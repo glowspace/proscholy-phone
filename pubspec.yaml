@@ -1,0 +1,26 @@
+name: zpevnik
+
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  sqflite:
+  path:
+
+  jaguar_orm:
+  jaguar_query_sqflite:
+
+  graphql_flutter:
+
+dev_dependencies:
+  jaguar_orm_gen:
+  build_runner:
+
+flutter:
+  uses-material-design: true
