@@ -16,7 +16,7 @@ dependencies:
   jaguar_orm:
   jaguar_query_sqflite:
 
-  graphql_flutter:
+  provider:
 
 dev_dependencies:
   jaguar_orm_gen:
@@ -24,3 +24,7 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/icons/
