@@ -1,6 +1,5 @@
 import 'package:jaguar_orm/jaguar_orm.dart';
-
-import 'package:zpevnik/models/song_lyric.dart';
+import 'package:zpevnik/models/songbook_record.dart';
 import 'package:zpevnik/utils/beans.dart';
 
 class Songbook {
@@ -9,11 +8,14 @@ class Songbook {
 
   final String name;
   final String shortcut;
+
+  @Column(isNullable: true)
   final String color;
+
   final bool isPrivate;
 
-  @ManyToMany(SongbookRecordBean, SongLyricBean)
-  List<SongLyric> songLyrics;
+  @HasMany(SongbookRecordBean)
+  List<SongbookRecord> songbookRecords;
 
   Songbook({
     this.id,
@@ -22,4 +24,12 @@ class Songbook {
     this.color,
     this.isPrivate,
   });
+
+  factory Songbook.fromJson(Map<String, dynamic> json) => Songbook(
+        id: int.parse(json['id']),
+        name: json['name'],
+        shortcut: json['shortcut'],
+        color: json['color'],
+        isPrivate: json['is_private'],
+      );
 }

@@ -1,41 +1,44 @@
 import 'package:jaguar_orm/jaguar_orm.dart';
-
 import 'package:zpevnik/models/author.dart';
 import 'package:zpevnik/models/external.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/models/song.dart';
 import 'package:zpevnik/models/songbook.dart';
+import 'package:zpevnik/models/songbook_record.dart';
 import 'package:zpevnik/models/tag.dart';
 
 part 'beans.jorm.dart';
 
 @GenBean()
 class SongLyricBean extends Bean<SongLyric> with _SongLyricBean {
-  SongBean songBean;
-  SongbookBean songbookBean;
-  AuthorBean authorBean;
-  TagBean tagBean;
-  ExternalBean externalBean;
-  PlaylistBean playlistBean;
+  SongBean _songBean;
+  AuthorBean _authorBean;
+  TagBean _tagBean;
+  ExternalBean _externalBean;
+  PlaylistBean _playlistBean;
 
-  SongLyricSongBean songLyricSongBean;
-  SongbookRecordBean songbookRecordBean;
-  SongLyricAuthorBean songLyricAuthorBean;
-  SongLyricPlaylistBean songLyricPlaylistBean;
+  SongbookRecordBean _songbookRecordBean;
+  SongLyricAuthorBean _songLyricAuthorBean;
+  SongLyricTagBean _songLyricTagBean;
+  SongLyricPlaylistBean _songLyricPlaylistBean;
 
-  SongLyricBean(Adapter adapter)
-      : songBean = SongBean(adapter),
-        songbookBean = SongbookBean(adapter),
-        authorBean = AuthorBean(adapter),
-        tagBean = TagBean(adapter),
-        externalBean = ExternalBean(adapter),
-        playlistBean = PlaylistBean(adapter),
-        songLyricSongBean = SongLyricSongBean(adapter),
-        songbookRecordBean = SongbookRecordBean(adapter),
-        songLyricAuthorBean = SongLyricAuthorBean(adapter),
-        songLyricPlaylistBean = SongLyricPlaylistBean(adapter),
-        super(adapter);
+  SongLyricBean(Adapter adapter) : super(adapter);
+
+  SongBean get songBean => _songBean ??= SongBean(adapter);
+  AuthorBean get authorBean => _authorBean ??= AuthorBean(adapter);
+  TagBean get tagBean => _tagBean ??= TagBean(adapter);
+  ExternalBean get externalBean => _externalBean ??= ExternalBean(adapter);
+  PlaylistBean get playlistBean => _playlistBean ??= PlaylistBean(adapter);
+
+  SongbookRecordBean get songbookRecordBean =>
+      _songbookRecordBean ??= SongbookRecordBean(adapter);
+  SongLyricAuthorBean get songLyricAuthorBean =>
+      _songLyricAuthorBean ??= SongLyricAuthorBean(adapter);
+  SongLyricTagBean get songLyricTagBean =>
+      _songLyricTagBean ??= SongLyricTagBean(adapter);
+  SongLyricPlaylistBean get songLyricPlaylistBean =>
+      _songLyricPlaylistBean ??= SongLyricPlaylistBean(adapter);
 
   @override
   String get tableName => 'song_lyrics';
@@ -43,14 +46,11 @@ class SongLyricBean extends Bean<SongLyric> with _SongLyricBean {
 
 @GenBean()
 class SongBean extends Bean<Song> with _SongBean {
-  SongLyricBean songLyricBean;
+  SongLyricBean _songLyricBean;
 
-  SongLyricSongBean songLyricSongBean;
+  SongBean(Adapter adapter) : super(adapter);
 
-  SongBean(Adapter adapter)
-      : songLyricBean = SongLyricBean(adapter),
-        songLyricSongBean = SongLyricSongBean(adapter),
-        super(adapter);
+  SongLyricBean get songLyricBean => _songLyricBean ??= SongLyricBean(adapter);
 
   @override
   String get tableName => 'songs';
@@ -58,14 +58,12 @@ class SongBean extends Bean<Song> with _SongBean {
 
 @GenBean()
 class SongbookBean extends Bean<Songbook> with _SongbookBean {
-  SongLyricBean songLyricBean;
+  SongbookRecordBean _songbookRecordBean;
 
-  SongbookRecordBean songbookRecordBean;
+  SongbookBean(Adapter adapter) : super(adapter);
 
-  SongbookBean(Adapter adapter)
-      : songLyricBean = SongLyricBean(adapter),
-        songbookRecordBean = SongbookRecordBean(adapter),
-        super(adapter);
+  SongbookRecordBean get songbookRecordBean =>
+      _songbookRecordBean ??= SongbookRecordBean(adapter);
 
   @override
   String get tableName => 'songbooks';
@@ -73,14 +71,21 @@ class SongbookBean extends Bean<Songbook> with _SongbookBean {
 
 @GenBean()
 class AuthorBean extends Bean<Author> with _AuthorBean {
-  SongLyricBean songLyricBean;
+  SongLyricBean _songLyricBean;
+  ExternalBean _externalBean;
 
-  SongLyricAuthorBean songLyricAuthorBean;
+  SongLyricAuthorBean _songLyricAuthorBean;
+  AuthorExternalBean _authorExternalBean;
 
-  AuthorBean(Adapter adapter)
-      : songLyricBean = SongLyricBean(adapter),
-        songLyricAuthorBean = SongLyricAuthorBean(adapter),
-        super(adapter);
+  AuthorBean(Adapter adapter) : super(adapter);
+
+  SongLyricBean get songLyricBean => _songLyricBean ??= SongLyricBean(adapter);
+  ExternalBean get externalBean => _externalBean ??= ExternalBean(adapter);
+
+  SongLyricAuthorBean get songLyricAuthorBean =>
+      _songLyricAuthorBean ??= SongLyricAuthorBean(adapter);
+  AuthorExternalBean get authorExternalBean =>
+      _authorExternalBean ??= AuthorExternalBean(adapter);
 
   @override
   String get tableName => 'authors';
@@ -88,11 +93,15 @@ class AuthorBean extends Bean<Author> with _AuthorBean {
 
 @GenBean()
 class TagBean extends Bean<Tag> with _TagBean {
-  SongLyricBean songLyricBean;
+  SongLyricBean _songLyricBean;
+  SongLyricTagBean _songLyricTagBean;
 
-  TagBean(Adapter adapter)
-      : songLyricBean = SongLyricBean(adapter),
-        super(adapter);
+  TagBean(Adapter adapter) : super(adapter);
+
+  SongLyricBean get songLyricBean => _songLyricBean ??= SongLyricBean(adapter);
+
+  SongLyricTagBean get songLyricTagBean =>
+      _songLyricTagBean ??= SongLyricTagBean(adapter);
 
   @override
   String get tableName => 'tags';
@@ -100,11 +109,18 @@ class TagBean extends Bean<Tag> with _TagBean {
 
 @GenBean()
 class ExternalBean extends Bean<External> with _ExternalBean {
-  SongLyricBean songLyricBean;
+  SongLyricBean _songLyricBean;
+  AuthorBean _authorBean;
 
-  ExternalBean(Adapter adapter)
-      : songLyricBean = SongLyricBean(adapter),
-        super(adapter);
+  AuthorExternalBean _authorExternalBean;
+
+  ExternalBean(Adapter adapter) : super(adapter);
+
+  SongLyricBean get songLyricBean => _songLyricBean ??= SongLyricBean(adapter);
+  AuthorBean get authorBean => _authorBean ??= AuthorBean(adapter);
+
+  AuthorExternalBean get authorExternalBean =>
+      _authorExternalBean ??= AuthorExternalBean(adapter);
 
   @override
   String get tableName => 'externals';
@@ -112,62 +128,30 @@ class ExternalBean extends Bean<External> with _ExternalBean {
 
 @GenBean()
 class PlaylistBean extends Bean<Playlist> with _PlaylistBean {
-  SongLyricBean songLyricBean;
+  SongLyricBean _songLyricBean;
 
-  SongLyricPlaylistBean songLyricPlaylistBean;
+  SongLyricPlaylistBean _songLyricPlaylistBean;
 
-  PlaylistBean(Adapter adapter)
-      : songLyricBean = SongLyricBean(adapter),
-        songLyricPlaylistBean = SongLyricPlaylistBean(adapter),
-        super(adapter);
+  PlaylistBean(Adapter adapter) : super(adapter);
+
+  SongLyricBean get songLyricBean => _songLyricBean ??= SongLyricBean(adapter);
+
+  SongLyricPlaylistBean get songLyricPlaylistBean =>
+      _songLyricPlaylistBean ??= SongLyricPlaylistBean(adapter);
 
   @override
   String get tableName => 'playlists';
 }
 
-class SongLyricSong {
-  @BelongsTo.many(SongLyricBean)
-  int songLyricId;
-
-  @BelongsTo.many(SongBean)
-  int songId;
-}
-
-@GenBean()
-class SongLyricSongBean extends Bean<SongLyricSong> with _SongLyricSongBean {
-  SongLyricBean songLyricBean;
-  SongBean songBean;
-
-  SongLyricSongBean(Adapter adapter)
-      : songLyricBean = SongLyricBean(adapter),
-        songBean = SongBean(adapter),
-        super(adapter);
-
-  @override
-  String get tableName => 'song_lyrics_songs';
-}
-
-class SongbookRecord {
-  final String number;
-
-  @BelongsTo.many(SongLyricBean)
-  int songLyricId;
-
-  @BelongsTo.many(SongbookBean)
-  int songbookId;
-
-  SongbookRecord({this.number});
-}
-
 @GenBean()
 class SongbookRecordBean extends Bean<SongbookRecord> with _SongbookRecordBean {
-  SongLyricBean songLyricBean;
-  SongbookBean songbookBean;
+  SongLyricBean _songLyricBean;
+  SongbookBean _songbookBean;
 
-  SongbookRecordBean(Adapter adapter)
-      : songLyricBean = SongLyricBean(adapter),
-        songbookBean = SongbookBean(adapter),
-        super(adapter);
+  SongbookRecordBean(Adapter adapter) : super(adapter);
+
+  SongLyricBean get songLyricBean => _songLyricBean ??= SongLyricBean(adapter);
+  SongbookBean get songbookBean => _songbookBean ??= SongbookBean(adapter);
 
   @override
   String get tableName => 'songbook_records';
@@ -184,16 +168,38 @@ class SongLyricAuthor {
 @GenBean()
 class SongLyricAuthorBean extends Bean<SongLyricAuthor>
     with _SongLyricAuthorBean {
-  SongLyricBean songLyricBean;
-  AuthorBean authorBean;
+  SongLyricBean _songLyricBean;
+  AuthorBean _authorBean;
 
-  SongLyricAuthorBean(Adapter adapter)
-      : songLyricBean = SongLyricBean(adapter),
-        authorBean = AuthorBean(adapter),
-        super(adapter);
+  SongLyricAuthorBean(Adapter adapter) : super(adapter);
+
+  SongLyricBean get songLyricBean => _songLyricBean ??= SongLyricBean(adapter);
+  AuthorBean get authorBean => _authorBean ??= AuthorBean(adapter);
 
   @override
   String get tableName => 'song_lyrics_authors';
+}
+
+class SongLyricTag {
+  @BelongsTo.many(SongLyricBean)
+  int songLyricId;
+
+  @BelongsTo.many(TagBean)
+  int tagId;
+}
+
+@GenBean()
+class SongLyricTagBean extends Bean<SongLyricTag> with _SongLyricTagBean {
+  SongLyricBean _songLyricBean;
+  TagBean _tagBean;
+
+  SongLyricTagBean(Adapter adapter) : super(adapter);
+
+  SongLyricBean get songLyricBean => _songLyricBean ??= SongLyricBean(adapter);
+  TagBean get tagBean => _tagBean ??= TagBean(adapter);
+
+  @override
+  String get tableName => 'song_lyrics_tags';
 }
 
 class SongLyricPlaylist {
@@ -207,14 +213,36 @@ class SongLyricPlaylist {
 @GenBean()
 class SongLyricPlaylistBean extends Bean<SongLyricPlaylist>
     with _SongLyricPlaylistBean {
-  SongLyricBean songLyricBean;
-  PlaylistBean playlistBean;
+  SongLyricBean _songLyricBean;
+  PlaylistBean _playlistBean;
 
-  SongLyricPlaylistBean(Adapter adapter)
-      : songLyricBean = SongLyricBean(adapter),
-        playlistBean = PlaylistBean(adapter),
-        super(adapter);
+  SongLyricPlaylistBean(Adapter adapter) : super(adapter);
+
+  SongLyricBean get songLyricBean => _songLyricBean ??= SongLyricBean(adapter);
+  PlaylistBean get playlistBean => _playlistBean ??= PlaylistBean(adapter);
 
   @override
-  String get tableName => 'song_lyrics_authors';
+  String get tableName => 'song_lyrics_playlists';
+}
+
+class AuthorExternal {
+  @BelongsTo.many(AuthorBean)
+  int authorId;
+
+  @BelongsTo.many(ExternalBean)
+  int externalId;
+}
+
+@GenBean()
+class AuthorExternalBean extends Bean<AuthorExternal> with _AuthorExternalBean {
+  AuthorBean _authorBean;
+  ExternalBean _externalBean;
+
+  AuthorExternalBean(Adapter adapter) : super(adapter);
+
+  ExternalBean get externalBean => _externalBean ??= ExternalBean(adapter);
+  AuthorBean get authorBean => _authorBean ??= AuthorBean(adapter);
+
+  @override
+  String get tableName => 'authors_externals';
 }
