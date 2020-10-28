@@ -10,13 +10,19 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  sqflite:
-  path:
 
   jaguar_orm:
   jaguar_query_sqflite:
+  sqflite:
+  path:
 
+  shared_preferences:
+    
   provider:
+
+  modal_bottom_sheet:
+
+  cupertino_icons:
 
 dev_dependencies:
   jaguar_orm_gen:
@@ -28,4 +34,5 @@ flutter:
   assets:
     - assets/data.json
     - assets/images/
+    - assets/images/songbooks/
     - assets/icons/

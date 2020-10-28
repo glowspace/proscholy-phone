@@ -1,12 +1,12 @@
 import 'package:jaguar_orm/jaguar_orm.dart';
-import 'package:zpevnik/models/author.dart';
-import 'package:zpevnik/models/external.dart';
-import 'package:zpevnik/models/playlist.dart';
-import 'package:zpevnik/models/song_lyric.dart';
-import 'package:zpevnik/models/song.dart';
-import 'package:zpevnik/models/songbook.dart';
-import 'package:zpevnik/models/songbook_record.dart';
-import 'package:zpevnik/models/tag.dart';
+import 'package:zpevnik/models/entities/author.dart';
+import 'package:zpevnik/models/entities/external.dart';
+import 'package:zpevnik/models/entities/playlist.dart';
+import 'package:zpevnik/models/entities/song_lyric.dart';
+import 'package:zpevnik/models/entities/song.dart';
+import 'package:zpevnik/models/entities/songbook.dart';
+import 'package:zpevnik/models/entities/songbook_record.dart';
+import 'package:zpevnik/models/entities/tag.dart';
 
 part 'beans.jorm.dart';
 
@@ -14,7 +14,7 @@ part 'beans.jorm.dart';
 class SongLyricBean extends Bean<SongLyric> with _SongLyricBean {
   SongBean _songBean;
   AuthorBean _authorBean;
-  TagBean _tagBean;
+  TagBean _tagEntityBean;
   ExternalBean _externalBean;
   PlaylistBean _playlistBean;
 
@@ -27,7 +27,7 @@ class SongLyricBean extends Bean<SongLyric> with _SongLyricBean {
 
   SongBean get songBean => _songBean ??= SongBean(adapter);
   AuthorBean get authorBean => _authorBean ??= AuthorBean(adapter);
-  TagBean get tagBean => _tagBean ??= TagBean(adapter);
+  TagBean get tagEntityBean => _tagEntityBean ??= TagBean(adapter);
   ExternalBean get externalBean => _externalBean ??= ExternalBean(adapter);
   PlaylistBean get playlistBean => _playlistBean ??= PlaylistBean(adapter);
 
@@ -92,7 +92,7 @@ class AuthorBean extends Bean<Author> with _AuthorBean {
 }
 
 @GenBean()
-class TagBean extends Bean<Tag> with _TagBean {
+class TagBean extends Bean<TagEntity> with _TagBean {
   SongLyricBean _songLyricBean;
   SongLyricTagBean _songLyricTagBean;
 
@@ -191,12 +191,12 @@ class SongLyricTag {
 @GenBean()
 class SongLyricTagBean extends Bean<SongLyricTag> with _SongLyricTagBean {
   SongLyricBean _songLyricBean;
-  TagBean _tagBean;
+  TagBean _tagEntityBean;
 
   SongLyricTagBean(Adapter adapter) : super(adapter);
 
   SongLyricBean get songLyricBean => _songLyricBean ??= SongLyricBean(adapter);
-  TagBean get tagBean => _tagBean ??= TagBean(adapter);
+  TagBean get tagEntityBean => _tagEntityBean ??= TagBean(adapter);
 
   @override
   String get tableName => 'song_lyrics_tags';

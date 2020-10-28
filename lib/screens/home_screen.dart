@@ -4,7 +4,9 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/providers/data_provider.dart';
 import 'package:zpevnik/providers/song_lyrics_provider.dart';
+import 'package:zpevnik/providers/tags_provider.dart';
 import 'package:zpevnik/screens/components/song_lyrics_list.dart';
+import 'package:zpevnik/screens/filters/widget.dart';
 import 'package:zpevnik/utils/platform_state.dart';
 import 'package:zpevnik/screens/components/search_widget.dart';
 
@@ -16,6 +18,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> with PlatformStateMixin {
   final SongLyricsProvider _songLyricsProvider =
       SongLyricsProvider(DataProvider.shared.songLyrics);
+
+  final TagsProvider _tagsProvider = TagsProvider(DataProvider.shared.tags);
 
   @override
   Widget iOSWidget(BuildContext context) => CupertinoPageScaffold(
@@ -52,10 +56,10 @@ class _HomeScreenState extends State<HomeScreen> with PlatformStateMixin {
   void _showFilters(BuildContext context) => showCupertinoModalBottomSheet(
         context: context,
         builder: (context, scrollController) => SizedBox(
-          height: 400,
-          child: Container(
-            color: Colors.red,
-          ),
-        ),
+            height: 0.67 * MediaQuery.of(context).size.height,
+            child: ChangeNotifierProvider.value(
+              value: _tagsProvider,
+              child: FiltersWidget(),
+            )),
       );
 }

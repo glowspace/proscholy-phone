@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:zpevnik/models/song_lyric.dart';
+import 'package:zpevnik/models/entities/song_lyric.dart';
 import 'package:zpevnik/utils/platform_state.dart';
 
 class SongLyricScreen extends StatefulWidget {

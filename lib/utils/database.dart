@@ -3,11 +3,11 @@ import 'dart:math';
 import 'package:jaguar_orm/jaguar_orm.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:zpevnik/models/author.dart';
-import 'package:zpevnik/models/song.dart';
-import 'package:zpevnik/models/song_lyric.dart';
-import 'package:zpevnik/models/songbook.dart';
-import 'package:zpevnik/models/tag.dart';
+import 'package:zpevnik/models/entities/author.dart';
+import 'package:zpevnik/models/entities/song.dart';
+import 'package:zpevnik/models/entities/song_lyric.dart';
+import 'package:zpevnik/models/entities/songbook.dart';
+import 'package:zpevnik/models/entities/tag.dart';
 import 'package:zpevnik/utils/adapter.dart';
 import 'package:zpevnik/utils/beans.dart';
 
@@ -18,7 +18,7 @@ class Database {
 
   static final Database shared = Database._();
 
-  Future<void> init(bool loaded) async {
+  Future<void> init() async {
     _adapter = new CustomAdapter(join(await getDatabasesPath(), 'zpevnik.db'));
 
     await _adapter.connect();
@@ -38,28 +38,27 @@ class Database {
     //   AuthorExternalBean(_adapter)
     // ]) bean.drop();
 
-    if (loaded)
-      await Future.wait([
-        SongLyricBean(_adapter).createTable(ifNotExists: true),
-        SongBean(_adapter).createTable(ifNotExists: true),
-        SongbookBean(_adapter).createTable(ifNotExists: true),
-        AuthorBean(_adapter).createTable(ifNotExists: true),
-        ExternalBean(_adapter).createTable(ifNotExists: true),
-        TagBean(_adapter).createTable(ifNotExists: true),
-        PlaylistBean(_adapter).createTable(ifNotExists: true),
-        SongbookRecordBean(_adapter).createTable(ifNotExists: true),
-        SongLyricAuthorBean(_adapter).createTable(ifNotExists: true),
-        SongLyricTagBean(_adapter).createTable(ifNotExists: true),
-        SongLyricPlaylistBean(_adapter).createTable(ifNotExists: true),
-        AuthorExternalBean(_adapter).createTable(ifNotExists: true),
-      ]);
+    await Future.wait([
+      SongLyricBean(_adapter).createTable(ifNotExists: true),
+      SongBean(_adapter).createTable(ifNotExists: true),
+      SongbookBean(_adapter).createTable(ifNotExists: true),
+      AuthorBean(_adapter).createTable(ifNotExists: true),
+      ExternalBean(_adapter).createTable(ifNotExists: true),
+      TagBean(_adapter).createTable(ifNotExists: true),
+      PlaylistBean(_adapter).createTable(ifNotExists: true),
+      SongbookRecordBean(_adapter).createTable(ifNotExists: true),
+      SongLyricAuthorBean(_adapter).createTable(ifNotExists: true),
+      SongLyricTagBean(_adapter).createTable(ifNotExists: true),
+      SongLyricPlaylistBean(_adapter).createTable(ifNotExists: true),
+      AuthorExternalBean(_adapter).createTable(ifNotExists: true),
+    ]);
   }
 
   Future<void> saveAuthors(List<Author> authors) => AuthorBean(_adapter)
       .insertMany(authors)
       .catchError((error) => print(error));
 
-  Future<void> saveTags(List<Tag> tags) =>
+  Future<void> saveTags(List<TagEntity> tags) =>
       TagBean(_adapter).insertMany(tags).catchError((error) => print(error));
 
   Future<void> saveSongbooks(List<Songbook> songbooks) => SongbookBean(_adapter)
@@ -83,7 +82,7 @@ class Database {
   Future<void> saveSongLyric(SongLyric songLyric) =>
       SongLyricBean(_adapter).insert(songLyric, cascade: true);
 
-  Future<List<Tag>> get tags => TagBean(_adapter).getAll();
+  Future<List<TagEntity>> get tags => TagBean(_adapter).getAll();
 
   Future<List<Songbook>> get songbooks async {
     final bean = SongbookBean(_adapter);

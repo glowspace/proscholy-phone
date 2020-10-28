@@ -14,22 +14,21 @@ class MainWidget extends StatelessWidget with PlatformWidgetMixin {
   final UpdateProvider _updateProvider = UpdateProvider();
 
   @override
-  Widget iOSWidget(BuildContext context) => CupertinoApp(
-        title: _title,
-        home: _home(context),
+  Widget iOSWidget(BuildContext context) => Theme(
+        data: MediaQuery.platformBrightnessOf(context) == Brightness.light
+            ? ThemeData.light()
+            : ThemeData.dark(),
+        child: CupertinoApp(
+          title: _title,
+          home: _home(context),
+        ),
       );
 
   @override
   Widget androidWidget(BuildContext context) => MaterialApp(
         title: _title,
-        theme: ThemeData(
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-          brightness: Brightness.light,
-        ),
-        darkTheme: ThemeData(
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-          brightness: Brightness.dark,
-        ),
+        theme: ThemeData.light(),
+        darkTheme: ThemeData.dark(),
         home: _home(context),
       );
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:zpevnik/models/songbook.dart';
+import 'package:zpevnik/models/entities/songbook.dart';
 import 'package:zpevnik/screens/components/search_widget.dart';
 
 class SongbooksProvider extends ChangeNotifier implements Searchable {

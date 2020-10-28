@@ -3,11 +3,13 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart';
-import 'package:zpevnik/models/author.dart';
-import 'package:zpevnik/models/song.dart';
-import 'package:zpevnik/models/song_lyric.dart';
-import 'package:zpevnik/models/songbook.dart';
-import 'package:zpevnik/models/tag.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:zpevnik/models/entities/author.dart';
+import 'package:zpevnik/models/entities/song.dart';
+import 'package:zpevnik/models/entities/song_lyric.dart';
+import 'package:zpevnik/models/entities/songbook.dart';
+import 'package:zpevnik/models/entities/tag.dart';
+import 'package:zpevnik/providers/data_provider.dart';
 import 'package:zpevnik/utils/database.dart';
 
 class UpdateProvider extends ChangeNotifier {
@@ -74,7 +76,7 @@ class UpdateProvider extends ChangeNotifier {
       }
     }"
   }
-''';
+  ''';
 
   String _progressInfo;
   String get progressInfo => _progressInfo;
@@ -84,11 +86,20 @@ class UpdateProvider extends ChangeNotifier {
   }
 
   Future<bool> update() async {
+    final prefs = await SharedPreferences.getInstance();
+
     await Database.shared.init();
 
+    if (!prefs.containsKey('loaded')) {
+      await _loadLocal();
+
+      await prefs.setBool('loaded', true);
+    }
+
     // todo: handle initial load + updating
-    // await _loadLocal();
     // await _update();
+
+    await DataProvider.shared.init();
 
     return true;
   }
@@ -122,7 +133,7 @@ class UpdateProvider extends ChangeNotifier {
         .toList());
 
     await Database.shared.saveTags((data['tags_enum'] as List<dynamic>)
-        .map((json) => Tag.fromJson(json))
+        .map((json) => TagEntity.fromJson(json))
         .toList());
 
     await Database.shared.saveSongbooks((data['songbooks'] as List<dynamic>)

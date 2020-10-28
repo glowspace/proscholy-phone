@@ -1,10 +1,9 @@
 import 'package:jaguar_orm/jaguar_orm.dart';
-import 'package:zpevnik/models/author.dart';
-import 'package:zpevnik/models/external.dart';
-import 'package:zpevnik/models/playlist.dart';
-import 'package:zpevnik/models/songbook.dart';
-import 'package:zpevnik/models/songbook_record.dart';
-import 'package:zpevnik/models/tag.dart';
+import 'package:zpevnik/models/entities/author.dart';
+import 'package:zpevnik/models/entities/external.dart';
+import 'package:zpevnik/models/entities/playlist.dart';
+import 'package:zpevnik/models/entities/songbook_record.dart';
+import 'package:zpevnik/models/entities/tag.dart';
 import 'package:zpevnik/utils/beans.dart';
 
 class SongLyric {
@@ -26,7 +25,7 @@ class SongLyric {
   List<External> externals;
 
   @ManyToMany(SongLyricTagBean, TagBean)
-  List<Tag> tags;
+  List<TagEntity> tags;
 
   @ManyToMany(SongLyricPlaylistBean, PlaylistBean)
   List<Playlist> playlists;
@@ -68,7 +67,7 @@ class SongLyric {
           .map((json) => External.fromJson(json))
           .toList()
       ..tags = (json['tags'] as List<dynamic>)
-          .map((json) => Tag.fromJson(json))
+          .map((json) => TagEntity.fromJson(json))
           .toList()
       ..playlists = []
       ..songbookRecords = (json['songbook_records'] as List<dynamic>)

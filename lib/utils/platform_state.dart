@@ -6,7 +6,7 @@ mixin PlatformWidgetMixin on StatelessWidget {
   Widget build(BuildContext context) {
     if (Platform.isIOS)
       return iOSWidget(context);
-    else if (Platform.isAndroid) return iOSWidget(context);
+    else if (Platform.isAndroid) return androidWidget(context);
 
     return Container();
   }
@@ -20,7 +20,7 @@ mixin PlatformStateMixin<T extends StatefulWidget> on State<T> {
   Widget build(BuildContext context) {
     if (Platform.isIOS)
       return iOSWidget(context);
-    else if (Platform.isAndroid) return iOSWidget(context);
+    else if (Platform.isAndroid) return androidWidget(context);
 
     return Container();
   }
