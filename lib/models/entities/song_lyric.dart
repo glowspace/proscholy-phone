@@ -6,7 +6,7 @@ import 'package:zpevnik/models/entities/songbook_record.dart';
 import 'package:zpevnik/models/entities/tag.dart';
 import 'package:zpevnik/utils/beans.dart';
 
-class SongLyric {
+class SongLyricEntity {
   @PrimaryKey()
   final int id;
 
@@ -36,7 +36,7 @@ class SongLyric {
   @BelongsTo(SongBean, isNullable: true)
   int songId;
 
-  SongLyric({
+  SongLyricEntity({
     this.id,
     this.name,
     this.lyrics,
@@ -44,7 +44,7 @@ class SongLyric {
     this.type,
   });
 
-  factory SongLyric.fromJson(Map<String, dynamic> json) {
+  factory SongLyricEntity.fromJson(Map<String, dynamic> json) {
     // print(json['song']);
 
     final id = int.parse(json['id']);
@@ -52,7 +52,7 @@ class SongLyric {
         ? null
         : (json['song'] as Map<String, dynamic>)['id'];
 
-    return SongLyric(
+    return SongLyricEntity(
       id: id,
       name: json['name'],
       lyrics: json['lyrics'],

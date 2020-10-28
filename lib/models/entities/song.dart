@@ -9,7 +9,7 @@ class Song {
   final String name;
 
   @HasMany(SongLyricBean)
-  List<SongLyric> songLyrics;
+  List<SongLyricEntity> songLyrics;
 
   Song({
     this.id,

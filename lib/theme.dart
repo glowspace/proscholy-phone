@@ -5,6 +5,12 @@ class AppTheme {
 
   static final AppTheme shared = AppTheme._();
 
+  Color textColor(BuildContext context) =>
+      _isLight(context) ? Color(0xff222222) : Color(0xffdddddd);
+
+  Color chordColor(BuildContext context) =>
+      _isLight(context) ? Color(0xff3961ad) : Color(0xff4dc0b5);
+
   // filters theme
   Color _filtersTextColor(BuildContext context) =>
       _isLight(context) ? Color(0xff222529) : Color(0xffdddad6);

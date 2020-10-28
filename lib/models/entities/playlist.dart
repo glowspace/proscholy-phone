@@ -10,7 +10,7 @@ class Playlist {
   final bool isArchived;
 
   @ManyToMany(SongLyricPlaylistBean, SongLyricBean)
-  List<SongLyric> songLyrics;
+  List<SongLyricEntity> songLyrics;
 
   Playlist({
     this.id,

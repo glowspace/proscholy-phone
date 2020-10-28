@@ -10,7 +10,7 @@ class Author {
   final String name;
 
   @ManyToMany(SongLyricAuthorBean, SongLyricBean)
-  List<SongLyric> songLyrics;
+  List<SongLyricEntity> songLyrics;
 
   @ManyToMany(AuthorExternalBean, ExternalBean)
   List<External> externals;

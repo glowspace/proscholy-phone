@@ -10,7 +10,7 @@ class TagEntity {
   final int type;
 
   @ManyToMany(SongLyricTagBean, SongLyricBean)
-  List<SongLyric> songLyrics;
+  List<SongLyricEntity> songLyrics;
 
   TagEntity({
     this.id,

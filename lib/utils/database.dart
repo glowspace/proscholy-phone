@@ -72,15 +72,12 @@ class Database {
           .catchError((error) => print(error));
   }
 
-  Future<void> saveSongLyrics(List<SongLyric> songLyrics) async {
+  Future<void> saveSongLyrics(List<SongLyricEntity> songLyrics) async {
     for (final batch in _splitInBatches(songLyrics))
       await SongLyricBean(_adapter)
           .insertMany(batch, cascade: true)
           .catchError((error) => print(error));
   }
-
-  Future<void> saveSongLyric(SongLyric songLyric) =>
-      SongLyricBean(_adapter).insert(songLyric, cascade: true);
 
   Future<List<TagEntity>> get tags => TagBean(_adapter).getAll();
 
@@ -92,7 +89,7 @@ class Database {
         .catchError((error) => print(error));
   }
 
-  Future<List<SongLyric>> get songLyrics async {
+  Future<List<SongLyricEntity>> get songLyrics async {
     final bean = SongLyricBean(_adapter);
     final songLyrics = await bean
         .findWhere(bean.lyrics.isNot(null))

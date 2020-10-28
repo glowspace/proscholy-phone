@@ -1,5 +1,5 @@
-import 'package:zpevnik/models/entities/song_lyric.dart';
 import 'package:zpevnik/models/entities/songbook.dart';
+import 'package:zpevnik/models/songLyric.dart';
 import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/utils/database.dart';
 
@@ -13,7 +13,9 @@ class DataProvider {
   List<Tag> _tags;
 
   Future<void> init() async {
-    _songLyrics = await Database.shared.songLyrics;
+    _songLyrics = (await Database.shared.songLyrics)
+        .map((songLyricEntity) => SongLyric(songLyricEntity))
+        .toList();
     _songbooks = await Database.shared.songbooks;
     _tags = (await Database.shared.tags)
         .map((tagEntity) => Tag(tagEntity))

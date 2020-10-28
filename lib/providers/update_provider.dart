@@ -145,7 +145,7 @@ class UpdateProvider extends ChangeNotifier {
         .toList());
 
     await Database.shared.saveSongLyrics((data['song_lyrics'] as List<dynamic>)
-        .map((json) => SongLyric.fromJson(json))
+        .map((json) => SongLyricEntity.fromJson(json))
         .toList());
   }
 }
