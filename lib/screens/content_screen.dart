@@ -1,18 +1,16 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:zpevnik/utils/platform_state.dart';
+import 'package:zpevnik/screens/home_screen.dart';
+import 'package:zpevnik/screens/songbooks_screen.dart';
+import 'package:zpevnik/screens/user_screen.dart';
 
-import 'package:zpevnik/screens/home.dart';
-import 'package:zpevnik/screens/songbooks.dart';
-import 'package:zpevnik/screens/user.dart';
-
-class ContentWidget extends StatefulWidget {
+class ContentScreen extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _ContentState();
+  State<StatefulWidget> createState() => _ContentScreenState();
 }
 
-class _ContentState extends State<ContentWidget> {
+class _ContentScreenState extends State<ContentScreen> with PlatformStateMixin {
   int _currentIndex;
 
   @override
@@ -23,22 +21,14 @@ class _ContentState extends State<ContentWidget> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    if (Platform.isIOS)
-      return _iosWidget(context);
-    else if (Platform.isAndroid) return _androidWidget(context);
-
-    return Container();
-  }
-
-  Widget _iosWidget(BuildContext context) => CupertinoTabScaffold(
+  Widget iOSWidget(BuildContext context) => CupertinoTabScaffold(
         tabBar: CupertinoTabBar(items: _tabBarItems(context)),
-        tabBuilder: (BuildContext context, int index) => CupertinoPageScaffold(
-          child: _activeWidget(context, index),
-        ),
+        tabBuilder: (BuildContext context, int index) =>
+            _activeWidget(context, index),
       );
 
-  Widget _androidWidget(BuildContext context) => Scaffold(
+  @override
+  Widget androidWidget(BuildContext context) => Scaffold(
         body: _activeWidget(context, _currentIndex),
         bottomNavigationBar: BottomNavigationBar(
           items: _tabBarItems(context),
@@ -50,11 +40,11 @@ class _ContentState extends State<ContentWidget> {
   Widget _activeWidget(BuildContext context, int index) {
     switch (index) {
       case 0:
-        return HomeWidget();
+        return HomeScreen();
       case 1:
-        return SongbooksWidget();
+        return SongbooksScreen();
       case 2:
-        return UserWidget();
+        return UserScreen();
       default:
         return Container();
     }

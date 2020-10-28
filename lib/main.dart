@@ -1,30 +1,27 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
+import 'package:zpevnik/utils/platform_state.dart';
 import 'package:zpevnik/providers/update_provider.dart';
-import 'package:zpevnik/screens/content.dart';
-import 'package:zpevnik/screens/loading.dart';
+import 'package:zpevnik/screens/content_screen.dart';
+import 'package:zpevnik/screens/loading_screen.dart';
 
-void main() => runApp(Main());
+void main() => runApp(MainWidget());
 
-class Main extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() => _Main();
-}
+class MainWidget extends StatelessWidget with PlatformWidgetMixin {
+  final String _title = 'Zpěvník';
 
-class _Main extends State<Main> {
-  UpdateProvider _updateProvider;
+  final UpdateProvider _updateProvider = UpdateProvider();
 
   @override
-  void initState() {
-    super.initState();
-
-    _updateProvider = UpdateProvider();
-  }
+  Widget iOSWidget(BuildContext context) => CupertinoApp(
+        title: _title,
+        home: _home(context),
+      );
 
   @override
-  Widget build(BuildContext context) => MaterialApp(
-        title: 'Zpěvník',
+  Widget androidWidget(BuildContext context) => MaterialApp(
+        title: _title,
         theme: ThemeData(
           visualDensity: VisualDensity.adaptivePlatformDensity,
           brightness: Brightness.light,
@@ -33,14 +30,16 @@ class _Main extends State<Main> {
           visualDensity: VisualDensity.adaptivePlatformDensity,
           brightness: Brightness.dark,
         ),
-        home: FutureBuilder<void>(
-          future: _updateProvider.update(),
-          builder: (context, snapshot) => snapshot.hasData
-              ? ChangeNotifierProvider.value(
-                  value: _updateProvider,
-                  child: LoadingWidget(),
-                )
-              : ContentWidget(),
-        ),
+        home: _home(context),
+      );
+
+  Widget _home(BuildContext context) => FutureBuilder<bool>(
+        future: _updateProvider.update(),
+        builder: (context, snapshot) => snapshot.hasData
+            ? ContentScreen()
+            : ChangeNotifierProvider.value(
+                value: _updateProvider,
+                child: LoadingScreen(),
+              ),
       );
 }

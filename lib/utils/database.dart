@@ -18,7 +18,7 @@ class Database {
 
   static final Database shared = Database._();
 
-  Future<void> init() async {
+  Future<void> init(bool loaded) async {
     _adapter = new CustomAdapter(join(await getDatabasesPath(), 'zpevnik.db'));
 
     await _adapter.connect();
@@ -38,20 +38,21 @@ class Database {
     //   AuthorExternalBean(_adapter)
     // ]) bean.drop();
 
-    // await Future.wait([
-    //   SongLyricBean(_adapter).createTable(),
-    //   SongBean(_adapter).createTable(),
-    //   SongbookBean(_adapter).createTable(),
-    //   AuthorBean(_adapter).createTable(),
-    //   ExternalBean(_adapter).createTable(),
-    //   TagBean(_adapter).createTable(),
-    //   PlaylistBean(_adapter).createTable(),
-    //   SongbookRecordBean(_adapter).createTable(),
-    //   SongLyricAuthorBean(_adapter).createTable(),
-    //   SongLyricTagBean(_adapter).createTable(),
-    //   SongLyricPlaylistBean(_adapter).createTable(),
-    //   AuthorExternalBean(_adapter).createTable(),
-    // ]);
+    if (loaded)
+      await Future.wait([
+        SongLyricBean(_adapter).createTable(ifNotExists: true),
+        SongBean(_adapter).createTable(ifNotExists: true),
+        SongbookBean(_adapter).createTable(ifNotExists: true),
+        AuthorBean(_adapter).createTable(ifNotExists: true),
+        ExternalBean(_adapter).createTable(ifNotExists: true),
+        TagBean(_adapter).createTable(ifNotExists: true),
+        PlaylistBean(_adapter).createTable(ifNotExists: true),
+        SongbookRecordBean(_adapter).createTable(ifNotExists: true),
+        SongLyricAuthorBean(_adapter).createTable(ifNotExists: true),
+        SongLyricTagBean(_adapter).createTable(ifNotExists: true),
+        SongLyricPlaylistBean(_adapter).createTable(ifNotExists: true),
+        AuthorExternalBean(_adapter).createTable(ifNotExists: true),
+      ]);
   }
 
   Future<void> saveAuthors(List<Author> authors) => AuthorBean(_adapter)
@@ -84,14 +85,22 @@ class Database {
 
   Future<List<Tag>> get tags => TagBean(_adapter).getAll();
 
+  Future<List<Songbook>> get songbooks async {
+    final bean = SongbookBean(_adapter);
+
+    return bean
+        .findWhere(bean.isPrivate.ne(true))
+        .catchError((error) => print(error));
+  }
+
   Future<List<SongLyric>> get songLyrics async {
     final bean = SongLyricBean(_adapter);
-    final songLyrics = await bean.getAll().catchError((error) => print(error));
+    final songLyrics = await bean
+        .findWhere(bean.lyrics.isNot(null))
+        .catchError((error) => print(error));
 
     for (final batch in _splitInBatches(songLyrics))
-      await bean
-          .preloadAll(batch, cascade: true)
-          .catchError((error) => print(error));
+      bean.preloadAll(batch, cascade: true).catchError((error) => print(error));
 
     return songLyrics;
   }

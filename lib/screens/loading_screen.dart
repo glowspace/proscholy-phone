@@ -1,19 +1,22 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import 'package:zpevnik/providers/update_provider.dart';
+import 'package:zpevnik/utils/platform_state.dart';
 
-class LoadingWidget extends StatefulWidget {
+class LoadingScreen extends StatelessWidget with PlatformWidgetMixin {
   @override
-  State<StatefulWidget> createState() => _LoadingWidgetState();
-}
+  Widget androidWidget(BuildContext context) =>
+      _content(context, Theme.of(context).brightness);
 
-class _LoadingWidgetState extends State<LoadingWidget> {
   @override
-  Widget build(BuildContext context) => Container(
+  Widget iOSWidget(BuildContext context) =>
+      _content(context, MediaQuery.platformBrightnessOf(context));
+
+  Widget _content(BuildContext context, Brightness brightness) => Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage(Theme.of(context).brightness == Brightness.light
+            image: AssetImage(brightness == Brightness.light
                 ? 'assets/images/background.png'
                 : 'assets/images/background_dark.png'),
             fit: BoxFit.cover,
@@ -24,8 +27,8 @@ class _LoadingWidgetState extends State<LoadingWidget> {
           body: Container(
             child: Center(
               child: Consumer<UpdateProvider>(
-                  builder: (context, provider, _) =>
-                      Text(provider.progressInfo)),
+                builder: (context, provider, _) => Text(provider.progressInfo),
+              ),
             ),
           ),
         ),
