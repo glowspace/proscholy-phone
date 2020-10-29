@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:zpevnik/providers/data_provider.dart';
 import 'package:zpevnik/providers/songbooks_provider.dart';
 import 'package:zpevnik/screens/components/songbooks_list.dart';
-import 'package:zpevnik/utils/platform_state.dart';
+import 'package:zpevnik/utils/platform.dart';
 import 'package:zpevnik/screens/components/search_widget.dart';
 
 class SongbooksScreen extends StatefulWidget {
@@ -12,16 +12,13 @@ class SongbooksScreen extends StatefulWidget {
   State<StatefulWidget> createState() => _SongbooksScreenState();
 }
 
-class _SongbooksScreenState extends State<SongbooksScreen>
-    with PlatformStateMixin {
-  final SongbooksProvider _songbooksProvider =
-      SongbooksProvider(DataProvider.shared.songbooks);
+class _SongbooksScreenState extends State<SongbooksScreen> with PlatformStateMixin {
+  final SongbooksProvider _songbooksProvider = SongbooksProvider(DataProvider.shared.songbooks);
 
   @override
   Widget iOSWidget(BuildContext context) => CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
           middle: _searchWidget(context),
-          transitionBetweenRoutes: false,
         ),
         child: _body(context),
       );
@@ -35,8 +32,7 @@ class _SongbooksScreenState extends State<SongbooksScreen>
       );
 
   Widget _body(BuildContext context) => SafeArea(
-        child: ChangeNotifierProvider.value(
-            value: _songbooksProvider, child: SongbookListView()),
+        child: ChangeNotifierProvider.value(value: _songbooksProvider, child: SongbookListView()),
       );
 
   Widget _searchWidget(BuildContext context) => SearchWidget(

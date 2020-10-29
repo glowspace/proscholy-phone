@@ -38,8 +38,8 @@ class _FilterTagState extends State<FilterTag> {
                   : Colors.transparent,
               border:
                   Border.all(color: AppTheme.shared.filterBorderColor(context)),
-              borderRadius:
-                  BorderRadius.all(Radius.circular(_size(context).height)),
+              borderRadius: BorderRadius.all(Radius.circular(
+                  100)), // big enough number to make it always full circular
             ),
             padding: EdgeInsets.symmetric(
                 horizontal: kDefaultPadding / 2, vertical: kDefaultPadding / 4),
@@ -50,7 +50,4 @@ class _FilterTagState extends State<FilterTag> {
           ),
         ),
       );
-
-  Size _size(BuildContext context) =>
-      (context.findRenderObject() as RenderBox)?.size ?? Size.zero;
 }

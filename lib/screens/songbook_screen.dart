@@ -6,13 +6,12 @@ import 'package:zpevnik/providers/data_provider.dart';
 import 'package:zpevnik/providers/song_lyrics_provider.dart';
 import 'package:zpevnik/screens/components/search_widget.dart';
 import 'package:zpevnik/screens/components/song_lyrics_list.dart';
-import 'package:zpevnik/utils/platform_state.dart';
+import 'package:zpevnik/utils/platform.dart';
 
 class SongbookScreen extends StatelessWidget with PlatformWidgetMixin {
   final Songbook songbook;
 
-  final SongLyricsProvider _songLyricsProvider =
-      SongLyricsProvider(DataProvider.shared.songLyrics);
+  final SongLyricsProvider _songLyricsProvider = SongLyricsProvider(DataProvider.shared.songLyrics);
 
   SongbookScreen({Key key, this.songbook}) : super(key: key);
 
@@ -20,7 +19,6 @@ class SongbookScreen extends StatelessWidget with PlatformWidgetMixin {
   Widget iOSWidget(BuildContext context) => CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
           middle: _searchWidget(context),
-          transitionBetweenRoutes: false,
         ),
         child: _body(context),
       );
@@ -34,8 +32,7 @@ class SongbookScreen extends StatelessWidget with PlatformWidgetMixin {
       );
 
   Widget _body(BuildContext context) => SafeArea(
-        child: ChangeNotifierProvider.value(
-            value: _songLyricsProvider, child: SongLyricsListView()),
+        child: ChangeNotifierProvider.value(value: _songLyricsProvider, child: SongLyricsListView()),
       );
 
   Widget _searchWidget(BuildContext context) => SearchWidget(

@@ -90,16 +90,13 @@ class UpdateProvider extends ChangeNotifier {
 
     await Database.shared.init();
 
-    if (!prefs.containsKey('loaded')) {
+    if (!prefs.containsKey('loaded'))
       await _loadLocal();
-
-      await prefs.setBool('loaded', true);
-    }
+    else
+      await DataProvider.shared.init();
 
     // todo: handle initial load + updating
     // await _update();
-
-    await DataProvider.shared.init();
 
     return true;
   }
@@ -128,24 +125,36 @@ class UpdateProvider extends ChangeNotifier {
 
     if (data == null) return;
 
-    await Database.shared.saveAuthors((data['authors'] as List<dynamic>)
+    final authors = (data['authors'] as List<dynamic>)
         .map((json) => Author.fromJson(json))
-        .toList());
+        .toList();
 
-    await Database.shared.saveTags((data['tags_enum'] as List<dynamic>)
+    final tags = (data['tags_enum'] as List<dynamic>)
         .map((json) => TagEntity.fromJson(json))
-        .toList());
+        .toList();
 
-    await Database.shared.saveSongbooks((data['songbooks'] as List<dynamic>)
+    final songbooks = (data['songbooks'] as List<dynamic>)
         .map((json) => Songbook.fromJson(json))
-        .toList());
+        .toList();
 
-    await Database.shared.saveSongs((data['songs'] as List<dynamic>)
+    final songs = (data['songs'] as List<dynamic>)
         .map((json) => Song.fromJson(json))
-        .toList());
+        .toList();
 
-    await Database.shared.saveSongLyrics((data['song_lyrics'] as List<dynamic>)
+    final songLyrics = (data['song_lyrics'] as List<dynamic>)
         .map((json) => SongLyricEntity.fromJson(json))
-        .toList());
+        .toList();
+
+    await DataProvider.shared
+        .init(songLyrics: songLyrics, songbooks: songbooks, tags: tags);
+
+    Future.wait([
+      Database.shared.saveAuthors(authors),
+      Database.shared.saveTags(tags),
+      Database.shared.saveSongbooks(songbooks),
+      Database.shared.saveSongs(songs),
+      Database.shared.saveSongLyrics(songLyrics),
+    ]).then((_) => SharedPreferences.getInstance()
+        .then((prefs) => prefs.setBool('loaded', true)));
   }
 }

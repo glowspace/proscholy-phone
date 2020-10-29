@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:zpevnik/utils/platform_state.dart';
+import 'package:zpevnik/utils/platform.dart';
 import 'package:zpevnik/providers/update_provider.dart';
 import 'package:zpevnik/screens/content_screen.dart';
 import 'package:zpevnik/screens/loading_screen.dart';
@@ -15,9 +15,7 @@ class MainWidget extends StatelessWidget with PlatformWidgetMixin {
 
   @override
   Widget iOSWidget(BuildContext context) => Theme(
-        data: MediaQuery.platformBrightnessOf(context) == Brightness.light
-            ? ThemeData.light()
-            : ThemeData.dark(),
+        data: MediaQuery.platformBrightnessOf(context) == Brightness.light ? ThemeData.light() : ThemeData.dark(),
         child: CupertinoApp(
           title: _title,
           home: _home(context),
@@ -34,11 +32,6 @@ class MainWidget extends StatelessWidget with PlatformWidgetMixin {
 
   Widget _home(BuildContext context) => FutureBuilder<bool>(
         future: _updateProvider.update(),
-        builder: (context, snapshot) => snapshot.hasData
-            ? ContentScreen()
-            : ChangeNotifierProvider.value(
-                value: _updateProvider,
-                child: LoadingScreen(),
-              ),
+        builder: (context, snapshot) => snapshot.hasData ? ContentScreen() : LoadingScreen(),
       );
 }

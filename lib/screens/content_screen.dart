@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/utils/platform_state.dart';
+import 'package:zpevnik/utils/platform.dart';
 import 'package:zpevnik/screens/home_screen.dart';
 import 'package:zpevnik/screens/songbooks_screen.dart';
 import 'package:zpevnik/screens/user_screen.dart';
@@ -12,16 +13,11 @@ class ContentScreen extends StatefulWidget {
 }
 
 class _ContentScreenState extends State<ContentScreen> with PlatformStateMixin {
-  CupertinoTabController _tabController;
   int _currentIndex;
 
   @override
   void initState() {
     super.initState();
-
-    _tabController = CupertinoTabController();
-    _tabController.addListener(
-        () => setState(() => _currentIndex = _tabController.index));
 
     _currentIndex = 0;
   }
@@ -29,10 +25,13 @@ class _ContentScreenState extends State<ContentScreen> with PlatformStateMixin {
   @override
   Widget iOSWidget(BuildContext context) => CupertinoTabScaffold(
         tabBar: CupertinoTabBar(
-            activeColor: _activeColor, items: _tabBarItems(context)),
-        tabBuilder: (BuildContext context, int index) =>
-            _activeWidget(context, index),
-        controller: _tabController,
+            backgroundColor: CupertinoColors.quaternarySystemFill,
+            onTap: (index) => setState(() => _currentIndex = index),
+            activeColor: _activeColor,
+            items: _tabBarItems(context)),
+        tabBuilder: (BuildContext context, int index) => CupertinoTabView(
+          builder: (context) => _activeWidget(context, index),
+        ),
       );
 
   @override
@@ -59,8 +58,7 @@ class _ContentScreenState extends State<ContentScreen> with PlatformStateMixin {
     }
   }
 
-  Color get _activeColor =>
-      _currentIndex == 0 ? blue : (_currentIndex == 1 ? green : red);
+  Color get _activeColor => _currentIndex == 0 ? blue : (_currentIndex == 1 ? green : red);
 
   List<BottomNavigationBarItem> _tabBarItems(BuildContext context) => [
         BottomNavigationBarItem(

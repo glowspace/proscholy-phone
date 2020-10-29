@@ -1,10 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:zpevnik/models/entities/song_lyric.dart';
 import 'package:zpevnik/utils/song_lyrics_parser.dart';
 
-class SongLyric {
+class SongLyric extends ChangeNotifier {
   final SongLyricEntity _entity;
 
-  String _lyrics;
+  List<Verse> _verses;
 
   SongLyric(this._entity);
 
@@ -12,8 +13,28 @@ class SongLyric {
 
   String get name => _entity.name;
 
-  List<Verse> get parsedLyrics =>
-      SongLyricsParser.shared.parseLyrics(_entity.lyrics);
+  List<Verse> get verses => _verses ??= SongLyricsParser.shared.parseLyrics(_entity.lyrics);
+
+  int _transposition = 0;
+
+  int get trasnposition => _transposition;
+
+  void changeTransposition(int byValue) {
+    _transposition += byValue;
+
+    verses.forEach(
+        (verse) => verse.lines.forEach((line) => line.blocks.forEach((block) => block.transposition = _transposition)));
+
+    notifyListeners();
+  }
+
+  set accidentals(value) {
+    notifyListeners();
+  }
+
+  set showChords(value) {
+    notifyListeners();
+  }
 }
 
 class Verse {
@@ -40,8 +61,13 @@ class Line {
 }
 
 class Block {
-  final String chord;
+  final String _chord;
   final String lyricsPart;
+  int transposition = 0;
 
-  Block(this.chord, this.lyricsPart);
+  Block(this._chord, this.lyricsPart);
+
+  String get chord => SongLyricsParser.shared.transpose(_chord, transposition);
+
+  bool get shouldShowLine => lyricsPart.contains(new RegExp(r'[A-Za-z]'));
 }

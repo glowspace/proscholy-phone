@@ -5,6 +5,8 @@ import 'package:zpevnik/providers/tags_provider.dart';
 import 'package:zpevnik/screens/filters/section.dart';
 
 class FiltersWidget extends StatelessWidget {
+  FiltersWidget({key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) => SafeArea(
         child: SingleChildScrollView(

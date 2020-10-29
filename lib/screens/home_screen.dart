@@ -7,7 +7,7 @@ import 'package:zpevnik/providers/song_lyrics_provider.dart';
 import 'package:zpevnik/providers/tags_provider.dart';
 import 'package:zpevnik/screens/components/song_lyrics_list.dart';
 import 'package:zpevnik/screens/filters/widget.dart';
-import 'package:zpevnik/utils/platform_state.dart';
+import 'package:zpevnik/utils/platform.dart';
 import 'package:zpevnik/screens/components/search_widget.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -16,8 +16,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with PlatformStateMixin {
-  final SongLyricsProvider _songLyricsProvider =
-      SongLyricsProvider(DataProvider.shared.songLyrics);
+  final SongLyricsProvider _songLyricsProvider = SongLyricsProvider(DataProvider.shared.songLyrics);
 
   final TagsProvider _tagsProvider = TagsProvider(DataProvider.shared.tags);
 
@@ -25,7 +24,6 @@ class _HomeScreenState extends State<HomeScreen> with PlatformStateMixin {
   Widget iOSWidget(BuildContext context) => CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
           middle: _searchWidget(context),
-          transitionBetweenRoutes: false,
         ),
         child: _body(context),
       );
@@ -39,8 +37,7 @@ class _HomeScreenState extends State<HomeScreen> with PlatformStateMixin {
       );
 
   Widget _body(BuildContext context) => SafeArea(
-        child: ChangeNotifierProvider.value(
-            value: _songLyricsProvider, child: SongLyricsListView()),
+        child: ChangeNotifierProvider.value(value: _songLyricsProvider, child: SongLyricsListView()),
       );
 
   Widget _searchWidget(BuildContext context) => SearchWidget(
@@ -56,10 +53,12 @@ class _HomeScreenState extends State<HomeScreen> with PlatformStateMixin {
   void _showFilters(BuildContext context) => showCupertinoModalBottomSheet(
         context: context,
         builder: (context, scrollController) => SizedBox(
-            height: 0.67 * MediaQuery.of(context).size.height,
-            child: ChangeNotifierProvider.value(
-              value: _tagsProvider,
-              child: FiltersWidget(),
-            )),
+          height: 0.67 * MediaQuery.of(context).size.height,
+          child: ChangeNotifierProvider.value(
+            value: _tagsProvider,
+            child: FiltersWidget(key: Key('test')),
+          ),
+        ),
+        useRootNavigator: true,
       );
 }

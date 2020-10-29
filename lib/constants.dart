@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 const double kDefaultPadding = 16;
+const int kDefaultAnimationTime = 300;
 
 const Color blue = Color(0xff3861ac);
 const Color green = Color(0xff098845);

@@ -1,13 +1,13 @@
 import 'package:zpevnik/models/songLyric.dart';
 
-final RegExp _verseRE = RegExp(
-    r'\s*(\d\.|\(?[BCR]\d?[:.]\)?)\s*((?:=\s*(\d\.)|.|\n)*?)\n*(?=$|[^=]?\d\.|\(?[BCR]\d?[:.]\)?)');
-
+final RegExp _verseRE =
+    RegExp(r'\s*(\d\.|\(?[BCR]\d?[:.]\)?)\s*((?:=\s*(\d\.)|.|\n)*?)\n*(?=$|[^=]?\d\.|\(?[BCR]\d?[:.]\)?)');
 final RegExp _chordsRE = RegExp(r'\[[^\]]+\]');
 final RegExp _placeholderRE = RegExp(r'\[%\]');
+final RegExp _firstVerseRE = RegExp(r'1\.(?:.|\n)+?(?=\n+\d\.|\n+\(?[BCR][:.]\)?)', multiLine: true);
 
-final RegExp _firstVerseRE =
-    RegExp(r'1\.(?:.|\n)+?(?=\n+\d\.|\n+\(?[BCR][:.]\)?)', multiLine: true);
+final List<String> _plainChords = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'H'];
+final RegExp _plainChordsRE = RegExp(r'[CDEFGABH]#?');
 
 class SongLyricsParser {
   SongLyricsParser._();
@@ -15,8 +15,7 @@ class SongLyricsParser {
   static final SongLyricsParser shared = SongLyricsParser._();
 
   List<Verse> parseLyrics(String lyrics) =>
-      _verses(_substituteChordsPlaceholders(
-          lyrics.replaceAll('\r', '').replaceAll('@', '')));
+      _verses(_substituteChordsPlaceholders(lyrics.replaceAll('\r', '').replaceAll('@', '')));
 
   // replaces all placeholder chords with chords from first verse
   String _substituteChordsPlaceholders(String lyrics) {
@@ -24,16 +23,12 @@ class SongLyricsParser {
 
     int index = 0;
 
-    return lyrics.replaceAllMapped(
-        _placeholderRE, (match) => chords[index++ % chords.length]);
+    return lyrics.replaceAllMapped(_placeholderRE, (match) => chords[index++ % chords.length]);
   }
 
   // creates verses from lyrics
   List<Verse> _verses(String lyrics) {
-    final verses = _verseRE
-        .allMatches(lyrics)
-        .map((match) => Verse.fromMatch(match))
-        .toList();
+    final verses = _verseRE.allMatches(lyrics).map((match) => Verse.fromMatch(match)).toList();
 
     if (verses.isEmpty) return [Verse.withoutNumber(lyrics)];
 
@@ -46,8 +41,7 @@ class SongLyricsParser {
       if ((verses[i].lines.isEmpty ||
               verses[i].lines[0].blocks.isEmpty ||
               verses[i].lines[0].blocks[0].lyricsPart.isEmpty) &&
-          substitute != null)
-        verses[i] = Verse(substitute.number, substitute.lines);
+          substitute != null) verses[i] = Verse(substitute.number, substitute.lines);
 
       substitutes[verses[i].number] = verses[i];
     }
@@ -56,10 +50,8 @@ class SongLyricsParser {
   }
 
   // extracts chords from given lyrics
-  List<String> _chords(String lyrics) => _chordsRE
-      .allMatches(lyrics)
-      .map((match) => lyrics.substring(match.start, match.end))
-      .toList();
+  List<String> _chords(String lyrics) =>
+      _chordsRE.allMatches(lyrics).map((match) => lyrics.substring(match.start, match.end)).toList();
 
   // extracts chords from first verse, used to replace placeholders in next verses
   List<String> _firstVerseChords(String lyrics) {
@@ -71,8 +63,7 @@ class SongLyricsParser {
   }
 
   // extracts lines of verse
-  List<Line> lines(String verse) =>
-      verse.split('\n').map((line) => Line(_blocks(line))).toList();
+  List<Line> lines(String verse) => verse.split('\n').map((line) => Line(_blocks(line))).toList();
 
   // extracts blocks from verse lines, every block is either word or part of word with corresponding chord
   // it is generated like this only for easier displaying of song lyric
@@ -90,7 +81,11 @@ class SongLyricsParser {
         final words = text.split(' ');
 
         int i = 0;
-        blocks.add(Block(previous, words[i++]));
+        // temporary solution to handle shorter chord than word
+        if (words[i].length < 4 && words.length > 1)
+          blocks.add(Block(previous, '${words[i++]} ${words[i++]}'));
+        else
+          blocks.add(Block(previous, words[i++]));
 
         for (; i < words.length; i++) blocks.add(Block('', ' ${words[i]}'));
       }
@@ -103,4 +98,10 @@ class SongLyricsParser {
 
     return blocks;
   }
+
+  String transpose(String chord, int transposition) => chord.replaceAllMapped(
+        _plainChordsRE,
+        (match) => _plainChords[
+            (_plainChords.indexOf(chord.substring(match.start, match.end)) + transposition) % _plainChords.length],
+      );
 }
