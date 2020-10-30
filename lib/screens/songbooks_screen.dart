@@ -37,7 +37,7 @@ class _SongbooksScreenState extends State<SongbooksScreen> with PlatformStateMix
 
   Widget _searchWidget(BuildContext context) => SearchWidget(
         placeholder: 'Zadejte název nebo zkratku zpěvníku',
-        searchable: _songbooksProvider,
+        search: _songbooksProvider.search,
         leading: Icon(Icons.search),
       );
 }

@@ -2,24 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:zpevnik/models/tag.dart';
 
 class TagsProvider extends ChangeNotifier {
-  Map<String, List<Tag>> _tags;
+  List<TagsSection> _sections;
   List<Tag> _selectedTags;
 
   TagsProvider(List<Tag> tags) {
-    _tags = {};
+    Map<String, List<Tag>> tagsMap = {};
 
     for (final tag in tags) {
       if (!tag.type.supported) continue;
 
-      if (_tags[tag.type.description] == null) _tags[tag.type.description] = [];
+      if (tagsMap[tag.type.description] == null) tagsMap[tag.type.description] = [];
 
-      _tags[tag.type.description].add(tag);
+      tagsMap[tag.type.description].add(tag);
     }
+
+    _sections = tagsMap.entries.map((entry) => TagsSection(entry.key, entry.value)).toList()
+      ..sort((first, second) => first.tags[0].type.rawValue.compareTo(second.tags[0].type.rawValue));
 
     _selectedTags = [];
   }
 
-  Map<String, List<Tag>> get tags => _tags;
+  List<TagsSection> get sections => _sections;
 
   List<Tag> get selectedTags => _selectedTags;
 
@@ -29,4 +32,11 @@ class TagsProvider extends ChangeNotifier {
     else
       _selectedTags.remove(tag);
   }
+}
+
+class TagsSection {
+  final String title;
+  final List<Tag> tags;
+
+  TagsSection(this.title, this.tags);
 }

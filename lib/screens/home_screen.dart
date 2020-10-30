@@ -42,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen> with PlatformStateMixin {
 
   Widget _searchWidget(BuildContext context) => SearchWidget(
         placeholder: 'Zadejte slovo nebo číslo',
-        searchable: _songLyricsProvider,
+        search: _songLyricsProvider.search,
         leading: Icon(Icons.search),
         trailing: GestureDetector(
           onTap: () => _showFilters(context),
@@ -50,15 +50,30 @@ class _HomeScreenState extends State<HomeScreen> with PlatformStateMixin {
         ),
       );
 
-  void _showFilters(BuildContext context) => showCupertinoModalBottomSheet(
+  void _showFilters(BuildContext context) => showModalBottomSheet(
         context: context,
-        builder: (context, scrollController) => SizedBox(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+        ),
+        builder: (context) => SizedBox(
           height: 0.67 * MediaQuery.of(context).size.height,
           child: ChangeNotifierProvider.value(
             value: _tagsProvider,
-            child: FiltersWidget(key: Key('test')),
+            child: FiltersWidget(),
           ),
         ),
         useRootNavigator: true,
       );
+
+  // void _showFilters(BuildContext context) => showCupertinoModalBottomSheet(
+  //       context: context,
+  //       builder: (context, scrollController) => SizedBox(
+  //         height: 0.67 * MediaQuery.of(context).size.height,
+  //         child: ChangeNotifierProvider.value(
+  //           value: _tagsProvider,
+  //           child: FiltersWidget(key: Key('test')),
+  //         ),
+  //       ),
+  //       useRootNavigator: true,
+  //     );
 }

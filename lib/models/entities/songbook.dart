@@ -2,7 +2,7 @@ import 'package:jaguar_orm/jaguar_orm.dart';
 import 'package:zpevnik/models/entities/songbook_record.dart';
 import 'package:zpevnik/utils/beans.dart';
 
-class Songbook {
+class SongbookEntity {
   @PrimaryKey()
   final int id;
 
@@ -15,9 +15,9 @@ class Songbook {
   final bool isPrivate;
 
   @HasMany(SongbookRecordBean)
-  List<SongbookRecord> songbookRecords;
+  List<SongbookRecord> records;
 
-  Songbook({
+  SongbookEntity({
     this.id,
     this.name,
     this.shortcut,
@@ -25,7 +25,7 @@ class Songbook {
     this.isPrivate,
   });
 
-  factory Songbook.fromJson(Map<String, dynamic> json) => Songbook(
+  factory SongbookEntity.fromJson(Map<String, dynamic> json) => SongbookEntity(
         id: int.parse(json['id']),
         name: json['name'],
         shortcut: json['shortcut'],

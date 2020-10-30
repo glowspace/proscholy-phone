@@ -1,14 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/platform.dart';
-
-abstract class Searchable {
-  void search(String searchText);
-}
 
 class SearchWidget extends StatefulWidget {
   final String placeholder;
-  final Searchable searchable;
+  final Function(String) search;
 
   final Widget leading;
   final Widget trailing;
@@ -16,7 +14,7 @@ class SearchWidget extends StatefulWidget {
   const SearchWidget({
     Key key,
     this.placeholder,
-    this.searchable,
+    this.search,
     this.leading,
     this.trailing,
   }) : super(key: key);
@@ -31,29 +29,67 @@ class _SearchWidgetState extends State<SearchWidget> with PlatformStateMixin {
         context,
         CupertinoTextField(
           placeholder: widget.placeholder,
-          onChanged: (searchText) => widget.searchable.search(searchText),
+          onChanged: (searchText) => widget.search(searchText),
         ),
       );
 
   @override
   Widget androidWidget(BuildContext context) => _body(
         context,
-        TextField(
-          decoration: InputDecoration(
-            border: InputBorder.none,
-            hintText: widget.placeholder,
+        LayoutBuilder(
+          builder: (context, constraints) => TextField(
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              hintText: widget.placeholder,
+              hintStyle: _textStyle(context, widget.placeholder, constraints.maxWidth),
+            ),
+            onChanged: (searchText) => widget.search(searchText),
           ),
-          onChanged: (searchText) => widget.searchable.search(searchText),
         ),
       );
 
   Widget _body(BuildContext context, Widget textField) => Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: AppTheme.shared.filterBorderColor(context)),
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+        ),
         child: Row(
           children: [
-            if (widget.leading != null) widget.leading,
-            Expanded(child: textField),
-            if (widget.trailing != null) widget.trailing,
+            if (widget.leading != null)
+              Container(
+                padding: EdgeInsets.only(left: kDefaultPadding / 2),
+                child: widget.leading,
+              ),
+            Expanded(
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
+                child: textField,
+              ),
+            ),
+            if (widget.trailing != null)
+              Container(
+                padding: EdgeInsets.only(right: kDefaultPadding / 2),
+                child: widget.trailing,
+              ),
           ],
         ),
       );
+
+  TextStyle _textStyle(BuildContext context, String text, double width) {
+    double fontSize = 17;
+    Size size;
+    do {
+      size = (TextPainter(
+              text: TextSpan(text: text, style: TextStyle(fontSize: fontSize)),
+              maxLines: 1,
+              textScaleFactor: MediaQuery.of(context).textScaleFactor,
+              textDirection: TextDirection.ltr)
+            ..layout())
+          .size;
+
+      fontSize -= 0.5;
+    } while (size.width > width);
+
+    return TextStyle(fontSize: fontSize);
+  }
 }

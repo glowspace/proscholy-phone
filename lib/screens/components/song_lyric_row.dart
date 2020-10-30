@@ -9,24 +9,25 @@ class SongLyricRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => GestureDetector(
-        onTap: () => Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => SongLyricScreen(songLyric: songLyric),
-          ),
-        ),
+        onTap: () => _pushSongLyric(context),
+        behavior: HitTestBehavior.translucent,
         child: Container(
-          margin: EdgeInsets.all(10),
+          padding: EdgeInsets.all(10),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Flexible(
-                child:
-                    Text(songLyric.name, style: TextStyle(color: Colors.white)),
+                child: Text(songLyric.name, style: TextStyle(color: Colors.white)),
               ),
-              Text(songLyric.id.toString(),
-                  style: TextStyle(color: Colors.white))
+              Text(songLyric.id.toString(), style: TextStyle(color: Colors.white))
             ],
           ),
+        ),
+      );
+
+  void _pushSongLyric(BuildContext context) => Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => SongLyricScreen(songLyric: songLyric),
         ),
       );
 }

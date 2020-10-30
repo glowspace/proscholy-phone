@@ -1,7 +1,5 @@
-import 'package:zpevnik/models/entities/song_lyric.dart';
-import 'package:zpevnik/models/entities/songbook.dart';
-import 'package:zpevnik/models/entities/tag.dart';
 import 'package:zpevnik/models/songLyric.dart';
+import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/utils/database.dart';
 
@@ -14,18 +12,12 @@ class DataProvider {
   List<Songbook> _songbooks;
   List<Tag> _tags;
 
-  Future<void> init({
-    List<SongLyricEntity> songLyrics,
-    List<Songbook> songbooks,
-    List<TagEntity> tags,
-  }) async {
-    _songLyrics = (songLyrics ?? (await Database.shared.songLyrics))
-        .map((songLyricEntity) => SongLyric(songLyricEntity))
-        .toList();
-    _songbooks = songbooks ?? await Database.shared.songbooks;
-    _tags = (tags ?? (await Database.shared.tags))
-        .map((tagEntity) => Tag(tagEntity))
-        .toList();
+  Future<void> init() async {
+    _songLyrics = (await Database.shared.songLyrics).map((songLyricEntity) => SongLyric(songLyricEntity)).toList()
+      ..sort((first, second) => first.name.compareTo(second.name));
+    _songbooks = (await Database.shared.songbooks).map((songbookEntity) => Songbook(songbookEntity)).toList()
+      ..sort((first, second) => first.name.compareTo(second.name));
+    _tags = (await Database.shared.tags).map((tagEntity) => Tag(tagEntity)).toList();
   }
 
   List<SongLyric> get songLyrics => _songLyrics;

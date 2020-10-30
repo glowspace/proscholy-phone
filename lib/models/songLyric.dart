@@ -9,6 +9,8 @@ class SongLyric extends ChangeNotifier {
 
   SongLyric(this._entity);
 
+  SongLyricEntity get entity => _entity;
+
   int get id => _entity.id;
 
   String get name => _entity.name;
