@@ -4,17 +4,31 @@ import 'package:zpevnik/models/songLyric.dart';
 import 'package:zpevnik/theme.dart';
 
 class LyricsWidget extends StatelessWidget {
-  final List<Verse> verses;
+  final SongLyric songLyric;
 
-  const LyricsWidget({Key key, this.verses}) : super(key: key);
+  const LyricsWidget({Key key, this.songLyric}) : super(key: key);
 
   @override
   Widget build(BuildContext context) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: List.generate(
-          verses.length,
-          (index) => _verse(context, verses[index]),
-        ),
+        children: [
+          Text(songLyric.name,
+              style: Theme.of(context).textTheme.headline6.copyWith(
+                    color: AppTheme.shared.textColor(context),
+                    fontSize: 1.3 * songLyric.fontSize,
+                    fontWeight: FontWeight.bold,
+                  )),
+          Container(
+            padding: EdgeInsets.only(top: 1.5 * songLyric.fontSize),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: List.generate(
+                songLyric.verses.length,
+                (index) => _verse(context, songLyric.verses[index]),
+              ),
+            ),
+          ),
+        ],
       );
 
   Container _verse(BuildContext context, Verse verse) => Container(
@@ -25,7 +39,10 @@ class LyricsWidget extends StatelessWidget {
             if (verse.number.isNotEmpty)
               Text(
                 verse.number,
-                style: Theme.of(context).textTheme.bodyText1.copyWith(color: AppTheme.shared.textColor(context)),
+                style: Theme.of(context).textTheme.bodyText1.copyWith(
+                      color: AppTheme.shared.textColor(context),
+                      fontSize: songLyric.fontSize,
+                    ),
               ),
             Flexible(
               child: Container(
@@ -60,7 +77,7 @@ class LyricsWidget extends StatelessWidget {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 8),
               child: Transform.translate(
-                offset: Offset(0, -23),
+                offset: Offset(0, -1.5 * songLyric.fontSize),
                 child: Container(
                   decoration: BoxDecoration(
                     border: Border(
@@ -68,13 +85,14 @@ class LyricsWidget extends StatelessWidget {
                     ),
                   ),
                   child: Transform.translate(
-                    offset: Offset(0, -8),
+                    offset: Offset(0, -0.5 * songLyric.fontSize),
                     child: Text(
                       block.chord,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyText1
-                          .copyWith(color: AppTheme.shared.chordColor(context), height: 2.5),
+                      style: Theme.of(context).textTheme.bodyText1.copyWith(
+                            color: AppTheme.shared.chordColor(context),
+                            fontSize: songLyric.fontSize,
+                            height: songLyric.showChords ? 2.5 : 1,
+                          ),
                     ),
                   ),
                 ),
@@ -84,7 +102,10 @@ class LyricsWidget extends StatelessWidget {
               color: Theme.of(context).scaffoldBackgroundColor,
               child: Text(
                 block.lyricsPart,
-                style: Theme.of(context).textTheme.bodyText1.copyWith(color: AppTheme.shared.textColor(context)),
+                style: Theme.of(context).textTheme.bodyText1.copyWith(
+                      color: AppTheme.shared.textColor(context),
+                      fontSize: songLyric.fontSize,
+                    ),
               ),
             ),
           ],

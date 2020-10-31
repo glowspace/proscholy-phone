@@ -1,13 +1,21 @@
 import 'package:zpevnik/models/songLyric.dart';
 
 final RegExp _verseRE =
-    RegExp(r'\s*(\d\.|\(?[BCR]\d?[:.]\)?)\s*((?:=\s*(\d\.)|.|\n)*?)\n*(?=$|[^=]?\d\.|\(?[BCR]\d?[:.]\)?)');
+    RegExp(r'\s*(\d\.|\(?[BCR]\d?[:.]\)?)?\s*((?:=\s*(\d\.)|.|\n)*?)\n*(?=$|[^=]?\d\.|\(?[BCR]\d?[:.]\)?)');
 final RegExp _chordsRE = RegExp(r'\[[^\]]+\]');
 final RegExp _placeholderRE = RegExp(r'\[%\]');
 final RegExp _firstVerseRE = RegExp(r'1\.(?:.|\n)+?(?=\n+\d\.|\n+\(?[BCR][:.]\)?)', multiLine: true);
 
 final List<String> _plainChords = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'H'];
-final RegExp _plainChordsRE = RegExp(r'[CDEFGABH]#?');
+final RegExp _plainChordsRE = RegExp(r'[CDEFGAH]#?');
+
+final Map<String, String> _toFlat = {'C#': 'Db', 'D#': 'Eb', 'F#': 'Gb', 'G#': 'Ab', 'A#': 'B'};
+final RegExp _toFlatRE = RegExp(r'[CDEFGAH]#');
+
+final Map<String, String> _fromFlat = {'Db': 'C#', 'Eb': 'D#', 'Gb': 'F#', 'Ab': 'G#', 'B': 'A#'};
+final RegExp _fromFlatRE = RegExp(r'([CDEFGAH]b|B)');
+
+final RegExp _parentheses = RegExp(r'\(?\)?');
 
 class SongLyricsParser {
   SongLyricsParser._();
@@ -28,7 +36,8 @@ class SongLyricsParser {
 
   // creates verses from lyrics
   List<Verse> _verses(String lyrics) {
-    final verses = _verseRE.allMatches(lyrics).map((match) => Verse.fromMatch(match)).toList();
+    final verses = _verseRE.allMatches(lyrics).map((match) => Verse.fromMatch(match)).toList()
+      ..removeWhere((verse) => verse == null);
 
     if (verses.isEmpty) return [Verse.withoutNumber(lyrics)];
 
@@ -36,7 +45,15 @@ class SongLyricsParser {
 
     // replace empty verses, with substitutes
     for (int i = 0; i < verses.length; i++) {
-      final substitute = substitutes[verses[i].number];
+      if (verses[i].number == '') continue;
+
+      Verse substitute = substitutes[verses[i].number];
+
+      // sometimes . and : are mixed, so check it with replaced
+      if (substitute == null) substitute = substitutes[verses[i].number.replaceAll('.', ':')];
+
+      // sometimes number is in parentheses, so check it as well
+      if (substitute == null) substitute = substitutes[verses[i].number.replaceAll(_parentheses, '')];
 
       if ((verses[i].lines.isEmpty ||
               verses[i].lines[0].blocks.isEmpty ||
@@ -83,18 +100,18 @@ class SongLyricsParser {
         int i = 0;
         // temporary solution to handle shorter chord than word
         if (words[i].length < 4 && words.length > 1)
-          blocks.add(Block(previous, '${words[i++]} ${words[i++]}'));
+          blocks.add(Block(previous, '${words[i++]} ${words[i++]}', true));
         else
-          blocks.add(Block(previous, words[i++]));
+          blocks.add(Block(previous, words[i++], true));
 
-        for (; i < words.length; i++) blocks.add(Block('', ' ${words[i]}'));
+        for (; i < words.length; i++) blocks.add(Block('', ' ${words[i]}', true));
       }
 
       index = match.end;
       previous = line.substring(match.start + 1, match.end - 1);
     }
 
-    blocks.add(Block(previous, line.substring(index)));
+    blocks.add(Block(previous, line.substring(index), false));
 
     return blocks;
   }
@@ -104,4 +121,10 @@ class SongLyricsParser {
         (match) => _plainChords[
             (_plainChords.indexOf(chord.substring(match.start, match.end)) + transposition) % _plainChords.length],
       );
+
+  String convertAccidentals(String chord, bool accidental) => chord.replaceAllMapped(
+      accidental ? _toFlatRE : _fromFlatRE,
+      (match) => accidental
+          ? _toFlat[chord.substring(match.start, match.end)]
+          : _fromFlat[chord.substring(match.start, match.end)]);
 }

@@ -26,9 +26,7 @@ class SongbookWidget extends StatelessWidget {
                   Flexible(
                     child: Text(
                       songbook.name,
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
+                      style: Theme.of(context).textTheme.bodyText1,
                     ),
                   ),
                 ],

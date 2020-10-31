@@ -17,9 +17,9 @@ class SongLyricRow extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Flexible(
-                child: Text(songLyric.name, style: TextStyle(color: Colors.white)),
+                child: Text(songLyric.name, style: Theme.of(context).textTheme.bodyText1),
               ),
-              Text(songLyric.id.toString(), style: TextStyle(color: Colors.white))
+              Text(songLyric.id.toString(), style: Theme.of(context).textTheme.caption)
             ],
           ),
         ),

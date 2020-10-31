@@ -12,6 +12,7 @@ abstract class _SongLyricBean implements Bean<SongLyricEntity> {
   final lyrics = StrField('lyrics');
   final language = StrField('language');
   final type = IntField('type');
+  final favoriteOrder = IntField('favorite_order');
   final songId = IntField('song_id');
   Map<String, Field> _fields;
   Map<String, Field> get fields => _fields ??= {
@@ -20,6 +21,7 @@ abstract class _SongLyricBean implements Bean<SongLyricEntity> {
         lyrics.name: lyrics,
         language.name: language,
         type.name: type,
+        favoriteOrder.name: favoriteOrder,
         songId.name: songId,
       };
   SongLyricEntity fromMap(Map map) {
@@ -30,6 +32,7 @@ abstract class _SongLyricBean implements Bean<SongLyricEntity> {
       language: adapter.parseValue(map['language']),
       type: adapter.parseValue(map['type']),
     );
+    model.favoriteOrder = adapter.parseValue(map['favorite_order']);
     model.songId = adapter.parseValue(map['song_id']);
 
     return model;
@@ -45,6 +48,7 @@ abstract class _SongLyricBean implements Bean<SongLyricEntity> {
       ret.add(lyrics.set(model.lyrics));
       ret.add(language.set(model.language));
       ret.add(type.set(model.type));
+      ret.add(favoriteOrder.set(model.favoriteOrder));
       ret.add(songId.set(model.songId));
     } else if (only != null) {
       if (only.contains(id.name)) ret.add(id.set(model.id));
@@ -52,6 +56,8 @@ abstract class _SongLyricBean implements Bean<SongLyricEntity> {
       if (only.contains(lyrics.name)) ret.add(lyrics.set(model.lyrics));
       if (only.contains(language.name)) ret.add(language.set(model.language));
       if (only.contains(type.name)) ret.add(type.set(model.type));
+      if (only.contains(favoriteOrder.name))
+        ret.add(favoriteOrder.set(model.favoriteOrder));
       if (only.contains(songId.name)) ret.add(songId.set(model.songId));
     } else /* if (onlyNonNull) */ {
       if (model.id != null) {
@@ -69,6 +75,9 @@ abstract class _SongLyricBean implements Bean<SongLyricEntity> {
       if (model.type != null) {
         ret.add(type.set(model.type));
       }
+      if (model.favoriteOrder != null) {
+        ret.add(favoriteOrder.set(model.favoriteOrder));
+      }
       if (model.songId != null) {
         ret.add(songId.set(model.songId));
       }
@@ -84,6 +93,7 @@ abstract class _SongLyricBean implements Bean<SongLyricEntity> {
     st.addStr(lyrics.name, isNullable: true);
     st.addStr(language.name, isNullable: false);
     st.addInt(type.name, isNullable: false);
+    st.addInt(favoriteOrder.name, isNullable: true);
     st.addInt(songId.name,
         foreignTable: songBean.tableName,
         foreignCol: songBean.id.name,

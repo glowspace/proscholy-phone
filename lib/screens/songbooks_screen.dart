@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/providers/data_provider.dart';
 import 'package:zpevnik/providers/songbooks_provider.dart';
+import 'package:zpevnik/screens/components/custom_icon_button.dart';
 import 'package:zpevnik/screens/components/songbooks_list.dart';
+import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/platform.dart';
 import 'package:zpevnik/screens/components/search_widget.dart';
 
@@ -38,6 +40,9 @@ class _SongbooksScreenState extends State<SongbooksScreen> with PlatformStateMix
   Widget _searchWidget(BuildContext context) => SearchWidget(
         placeholder: 'Zadejte název nebo zkratku zpěvníku',
         search: _songbooksProvider.search,
-        leading: Icon(Icons.search),
+        leading: CustomIconButton(
+          onPressed: null,
+          icon: Icon(Icons.search, color: AppTheme.shared.searchFieldIconColor(context)),
+        ),
       );
 }

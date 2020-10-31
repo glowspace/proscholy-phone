@@ -9,6 +9,8 @@ class ScrollProvider extends ChangeNotifier {
 
   bool get scrolling => _scrolling;
 
+  bool get canScroll => !(scrollController.position.atEdge && scrollController.position.pixels != 0);
+
   void scrollEnded() {
     _scrolling = false;
     notifyListeners();

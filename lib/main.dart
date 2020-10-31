@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/platform.dart';
 import 'package:zpevnik/utils/updater.dart';
 import 'package:zpevnik/screens/content_screen.dart';
@@ -19,8 +20,8 @@ class MainWidget extends StatelessWidget with PlatformWidgetMixin {
   @override
   Widget androidWidget(BuildContext context) => MaterialApp(
         title: _title,
-        theme: ThemeData.light(),
-        darkTheme: ThemeData.dark(),
+        theme: AppTheme.shared.light,
+        darkTheme: AppTheme.shared.dark,
         home: _home(context),
       );
 

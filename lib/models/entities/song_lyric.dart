@@ -18,6 +18,9 @@ class SongLyricEntity {
   final String language;
   final int type;
 
+  @Column(isNullable: true)
+  int favoriteOrder;
+
   @ManyToMany(SongLyricAuthorBean, AuthorBean)
   List<Author> authors;
 
@@ -48,9 +51,7 @@ class SongLyricEntity {
     // print(json['song']);
 
     final id = int.parse(json['id']);
-    final songId = json['song'] == null
-        ? null
-        : (json['song'] as Map<String, dynamic>)['id'];
+    final songId = json['song'] == null ? null : (json['song'] as Map<String, dynamic>)['id'];
 
     return SongLyricEntity(
       id: id,
@@ -60,15 +61,9 @@ class SongLyricEntity {
       // todo: handle type
       type: 1,
     )
-      ..authors = (json['authors_pivot'] as List<dynamic>)
-          .map((json) => Author.fromJson(json['author']))
-          .toList()
-      ..externals = (json['externals'] as List<dynamic>)
-          .map((json) => External.fromJson(json))
-          .toList()
-      ..tags = (json['tags'] as List<dynamic>)
-          .map((json) => TagEntity.fromJson(json))
-          .toList()
+      ..authors = (json['authors_pivot'] as List<dynamic>).map((json) => Author.fromJson(json['author'])).toList()
+      ..externals = (json['externals'] as List<dynamic>).map((json) => External.fromJson(json)).toList()
+      ..tags = (json['tags'] as List<dynamic>).map((json) => TagEntity.fromJson(json)).toList()
       ..playlists = []
       ..songbookRecords = (json['songbook_records'] as List<dynamic>)
           .map((json) => SongbookRecord.fromJson(json)..songLyricId = id)

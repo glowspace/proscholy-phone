@@ -1,6 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/screens/components/custom_icon_button.dart';
+import 'package:zpevnik/screens/favorite_screen.dart';
+import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/platform.dart';
 import 'package:zpevnik/screens/components/search_widget.dart';
 
@@ -29,29 +33,61 @@ class _UserScreenState extends State<UserScreen> with PlatformStateMixin {
       );
 
   Widget _body(BuildContext context) => SafeArea(
-        child: Column(
-          children: [
-            Spacer(),
-            Row(
-              children: [
-                Text('Ostatní'),
-                Spacer(),
-                GestureDetector(
-                  onTap: () => _showOptions(context),
-                  child: Icon(Icons.menu),
+        child: Container(
+          padding: EdgeInsets.all(kDefaultPadding),
+          child: Column(
+            children: [
+              SingleChildScrollView(
+                child: Column(
+                  children: [
+                    GestureDetector(
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => FavoriteScreen()),
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.only(right: kDefaultPadding),
+                            child: Icon(Icons.star),
+                          ),
+                          Text('Písně s hvězdičkou'),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ],
+              ),
+              Spacer(),
+              Row(
+                children: [
+                  Text('Ostatní'),
+                  Spacer(),
+                  GestureDetector(
+                    onTap: () => _showOptions(context),
+                    child: Icon(Icons.menu),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       );
 
-  Widget _searchWidget(BuildContext context) => SearchWidget();
+  Widget _searchWidget(BuildContext context) => SearchWidget(
+        placeholder: 'Zadejte název seznamu písní',
+        leading: CustomIconButton(
+          onPressed: null,
+          icon: Icon(Icons.search, color: AppTheme.shared.searchFieldIconColor(context)),
+        ),
+      );
 
-  void _showOptions(BuildContext context) => showCupertinoModalBottomSheet(
+  void _showOptions(BuildContext context) => showModalBottomSheet(
         context: context,
-        builder: (context, scrollController) => SizedBox(
-          height: 0.67 * MediaQuery.of(context).size.height,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+        ),
+        builder: (context) => SizedBox(
+          height: 0.5 * MediaQuery.of(context).size.height,
           child: UserMenuWidget(),
         ),
       );

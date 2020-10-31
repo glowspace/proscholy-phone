@@ -55,22 +55,11 @@ class _SearchWidgetState extends State<SearchWidget> with PlatformStateMixin {
         ),
         child: Row(
           children: [
-            if (widget.leading != null)
-              Container(
-                padding: EdgeInsets.only(left: kDefaultPadding / 2),
-                child: widget.leading,
-              ),
+            if (widget.leading != null) widget.leading,
             Expanded(
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
-                child: textField,
-              ),
+              child: textField,
             ),
-            if (widget.trailing != null)
-              Container(
-                padding: EdgeInsets.only(right: kDefaultPadding / 2),
-                child: widget.trailing,
-              ),
+            if (widget.trailing != null) widget.trailing,
           ],
         ),
       );
@@ -80,7 +69,9 @@ class _SearchWidgetState extends State<SearchWidget> with PlatformStateMixin {
     Size size;
     do {
       size = (TextPainter(
-              text: TextSpan(text: text, style: TextStyle(fontSize: fontSize)),
+              text: TextSpan(
+                  text: text,
+                  style: AppTheme.shared.searchFieldPlaceholderColorTextStyle(context).copyWith(fontSize: fontSize)),
               maxLines: 1,
               textScaleFactor: MediaQuery.of(context).textScaleFactor,
               textDirection: TextDirection.ltr)
@@ -90,6 +81,6 @@ class _SearchWidgetState extends State<SearchWidget> with PlatformStateMixin {
       fontSize -= 0.5;
     } while (size.width > width);
 
-    return TextStyle(fontSize: fontSize);
+    return AppTheme.shared.searchFieldPlaceholderColorTextStyle(context).copyWith(fontSize: fontSize);
   }
 }

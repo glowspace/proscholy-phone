@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -8,6 +6,7 @@ import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songLyric.dart';
 import 'package:zpevnik/providers/scroll_provider.dart';
 import 'package:zpevnik/screens/components/lyrics_widget.dart';
+import 'package:zpevnik/screens/components/song_lyric_menu.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/platform.dart';
 
@@ -28,6 +27,7 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
   ScrollProvider _scrollProvider;
 
   bool _fullScreen;
+  ValueNotifier<bool> _showingMenu;
 
   @override
   void initState() {
@@ -37,52 +37,67 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
     _scrollProvider = ScrollProvider(_scrollController);
 
     _fullScreen = false;
+    _showingMenu = ValueNotifier(false);
 
-    widget.songLyric.addListener(() => setState(() {}));
+    widget.songLyric.addListener(_update);
   }
 
   @override
-  Widget androidWidget(BuildContext context) =>
-      Scaffold(appBar: _fullScreen ? null : AppBar(title: Text(widget.songLyric.id.toString())), body: _body(context));
+  void dispose() {
+    widget.songLyric.removeListener(_update);
+    super.dispose();
+  }
 
   @override
   Widget iOSWidget(BuildContext context) => CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-        middle: Text(widget.songLyric.id.toString()),
-      ),
-      child: _body(context));
+        navigationBar: CupertinoNavigationBar(
+          middle: Text(widget.songLyric.id.toString()),
+        ),
+        child: _body(context),
+      );
+
+  @override
+  Widget androidWidget(BuildContext context) => Scaffold(
+        appBar: _fullScreen
+            ? null
+            : AppBar(
+                title: Text(widget.songLyric.id.toString()),
+                shadowColor: AppTheme.shared.appBarDividerColor(context),
+                actions: _actions(context),
+              ),
+        body: _body(context),
+      );
 
   Widget _body(BuildContext context) => SafeArea(
         child: GestureDetector(
-          onTap: () => setState(() => _fullScreen = !_fullScreen),
+          onTap: () => setState(() {
+            _showingMenu.value = !_showingMenu.value;
+            _fullScreen = !_fullScreen;
+          }),
           child: Stack(
             children: [
               NotificationListener(
                 onNotification: (notif) {
-                  if (notif is ScrollEndNotification && _scrollProvider.scrolling)
-                    setState(() => _scrollProvider.scrollEnded());
+                  if (notif is ScrollEndNotification) setState(() => _scrollProvider.scrollEnded());
 
                   return true;
                 },
-                child: SingleChildScrollView(
-                  controller: _scrollController,
-                  child: Container(
-                    margin: EdgeInsets.symmetric(vertical: kDefaultPadding, horizontal: kDefaultPadding / 2),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(widget.songLyric.name,
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline6
-                                .copyWith(color: AppTheme.shared.textColor(context))),
-                        Container(
-                          padding: EdgeInsets.only(top: kDefaultPadding),
-                          child: LyricsWidget(verses: widget.songLyric.verses),
-                        ),
-                      ],
+                child: Container(
+                  height: double.infinity,
+                  child: SingleChildScrollView(
+                    controller: _scrollController,
+                    child: Container(
+                      margin: EdgeInsets.symmetric(vertical: kDefaultPadding, horizontal: kDefaultPadding / 2),
+                      child: LyricsWidget(songLyric: widget.songLyric),
                     ),
                   ),
+                ),
+              ),
+              Positioned(
+                right: 0,
+                child: SongLyricMenu(
+                  songLyric: widget.songLyric,
+                  showing: _showingMenu,
                 ),
               ),
               Positioned(
@@ -101,24 +116,35 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
         ),
       );
 
+  List<Widget> _actions(BuildContext context) => [
+        IconButton(
+          onPressed: null,
+          icon: Icon(Icons.translate),
+        ),
+        IconButton(
+          onPressed: widget.songLyric.toggleFavorite,
+          icon: Icon(widget.songLyric.isFavorite ? Icons.star : Icons.star_outline),
+        ),
+        IconButton(
+          onPressed: () => _showingMenu.value = !_showingMenu.value,
+          icon: Icon(Icons.more_vert),
+        ),
+      ];
+
   void _showSettings() {
-    if (!Platform.isIOS)
-      showCupertinoModalBottomSheet(
-        context: context,
-        builder: (context, scrollController) => SizedBox(
-          height: 0.67 * MediaQuery.of(context).size.height,
-          child: SongLyricSettings(songLyric: widget.songLyric),
+    showModalBottomSheet(
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+      ),
+      builder: (context) => SizedBox(
+        height: 0.67 * MediaQuery.of(context).size.height,
+        child: ChangeNotifierProvider.value(
+          value: widget.songLyric,
+          child: SongLyricSettings(),
         ),
-        useRootNavigator: true,
-      );
-    else
-      showModalBottomSheet(
-        context: context,
-        builder: (context) => SizedBox(
-          height: 0.67 * MediaQuery.of(context).size.height,
-          child: SongLyricSettings(songLyric: widget.songLyric),
-        ),
-      );
+      ),
+    );
   }
 
   void _showExternals() => showCupertinoModalBottomSheet(
@@ -129,4 +155,6 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
         ),
         useRootNavigator: true,
       );
+
+  void _update() => setState(() => {});
 }

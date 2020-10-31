@@ -96,14 +96,12 @@ class Updater {
 
     await Database.shared.init();
 
-    // if (connectivityResult == ConnectivityResult.wifi) {
-    //   if (prefs.containsKey(_initialLoadKey))
-    //     _update(prefs.getString(_lastUpdateKey));
-    //   else
-    //     await _update(null);
-    // } else if (!prefs.containsKey(_initialLoadKey)) await _loadLocal();
-
-    await _loadLocal();
+    if (connectivityResult == ConnectivityResult.wifi) {
+      if (prefs.containsKey(_initialLoadKey))
+        _update(prefs.getString(_lastUpdateKey));
+      else
+        await _update(null);
+    } else if (!prefs.containsKey(_initialLoadKey)) await _loadLocal();
 
     await DataProvider.shared.init();
 

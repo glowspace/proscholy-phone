@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/scroll_provider.dart';
+import 'package:zpevnik/screens/components/custom_icon_button.dart';
+import 'package:zpevnik/theme.dart';
 
 class SlidingWidget extends StatefulWidget {
   final Function() showSettings;
@@ -34,41 +36,54 @@ class _SlidingWidgetState extends State<SlidingWidget> with SingleTickerProvider
   }
 
   @override
-  Widget build(BuildContext context) => Container(
-        padding: EdgeInsets.only(left: kDefaultPadding / 3),
-        decoration: BoxDecoration(
-          color: Colors.grey,
-          borderRadius: BorderRadius.horizontal(
-            left: Radius.circular(100), // big enough number, so it's always full circular
+  Widget build(BuildContext context) => Transform.translate(
+        offset: Offset(1, 0), // just to hide right border
+        child: Container(
+          padding: EdgeInsets.only(left: kDefaultPadding / 3),
+          decoration: BoxDecoration(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            border: Border.all(color: AppTheme.shared.borderColor(context)),
+            borderRadius: BorderRadius.horizontal(
+              left: Radius.circular(100), // big enough number, so it's always full circular
+            ),
           ),
-        ),
-        child: Row(
-          children: _options(context),
+          child: Row(
+            children: _options(context),
+          ),
         ),
       );
 
   List<Widget> _options(BuildContext context) => [
-        GestureDetector(
-            onTap: widget.showSettings, child: _collapseable(context, Icon(Icons.tune), _collapseAnimation)),
-        GestureDetector(
-            onTap: widget.showExternals, child: _collapseable(context, Icon(Icons.headset), _collapseAnimation)),
+        _collapseable(
+            context,
+            CustomIconButton(
+              onPressed: widget.showSettings,
+              icon: Icon(Icons.tune),
+            ),
+            _collapseAnimation),
+        _collapseable(
+            context,
+            CustomIconButton(
+              onPressed: widget.showExternals,
+              icon: Icon(Icons.headset),
+            ),
+            _collapseAnimation),
         // _collapseable(context, Icon(Icons.add), _collapseAnimation),
         // _collapseable(context, Icon(Icons.remove), _collapseAnimation),
         Consumer<ScrollProvider>(
-          builder: (context, provider, _) => GestureDetector(
-            onTap: provider.toggleScroll,
-            child: _collapseable(
-                context, Icon(provider.scrolling ? Icons.stop : Icons.arrow_downward), _collapseAnimation),
-          ),
+          builder: (context, provider, _) => _collapseable(
+              context,
+              CustomIconButton(
+                onPressed: provider.canScroll ? provider.toggleScroll : null,
+                icon: Icon(provider.scrolling ? Icons.stop : Icons.arrow_downward),
+              ),
+              _collapseAnimation),
         ),
-        GestureDetector(
-          onTap: _toggleCollapse,
-          child: _wrapped(
-            context,
-            Transform.rotate(
-              angle: _collapseAnimation.value * pi,
-              child: Icon(Icons.arrow_back),
-            ),
+        CustomIconButton(
+          onPressed: _toggleCollapse,
+          icon: Transform.rotate(
+            angle: _collapseAnimation.value * pi,
+            child: Icon(Icons.arrow_back),
           ),
         ),
       ];
@@ -76,11 +91,8 @@ class _SlidingWidgetState extends State<SlidingWidget> with SingleTickerProvider
   Widget _collapseable(BuildContext context, Widget child, Animation<double> animation) => SizeTransition(
         sizeFactor: animation,
         axis: Axis.horizontal,
-        child: Opacity(opacity: animation.value, child: _wrapped(context, child)),
+        child: Opacity(opacity: animation.value, child: child),
       );
-
-  Widget _wrapped(BuildContext context, Widget child) => Container(
-      padding: EdgeInsets.symmetric(vertical: kDefaultPadding / 4, horizontal: kDefaultPadding / 3), child: child);
 
   void _toggleCollapse() {
     _collapsed ? _collapseController.reverse() : _collapseController.forward();

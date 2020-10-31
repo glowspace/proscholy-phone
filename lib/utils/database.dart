@@ -62,6 +62,9 @@ class Database {
   Future<void> saveSongbookRecords(List<SongbookRecord> songbookRecords) =>
       SongbookRecordBean(_adapter).upsertMany(songbookRecords).catchError((error) => print(error));
 
+  Future<void> updateSongLyric(SongLyricEntity songLyric, Set<String> only) =>
+      SongLyricBean(_adapter).update(songLyric, only: only).catchError((error) => print(error));
+
   Future<List<TagEntity>> get tags => TagBean(_adapter).getAll();
 
   Future<List<SongbookEntity>> get songbooks async {

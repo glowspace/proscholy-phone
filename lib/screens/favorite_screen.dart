@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/models/songbook.dart';
+import 'package:zpevnik/providers/data_provider.dart';
 import 'package:zpevnik/providers/song_lyrics_provider.dart';
 import 'package:zpevnik/screens/components/custom_icon_button.dart';
 import 'package:zpevnik/screens/components/search_widget.dart';
@@ -10,21 +10,18 @@ import 'package:zpevnik/screens/components/song_lyrics_list.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/platform.dart';
 
-class SongbookScreen extends StatefulWidget {
-  final Songbook songbook;
-
-  const SongbookScreen({Key key, this.songbook}) : super(key: key);
-
+class FavoriteScreen extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _SongbookScreenState(SongLyricsProvider(songbook.songLyrics));
+  State<StatefulWidget> createState() => _FavoriteScreenState(
+      SongLyricsProvider(DataProvider.shared.songLyrics.where((songLyric) => songLyric.isFavorite).toList()));
 }
 
-class _SongbookScreenState extends State<SongbookScreen> with PlatformStateMixin {
+class _FavoriteScreenState extends State<FavoriteScreen> with PlatformStateMixin {
   final SongLyricsProvider _songLyricsProvider;
 
   bool _searching;
 
-  _SongbookScreenState(this._songLyricsProvider);
+  _FavoriteScreenState(this._songLyricsProvider);
 
   @override
   void initState() {
@@ -73,7 +70,7 @@ class _SongbookScreenState extends State<SongbookScreen> with PlatformStateMixin
             icon: Icon(Icons.filter_list),
           ),
         )
-      : Text(widget.songbook.name);
+      : Text('Písně s hvězdičkou');
 
   Widget _trailing(BuildContext context) => _searching
       ? Container(width: 0)
@@ -83,6 +80,16 @@ class _SongbookScreenState extends State<SongbookScreen> with PlatformStateMixin
         );
 
   Widget _body(BuildContext context) => SafeArea(
-        child: ChangeNotifierProvider.value(value: _songLyricsProvider, child: SongLyricsListView()),
+        child: _songLyricsProvider.songLyrics.isEmpty
+            ? Container(
+                padding: EdgeInsets.all(kDefaultPadding),
+                child: Center(
+                  child: Text(
+                    'Nemáte vybrané žádné oblíbené písně. Píseň si můžete přidat do oblíbených v${unbreakableSpace}náhledu písně.',
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              )
+            : ChangeNotifierProvider.value(value: _songLyricsProvider, child: SongLyricsListView()),
       );
 }

@@ -5,8 +5,10 @@ import 'package:provider/provider.dart';
 import 'package:zpevnik/providers/data_provider.dart';
 import 'package:zpevnik/providers/song_lyrics_provider.dart';
 import 'package:zpevnik/providers/tags_provider.dart';
+import 'package:zpevnik/screens/components/custom_icon_button.dart';
 import 'package:zpevnik/screens/components/song_lyrics_list.dart';
 import 'package:zpevnik/screens/filters/widget.dart';
+import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/platform.dart';
 import 'package:zpevnik/screens/components/search_widget.dart';
 
@@ -43,10 +45,13 @@ class _HomeScreenState extends State<HomeScreen> with PlatformStateMixin {
   Widget _searchWidget(BuildContext context) => SearchWidget(
         placeholder: 'Zadejte slovo nebo číslo',
         search: _songLyricsProvider.search,
-        leading: Icon(Icons.search),
-        trailing: GestureDetector(
-          onTap: () => _showFilters(context),
-          child: Icon(Icons.filter_list),
+        leading: CustomIconButton(
+          onPressed: null,
+          icon: Icon(Icons.search, color: AppTheme.shared.searchFieldIconColor(context)),
+        ),
+        trailing: CustomIconButton(
+          onPressed: () => _showFilters(context),
+          icon: Icon(Icons.filter_list, color: AppTheme.shared.searchFieldIconColor(context)),
         ),
       );
 
