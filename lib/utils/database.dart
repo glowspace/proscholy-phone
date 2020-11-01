@@ -62,25 +62,47 @@ class Database {
   Future<void> saveSongbookRecords(List<SongbookRecord> songbookRecords) =>
       SongbookRecordBean(_adapter).upsertMany(songbookRecords).catchError((error) => print(error));
 
+  Future<void> saveSongLyricTags(List<SongLyricTag> songLyricTags) =>
+      SongLyricTagBean(_adapter).upsertMany(songLyricTags).catchError((error) => print(error));
+
+  Future<void> updateSongbook(SongbookEntity songbook, Set<String> only) =>
+      SongbookBean(_adapter).update(songbook, only: only).catchError((error) => print(error));
+
   Future<void> updateSongLyric(SongLyricEntity songLyric, Set<String> only) =>
       SongLyricBean(_adapter).update(songLyric, only: only).catchError((error) => print(error));
 
   Future<List<TagEntity>> get tags => TagBean(_adapter).getAll();
 
-  Future<List<SongbookEntity>> get songbooks async {
+  Future<List<SongbookEntity>> get songbooks {
     final bean = SongbookBean(_adapter);
-    final songbooks = await bean.findWhere(bean.isPrivate.ne(true)).catchError((error) => print(error));
 
-    await bean.preloadAll(songbooks);
-
-    return songbooks;
+    return bean.findWhere(bean.isPrivate.ne(true)).catchError((error) => print(error));
   }
 
   Future<List<SongLyricEntity>> get songLyrics async {
     final bean = SongLyricBean(_adapter);
     final songLyrics = await bean.findWhere(bean.lyrics.isNot(null)).catchError((error) => print(error));
 
-    await bean.preloadAll(songLyrics);
+    // custom preloading, normal preload is too slow
+    Map<int, List<SongbookRecord>> songbookRecords = {};
+    Map<int, List<TagEntity>> songLyricTags = {};
+
+    for (final songbookRecord in await SongbookRecordBean(_adapter).getAll()) {
+      if (!songbookRecords.containsKey(songbookRecord.songLyricId)) songbookRecords[songbookRecord.songLyricId] = [];
+
+      songbookRecords[songbookRecord.songLyricId].add(songbookRecord);
+    }
+
+    for (final songLyricTag in await SongLyricTagBean(_adapter).getAll()) {
+      if (!songLyricTags.containsKey(songLyricTag.songLyricId)) songLyricTags[songLyricTag.songLyricId] = [];
+
+      songLyricTags[songLyricTag.songLyricId].add(TagEntity(id: songLyricTag.tagId));
+    }
+
+    for (SongLyricEntity songLyric in songLyrics) {
+      songLyric.songbookRecords = songbookRecords[songLyric.id] ?? [];
+      songLyric.tags = songLyricTags[songLyric.id] ?? [];
+    }
 
     return songLyrics;
   }

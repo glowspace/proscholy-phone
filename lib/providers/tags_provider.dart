@@ -26,11 +26,13 @@ class TagsProvider extends ChangeNotifier {
 
   List<Tag> get selectedTags => _selectedTags;
 
-  void select(Tag tag, {bool select = true}) {
+  void select(Tag tag, bool select) {
     if (select)
       _selectedTags.add(tag);
     else
       _selectedTags.remove(tag);
+
+    notifyListeners();
   }
 }
 

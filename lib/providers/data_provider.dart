@@ -15,8 +15,7 @@ class DataProvider {
   Future<void> init() async {
     _songLyrics = (await Database.shared.songLyrics).map((songLyricEntity) => SongLyric(songLyricEntity)).toList()
       ..sort((first, second) => first.name.compareTo(second.name));
-    _songbooks = (await Database.shared.songbooks).map((songbookEntity) => Songbook(songbookEntity)).toList()
-      ..sort((first, second) => first.name.compareTo(second.name));
+    _songbooks = (await Database.shared.songbooks).map((songbookEntity) => Songbook(songbookEntity)).toList();
     _tags = (await Database.shared.tags).map((tagEntity) => Tag(tagEntity)).toList();
   }
 

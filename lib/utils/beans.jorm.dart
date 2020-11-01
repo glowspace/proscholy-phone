@@ -751,6 +751,7 @@ abstract class _SongbookBean implements Bean<SongbookEntity> {
   final shortcut = StrField('shortcut');
   final color = StrField('color');
   final isPrivate = BoolField('is_private');
+  final isPinned = BoolField('is_pinned');
   Map<String, Field> _fields;
   Map<String, Field> get fields => _fields ??= {
         id.name: id,
@@ -758,6 +759,7 @@ abstract class _SongbookBean implements Bean<SongbookEntity> {
         shortcut.name: shortcut,
         color.name: color,
         isPrivate.name: isPrivate,
+        isPinned.name: isPinned,
       };
   SongbookEntity fromMap(Map map) {
     SongbookEntity model = SongbookEntity(
@@ -767,6 +769,7 @@ abstract class _SongbookBean implements Bean<SongbookEntity> {
       color: adapter.parseValue(map['color']),
       isPrivate: adapter.parseValue(map['is_private']),
     );
+    model.isPinned = adapter.parseValue(map['is_pinned']);
 
     return model;
   }
@@ -781,6 +784,7 @@ abstract class _SongbookBean implements Bean<SongbookEntity> {
       ret.add(shortcut.set(model.shortcut));
       ret.add(color.set(model.color));
       ret.add(isPrivate.set(model.isPrivate));
+      ret.add(isPinned.set(model.isPinned));
     } else if (only != null) {
       if (only.contains(id.name)) ret.add(id.set(model.id));
       if (only.contains(name.name)) ret.add(name.set(model.name));
@@ -788,6 +792,7 @@ abstract class _SongbookBean implements Bean<SongbookEntity> {
       if (only.contains(color.name)) ret.add(color.set(model.color));
       if (only.contains(isPrivate.name))
         ret.add(isPrivate.set(model.isPrivate));
+      if (only.contains(isPinned.name)) ret.add(isPinned.set(model.isPinned));
     } else /* if (onlyNonNull) */ {
       if (model.id != null) {
         ret.add(id.set(model.id));
@@ -804,6 +809,9 @@ abstract class _SongbookBean implements Bean<SongbookEntity> {
       if (model.isPrivate != null) {
         ret.add(isPrivate.set(model.isPrivate));
       }
+      if (model.isPinned != null) {
+        ret.add(isPinned.set(model.isPinned));
+      }
     }
 
     return ret;
@@ -816,6 +824,7 @@ abstract class _SongbookBean implements Bean<SongbookEntity> {
     st.addStr(shortcut.name, isNullable: false);
     st.addStr(color.name, isNullable: true);
     st.addBool(isPrivate.name, isNullable: false);
+    st.addBool(isPinned.name, isNullable: false);
     return adapter.createTable(st);
   }
 

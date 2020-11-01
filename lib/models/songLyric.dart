@@ -13,6 +13,8 @@ class SongLyric extends ChangeNotifier {
 
   List<Verse> _versesNoChords;
 
+  List<String> _numbers;
+
   // todo: load saved
   double _fontSize = 17;
 
@@ -24,11 +26,19 @@ class SongLyric extends ChangeNotifier {
 
   bool _accidentals = false;
 
-  SongLyric(this._entity);
+  SongLyric(this._entity) {
+    // print(_entity.tags);
+  }
 
   SongLyricEntity get entity => _entity;
 
   int get id => _entity.id;
+
+  String get number => _entity.id.toString();
+
+  // todo: add songbook shortcut
+  List<String> get numbers =>
+      _numbers ??= [id.toString()] + _entity.songbookRecords.map((record) => '${record.number}').toList();
 
   String get name => _entity.name;
 

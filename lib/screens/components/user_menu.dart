@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/screens/about_screen.dart';
+import 'package:zpevnik/screens/components/higlightable_row.dart';
 
 class UserMenuWidget extends StatelessWidget {
   @override
@@ -10,40 +11,24 @@ class UserMenuWidget extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _option('Nastavení', Icons.settings, null),
-            _option('Webová verze', Icons.language, () => _open('https://zpevnik.proscholy.cz')),
-            _option(
-                'Zpětná vazba',
-                Icons.feedback,
-                () => _open(
+            HighlightableRow(title: 'Nastavení', icon: Icons.settings, onPressed: null),
+            HighlightableRow(
+                title: 'Webová verze', icon: Icons.language, onPressed: () => launch('https://zpevnik.proscholy.cz')),
+            HighlightableRow(
+                title: 'Zpětná vazba',
+                icon: Icons.feedback,
+                onPressed: () => launch(
                     'https://docs.google.com/forms/d/e/1FAIpQLSfI0143gkLBtMbWQnSa9nzpOoBNMokZrOIS5mUreSR41E_B7A/viewform')),
-            _option('Přidat píseň', Icons.add, () => _open('https://forms.gle/AYXXxkWtDHQQ13856')),
-            _option(
-              'O projektu',
-              Icons.info,
-              () => Navigator.of(context).push(
+            HighlightableRow(
+                title: 'Přidat píseň', icon: Icons.add, onPressed: () => launch('https://forms.gle/AYXXxkWtDHQQ13856')),
+            HighlightableRow(
+              title: 'O projektu',
+              icon: Icons.info,
+              onPressed: () => Navigator.of(context).push(
                 MaterialPageRoute(builder: (context) => AboutScreen()),
               ),
             ),
           ],
         ),
       );
-
-  Widget _option(String title, IconData icon, Function() action) => GestureDetector(
-        onTap: action,
-        child: Container(
-          padding: EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
-          child: Row(
-            children: [
-              Container(
-                padding: EdgeInsets.only(right: kDefaultPadding),
-                child: Icon(icon),
-              ),
-              Text(title),
-            ],
-          ),
-        ),
-      );
-
-  void _open(String url) async => await launch(url);
 }

@@ -5,6 +5,7 @@ import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songLyric.dart';
 import 'package:zpevnik/screens/components/highlithtable_button.dart';
 import 'package:zpevnik/screens/components/selector_widget.dart';
+import 'package:zpevnik/theme.dart';
 
 class SongLyricSettings extends StatelessWidget {
   @override
@@ -17,7 +18,7 @@ class SongLyricSettings extends StatelessWidget {
               children: [
                 Container(
                   padding: EdgeInsets.only(bottom: kDefaultPadding / 2),
-                  child: Text('Nastavení písně', style: Theme.of(context).textTheme.headline6),
+                  child: Text('Nastavení zobrazení', style: Theme.of(context).textTheme.headline6),
                 ),
                 _row(
                   'Transpozice',
@@ -78,9 +79,9 @@ class SongLyricSettings extends StatelessWidget {
           builder: (context, songLyric, _) => Row(
             children: [
               HighlightableButton(
-                padding: EdgeInsets.only(right: kDefaultPadding / 4),
+                padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 4),
                 icon: Icons.remove,
-                highlightedColor: Colors.red,
+                highlightedColor: AppTheme.shared.highlightColor(context),
                 onPressed: () => songLyric.changeTransposition(-1),
               ),
               SizedBox(
@@ -91,9 +92,9 @@ class SongLyricSettings extends StatelessWidget {
                 ),
               ),
               HighlightableButton(
-                padding: EdgeInsets.only(left: kDefaultPadding / 4),
+                padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 4),
                 icon: Icons.add,
-                highlightedColor: Colors.red,
+                highlightedColor: AppTheme.shared.highlightColor(context),
                 onPressed: () => songLyric.changeTransposition(1),
               ),
             ],

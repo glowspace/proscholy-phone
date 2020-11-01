@@ -28,21 +28,16 @@ class _FilterTagState extends State<FilterTag> {
   Widget build(BuildContext context) => Consumer<TagsProvider>(
         builder: (context, provider, _) => GestureDetector(
           onTap: () {
-            provider.select(widget.tag);
+            provider.select(widget.tag, !_selected);
             setState(() => _selected = !_selected);
           },
           child: Container(
             decoration: BoxDecoration(
-              color: _selected
-                  ? widget.tag.type.selectedColor
-                  : Colors.transparent,
-              border:
-                  Border.all(color: AppTheme.shared.filterBorderColor(context)),
-              borderRadius: BorderRadius.all(Radius.circular(
-                  100)), // big enough number to make it always full circular
+              color: _selected ? widget.tag.type.selectedColor : Colors.transparent,
+              border: Border.all(color: AppTheme.shared.filterBorderColor(context)),
+              borderRadius: BorderRadius.all(Radius.circular(100)), // big enough number to make it always full circular
             ),
-            padding: EdgeInsets.symmetric(
-                horizontal: kDefaultPadding / 2, vertical: kDefaultPadding / 4),
+            padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2, vertical: kDefaultPadding / 4),
             child: Text(
               widget.tag.name,
               style: AppTheme.shared.filterTextStyle(context),

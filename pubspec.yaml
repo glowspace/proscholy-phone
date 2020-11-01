@@ -11,22 +11,28 @@ dependencies:
   flutter:
     sdk: flutter
 
-  jaguar_orm:
-  jaguar_query_sqflite:
-  sqflite:
-  path:
+  jaguar_orm: any
+  jaguar_query_sqflite: any
+  sqflite: any
+  path: any
 
-  shared_preferences:
+  shared_preferences: any
+
+  connectivity: any
+  diacritic: any
     
-  provider:
+  provider: any
 
-  modal_bottom_sheet:
+  modal_bottom_sheet: any
 
-  cupertino_icons:
+  url_launcher: any
+  flutter_share: any
+
+  cupertino_icons: any
 
 dev_dependencies:
-  jaguar_orm_gen:
-  build_runner:
+  jaguar_orm_gen: any
+  build_runner: any
 
 flutter:
   uses-material-design: true

@@ -32,6 +32,8 @@ class AppTheme {
 
   Color borderColor(BuildContext context) => _isLight(context) ? Color(0xff7d8185) : Color(0xff827e7a);
 
+  Color highlightColor(BuildContext context) => _isLight(context) ? Color(0xffdfdfdf) : Color(0xff202020);
+
   // selector theme
 
   Color selectedColor(BuildContext context) => _isLight(context) ? Color(0xff9a9a9a) : Color(0xff656565);

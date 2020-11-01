@@ -71,7 +71,7 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
   Widget _body(BuildContext context) => SafeArea(
         child: GestureDetector(
           onTap: () => setState(() {
-            _showingMenu.value = !_showingMenu.value;
+            _showingMenu.value = false;
             _fullScreen = !_fullScreen;
           }),
           child: Stack(

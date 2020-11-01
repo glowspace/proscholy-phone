@@ -77,7 +77,7 @@ class LyricsWidget extends StatelessWidget {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 8),
               child: Transform.translate(
-                offset: Offset(0, -1.5 * songLyric.fontSize),
+                offset: Offset(0, -1.45 * songLyric.fontSize),
                 child: Container(
                   decoration: BoxDecoration(
                     border: Border(
@@ -91,7 +91,7 @@ class LyricsWidget extends StatelessWidget {
                       style: Theme.of(context).textTheme.bodyText1.copyWith(
                             color: AppTheme.shared.chordColor(context),
                             fontSize: songLyric.fontSize,
-                            height: songLyric.showChords ? 2.5 : 1,
+                            height: songLyric.showChords ? 2.4 : 1,
                           ),
                     ),
                   ),

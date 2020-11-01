@@ -175,6 +175,11 @@ class SongLyricTag {
 
   @BelongsTo.many(TagBean)
   int tagId;
+
+  @override
+  String toString() {
+    return '$songLyricId: $tagId';
+  }
 }
 
 @GenBean()

@@ -14,6 +14,8 @@ class SongbookEntity {
 
   final bool isPrivate;
 
+  bool isPinned;
+
   @HasMany(SongbookRecordBean)
   List<SongbookRecord> records;
 
@@ -23,6 +25,7 @@ class SongbookEntity {
     this.shortcut,
     this.color,
     this.isPrivate,
+    this.isPinned,
   });
 
   factory SongbookEntity.fromJson(Map<String, dynamic> json) => SongbookEntity(
@@ -31,5 +34,6 @@ class SongbookEntity {
         shortcut: json['shortcut'],
         color: json['color'],
         isPrivate: json['is_private'],
+        isPinned: false,
       );
 }

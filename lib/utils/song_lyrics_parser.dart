@@ -15,7 +15,8 @@ final RegExp _toFlatRE = RegExp(r'[CDEFGAH]#');
 final Map<String, String> _fromFlat = {'Db': 'C#', 'Eb': 'D#', 'Gb': 'F#', 'Ab': 'G#', 'B': 'A#'};
 final RegExp _fromFlatRE = RegExp(r'([CDEFGAH]b|B)');
 
-final RegExp _parentheses = RegExp(r'\(?\)?');
+final RegExp _parenthesesRE = RegExp(r'\(?\)?');
+final RegExp _multipleSpacesRE = RegExp(r' +');
 
 class SongLyricsParser {
   SongLyricsParser._();
@@ -53,7 +54,7 @@ class SongLyricsParser {
       if (substitute == null) substitute = substitutes[verses[i].number.replaceAll('.', ':')];
 
       // sometimes number is in parentheses, so check it as well
-      if (substitute == null) substitute = substitutes[verses[i].number.replaceAll(_parentheses, '')];
+      if (substitute == null) substitute = substitutes[verses[i].number.replaceAll(_parenthesesRE, '')];
 
       if ((verses[i].lines.isEmpty ||
               verses[i].lines[0].blocks.isEmpty ||
@@ -95,23 +96,32 @@ class SongLyricsParser {
 
       // don't create empty blocks
       if (previous.length > 0 || text.length > 0) {
-        final words = text.split(' ');
+        final words = text.split(_multipleSpacesRE);
 
         int i = 0;
         // temporary solution to handle shorter chord than word
         if (words[i].length < 4 && words.length > 1)
-          blocks.add(Block(previous, '${words[i++]} ${words[i++]}', true));
+          blocks.add(Block(previous, '${words[i++]} ${words[i++]}' + (words.length > 2 ? ' ' : ''), true));
         else
-          blocks.add(Block(previous, words[i++], true));
+          blocks.add(Block(previous, words[i++] + (words.length > 1 ? ' ' : ''), true));
 
-        for (; i < words.length; i++) blocks.add(Block('', ' ${words[i]}', true));
+        for (; i < words.length; i++) if (words[i].isNotEmpty) blocks.add(Block('', '${words[i]} ', true));
       }
 
       index = match.end;
       previous = line.substring(match.start + 1, match.end - 1);
     }
 
-    blocks.add(Block(previous, line.substring(index), false));
+    final words = line.substring(index).split(' ');
+
+    int i = 0;
+    // temporary solution to handle shorter chord than word
+    if (words[i].length < 4 && words.length > 1)
+      blocks.add(Block(previous, '${words[i++]} ${words[i++]}' + (words.length > 2 ? ' ' : ''), false));
+    else
+      blocks.add(Block(previous, words[i++] + (words.length > 1 ? ' ' : ''), words.length != 1));
+
+    for (; i < words.length; i++) blocks.add(Block('', '${words[i]} ', true));
 
     return blocks;
   }

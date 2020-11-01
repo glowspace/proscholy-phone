@@ -3,6 +3,7 @@ import 'package:flutter_share/flutter_share.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songLyric.dart';
+import 'package:zpevnik/screens/components/higlightable_row.dart';
 import 'package:zpevnik/theme.dart';
 
 class SongLyricMenu extends StatefulWidget {
@@ -39,21 +40,25 @@ class _SongLyricMenuState extends State<SongLyricMenu> with SingleTickerProvider
               left: BorderSide(color: AppTheme.shared.borderColor(context)),
               bottom: BorderSide(color: AppTheme.shared.borderColor(context))),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _row('Přidat do seznamu', Icons.playlist_add, null),
-            _row('Zpěvníky', Icons.import_contacts, null),
-            _row('Noty', Icons.insert_drive_file, null),
-            _row('Sdílet', Icons.share, share),
-            _row('Otevřít na webu', Icons.language,
-                () => _open('https://zpevnik.proscholy.cz/pisen/${widget.songLyric.id}/')),
-            _row(
-                'Nahlásit',
-                Icons.warning,
-                () => _open(
-                    'https://docs.google.com/forms/d/e/1FAIpQLSdTaOCzzlfZmyoCB0I_S2kSPiSZVGwDhDovyxkWB7w2LfH0IA/viewform?entry.2038741493=${widget.songLyric.id}')),
-          ],
+        child: IntrinsicWidth(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              HighlightableRow(title: 'Přidat do seznamu', icon: Icons.playlist_add, onPressed: null),
+              // HighlightableRow('Zpěvníky', Icons.import_contacts, null),
+              HighlightableRow(title: 'Noty', icon: Icons.insert_drive_file, onPressed: null),
+              HighlightableRow(title: 'Sdílet', icon: Icons.share, onPressed: share),
+              HighlightableRow(
+                  title: 'Otevřít na webu',
+                  icon: Icons.language,
+                  onPressed: () => launch('https://zpevnik.proscholy.cz/pisen/${widget.songLyric.id}/')),
+              HighlightableRow(
+                  title: 'Nahlásit',
+                  icon: Icons.warning,
+                  onPressed: () => launch(
+                      'https://docs.google.com/forms/d/e/1FAIpQLSdTaOCzzlfZmyoCB0I_S2kSPiSZVGwDhDovyxkWB7w2LfH0IA/viewform?entry.2038741493=${widget.songLyric.id}')),
+            ],
+          ),
         ),
       ),
       _animation);
@@ -63,24 +68,6 @@ class _SongLyricMenuState extends State<SongLyricMenu> with SingleTickerProvider
         axis: Axis.vertical,
         child: child,
       );
-
-  Widget _row(String title, IconData icon, Function() onTap) => GestureDetector(
-        onTap: onTap,
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2, vertical: kDefaultPadding / 4),
-          child: Row(
-            children: [
-              Container(
-                padding: EdgeInsets.only(right: kDefaultPadding / 2),
-                child: Icon(icon),
-              ),
-              Text(title),
-            ],
-          ),
-        ),
-      );
-
-  void _open(String url) async => await launch(url);
 
   void share() async => await FlutterShare.share(
       title: widget.songLyric.name,

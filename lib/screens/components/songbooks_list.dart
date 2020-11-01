@@ -10,8 +10,9 @@ class SongbookListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scrollbar(
         child: Consumer<SongbooksProvider>(
-          builder: (context, provider, child) => GridView.count(
-            key: PageStorageKey(key),
+          builder: (context, provider, _) => GridView.count(
+            childAspectRatio: 4 / 4.5,
+            key: PageStorageKey(_key),
             crossAxisCount: 2,
             children: List.generate(
               provider.songbooks.length,

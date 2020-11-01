@@ -29,13 +29,9 @@ class AboutScreen extends StatelessWidget with PlatformWidgetMixin {
         child: RichText(
           text: TextSpan(text: 'Zpěvník ', children: [
             TextSpan(
-              text: 'ProScholy.cz',
-              style: TextStyle(color: Colors.blue),
-              recognizer: TapGestureRecognizer()
-                ..onTap = () {
-                  launch('https://zpevnik.proscholy.cz');
-                },
-            ),
+                text: 'ProScholy.cz',
+                style: TextStyle(color: Colors.blue),
+                recognizer: TapGestureRecognizer()..onTap = () => launch('https://zpevnik.proscholy.cz')),
             TextSpan(
                 text:
                     ', který přichází na${unbreakableSpace}pomoc všem scholám, křesťanským kapelám, společenstvím a${unbreakableSpace}všem, kdo se chtějí modlit hudbou!\n\nProjekt vzniká se svolením '),
@@ -47,17 +43,11 @@ class AboutScreen extends StatelessWidget with PlatformWidgetMixin {
                 text:
                     '.\n\nDalší informace o${unbreakableSpace}stavu a${unbreakableSpace}rozvoji projektu naleznete na$unbreakableSpace'),
             TextSpan(
-              text: 'https://zpevnik.proscholy.cz',
-              style: TextStyle(color: Colors.blue),
-              recognizer: TapGestureRecognizer()
-                ..onTap = () {
-                  launch('https://zpevnik.proscholy.cz');
-                },
-            ),
+                text: 'https://zpevnik.proscholy.cz',
+                style: TextStyle(color: Colors.blue),
+                recognizer: TapGestureRecognizer()..onTap = () => launch('https://zpevnik.proscholy.cz')),
             TextSpan(text: '.'),
           ]),
         ),
       );
-
-  void _open(String url) async => await launch(url);
 }

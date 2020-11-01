@@ -44,6 +44,7 @@ class _UserScreenState extends State<UserScreen> with PlatformStateMixin {
                       onTap: () => Navigator.of(context).push(
                         MaterialPageRoute(builder: (context) => FavoriteScreen()),
                       ),
+                      behavior: HitTestBehavior.translucent,
                       child: Row(
                         children: [
                           Container(

@@ -11,6 +11,7 @@ import 'package:zpevnik/models/entities/song_lyric.dart';
 import 'package:zpevnik/models/entities/songbook.dart';
 import 'package:zpevnik/models/entities/tag.dart';
 import 'package:zpevnik/providers/data_provider.dart';
+import 'package:zpevnik/utils/beans.dart';
 import 'package:zpevnik/utils/database.dart';
 
 const String _initialLoadKey = 'initial_load';
@@ -147,6 +148,17 @@ class Updater {
       Database.shared.saveSongLyrics(songLyrics),
       Database.shared
           .saveSongbookRecords(songLyrics.map((songLyric) => songLyric.songbookRecords).toList().reduce((result, list) {
+        result.addAll(list);
+        return result;
+      }).toList()),
+      Database.shared.saveSongLyricTags(songLyrics
+          .map((songLyric) => List.generate(
+              songLyric.tags.length,
+              (index) => SongLyricTag()
+                ..songLyricId = songLyric.id
+                ..tagId = songLyric.tags[index].id))
+          .toList()
+          .reduce((result, list) {
         result.addAll(list);
         return result;
       })),

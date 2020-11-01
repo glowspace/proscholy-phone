@@ -71,8 +71,9 @@ extension TagTypeExtension on TagType {
   Color get selectedColor {
     switch (this) {
       case TagType.liturgyPart:
-      case TagType.liturgyPeriod:
         return blue;
+      case TagType.liturgyPeriod:
+        return red;
       case TagType.saints:
       case TagType.generic:
         return green;
@@ -88,6 +89,8 @@ class Tag {
   final TagEntity _entity;
 
   Tag(this._entity);
+
+  int get id => _entity.id;
 
   String get name => _entity.name;
 
