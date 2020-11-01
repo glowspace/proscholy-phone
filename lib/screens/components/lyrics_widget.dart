@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songLyric.dart';
+import 'package:zpevnik/providers/settings_provider.dart';
 import 'package:zpevnik/theme.dart';
 
 class LyricsWidget extends StatelessWidget {
@@ -9,26 +11,28 @@ class LyricsWidget extends StatelessWidget {
   const LyricsWidget({Key key, this.songLyric}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(songLyric.name,
-              style: Theme.of(context).textTheme.headline6.copyWith(
-                    color: AppTheme.shared.textColor(context),
-                    fontSize: 1.3 * songLyric.fontSize,
-                    fontWeight: FontWeight.bold,
-                  )),
-          Container(
-            padding: EdgeInsets.only(top: 1.5 * songLyric.fontSize),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: List.generate(
-                songLyric.verses.length,
-                (index) => _verse(context, songLyric.verses[index]),
+  Widget build(BuildContext context) => Consumer<SettingsProvider>(
+        builder: (context, settingsProvider, _) => Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(songLyric.name,
+                style: Theme.of(context).textTheme.headline6.copyWith(
+                      color: AppTheme.shared.textColor(context),
+                      fontSize: 1.3 * SettingsProvider.shared.fontSize,
+                      fontWeight: FontWeight.bold,
+                    )),
+            Container(
+              padding: EdgeInsets.only(top: 1.5 * SettingsProvider.shared.fontSize),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: List.generate(
+                  songLyric.verses.length,
+                  (index) => _verse(context, songLyric.verses[index]),
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       );
 
   Container _verse(BuildContext context, Verse verse) => Container(
@@ -41,7 +45,7 @@ class LyricsWidget extends StatelessWidget {
                 verse.number,
                 style: Theme.of(context).textTheme.bodyText1.copyWith(
                       color: AppTheme.shared.textColor(context),
-                      fontSize: songLyric.fontSize,
+                      fontSize: SettingsProvider.shared.fontSize,
                     ),
               ),
             Flexible(
@@ -77,7 +81,7 @@ class LyricsWidget extends StatelessWidget {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 8),
               child: Transform.translate(
-                offset: Offset(0, -1.45 * songLyric.fontSize),
+                offset: Offset(0, -1.45 * SettingsProvider.shared.fontSize),
                 child: Container(
                   decoration: BoxDecoration(
                     border: Border(
@@ -85,12 +89,12 @@ class LyricsWidget extends StatelessWidget {
                     ),
                   ),
                   child: Transform.translate(
-                    offset: Offset(0, -0.5 * songLyric.fontSize),
+                    offset: Offset(0, -0.5 * SettingsProvider.shared.fontSize),
                     child: Text(
                       block.chord,
                       style: Theme.of(context).textTheme.bodyText1.copyWith(
                             color: AppTheme.shared.chordColor(context),
-                            fontSize: songLyric.fontSize,
+                            fontSize: SettingsProvider.shared.fontSize,
                             height: songLyric.showChords ? 2.4 : 1,
                           ),
                     ),
@@ -104,7 +108,7 @@ class LyricsWidget extends StatelessWidget {
                 block.lyricsPart,
                 style: Theme.of(context).textTheme.bodyText1.copyWith(
                       color: AppTheme.shared.textColor(context),
-                      fontSize: songLyric.fontSize,
+                      fontSize: SettingsProvider.shared.fontSize,
                     ),
               ),
             ),

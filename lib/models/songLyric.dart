@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/entities/song_lyric.dart';
+import 'package:zpevnik/providers/settings_provider.dart';
 import 'package:zpevnik/utils/database.dart';
 import 'package:zpevnik/utils/song_lyrics_parser.dart';
 
@@ -15,20 +15,9 @@ class SongLyric extends ChangeNotifier {
 
   List<String> _numbers;
 
-  // todo: load saved
-  double _fontSize = 17;
-
-  int _transposition = 0;
-
   bool _hasChords;
 
-  bool _showChords = true;
-
-  bool _accidentals = false;
-
-  SongLyric(this._entity) {
-    // print(_entity.tags);
-  }
+  SongLyric(this._entity);
 
   SongLyricEntity get entity => _entity;
 
@@ -42,21 +31,19 @@ class SongLyric extends ChangeNotifier {
 
   String get name => _entity.name;
 
-  List<Verse> get verses => _showChords
-      ? _verses ??= SongLyricsParser.shared.parseLyrics(_entity.lyrics)
-      : _versesNoChords ??= SongLyricsParser.shared.parseLyrics(_entity.lyrics.replaceAll(_chordsRE, ''));
+  List<Verse> get verses => showChords
+      ? _verses ??= SongLyricsParser.shared.parseLyrics(_entity.lyrics, transposition, accidentals)
+      : _versesNoChords ??= SongLyricsParser.shared.parseLyrics(_entity.lyrics.replaceAll(_chordsRE, ''), 0, false);
 
   bool get isFavorite => _entity.favoriteOrder != null;
 
-  double get fontSize => _fontSize;
-
-  int get transposition => _transposition;
+  int get transposition => _entity.transposition ??= 0;
 
   bool get hasChords => _hasChords ??= _entity.lyrics.contains(_chordsRE);
 
-  bool get showChords => _showChords;
+  bool get showChords => _entity.showChords ?? SettingsProvider.shared.showChords;
 
-  bool get accidentals => _accidentals;
+  bool get accidentals => _entity.accidentals ?? SettingsProvider.shared.accidentals;
 
   void toggleFavorite() {
     if (isFavorite)
@@ -70,28 +57,22 @@ class SongLyric extends ChangeNotifier {
     notifyListeners();
   }
 
-  void changeFontSize(double value) {
-    if (value < kMinimumFontSize)
-      value = kMinimumFontSize;
-    else if (value > kMaximumFontSize) value = kMaximumFontSize;
-
-    _fontSize = value;
-
-    notifyListeners();
-  }
-
   void changeTransposition(int byValue) {
-    _transposition += byValue;
-    if (_transposition == 12 || _transposition == -12) _transposition = 0;
+    _entity.transposition += byValue;
+    if (_entity.transposition == 12 || _entity.transposition == -12) _entity.transposition = 0;
 
-    verses.forEach(
-        (verse) => verse.lines.forEach((line) => line.blocks.forEach((block) => block.transposition = _transposition)));
+    verses.forEach((verse) =>
+        verse.lines.forEach((line) => line.blocks.forEach((block) => block.transposition = _entity.transposition)));
+
+    Database.shared.updateSongLyric(_entity, ['transposition'].toSet());
 
     notifyListeners();
   }
 
   set accidentals(bool accidentals) {
-    _accidentals = accidentals;
+    _entity.accidentals = accidentals;
+
+    Database.shared.updateSongLyric(_entity, ['accidentals'].toSet());
 
     verses.forEach(
         (verse) => verse.lines.forEach((line) => line.blocks.forEach((block) => block.accidentals = accidentals)));
@@ -100,7 +81,9 @@ class SongLyric extends ChangeNotifier {
   }
 
   set showChords(bool showChords) {
-    _showChords = showChords;
+    _entity.showChords = showChords;
+
+    Database.shared.updateSongLyric(_entity, ['show_chords'].toSet());
 
     notifyListeners();
   }
@@ -144,8 +127,8 @@ class Block {
   final String lyricsPart;
   final bool _showShowLine;
 
-  int transposition = 0;
-  bool accidentals = false;
+  int transposition;
+  bool accidentals;
 
   Block(this._chord, this.lyricsPart, this._showShowLine);
 

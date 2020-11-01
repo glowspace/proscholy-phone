@@ -36,11 +36,14 @@ class SongbookWidget extends StatelessWidget {
                       ),
                     ),
                     Consumer<SongbooksProvider>(
-                      builder: (context, provider, _) => HighlightableButton(
-                        onPressed: () => provider.togglePinned(songbook),
-                        color: Theme.of(context).textTheme.caption.color,
-                        highlightedColor: AppTheme.shared.highlightColor(context),
-                        icon: songbook.isPinned ? Icons.push_pin : Icons.push_pin_outlined,
+                      builder: (context, provider, _) => Transform.scale(
+                        scale: 0.75,
+                        child: HighlightableButton(
+                          onPressed: () => provider.togglePinned(songbook),
+                          color: Theme.of(context).textTheme.caption.color,
+                          highlightedColor: AppTheme.shared.highlightColor(context),
+                          icon: songbook.isPinned ? Icons.push_pin : Icons.push_pin_outlined,
+                        ),
                       ),
                     ),
                   ],

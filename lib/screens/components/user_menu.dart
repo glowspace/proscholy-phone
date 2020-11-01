@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/providers/settings_provider.dart';
 import 'package:zpevnik/screens/about_screen.dart';
 import 'package:zpevnik/screens/components/higlightable_row.dart';
+import 'package:zpevnik/screens/settings_screen.dart';
 
 class UserMenuWidget extends StatelessWidget {
   @override
@@ -11,7 +14,16 @@ class UserMenuWidget extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            HighlightableRow(title: 'Nastavení', icon: Icons.settings, onPressed: null),
+            HighlightableRow(
+              title: 'Nastavení',
+              icon: Icons.settings,
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) =>
+                      ChangeNotifierProvider.value(value: SettingsProvider.shared, child: SettingsScreen()),
+                ),
+              ),
+            ),
             HighlightableRow(
                 title: 'Webová verze', icon: Icons.language, onPressed: () => launch('https://zpevnik.proscholy.cz')),
             HighlightableRow(

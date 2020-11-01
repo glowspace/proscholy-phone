@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songLyric.dart';
 import 'package:zpevnik/providers/scroll_provider.dart';
+import 'package:zpevnik/providers/settings_provider.dart';
 import 'package:zpevnik/screens/components/lyrics_widget.dart';
 import 'package:zpevnik/screens/components/song_lyric_menu.dart';
 import 'package:zpevnik/theme.dart';
@@ -88,7 +89,10 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
                     controller: _scrollController,
                     child: Container(
                       margin: EdgeInsets.symmetric(vertical: kDefaultPadding, horizontal: kDefaultPadding / 2),
-                      child: LyricsWidget(songLyric: widget.songLyric),
+                      child: ChangeNotifierProvider.value(
+                        value: SettingsProvider.shared,
+                        child: LyricsWidget(songLyric: widget.songLyric),
+                      ),
                     ),
                   ),
                 ),
@@ -141,7 +145,7 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
         height: 0.67 * MediaQuery.of(context).size.height,
         child: ChangeNotifierProvider.value(
           value: widget.songLyric,
-          child: SongLyricSettings(),
+          child: ChangeNotifierProvider.value(value: SettingsProvider.shared, child: SongLyricSettings()),
         ),
       ),
     );

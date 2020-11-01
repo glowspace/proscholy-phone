@@ -21,6 +21,15 @@ class SongLyricEntity {
   @Column(isNullable: true)
   int favoriteOrder;
 
+  @Column(isNullable: true)
+  int transposition;
+
+  @Column(isNullable: true)
+  bool showChords;
+
+  @Column(isNullable: true)
+  bool accidentals;
+
   @ManyToMany(SongLyricAuthorBean, AuthorBean)
   List<Author> authors;
 

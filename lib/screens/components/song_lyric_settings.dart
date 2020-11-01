@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songLyric.dart';
+import 'package:zpevnik/providers/settings_provider.dart';
 import 'package:zpevnik/screens/components/highlithtable_button.dart';
 import 'package:zpevnik/screens/components/selector_widget.dart';
 import 'package:zpevnik/theme.dart';
@@ -104,8 +105,8 @@ class SongLyricSettings extends StatelessWidget {
 
   Widget _fontSizeSlider(BuildContext context) => Container(
         padding: EdgeInsets.symmetric(vertical: kDefaultPadding / 3),
-        child: Consumer<SongLyric>(
-          builder: (context, songLyric, _) => Column(
+        child: Consumer<SettingsProvider>(
+          builder: (context, settingsProvider, _) => Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('Velikost písma'),
@@ -114,8 +115,8 @@ class SongLyricSettings extends StatelessWidget {
                   Text('A', style: Theme.of(context).textTheme.bodyText1.copyWith(fontSize: kMinimumFontSize)),
                   Flexible(
                     child: Slider(
-                      value: songLyric.fontSize,
-                      onChanged: songLyric.changeFontSize,
+                      value: settingsProvider.fontSize,
+                      onChanged: settingsProvider.changeFontSize,
                       min: kMinimumFontSize,
                       max: kMaximumFontSize,
                     ),

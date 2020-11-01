@@ -23,8 +23,18 @@ class SongLyricsParser {
 
   static final SongLyricsParser shared = SongLyricsParser._();
 
-  List<Verse> parseLyrics(String lyrics) =>
-      _verses(_substituteChordsPlaceholders(lyrics.replaceAll('\r', '').replaceAll('@', '')));
+  List<Verse> parseLyrics(String lyrics, int transposition, bool accidentals) =>
+      _verses(_substituteChordsPlaceholders(lyrics.replaceAll('\r', '').replaceAll('@', '')))
+        ..forEach(
+          (verse) => verse.lines.forEach(
+            (line) => line.blocks.forEach(
+              (block) {
+                block.transposition = transposition;
+                block.accidentals = accidentals;
+              },
+            ),
+          ),
+        );
 
   // replaces all placeholder chords with chords from first verse
   String _substituteChordsPlaceholders(String lyrics) {

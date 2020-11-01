@@ -11,6 +11,7 @@ import 'package:zpevnik/models/entities/song_lyric.dart';
 import 'package:zpevnik/models/entities/songbook.dart';
 import 'package:zpevnik/models/entities/tag.dart';
 import 'package:zpevnik/providers/data_provider.dart';
+import 'package:zpevnik/providers/settings_provider.dart';
 import 'package:zpevnik/utils/beans.dart';
 import 'package:zpevnik/utils/database.dart';
 
@@ -105,6 +106,7 @@ class Updater {
     } else if (!prefs.containsKey(_initialLoadKey)) await _loadLocal();
 
     await DataProvider.shared.init();
+    SettingsProvider.shared.init();
 
     return true;
   }

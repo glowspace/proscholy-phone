@@ -13,6 +13,9 @@ abstract class _SongLyricBean implements Bean<SongLyricEntity> {
   final language = StrField('language');
   final type = IntField('type');
   final favoriteOrder = IntField('favorite_order');
+  final transposition = IntField('transposition');
+  final showChords = BoolField('show_chords');
+  final accidentals = BoolField('accidentals');
   final songId = IntField('song_id');
   Map<String, Field> _fields;
   Map<String, Field> get fields => _fields ??= {
@@ -22,6 +25,9 @@ abstract class _SongLyricBean implements Bean<SongLyricEntity> {
         language.name: language,
         type.name: type,
         favoriteOrder.name: favoriteOrder,
+        transposition.name: transposition,
+        showChords.name: showChords,
+        accidentals.name: accidentals,
         songId.name: songId,
       };
   SongLyricEntity fromMap(Map map) {
@@ -33,6 +39,9 @@ abstract class _SongLyricBean implements Bean<SongLyricEntity> {
       type: adapter.parseValue(map['type']),
     );
     model.favoriteOrder = adapter.parseValue(map['favorite_order']);
+    model.transposition = adapter.parseValue(map['transposition']);
+    model.showChords = adapter.parseValue(map['show_chords']);
+    model.accidentals = adapter.parseValue(map['accidentals']);
     model.songId = adapter.parseValue(map['song_id']);
 
     return model;
@@ -49,6 +58,9 @@ abstract class _SongLyricBean implements Bean<SongLyricEntity> {
       ret.add(language.set(model.language));
       ret.add(type.set(model.type));
       ret.add(favoriteOrder.set(model.favoriteOrder));
+      ret.add(transposition.set(model.transposition));
+      ret.add(showChords.set(model.showChords));
+      ret.add(accidentals.set(model.accidentals));
       ret.add(songId.set(model.songId));
     } else if (only != null) {
       if (only.contains(id.name)) ret.add(id.set(model.id));
@@ -58,6 +70,12 @@ abstract class _SongLyricBean implements Bean<SongLyricEntity> {
       if (only.contains(type.name)) ret.add(type.set(model.type));
       if (only.contains(favoriteOrder.name))
         ret.add(favoriteOrder.set(model.favoriteOrder));
+      if (only.contains(transposition.name))
+        ret.add(transposition.set(model.transposition));
+      if (only.contains(showChords.name))
+        ret.add(showChords.set(model.showChords));
+      if (only.contains(accidentals.name))
+        ret.add(accidentals.set(model.accidentals));
       if (only.contains(songId.name)) ret.add(songId.set(model.songId));
     } else /* if (onlyNonNull) */ {
       if (model.id != null) {
@@ -78,6 +96,15 @@ abstract class _SongLyricBean implements Bean<SongLyricEntity> {
       if (model.favoriteOrder != null) {
         ret.add(favoriteOrder.set(model.favoriteOrder));
       }
+      if (model.transposition != null) {
+        ret.add(transposition.set(model.transposition));
+      }
+      if (model.showChords != null) {
+        ret.add(showChords.set(model.showChords));
+      }
+      if (model.accidentals != null) {
+        ret.add(accidentals.set(model.accidentals));
+      }
       if (model.songId != null) {
         ret.add(songId.set(model.songId));
       }
@@ -94,6 +121,9 @@ abstract class _SongLyricBean implements Bean<SongLyricEntity> {
     st.addStr(language.name, isNullable: false);
     st.addInt(type.name, isNullable: false);
     st.addInt(favoriteOrder.name, isNullable: true);
+    st.addInt(transposition.name, isNullable: true);
+    st.addBool(showChords.name, isNullable: true);
+    st.addBool(accidentals.name, isNullable: true);
     st.addInt(songId.name,
         foreignTable: songBean.tableName,
         foreignCol: songBean.id.name,
