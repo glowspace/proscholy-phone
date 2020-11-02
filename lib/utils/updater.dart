@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/services.dart';
@@ -56,6 +57,7 @@ class Updater {
         id
         name
         lyrics
+        lilypond_svg
         lang
         lang_string
         type_enum
@@ -73,8 +75,7 @@ class Updater {
           id
           public_name
           media_id
-          type
-          type_string
+          media_type
           authors {
             id
           }
@@ -132,13 +133,13 @@ class Updater {
 
     if (data == null) return;
 
-    final authors = (data['authors'] as List<dynamic>).map((json) => Author.fromJson(json)).toList();
+    final authors = (data['authors'] as List<dynamic>).map((json) => AuthorEntity.fromJson(json)).toList();
 
     final tags = (data['tags_enum'] as List<dynamic>).map((json) => TagEntity.fromJson(json)).toList();
 
     final songbooks = (data['songbooks'] as List<dynamic>).map((json) => SongbookEntity.fromJson(json)).toList();
 
-    final songs = (data['songs'] as List<dynamic>).map((json) => Song.fromJson(json)).toList();
+    final songs = (data['songs'] as List<dynamic>).map((json) => SongEntity.fromJson(json)).toList();
 
     final songLyrics = (data['song_lyrics'] as List<dynamic>).map((json) => SongLyricEntity.fromJson(json)).toList();
 
@@ -148,6 +149,10 @@ class Updater {
       Database.shared.saveSongbooks(songbooks),
       Database.shared.saveSongs(songs),
       Database.shared.saveSongLyrics(songLyrics),
+      Database.shared.saveExternals(songLyrics.map((songLyric) => songLyric.externals).reduce((result, list) {
+        result.addAll(list);
+        return result;
+      })),
       Database.shared
           .saveSongbookRecords(songLyrics.map((songLyric) => songLyric.songbookRecords).toList().reduce((result, list) {
         result.addAll(list);
@@ -164,6 +169,11 @@ class Updater {
         result.addAll(list);
         return result;
       })),
-    ]).then((_) => SharedPreferences.getInstance().then((prefs) => prefs.setBool(_initialLoadKey, true)));
+    ]).then((_) => SharedPreferences.getInstance().then((prefs) async {
+          if (!prefs.containsKey(_initialLoadKey)) {
+            if (Platform.isAndroid) await Database.shared.migrateAndroid();
+            prefs.setBool(_initialLoadKey, true);
+          }
+        }));
   }
 }

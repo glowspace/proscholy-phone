@@ -1,3 +1,4 @@
+import 'package:zpevnik/models/song.dart';
 import 'package:zpevnik/models/songLyric.dart';
 import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/models/tag.dart';
@@ -13,7 +14,15 @@ class DataProvider {
   List<Tag> _tags;
 
   Future<void> init() async {
-    _songLyrics = (await Database.shared.songLyrics).map((songLyricEntity) => SongLyric(songLyricEntity)).toList()
+    final songs = (await Database.shared.songs).map((key, value) => MapEntry(key, Song(value)));
+
+    _songLyrics = (await Database.shared.songLyrics).map((songLyricEntity) {
+      if (songs[songLyricEntity.songId].songLyrics == null) songs[songLyricEntity.songId].songLyrics = [];
+      final songLyric = SongLyric(songLyricEntity, songs[songLyricEntity.songId]);
+
+      songs[songLyricEntity.songId].songLyrics.add(songLyric);
+      return songLyric;
+    }).toList()
       ..sort((first, second) => first.name.compareTo(second.name));
     _songbooks = (await Database.shared.songbooks).map((songbookEntity) => Songbook(songbookEntity)).toList();
     _tags = (await Database.shared.tags).map((tagEntity) => Tag(tagEntity)).toList();

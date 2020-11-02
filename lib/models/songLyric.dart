@@ -1,13 +1,60 @@
 import 'package:flutter/material.dart';
+import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/models/entities/external.dart';
 import 'package:zpevnik/models/entities/song_lyric.dart';
+import 'package:zpevnik/models/song.dart';
 import 'package:zpevnik/providers/settings_provider.dart';
 import 'package:zpevnik/utils/database.dart';
 import 'package:zpevnik/utils/song_lyrics_parser.dart';
 
 final RegExp _chordsRE = RegExp(r'\[[^\]]+\]');
 
+enum SongLyricType {
+  original,
+  translation,
+  authorizedTranslation,
+}
+
+extension SongLyricTypeExtension on SongLyricType {
+  static SongLyricType fromString(String string) {
+    switch (string) {
+      case "ORIGINAL":
+        return SongLyricType.original;
+      case "AUTHORIZED_TRANSLATION":
+        return SongLyricType.authorizedTranslation;
+      default:
+        return SongLyricType.translation;
+    }
+  }
+
+  int get rawValue => SongLyricType.values.indexOf(this);
+
+  String get description {
+    switch (this) {
+      case SongLyricType.original:
+        return "Originál";
+      case SongLyricType.authorizedTranslation:
+        return "Autorizovaný překlad";
+      default:
+        return "Překlad";
+    }
+  }
+
+  Color get color {
+    switch (this) {
+      case SongLyricType.original:
+        return blue;
+      case SongLyricType.authorizedTranslation:
+        return yellow;
+      default:
+        return green;
+    }
+  }
+}
+
 class SongLyric extends ChangeNotifier {
   final SongLyricEntity _entity;
+  final Song _song;
 
   List<Verse> _verses;
 
@@ -17,7 +64,7 @@ class SongLyric extends ChangeNotifier {
 
   bool _hasChords;
 
-  SongLyric(this._entity);
+  SongLyric(this._entity, this._song);
 
   SongLyricEntity get entity => _entity;
 
@@ -35,6 +82,10 @@ class SongLyric extends ChangeNotifier {
       ? _verses ??= SongLyricsParser.shared.parseLyrics(_entity.lyrics, transposition, accidentals)
       : _versesNoChords ??= SongLyricsParser.shared.parseLyrics(_entity.lyrics.replaceAll(_chordsRE, ''), 0, false);
 
+  String get lilypond => _entity.lilypond;
+
+  SongLyricType get type => SongLyricType.values[_entity.type];
+
   bool get isFavorite => _entity.favoriteOrder != null;
 
   int get transposition => _entity.transposition ??= 0;
@@ -44,6 +95,21 @@ class SongLyric extends ChangeNotifier {
   bool get showChords => _entity.showChords ?? SettingsProvider.shared.showChords;
 
   bool get accidentals => _entity.accidentals ?? SettingsProvider.shared.accidentals;
+
+  bool get hasTranslations => _song.songLyrics.length > 1;
+
+  bool get hasExternals => _entity.externals.isNotEmpty;
+
+  List<SongLyric> get original =>
+      _song.songLyrics.where((songLyric) => songLyric.type == SongLyricType.original).toList();
+
+  List<SongLyric> get authorizedTranslations =>
+      _song.songLyrics.where((songLyric) => songLyric.type == SongLyricType.authorizedTranslation).toList();
+
+  List<SongLyric> get translations =>
+      _song.songLyrics.where((songLyric) => songLyric.type == SongLyricType.translation).toList();
+
+  List<ExternalEntity> get youtubes => _entity.externals.where((ext) => ext.mediaType == 'youtube').toList();
 
   void toggleFavorite() {
     if (isFavorite)

@@ -8,6 +8,8 @@ import 'package:zpevnik/providers/scroll_provider.dart';
 import 'package:zpevnik/providers/settings_provider.dart';
 import 'package:zpevnik/screens/components/lyrics_widget.dart';
 import 'package:zpevnik/screens/components/song_lyric_menu.dart';
+import 'package:zpevnik/screens/externals_widget.dart';
+import 'package:zpevnik/screens/translations_screen.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/platform.dart';
 
@@ -71,6 +73,8 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
 
   Widget _body(BuildContext context) => SafeArea(
         child: GestureDetector(
+          onScaleStart: SettingsProvider.shared.fontScaleStarted,
+          onScaleUpdate: SettingsProvider.shared.fontScaleUpdated,
           onTap: () => setState(() {
             _showingMenu.value = false;
             _fullScreen = !_fullScreen;
@@ -122,10 +126,12 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
       );
 
   List<Widget> _actions(BuildContext context) => [
-        IconButton(
-          onPressed: null,
-          icon: Icon(Icons.translate),
-        ),
+        if (widget.songLyric.hasTranslations)
+          IconButton(
+            onPressed: () => Navigator.of(context)
+                .push(MaterialPageRoute(builder: (context) => TranslationsScreen(songLyric: widget.songLyric))),
+            icon: Icon(Icons.translate),
+          ),
         IconButton(
           onPressed: widget.songLyric.toggleFavorite,
           icon: Icon(widget.songLyric.isFavorite ? Icons.star : Icons.star_outline),
@@ -152,11 +158,14 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
     );
   }
 
-  void _showExternals() => showCupertinoModalBottomSheet(
+  void _showExternals() => showModalBottomSheet(
         context: context,
-        builder: (context, scrollController) => SizedBox(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+        ),
+        builder: (context) => SizedBox(
           height: 0.67 * MediaQuery.of(context).size.height,
-          child: Container(),
+          child: ExternalsWidget(songLyric: widget.songLyric),
         ),
         useRootNavigator: true,
       );

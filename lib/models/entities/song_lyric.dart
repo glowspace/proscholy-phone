@@ -1,9 +1,11 @@
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:jaguar_orm/jaguar_orm.dart';
 import 'package:zpevnik/models/entities/author.dart';
 import 'package:zpevnik/models/entities/external.dart';
 import 'package:zpevnik/models/entities/playlist.dart';
 import 'package:zpevnik/models/entities/songbook_record.dart';
 import 'package:zpevnik/models/entities/tag.dart';
+import 'package:zpevnik/models/songLyric.dart';
 import 'package:zpevnik/utils/beans.dart';
 
 class SongLyricEntity {
@@ -18,6 +20,10 @@ class SongLyricEntity {
   final String language;
   final int type;
 
+  // fixme: store it as raw data instead of string
+  @Column(isNullable: true)
+  final String lilypond;
+
   @Column(isNullable: true)
   int favoriteOrder;
 
@@ -31,10 +37,10 @@ class SongLyricEntity {
   bool accidentals;
 
   @ManyToMany(SongLyricAuthorBean, AuthorBean)
-  List<Author> authors;
+  List<AuthorEntity> authors;
 
   @HasMany(ExternalBean)
-  List<External> externals;
+  List<ExternalEntity> externals;
 
   @ManyToMany(SongLyricTagBean, TagBean)
   List<TagEntity> tags;
@@ -54,11 +60,10 @@ class SongLyricEntity {
     this.lyrics,
     this.language,
     this.type,
+    this.lilypond,
   });
 
   factory SongLyricEntity.fromJson(Map<String, dynamic> json) {
-    // print(json['song']);
-
     final id = int.parse(json['id']);
     final songId = json['song'] == null ? null : (json['song'] as Map<String, dynamic>)['id'];
 
@@ -67,11 +72,12 @@ class SongLyricEntity {
       name: json['name'],
       lyrics: json['lyrics'],
       language: json['lang_string'],
-      // todo: handle type
-      type: 1,
+      type: SongLyricTypeExtension.fromString(json['type_enum']).rawValue,
+      lilypond: json['lilypond_svg'],
     )
-      ..authors = (json['authors_pivot'] as List<dynamic>).map((json) => Author.fromJson(json['author'])).toList()
-      ..externals = (json['externals'] as List<dynamic>).map((json) => External.fromJson(json)).toList()
+      ..authors = (json['authors_pivot'] as List<dynamic>).map((json) => AuthorEntity.fromJson(json['author'])).toList()
+      ..externals =
+          (json['externals'] as List<dynamic>).map((json) => ExternalEntity.fromJson(json)..songLyricId = id).toList()
       ..tags = (json['tags'] as List<dynamic>).map((json) => TagEntity.fromJson(json)).toList()
       ..playlists = []
       ..songbookRecords = (json['songbook_records'] as List<dynamic>)

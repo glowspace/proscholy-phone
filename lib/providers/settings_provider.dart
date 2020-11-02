@@ -11,6 +11,7 @@ const String _showBottomOptionsKey = 'show_bottom_options';
 
 class SettingsProvider extends ChangeNotifier {
   double _fontSize;
+  double _fontSizeBeforeScale;
   bool _showChords;
   bool _accidentals;
   bool _blockDisplayOff;
@@ -92,4 +93,8 @@ class SettingsProvider extends ChangeNotifier {
 
     notifyListeners();
   }
+
+  void fontScaleStarted(_) => _fontSizeBeforeScale = fontSize;
+
+  void fontScaleUpdated(ScaleUpdateDetails details) => changeFontSize(_fontSizeBeforeScale * details.scale);
 }

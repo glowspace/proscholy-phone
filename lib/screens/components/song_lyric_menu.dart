@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songLyric.dart';
 import 'package:zpevnik/screens/components/higlightable_row.dart';
+import 'package:zpevnik/screens/music_notes_screen.dart';
 import 'package:zpevnik/theme.dart';
 
 class SongLyricMenu extends StatefulWidget {
@@ -46,7 +47,16 @@ class _SongLyricMenuState extends State<SongLyricMenu> with SingleTickerProvider
             children: [
               HighlightableRow(title: 'Přidat do seznamu', icon: Icons.playlist_add, onPressed: null),
               // HighlightableRow('Zpěvníky', Icons.import_contacts, null),
-              HighlightableRow(title: 'Noty', icon: Icons.insert_drive_file, onPressed: null),
+              if (widget.songLyric.lilypond != null)
+                HighlightableRow(
+                  title: 'Noty',
+                  icon: Icons.insert_drive_file,
+                  onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => MusicNotesScreen(songLyric: widget.songLyric),
+                    ),
+                  ),
+                ),
               HighlightableRow(title: 'Sdílet', icon: Icons.share, onPressed: share),
               HighlightableRow(
                   title: 'Otevřít na webu',

@@ -3,7 +3,7 @@ import 'package:zpevnik/models/entities/external.dart';
 import 'package:zpevnik/models/entities/song_lyric.dart';
 import 'package:zpevnik/utils/beans.dart';
 
-class Author {
+class AuthorEntity {
   @PrimaryKey()
   final int id;
 
@@ -13,14 +13,14 @@ class Author {
   List<SongLyricEntity> songLyrics;
 
   @ManyToMany(AuthorExternalBean, ExternalBean)
-  List<External> externals;
+  List<ExternalEntity> externals;
 
-  Author({
+  AuthorEntity({
     this.id,
     this.name,
   });
 
-  factory Author.fromJson(Map<String, dynamic> json) => Author(
+  factory AuthorEntity.fromJson(Map<String, dynamic> json) => AuthorEntity(
         id: int.parse(json['id']),
         name: json['name'],
       );

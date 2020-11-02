@@ -12,26 +12,29 @@ class LyricsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Consumer<SettingsProvider>(
-        builder: (context, settingsProvider, _) => Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(songLyric.name,
-                style: Theme.of(context).textTheme.headline6.copyWith(
-                      color: AppTheme.shared.textColor(context),
-                      fontSize: 1.3 * SettingsProvider.shared.fontSize,
-                      fontWeight: FontWeight.bold,
-                    )),
-            Container(
-              padding: EdgeInsets.only(top: 1.5 * SettingsProvider.shared.fontSize),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: List.generate(
-                  songLyric.verses.length,
-                  (index) => _verse(context, songLyric.verses[index]),
+        builder: (context, settingsProvider, _) => GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(songLyric.name,
+                  style: Theme.of(context).textTheme.headline6.copyWith(
+                        color: AppTheme.shared.textColor(context),
+                        fontSize: 1.3 * SettingsProvider.shared.fontSize,
+                        fontWeight: FontWeight.bold,
+                      )),
+              Container(
+                padding: EdgeInsets.only(top: 1.5 * SettingsProvider.shared.fontSize),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: List.generate(
+                    songLyric.verses.length,
+                    (index) => _verse(context, songLyric.verses[index]),
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       );
 

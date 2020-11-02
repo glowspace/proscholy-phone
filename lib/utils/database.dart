@@ -4,6 +4,7 @@ import 'package:jaguar_query_sqflite/jaguar_query_sqflite.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:zpevnik/models/entities/author.dart';
+import 'package:zpevnik/models/entities/external.dart';
 import 'package:zpevnik/models/entities/song.dart';
 import 'package:zpevnik/models/entities/song_lyric.dart';
 import 'package:zpevnik/models/entities/songbook.dart';
@@ -19,7 +20,7 @@ class Database {
   static final Database shared = Database._();
 
   Future<void> init() async {
-    _adapter = new SqfliteAdapter(join(await getDatabasesPath(), 'zpevnik.db'));
+    _adapter = SqfliteAdapter(join(await getDatabasesPath(), 'zpevnik.db'));
 
     await _adapter.connect();
 
@@ -39,7 +40,7 @@ class Database {
     ]);
   }
 
-  Future<void> saveAuthors(List<Author> authors) async {
+  Future<void> saveAuthors(List<AuthorEntity> authors) async {
     for (final batch in _splitInBatches(authors))
       await AuthorBean(_adapter).upsertMany(batch).catchError((error) => print(error));
   }
@@ -49,7 +50,7 @@ class Database {
   Future<void> saveSongbooks(List<SongbookEntity> songbooks) =>
       SongbookBean(_adapter).upsertMany(songbooks).catchError((error) => print(error));
 
-  Future<void> saveSongs(List<Song> songs) async {
+  Future<void> saveSongs(List<SongEntity> songs) async {
     for (final batch in _splitInBatches(songs))
       await SongBean(_adapter).upsertMany(batch).catchError((error) => print(error));
   }
@@ -59,17 +60,32 @@ class Database {
       await SongLyricBean(_adapter).upsertMany(batch).catchError((error) => print(error));
   }
 
+  Future<void> saveExternals(List<ExternalEntity> externals) async {
+    for (final batch in _splitInBatches(externals))
+      await ExternalBean(_adapter).upsertMany(batch).catchError((error) => print(error));
+  }
+
   Future<void> saveSongbookRecords(List<SongbookRecord> songbookRecords) =>
       SongbookRecordBean(_adapter).upsertMany(songbookRecords).catchError((error) => print(error));
 
   Future<void> saveSongLyricTags(List<SongLyricTag> songLyricTags) =>
       SongLyricTagBean(_adapter).upsertMany(songLyricTags).catchError((error) => print(error));
 
+  Future<void> saveSongLyricAuthors(List<SongLyricAuthor> songLyricAuthors) =>
+      SongLyricAuthorBean(_adapter).upsertMany(songLyricAuthors).catchError((error) => print(error));
+
   Future<void> updateSongbook(SongbookEntity songbook, Set<String> only) =>
       SongbookBean(_adapter).update(songbook, only: only).catchError((error) => print(error));
 
   Future<void> updateSongLyric(SongLyricEntity songLyric, Set<String> only) =>
       SongLyricBean(_adapter).update(songLyric, only: only).catchError((error) => print(error));
+
+  Future<Map<int, SongEntity>> get songs async {
+    Map<int, SongEntity> songs = {};
+    for (final song in await SongBean(_adapter).getAll()) songs[song.id] = song;
+
+    return songs;
+  }
 
   Future<List<TagEntity>> get tags => TagBean(_adapter).getAll();
 
@@ -86,6 +102,9 @@ class Database {
     // custom preloading, normal preload is too slow
     Map<int, List<SongbookRecord>> songbookRecords = {};
     Map<int, List<TagEntity>> songLyricTags = {};
+    Map<int, AuthorEntity> authors = {};
+    Map<int, List<SongLyricAuthor>> songLyricAuthors = {};
+    Map<int, List<ExternalEntity>> externals = {};
 
     for (final songbookRecord in await SongbookRecordBean(_adapter).getAll()) {
       if (!songbookRecords.containsKey(songbookRecord.songLyricId)) songbookRecords[songbookRecord.songLyricId] = [];
@@ -99,13 +118,36 @@ class Database {
       songLyricTags[songLyricTag.songLyricId].add(TagEntity(id: songLyricTag.tagId));
     }
 
+    for (final author in await AuthorBean(_adapter).getAll()) authors[author.id] = author;
+
+    for (final songLyricAuthor in await SongLyricAuthorBean(_adapter).getAll()) {
+      if (!songLyricAuthors.containsKey(songLyricAuthor.songLyricId))
+        songLyricAuthors[songLyricAuthor.songLyricId] = [];
+
+      songLyricAuthors[songLyricAuthor.songLyricId].add(songLyricAuthor);
+    }
+
+    for (final ext in await ExternalBean(_adapter).getAll()) {
+      if (!externals.containsKey(ext.songLyricId)) externals[ext.songLyricId] = [];
+
+      externals[ext.songLyricId].add(ext);
+    }
+
     for (SongLyricEntity songLyric in songLyrics) {
       songLyric.songbookRecords = songbookRecords[songLyric.id] ?? [];
       songLyric.tags = songLyricTags[songLyric.id] ?? [];
+      songLyric.authors = songLyricAuthors[songLyric.id] ?? [];
+      songLyric.externals = externals[songLyric.id] ?? [];
     }
 
     return songLyrics;
   }
+
+  Future<void> migrateAndroid() async => openDatabase(join(await getDatabasesPath(), 'Favorites.db'))
+      .then((db) => db.rawQuery('SELECT * FROM favorites;').then((favorites) => SongLyricBean(_adapter).updateMany(
+          favorites.map((object) => SongLyricEntity(id: int.parse(object['id']))..favoriteOrder = 1).toList(),
+          only: ['id'].toSet())))
+      .catchError((error) => print(error));
 
   List<List<T>> _splitInBatches<T>(List<T> list) {
     List<List<T>> batches = [];
