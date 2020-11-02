@@ -111,11 +111,11 @@ class SongLyricsParser {
         int i = 0;
         // temporary solution to handle shorter chord than word
         if (words[i].length < 4 && words.length > 1)
-          blocks.add(Block(previous, '${words[i++]} ${words[i++]}' + (words.length > 2 ? ' ' : ''), true));
+          blocks.add(Block(previous, '${words[i++]} ${words[i++]}' + (words.length > 2 ? ' ' : ''), false));
         else
-          blocks.add(Block(previous, words[i++] + (words.length > 1 ? ' ' : ''), true));
+          blocks.add(Block(previous, words[i++] + (words.length > 1 ? ' ' : ''), words.length == 1));
 
-        for (; i < words.length; i++) if (words[i].isNotEmpty) blocks.add(Block('', '${words[i]} ', true));
+        for (; i < words.length; i++) if (words[i].isNotEmpty) blocks.add(Block('', '${words[i]} ', false));
       }
 
       index = match.end;
@@ -129,9 +129,9 @@ class SongLyricsParser {
     if (words[i].length < 4 && words.length > 1)
       blocks.add(Block(previous, '${words[i++]} ${words[i++]}' + (words.length > 2 ? ' ' : ''), false));
     else
-      blocks.add(Block(previous, words[i++] + (words.length > 1 ? ' ' : ''), words.length != 1));
+      blocks.add(Block(previous, words[i++] + (words.length > 1 ? ' ' : ''), words.length == 1));
 
-    for (; i < words.length; i++) blocks.add(Block('', '${words[i]} ', true));
+    for (; i < words.length; i++) blocks.add(Block('', '${words[i]} ', false));
 
     return blocks;
   }

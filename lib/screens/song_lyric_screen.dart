@@ -104,17 +104,18 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
                   showing: _showingMenu,
                 ),
               ),
-              Positioned(
-                right: 0,
-                bottom: kDefaultPadding,
-                child: ChangeNotifierProvider.value(
-                  value: _scrollProvider,
-                  child: SlidingWidget(
-                    showSettings: _showSettings,
-                    showExternals: _showExternals,
+              if (SettingsProvider.shared.showBottomOptions)
+                Positioned(
+                  right: 0,
+                  bottom: kDefaultPadding,
+                  child: ChangeNotifierProvider.value(
+                    value: _scrollProvider,
+                    child: SlidingWidget(
+                      showSettings: _showSettings,
+                      showExternals: _showExternals,
+                    ),
                   ),
                 ),
-              ),
             ],
           ),
         ),

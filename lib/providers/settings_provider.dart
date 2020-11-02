@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:wakelock/wakelock.dart';
 import 'package:zpevnik/constants.dart';
 
 const String _fontSizeKey = 'font_size';
 const String _showChordsKey = 'show_chords';
 const String _accidentalsKey = 'accidentals';
 const String _blockDisplayOffKey = 'block_display';
+const String _showBottomOptionsKey = 'show_bottom_options';
 
 class SettingsProvider extends ChangeNotifier {
   double _fontSize;
   bool _showChords;
   bool _accidentals;
   bool _blockDisplayOff;
+  bool _showBottomOptions;
 
   SharedPreferences _prefs;
 
@@ -26,6 +29,9 @@ class SettingsProvider extends ChangeNotifier {
         _showChords = prefs.getBool(_showChordsKey) ?? true;
         _accidentals = prefs.getBool(_accidentalsKey) ?? false;
         _blockDisplayOff = prefs.getBool(_blockDisplayOffKey) ?? false;
+        _showBottomOptions = prefs.getBool(_showBottomOptionsKey) ?? true;
+
+        if (_blockDisplayOff) Wakelock.enable();
       });
 
   double get fontSize => _fontSize;
@@ -35,6 +41,8 @@ class SettingsProvider extends ChangeNotifier {
   bool get accidentals => _accidentals;
 
   bool get blockDisplayOff => _blockDisplayOff;
+
+  bool get showBottomOptions => _showBottomOptions;
 
   void changeFontSize(double value) {
     if (value < kMinimumFontSize)
@@ -68,6 +76,19 @@ class SettingsProvider extends ChangeNotifier {
     _blockDisplayOff = value;
 
     _prefs.setBool(_blockDisplayOffKey, value);
+
+    if (_blockDisplayOff)
+      Wakelock.enable();
+    else
+      Wakelock.disable();
+
+    notifyListeners();
+  }
+
+  void changeShowBottomOptions(bool value) {
+    _showBottomOptions = value;
+
+    _prefs.setBool(_showBottomOptionsKey, value);
 
     notifyListeners();
   }

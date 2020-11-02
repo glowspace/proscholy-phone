@@ -20,6 +20,7 @@ dependencies:
 
   connectivity: any
   diacritic: any
+  wakelock: any
     
   provider: any
 

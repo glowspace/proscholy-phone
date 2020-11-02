@@ -125,15 +125,15 @@ class Line {
 class Block {
   final String _chord;
   final String lyricsPart;
-  final bool _showShowLine;
+  final bool _shouldShowLine;
 
   int transposition;
   bool accidentals;
 
-  Block(this._chord, this.lyricsPart, this._showShowLine);
+  Block(this._chord, this.lyricsPart, this._shouldShowLine);
 
   String get chord =>
       SongLyricsParser.shared.convertAccidentals(SongLyricsParser.shared.transpose(_chord, transposition), accidentals);
 
-  bool get shouldShowLine => _showShowLine && lyricsPart.contains(new RegExp(r'[A-Za-z]'));
+  bool get shouldShowLine => _shouldShowLine && lyricsPart.contains(new RegExp(r'[A-Za-z]'));
 }

@@ -36,6 +36,10 @@ class AppTheme {
 
   // selector theme
 
+  Color selectedRowBackgroundColor(BuildContext context) => _isLight(context) ? Color(0x15005af7) : Color(0x3300f7de);
+
+  Color selectedRowColor(BuildContext context) => chordColor(context);
+
   Color selectedColor(BuildContext context) => _isLight(context) ? Color(0xff9a9a9a) : Color(0xff656565);
 
   Color unSelectedColor(BuildContext context) => _isLight(context) ? Color(0xffd7d7d7) : Color(0xff282828);

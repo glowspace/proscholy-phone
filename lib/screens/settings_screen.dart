@@ -78,6 +78,11 @@ class SettingsScreen extends StatelessWidget with PlatformWidgetMixin {
                     ),
                   ),
                   _fontSizeSlider(context),
+                  _row(
+                    'Zobrazit spodní nabídku',
+                    Switch(
+                        value: settingsProvider.showBottomOptions, onChanged: settingsProvider.changeShowBottomOptions),
+                  ),
                 ],
               )
             ],
