@@ -50,7 +50,6 @@ class _ExternalsWidgetState extends State<ExternalsWidget> {
         children: [
           YoutubePlayer(
             controller: controller,
-            showVideoProgressIndicator: false,
           ),
           Container(
             padding: EdgeInsets.symmetric(vertical: kDefaultPadding / 2, horizontal: kDefaultPadding / 2),

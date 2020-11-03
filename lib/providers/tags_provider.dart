@@ -3,7 +3,7 @@ import 'package:zpevnik/models/tag.dart';
 
 class TagsProvider extends ChangeNotifier {
   List<TagsSection> _sections;
-  List<Tag> _selectedTags;
+  Map<Tag, bool> _selectedTags;
 
   TagsProvider(List<Tag> tags) {
     Map<String, List<Tag>> tagsMap = {};
@@ -19,21 +19,23 @@ class TagsProvider extends ChangeNotifier {
     _sections = tagsMap.entries.map((entry) => TagsSection(entry.key, entry.value)).toList()
       ..sort((first, second) => first.tags[0].type.rawValue.compareTo(second.tags[0].type.rawValue));
 
-    _selectedTags = [];
+    _selectedTags = {};
   }
 
   List<TagsSection> get sections => _sections;
 
-  List<Tag> get selectedTags => _selectedTags;
+  List<Tag> get selectedTags => _selectedTags.keys.toList();
 
   void select(Tag tag, bool select) {
     if (select)
-      _selectedTags.add(tag);
+      _selectedTags[tag] = true;
     else
       _selectedTags.remove(tag);
 
     notifyListeners();
   }
+
+  bool isSelected(Tag tag) => _selectedTags.containsKey(tag);
 }
 
 class TagsSection {

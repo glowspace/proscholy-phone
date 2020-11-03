@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_reorderable_list/flutter_reorderable_list.dart';
 import 'package:provider/provider.dart';
+import 'package:zpevnik/bottom_sheets.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/data_provider.dart';
 import 'package:zpevnik/providers/song_lyrics_provider.dart';
@@ -68,7 +69,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> with PlatformStateMixin
             icon: Icon(Icons.arrow_back),
           ),
           trailing: CustomIconButton(
-            onPressed: null,
+            onPressed: () => showFilters(context, _songLyricsProvider.tagsProvider),
             icon: Icon(Icons.filter_list),
           ),
         )

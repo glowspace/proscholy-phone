@@ -24,6 +24,9 @@ class Database {
 
     await _adapter.connect();
 
+    SongLyricBean(_adapter).drop();
+    ExternalBean(_adapter).drop();
+
     await Future.wait([
       SongLyricBean(_adapter).createTable(ifNotExists: true),
       SongBean(_adapter).createTable(ifNotExists: true),
