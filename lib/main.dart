@@ -6,9 +6,7 @@ import 'package:zpevnik/utils/updater.dart';
 import 'package:zpevnik/screens/content_screen.dart';
 import 'package:zpevnik/screens/loading_screen.dart';
 
-void main() {
-  runApp(MainWidget());
-}
+void main() => runApp(MainWidget());
 
 class MainWidget extends StatelessWidget with PlatformWidgetMixin {
   final String _title = 'Zpěvník';

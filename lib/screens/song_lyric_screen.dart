@@ -6,6 +6,7 @@ import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songLyric.dart';
 import 'package:zpevnik/providers/scroll_provider.dart';
 import 'package:zpevnik/providers/settings_provider.dart';
+import 'package:zpevnik/providers/song_lyrics_provider.dart';
 import 'package:zpevnik/screens/components/lyrics_widget.dart';
 import 'package:zpevnik/screens/components/song_lyric_menu.dart';
 import 'package:zpevnik/screens/externals_widget.dart';
@@ -128,8 +129,10 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
   List<Widget> _actions(BuildContext context) => [
         if (widget.songLyric.hasTranslations)
           IconButton(
-            onPressed: () => Navigator.of(context)
-                .push(MaterialPageRoute(builder: (context) => TranslationsScreen(songLyric: widget.songLyric))),
+            onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => ChangeNotifierProvider(
+                    create: (context) => SongLyricsProvider([]),
+                    child: TranslationsScreen(songLyric: widget.songLyric)))),
             icon: Icon(Icons.translate),
           ),
         IconButton(

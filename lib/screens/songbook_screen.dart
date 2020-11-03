@@ -2,9 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/bottom_sheets.dart';
-import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songbook.dart';
-import 'package:zpevnik/providers/selection_provider.dart';
 import 'package:zpevnik/providers/song_lyrics_provider.dart';
 import 'package:zpevnik/screens/components/custom_icon_button.dart';
 import 'package:zpevnik/screens/components/search_widget.dart';
@@ -85,9 +83,6 @@ class _SongbookScreenState extends State<SongbookScreen> with PlatformStateMixin
         );
 
   Widget _body(BuildContext context) => SafeArea(
-        child: ChangeNotifierProvider(
-          create: (_) => SelectionProvider(),
-          child: ChangeNotifierProvider.value(value: _songLyricsProvider, child: SongLyricsListView()),
-        ),
+        child: ChangeNotifierProvider.value(value: _songLyricsProvider, child: SongLyricsListView()),
       );
 }

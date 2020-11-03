@@ -56,6 +56,8 @@ class SongLyric extends ChangeNotifier {
   final SongLyricEntity _entity;
   final Song _song;
 
+  static int _nextFavoriteOrder = 1;
+
   List<Verse> _verses;
 
   List<Verse> _versesNoChords;
@@ -64,11 +66,16 @@ class SongLyric extends ChangeNotifier {
 
   bool _hasChords;
 
-  SongLyric(this._entity, this._song);
+  SongLyric(this._entity, this._song) {
+    if (_entity.favoriteOrder != null && _entity.favoriteOrder > _nextFavoriteOrder)
+      _nextFavoriteOrder = _entity.favoriteOrder;
+  }
 
   SongLyricEntity get entity => _entity;
 
   int get id => _entity.id;
+
+  Key get key => Key(_entity.id.toString());
 
   String get number => _entity.id.toString();
 
@@ -115,12 +122,18 @@ class SongLyric extends ChangeNotifier {
     if (isFavorite)
       _entity.favoriteOrder = null;
     else
-      _entity.favoriteOrder = 1;
+      _entity.favoriteOrder = _nextFavoriteOrder++;
 
     Database.shared.updateSongLyric(_entity, ['favorite_order'].toSet());
 
     // fixme: it will also redraw lyrics because of this
     notifyListeners();
+  }
+
+  set favoriteOrder(int value) {
+    _entity.favoriteOrder = value;
+
+    Database.shared.updateSongLyric(_entity, ['favorite_order'].toSet());
   }
 
   void changeTransposition(int byValue) {

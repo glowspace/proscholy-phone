@@ -1,20 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_reorderable_list/flutter_reorderable_list.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/data_provider.dart';
-import 'package:zpevnik/providers/selection_provider.dart';
 import 'package:zpevnik/providers/song_lyrics_provider.dart';
 import 'package:zpevnik/screens/components/custom_icon_button.dart';
 import 'package:zpevnik/screens/components/search_widget.dart';
-import 'package:zpevnik/screens/components/song_lyrics_list.dart';
+import 'package:zpevnik/screens/components/song_lyric_reorderable_row.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/platform.dart';
 
 class FavoriteScreen extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _FavoriteScreenState(
-      SongLyricsProvider(DataProvider.shared.songLyrics.where((songLyric) => songLyric.isFavorite).toList()));
+  State<StatefulWidget> createState() => _FavoriteScreenState(SongLyricsProvider(
+      DataProvider.shared.songLyrics.where((songLyric) => songLyric.isFavorite).toList()
+        ..sort((first, second) => first.entity.favoriteOrder.compareTo(second.entity.favoriteOrder))));
 }
 
 class _FavoriteScreenState extends State<FavoriteScreen> with PlatformStateMixin {
@@ -91,9 +92,42 @@ class _FavoriteScreenState extends State<FavoriteScreen> with PlatformStateMixin
                   ),
                 ),
               )
-            : ChangeNotifierProvider(
-                create: (_) => SelectionProvider(),
-                child: ChangeNotifierProvider.value(value: _songLyricsProvider, child: SongLyricsListView()),
+            : Container(
+                padding: EdgeInsets.only(top: kDefaultPadding / 2),
+                child: ChangeNotifierProvider.value(
+                  value: _songLyricsProvider,
+                  child: Scrollbar(
+                    child: Consumer<SongLyricsProvider>(
+                      builder: (context, provider, child) => ReorderableList(
+                        onReorder: (Key from, Key to) {
+                          int fromIndex = provider.songLyrics.indexWhere((songLyric) => songLyric.key == from);
+                          int toIndex = provider.songLyrics.indexWhere((songLyric) => songLyric.key == to);
+
+                          final songLyric = provider.songLyrics[fromIndex];
+                          setState(() {
+                            provider.songLyrics.removeAt(fromIndex);
+                            provider.songLyrics.insert(toIndex, songLyric);
+                          });
+                          return true;
+                        },
+                        onReorderDone: (_) {
+                          for (int i = 0; i < provider.songLyrics.length; i++) provider.songLyrics[i].favoriteOrder = i;
+                        },
+                        child: Scrollbar(
+                          child: Consumer<SongLyricsProvider>(
+                            builder: (context, provider, child) => ListView.builder(
+                              itemBuilder: (context, index) => SongLyricRorderableRow(
+                                key: provider.songLyrics[index].key,
+                                songLyric: provider.songLyrics[index],
+                              ),
+                              itemCount: provider.songLyrics.length,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ),
       );
 }

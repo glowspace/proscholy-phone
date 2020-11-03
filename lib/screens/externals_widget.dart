@@ -4,7 +4,7 @@ import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songLyric.dart';
 import 'package:zpevnik/theme.dart';
 
-final RegExp _nameRE = RegExp(r'youtube \((.+)\)');
+final RegExp _nameRE = RegExp(r'youtube \([^|]+\|\s?(.+)\)');
 
 class ExternalsWidget extends StatefulWidget {
   final SongLyric songLyric;
@@ -53,7 +53,7 @@ class _ExternalsWidgetState extends State<ExternalsWidget> {
             showVideoProgressIndicator: false,
           ),
           Container(
-            padding: EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
+            padding: EdgeInsets.symmetric(vertical: kDefaultPadding / 2, horizontal: kDefaultPadding / 2),
             color: AppTheme.shared.selectedColor(context),
             child: Text(name),
           ),

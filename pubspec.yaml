@@ -29,6 +29,10 @@ dependencies:
   url_launcher: any
   flutter_share: any
 
+  youtube_player_flutter: any
+  flutter_svg: any
+  flutter_reorderable_list: any
+
   cupertino_icons: any
 
 dev_dependencies:

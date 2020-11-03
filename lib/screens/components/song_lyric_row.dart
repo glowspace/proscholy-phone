@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songLyric.dart';
-import 'package:zpevnik/providers/selection_provider.dart';
+import 'package:zpevnik/providers/song_lyrics_provider.dart';
 import 'package:zpevnik/screens/song_lyric_screen.dart';
 import 'package:zpevnik/theme.dart';
 
@@ -32,10 +32,10 @@ class _SongLyricRowState extends State<SongLyricRow> {
 
   @override
   Widget build(BuildContext context) {
-    final selectionProvider = Provider.of<SelectionProvider>(context, listen: false);
+    final selectionProvider = Provider.of<SongLyricsProvider>(context, listen: false).selectionProvider;
 
     return GestureDetector(
-      onLongPress: () => selectionProvider?.toggleSongLyric(widget.songLyric),
+      onLongPress: selectionProvider == null ? null : () => selectionProvider?.toggleSongLyric(widget.songLyric),
       onTap: () => (selectionProvider?.selectionEnabled ?? false)
           ? selectionProvider?.toggleSongLyric(widget.songLyric)
           : _pushSongLyric(context),
@@ -83,11 +83,15 @@ class _SongLyricRowState extends State<SongLyricRow> {
     );
   }
 
-  void _pushSongLyric(BuildContext context) => Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => SongLyricScreen(songLyric: widget.songLyric),
-        ),
-      );
+  void _pushSongLyric(BuildContext context) {
+    FocusScope.of(context).unfocus();
+
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => SongLyricScreen(songLyric: widget.songLyric),
+      ),
+    );
+  }
 
   void _update() => setState(() => {});
 

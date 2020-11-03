@@ -1,9 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songLyric.dart';
-import 'package:zpevnik/providers/selection_provider.dart';
 import 'package:zpevnik/screens/components/song_lyric_row.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/platform.dart';
@@ -56,11 +54,7 @@ class TranslationsScreen extends StatelessWidget with PlatformWidgetMixin {
               child: Text(songLyricType.description,
                   style: Theme.of(context).textTheme.subtitle1.copyWith(color: songLyricType.color)),
             ),
-            for (final songLyric in songLyrics)
-              ChangeNotifierProvider(
-                create: (_) => SelectionProvider(),
-                child: SongLyricRow(songLyric: songLyric),
-              ),
+            for (final songLyric in songLyrics) SongLyricRow(songLyric: songLyric),
           ],
         ),
       );

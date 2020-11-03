@@ -169,11 +169,6 @@ class Updater {
         result.addAll(list);
         return result;
       })),
-    ]).then((_) => SharedPreferences.getInstance().then((prefs) async {
-          if (!prefs.containsKey(_initialLoadKey)) {
-            if (Platform.isAndroid) await Database.shared.migrateAndroid();
-            prefs.setBool(_initialLoadKey, true);
-          }
-        }));
+    ]).then((_) => SharedPreferences.getInstance().then((prefs) => prefs.setBool(_initialLoadKey, true)));
   }
 }

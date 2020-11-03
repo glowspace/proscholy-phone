@@ -3,27 +3,29 @@ import 'package:flutter/material.dart';
 import 'package:zpevnik/models/songLyric.dart';
 import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/providers/data_provider.dart';
+import 'package:zpevnik/providers/selection_provider.dart';
 import 'package:zpevnik/providers/tags_provider.dart';
 
 class SongLyricsProvider extends ChangeNotifier {
   final List<SongLyric> _allSongLyrics;
 
-  final TagsProvider _tagsProvider;
+  final TagsProvider tagsProvider;
+  final SelectionProvider selectionProvider;
 
   List<SongLyric> _songLyrics;
 
   String _searchText;
 
-  SongLyricsProvider(this._allSongLyrics)
+  SongLyricsProvider(this._allSongLyrics, {this.selectionProvider})
       : _searchText = '',
         _songLyrics = _allSongLyrics,
-        _tagsProvider = TagsProvider(DataProvider.shared.tags) {
-    _tagsProvider.addListener(_update);
+        tagsProvider = TagsProvider(DataProvider.shared.tags) {
+    tagsProvider.addListener(_update);
   }
 
   List<SongLyric> get songLyrics => _songLyrics;
 
-  TagsProvider get tagsProvider => _tagsProvider;
+  String get searchText => _searchText;
 
   void search(String searchText) {
     _searchText = searchText;
@@ -43,7 +45,7 @@ class SongLyricsProvider extends ChangeNotifier {
   List<SongLyric> _filter(List<SongLyric> songLyrics) {
     Map<TagType, List<Tag>> tagGroups = {};
 
-    for (final tag in _tagsProvider.selectedTags) {
+    for (final tag in tagsProvider.selectedTags) {
       if (!tagGroups.containsKey(tag.type)) tagGroups[tag.type] = [];
 
       tagGroups[tag.type].add(tag);
@@ -59,7 +61,7 @@ class SongLyricsProvider extends ChangeNotifier {
   void _update() {
     final predicates = _predicates;
 
-    List<SongLyric> filtered = _tagsProvider.selectedTags.isEmpty ? _allSongLyrics : _filter(_allSongLyrics);
+    List<SongLyric> filtered = tagsProvider.selectedTags.isEmpty ? _allSongLyrics : _filter(_allSongLyrics);
 
     List<List<SongLyric>> searchResults = List<List<SongLyric>>.generate(predicates.length, (index) => []);
 
@@ -82,7 +84,7 @@ class SongLyricsProvider extends ChangeNotifier {
 
   @override
   void dispose() {
-    _tagsProvider.removeListener(_update);
+    tagsProvider.removeListener(_update);
 
     super.dispose();
   }

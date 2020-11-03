@@ -17,14 +17,14 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with PlatformStateMixin {
-  final SongLyricsProvider _songLyricsProvider = SongLyricsProvider(DataProvider.shared.songLyrics);
-  final SelectionProvider _selectionProvider = SelectionProvider();
+  final SongLyricsProvider _songLyricsProvider =
+      SongLyricsProvider(DataProvider.shared.songLyrics, selectionProvider: SelectionProvider());
 
   @override
   void initState() {
     super.initState();
 
-    _selectionProvider.addListener(_update);
+    _songLyricsProvider.selectionProvider.addListener(_update);
   }
 
   @override
@@ -32,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> with PlatformStateMixin {
         navigationBar: CupertinoNavigationBar(
           leading: _leading(context),
           middle: _middle(context),
-          trailing: _selectionProvider.selectionEnabled ? Row(children: _trailing(context)) : null,
+          trailing: _songLyricsProvider.selectionProvider.selectionEnabled ? Row(children: _trailing(context)) : null,
         ),
         child: _body(context),
       );
@@ -42,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen> with PlatformStateMixin {
         appBar: AppBar(
           leading: _leading(context),
           title: _middle(context),
-          actions: _selectionProvider.selectionEnabled ? _trailing(context) : null,
+          actions: _songLyricsProvider.selectionProvider.selectionEnabled ? _trailing(context) : null,
         ),
         body: _body(context),
       );
@@ -50,18 +50,17 @@ class _HomeScreenState extends State<HomeScreen> with PlatformStateMixin {
   Widget _body(BuildContext context) => SafeArea(
         child: ChangeNotifierProvider.value(
           value: _songLyricsProvider,
-          child: ChangeNotifierProvider.value(
-            value: _selectionProvider,
-            child: SongLyricsListView(),
-          ),
+          child: SongLyricsListView(),
         ),
       );
 
   List<Widget> _trailing(BuildContext context) => [
         IconButton(
-          onPressed: _selectionProvider.selectedCount > 0 ? () => _selectionProvider.toggleFavorite() : null,
+          onPressed: _songLyricsProvider.selectionProvider.selectedCount > 0
+              ? () => _songLyricsProvider.selectionProvider.toggleFavorite()
+              : null,
           color: AppTheme.shared.selectedRowColor(context),
-          icon: Icon(_selectionProvider.allFavorited ? Icons.star : Icons.star_outline),
+          icon: Icon(_songLyricsProvider.selectionProvider.allFavorited ? Icons.star : Icons.star_outline),
         ),
         IconButton(
           onPressed: null,
@@ -69,39 +68,40 @@ class _HomeScreenState extends State<HomeScreen> with PlatformStateMixin {
           icon: Icon(Icons.playlist_add),
         ),
         IconButton(
-          onPressed: () => _selectionProvider.toggleAll(_songLyricsProvider.songLyrics),
+          onPressed: () => _songLyricsProvider.selectionProvider.toggleAll(_songLyricsProvider.songLyrics),
           color: AppTheme.shared.selectedRowColor(context),
           icon: Icon(Icons.select_all),
         )
       ];
 
-  Widget _leading(BuildContext context) => _selectionProvider.selectionEnabled
+  Widget _leading(BuildContext context) => _songLyricsProvider.selectionProvider.selectionEnabled
       ? IconButton(
-          onPressed: () => setState(() => _selectionProvider.selectionEnabled = false),
+          onPressed: () => setState(() => _songLyricsProvider.selectionProvider.selectionEnabled = false),
           icon: Icon(Icons.close, color: AppTheme.shared.selectedRowColor(context)),
         )
       : null;
 
   Widget _middle(BuildContext context) =>
-      _selectionProvider.selectionEnabled ? _title(context) : _searchWidget(context);
+      _songLyricsProvider.selectionProvider.selectionEnabled ? _title(context) : _searchWidget(context);
 
   Widget _title(BuildContext context) {
     String title;
 
-    if (_selectionProvider.selectedCount == 0)
+    if (_songLyricsProvider.selectionProvider.selectedCount == 0)
       title = "Nic nevybráno";
-    else if (_selectionProvider.selectedCount == 1)
+    else if (_songLyricsProvider.selectionProvider.selectedCount == 1)
       title = "1 píseň";
-    else if (_selectionProvider.selectedCount < 5)
-      title = "${_selectionProvider.selectedCount} písně";
+    else if (_songLyricsProvider.selectionProvider.selectedCount < 5)
+      title = "${_songLyricsProvider.selectionProvider.selectedCount} písně";
     else
-      title = "${_selectionProvider.selectedCount} písní";
+      title = "${_songLyricsProvider.selectionProvider.selectedCount} písní";
 
     return FittedBox(fit: BoxFit.scaleDown, child: Text(title));
   }
 
   Widget _searchWidget(BuildContext context) => SearchWidget(
         placeholder: 'Zadejte slovo nebo číslo',
+        initial: _songLyricsProvider.searchText,
         search: _songLyricsProvider.search,
         leading: CustomIconButton(
           onPressed: null,
@@ -117,7 +117,7 @@ class _HomeScreenState extends State<HomeScreen> with PlatformStateMixin {
 
   @override
   void dispose() {
-    _selectionProvider.removeListener(_update);
+    _songLyricsProvider.selectionProvider.removeListener(_update);
 
     super.dispose();
   }

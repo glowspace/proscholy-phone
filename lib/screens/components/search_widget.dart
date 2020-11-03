@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/platform.dart';
 
 class SearchWidget extends StatefulWidget {
   final String placeholder;
+  final String initial;
   final Function(String) search;
 
   final Widget leading;
@@ -14,6 +14,7 @@ class SearchWidget extends StatefulWidget {
   const SearchWidget({
     Key key,
     this.placeholder,
+    this.initial,
     this.search,
     this.leading,
     this.trailing,
@@ -43,6 +44,7 @@ class _SearchWidgetState extends State<SearchWidget> with PlatformStateMixin {
               hintText: widget.placeholder,
               hintStyle: _textStyle(context, widget.placeholder, constraints.maxWidth),
             ),
+            controller: TextEditingController()..text = widget.initial,
             onChanged: (searchText) => widget.search(searchText),
           ),
         ),

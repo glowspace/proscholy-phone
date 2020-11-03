@@ -143,12 +143,6 @@ class Database {
     return songLyrics;
   }
 
-  Future<void> migrateAndroid() async => openDatabase(join(await getDatabasesPath(), 'Favorites.db'))
-      .then((db) => db.rawQuery('SELECT * FROM favorites;').then((favorites) => SongLyricBean(_adapter).updateMany(
-          favorites.map((object) => SongLyricEntity(id: int.parse(object['id']))..favoriteOrder = 1).toList(),
-          only: ['id'].toSet())))
-      .catchError((error) => print(error));
-
   List<List<T>> _splitInBatches<T>(List<T> list) {
     List<List<T>> batches = [];
 
