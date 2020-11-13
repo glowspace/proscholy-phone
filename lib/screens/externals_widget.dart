@@ -47,6 +47,7 @@ class _ExternalsWidgetState extends State<ExternalsWidget> {
       );
 
   Widget _section(BuildContext context, String name, YoutubePlayerController controller) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           YoutubePlayer(
             controller: controller,

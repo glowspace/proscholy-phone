@@ -46,7 +46,7 @@ class SongLyricEntity {
   List<TagEntity> tags;
 
   @ManyToMany(SongLyricPlaylistBean, PlaylistBean)
-  List<Playlist> playlists;
+  List<PlaylistEntity> playlists;
 
   @HasMany(SongbookRecordBean)
   List<SongbookRecord> songbookRecords;

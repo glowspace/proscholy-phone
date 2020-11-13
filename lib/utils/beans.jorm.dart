@@ -174,7 +174,7 @@ abstract class _SongLyricBean implements Bean<SongLyricEntity> {
       if (model.playlists != null) {
         newModel ??= await find(model.id);
         for (final child in model.playlists) {
-          await playlistBean.insert(child, cascade: cascade);
+          await playlistEntityBean.insert(child, cascade: cascade);
           await songLyricPlaylistBean.attach(newModel, child);
         }
       }
@@ -260,7 +260,7 @@ abstract class _SongLyricBean implements Bean<SongLyricEntity> {
       if (model.playlists != null) {
         newModel ??= await find(model.id);
         for (final child in model.playlists) {
-          await playlistBean.upsert(child, cascade: cascade);
+          await playlistEntityBean.upsert(child, cascade: cascade);
           await songLyricPlaylistBean.attach(newModel, child, upsert: true);
         }
       }
@@ -338,7 +338,7 @@ abstract class _SongLyricBean implements Bean<SongLyricEntity> {
       }
       if (model.playlists != null) {
         for (final child in model.playlists) {
-          await playlistBean.update(child,
+          await playlistEntityBean.update(child,
               cascade: cascade, associate: associate);
         }
       }
@@ -523,7 +523,7 @@ abstract class _SongLyricBean implements Bean<SongLyricEntity> {
   TagBean get tagEntityBean;
   SongLyricPlaylistBean get songLyricPlaylistBean;
 
-  PlaylistBean get playlistBean;
+  PlaylistBean get playlistEntityBean;
   SongbookRecordBean get songbookRecordBean;
   SongBean get songEntityBean;
 }
@@ -1942,7 +1942,7 @@ abstract class _ExternalBean implements Bean<ExternalEntity> {
   SongLyricBean get songLyricEntityBean;
 }
 
-abstract class _PlaylistBean implements Bean<Playlist> {
+abstract class _PlaylistBean implements Bean<PlaylistEntity> {
   final id = IntField('id');
   final name = StrField('name');
   final isArchived = BoolField('is_archived');
@@ -1952,8 +1952,8 @@ abstract class _PlaylistBean implements Bean<Playlist> {
         name.name: name,
         isArchived.name: isArchived,
       };
-  Playlist fromMap(Map map) {
-    Playlist model = Playlist(
+  PlaylistEntity fromMap(Map map) {
+    PlaylistEntity model = PlaylistEntity(
       id: adapter.parseValue(map['id']),
       name: adapter.parseValue(map['name']),
       isArchived: adapter.parseValue(map['is_archived']),
@@ -1962,7 +1962,7 @@ abstract class _PlaylistBean implements Bean<Playlist> {
     return model;
   }
 
-  List<SetColumn> toSetColumns(Playlist model,
+  List<SetColumn> toSetColumns(PlaylistEntity model,
       {bool update = false, Set<String> only, bool onlyNonNull = false}) {
     List<SetColumn> ret = [];
 
@@ -1998,7 +1998,7 @@ abstract class _PlaylistBean implements Bean<Playlist> {
     return adapter.createTable(st);
   }
 
-  Future<dynamic> insert(Playlist model,
+  Future<dynamic> insert(PlaylistEntity model,
       {bool cascade = false,
       bool onlyNonNull = false,
       Set<String> only}) async {
@@ -2006,7 +2006,7 @@ abstract class _PlaylistBean implements Bean<Playlist> {
         .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
     var retId = await adapter.insert(insert);
     if (cascade) {
-      Playlist newModel;
+      PlaylistEntity newModel;
       if (model.songLyrics != null) {
         newModel ??= await find(model.id);
         for (final child in model.songLyrics) {
@@ -2018,7 +2018,7 @@ abstract class _PlaylistBean implements Bean<Playlist> {
     return retId;
   }
 
-  Future<void> insertMany(List<Playlist> models,
+  Future<void> insertMany(List<PlaylistEntity> models,
       {bool cascade = false,
       bool onlyNonNull = false,
       Set<String> only}) async {
@@ -2040,7 +2040,7 @@ abstract class _PlaylistBean implements Bean<Playlist> {
     }
   }
 
-  Future<dynamic> upsert(Playlist model,
+  Future<dynamic> upsert(PlaylistEntity model,
       {bool cascade = false,
       Set<String> only,
       bool onlyNonNull = false,
@@ -2062,7 +2062,7 @@ abstract class _PlaylistBean implements Bean<Playlist> {
       retId = await adapter.upsert(upsert);
     }
     if (cascade) {
-      Playlist newModel;
+      PlaylistEntity newModel;
       if (model.songLyrics != null) {
         newModel ??= await find(model.id);
         for (final child in model.songLyrics) {
@@ -2074,7 +2074,7 @@ abstract class _PlaylistBean implements Bean<Playlist> {
     return retId;
   }
 
-  Future<void> upsertMany(List<Playlist> models,
+  Future<void> upsertMany(List<PlaylistEntity> models,
       {bool cascade = false,
       bool onlyNonNull = false,
       Set<String> only,
@@ -2100,7 +2100,7 @@ abstract class _PlaylistBean implements Bean<Playlist> {
     }
   }
 
-  Future<int> update(Playlist model,
+  Future<int> update(PlaylistEntity model,
       {bool cascade = false,
       bool associate = false,
       Set<String> only,
@@ -2110,7 +2110,7 @@ abstract class _PlaylistBean implements Bean<Playlist> {
         .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
     final ret = adapter.update(update);
     if (cascade) {
-      Playlist newModel;
+      PlaylistEntity newModel;
       if (model.songLyrics != null) {
         for (final child in model.songLyrics) {
           await songLyricEntityBean.update(child,
@@ -2121,7 +2121,7 @@ abstract class _PlaylistBean implements Bean<Playlist> {
     return ret;
   }
 
-  Future<void> updateMany(List<Playlist> models,
+  Future<void> updateMany(List<PlaylistEntity> models,
       {bool cascade = false,
       bool onlyNonNull = false,
       Set<String> only}) async {
@@ -2147,10 +2147,10 @@ abstract class _PlaylistBean implements Bean<Playlist> {
     }
   }
 
-  Future<Playlist> find(int id,
+  Future<PlaylistEntity> find(int id,
       {bool preload = false, bool cascade = false}) async {
     final Find find = finder.where(this.id.eq(id));
-    final Playlist model = await findOne(find);
+    final PlaylistEntity model = await findOne(find);
     if (preload && model != null) {
       await this.preload(model, cascade: cascade);
     }
@@ -2159,16 +2159,16 @@ abstract class _PlaylistBean implements Bean<Playlist> {
 
   Future<int> remove(int id, {bool cascade = false}) async {
     if (cascade) {
-      final Playlist newModel = await find(id);
+      final PlaylistEntity newModel = await find(id);
       if (newModel != null) {
-        await songLyricPlaylistBean.detachPlaylist(newModel);
+        await songLyricPlaylistBean.detachPlaylistEntity(newModel);
       }
     }
     final Remove remove = remover.where(this.id.eq(id));
     return adapter.remove(remove);
   }
 
-  Future<int> removeMany(List<Playlist> models) async {
+  Future<int> removeMany(List<PlaylistEntity> models) async {
 // Return if models is empty. If this is not done, all records will be removed!
     if (models == null || models.isEmpty) return 0;
     final Remove remove = remover;
@@ -2178,15 +2178,16 @@ abstract class _PlaylistBean implements Bean<Playlist> {
     return adapter.remove(remove);
   }
 
-  Future<Playlist> preload(Playlist model, {bool cascade = false}) async {
-    model.songLyrics = await songLyricPlaylistBean.fetchByPlaylist(model);
+  Future<PlaylistEntity> preload(PlaylistEntity model,
+      {bool cascade = false}) async {
+    model.songLyrics = await songLyricPlaylistBean.fetchByPlaylistEntity(model);
     return model;
   }
 
-  Future<List<Playlist>> preloadAll(List<Playlist> models,
+  Future<List<PlaylistEntity>> preloadAll(List<PlaylistEntity> models,
       {bool cascade = false}) async {
-    for (Playlist model in models) {
-      var temp = await songLyricPlaylistBean.fetchByPlaylist(model);
+    for (PlaylistEntity model in models) {
+      var temp = await songLyricPlaylistBean.fetchByPlaylistEntity(model);
       if (model.songLyrics == null)
         model.songLyrics = temp;
       else {
@@ -2936,8 +2937,8 @@ abstract class _SongLyricPlaylistBean implements Bean<SongLyricPlaylist> {
         foreignCol: songLyricEntityBean.id.name,
         isNullable: false);
     st.addInt(playlistId.name,
-        foreignTable: playlistBean.tableName,
-        foreignCol: playlistBean.id.name,
+        foreignTable: playlistEntityBean.tableName,
+        foreignCol: playlistEntityBean.id.name,
         isNullable: false);
     return adapter.createTable(st);
   }
@@ -3037,54 +3038,57 @@ abstract class _SongLyricPlaylistBean implements Bean<SongLyricPlaylist> {
       await removeBySongLyricEntity(model.id);
       final exp = Or();
       for (final t in dels) {
-        exp.or(playlistBean.id.eq(t.playlistId));
+        exp.or(playlistEntityBean.id.eq(t.playlistId));
       }
-      return await playlistBean.removeWhere(exp);
+      return await playlistEntityBean.removeWhere(exp);
     }
     return 0;
   }
 
-  Future<List<Playlist>> fetchBySongLyricEntity(SongLyricEntity model) async {
+  Future<List<PlaylistEntity>> fetchBySongLyricEntity(
+      SongLyricEntity model) async {
     final pivots = await findBySongLyricEntity(model.id);
 // Return if model has no pivots. If this is not done, all records will be removed!
     if (pivots.isEmpty) return [];
     final exp = Or();
     for (final t in pivots) {
-      exp.or(playlistBean.id.eq(t.playlistId));
+      exp.or(playlistEntityBean.id.eq(t.playlistId));
     }
-    return await playlistBean.findWhere(exp);
+    return await playlistEntityBean.findWhere(exp);
   }
 
-  Future<List<SongLyricPlaylist>> findByPlaylist(int playlistId,
+  Future<List<SongLyricPlaylist>> findByPlaylistEntity(int playlistId,
       {bool preload = false, bool cascade = false}) async {
     final Find find = finder.where(this.playlistId.eq(playlistId));
     return findMany(find);
   }
 
-  Future<List<SongLyricPlaylist>> findByPlaylistList(List<Playlist> models,
-      {bool preload = false, bool cascade = false}) async {
+  Future<List<SongLyricPlaylist>> findByPlaylistEntityList(
+      List<PlaylistEntity> models,
+      {bool preload = false,
+      bool cascade = false}) async {
 // Return if models is empty. If this is not done, all the records will be returned!
     if (models == null || models.isEmpty) return [];
     final Find find = finder;
-    for (Playlist model in models) {
+    for (PlaylistEntity model in models) {
       find.or(this.playlistId.eq(model.id));
     }
     return findMany(find);
   }
 
-  Future<int> removeByPlaylist(int playlistId) async {
+  Future<int> removeByPlaylistEntity(int playlistId) async {
     final Remove rm = remover.where(this.playlistId.eq(playlistId));
     return await adapter.remove(rm);
   }
 
-  void associatePlaylist(SongLyricPlaylist child, Playlist parent) {
+  void associatePlaylistEntity(SongLyricPlaylist child, PlaylistEntity parent) {
     child.playlistId = parent.id;
   }
 
-  Future<int> detachPlaylist(Playlist model) async {
-    final dels = await findByPlaylist(model.id);
+  Future<int> detachPlaylistEntity(PlaylistEntity model) async {
+    final dels = await findByPlaylistEntity(model.id);
     if (dels.isNotEmpty) {
-      await removeByPlaylist(model.id);
+      await removeByPlaylistEntity(model.id);
       final exp = Or();
       for (final t in dels) {
         exp.or(songLyricEntityBean.id.eq(t.songLyricId));
@@ -3094,8 +3098,9 @@ abstract class _SongLyricPlaylistBean implements Bean<SongLyricPlaylist> {
     return 0;
   }
 
-  Future<List<SongLyricEntity>> fetchByPlaylist(Playlist model) async {
-    final pivots = await findByPlaylist(model.id);
+  Future<List<SongLyricEntity>> fetchByPlaylistEntity(
+      PlaylistEntity model) async {
+    final pivots = await findByPlaylistEntity(model.id);
 // Return if model has no pivots. If this is not done, all records will be removed!
     if (pivots.isEmpty) return [];
     final exp = Or();
@@ -3105,7 +3110,7 @@ abstract class _SongLyricPlaylistBean implements Bean<SongLyricPlaylist> {
     return await songLyricEntityBean.findWhere(exp);
   }
 
-  Future<dynamic> attach(SongLyricEntity one, Playlist two,
+  Future<dynamic> attach(SongLyricEntity one, PlaylistEntity two,
       {bool upsert = false}) async {
     final ret = SongLyricPlaylist();
     ret.songLyricId = one.id;
@@ -3118,7 +3123,7 @@ abstract class _SongLyricPlaylistBean implements Bean<SongLyricPlaylist> {
   }
 
   SongLyricBean get songLyricEntityBean;
-  PlaylistBean get playlistBean;
+  PlaylistBean get playlistEntityBean;
 }
 
 abstract class _AuthorExternalBean implements Bean<AuthorExternal> {

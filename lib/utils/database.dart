@@ -5,6 +5,7 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:zpevnik/models/entities/author.dart';
 import 'package:zpevnik/models/entities/external.dart';
+import 'package:zpevnik/models/entities/playlist.dart';
 import 'package:zpevnik/models/entities/song.dart';
 import 'package:zpevnik/models/entities/song_lyric.dart';
 import 'package:zpevnik/models/entities/songbook.dart';
@@ -76,6 +77,17 @@ class Database {
 
   Future<void> saveSongLyricAuthors(List<SongLyricAuthor> songLyricAuthors) =>
       SongLyricAuthorBean(_adapter).upsertMany(songLyricAuthors).catchError((error) => print(error));
+
+  void savePlaylist(PlaylistEntity playlist) {
+    PlaylistBean(_adapter).insert(playlist).catchError((error) => print(error));
+    SongLyricPlaylistBean(_adapter)
+        .insertMany(playlist.songLyrics
+            .map((songLyric) => SongLyricPlaylist()
+              ..playlistId = playlist.id
+              ..songLyricId = songLyric.id)
+            .toList())
+        .catchError((error) => print(error));
+  }
 
   Future<void> updateSongbook(SongbookEntity songbook, Set<String> only) =>
       SongbookBean(_adapter).update(songbook, only: only).catchError((error) => print(error));

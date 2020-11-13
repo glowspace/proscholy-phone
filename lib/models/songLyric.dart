@@ -198,7 +198,31 @@ class Verse {
 class Line {
   final List<Block> blocks;
 
+  List<List<Block>> _groupedBlocks;
+
   Line(this.blocks);
+
+  List<List<Block>> get groupedBlocks {
+    if (_groupedBlocks != null) return _groupedBlocks;
+
+    List<List<Block>> grouped = [];
+
+    List<Block> tmp = [];
+    for (final block in blocks) {
+      tmp.add(block);
+
+      if (!block.shouldShowLine) {
+        grouped.add(tmp);
+        tmp = [];
+      }
+    }
+
+    grouped.add(tmp);
+
+    _groupedBlocks = grouped;
+
+    return grouped;
+  }
 }
 
 class Block {

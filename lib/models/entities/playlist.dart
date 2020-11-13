@@ -2,7 +2,7 @@ import 'package:jaguar_orm/jaguar_orm.dart';
 import 'package:zpevnik/models/entities/song_lyric.dart';
 import 'package:zpevnik/utils/beans.dart';
 
-class Playlist {
+class PlaylistEntity {
   @PrimaryKey()
   final int id;
 
@@ -12,9 +12,9 @@ class Playlist {
   @ManyToMany(SongLyricPlaylistBean, SongLyricBean)
   List<SongLyricEntity> songLyrics;
 
-  Playlist({
+  PlaylistEntity({
     this.id,
     this.name,
-    this.isArchived,
+    this.isArchived = false,
   });
 }

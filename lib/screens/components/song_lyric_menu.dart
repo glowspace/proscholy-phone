@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:zpevnik/bottom_sheets.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songLyric.dart';
 import 'package:zpevnik/screens/components/higlightable_row.dart';
@@ -45,7 +46,8 @@ class _SongLyricMenuState extends State<SongLyricMenu> with SingleTickerProvider
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              HighlightableRow(title: 'Přidat do seznamu', icon: Icons.playlist_add, onPressed: null),
+              HighlightableRow(
+                  title: 'Přidat do seznamu', icon: Icons.playlist_add, onPressed: () => showPlaylists(context, [])),
               // HighlightableRow('Zpěvníky', Icons.import_contacts, null),
               if (widget.songLyric.lilypond != null)
                 HighlightableRow(

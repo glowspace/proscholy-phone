@@ -71,51 +71,61 @@ class LyricsWidget extends StatelessWidget {
         text: TextSpan(
           text: '',
           children: List.generate(
-            line.blocks.length,
-            (index) => _block(context, line.blocks[index]),
+            line.groupedBlocks.length,
+            (index) => _blocks(context, line.groupedBlocks[index]),
           ),
         ),
       );
 
-  InlineSpan _block(BuildContext context, Block block) => WidgetSpan(
-        child: Stack(
-          alignment: AlignmentDirectional.topStart,
-          children: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 8),
-              child: Transform.translate(
-                offset: Offset(0, -1.45 * SettingsProvider.shared.fontSize),
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(color: block.shouldShowLine ? Colors.white : Colors.transparent),
-                    ),
+  InlineSpan _blocks(BuildContext context, List<Block> blocks) => blocks.length == 1
+      ? WidgetSpan(
+          child: _block(context, blocks[0]),
+        )
+      : WidgetSpan(
+          child: Wrap(
+          children: List.generate(
+            blocks.length,
+            (index) => _block(context, blocks[index]),
+          ),
+        ));
+
+  Widget _block(BuildContext context, Block block) => Stack(
+        alignment: AlignmentDirectional.topStart,
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 8),
+            child: Transform.translate(
+              offset: Offset(0, -1.45 * SettingsProvider.shared.fontSize),
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(color: block.shouldShowLine ? Colors.white : Colors.transparent),
                   ),
-                  child: Transform.translate(
-                    offset: Offset(0, -0.5 * SettingsProvider.shared.fontSize),
-                    child: Text(
-                      block.chord,
-                      style: Theme.of(context).textTheme.bodyText1.copyWith(
-                            color: AppTheme.shared.chordColor(context),
-                            fontSize: SettingsProvider.shared.fontSize,
-                            height: songLyric.showChords ? 2.4 : 1,
-                          ),
-                    ),
+                ),
+                child: Transform.translate(
+                  offset: Offset(0, -0.5 * SettingsProvider.shared.fontSize),
+                  child: Text(
+                    block.chord,
+                    style: Theme.of(context).textTheme.bodyText1.copyWith(
+                          color: AppTheme.shared.chordColor(context),
+                          fontSize: SettingsProvider.shared.fontSize,
+                          height: songLyric.showChords ? 2.4 : 1,
+                        ),
                   ),
                 ),
               ),
             ),
-            Container(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              child: Text(
-                block.lyricsPart,
-                style: Theme.of(context).textTheme.bodyText1.copyWith(
-                      color: AppTheme.shared.textColor(context),
-                      fontSize: SettingsProvider.shared.fontSize,
-                    ),
-              ),
+          ),
+          Container(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            child: Text(
+              block.lyricsPart,
+              style: Theme.of(context).textTheme.bodyText1.copyWith(
+                    color: AppTheme.shared.textColor(context),
+                    fontSize: SettingsProvider.shared.fontSize,
+                  ),
             ),
-          ],
-        ),
+          ),
+        ],
       );
 }

@@ -107,15 +107,22 @@ class SongLyricsParser {
       // don't create empty blocks
       if (previous.length > 0 || text.length > 0) {
         final words = text.split(_multipleSpacesRE);
+        final isNextLetter = match.end != line.length && RegExp(r'[a-zA-Z]').hasMatch(line[match.end]);
 
         int i = 0;
         // temporary solution to handle shorter chord than word
-        if (words[i].length < 4 && words.length > 1)
-          blocks.add(Block(previous, '${words[i++]} ${words[i++]}' + (words.length > 2 ? ' ' : ''), false));
+        if (words[i].length <= previous.length && words.length > 1)
+          blocks.add(Block(previous, '${words[i++]} ${words[i++]}' + (words.length > 2 ? ' ' : ''),
+              words.length == 2 && isNextLetter));
         else
-          blocks.add(Block(previous, words[i++] + (words.length > 1 ? ' ' : ''), words.length == 1));
+          blocks.add(Block(previous, words[i++] + (words.length > 1 ? ' ' : ''), words.length == 1 && isNextLetter));
 
-        for (; i < words.length; i++) if (words[i].isNotEmpty) blocks.add(Block('', '${words[i]} ', false));
+        for (; i < words.length - 1; i++) if (words[i].isNotEmpty) blocks.add(Block('', '${words[i]} ', false));
+
+        if (words.length > 1 && words[0].length > previous.length) if (isNextLetter)
+          blocks.add(Block('', '${words[i]}', true));
+        else
+          blocks.add(Block('', '${words[i]} ', false));
       }
 
       index = match.end;
@@ -131,7 +138,7 @@ class SongLyricsParser {
     else
       blocks.add(Block(previous, words[i++] + (words.length > 1 ? ' ' : ''), words.length == 1));
 
-    for (; i < words.length; i++) blocks.add(Block('', '${words[i]} ', false));
+    for (; i < words.length; i++) if (words[i].isNotEmpty) blocks.add(Block('', '${words[i]} ', false));
 
     return blocks;
   }
