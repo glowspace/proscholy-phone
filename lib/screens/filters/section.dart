@@ -9,39 +9,34 @@ class FiltersSection extends StatelessWidget {
   final String title;
   final List<Tag> tags;
 
-  const FiltersSection({
-    Key key,
-    this.title,
-    this.tags,
-  }) : super(key: key);
+  const FiltersSection({Key key, this.title, this.tags}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            margin: EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: AppTheme.shared.filtersSectionTitleTextStyle(context),
-                ),
-                Wrap(
-                  spacing: kDefaultPadding / 2,
-                  runSpacing: kDefaultPadding / 3,
-                  children: List.generate(
-                    tags.length,
-                    (index) => FilterTag(tag: tags[index]),
-                  ),
-                ),
-              ],
-            ),
+  Widget build(BuildContext context) {
+    final textStyle = Theme.of(context).textTheme.headline6.copyWith(color: AppTheme.shared.filtersTextColor(context));
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          padding: EdgeInsets.only(bottom: kDefaultPadding / 4),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: EdgeInsets.only(bottom: kDefaultPadding / 2),
+                child: Text(title, style: textStyle),
+              ),
+              Wrap(
+                spacing: kDefaultPadding / 4,
+                runSpacing: kDefaultPadding / 4,
+                children: List.generate(tags.length, (index) => FilterTag(tag: tags[index])),
+              ),
+            ],
           ),
-          Divider(
-              thickness: 2,
-              color: AppTheme.shared.filtersSectionSeparatorColor(context)),
-        ],
-      );
+        ),
+        Divider(thickness: 2, color: AppTheme.shared.filtersSectionSeparatorColor(context)),
+      ],
+    );
+  }
 }

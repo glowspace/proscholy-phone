@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:zpevnik/bottom_sheets.dart';
 import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/providers/song_lyrics_provider.dart';
 import 'package:zpevnik/screens/components/custom_icon_button.dart';
 import 'package:zpevnik/screens/components/search_widget.dart';
 import 'package:zpevnik/screens/components/song_lyrics_list.dart';
+import 'package:zpevnik/screens/songbooks/componenets/songbook_provider.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/platform.dart';
 
@@ -59,6 +59,7 @@ class _SongbookScreenState extends State<SongbookScreen> with PlatformStateMixin
 
   Widget _middle(BuildContext context) => _searching
       ? SearchWidget(
+          key: PageStorageKey('songbook_search_widget'),
           placeholder: 'Zadejte slovo nebo číslo',
           search: _songLyricsProvider.search,
           leading: CustomIconButton(
@@ -69,7 +70,7 @@ class _SongbookScreenState extends State<SongbookScreen> with PlatformStateMixin
             icon: Icon(Icons.arrow_back),
           ),
           trailing: CustomIconButton(
-            onPressed: () => showFilters(context, _songLyricsProvider.tagsProvider),
+            onPressed: () => _songLyricsProvider.tagsProvider.showFilters(context, _songLyricsProvider.tagsProvider),
             icon: Icon(Icons.filter_list),
           ),
         )
@@ -77,12 +78,12 @@ class _SongbookScreenState extends State<SongbookScreen> with PlatformStateMixin
 
   Widget _trailing(BuildContext context) => _searching
       ? Container(width: 0)
-      : IconButton(
-          onPressed: () => setState(() => _searching = true),
-          icon: Icon(Icons.search),
-        );
+      : IconButton(onPressed: () => setState(() => _searching = true), icon: Icon(Icons.search));
 
   Widget _body(BuildContext context) => SafeArea(
-        child: ChangeNotifierProvider.value(value: _songLyricsProvider, child: SongLyricsListView()),
+        child: SongbookProvider(
+          child: ChangeNotifierProvider.value(value: _songLyricsProvider, child: SongLyricsListView()),
+          songbook: widget.songbook,
+        ),
       );
 }

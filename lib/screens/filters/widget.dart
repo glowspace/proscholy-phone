@@ -8,7 +8,7 @@ class FiltersWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) => SafeArea(
         child: Container(
-          padding: EdgeInsets.all(kDefaultPadding / 2),
+          padding: EdgeInsets.fromLTRB(kDefaultPadding, kDefaultPadding, kDefaultPadding, 0),
           child: Consumer<TagsProvider>(
             builder: (context, provider, _) => ListView.builder(
               itemCount: provider.sections.length,

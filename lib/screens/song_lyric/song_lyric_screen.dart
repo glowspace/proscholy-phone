@@ -1,16 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songLyric.dart';
 import 'package:zpevnik/providers/scroll_provider.dart';
 import 'package:zpevnik/providers/settings_provider.dart';
 import 'package:zpevnik/providers/song_lyrics_provider.dart';
-import 'package:zpevnik/screens/components/lyrics_widget.dart';
-import 'package:zpevnik/screens/components/song_lyric_menu.dart';
-import 'package:zpevnik/screens/externals_widget.dart';
-import 'package:zpevnik/screens/translations_screen.dart';
+import 'package:zpevnik/screens/song_lyric/components/lyrics_widget.dart';
+import 'package:zpevnik/screens/song_lyric/components/song_lyric_menu.dart';
+import 'package:zpevnik/screens/song_lyric/externals_widget.dart';
+import 'package:zpevnik/screens/song_lyric/translations_screen.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/platform.dart';
 
@@ -54,9 +53,7 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
 
   @override
   Widget iOSWidget(BuildContext context) => CupertinoPageScaffold(
-        navigationBar: CupertinoNavigationBar(
-          middle: Text(widget.songLyric.id.toString()),
-        ),
+        navigationBar: CupertinoNavigationBar(middle: Text(widget.songLyric.id.toString())),
         child: _body(context),
       );
 
@@ -93,7 +90,7 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
                   child: SingleChildScrollView(
                     controller: _scrollController,
                     child: Container(
-                      margin: EdgeInsets.symmetric(vertical: kDefaultPadding, horizontal: kDefaultPadding / 2),
+                      padding: EdgeInsets.symmetric(vertical: kDefaultPadding, horizontal: kDefaultPadding / 2),
                       child: ChangeNotifierProvider.value(
                         value: SettingsProvider.shared,
                         child: LyricsWidget(songLyric: widget.songLyric),
@@ -145,27 +142,21 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
         ),
       ];
 
-  void _showSettings() {
-    showModalBottomSheet(
-      context: context,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
-      ),
-      builder: (context) => SizedBox(
-        height: 0.67 * MediaQuery.of(context).size.height,
-        child: ChangeNotifierProvider.value(
-          value: widget.songLyric,
-          child: ChangeNotifierProvider.value(value: SettingsProvider.shared, child: SongLyricSettings()),
+  void _showSettings() => showModalBottomSheet(
+        context: context,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(15))),
+        builder: (context) => SizedBox(
+          height: 0.67 * MediaQuery.of(context).size.height,
+          child: ChangeNotifierProvider.value(
+            value: widget.songLyric,
+            child: ChangeNotifierProvider.value(value: SettingsProvider.shared, child: SongLyricSettings()),
+          ),
         ),
-      ),
-    );
-  }
+      );
 
   void _showExternals() => showModalBottomSheet(
         context: context,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(15))),
         builder: (context) => SizedBox(
           height: 0.67 * MediaQuery.of(context).size.height,
           child: ExternalsWidget(songLyric: widget.songLyric),

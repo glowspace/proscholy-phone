@@ -4,7 +4,7 @@ import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songLyric.dart';
 import 'package:zpevnik/theme.dart';
 
-final RegExp _nameRE = RegExp(r'youtube \([^|]+\|\s?(.+)\)');
+final RegExp _nameRE = RegExp(r'youtube \(([^|]+\|\s?)?(.+)\)');
 
 class ExternalsWidget extends StatefulWidget {
   final SongLyric songLyric;
@@ -24,10 +24,7 @@ class _ExternalsWidgetState extends State<ExternalsWidget> {
     _controllers = widget.songLyric.youtubes
         .map((youtube) => YoutubePlayerController(
               initialVideoId: youtube.mediaId,
-              flags: YoutubePlayerFlags(
-                autoPlay: false,
-                mute: false,
-              ),
+              flags: YoutubePlayerFlags(autoPlay: false, mute: false),
             ))
         .toList();
   }
@@ -40,7 +37,7 @@ class _ExternalsWidgetState extends State<ExternalsWidget> {
             children: List.generate(
               _controllers.length,
               (index) => _section(
-                  context, _nameRE.firstMatch(widget.songLyric.youtubes[index].name).group(1), _controllers[index]),
+                  context, _nameRE.firstMatch(widget.songLyric.youtubes[index].name).group(2), _controllers[index]),
             ),
           ),
         ),

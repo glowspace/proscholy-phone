@@ -13,22 +13,15 @@ class SongLyricRorderableRow extends StatelessWidget {
   Widget build(BuildContext context) => ReorderableItem(
         key: songLyric.key,
         childBuilder: (context, state) => Container(
-          child: Row(
-            children: [
-              ReorderableListener(
-                child: Container(
-                  padding: EdgeInsets.only(left: kDefaultPadding / 2),
-                  child: Icon(
-                    Icons.drag_handle,
-                    color: Theme.of(context).textTheme.caption.color,
-                  ),
-                ),
+          child: Row(children: [
+            ReorderableListener(
+              child: Container(
+                padding: EdgeInsets.only(left: 2 * kDefaultPadding / 3),
+                child: Icon(Icons.drag_handle, color: Theme.of(context).textTheme.caption.color),
               ),
-              Expanded(
-                child: SongLyricRow(songLyric: songLyric, showStar: false),
-              ),
-            ],
-          ),
+            ),
+            Expanded(child: SongLyricRow(songLyric: songLyric, showStar: false)),
+          ]),
         ),
       );
 }

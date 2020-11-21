@@ -4,10 +4,8 @@ import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/providers/songbooks_provider.dart';
 import 'package:zpevnik/screens/components/highlithtable_button.dart';
-import 'package:zpevnik/screens/songbook_screen.dart';
+import 'package:zpevnik/screens/songbooks/songbook_screen.dart';
 import 'package:zpevnik/theme.dart';
-
-const String _songbooksPath = 'assets/images/songbooks';
 
 const List<String> _existingLogos = ['csach', 'csatr', 'csmom', 'csmta', 'csmzd', 'sdmkr'];
 
@@ -29,12 +27,7 @@ class SongbookWidget extends StatelessWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Expanded(
-                      child: Text(
-                        songbook.name,
-                        style: Theme.of(context).textTheme.bodyText1,
-                      ),
-                    ),
+                    Expanded(child: Text(songbook.name, style: Theme.of(context).textTheme.bodyText1)),
                     Consumer<SongbooksProvider>(
                       builder: (context, provider, _) => Transform.scale(
                         scale: 0.75,
@@ -60,15 +53,13 @@ class SongbookWidget extends StatelessWidget {
           aspectRatio: 4 / 3,
           child: FittedBox(
             child: Image.asset(_existingLogos.contains(songbook.shortcut.toLowerCase())
-                ? '$_songbooksPath/${songbook.shortcut.toLowerCase()}.png'
-                : '$_songbooksPath/default.png'),
+                ? '$imagesPath/songbooks/${songbook.shortcut.toLowerCase()}.png'
+                : '$imagesPath/songbooks/default.png'),
           ),
         ),
       );
 
   void _pushSongbook(BuildContext context) => Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => SongbookScreen(songbook: songbook),
-        ),
+        MaterialPageRoute(builder: (context) => SongbookScreen(songbook: songbook)),
       );
 }

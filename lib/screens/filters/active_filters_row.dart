@@ -16,26 +16,21 @@ class ActiveFiltersRow extends StatelessWidget {
             alignment: Alignment.centerLeft,
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
-                    child: Icon(Icons.filter_list),
-                  ),
-                  Row(
-                    children: List.generate(
-                      selectedTags.length,
-                      (index) => Container(
-                        padding: EdgeInsets.only(right: kDefaultPadding / 4),
-                        child: FilterTag(
-                          tag: selectedTags[index],
-                          cancellable: true,
-                        ),
-                      ),
+              child: Row(children: [
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
+                  child: Icon(Icons.filter_list),
+                ),
+                Row(
+                  children: List.generate(
+                    selectedTags.length,
+                    (index) => Container(
+                      padding: EdgeInsets.only(right: kDefaultPadding / 4),
+                      child: FilterTag(tag: selectedTags[index], cancellable: true),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ]),
             ),
           ),
         )

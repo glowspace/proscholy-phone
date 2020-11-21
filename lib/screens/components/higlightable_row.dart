@@ -37,16 +37,11 @@ class _HighlightableRowState extends State<HighlightableRow> {
           child: Opacity(
             opacity: _highlighted ? 0.75 : 1,
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2, vertical: kDefaultPadding / 2),
-              child: Row(
-                children: [
-                  Container(
-                    padding: EdgeInsets.only(right: kDefaultPadding / 2),
-                    child: Icon(widget.icon),
-                  ),
-                  Text(widget.title),
-                ],
-              ),
+              padding: EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
+              child: Row(children: [
+                Container(padding: EdgeInsets.only(right: kDefaultPadding / 2), child: Icon(widget.icon)),
+                Text(widget.title),
+              ]),
             ),
           ),
         ),

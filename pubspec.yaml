@@ -33,8 +33,6 @@ dependencies:
   flutter_svg: any
   flutter_reorderable_list: any
 
-  cupertino_icons: any
-
 dev_dependencies:
   jaguar_orm_gen: any
   build_runner: any

@@ -126,7 +126,8 @@ class SongLyricsParser {
       }
 
       index = match.end;
-      previous = line.substring(match.start + 1, match.end - 1);
+      // normalize chord to be in # accidentals and replace -is with #
+      previous = convertAccidentals(line.substring(match.start + 1, match.end - 1), false).replaceFirst('is', '#');
     }
 
     final words = line.substring(index).split(' ');

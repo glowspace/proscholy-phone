@@ -13,18 +13,13 @@ class TranslationsScreen extends StatelessWidget with PlatformWidgetMixin {
 
   @override
   Widget iOSWidget(BuildContext context) => CupertinoPageScaffold(
-        navigationBar: CupertinoNavigationBar(
-          middle: Text('Překlady'),
-        ),
+        navigationBar: CupertinoNavigationBar(middle: Text('Překlady')),
         child: _body(context),
       );
 
   @override
   Widget androidWidget(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          title: Text('Překlady'),
-          shadowColor: AppTheme.shared.appBarDividerColor(context),
-        ),
+        appBar: AppBar(title: Text('Překlady'), shadowColor: AppTheme.shared.appBarDividerColor(context)),
         body: _body(context),
       );
 
@@ -46,13 +41,16 @@ class TranslationsScreen extends StatelessWidget with PlatformWidgetMixin {
       );
 
   Widget _section(BuildContext context, SongLyricType songLyricType, List<SongLyric> songLyrics) => Container(
+        padding: EdgeInsets.only(bottom: kDefaultPadding / 2),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 2 * kDefaultPadding / 3),
-              child: Text(songLyricType.description,
-                  style: Theme.of(context).textTheme.subtitle1.copyWith(color: songLyricType.color)),
+              padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
+              child: Text(
+                songLyricType.description,
+                style: Theme.of(context).textTheme.subtitle1.copyWith(color: songLyricType.color),
+              ),
             ),
             for (final songLyric in songLyrics) SongLyricRow(songLyric: songLyric),
           ],

@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_reorderable_list/flutter_reorderable_list.dart';
 import 'package:provider/provider.dart';
-import 'package:zpevnik/bottom_sheets.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/data_provider.dart';
 import 'package:zpevnik/providers/song_lyrics_provider.dart';
@@ -59,6 +58,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> with PlatformStateMixin
 
   Widget _middle(BuildContext context) => _searching
       ? SearchWidget(
+          key: PageStorageKey('favorite_search_widget'),
           placeholder: 'Zadejte slovo nebo číslo',
           search: _songLyricsProvider.search,
           leading: CustomIconButton(
@@ -69,7 +69,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> with PlatformStateMixin
             icon: Icon(Icons.arrow_back),
           ),
           trailing: CustomIconButton(
-            onPressed: () => showFilters(context, _songLyricsProvider.tagsProvider),
+            onPressed: () => _songLyricsProvider.tagsProvider.showFilters(context, _songLyricsProvider.tagsProvider),
             icon: Icon(Icons.filter_list),
           ),
         )
@@ -77,10 +77,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> with PlatformStateMixin
 
   Widget _trailing(BuildContext context) => _searching
       ? Container(width: 0)
-      : IconButton(
-          onPressed: () => setState(() => _searching = true),
-          icon: Icon(Icons.search),
-        );
+      : IconButton(onPressed: () => setState(() => _searching = true), icon: Icon(Icons.search));
 
   Widget _body(BuildContext context) => SafeArea(
         child: _songLyricsProvider.songLyrics.isEmpty

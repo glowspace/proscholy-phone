@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zpevnik/models/songLyric.dart';
 
-class SelectionProvider extends ChangeNotifier {
+class SelectionProvider with ChangeNotifier {
   bool _selectionEnabled;
   Map<int, SongLyric> _selected;
 

@@ -3,6 +3,7 @@ import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/entities/external.dart';
 import 'package:zpevnik/models/entities/song_lyric.dart';
 import 'package:zpevnik/models/song.dart';
+import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/providers/settings_provider.dart';
 import 'package:zpevnik/utils/database.dart';
 import 'package:zpevnik/utils/song_lyrics_parser.dart';
@@ -77,7 +78,8 @@ class SongLyric extends ChangeNotifier {
 
   Key get key => Key(_entity.id.toString());
 
-  String get number => _entity.id.toString();
+  String number(Songbook songbook) =>
+      '${songbook.shortcut}${_entity.songbookRecords.firstWhere((record) => record.songbookId == songbook.id).number}';
 
   // todo: add songbook shortcut
   List<String> get numbers =>
@@ -140,10 +142,10 @@ class SongLyric extends ChangeNotifier {
     _entity.transposition += byValue;
     if (_entity.transposition == 12 || _entity.transposition == -12) _entity.transposition = 0;
 
+    Database.shared.updateSongLyric(_entity, ['transposition'].toSet());
+
     verses.forEach((verse) =>
         verse.lines.forEach((line) => line.blocks.forEach((block) => block.transposition = _entity.transposition)));
-
-    Database.shared.updateSongLyric(_entity, ['transposition'].toSet());
 
     notifyListeners();
   }
@@ -189,10 +191,7 @@ class Verse {
     );
   }
 
-  factory Verse.withoutNumber(String verse) => Verse(
-        '',
-        SongLyricsParser.shared.lines(verse),
-      );
+  factory Verse.withoutNumber(String verse) => Verse('', SongLyricsParser.shared.lines(verse));
 }
 
 class Line {

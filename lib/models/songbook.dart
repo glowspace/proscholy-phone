@@ -11,6 +11,8 @@ class Songbook extends Comparable {
 
   Songbook(this._entity);
 
+  int get id => _entity.id;
+
   String get name => _entity.name;
 
   String get shortcut => _entity.shortcut;

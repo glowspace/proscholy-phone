@@ -2,9 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/utils/platform.dart';
-import 'package:zpevnik/screens/home_screen.dart';
-import 'package:zpevnik/screens/songbooks_screen.dart';
-import 'package:zpevnik/screens/user_screen.dart';
+import 'package:zpevnik/screens/home/home_screen.dart';
+import 'package:zpevnik/screens/songbooks/songbooks_screen.dart';
+import 'package:zpevnik/screens/user/user_screen.dart';
 
 class ContentScreen extends StatefulWidget {
   @override
@@ -23,43 +23,33 @@ class _ContentScreenState extends State<ContentScreen> with PlatformStateMixin {
 
   @override
   Widget iOSWidget(BuildContext context) => CupertinoTabScaffold(
+        tabBuilder: (context, _) => CupertinoTabView(builder: (context) => _activeWidget),
         tabBar: CupertinoTabBar(
-            backgroundColor: CupertinoColors.quaternarySystemFill,
-            onTap: (index) => setState(() => _currentIndex = index),
-            activeColor: _activeColor,
-            items: _tabBarItems(context)),
-        tabBuilder: (BuildContext context, int index) => CupertinoTabView(
-          builder: (context) => _activeWidget(context, index),
+          backgroundColor: CupertinoColors.quaternarySystemFill,
+          activeColor: _activeColor,
+          items: _tabBarItems,
+          onTap: (index) => setState(() => _currentIndex = index),
         ),
       );
 
   @override
   Widget androidWidget(BuildContext context) => Scaffold(
-        body: _activeWidget(context, _currentIndex),
+        body: _activeWidget,
         bottomNavigationBar: BottomNavigationBar(
           selectedItemColor: _activeColor,
-          items: _tabBarItems(context),
+          items: _tabBarItems,
           currentIndex: _currentIndex,
           onTap: (index) => setState(() => _currentIndex = index),
         ),
       );
 
-  Widget _activeWidget(BuildContext context, int index) {
-    switch (index) {
-      case 0:
-        return HomeScreen();
-      case 1:
-        return SongbooksScreen();
-      case 2:
-        return UserScreen();
-      default:
-        return Container();
-    }
-  }
+  Widget get _activeWidget => _currentIndex == 0
+      ? HomeScreen(key: PageStorageKey('home_screen'))
+      : (_currentIndex == 1 ? SongbooksScreen(key: PageStorageKey('songbooks_screen')) : UserScreen());
 
   Color get _activeColor => _currentIndex == 0 ? blue : (_currentIndex == 1 ? green : red);
 
-  List<BottomNavigationBarItem> _tabBarItems(BuildContext context) => [
+  List<BottomNavigationBarItem> get _tabBarItems => [
         BottomNavigationBarItem(
           icon: Icon(Icons.search),
           label: 'Vyhledávání',

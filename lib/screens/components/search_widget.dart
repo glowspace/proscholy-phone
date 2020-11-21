@@ -5,8 +5,8 @@ import 'package:zpevnik/utils/platform.dart';
 
 class SearchWidget extends StatefulWidget {
   final String placeholder;
-  final String initial;
   final Function(String) search;
+  final FocusNode focusNode;
 
   final Widget leading;
   final Widget trailing;
@@ -14,8 +14,8 @@ class SearchWidget extends StatefulWidget {
   const SearchWidget({
     Key key,
     this.placeholder,
-    this.initial,
     this.search,
+    this.focusNode,
     this.leading,
     this.trailing,
   }) : super(key: key);
@@ -30,7 +30,7 @@ class _SearchWidgetState extends State<SearchWidget> with PlatformStateMixin {
         context,
         CupertinoTextField(
           placeholder: widget.placeholder,
-          onChanged: (searchText) => widget.search(searchText),
+          onChanged: searchTextChanged,
         ),
       );
 
@@ -39,13 +39,15 @@ class _SearchWidgetState extends State<SearchWidget> with PlatformStateMixin {
         context,
         LayoutBuilder(
           builder: (context, constraints) => TextField(
+            key: PageStorageKey('text_field'),
+            focusNode: widget.focusNode,
             decoration: InputDecoration(
               border: InputBorder.none,
               hintText: widget.placeholder,
               hintStyle: _textStyle(context, widget.placeholder, constraints.maxWidth),
             ),
-            controller: TextEditingController()..text = widget.initial,
-            onChanged: (searchText) => widget.search(searchText),
+            controller: TextEditingController()..text = PageStorage.of(context)?.readState(context) as String ?? '',
+            onChanged: searchTextChanged,
           ),
         ),
       );
@@ -55,29 +57,33 @@ class _SearchWidgetState extends State<SearchWidget> with PlatformStateMixin {
           border: Border.all(color: AppTheme.shared.filterBorderColor(context)),
           borderRadius: BorderRadius.all(Radius.circular(10)),
         ),
-        child: Row(
-          children: [
-            if (widget.leading != null) widget.leading,
-            Expanded(
-              child: textField,
-            ),
-            if (widget.trailing != null) widget.trailing,
-          ],
-        ),
+        child: Row(children: [
+          if (widget.leading != null) widget.leading,
+          Expanded(child: textField),
+          if (widget.trailing != null) widget.trailing,
+        ]),
       );
+
+  void searchTextChanged(String searchText) {
+    PageStorage.of(context)?.writeState(context, searchText);
+
+    widget.search(searchText);
+  }
 
   TextStyle _textStyle(BuildContext context, String text, double width) {
     double fontSize = 17;
     Size size;
+
     do {
       size = (TextPainter(
-              text: TextSpan(
-                  text: text,
-                  style: AppTheme.shared.searchFieldPlaceholderColorTextStyle(context).copyWith(fontSize: fontSize)),
-              maxLines: 1,
-              textScaleFactor: MediaQuery.of(context).textScaleFactor,
-              textDirection: TextDirection.ltr)
-            ..layout())
+        text: TextSpan(
+          text: text,
+          style: AppTheme.shared.searchFieldPlaceholderColorTextStyle(context).copyWith(fontSize: fontSize),
+        ),
+        maxLines: 1,
+        textScaleFactor: MediaQuery.of(context).textScaleFactor,
+        textDirection: TextDirection.ltr,
+      )..layout())
           .size;
 
       fontSize -= 0.5;

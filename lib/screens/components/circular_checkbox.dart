@@ -9,13 +9,7 @@ class CircularCheckbox extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
         child: selected
-            ? Icon(
-                Icons.check_circle,
-                color: AppTheme.shared.selectedRowColor(context),
-              )
-            : Icon(
-                Icons.radio_button_off,
-                color: Colors.grey,
-              ),
+            ? Icon(Icons.check_circle, color: AppTheme.shared.selectedRowColor(context))
+            : Icon(Icons.radio_button_off, color: Colors.grey),
       );
 }

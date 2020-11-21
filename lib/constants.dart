@@ -12,3 +12,5 @@ const Color red = Color(0xffd83026);
 const Color yellow = Color(0xffee9528);
 
 final String unbreakableSpace = String.fromCharCode(0x00A0);
+
+const String imagesPath = 'assets/images';
