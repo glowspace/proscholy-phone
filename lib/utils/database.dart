@@ -25,9 +25,6 @@ class Database {
 
     await _adapter.connect();
 
-    SongLyricBean(_adapter).drop();
-    ExternalBean(_adapter).drop();
-
     await Future.wait([
       SongLyricBean(_adapter).createTable(ifNotExists: true),
       SongBean(_adapter).createTable(ifNotExists: true),
@@ -41,7 +38,7 @@ class Database {
       SongLyricTagBean(_adapter).createTable(ifNotExists: true),
       SongLyricPlaylistBean(_adapter).createTable(ifNotExists: true),
       AuthorExternalBean(_adapter).createTable(ifNotExists: true),
-    ]);
+    ]).catchError((error) => print(error));
   }
 
   Future<void> saveAuthors(List<AuthorEntity> authors) async {
@@ -81,11 +78,12 @@ class Database {
   void savePlaylist(PlaylistEntity playlist) {
     PlaylistBean(_adapter).insert(playlist).catchError((error) => print(error));
     SongLyricPlaylistBean(_adapter)
-        .insertMany(playlist.songLyrics
-            .map((songLyric) => SongLyricPlaylist()
-              ..playlistId = playlist.id
-              ..songLyricId = songLyric.id)
-            .toList())
+        .insertMany(playlist.songLyrics.map((songLyric) {
+          print('test');
+          SongLyricPlaylist()
+            ..playlistId = playlist.id
+            ..songLyricId = songLyric.id;
+        }).toList())
         .catchError((error) => print(error));
   }
 
@@ -94,6 +92,16 @@ class Database {
 
   Future<void> updateSongLyric(SongLyricEntity songLyric, Set<String> only) =>
       SongLyricBean(_adapter).update(songLyric, only: only).catchError((error) => print(error));
+
+  Future<void> updatePlaylist(PlaylistEntity playlist, Set<String> only) =>
+      PlaylistBean(_adapter).update(playlist, only: only).catchError((error) => print(error));
+
+  Future<void> addPlaylistSongLyrics(PlaylistEntity playlist, List<SongLyricEntity> songLyrics) =>
+      SongLyricPlaylistBean(_adapter).insertMany(songLyrics
+          .map((songLyric) => SongLyricPlaylist()
+            ..playlistId = playlist.id
+            ..songLyricId = songLyric.id)
+          .toList());
 
   Future<Map<int, SongEntity>> get songs async {
     Map<int, SongEntity> songs = {};
@@ -120,6 +128,8 @@ class Database {
     Map<int, AuthorEntity> authors = {};
     Map<int, List<SongLyricAuthor>> songLyricAuthors = {};
     Map<int, List<ExternalEntity>> externals = {};
+    Map<int, List<int>> songLyricPlaylists = {};
+    Map<int, List<PlaylistEntity>> playlists = {};
 
     for (final songbookRecord in await SongbookRecordBean(_adapter).getAll()) {
       if (!songbookRecords.containsKey(songbookRecord.songLyricId)) songbookRecords[songbookRecord.songLyricId] = [];
@@ -148,14 +158,44 @@ class Database {
       externals[ext.songLyricId].add(ext);
     }
 
+    for (final songlyricPlaylist in await SongLyricPlaylistBean(_adapter).getAll()) {
+      if (!songLyricPlaylists.containsKey(songlyricPlaylist.playlistId))
+        songLyricPlaylists[songlyricPlaylist.playlistId] = [];
+
+      songLyricPlaylists[songlyricPlaylist.playlistId].add(songlyricPlaylist.songLyricId);
+    }
+
+    for (final playlist in await PlaylistBean(_adapter).getAll().catchError((error) => print(error))) {
+      // fixme: should not be needed
+      if (songLyricPlaylists.containsKey(playlist.id)) {
+        for (final songLyricId in songLyricPlaylists[playlist.id]) {
+          if (!playlists.containsKey(songLyricId)) playlists[songLyricId] = [];
+
+          playlists[songLyricId].add(playlist);
+        }
+      }
+    }
+
     for (SongLyricEntity songLyric in songLyrics) {
       songLyric.songbookRecords = songbookRecords[songLyric.id] ?? [];
       songLyric.tags = songLyricTags[songLyric.id] ?? [];
       songLyric.authors = songLyricAuthors[songLyric.id] ?? [];
       songLyric.externals = externals[songLyric.id] ?? [];
+      songLyric.playlists = playlists[songLyric.id] ?? [];
     }
 
     return songLyrics;
+  }
+
+  Future<List<PlaylistEntity>> get playlists {
+    final bean = PlaylistBean(_adapter);
+
+    return bean.getAll().catchError((error) => print(error));
+  }
+
+  Future<void> removePlaylist(PlaylistEntity playlist) {
+    PlaylistBean(_adapter).remove(playlist.id);
+    return SongLyricPlaylistBean(_adapter).removeByPlaylistEntity(playlist.id);
   }
 
   List<List<T>> _splitInBatches<T>(List<T> list) {

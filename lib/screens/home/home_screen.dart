@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/providers/data_provider.dart';
+import 'package:zpevnik/providers/playlists_provider.dart';
 import 'package:zpevnik/providers/selection_provider.dart';
 import 'package:zpevnik/providers/song_lyrics_provider.dart';
 import 'package:zpevnik/screens/components/custom_icon_button.dart';
@@ -95,7 +96,7 @@ class _HomeScreenState extends State<HomeScreen> with PlatformStateMixin {
           icon: Icon(_selectionProvider.allFavorited ? Icons.star : Icons.star_outline),
         ),
         IconButton(
-          onPressed: null,
+          onPressed: () => PlaylistsProvider.shared.showPlaylists(context, _selectionProvider.selected),
           color: AppTheme.shared.selectedRowColor(context),
           icon: Icon(Icons.playlist_add),
         ),

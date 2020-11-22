@@ -99,13 +99,7 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
                   ),
                 ),
               ),
-              Positioned(
-                right: 0,
-                child: SongLyricMenu(
-                  songLyric: widget.songLyric,
-                  showing: _showingMenu,
-                ),
-              ),
+              Positioned(right: 0, child: SongLyricMenu(songLyric: widget.songLyric, showing: _showingMenu)),
               if (SettingsProvider.shared.showBottomOptions)
                 Positioned(
                   right: 0,

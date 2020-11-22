@@ -17,6 +17,8 @@ class SelectionProvider with ChangeNotifier {
 
   int get selectedCount => _selected.length;
 
+  List<SongLyric> get selected => _selected.values.toList();
+
   set selectionEnabled(bool value) {
     _selectionEnabled = value;
 

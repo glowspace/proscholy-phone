@@ -105,8 +105,6 @@ class Updater {
         await _update(null);
     } else if (!prefs.containsKey(_initialLoadKey)) await _loadLocal();
 
-    await _loadLocal();
-
     await DataProvider.shared.init();
     SettingsProvider.shared.init();
 

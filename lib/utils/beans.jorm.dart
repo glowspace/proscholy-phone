@@ -1946,18 +1946,21 @@ abstract class _PlaylistBean implements Bean<PlaylistEntity> {
   final id = IntField('id');
   final name = StrField('name');
   final isArchived = BoolField('is_archived');
+  final orderValue = IntField('order_value');
   Map<String, Field> _fields;
   Map<String, Field> get fields => _fields ??= {
         id.name: id,
         name.name: name,
         isArchived.name: isArchived,
+        orderValue.name: orderValue,
       };
   PlaylistEntity fromMap(Map map) {
     PlaylistEntity model = PlaylistEntity(
       id: adapter.parseValue(map['id']),
-      name: adapter.parseValue(map['name']),
-      isArchived: adapter.parseValue(map['is_archived']),
     );
+    model.name = adapter.parseValue(map['name']);
+    model.isArchived = adapter.parseValue(map['is_archived']);
+    model.orderValue = adapter.parseValue(map['order_value']);
 
     return model;
   }
@@ -1967,14 +1970,21 @@ abstract class _PlaylistBean implements Bean<PlaylistEntity> {
     List<SetColumn> ret = [];
 
     if (only == null && !onlyNonNull) {
-      ret.add(id.set(model.id));
+      if (model.id != null) {
+        ret.add(id.set(model.id));
+      }
       ret.add(name.set(model.name));
       ret.add(isArchived.set(model.isArchived));
+      ret.add(orderValue.set(model.orderValue));
     } else if (only != null) {
-      if (only.contains(id.name)) ret.add(id.set(model.id));
+      if (model.id != null) {
+        if (only.contains(id.name)) ret.add(id.set(model.id));
+      }
       if (only.contains(name.name)) ret.add(name.set(model.name));
       if (only.contains(isArchived.name))
         ret.add(isArchived.set(model.isArchived));
+      if (only.contains(orderValue.name))
+        ret.add(orderValue.set(model.orderValue));
     } else /* if (onlyNonNull) */ {
       if (model.id != null) {
         ret.add(id.set(model.id));
@@ -1985,6 +1995,9 @@ abstract class _PlaylistBean implements Bean<PlaylistEntity> {
       if (model.isArchived != null) {
         ret.add(isArchived.set(model.isArchived));
       }
+      if (model.orderValue != null) {
+        ret.add(orderValue.set(model.orderValue));
+      }
     }
 
     return ret;
@@ -1992,9 +2005,10 @@ abstract class _PlaylistBean implements Bean<PlaylistEntity> {
 
   Future<void> createTable({bool ifNotExists = false}) async {
     final st = Sql.create(tableName, ifNotExists: ifNotExists);
-    st.addInt(id.name, primary: true, isNullable: false);
+    st.addInt(id.name, primary: true, autoIncrement: true, isNullable: false);
     st.addStr(name.name, isNullable: false);
     st.addBool(isArchived.name, isNullable: false);
+    st.addInt(orderValue.name, isNullable: false);
     return adapter.createTable(st);
   }
 
@@ -2003,12 +2017,13 @@ abstract class _PlaylistBean implements Bean<PlaylistEntity> {
       bool onlyNonNull = false,
       Set<String> only}) async {
     final Insert insert = inserter
-        .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
+        .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull))
+        .id(id.name);
     var retId = await adapter.insert(insert);
     if (cascade) {
       PlaylistEntity newModel;
       if (model.songLyrics != null) {
-        newModel ??= await find(model.id);
+        newModel ??= await find(retId);
         for (final child in model.songLyrics) {
           await songLyricEntityBean.insert(child, cascade: cascade);
           await songLyricPlaylistBean.attach(child, newModel);
@@ -2058,13 +2073,14 @@ abstract class _PlaylistBean implements Bean<PlaylistEntity> {
       }
     } else {
       final Upsert upsert = upserter
-          .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
+          .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull))
+          .id(id.name);
       retId = await adapter.upsert(upsert);
     }
     if (cascade) {
       PlaylistEntity newModel;
       if (model.songLyrics != null) {
-        newModel ??= await find(model.id);
+        newModel ??= await find(retId);
         for (final child in model.songLyrics) {
           await songLyricEntityBean.upsert(child, cascade: cascade);
           await songLyricPlaylistBean.attach(child, newModel, upsert: true);

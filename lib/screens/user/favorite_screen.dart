@@ -7,7 +7,8 @@ import 'package:zpevnik/providers/data_provider.dart';
 import 'package:zpevnik/providers/song_lyrics_provider.dart';
 import 'package:zpevnik/screens/components/custom_icon_button.dart';
 import 'package:zpevnik/screens/components/search_widget.dart';
-import 'package:zpevnik/screens/components/song_lyric_reorderable_row.dart';
+import 'package:zpevnik/screens/components/reorderable_row.dart';
+import 'package:zpevnik/screens/components/song_lyric_row.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/platform.dart';
 
@@ -111,16 +112,12 @@ class _FavoriteScreenState extends State<FavoriteScreen> with PlatformStateMixin
                         onReorderDone: (_) {
                           for (int i = 0; i < provider.songLyrics.length; i++) provider.songLyrics[i].favoriteOrder = i;
                         },
-                        child: Scrollbar(
-                          child: Consumer<SongLyricsProvider>(
-                            builder: (context, provider, child) => ListView.builder(
-                              itemBuilder: (context, index) => SongLyricRorderableRow(
-                                key: provider.songLyrics[index].key,
-                                songLyric: provider.songLyrics[index],
-                              ),
-                              itemCount: provider.songLyrics.length,
-                            ),
+                        child: ListView.builder(
+                          itemBuilder: (context, index) => ReorderableRow(
+                            key: provider.songLyrics[index].key,
+                            child: SongLyricRow(songLyric: provider.songLyrics[index], showStar: false),
                           ),
+                          itemCount: provider.songLyrics.length,
                         ),
                       ),
                     ),

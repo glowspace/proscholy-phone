@@ -6,8 +6,10 @@ class PlaylistEntity {
   @PrimaryKey()
   final int id;
 
-  final String name;
-  final bool isArchived;
+  String name;
+  bool isArchived;
+
+  int orderValue;
 
   @ManyToMany(SongLyricPlaylistBean, SongLyricBean)
   List<SongLyricEntity> songLyrics;
@@ -16,5 +18,6 @@ class PlaylistEntity {
     this.id,
     this.name,
     this.isArchived = false,
+    this.orderValue,
   });
 }

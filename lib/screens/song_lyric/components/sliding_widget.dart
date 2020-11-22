@@ -47,9 +47,7 @@ class _SlidingWidgetState extends State<SlidingWidget> with SingleTickerProvider
               left: Radius.circular(100), // big enough number, so it's always full circular
             ),
           ),
-          child: Row(
-            children: _options(context),
-          ),
+          child: Row(children: _options(context)),
         ),
       );
 

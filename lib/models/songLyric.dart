@@ -68,8 +68,8 @@ class SongLyric extends ChangeNotifier {
   bool _hasChords;
 
   SongLyric(this._entity, this._song) {
-    if (_entity.favoriteOrder != null && _entity.favoriteOrder > _nextFavoriteOrder)
-      _nextFavoriteOrder = _entity.favoriteOrder;
+    if (_entity.favoriteOrder != null && _entity.favoriteOrder >= _nextFavoriteOrder)
+      _nextFavoriteOrder = _entity.favoriteOrder + 1;
   }
 
   SongLyricEntity get entity => _entity;
