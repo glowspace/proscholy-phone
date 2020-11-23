@@ -40,7 +40,7 @@ class _PlaylistRowState extends State<PlaylistRow> {
           color: (_highlighted ? AppTheme.shared.highlightColor(context) : null),
           padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2, vertical: kDefaultPadding / 2),
           child: Row(children: [
-            Expanded(child: Text(widget.playlist.name, style: Theme.of(context).textTheme.bodyText1)),
+            Expanded(child: Text(widget.playlist.name, style: AppThemeNew.of(context).bodyTextStyle)),
             GestureDetector(
               onTap: () {
                 widget.select(widget.playlist);

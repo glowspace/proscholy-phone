@@ -7,6 +7,7 @@ import 'package:zpevnik/models/songLyric.dart';
 import 'package:zpevnik/providers/data_provider.dart';
 import 'package:zpevnik/screens/components/bottom_form_sheet.dart';
 import 'package:zpevnik/screens/components/higlightable_row.dart';
+import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/database.dart';
 
 class PlaylistsProvider extends ChangeNotifier {
@@ -101,7 +102,7 @@ class PlaylistsProvider extends ChangeNotifier {
         ),
         actions: [
           TextButton(
-            child: Text('Zrušit', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.red)),
+            child: Text('Zrušit', style: AppThemeNew.of(context).bodyTextStyle.copyWith(color: Colors.red)),
             onPressed: () => Navigator.of(context).pop(),
           ),
           // fixme: don't know better way to do it now, but there must be

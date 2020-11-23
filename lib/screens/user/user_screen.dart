@@ -18,6 +18,8 @@ import 'package:zpevnik/utils/platform.dart';
 import 'package:zpevnik/screens/components/search_widget.dart';
 
 class UserScreen extends StatefulWidget {
+  const UserScreen({Key key}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() => _UserScreenState();
 }
@@ -272,7 +274,7 @@ class _UserScreenState extends State<UserScreen> with PlatformStateMixin {
         ),
         actions: [
           TextButton(
-            child: Text('Zrušit', style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.red)),
+            child: Text('Zrušit', style: AppThemeNew.of(context).bodyTextStyle.copyWith(color: Colors.red)),
             onPressed: () {
               Navigator.of(context).pop();
               _showingMenuKey.value = null;

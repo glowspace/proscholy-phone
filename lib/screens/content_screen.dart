@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/platform.dart';
 import 'package:zpevnik/screens/home/home_screen.dart';
 import 'package:zpevnik/screens/songbooks/songbooks_screen.dart';
@@ -44,8 +45,10 @@ class _ContentScreenState extends State<ContentScreen> with PlatformStateMixin {
       );
 
   Widget get _activeWidget => _currentIndex == 0
-      ? HomeScreen(key: PageStorageKey('home_screen'))
-      : (_currentIndex == 1 ? SongbooksScreen(key: PageStorageKey('songbooks_screen')) : UserScreen());
+      ? const HomeScreen(key: PageStorageKey('home_screen'))
+      : (_currentIndex == 1
+          ? const SongbooksScreen(key: PageStorageKey('songbooks_screen'))
+          : const UserScreen(key: PageStorageKey('user_screen')));
 
   Color get _activeColor => _currentIndex == 0 ? blue : (_currentIndex == 1 ? green : red);
 

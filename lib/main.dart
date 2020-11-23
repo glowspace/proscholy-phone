@@ -14,15 +14,27 @@ class MainWidget extends StatelessWidget with PlatformWidgetMixin {
   @override
   Widget iOSWidget(BuildContext context) => CupertinoApp(
         title: _title,
-        home: _home(context),
+        home: Builder(
+          builder: (context) => AppThemeNew(
+            child: Builder(
+              builder: (context) => CupertinoTheme(data: AppThemeNew.of(context).cupertinoTheme, child: _home(context)),
+            ),
+            brightness: MediaQuery.platformBrightnessOf(context),
+          ),
+        ),
       );
 
   @override
   Widget androidWidget(BuildContext context) => MaterialApp(
         title: _title,
-        theme: AppTheme.shared.light,
-        darkTheme: AppTheme.shared.dark,
-        home: _home(context),
+        home: Builder(
+          builder: (context) => AppThemeNew(
+            child: Builder(
+              builder: (context) => Theme(data: AppThemeNew.of(context).materialTheme, child: _home(context)),
+            ),
+            brightness: MediaQuery.platformBrightnessOf(context),
+          ),
+        ),
       );
 
   Widget _home(BuildContext context) => FutureBuilder<bool>(

@@ -13,7 +13,7 @@ class FilterTag extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textStyle = Theme.of(context).textTheme.bodyText1.copyWith(color: AppTheme.shared.filtersTextColor(context));
+    final textStyle = AppThemeNew.of(context).bodyTextStyle.copyWith(color: AppTheme.shared.filtersTextColor(context));
 
     return Consumer<TagsProvider>(
       builder: (context, provider, _) => GestureDetector(

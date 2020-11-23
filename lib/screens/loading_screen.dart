@@ -11,12 +11,7 @@ class LoadingScreen extends StatelessWidget {
     final titleImage = brightness == Brightness.light ? '$imagesPath/title.png' : '$imagesPath/title_dark.png';
 
     return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage(backgroundImage),
-          fit: BoxFit.cover,
-        ),
-      ),
+      decoration: BoxDecoration(image: DecorationImage(image: AssetImage(backgroundImage), fit: BoxFit.cover)),
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: Transform.translate(

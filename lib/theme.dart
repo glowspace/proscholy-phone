@@ -1,4 +1,35 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+class AppThemeNew extends InheritedWidget {
+  final Brightness brightness;
+
+  const AppThemeNew({@required Widget child, this.brightness = Brightness.light}) : super(child: child);
+
+  CupertinoThemeData get cupertinoTheme => CupertinoThemeData(
+        brightness: brightness,
+      );
+
+  ThemeData get materialTheme => (_isLight ? ThemeData.light() : ThemeData.dark()).copyWith(
+        primaryColor: _isLight ? Colors.white : Colors.black,
+      );
+
+  TextStyle get bodyTextStyle => Platform.isIOS
+      ? CupertinoTextThemeData().textStyle.copyWith(color: textColor)
+      : materialTheme.textTheme.bodyText1.copyWith(color: textColor);
+
+  Color get textColor => _isLight ? Color(0xff222222) : Color(0xffdddddd);
+  Color get chordColor => _isLight ? Color(0xff3961ad) : Color(0xff4dc0b5);
+
+  bool get _isLight => brightness == Brightness.light;
+
+  @override
+  bool updateShouldNotify(AppThemeNew oldWidget) => brightness != oldWidget.brightness;
+
+  static AppThemeNew of(BuildContext context) => context.dependOnInheritedWidgetOfExactType();
+}
 
 class AppTheme {
   AppTheme._();
@@ -51,7 +82,7 @@ class AppTheme {
   Color _searchFieldPlaceholderColor(BuildContext context) => _isLight(context) ? Color(0xff9aa0a5) : Color(0xff655f5a);
 
   TextStyle searchFieldPlaceholderColorTextStyle(BuildContext context) =>
-      Theme.of(context).textTheme.bodyText1.copyWith(
+      AppThemeNew.of(context).bodyTextStyle.copyWith(
             color: _searchFieldPlaceholderColor(context),
           );
 

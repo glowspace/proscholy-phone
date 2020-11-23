@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 mixin PlatformWidgetMixin on StatelessWidget {
   Widget build(BuildContext context) {
     if (Platform.isIOS)
-      return androidWidget(context);
+      return iOSWidget(context);
     else if (Platform.isAndroid) return androidWidget(context);
 
     return Container();
@@ -19,7 +19,7 @@ mixin PlatformWidgetMixin on StatelessWidget {
 mixin PlatformStateMixin<T extends StatefulWidget> on State<T> {
   Widget build(BuildContext context) {
     if (Platform.isIOS)
-      return androidWidget(context);
+      return iOSWidget(context);
     else if (Platform.isAndroid) return androidWidget(context);
 
     return Container();

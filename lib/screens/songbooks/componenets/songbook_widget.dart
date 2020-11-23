@@ -12,7 +12,7 @@ const List<String> _existingLogos = ['csach', 'csatr', 'csmom', 'csmta', 'csmzd'
 class SongbookWidget extends StatelessWidget {
   final Songbook songbook;
 
-  const SongbookWidget({Key key, this.songbook}) : super(key: key);
+  const SongbookWidget({Key key, @required this.songbook}) : super(key: key);
 
   @override
   Widget build(BuildContext context) => GestureDetector(
@@ -27,7 +27,7 @@ class SongbookWidget extends StatelessWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Expanded(child: Text(songbook.name, style: Theme.of(context).textTheme.bodyText1)),
+                    Expanded(child: Text(songbook.name, style: AppThemeNew.of(context).bodyTextStyle)),
                     Consumer<SongbooksProvider>(
                       builder: (context, provider, _) => Transform.scale(
                         scale: 0.75,

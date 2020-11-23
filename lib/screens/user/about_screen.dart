@@ -24,7 +24,7 @@ class AboutScreen extends StatelessWidget with PlatformWidgetMixin {
       );
 
   Widget _body(BuildContext context) {
-    final textStyle = Theme.of(context).textTheme.bodyText1;
+    final textStyle = AppThemeNew.of(context).bodyTextStyle;
     final highlightedStyle = textStyle.copyWith(color: Colors.blue);
     final boldStyle = textStyle.copyWith(fontWeight: FontWeight.bold);
 

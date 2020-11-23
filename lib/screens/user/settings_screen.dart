@@ -21,7 +21,7 @@ class SettingsScreen extends StatelessWidget with PlatformWidgetMixin {
       );
 
   Widget _body(BuildContext context) {
-    final accidentalsStyle = Theme.of(context).textTheme.bodyText1.copyWith(fontSize: 20, fontFamily: 'Hiragino Sans');
+    final accidentalsStyle = AppThemeNew.of(context).bodyTextStyle.copyWith(fontSize: 20, fontFamily: 'Hiragino Sans');
 
     return Container(
       padding: EdgeInsets.all(kDefaultPadding),
@@ -103,18 +103,18 @@ class SettingsScreen extends StatelessWidget with PlatformWidgetMixin {
         child: Consumer<SettingsProvider>(
           builder: (context, settingsProvider, _) => Row(
             children: [
-              Text('A', style: Theme.of(context).textTheme.bodyText1.copyWith(fontSize: kMinimumFontSize)),
+              Text('A', style: AppThemeNew.of(context).bodyTextStyle.copyWith(fontSize: kMinimumFontSize)),
               Flexible(
                 child: Slider(
                   min: kMinimumFontSize,
                   max: kMaximumFontSize,
                   value: settingsProvider.fontSize,
                   onChanged: settingsProvider.changeFontSize,
-                  activeColor: AppTheme.shared.chordColor(context),
+                  activeColor: AppThemeNew.of(context).chordColor,
                   inactiveColor: AppTheme.shared.unSelectedColor(context),
                 ),
               ),
-              Text('A', style: Theme.of(context).textTheme.bodyText1.copyWith(fontSize: kMaximumFontSize)),
+              Text('A', style: AppThemeNew.of(context).bodyTextStyle.copyWith(fontSize: kMaximumFontSize)),
             ],
           ),
         ),

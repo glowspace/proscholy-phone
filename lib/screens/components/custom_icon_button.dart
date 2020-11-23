@@ -1,21 +1,29 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/utils/platform.dart';
 
-class CustomIconButton extends StatelessWidget {
-  const CustomIconButton({
-    Key key,
-    @required this.onPressed,
-    @required this.icon,
-  }) : super(key: key);
-
+class CustomIconButton extends StatelessWidget with PlatformWidgetMixin {
   final Function() onPressed;
   final Widget icon;
 
+  const CustomIconButton({Key key, this.onPressed, this.icon}) : super(key: key);
+
   @override
-  Widget build(BuildContext context) => IconButton(
+  Widget androidWidget(BuildContext context) => IconButton(
         onPressed: onPressed,
         icon: icon,
         visualDensity: VisualDensity.compact,
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
+      );
+
+  @override
+  Widget iOSWidget(BuildContext context) => GestureDetector(
+        onTap: onPressed,
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2, vertical: kDefaultPadding / 2),
+          child: icon,
+        ),
       );
 }

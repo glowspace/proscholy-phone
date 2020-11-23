@@ -62,7 +62,7 @@ class _SongLyricRowState extends State<SongLyricRow> {
                 padding: EdgeInsets.only(right: kDefaultPadding / 2),
                 child: _songLyricNumber(context, widget.songLyric.number(songbookProvider.songbook)),
               ),
-            Expanded(child: Text(widget.songLyric.name, style: Theme.of(context).textTheme.bodyText1)),
+            Expanded(child: Text(widget.songLyric.name, style: AppThemeNew.of(context).bodyTextStyle)),
             if (widget.showStar && widget.songLyric.isFavorite)
               Container(
                 padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),

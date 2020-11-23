@@ -46,7 +46,7 @@ class LyricsWidget extends StatelessWidget {
             if (verse.number.isNotEmpty)
               Text(
                 verse.number,
-                style: Theme.of(context).textTheme.bodyText1.copyWith(
+                style: AppThemeNew.of(context).bodyTextStyle.copyWith(
                       color: AppTheme.shared.textColor(context),
                       fontSize: SettingsProvider.shared.fontSize,
                     ),
@@ -106,8 +106,8 @@ class LyricsWidget extends StatelessWidget {
                   offset: Offset(0, -0.5 * SettingsProvider.shared.fontSize),
                   child: Text(
                     block.chord,
-                    style: Theme.of(context).textTheme.bodyText1.copyWith(
-                          color: AppTheme.shared.chordColor(context),
+                    style: AppThemeNew.of(context).bodyTextStyle.copyWith(
+                          color: AppThemeNew.of(context).chordColor,
                           fontSize: SettingsProvider.shared.fontSize,
                           height: songLyric.showChords ? 2.4 : 1,
                         ),
@@ -120,10 +120,7 @@ class LyricsWidget extends StatelessWidget {
             color: Theme.of(context).scaffoldBackgroundColor,
             child: Text(
               block.lyricsPart,
-              style: Theme.of(context).textTheme.bodyText1.copyWith(
-                    color: AppTheme.shared.textColor(context),
-                    fontSize: SettingsProvider.shared.fontSize,
-                  ),
+              style: AppThemeNew.of(context).bodyTextStyle.copyWith(fontSize: SettingsProvider.shared.fontSize),
             ),
           ),
         ],
