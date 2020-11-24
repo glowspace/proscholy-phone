@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/screens/filters/widget.dart';
+import 'package:zpevnik/theme.dart';
 
 class TagsProvider extends ChangeNotifier {
   List<TagsSection> _sections;
@@ -39,23 +43,35 @@ class TagsProvider extends ChangeNotifier {
 
   bool isSelected(Tag tag) => _selectedTags.containsKey(tag);
 
-  void showFilters(BuildContext context, TagsProvider tagsProvider) {
+  void showFilters(BuildContext context) {
     FocusScope.of(context).unfocus();
 
-    showModalBottomSheet(
-      context: context,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
-      ),
-      builder: (context) => SizedBox(
-        height: 0.67 * MediaQuery.of(context).size.height,
+    final height = 0.67 * MediaQuery.of(context).size.height;
+    final bottomSheetBody = SizedBox(
+      height: height,
+      child: AppThemeNew(
         child: ChangeNotifierProvider.value(
-          value: tagsProvider,
+          value: this,
           child: FiltersWidget(),
         ),
+        brightness: MediaQuery.platformBrightnessOf(context),
       ),
-      useRootNavigator: true,
     );
+
+    if (Platform.isIOS)
+      showCupertinoModalBottomSheet(
+        context: context,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(15))),
+        builder: (context, scrollController) => bottomSheetBody,
+        useRootNavigator: true,
+      );
+    else
+      showModalBottomSheet(
+        context: context,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(15))),
+        builder: (context) => bottomSheetBody,
+        useRootNavigator: true,
+      );
   }
 }
 

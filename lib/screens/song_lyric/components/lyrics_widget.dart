@@ -24,6 +24,7 @@ class LyricsWidget extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       )),
               Container(
+                color: AppThemeNew.of(context).backgroundColor,
                 padding: EdgeInsets.only(top: 1.5 * SettingsProvider.shared.fontSize),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -78,9 +79,7 @@ class LyricsWidget extends StatelessWidget {
       );
 
   InlineSpan _blocks(BuildContext context, List<Block> blocks) => blocks.length == 1
-      ? WidgetSpan(
-          child: _block(context, blocks[0]),
-        )
+      ? WidgetSpan(child: _block(context, blocks[0]))
       : WidgetSpan(
           child: Wrap(
           children: List.generate(
@@ -89,35 +88,35 @@ class LyricsWidget extends StatelessWidget {
           ),
         ));
 
+  // displays block of text with chords above it
   Widget _block(BuildContext context, Block block) => Stack(
         alignment: AlignmentDirectional.topStart,
         children: [
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 8),
-            child: Transform.translate(
-              offset: Offset(0, -1.45 * SettingsProvider.shared.fontSize),
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(color: block.shouldShowLine ? Colors.white : Colors.transparent),
+          Transform.translate(
+            offset: Offset(0, -1.45 * SettingsProvider.shared.fontSize),
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(
+                    color: block.shouldShowLine ? AppThemeNew.of(context).textColor : Colors.transparent,
                   ),
                 ),
-                child: Transform.translate(
-                  offset: Offset(0, -0.5 * SettingsProvider.shared.fontSize),
-                  child: Text(
-                    block.chord,
-                    style: AppThemeNew.of(context).bodyTextStyle.copyWith(
-                          color: AppThemeNew.of(context).chordColor,
-                          fontSize: SettingsProvider.shared.fontSize,
-                          height: songLyric.showChords ? 2.4 : 1,
-                        ),
-                  ),
+              ),
+              child: Transform.translate(
+                offset: Offset(0, -0.5 * SettingsProvider.shared.fontSize),
+                child: Text(
+                  block.chord,
+                  style: AppThemeNew.of(context).bodyTextStyle.copyWith(
+                        color: AppThemeNew.of(context).chordColor,
+                        fontSize: SettingsProvider.shared.fontSize,
+                        height: songLyric.showChords ? 2.4 : 1,
+                      ),
                 ),
               ),
             ),
           ),
           Container(
-            color: Theme.of(context).scaffoldBackgroundColor,
+            color: AppThemeNew.of(context).backgroundColor,
             child: Text(
               block.lyricsPart,
               style: AppThemeNew.of(context).bodyTextStyle.copyWith(fontSize: SettingsProvider.shared.fontSize),

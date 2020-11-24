@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/platform.dart';
 import 'package:zpevnik/screens/home/home_screen.dart';
 import 'package:zpevnik/screens/songbooks/songbooks_screen.dart';
@@ -13,12 +12,16 @@ class ContentScreen extends StatefulWidget {
 }
 
 class _ContentScreenState extends State<ContentScreen> with PlatformStateMixin {
+  Widget _activeWidget;
+  Color _activeColor;
   int _currentIndex;
 
   @override
   void initState() {
     super.initState();
 
+    _activeWidget = const HomeScreen(key: PageStorageKey('home_screen'));
+    _activeColor = blue;
     _currentIndex = 0;
   }
 
@@ -29,7 +32,7 @@ class _ContentScreenState extends State<ContentScreen> with PlatformStateMixin {
           backgroundColor: CupertinoColors.quaternarySystemFill,
           activeColor: _activeColor,
           items: _tabBarItems,
-          onTap: (index) => setState(() => _currentIndex = index),
+          onTap: _indexChanged,
         ),
       );
 
@@ -40,17 +43,28 @@ class _ContentScreenState extends State<ContentScreen> with PlatformStateMixin {
           selectedItemColor: _activeColor,
           items: _tabBarItems,
           currentIndex: _currentIndex,
-          onTap: (index) => setState(() => _currentIndex = index),
+          onTap: _indexChanged,
         ),
       );
 
-  Widget get _activeWidget => _currentIndex == 0
-      ? const HomeScreen(key: PageStorageKey('home_screen'))
-      : (_currentIndex == 1
-          ? const SongbooksScreen(key: PageStorageKey('songbooks_screen'))
-          : const UserScreen(key: PageStorageKey('user_screen')));
+  void _indexChanged(int index) => setState(() {
+        _currentIndex = index;
 
-  Color get _activeColor => _currentIndex == 0 ? blue : (_currentIndex == 1 ? green : red);
+        switch (index) {
+          case 0:
+            _activeWidget = const HomeScreen(key: PageStorageKey('home_screen'));
+            _activeColor = blue;
+            break;
+          case 1:
+            _activeWidget = const SongbooksScreen(key: PageStorageKey('songbooks_screen'));
+            _activeColor = green;
+            break;
+          case 2:
+            _activeWidget = const UserScreen(key: PageStorageKey('user_screen'));
+            _activeColor = red;
+            break;
+        }
+      });
 
   List<BottomNavigationBarItem> get _tabBarItems => [
         BottomNavigationBarItem(

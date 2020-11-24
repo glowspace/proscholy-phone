@@ -3,17 +3,62 @@ import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songLyric.dart';
 import 'package:zpevnik/providers/song_lyrics_provider.dart';
+import 'package:zpevnik/screens/components/circular_checkbox.dart';
+import 'package:zpevnik/screens/components/highlightable_row.dart';
 import 'package:zpevnik/screens/song_lyric/song_lyric_screen.dart';
 import 'package:zpevnik/screens/songbooks/componenets/songbook_provider.dart';
 import 'package:zpevnik/theme.dart';
 
-import 'circular_checkbox.dart';
+class SongLyricRowNew extends StatefulWidget {
+  final SongLyric songLyric;
+  final bool showStar;
+
+  const SongLyricRowNew({Key key, @required this.songLyric, this.showStar = true}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => _SongLyricRowStateNew();
+}
+
+class _SongLyricRowStateNew extends State<SongLyricRowNew> {
+  @override
+  Widget build(BuildContext context) {
+    return HighlightableRow(
+      onPressed: () => _pushSongLyric(context),
+      padding: EdgeInsets.all(kDefaultPadding / 2),
+      highlightColor: AppThemeNew.of(context).highlightColor,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(child: Text(widget.songLyric.name, style: AppThemeNew.of(context).bodyTextStyle)),
+          if (widget.showStar && widget.songLyric.isFavorite)
+            Transform.scale(scale: 0.75, child: Icon(Icons.star, color: AppThemeNew.of(context).iconColor)),
+          _songLyricNumber(context, widget.songLyric.id.toString()),
+        ],
+      ),
+    );
+  }
+
+  Widget _songLyricNumber(BuildContext context, String number) => SizedBox(
+        width: 32,
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.centerRight,
+          child: Text(number, style: AppThemeNew.of(context).captionTextStyle),
+        ),
+      );
+
+  void _pushSongLyric(BuildContext context) {
+    FocusScope.of(context).unfocus();
+
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => SongLyricScreen(songLyric: widget.songLyric)));
+  }
+}
 
 class SongLyricRow extends StatefulWidget {
   final SongLyric songLyric;
   final bool showStar;
 
-  const SongLyricRow({Key key, this.songLyric, this.showStar = true}) : super(key: key);
+  const SongLyricRow({Key key, @required this.songLyric, this.showStar = true}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _SongLyricRowState();
@@ -68,10 +113,12 @@ class _SongLyricRowState extends State<SongLyricRow> {
                 padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
                 child: Transform.scale(
                   scale: 0.75,
-                  child: Icon(Icons.star,
-                      color: (selectionProvider?.isSelected(widget.songLyric) ?? false)
-                          ? AppTheme.shared.selectedRowColor(context)
-                          : Theme.of(context).textTheme.caption.color),
+                  child: Icon(
+                    Icons.star,
+                    color: (selectionProvider?.isSelected(widget.songLyric) ?? false)
+                        ? AppTheme.shared.selectedRowColor(context)
+                        : AppThemeNew.of(context).iconColor,
+                  ),
                 ),
               ),
             _songLyricNumber(context, widget.songLyric.id.toString()),
@@ -86,7 +133,7 @@ class _SongLyricRowState extends State<SongLyricRow> {
         child: FittedBox(
           fit: BoxFit.scaleDown,
           alignment: Alignment.centerRight,
-          child: Text(number, style: Theme.of(context).textTheme.caption),
+          child: Text(number, style: AppThemeNew.of(context).captionTextStyle),
         ),
       );
 

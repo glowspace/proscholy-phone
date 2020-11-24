@@ -14,14 +14,34 @@ class AppThemeNew extends InheritedWidget {
 
   ThemeData get materialTheme => (_isLight ? ThemeData.light() : ThemeData.dark()).copyWith(
         primaryColor: _isLight ? Colors.white : Colors.black,
+        backgroundColor: backgroundColor,
       );
 
   TextStyle get bodyTextStyle => Platform.isIOS
-      ? CupertinoTextThemeData().textStyle.copyWith(color: textColor)
+      ? cupertinoTheme.textTheme.textStyle.copyWith(color: textColor, fontSize: 15)
       : materialTheme.textTheme.bodyText1.copyWith(color: textColor);
+
+  TextStyle get placeholderTextStyle => bodyTextStyle.copyWith(
+        color: _isLight ? Color(0xff9aa0a5) : Color(0xff655f5a),
+      );
+
+  TextStyle get captionTextStyle => bodyTextStyle.copyWith(
+        color: _isLight ? Color(0xff636365) : Color(0xff9c9c9a),
+        fontSize: 13,
+      );
+
+  Color get backgroundColor => _isLight ? Color(0xffffffff) : Color(0xff000000);
+  Color get fillColor => Platform.isIOS ? CupertinoColors.systemFill : Color(0xff252525);
 
   Color get textColor => _isLight ? Color(0xff222222) : Color(0xffdddddd);
   Color get chordColor => _isLight ? Color(0xff3961ad) : Color(0xff4dc0b5);
+
+  Color get borderColor => _isLight ? Color(0xffd1d1d1) : Color(0xff2e2e2e);
+
+  Color get highlightColor => _isLight ? Color(0xffdfdfdf) : Color(0xff202020);
+
+  Color get iconColor => _isLight ? Color(0xff5e6368) : Color(0xffa19c97);
+  Color get disabledColor => _isLight ? Color(0xffd7d7d7) : Color(0xff282828);
 
   bool get _isLight => brightness == Brightness.light;
 

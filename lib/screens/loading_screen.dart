@@ -4,11 +4,10 @@ import 'package:zpevnik/constants.dart';
 
 class LoadingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
-    final brightness = MediaQuery.platformBrightnessOf(context);
+    final isLight = MediaQuery.platformBrightnessOf(context) == Brightness.light;
 
-    final backgroundImage =
-        brightness == Brightness.light ? '$imagesPath/background.png' : '$imagesPath/background_dark.png';
-    final titleImage = brightness == Brightness.light ? '$imagesPath/title.png' : '$imagesPath/title_dark.png';
+    final backgroundImage = isLight ? '$imagesPath/background.png' : '$imagesPath/background_dark.png';
+    final titleImage = isLight ? '$imagesPath/title.png' : '$imagesPath/title_dark.png';
 
     return Container(
       decoration: BoxDecoration(image: DecorationImage(image: AssetImage(backgroundImage), fit: BoxFit.cover)),

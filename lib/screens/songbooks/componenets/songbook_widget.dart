@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/providers/songbooks_provider.dart';
-import 'package:zpevnik/screens/components/highlithtable_button.dart';
+import 'package:zpevnik/screens/components/highlightable_button.dart';
 import 'package:zpevnik/screens/songbooks/songbook_screen.dart';
 import 'package:zpevnik/theme.dart';
 
@@ -34,7 +34,7 @@ class SongbookWidget extends StatelessWidget {
                         child: HighlightableButton(
                           onPressed: () => provider.togglePinned(songbook),
                           color: Theme.of(context).textTheme.caption.color,
-                          highlightedColor: AppTheme.shared.highlightColor(context),
+                          highlightColor: AppTheme.shared.highlightColor(context),
                           icon: songbook.isPinned ? Icons.push_pin : Icons.push_pin_outlined,
                         ),
                       ),

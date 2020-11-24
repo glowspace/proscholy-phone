@@ -7,7 +7,7 @@ import 'package:zpevnik/custom_icon_icons.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/providers/playlists_provider.dart';
 import 'package:zpevnik/screens/components/custom_icon_button.dart';
-import 'package:zpevnik/screens/components/higlightable_row.dart';
+import 'package:zpevnik/screens/components/menu_item.dart';
 import 'package:zpevnik/screens/components/playlist_row.dart';
 import 'package:zpevnik/screens/components/popup_menu.dart';
 import 'package:zpevnik/screens/components/reorderable_row.dart';
@@ -76,11 +76,10 @@ class _UserScreenState extends State<UserScreen> with PlatformStateMixin {
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
-                        HighlightableRow(
+                        MenuItem(
                           onPressed: () => Navigator.of(context).push(
                             MaterialPageRoute(builder: (context) => FavoriteScreen()),
                           ),
-                          padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
                           icon: Icons.star,
                           title: 'Písně s hvězdičkou',
                         ),
@@ -200,36 +199,32 @@ class _UserScreenState extends State<UserScreen> with PlatformStateMixin {
           border: Border.all(color: AppTheme.shared.borderColor(context)),
           animateHide: false, // todo: animate hide, it looks really bad now
           children: [
-            HighlightableRow(
+            MenuItem(
               title: 'Přejmenovat',
               icon: Icons.drive_file_rename_outline,
-              padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
               onPressed: () => _showRenameDialog(context),
             ),
             if (!_activePlaylist.isArchived)
-              HighlightableRow(
+              MenuItem(
                 title: 'Duplikovat',
                 icon: CustomIcon.content_duplicate,
-                padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
                 onPressed: () {
                   setState(() => PlaylistsProvider.shared.duplicate(_activePlaylist));
                   _showingMenuKey.value = null;
                 },
               ),
-            HighlightableRow(
+            MenuItem(
               title: _activePlaylist.isArchived ? 'Zrušit archivaci' : 'Archivovat',
               icon: Icons.archive,
-              padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
               onPressed: () {
                 setState(() => _activePlaylist.isArchived = !_activePlaylist.isArchived);
                 _showingMenuKey.value = null;
               },
             ),
             if (_activePlaylist.isArchived)
-              HighlightableRow(
+              MenuItem(
                 title: 'Odstranit',
                 icon: Icons.delete,
-                padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
                 onPressed: () {
                   setState(() => PlaylistsProvider.shared.remove(_activePlaylist));
                   _showingArchived &= PlaylistsProvider.shared.archivedPlaylists.isNotEmpty;
@@ -243,7 +238,7 @@ class _UserScreenState extends State<UserScreen> with PlatformStateMixin {
         key: PageStorageKey('user_screen_search_widget'),
         placeholder: 'Zadejte název seznamu písní',
         focusNode: searchFieldFocusNode,
-        leading: CustomIconButton(
+        prefix: CustomIconButton(
           onPressed: () => FocusScope.of(context).requestFocus(searchFieldFocusNode),
           icon: Icon(Icons.search, color: AppTheme.shared.searchFieldIconColor(context)),
         ),

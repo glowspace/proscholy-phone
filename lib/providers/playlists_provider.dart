@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/entities/playlist.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/songLyric.dart';
 import 'package:zpevnik/providers/data_provider.dart';
 import 'package:zpevnik/screens/components/bottom_form_sheet.dart';
-import 'package:zpevnik/screens/components/higlightable_row.dart';
+import 'package:zpevnik/screens/components/menu_item.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/database.dart';
 
@@ -65,16 +64,14 @@ class PlaylistsProvider extends ChangeNotifier {
         child: BottomFormSheet(
           title: 'Playlisty',
           items: [
-            HighlightableRow(
+            MenuItem(
               title: 'Nový playlist',
               icon: Icons.add,
-              padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
               onPressed: () => showPlaylistDialog(context),
             ),
             for (final playlist in playlists)
-              HighlightableRow(
+              MenuItem(
                 title: playlist.name,
-                padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
                 onPressed: () {
                   playlist.addSongLyrics(songLyrics);
                   Navigator.pop(context);

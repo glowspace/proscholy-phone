@@ -41,7 +41,7 @@ class _SlidingWidgetState extends State<SlidingWidget> with SingleTickerProvider
         child: Container(
           padding: EdgeInsets.only(left: kDefaultPadding / 3),
           decoration: BoxDecoration(
-            color: Theme.of(context).scaffoldBackgroundColor,
+            color: AppThemeNew.of(context).backgroundColor,
             border: Border.all(color: AppTheme.shared.borderColor(context)),
             borderRadius: BorderRadius.horizontal(
               left: Radius.circular(100), // big enough number, so it's always full circular

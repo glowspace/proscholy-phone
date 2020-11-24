@@ -18,7 +18,7 @@ class SongLyricsListView extends StatelessWidget {
           Expanded(
             child: Scrollbar(
               child: ListView.builder(
-                itemBuilder: (context, index) => SongLyricRow(
+                itemBuilder: (context, index) => SongLyricRowNew(
                   key: provider.songLyrics[index].key,
                   songLyric: provider.songLyrics[index],
                 ),

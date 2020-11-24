@@ -61,15 +61,15 @@ class _PlaylistScreenState extends State<PlaylistScreen> with PlatformStateMixin
           key: PageStorageKey('playlist_search_widget'),
           placeholder: 'Zadejte slovo nebo číslo',
           search: _songLyricsProvider.search,
-          leading: CustomIconButton(
+          prefix: CustomIconButton(
             onPressed: () => setState(() {
               _songLyricsProvider.search('');
               _searching = false;
             }),
             icon: Icon(Icons.arrow_back),
           ),
-          trailing: CustomIconButton(
-            onPressed: () => _songLyricsProvider.tagsProvider.showFilters(context, _songLyricsProvider.tagsProvider),
+          suffix: CustomIconButton(
+            onPressed: () => _songLyricsProvider.tagsProvider.showFilters(context),
             icon: Icon(Icons.filter_list),
           ),
         )

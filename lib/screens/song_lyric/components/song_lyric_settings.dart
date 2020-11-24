@@ -5,7 +5,7 @@ import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songLyric.dart';
 import 'package:zpevnik/providers/settings_provider.dart';
 import 'package:zpevnik/screens/components/bottom_form_sheet.dart';
-import 'package:zpevnik/screens/components/highlithtable_button.dart';
+import 'package:zpevnik/screens/components/highlightable_button.dart';
 import 'package:zpevnik/screens/song_lyric/components/selector_widget.dart';
 import 'package:zpevnik/theme.dart';
 
@@ -62,7 +62,7 @@ class SongLyricSettings extends StatelessWidget {
               HighlightableButton(
                 padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 4),
                 icon: Icons.remove,
-                highlightedColor: AppTheme.shared.highlightColor(context),
+                highlightColor: AppTheme.shared.highlightColor(context),
                 onPressed: () => songLyric.changeTransposition(-1),
               ),
               SizedBox(
@@ -72,7 +72,7 @@ class SongLyricSettings extends StatelessWidget {
               HighlightableButton(
                 padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 4),
                 icon: Icons.add,
-                highlightedColor: AppTheme.shared.highlightColor(context),
+                highlightColor: AppTheme.shared.highlightColor(context),
                 onPressed: () => songLyric.changeTransposition(1),
               ),
             ],

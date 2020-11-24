@@ -1,11 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/data_provider.dart';
 import 'package:zpevnik/providers/playlists_provider.dart';
 import 'package:zpevnik/providers/selection_provider.dart';
 import 'package:zpevnik/providers/song_lyrics_provider.dart';
-import 'package:zpevnik/screens/components/custom_icon_button.dart';
+import 'package:zpevnik/screens/components/highlightable_button.dart';
 import 'package:zpevnik/screens/components/song_lyrics_list.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/platform.dart';
@@ -44,10 +45,12 @@ class _HomeScreenState extends State<HomeScreen> with PlatformStateMixin {
   @override
   Widget iOSWidget(BuildContext context) => CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
-          leading: _leading(context),
-          middle: _middle(context),
-          trailing: _selectionProvider.selectionEnabled ? Row(children: _trailing(context)) : null,
-        ),
+            leading: _leading(context),
+            middle: _middle(context),
+            trailing: _selectionProvider.selectionEnabled
+                ? Row(mainAxisSize: MainAxisSize.min, children: _trailing(context))
+                : null,
+            padding: EdgeInsetsDirectional.only(start: kDefaultPadding / 2, end: kDefaultPadding / 2)),
         child: _body(context),
       );
 
@@ -69,9 +72,11 @@ class _HomeScreenState extends State<HomeScreen> with PlatformStateMixin {
       );
 
   Widget _leading(BuildContext context) => _selectionProvider.selectionEnabled
-      ? IconButton(
+      ? HighlightableButton(
+          icon: Icons.close,
+          color: AppTheme.shared.selectedRowColor(context),
+          padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 4, vertical: 2 * kDefaultPadding / 3),
           onPressed: () => setState(() => _selectionProvider.selectionEnabled = false),
-          icon: Icon(Icons.close, color: AppTheme.shared.selectedRowColor(context)),
         )
       : null;
 
@@ -89,40 +94,49 @@ class _HomeScreenState extends State<HomeScreen> with PlatformStateMixin {
     return "${_selectionProvider.selectedCount} písní";
   }
 
-  List<Widget> _trailing(BuildContext context) => [
-        IconButton(
-          onPressed: _selectionProvider.selectedCount > 0 ? () => _selectionProvider.toggleFavorite() : null,
-          color: AppTheme.shared.selectedRowColor(context),
-          icon: Icon(_selectionProvider.allFavorited ? Icons.star : Icons.star_outline),
-        ),
-        IconButton(
-          onPressed: () => PlaylistsProvider.shared.showPlaylists(context, _selectionProvider.selected),
-          color: AppTheme.shared.selectedRowColor(context),
-          icon: Icon(Icons.playlist_add),
-        ),
-        IconButton(
-          onPressed: () => _selectionProvider.toggleAll(_songLyricsProvider.songLyrics),
-          color: AppTheme.shared.selectedRowColor(context),
-          icon: Icon(Icons.select_all),
-        )
-      ];
+  List<Widget> _trailing(BuildContext context) {
+    final padding = EdgeInsets.symmetric(horizontal: kDefaultPadding / 3, vertical: 2 * kDefaultPadding / 3);
 
-  Widget _searchWidget(BuildContext context) {
-    return SearchWidget(
-      key: PageStorageKey('home_screen_search_widget'),
-      placeholder: 'Zadejte slovo nebo číslo',
-      search: _songLyricsProvider.search,
-      focusNode: searchFieldFocusNode,
-      leading: CustomIconButton(
-        onPressed: () => FocusScope.of(context).requestFocus(searchFieldFocusNode),
-        icon: Icon(Icons.search, color: AppTheme.shared.searchFieldIconColor(context)),
+    return [
+      HighlightableButton(
+        icon: _selectionProvider.allFavorited ? Icons.star : Icons.star_outline,
+        color: AppTheme.shared.selectedRowColor(context),
+        padding: padding,
+        onPressed: _selectionProvider.selectedCount > 0 ? () => _selectionProvider.toggleFavorite() : null,
       ),
-      trailing: CustomIconButton(
-        onPressed: () => _songLyricsProvider.tagsProvider.showFilters(context, _songLyricsProvider.tagsProvider),
-        icon: Icon(Icons.filter_list, color: AppTheme.shared.searchFieldIconColor(context)),
+      HighlightableButton(
+        icon: Icons.playlist_add,
+        color: AppTheme.shared.selectedRowColor(context),
+        padding: padding,
+        onPressed: () => PlaylistsProvider.shared.showPlaylists(context, _selectionProvider.selected),
       ),
-    );
+      HighlightableButton(
+        icon: Icons.select_all,
+        color: AppTheme.shared.selectedRowColor(context),
+        padding: padding,
+        onPressed: () => _selectionProvider.toggleAll(_songLyricsProvider.songLyrics),
+      )
+    ];
   }
+
+  Widget _searchWidget(BuildContext context) => SearchWidget(
+        key: PageStorageKey('home_screen_search_widget'),
+        placeholder: 'Zadejte slovo nebo číslo',
+        search: _songLyricsProvider.search,
+        focusNode: searchFieldFocusNode,
+        prefix: HighlightableButton(
+          icon: Icons.search,
+          color: AppThemeNew.of(context).iconColor,
+          padding: EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
+          onPressed: () => FocusScope.of(context).requestFocus(searchFieldFocusNode),
+        ),
+        suffix: HighlightableButton(
+          icon: Icons.filter_list,
+          color: AppThemeNew.of(context).iconColor,
+          padding: EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
+          onPressed: () => _songLyricsProvider.tagsProvider.showFilters(context),
+        ),
+      );
 
   void _update() => setState(() => {});
 
