@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/data_provider.dart';
 import 'package:zpevnik/providers/songbooks_provider.dart';
-import 'package:zpevnik/screens/components/custom_icon_button.dart';
 import 'package:zpevnik/screens/components/highlightable_button.dart';
 import 'package:zpevnik/screens/songbooks/componenets/songbooks_list.dart';
 import 'package:zpevnik/theme.dart';
@@ -60,7 +59,6 @@ class _SongbooksScreenState extends State<SongbooksScreen> with PlatformStateMix
         search: _songbooksProvider.search,
         prefix: HighlightableButton(
           icon: Icons.search,
-          color: AppThemeNew.of(context).iconColor,
           padding: EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
           onPressed: () => FocusScope.of(context).requestFocus(searchFieldFocusNode),
         ),

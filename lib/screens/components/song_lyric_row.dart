@@ -5,6 +5,7 @@ import 'package:zpevnik/models/songLyric.dart';
 import 'package:zpevnik/providers/song_lyrics_provider.dart';
 import 'package:zpevnik/screens/components/circular_checkbox.dart';
 import 'package:zpevnik/screens/components/highlightable_row.dart';
+import 'package:zpevnik/screens/song_lyric/components/song_lyric_container.dart';
 import 'package:zpevnik/screens/song_lyric/song_lyric_screen.dart';
 import 'package:zpevnik/screens/songbooks/componenets/songbook_provider.dart';
 import 'package:zpevnik/theme.dart';
@@ -24,7 +25,7 @@ class _SongLyricRowStateNew extends State<SongLyricRowNew> {
   Widget build(BuildContext context) {
     return HighlightableRow(
       onPressed: () => _pushSongLyric(context),
-      padding: EdgeInsets.all(kDefaultPadding / 2),
+      padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2, vertical: 2 * kDefaultPadding / 3),
       highlightColor: AppThemeNew.of(context).highlightColor,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -50,7 +51,11 @@ class _SongLyricRowStateNew extends State<SongLyricRowNew> {
   void _pushSongLyric(BuildContext context) {
     FocusScope.of(context).unfocus();
 
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => SongLyricScreen(songLyric: widget.songLyric)));
+    // if selecte songLyric is already in context pop back to it (used for translation screen)
+    if (widget.songLyric == SongLyricContainer.of(context)?.songLyric)
+      Navigator.of(context).pop();
+    else
+      Navigator.of(context).push(MaterialPageRoute(builder: (context) => SongLyricScreen(songLyric: widget.songLyric)));
   }
 }
 

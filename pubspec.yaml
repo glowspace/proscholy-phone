@@ -33,6 +33,8 @@ dependencies:
   flutter_svg: any
   flutter_reorderable_list: any
 
+  cupertino_icons: any
+
 dev_dependencies:
   jaguar_orm_gen: any
   build_runner: any
@@ -41,7 +43,7 @@ flutter:
   uses-material-design: true
 
   fonts:
-    - family:  CustomIcon
+    - family: CustomIcon
       fonts:
       - asset: assets/fonts/CustomIcon.ttf
 

@@ -29,7 +29,8 @@ class UserMenuWidget extends StatelessWidget {
           MenuItem(
             title: 'Zpětná vazba',
             icon: Icons.feedback,
-            onPressed: () => launch(feedbackUrl),
+            onPressed: () =>
+                launch(Theme.of(context).platform == TargetPlatform.iOS ? feedbackIOSUrl : feedbackAndroidUrl),
           ),
           MenuItem(
             title: 'Přidat píseň',

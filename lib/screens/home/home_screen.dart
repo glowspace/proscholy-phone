@@ -48,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> with PlatformStateMixin {
             leading: _leading(context),
             middle: _middle(context),
             trailing: _selectionProvider.selectionEnabled
-                ? Row(mainAxisSize: MainAxisSize.min, children: _trailing(context))
+                ? Row(mainAxisSize: MainAxisSize.min, children: _actions(context))
                 : null,
             padding: EdgeInsetsDirectional.only(start: kDefaultPadding / 2, end: kDefaultPadding / 2)),
         child: _body(context),
@@ -59,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> with PlatformStateMixin {
         appBar: AppBar(
           leading: _leading(context),
           title: _middle(context),
-          actions: _selectionProvider.selectionEnabled ? _trailing(context) : null,
+          actions: _selectionProvider.selectionEnabled ? _actions(context) : null,
         ),
         body: _body(context),
       );
@@ -94,7 +94,7 @@ class _HomeScreenState extends State<HomeScreen> with PlatformStateMixin {
     return "${_selectionProvider.selectedCount} písní";
   }
 
-  List<Widget> _trailing(BuildContext context) {
+  List<Widget> _actions(BuildContext context) {
     final padding = EdgeInsets.symmetric(horizontal: kDefaultPadding / 3, vertical: 2 * kDefaultPadding / 3);
 
     return [
@@ -126,13 +126,11 @@ class _HomeScreenState extends State<HomeScreen> with PlatformStateMixin {
         focusNode: searchFieldFocusNode,
         prefix: HighlightableButton(
           icon: Icons.search,
-          color: AppThemeNew.of(context).iconColor,
           padding: EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
           onPressed: () => FocusScope.of(context).requestFocus(searchFieldFocusNode),
         ),
         suffix: HighlightableButton(
           icon: Icons.filter_list,
-          color: AppThemeNew.of(context).iconColor,
           padding: EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
           onPressed: () => _songLyricsProvider.tagsProvider.showFilters(context),
         ),

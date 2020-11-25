@@ -1,25 +1,37 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class AppThemeNew extends InheritedWidget {
   final Brightness brightness;
+  final TargetPlatform platform; // for easier debugging
 
-  const AppThemeNew({@required Widget child, this.brightness = Brightness.light}) : super(child: child);
+  const AppThemeNew({
+    @required Widget child,
+    this.brightness = Brightness.light,
+    @required this.platform,
+  }) : super(child: child);
 
   CupertinoThemeData get cupertinoTheme => CupertinoThemeData(
         brightness: brightness,
+        primaryColor: iconColor,
       );
 
   ThemeData get materialTheme => (_isLight ? ThemeData.light() : ThemeData.dark()).copyWith(
+        platform: platform,
         primaryColor: _isLight ? Colors.white : Colors.black,
+        primaryIconTheme: IconThemeData(color: iconColor),
         backgroundColor: backgroundColor,
+        scaffoldBackgroundColor: backgroundColor,
       );
 
-  TextStyle get bodyTextStyle => Platform.isIOS
+  TextStyle get bodyTextStyle => _isIOS
       ? cupertinoTheme.textTheme.textStyle.copyWith(color: textColor, fontSize: 15)
       : materialTheme.textTheme.bodyText1.copyWith(color: textColor);
+
+  TextStyle get titleTextStyle => throw UnimplementedError();
+
+  TextStyle get subTitleTextStyle =>
+      _isIOS ? cupertinoTheme.textTheme.textStyle.copyWith(fontSize: 17) : materialTheme.textTheme.subtitle1;
 
   TextStyle get placeholderTextStyle => bodyTextStyle.copyWith(
         color: _isLight ? Color(0xff9aa0a5) : Color(0xff655f5a),
@@ -31,7 +43,7 @@ class AppThemeNew extends InheritedWidget {
       );
 
   Color get backgroundColor => _isLight ? Color(0xffffffff) : Color(0xff000000);
-  Color get fillColor => Platform.isIOS ? CupertinoColors.systemFill : Color(0xff252525);
+  Color get fillColor => _isIOS ? CupertinoColors.systemFill : Color(0xff252525);
 
   Color get textColor => _isLight ? Color(0xff222222) : Color(0xffdddddd);
   Color get chordColor => _isLight ? Color(0xff3961ad) : Color(0xff4dc0b5);
@@ -44,6 +56,8 @@ class AppThemeNew extends InheritedWidget {
   Color get disabledColor => _isLight ? Color(0xffd7d7d7) : Color(0xff282828);
 
   bool get _isLight => brightness == Brightness.light;
+
+  bool get _isIOS => platform == TargetPlatform.iOS;
 
   @override
   bool updateShouldNotify(AppThemeNew oldWidget) => brightness != oldWidget.brightness;

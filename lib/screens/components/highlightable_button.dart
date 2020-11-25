@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zpevnik/theme.dart';
+import 'package:zpevnik/utils/platform.dart';
 
 class HighlightableButton extends StatefulWidget {
   final IconData icon;
@@ -31,6 +32,11 @@ class _HighlightableButtonState extends State<HighlightableButton> {
     _isHighlighted = false;
   }
 
+  Color get _color => widget.color == null ? AppThemeNew.of(context).iconColor : widget.color;
+
+  Color get _iconColor =>
+      _isHighlighted ? (widget.highlightColor == null ? _color.withAlpha(0x80) : widget.highlightColor) : _color;
+
   @override
   Widget build(BuildContext context) => GestureDetector(
         onPanDown: (_) => setState(() => _isHighlighted = true),
@@ -49,8 +55,4 @@ class _HighlightableButtonState extends State<HighlightableButton> {
           ),
         ),
       );
-
-  Color get _iconColor => _isHighlighted
-      ? (widget.highlightColor == null ? widget.color.withAlpha(0x80) : widget.highlightColor)
-      : widget.color;
 }

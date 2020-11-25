@@ -9,5 +9,5 @@ class SongbookProvider extends InheritedWidget {
   @override
   bool updateShouldNotify(SongbookProvider oldWidget) => songbook != oldWidget.songbook;
 
-  static SongbookProvider of(BuildContext context) => context.dependOnInheritedWidgetOfExactType<SongbookProvider>();
+  static SongbookProvider of(BuildContext context) => context.dependOnInheritedWidgetOfExactType();
 }
