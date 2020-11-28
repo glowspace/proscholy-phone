@@ -38,7 +38,7 @@ class _PlaylistRowState extends State<PlaylistRow> {
         behavior: HitTestBehavior.translucent,
         child: Container(
           color: (_highlighted ? AppTheme.shared.highlightColor(context) : null),
-          padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2, vertical: kDefaultPadding / 2),
+          padding: EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding),
           child: Row(children: [
             Expanded(child: Text(widget.playlist.name, style: AppThemeNew.of(context).bodyTextStyle)),
             GestureDetector(

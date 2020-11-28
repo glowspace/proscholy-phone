@@ -91,7 +91,7 @@ class SettingsScreen extends StatelessWidget with PlatformWidgetMixin {
       );
 
   Widget _row(String name, Widget widget) => Container(
-        padding: EdgeInsets.symmetric(vertical: kDefaultPadding / 3),
+        padding: EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [Text(name), widget],
@@ -99,7 +99,7 @@ class SettingsScreen extends StatelessWidget with PlatformWidgetMixin {
       );
 
   Widget _fontSizeSlider(BuildContext context) => Container(
-        padding: EdgeInsets.symmetric(vertical: kDefaultPadding / 3),
+        padding: EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
         child: Consumer<SettingsProvider>(
           builder: (context, settingsProvider, _) => Row(
             children: [

@@ -40,6 +40,7 @@ class _SongbookScreenState extends State<SongbookScreen> with PlatformStateMixin
           leading: _leading(context),
           middle: _middle(context),
           trailing: _trailing(context),
+          transitionBetweenRoutes: false, // needed because of search widget
         ),
         child: _body(context),
       );

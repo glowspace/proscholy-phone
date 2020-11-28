@@ -54,7 +54,7 @@ class LyricsWidget extends StatelessWidget {
               ),
             Flexible(
               child: Container(
-                padding: EdgeInsets.only(left: verse.number.isEmpty ? 0 : (kDefaultPadding / 2)),
+                padding: EdgeInsets.only(left: verse.number.isEmpty ? 0 : (kDefaultPadding)),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: List.generate(

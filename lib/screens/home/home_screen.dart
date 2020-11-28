@@ -44,45 +44,52 @@ class _HomeScreenState extends State<HomeScreen> with PlatformStateMixin {
 
   @override
   Widget iOSWidget(BuildContext context) => CupertinoPageScaffold(
-        navigationBar: CupertinoNavigationBar(
-            leading: _leading(context),
-            middle: _middle(context),
-            trailing: _selectionProvider.selectionEnabled
-                ? Row(mainAxisSize: MainAxisSize.min, children: _actions(context))
-                : null,
-            padding: EdgeInsetsDirectional.only(start: kDefaultPadding / 2, end: kDefaultPadding / 2)),
+        navigationBar: _selectionProvider.selectionEnabled
+            ? CupertinoNavigationBar(
+                leading: _leading(context),
+                middle: _middle(context),
+                trailing: Row(mainAxisSize: MainAxisSize.min, children: _actions(context)),
+                padding: EdgeInsetsDirectional.only(start: kDefaultPadding, end: kDefaultPadding),
+              )
+            : null,
         child: _body(context),
       );
 
   @override
   Widget androidWidget(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          leading: _leading(context),
-          title: _middle(context),
-          actions: _selectionProvider.selectionEnabled ? _actions(context) : null,
-        ),
+        appBar: _selectionProvider.selectionEnabled
+            ? AppBar(
+                leading: _leading(context),
+                title: _middle(context),
+                actions: _selectionProvider.selectionEnabled ? _actions(context) : null,
+              )
+            : null,
         body: _body(context),
       );
 
   Widget _body(BuildContext context) => SafeArea(
-        child: ChangeNotifierProvider.value(
-          value: _songLyricsProvider,
-          child: SongLyricsListView(key: PageStorageKey('home_screen_list_view')),
-        ),
+        child: Column(children: [
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: kDefaultPadding),
+            child: _searchWidget(context),
+          ),
+          Expanded(
+            child: ChangeNotifierProvider.value(
+              value: _songLyricsProvider,
+              child: SongLyricsListView(key: PageStorageKey('home_screen_list_view')),
+            ),
+          ),
+        ]),
       );
 
-  Widget _leading(BuildContext context) => _selectionProvider.selectionEnabled
-      ? HighlightableButton(
-          icon: Icons.close,
-          color: AppTheme.shared.selectedRowColor(context),
-          padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 4, vertical: 2 * kDefaultPadding / 3),
-          onPressed: () => setState(() => _selectionProvider.selectionEnabled = false),
-        )
-      : null;
+  Widget _leading(BuildContext context) => HighlightableButton(
+        icon: Icons.close,
+        color: AppTheme.shared.selectedRowColor(context),
+        padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2, vertical: kDefaultPadding / 2),
+        onPressed: () => setState(() => _selectionProvider.selectionEnabled = false),
+      );
 
-  Widget _middle(BuildContext context) => _selectionProvider.selectionEnabled
-      ? FittedBox(fit: BoxFit.scaleDown, child: Text(_title))
-      : _searchWidget(context);
+  Widget _middle(BuildContext context) => FittedBox(fit: BoxFit.scaleDown, child: Text(_title));
 
   String get _title {
     if (_selectionProvider.selectedCount == 0)
@@ -95,7 +102,7 @@ class _HomeScreenState extends State<HomeScreen> with PlatformStateMixin {
   }
 
   List<Widget> _actions(BuildContext context) {
-    final padding = EdgeInsets.symmetric(horizontal: kDefaultPadding / 3, vertical: 2 * kDefaultPadding / 3);
+    final padding = EdgeInsets.symmetric(horizontal: kDefaultPadding / 2, vertical: kDefaultPadding / 2);
 
     return [
       HighlightableButton(

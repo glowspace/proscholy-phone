@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-const double kDefaultPadding = 16;
+const double kDefaultPadding = 10;
 const int kDefaultAnimationTime = 300;
 
 const double kMinimumFontSize = 8;

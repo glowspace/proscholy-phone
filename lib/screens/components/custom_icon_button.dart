@@ -22,7 +22,7 @@ class CustomIconButton extends StatelessWidget with PlatformWidgetMixin {
   Widget iOSWidget(BuildContext context) => GestureDetector(
         onTap: onPressed,
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2, vertical: kDefaultPadding / 2),
+          padding: EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding),
           child: icon,
         ),
       );

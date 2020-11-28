@@ -12,9 +12,9 @@ class MenuItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) => HighlightableRow(
         child: Container(
-          padding: EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
+          padding: EdgeInsets.symmetric(vertical: kDefaultPadding),
           child: Row(children: [
-            Container(padding: EdgeInsets.only(right: kDefaultPadding / 2), child: Icon(icon)),
+            Container(padding: EdgeInsets.only(right: kDefaultPadding), child: Icon(icon)),
             Text(title),
           ]),
         ),

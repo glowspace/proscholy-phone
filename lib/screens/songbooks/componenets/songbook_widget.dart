@@ -38,12 +38,12 @@ class SongbookWidget extends StatelessWidget {
   Widget build(BuildContext context) => GestureDetector(
         onTap: () => _pushSongbook(context),
         child: Container(
-          padding: EdgeInsets.all(kDefaultPadding / 2),
+          padding: EdgeInsets.all(kDefaultPadding),
           child: Column(
             children: [
               _image(context),
               Container(
-                padding: EdgeInsets.only(top: kDefaultPadding / 2),
+                padding: EdgeInsets.only(top: kDefaultPadding),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -70,9 +70,11 @@ class SongbookWidget extends StatelessWidget {
         child: AspectRatio(
           aspectRatio: 4 / 3,
           child: FittedBox(
-            child: Image.asset(_existingLogos.contains(songbook.shortcut.toLowerCase())
-                ? '$imagesPath/songbooks/${songbook.shortcut.toLowerCase()}.png'
-                : '$imagesPath/songbooks/default.png'),
+            child: Image.asset(
+                _existingLogos.contains(songbook.shortcut.toLowerCase())
+                    ? '$imagesPath/songbooks/${songbook.shortcut.toLowerCase()}.png'
+                    : '$imagesPath/songbooks/default.png',
+                key: Key(songbook.shortcut)),
           ),
         ),
       );

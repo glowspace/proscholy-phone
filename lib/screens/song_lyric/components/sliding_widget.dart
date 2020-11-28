@@ -39,7 +39,7 @@ class _SlidingWidgetState extends State<SlidingWidget> with SingleTickerProvider
   Widget build(BuildContext context) => Transform.translate(
         offset: Offset(1, 0), // just to hide right border
         child: Container(
-          padding: EdgeInsets.only(left: kDefaultPadding / 3),
+          padding: EdgeInsets.only(left: kDefaultPadding / 2),
           decoration: BoxDecoration(
             color: AppThemeNew.of(context).backgroundColor,
             border: Border.all(color: AppTheme.shared.borderColor(context)),

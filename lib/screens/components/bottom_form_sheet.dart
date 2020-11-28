@@ -15,7 +15,7 @@ class BottomFormSheet extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                padding: EdgeInsets.fromLTRB(kDefaultPadding, 0, kDefaultPadding, kDefaultPadding / 2),
+                padding: EdgeInsets.fromLTRB(kDefaultPadding, 0, kDefaultPadding, kDefaultPadding),
                 child: Text(title, style: Theme.of(context).textTheme.headline6),
               ),
               for (final item in items) item

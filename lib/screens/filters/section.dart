@@ -19,17 +19,17 @@ class FiltersSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          padding: EdgeInsets.only(bottom: kDefaultPadding / 4),
+          padding: EdgeInsets.only(bottom: kDefaultPadding / 2),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                padding: EdgeInsets.only(bottom: kDefaultPadding / 2),
+                padding: EdgeInsets.only(bottom: kDefaultPadding),
                 child: Text(title, style: textStyle),
               ),
               Wrap(
-                spacing: kDefaultPadding / 4,
-                runSpacing: kDefaultPadding / 4,
+                spacing: kDefaultPadding / 2,
+                runSpacing: kDefaultPadding / 2,
                 children: List.generate(tags.length, (index) => FilterTag(tag: tags[index])),
               ),
             ],

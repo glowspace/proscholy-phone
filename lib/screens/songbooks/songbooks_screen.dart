@@ -34,22 +34,21 @@ class _SongbooksScreenState extends State<SongbooksScreen> with PlatformStateMix
   }
 
   @override
-  Widget iOSWidget(BuildContext context) => CupertinoPageScaffold(
-        navigationBar: CupertinoNavigationBar(middle: _searchWidget(context)),
-        child: _body(context),
-      );
+  Widget iOSWidget(BuildContext context) => CupertinoPageScaffold(child: _body(context));
 
   @override
-  Widget androidWidget(BuildContext context) => Scaffold(
-        appBar: AppBar(title: _searchWidget(context)),
-        body: _body(context),
-      );
+  Widget androidWidget(BuildContext context) => Scaffold(body: _body(context));
 
   Widget _body(BuildContext context) => SafeArea(
-        child: ChangeNotifierProvider.value(
-          value: _songbooksProvider,
-          child: SongbookListView(key: PageStorageKey('songbooks_grid_view')),
-        ),
+        child: Column(children: [
+          Container(padding: EdgeInsets.symmetric(horizontal: kDefaultPadding), child: _searchWidget(context)),
+          Expanded(
+            child: ChangeNotifierProvider.value(
+              value: _songbooksProvider,
+              child: SongbookListView(key: PageStorageKey('songbooks_grid_view')),
+            ),
+          ),
+        ]),
       );
 
   Widget _searchWidget(BuildContext context) => SearchWidget(

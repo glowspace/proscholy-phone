@@ -15,7 +15,7 @@ class HighlightableButton extends StatefulWidget {
     this.icon,
     this.color,
     this.highlightColor,
-    this.padding = const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
+    this.padding = const EdgeInsets.symmetric(vertical: kDefaultPadding),
     this.onPressed,
   }) : super(key: key);
 

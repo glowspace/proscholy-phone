@@ -39,6 +39,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> with PlatformStateMixin
           leading: _leading(context),
           middle: _middle(context),
           trailing: _trailing(context),
+          transitionBetweenRoutes: false, // needed because of search widget
         ),
         child: _body(context),
       );

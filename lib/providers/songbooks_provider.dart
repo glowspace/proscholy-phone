@@ -39,8 +39,6 @@ class SongbooksProvider extends ChangeNotifier {
       }
     }
 
-    print(searchResults);
-
     _songbooks = searchResults.reduce((result, list) {
       result.addAll(list);
       return result;

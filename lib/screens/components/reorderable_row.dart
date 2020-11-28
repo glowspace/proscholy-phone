@@ -17,7 +17,7 @@ class ReorderableRow extends StatelessWidget {
           child: Row(children: [
             ReorderableListener(
               child: Container(
-                padding: EdgeInsets.only(left: kDefaultPadding / 2),
+                padding: EdgeInsets.only(left: kDefaultPadding),
                 child: Icon(Icons.drag_handle, color: Theme.of(context).textTheme.caption.color),
               ),
             ),

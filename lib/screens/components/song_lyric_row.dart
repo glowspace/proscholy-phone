@@ -25,7 +25,7 @@ class _SongLyricRowStateNew extends State<SongLyricRowNew> {
   Widget build(BuildContext context) {
     return HighlightableRow(
       onPressed: () => _pushSongLyric(context),
-      padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2, vertical: 2 * kDefaultPadding / 3),
+      padding: EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding),
       highlightColor: AppThemeNew.of(context).highlightColor,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -99,23 +99,23 @@ class _SongLyricRowState extends State<SongLyricRow> {
         color: (selectionProvider?.isSelected(widget.songLyric) ?? false)
             ? AppTheme.shared.selectedRowBackgroundColor(context)
             : (_highlighted ? AppTheme.shared.highlightColor(context) : null),
-        padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2, vertical: kDefaultPadding / 2),
+        padding: EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding),
         child: Row(
           children: [
             if (selectionProvider?.selectionEnabled ?? false)
               Container(
-                padding: EdgeInsets.only(right: kDefaultPadding / 2),
+                padding: EdgeInsets.only(right: kDefaultPadding),
                 child: CircularCheckbox(selected: selectionProvider?.isSelected(widget.songLyric) ?? false),
               )
             else if (songbookProvider != null)
               Container(
-                padding: EdgeInsets.only(right: kDefaultPadding / 2),
+                padding: EdgeInsets.only(right: kDefaultPadding),
                 child: _songLyricNumber(context, widget.songLyric.number(songbookProvider.songbook)),
               ),
             Expanded(child: Text(widget.songLyric.name, style: AppThemeNew.of(context).bodyTextStyle)),
             if (widget.showStar && widget.songLyric.isFavorite)
               Container(
-                padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
+                padding: EdgeInsets.symmetric(horizontal: kDefaultPadding),
                 child: Transform.scale(
                   scale: 0.75,
                   child: Icon(

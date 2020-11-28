@@ -50,7 +50,7 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
         navigationBar: CupertinoNavigationBar(
           middle: Text(widget.songLyric.id.toString()),
           trailing: Row(mainAxisSize: MainAxisSize.min, children: _actions(context)),
-          padding: EdgeInsetsDirectional.only(start: kDefaultPadding / 2, end: kDefaultPadding / 2),
+          padding: EdgeInsetsDirectional.only(start: kDefaultPadding, end: kDefaultPadding),
         ),
         child: _body(context),
       );
@@ -87,7 +87,7 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
                     child: SingleChildScrollView(
                       controller: _scrollController,
                       child: Container(
-                        padding: EdgeInsets.symmetric(vertical: kDefaultPadding, horizontal: kDefaultPadding / 2),
+                        padding: EdgeInsets.symmetric(vertical: kDefaultPadding, horizontal: kDefaultPadding),
                         child: ChangeNotifierProvider.value(
                           value: SettingsProvider.shared,
                           child: LyricsWidget(songLyric: widget.songLyric),
@@ -116,7 +116,7 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
       );
 
   List<Widget> _actions(BuildContext context) {
-    final padding = EdgeInsets.symmetric(horizontal: kDefaultPadding / 3, vertical: 2 * kDefaultPadding / 3);
+    final padding = EdgeInsets.symmetric(horizontal: kDefaultPadding / 2, vertical: kDefaultPadding / 2);
 
     return [
       if (widget.songLyric.hasTranslations)

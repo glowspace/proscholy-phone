@@ -25,7 +25,7 @@ class TranslationsScreen extends StatelessWidget with PlatformWidgetMixin {
 
     return SafeArea(
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
+        padding: EdgeInsets.symmetric(vertical: kDefaultPadding),
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -47,7 +47,7 @@ class TranslationsScreen extends StatelessWidget with PlatformWidgetMixin {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
+              padding: EdgeInsets.symmetric(horizontal: kDefaultPadding),
               child: Text(
                 songLyricType.description,
                 style: AppThemeNew.of(context).subTitleTextStyle.copyWith(color: songLyricType.color),

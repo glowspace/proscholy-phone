@@ -25,7 +25,6 @@ class UserScreen extends StatefulWidget {
 }
 
 class _UserScreenState extends State<UserScreen> with PlatformStateMixin {
-  final navBarKey = GlobalKey();
   final searchFieldFocusNode = FocusNode();
 
   ValueNotifier<bool> _showingMenu;
@@ -49,16 +48,10 @@ class _UserScreenState extends State<UserScreen> with PlatformStateMixin {
   }
 
   @override
-  Widget iOSWidget(BuildContext context) => CupertinoPageScaffold(
-        navigationBar: CupertinoNavigationBar(middle: _searchWidget(context), key: navBarKey),
-        child: _body(context),
-      );
+  Widget iOSWidget(BuildContext context) => CupertinoPageScaffold(child: _body(context));
 
   @override
-  Widget androidWidget(BuildContext context) => Scaffold(
-        appBar: AppBar(title: _searchWidget(context), key: navBarKey),
-        body: _body(context),
-      );
+  Widget androidWidget(BuildContext context) => Scaffold(body: _body(context));
 
   Widget _body(BuildContext context) {
     final playlists = PlaylistsProvider.shared.playlists;
@@ -72,6 +65,7 @@ class _UserScreenState extends State<UserScreen> with PlatformStateMixin {
             behavior: HitTestBehavior.translucent,
             child: Column(
               children: [
+                Container(padding: EdgeInsets.symmetric(horizontal: kDefaultPadding), child: _searchWidget(context)),
                 Scrollbar(
                   child: SingleChildScrollView(
                     child: Column(
@@ -119,10 +113,10 @@ class _UserScreenState extends State<UserScreen> with PlatformStateMixin {
                           GestureDetector(
                             onTap: () => setState(() => _showingArchived = !_showingArchived),
                             child: Container(
-                              padding: EdgeInsets.all(kDefaultPadding / 2),
+                              padding: EdgeInsets.all(kDefaultPadding),
                               child: Row(children: [
                                 Container(
-                                  padding: EdgeInsets.only(right: kDefaultPadding / 2),
+                                  padding: EdgeInsets.only(right: kDefaultPadding),
                                   child: Icon(Icons.archive_outlined),
                                 ),
                                 Expanded(child: Text('Archiv')),
@@ -148,7 +142,7 @@ class _UserScreenState extends State<UserScreen> with PlatformStateMixin {
                 ),
                 Spacer(),
                 Container(
-                  padding: EdgeInsets.all(kDefaultPadding / 2),
+                  padding: EdgeInsets.all(kDefaultPadding),
                   child: Row(children: [
                     Text('Ostatní'),
                     Spacer(),
@@ -163,7 +157,7 @@ class _UserScreenState extends State<UserScreen> with PlatformStateMixin {
               child: GestureDetector(
                 onTap: () => PlaylistsProvider.shared.showPlaylistDialog(context, callback: () => setState(() => {})),
                 child: Container(
-                  padding: EdgeInsets.all(kDefaultPadding / 2),
+                  padding: EdgeInsets.all(kDefaultPadding),
                   child: Text(
                     'Nemáte žádný playlist. Vytvořit si jej můžete v${unbreakableSpace}náhledu písně nebo kliknutím na${unbreakableSpace}tento text.',
                     textAlign: TextAlign.center,

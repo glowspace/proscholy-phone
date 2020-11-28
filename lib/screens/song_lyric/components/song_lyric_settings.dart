@@ -48,7 +48,7 @@ class SongLyricSettings extends StatelessWidget {
   }
 
   Widget _row(String name, Widget widget) => Container(
-        padding: EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 3),
+        padding: EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [Text(name), widget],
@@ -60,7 +60,7 @@ class SongLyricSettings extends StatelessWidget {
           builder: (context, songLyric, _) => Row(
             children: [
               HighlightableButton(
-                padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 4),
+                padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
                 icon: Icons.remove,
                 highlightColor: AppTheme.shared.highlightColor(context),
                 onPressed: () => songLyric.changeTransposition(-1),
@@ -70,7 +70,7 @@ class SongLyricSettings extends StatelessWidget {
                 child: Text(songLyric.transposition.toString(), textAlign: TextAlign.center),
               ),
               HighlightableButton(
-                padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 4),
+                padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
                 icon: Icons.add,
                 highlightColor: AppTheme.shared.highlightColor(context),
                 onPressed: () => songLyric.changeTransposition(1),
@@ -81,7 +81,7 @@ class SongLyricSettings extends StatelessWidget {
       );
 
   Widget _fontSizeSlider(BuildContext context) => Container(
-        padding: EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 3),
+        padding: EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
         child: Consumer<SettingsProvider>(
           builder: (context, settingsProvider, _) => Row(children: [
             Text('A', style: AppThemeNew.of(context).bodyTextStyle.copyWith(fontSize: kMinimumFontSize)),

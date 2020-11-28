@@ -92,7 +92,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> with PlatformStateMixin
                 ),
               )
             : Container(
-                padding: EdgeInsets.only(top: kDefaultPadding / 2),
+                padding: EdgeInsets.only(top: kDefaultPadding),
                 child: ChangeNotifierProvider.value(
                   value: _songLyricsProvider,
                   child: Scrollbar(

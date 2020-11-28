@@ -24,7 +24,7 @@ class FilterTag extends StatelessWidget {
             border: Border.all(color: AppTheme.shared.filterBorderColor(context)),
             borderRadius: BorderRadius.all(Radius.circular(100)), // big enough number to make it always full circular
           ),
-          padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2, vertical: kDefaultPadding / 4),
+          padding: EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
           child: cancellable
               ? Row(children: [
                   Text(tag.name, style: textStyle),

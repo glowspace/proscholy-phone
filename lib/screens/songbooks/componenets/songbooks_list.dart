@@ -16,7 +16,7 @@ class SongbookListView extends StatelessWidget {
     return Scrollbar(
       child: Consumer<SongbooksProvider>(
         builder: (context, provider, _) => GridView.count(
-          childAspectRatio: 1 / 1.1, // to fit multiline songbook names on small devices
+          childAspectRatio: 1 / 1.2, // to fit multiline songbook names on small devices
           crossAxisCount: count,
           children: List.generate(
             provider.songbooks.length,

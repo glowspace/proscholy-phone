@@ -54,7 +54,7 @@ class _ExternalsWidgetState extends State<ExternalsWidget> {
             child: VideoPlayer(controller),
           ),
           Container(
-            padding: EdgeInsets.symmetric(vertical: kDefaultPadding / 2, horizontal: kDefaultPadding / 2),
+            padding: EdgeInsets.symmetric(vertical: kDefaultPadding, horizontal: kDefaultPadding),
             color: AppTheme.shared.selectedColor(context),
             child: Text(name),
           ),

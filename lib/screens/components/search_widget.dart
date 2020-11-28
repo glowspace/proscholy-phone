@@ -38,46 +38,51 @@ class _SearchWidgetState extends State<SearchWidget> with PlatformStateMixin {
   @override
   Widget iOSWidget(BuildContext context) => _body(
         context,
-        CupertinoTextField(
-          key: PageStorageKey('text_field'),
-          decoration: BoxDecoration(color: Colors.transparent),
-          focusNode: widget.focusNode,
-          placeholder: widget.placeholder,
-          controller: _textController,
-          onChanged: _searchTextChanged,
+        LayoutBuilder(
+          builder: (context, constraints) => Container(
+            child: CupertinoTextField(
+              key: PageStorageKey('text_field'),
+              decoration: BoxDecoration(color: Colors.transparent),
+              focusNode: widget.focusNode,
+              placeholder: widget.placeholder,
+              placeholderStyle: _placeholderStyle(context, constraints.maxWidth - 12), // - 12 for textfield padding
+              controller: _textController,
+              onChanged: _searchTextChanged,
+              clearButtonMode: OverlayVisibilityMode.editing,
+            ),
+          ),
         ),
       );
 
   @override
   Widget androidWidget(BuildContext context) => _body(
         context,
-        TextField(
-          key: PageStorageKey('text_field'),
-          decoration: InputDecoration(
-            border: InputBorder.none,
-            hintText: widget.placeholder,
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: IntrinsicWidth(
+            child: TextField(
+              key: PageStorageKey('text_field'),
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                hintText: widget.placeholder,
+              ),
+              focusNode: widget.focusNode,
+              controller: _textController,
+              onChanged: _searchTextChanged,
+            ),
           ),
-          focusNode: widget.focusNode,
-          controller: _textController,
-          onChanged: _searchTextChanged,
         ),
       );
 
   Widget _body(BuildContext context, Widget child) => Container(
-        padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
+        padding: EdgeInsets.symmetric(horizontal: kDefaultPadding),
         decoration: BoxDecoration(
           border: Border.all(color: AppThemeNew.of(context).borderColor),
           borderRadius: BorderRadius.all(Radius.circular(10)),
         ),
         child: Row(children: [
           if (widget.prefix != null) widget.prefix,
-          Expanded(
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              alignment: Alignment.centerLeft,
-              child: IntrinsicWidth(child: child),
-            ),
-          ),
+          Expanded(child: child),
           if (widget.suffix != null) widget.suffix,
         ]),
       );
@@ -87,5 +92,28 @@ class _SearchWidgetState extends State<SearchWidget> with PlatformStateMixin {
     PageStorage.of(context)?.writeState(context, searchText);
 
     widget.search(searchText);
+  }
+
+  // could not find good way with fittedbox on iOS, so compute fontSize, that will fit
+  TextStyle _placeholderStyle(BuildContext context, double width) {
+    double fontSize = 17;
+    TextStyle textStyle;
+    double textWidth;
+
+    do {
+      textStyle = AppThemeNew.of(context).placeholderTextStyle.copyWith(fontSize: fontSize);
+      fontSize -= 0.5;
+
+      textWidth = (TextPainter(
+        text: TextSpan(text: widget.placeholder, style: textStyle),
+        maxLines: 1,
+        textScaleFactor: MediaQuery.of(context).textScaleFactor,
+        textDirection: TextDirection.ltr,
+      )..layout())
+          .size
+          .width;
+    } while (textWidth > width);
+
+    return textStyle;
   }
 }
