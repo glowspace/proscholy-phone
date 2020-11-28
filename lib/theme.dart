@@ -22,6 +22,7 @@ class AppThemeNew extends InheritedWidget {
         primaryIconTheme: IconThemeData(color: iconColor),
         backgroundColor: backgroundColor,
         scaffoldBackgroundColor: backgroundColor,
+        bottomSheetTheme: BottomSheetThemeData(backgroundColor: fillColor),
       );
 
   TextStyle get bodyTextStyle => _isIOS

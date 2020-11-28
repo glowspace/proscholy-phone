@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/providers/song_lyrics_provider.dart';
 import 'package:zpevnik/screens/components/custom_icon_button.dart';
+import 'package:zpevnik/screens/components/highlightable_button.dart';
 import 'package:zpevnik/screens/components/search_widget.dart';
 import 'package:zpevnik/screens/components/song_lyrics_list.dart';
 import 'package:zpevnik/screens/songbooks/componenets/songbook_provider.dart';
@@ -62,23 +63,23 @@ class _SongbookScreenState extends State<SongbookScreen> with PlatformStateMixin
           key: PageStorageKey('songbook_search_widget'),
           placeholder: 'Zadejte slovo nebo číslo',
           search: _songLyricsProvider.search,
-          prefix: CustomIconButton(
+          prefix: HighlightableButton(
+            icon: Icons.arrow_back,
             onPressed: () => setState(() {
               _songLyricsProvider.search('');
               _searching = false;
             }),
-            icon: Icon(Icons.arrow_back),
           ),
-          suffix: CustomIconButton(
+          suffix: HighlightableButton(
+            icon: Icons.filter_list,
             onPressed: () => _songLyricsProvider.tagsProvider.showFilters(context),
-            icon: Icon(Icons.filter_list),
           ),
         )
       : Text(widget.songbook.name);
 
   Widget _trailing(BuildContext context) => _searching
       ? Container(width: 0)
-      : IconButton(onPressed: () => setState(() => _searching = true), icon: Icon(Icons.search));
+      : HighlightableButton(icon: Icons.search, onPressed: () => setState(() => _searching = true));
 
   Widget _body(BuildContext context) => SafeArea(
         child: SongbookProvider(

@@ -126,12 +126,10 @@ class _HomeScreenState extends State<HomeScreen> with PlatformStateMixin {
         focusNode: searchFieldFocusNode,
         prefix: HighlightableButton(
           icon: Icons.search,
-          padding: EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
           onPressed: () => FocusScope.of(context).requestFocus(searchFieldFocusNode),
         ),
         suffix: HighlightableButton(
           icon: Icons.filter_list,
-          padding: EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
           onPressed: () => _songLyricsProvider.tagsProvider.showFilters(context),
         ),
       );

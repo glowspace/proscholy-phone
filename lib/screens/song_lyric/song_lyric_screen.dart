@@ -148,9 +148,10 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
       );
 
   void _showExternals() => showPlatformBottomSheet(
-      context: context,
-      child: ExternalsWidget(songLyric: widget.songLyric),
-      height: 0.67 * MediaQuery.of(context).size.height);
+        context: context,
+        child: ExternalsWidget(songLyric: widget.songLyric),
+        height: 0.67 * MediaQuery.of(context).size.height,
+      );
 
   void _pushTranslateScreen(BuildContext context) {
     // if user came here from translation screen pop back instead of pushing to new

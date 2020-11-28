@@ -59,7 +59,6 @@ class _SongbooksScreenState extends State<SongbooksScreen> with PlatformStateMix
         search: _songbooksProvider.search,
         prefix: HighlightableButton(
           icon: Icons.search,
-          padding: EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
           onPressed: () => FocusScope.of(context).requestFocus(searchFieldFocusNode),
         ),
       );
