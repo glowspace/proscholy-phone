@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:zpevnik/links.dart';
+import 'package:zpevnik/models/songLyric.dart';
 import 'package:zpevnik/providers/playlists_provider.dart';
+import 'package:zpevnik/screens/components/data_container.dart';
 import 'package:zpevnik/screens/components/menu_item.dart';
 import 'package:zpevnik/screens/components/popup_menu.dart';
-import 'package:zpevnik/screens/song_lyric/components/song_lyric_container.dart';
 import 'package:zpevnik/screens/song_lyric/music_notes_screen.dart';
 import 'package:zpevnik/theme.dart';
 
@@ -16,7 +17,7 @@ class SongLyricMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final songLyric = SongLyricContainer.of(context).songLyric;
+    final songLyric = DataContainer.of<SongLyric>(context).data;
 
     return PopupMenu(
       showing: showing,

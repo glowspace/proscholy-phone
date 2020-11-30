@@ -14,10 +14,11 @@ class BottomFormSheet extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                padding: EdgeInsets.fromLTRB(kDefaultPadding, 0, kDefaultPadding, kDefaultPadding),
-                child: Text(title, style: Theme.of(context).textTheme.headline6),
-              ),
+              if (title.isNotEmpty)
+                Container(
+                  padding: EdgeInsets.fromLTRB(kDefaultPadding, 0, kDefaultPadding, kDefaultPadding),
+                  child: Text(title, style: Theme.of(context).textTheme.headline6),
+                ),
               for (final item in items) item
             ],
           ),

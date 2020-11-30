@@ -4,6 +4,7 @@ import 'package:zpevnik/models/entities/external.dart';
 import 'package:zpevnik/models/entities/song_lyric.dart';
 import 'package:zpevnik/models/song.dart';
 import 'package:zpevnik/models/songbook.dart';
+import 'package:zpevnik/providers/data_provider.dart';
 import 'package:zpevnik/providers/settings_provider.dart';
 import 'package:zpevnik/utils/database.dart';
 import 'package:zpevnik/utils/song_lyrics_parser.dart';
@@ -79,7 +80,7 @@ class SongLyric extends ChangeNotifier {
   Key get key => Key(_entity.id.toString());
 
   String number(Songbook songbook) =>
-      '${songbook.shortcut}${_entity.songbookRecords.firstWhere((record) => record.songbookId == songbook.id).number}';
+      '${songbook.shortcut} ${_entity.songbookRecords.firstWhere((record) => record.songbookId == songbook.id).number}';
 
   // todo: add songbook shortcut
   List<String> get numbers =>
@@ -101,9 +102,9 @@ class SongLyric extends ChangeNotifier {
 
   bool get hasChords => _hasChords ??= _entity.lyrics.contains(_chordsRE);
 
-  bool get showChords => _entity.showChords ?? SettingsProvider.shared.showChords;
+  bool get showChords => _entity.showChords ?? hasChords && (DataProvider.shared.prefs.getBool('show_chords') ?? true);
 
-  bool get accidentals => _entity.accidentals ?? SettingsProvider.shared.accidentals;
+  bool get accidentals => _entity.accidentals ?? (DataProvider.shared.prefs.getBool('accidentals') ?? false);
 
   bool get hasTranslations => _song.songLyrics.length > 1;
 
@@ -129,6 +130,7 @@ class SongLyric extends ChangeNotifier {
     Database.shared.updateSongLyric(_entity, ['favorite_order'].toSet());
 
     // fixme: it will also redraw lyrics because of this
+    // it makes slower animation of filled star change
     notifyListeners();
   }
 

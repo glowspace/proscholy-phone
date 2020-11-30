@@ -5,10 +5,10 @@ import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songLyric.dart';
 import 'package:zpevnik/providers/scroll_provider.dart';
 import 'package:zpevnik/providers/settings_provider.dart';
+import 'package:zpevnik/screens/components/data_container.dart';
 import 'package:zpevnik/screens/components/highlightable_button.dart';
 import 'package:zpevnik/screens/song_lyric/components/lyrics_widget.dart';
 import 'package:zpevnik/screens/song_lyric/components/sliding_widget.dart';
-import 'package:zpevnik/screens/song_lyric/components/song_lyric_container.dart';
 import 'package:zpevnik/screens/song_lyric/components/song_lyric_menu.dart';
 import 'package:zpevnik/screens/song_lyric/components/song_lyric_settings.dart';
 import 'package:zpevnik/screens/song_lyric/externals_widget.dart';
@@ -60,78 +60,80 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
         appBar: _fullScreen
             ? null
             : AppBar(
-                title: Text(widget.songLyric.id.toString()),
+                title: Text(widget.songLyric.id.toString(), style: AppThemeNew.of(context).bodyTextStyle),
                 shadowColor: AppTheme.shared.appBarDividerColor(context),
                 actions: _actions(context),
               ),
         body: _body(context),
       );
 
-  Widget _body(BuildContext context) => SongLyricContainer(
-        songLyric: widget.songLyric,
-        child: SafeArea(
-          child: GestureDetector(
-            onScaleStart: SettingsProvider.shared.fontScaleStarted,
-            onScaleUpdate: SettingsProvider.shared.fontScaleUpdated,
-            onTap: _toggleFullScreen,
-            child: Stack(
-              children: [
-                NotificationListener(
-                  onNotification: (notif) {
-                    if (notif is ScrollEndNotification) setState(() => _scrollProvider.scrollEnded());
+  Widget _body(BuildContext context) {
+    final settingsProvider = Provider.of<SettingsProvider>(context, listen: false);
 
-                    return true;
-                  },
-                  child: Container(
-                    height: double.infinity,
-                    child: SingleChildScrollView(
-                      controller: _scrollController,
-                      child: Container(
-                        padding: EdgeInsets.symmetric(vertical: kDefaultPadding, horizontal: kDefaultPadding),
-                        child: ChangeNotifierProvider.value(
-                          value: SettingsProvider.shared,
-                          child: LyricsWidget(songLyric: widget.songLyric),
-                        ),
-                      ),
+    return DataContainer(
+      data: widget.songLyric,
+      child: SafeArea(
+        child: GestureDetector(
+          onScaleStart: settingsProvider.fontScaleStarted,
+          onScaleUpdate: settingsProvider.fontScaleUpdated,
+          onTap: _toggleFullScreen,
+          child: Stack(
+            children: [
+              NotificationListener(
+                onNotification: (notif) {
+                  if (notif is ScrollEndNotification) setState(() => _scrollProvider.scrollEnded());
+
+                  return true;
+                },
+                child: Container(
+                  height: double.infinity,
+                  child: SingleChildScrollView(
+                    controller: _scrollController,
+                    child: Container(
+                      padding: EdgeInsets.symmetric(vertical: kDefaultPadding, horizontal: kDefaultPadding),
+                      child: LyricsWidget(songLyric: widget.songLyric),
                     ),
                   ),
                 ),
-                Positioned(right: 0, child: SongLyricMenu(showing: _showingMenu)),
-                if (SettingsProvider.shared.showBottomOptions)
-                  Positioned(
-                    right: 0,
-                    bottom: kDefaultPadding,
-                    child: ChangeNotifierProvider.value(
-                      value: _scrollProvider,
-                      child: SlidingWidget(
-                        showSettings: _showSettings,
-                        showExternals: widget.songLyric.youtubes.isNotEmpty ? _showExternals : null,
-                      ),
+              ),
+              Positioned(right: 0, child: SongLyricMenu(showing: _showingMenu)),
+              if (settingsProvider.showBottomOptions)
+                Positioned(
+                  right: 0,
+                  bottom: kDefaultPadding,
+                  child: DataContainer(
+                    data: _scrollProvider,
+                    child: SlidingWidget(
+                      showSettings: _showSettings,
+                      showExternals: widget.songLyric.youtubes.isNotEmpty ? _showExternals : null,
+                      scrollProvider: _scrollProvider,
                     ),
                   ),
-              ],
-            ),
+                ),
+            ],
           ),
         ),
-      );
+      ),
+    );
+  }
 
   List<Widget> _actions(BuildContext context) {
-    final padding = EdgeInsets.symmetric(horizontal: kDefaultPadding / 2, vertical: kDefaultPadding / 2);
+    final padding = EdgeInsets.symmetric(horizontal: kDefaultPadding / 2, vertical: kDefaultPadding);
 
     return [
       if (widget.songLyric.hasTranslations)
         HighlightableButton(
-          icon: Icons.translate,
+          icon: Icon(Icons.translate),
           padding: padding,
           onPressed: () => _pushTranslateScreen(context),
         ),
       HighlightableButton(
-        icon: widget.songLyric.isFavorite ? Icons.star : Icons.star_outline,
+        icon: Icon(widget.songLyric.isFavorite ? Icons.star : Icons.star_outline),
         padding: padding,
         onPressed: widget.songLyric.toggleFavorite,
       ),
       HighlightableButton(
-        icon: Icons.more_vert,
+        icon: Icon(Icons.more_vert),
         padding: padding,
         onPressed: () => _showingMenu.value = !_showingMenu.value,
       ),
@@ -142,7 +144,7 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
         context: context,
         child: ChangeNotifierProvider.value(
           value: widget.songLyric,
-          child: ChangeNotifierProvider.value(value: SettingsProvider.shared, child: SongLyricSettings()),
+          child: SongLyricSettings(),
         ),
         height: 0.67 * MediaQuery.of(context).size.height,
       );
@@ -157,12 +159,12 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
     // if user came here from translation screen pop back instead of pushing to new
     // so user can't keep infinitely pushing new screens
     // fixme: doesn't work now
-    if (SongLyricContainer.of(context) != null)
+    if (DataContainer.of<SongLyric>(context) != null)
       Navigator.of(context).pop();
     else
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (context) => SongLyricContainer(child: TranslationsScreen(), songLyric: widget.songLyric),
+          builder: (context) => DataContainer(child: TranslationsScreen(), data: widget.songLyric),
         ),
       );
   }

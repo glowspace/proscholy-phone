@@ -6,13 +6,14 @@ import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/custom_icon_icons.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/providers/playlists_provider.dart';
-import 'package:zpevnik/screens/components/custom_icon_button.dart';
+import 'package:zpevnik/screens/components/highlightable_button.dart';
 import 'package:zpevnik/screens/components/menu_item.dart';
 import 'package:zpevnik/screens/components/playlist_row.dart';
 import 'package:zpevnik/screens/components/popup_menu.dart';
 import 'package:zpevnik/screens/components/reorderable_row.dart';
 import 'package:zpevnik/screens/user/components/user_menu.dart';
 import 'package:zpevnik/screens/user/favorite_screen.dart';
+import 'package:zpevnik/status_bar_wrapper.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/platform.dart';
 import 'package:zpevnik/screens/components/search_widget.dart';
@@ -48,10 +49,10 @@ class _UserScreenState extends State<UserScreen> with PlatformStateMixin {
   }
 
   @override
-  Widget iOSWidget(BuildContext context) => CupertinoPageScaffold(child: _body(context));
+  Widget iOSWidget(BuildContext context) => StatusBarWrapper(child: CupertinoPageScaffold(child: _body(context)));
 
   @override
-  Widget androidWidget(BuildContext context) => Scaffold(body: _body(context));
+  Widget androidWidget(BuildContext context) => StatusBarWrapper(child: Scaffold(body: _body(context)));
 
   Widget _body(BuildContext context) {
     final playlists = PlaylistsProvider.shared.playlists;
@@ -65,7 +66,10 @@ class _UserScreenState extends State<UserScreen> with PlatformStateMixin {
             behavior: HitTestBehavior.translucent,
             child: Column(
               children: [
-                Container(padding: EdgeInsets.symmetric(horizontal: kDefaultPadding), child: _searchWidget(context)),
+                Container(
+                  padding: EdgeInsets.fromLTRB(kDefaultPadding, 0, kDefaultPadding, kDefaultPadding),
+                  child: _searchWidget(context),
+                ),
                 Scrollbar(
                   child: SingleChildScrollView(
                     child: Column(
@@ -232,9 +236,9 @@ class _UserScreenState extends State<UserScreen> with PlatformStateMixin {
         key: PageStorageKey('user_screen_search_widget'),
         placeholder: 'Zadejte název seznamu písní',
         focusNode: searchFieldFocusNode,
-        prefix: CustomIconButton(
+        prefix: HighlightableButton(
+          icon: Icon(Icons.search),
           onPressed: () => FocusScope.of(context).requestFocus(searchFieldFocusNode),
-          icon: Icon(Icons.search, color: AppTheme.shared.searchFieldIconColor(context)),
         ),
       );
 

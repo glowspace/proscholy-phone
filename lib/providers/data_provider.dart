@@ -1,3 +1,4 @@
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song.dart';
 import 'package:zpevnik/models/songLyric.dart';
@@ -15,7 +16,12 @@ class DataProvider {
   List<Tag> _tags;
   List<Playlist> _playlists;
 
+  // fixme: temporary solution, needed by `SongLyric`
+  SharedPreferences prefs;
+
   Future<void> init() async {
+    prefs = await SharedPreferences.getInstance();
+
     final songs = (await Database.shared.songs).map((key, value) => MapEntry(key, Song(value)));
 
     _songLyrics = (await Database.shared.songLyrics).map((songLyricEntity) {

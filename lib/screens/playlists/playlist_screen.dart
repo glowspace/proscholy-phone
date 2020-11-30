@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/providers/song_lyrics_provider.dart';
-import 'package:zpevnik/screens/components/custom_icon_button.dart';
 import 'package:zpevnik/screens/components/highlightable_button.dart';
 import 'package:zpevnik/screens/components/search_widget.dart';
 import 'package:zpevnik/screens/components/song_lyrics_list.dart';
@@ -49,6 +49,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> with PlatformStateMixin
         appBar: AppBar(
           leading: _leading(context),
           title: _middle(context),
+          titleSpacing: kDefaultPadding,
           actions: [_trailing(context)],
           leadingWidth: _searching ? 0 : null,
           shadowColor: AppTheme.shared.appBarDividerColor(context),
@@ -64,14 +65,14 @@ class _PlaylistScreenState extends State<PlaylistScreen> with PlatformStateMixin
           placeholder: 'Zadejte slovo nebo číslo',
           search: _songLyricsProvider.search,
           prefix: HighlightableButton(
-            icon: Icons.arrow_back,
+            icon: Icon(Icons.arrow_back),
             onPressed: () => setState(() {
               _songLyricsProvider.search('');
               _searching = false;
             }),
           ),
           suffix: HighlightableButton(
-            icon: Icons.filter_list,
+            icon: Icon(Icons.filter_list),
             onPressed: () => _songLyricsProvider.tagsProvider.showFilters(context),
           ),
         )
@@ -79,7 +80,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> with PlatformStateMixin
 
   Widget _trailing(BuildContext context) => _searching
       ? Container(width: 0)
-      : HighlightableButton(icon: Icons.search, onPressed: () => setState(() => _searching = true));
+      : HighlightableButton(icon: Icon(Icons.search), onPressed: () => setState(() => _searching = true));
 
   Widget _body(BuildContext context) => SafeArea(
         child: ChangeNotifierProvider.value(value: _songLyricsProvider, child: SongLyricsListView()),

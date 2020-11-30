@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/theme.dart';
 
 class PopupMenu extends StatefulWidget {
   final List<Widget> children;
@@ -28,26 +29,13 @@ class _PopupMenuState extends State<PopupMenu> with SingleTickerProviderStateMix
   }
 
   @override
-  Widget build(BuildContext context) => _collapseable(
-      context,
-      Container(
-        decoration: BoxDecoration(
-          color: Theme.of(context).scaffoldBackgroundColor,
-          border: widget.border,
-        ),
-        child: IntrinsicWidth(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: widget.children,
-          ),
-        ),
-      ),
-      _animation);
-
-  Widget _collapseable(BuildContext context, Widget child, Animation<double> animation) => SizeTransition(
-        sizeFactor: animation,
+  Widget build(BuildContext context) => SizeTransition(
+        sizeFactor: _animation,
         axis: Axis.vertical,
-        child: child,
+        child: Container(
+          decoration: BoxDecoration(color: AppThemeNew.of(context).backgroundColor, border: widget.border),
+          child: IntrinsicWidth(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: widget.children)),
+        ),
       );
 
   void _update() =>

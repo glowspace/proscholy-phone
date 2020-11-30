@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songLyric.dart';
+import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/providers/song_lyrics_provider.dart';
 import 'package:zpevnik/screens/components/circular_checkbox.dart';
 import 'package:zpevnik/screens/components/highlightable_row.dart';
-import 'package:zpevnik/screens/song_lyric/components/song_lyric_container.dart';
 import 'package:zpevnik/screens/song_lyric/song_lyric_screen.dart';
-import 'package:zpevnik/screens/songbooks/componenets/songbook_provider.dart';
+import 'package:zpevnik/screens/components/data_container.dart';
 import 'package:zpevnik/theme.dart';
 
 class SongLyricRowNew extends StatefulWidget {
@@ -23,24 +23,32 @@ class SongLyricRowNew extends StatefulWidget {
 class _SongLyricRowStateNew extends State<SongLyricRowNew> {
   @override
   Widget build(BuildContext context) {
+    final songbookContainer = DataContainer.of<Songbook>(context);
+    final numberWidth = MediaQuery.of(context).size.width;
+
     return HighlightableRow(
       onPressed: () => _pushSongLyric(context),
-      padding: EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding),
+      padding: EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding, vertical: kDefaultPadding),
       highlightColor: AppThemeNew.of(context).highlightColor,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          if (songbookContainer != null)
+            Container(
+              padding: EdgeInsets.only(right: kDefaultPadding),
+              child: _songLyricNumber(context, widget.songLyric.number(songbookContainer.data), numberWidth),
+            ),
           Expanded(child: Text(widget.songLyric.name, style: AppThemeNew.of(context).bodyTextStyle)),
           if (widget.showStar && widget.songLyric.isFavorite)
-            Transform.scale(scale: 0.75, child: Icon(Icons.star, color: AppThemeNew.of(context).iconColor)),
-          _songLyricNumber(context, widget.songLyric.id.toString()),
+            Icon(Icons.star, color: AppThemeNew.of(context).iconColor, size: 16),
+          _songLyricNumber(context, widget.songLyric.id.toString(), numberWidth),
         ],
       ),
     );
   }
 
-  Widget _songLyricNumber(BuildContext context, String number) => SizedBox(
-        width: 32,
+  Widget _songLyricNumber(BuildContext context, String number, double width) => SizedBox(
+        width: 36,
         child: FittedBox(
           fit: BoxFit.scaleDown,
           alignment: Alignment.centerRight,
@@ -52,7 +60,7 @@ class _SongLyricRowStateNew extends State<SongLyricRowNew> {
     FocusScope.of(context).unfocus();
 
     // if selecte songLyric is already in context pop back to it (used for translation screen)
-    if (widget.songLyric == SongLyricContainer.of(context)?.songLyric)
+    if (widget.songLyric == DataContainer.of<SongLyric>(context)?.data)
       Navigator.of(context).pop();
     else
       Navigator.of(context).push(MaterialPageRoute(builder: (context) => SongLyricScreen(songLyric: widget.songLyric)));
@@ -84,7 +92,7 @@ class _SongLyricRowState extends State<SongLyricRow> {
   @override
   Widget build(BuildContext context) {
     final selectionProvider = Provider.of<SongLyricsProvider>(context, listen: false).selectionProvider;
-    final songbookProvider = SongbookProvider.of(context);
+    final songbookContainer = DataContainer.of<Songbook>(context);
 
     return GestureDetector(
       onLongPress: selectionProvider == null ? null : () => selectionProvider?.toggleSongLyric(widget.songLyric),
@@ -107,10 +115,10 @@ class _SongLyricRowState extends State<SongLyricRow> {
                 padding: EdgeInsets.only(right: kDefaultPadding),
                 child: CircularCheckbox(selected: selectionProvider?.isSelected(widget.songLyric) ?? false),
               )
-            else if (songbookProvider != null)
+            else if (songbookContainer != null)
               Container(
                 padding: EdgeInsets.only(right: kDefaultPadding),
-                child: _songLyricNumber(context, widget.songLyric.number(songbookProvider.songbook)),
+                child: _songLyricNumber(context, widget.songLyric.number(songbookContainer.data)),
               ),
             Expanded(child: Text(widget.songLyric.name, style: AppThemeNew.of(context).bodyTextStyle)),
             if (widget.showStar && widget.songLyric.isFavorite)

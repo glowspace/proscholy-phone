@@ -17,8 +17,7 @@ class UserMenuWidget extends StatelessWidget {
             title: 'Nastavení',
             icon: Icons.settings,
             onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) =>
-                  ChangeNotifierProvider.value(value: SettingsProvider.shared, child: SettingsScreen()),
+              builder: (context) => SettingsScreen(),
             )),
           ),
           MenuItem(

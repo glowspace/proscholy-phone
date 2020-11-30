@@ -30,7 +30,6 @@ dependencies:
   flutter_share: any
 
   youtube_player_flutter: any
-  video_player: any
   flutter_svg: any
   flutter_reorderable_list: any
 

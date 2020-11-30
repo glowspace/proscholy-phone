@@ -19,6 +19,10 @@ class Songbook extends Comparable {
 
   bool get isPinned => _entity.isPinned;
 
+  String get color => _entity.color;
+
+  String get colorText => _entity.colorText;
+
   set pinned(value) {
     _entity.isPinned = value;
     Database.shared.updateSongbook(_entity, ['is_pinned'].toSet());

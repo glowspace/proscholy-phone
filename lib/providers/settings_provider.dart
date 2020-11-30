@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wakelock/wakelock.dart';
 import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/providers/data_provider.dart';
 
 const String _fontSizeKey = 'font_size';
 const String _showChordsKey = 'show_chords';
@@ -19,21 +20,17 @@ class SettingsProvider extends ChangeNotifier {
 
   SharedPreferences _prefs;
 
-  SettingsProvider._();
+  SettingsProvider() {
+    _prefs = DataProvider.shared.prefs;
 
-  static final SettingsProvider shared = SettingsProvider._();
+    _fontSize = _prefs.getDouble(_fontSizeKey) ?? 17;
+    _showChords = _prefs.getBool(_showChordsKey) ?? true;
+    _accidentals = _prefs.getBool(_accidentalsKey) ?? false;
+    _blockDisplayOff = _prefs.getBool(_blockDisplayOffKey) ?? false;
+    _showBottomOptions = _prefs.getBool(_showBottomOptionsKey) ?? true;
 
-  void init() => SharedPreferences.getInstance().then((prefs) {
-        _prefs = prefs;
-
-        _fontSize = prefs.getDouble(_fontSizeKey) ?? 17;
-        _showChords = prefs.getBool(_showChordsKey) ?? true;
-        _accidentals = prefs.getBool(_accidentalsKey) ?? false;
-        _blockDisplayOff = prefs.getBool(_blockDisplayOffKey) ?? false;
-        _showBottomOptions = prefs.getBool(_showBottomOptionsKey) ?? true;
-
-        if (_blockDisplayOff) Wakelock.enable();
-      });
+    if (_blockDisplayOff) Wakelock.enable();
+  }
 
   double get fontSize => _fontSize;
 

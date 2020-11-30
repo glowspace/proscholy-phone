@@ -1,14 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/providers/song_lyrics_provider.dart';
-import 'package:zpevnik/screens/components/custom_icon_button.dart';
 import 'package:zpevnik/screens/components/highlightable_button.dart';
 import 'package:zpevnik/screens/components/search_widget.dart';
 import 'package:zpevnik/screens/components/song_lyrics_list.dart';
-import 'package:zpevnik/screens/songbooks/componenets/songbook_provider.dart';
+import 'package:zpevnik/screens/components/data_container.dart';
 import 'package:zpevnik/theme.dart';
+import 'package:zpevnik/utils/hex_color.dart';
 import 'package:zpevnik/utils/platform.dart';
 
 class SongbookScreen extends StatefulWidget {
@@ -37,6 +38,9 @@ class _SongbookScreenState extends State<SongbookScreen> with PlatformStateMixin
   @override
   Widget iOSWidget(BuildContext context) => CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
+          backgroundColor: (widget.songbook.color == null || !AppThemeNew.of(context).isLight)
+              ? null
+              : HexColor(widget.songbook.color),
           leading: _leading(context),
           middle: _middle(context),
           trailing: _trailing(context),
@@ -48,8 +52,12 @@ class _SongbookScreenState extends State<SongbookScreen> with PlatformStateMixin
   @override
   Widget androidWidget(BuildContext context) => Scaffold(
         appBar: AppBar(
+          backgroundColor: (widget.songbook.color == null || !AppThemeNew.of(context).isLight)
+              ? null
+              : HexColor(widget.songbook.color),
           leading: _leading(context),
           title: _middle(context),
+          titleSpacing: kDefaultPadding,
           actions: [_trailing(context)],
           leadingWidth: _searching ? 0 : null,
           shadowColor: AppTheme.shared.appBarDividerColor(context),
@@ -65,27 +73,30 @@ class _SongbookScreenState extends State<SongbookScreen> with PlatformStateMixin
           placeholder: 'Zadejte slovo nebo číslo',
           search: _songLyricsProvider.search,
           prefix: HighlightableButton(
-            icon: Icons.arrow_back,
+            icon: Icon(Icons.arrow_back),
             onPressed: () => setState(() {
               _songLyricsProvider.search('');
               _searching = false;
             }),
           ),
           suffix: HighlightableButton(
-            icon: Icons.filter_list,
+            icon: Icon(Icons.filter_list),
             onPressed: () => _songLyricsProvider.tagsProvider.showFilters(context),
           ),
         )
-      : Text(widget.songbook.name);
+      : Text(widget.songbook.name,
+          style: (widget.songbook.colorText == null || !AppThemeNew.of(context).isLight)
+              ? null
+              : AppThemeNew.of(context).bodyTextStyle.copyWith(color: HexColor(widget.songbook.colorText)));
 
   Widget _trailing(BuildContext context) => _searching
       ? Container(width: 0)
-      : HighlightableButton(icon: Icons.search, onPressed: () => setState(() => _searching = true));
+      : HighlightableButton(icon: Icon(Icons.search), onPressed: () => setState(() => _searching = true));
 
   Widget _body(BuildContext context) => SafeArea(
-        child: SongbookProvider(
+        child: DataContainer(
           child: ChangeNotifierProvider.value(value: _songLyricsProvider, child: SongLyricsListView()),
-          songbook: widget.songbook,
+          data: widget.songbook,
         ),
       );
 }

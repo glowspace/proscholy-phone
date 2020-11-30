@@ -12,6 +12,9 @@ class SongbookEntity {
   @Column(isNullable: true)
   final String color;
 
+  @Column(isNullable: true)
+  final String colorText;
+
   final bool isPrivate;
 
   bool isPinned;
@@ -24,6 +27,7 @@ class SongbookEntity {
     this.name,
     this.shortcut,
     this.color,
+    this.colorText,
     this.isPrivate,
     this.isPinned,
   });
@@ -33,6 +37,7 @@ class SongbookEntity {
         name: json['name'],
         shortcut: json['shortcut'],
         color: json['color'],
+        colorText: json['color_text'],
         isPrivate: json['is_private'],
         isPinned: false,
       );

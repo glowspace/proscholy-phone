@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/data_provider.dart';
@@ -8,6 +9,7 @@ import 'package:zpevnik/providers/selection_provider.dart';
 import 'package:zpevnik/providers/song_lyrics_provider.dart';
 import 'package:zpevnik/screens/components/highlightable_button.dart';
 import 'package:zpevnik/screens/components/song_lyrics_list.dart';
+import 'package:zpevnik/status_bar_wrapper.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/platform.dart';
 import 'package:zpevnik/screens/components/search_widget.dart';
@@ -43,28 +45,32 @@ class _HomeScreenState extends State<HomeScreen> with PlatformStateMixin {
   }
 
   @override
-  Widget iOSWidget(BuildContext context) => CupertinoPageScaffold(
-        navigationBar: _selectionProvider.selectionEnabled
-            ? CupertinoNavigationBar(
-                leading: _leading(context),
-                middle: _middle(context),
-                trailing: Row(mainAxisSize: MainAxisSize.min, children: _actions(context)),
-                padding: EdgeInsetsDirectional.only(start: kDefaultPadding, end: kDefaultPadding),
-              )
-            : null,
-        child: _body(context),
+  Widget iOSWidget(BuildContext context) => StatusBarWrapper(
+        child: CupertinoPageScaffold(
+          navigationBar: _selectionProvider.selectionEnabled
+              ? CupertinoNavigationBar(
+                  leading: _leading(context),
+                  middle: _middle(context),
+                  trailing: Row(mainAxisSize: MainAxisSize.min, children: _actions(context)),
+                  padding: EdgeInsetsDirectional.only(start: kDefaultPadding, end: kDefaultPadding),
+                )
+              : null,
+          child: _body(context),
+        ),
       );
 
   @override
-  Widget androidWidget(BuildContext context) => Scaffold(
-        appBar: _selectionProvider.selectionEnabled
-            ? AppBar(
-                leading: _leading(context),
-                title: _middle(context),
-                actions: _selectionProvider.selectionEnabled ? _actions(context) : null,
-              )
-            : null,
-        body: _body(context),
+  Widget androidWidget(BuildContext context) => StatusBarWrapper(
+        child: Scaffold(
+          appBar: _selectionProvider.selectionEnabled
+              ? AppBar(
+                  leading: _leading(context),
+                  title: _middle(context),
+                  actions: _selectionProvider.selectionEnabled ? _actions(context) : null,
+                )
+              : null,
+          body: _body(context),
+        ),
       );
 
   Widget _body(BuildContext context) => SafeArea(
@@ -83,7 +89,7 @@ class _HomeScreenState extends State<HomeScreen> with PlatformStateMixin {
       );
 
   Widget _leading(BuildContext context) => HighlightableButton(
-        icon: Icons.close,
+        icon: Icon(Icons.close),
         color: AppTheme.shared.selectedRowColor(context),
         padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2, vertical: kDefaultPadding / 2),
         onPressed: () => setState(() => _selectionProvider.selectionEnabled = false),
@@ -106,19 +112,19 @@ class _HomeScreenState extends State<HomeScreen> with PlatformStateMixin {
 
     return [
       HighlightableButton(
-        icon: _selectionProvider.allFavorited ? Icons.star : Icons.star_outline,
+        icon: Icon(_selectionProvider.allFavorited ? Icons.star : Icons.star_outline),
         color: AppTheme.shared.selectedRowColor(context),
         padding: padding,
         onPressed: _selectionProvider.selectedCount > 0 ? () => _selectionProvider.toggleFavorite() : null,
       ),
       HighlightableButton(
-        icon: Icons.playlist_add,
+        icon: Icon(Icons.playlist_add),
         color: AppTheme.shared.selectedRowColor(context),
         padding: padding,
         onPressed: () => PlaylistsProvider.shared.showPlaylists(context, _selectionProvider.selected),
       ),
       HighlightableButton(
-        icon: Icons.select_all,
+        icon: Icon(Icons.select_all),
         color: AppTheme.shared.selectedRowColor(context),
         padding: padding,
         onPressed: () => _selectionProvider.toggleAll(_songLyricsProvider.songLyrics),
@@ -132,11 +138,11 @@ class _HomeScreenState extends State<HomeScreen> with PlatformStateMixin {
         search: _songLyricsProvider.search,
         focusNode: searchFieldFocusNode,
         prefix: HighlightableButton(
-          icon: Icons.search,
+          icon: Icon(Icons.search),
           onPressed: () => FocusScope.of(context).requestFocus(searchFieldFocusNode),
         ),
         suffix: HighlightableButton(
-          icon: Icons.filter_list,
+          icon: Icon(Icons.filter_list),
           onPressed: () => _songLyricsProvider.tagsProvider.showFilters(context),
         ),
       );

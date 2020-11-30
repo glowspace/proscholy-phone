@@ -57,19 +57,17 @@ class _SearchWidgetState extends State<SearchWidget> with PlatformStateMixin {
   @override
   Widget androidWidget(BuildContext context) => _body(
         context,
-        FittedBox(
-          fit: BoxFit.scaleDown,
-          child: IntrinsicWidth(
-            child: TextField(
-              key: PageStorageKey('text_field'),
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                hintText: widget.placeholder,
-              ),
-              focusNode: widget.focusNode,
-              controller: _textController,
-              onChanged: _searchTextChanged,
+        LayoutBuilder(
+          builder: (context, constraints) => TextField(
+            key: PageStorageKey('text_field'),
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              hintText: widget.placeholder,
+              hintStyle: _placeholderStyle(context, constraints.maxWidth),
             ),
+            focusNode: widget.focusNode,
+            controller: _textController,
+            onChanged: _searchTextChanged,
           ),
         ),
       );
@@ -77,6 +75,7 @@ class _SearchWidgetState extends State<SearchWidget> with PlatformStateMixin {
   Widget _body(BuildContext context, Widget child) => Container(
         padding: EdgeInsets.symmetric(horizontal: kDefaultPadding),
         decoration: BoxDecoration(
+          color: AppThemeNew.of(context).backgroundColor,
           border: Border.all(color: AppThemeNew.of(context).borderColor),
           borderRadius: BorderRadius.all(Radius.circular(10)),
         ),
@@ -94,7 +93,7 @@ class _SearchWidgetState extends State<SearchWidget> with PlatformStateMixin {
     widget.search(searchText);
   }
 
-  // could not find good way with fittedbox on iOS, so compute fontSize, that will fit
+  // could not find good way with fittedbox, so compute fontSize, that will fit
   TextStyle _placeholderStyle(BuildContext context, double width) {
     double fontSize = 17;
     TextStyle textStyle;

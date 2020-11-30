@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:zpevnik/providers/settings_provider.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/platform.dart';
 import 'package:zpevnik/utils/updater.dart';
@@ -29,7 +31,12 @@ class _MainWidgetstate extends State<MainWidget> with PlatformStateMixin, Widget
   @override
   Widget iOSWidget(BuildContext context) => _wrap(
         context,
-        (context, home) => CupertinoApp(title: _title, theme: AppThemeNew.of(context).cupertinoTheme, home: home),
+        (context, home) => CupertinoApp(
+          localizationsDelegates: [DefaultMaterialLocalizations.delegate],
+          title: _title,
+          theme: AppThemeNew.of(context).cupertinoTheme,
+          home: home,
+        ),
       );
 
   @override
@@ -43,13 +50,12 @@ class _MainWidgetstate extends State<MainWidget> with PlatformStateMixin, Widget
     final platform = Theme.of(context).platform;
 
     return AppThemeNew(
-      child: Builder(
-        builder: (context) => builder(
-          context,
-          FutureBuilder<bool>(
-            future: Updater.shared.update(),
-            builder: (context, snapshot) => snapshot.hasData ? ContentScreen() : LoadingScreen(),
-          ),
+      child: ChangeNotifierProvider(
+        create: (context) => SettingsProvider(),
+        builder: builder,
+        child: FutureBuilder<bool>(
+          future: Updater.shared.update(),
+          builder: (context, snapshot) => snapshot.hasData ? ContentScreen() : LoadingScreen(),
         ),
       ),
       brightness: WidgetsBinding.instance.window.platformBrightness,
@@ -75,5 +81,5 @@ class _MainWidgetstate extends State<MainWidget> with PlatformStateMixin, Widget
 // widget for setting platform for debugging
 class DebugWidget extends StatelessWidget {
   @override
-  Widget build(BuildContext context) => Theme(data: ThemeData(platform: TargetPlatform.iOS), child: MainWidget());
+  Widget build(BuildContext context) => Theme(data: ThemeData(platform: TargetPlatform.android), child: MainWidget());
 }

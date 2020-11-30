@@ -47,13 +47,13 @@ class SongbookWidget extends StatelessWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Expanded(child: Text(songbook.name, style: AppThemeNew.of(context).bodyTextStyle)),
+                    Expanded(child: Text(songbook.name, style: AppThemeNew.of(context).bodyTextStyle, maxLines: 2)),
                     Consumer<SongbooksProvider>(
                       builder: (context, provider, _) => Transform.scale(
                         scale: 0.75,
                         child: HighlightableButton(
                           onPressed: () => provider.togglePinned(songbook),
-                          icon: songbook.isPinned ? Icons.push_pin : Icons.push_pin_outlined,
+                          icon: Icon(songbook.isPinned ? Icons.push_pin : Icons.push_pin_outlined),
                         ),
                       ),
                     ),

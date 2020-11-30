@@ -61,7 +61,7 @@ class SongLyricSettings extends StatelessWidget {
             children: [
               HighlightableButton(
                 padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
-                icon: Icons.remove,
+                icon: Icon(Icons.remove),
                 highlightColor: AppTheme.shared.highlightColor(context),
                 onPressed: () => songLyric.changeTransposition(-1),
               ),
@@ -71,7 +71,7 @@ class SongLyricSettings extends StatelessWidget {
               ),
               HighlightableButton(
                 padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
-                icon: Icons.add,
+                icon: Icon(Icons.add),
                 highlightColor: AppTheme.shared.highlightColor(context),
                 onPressed: () => songLyric.changeTransposition(1),
               ),

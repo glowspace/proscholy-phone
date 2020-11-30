@@ -789,6 +789,7 @@ abstract class _SongbookBean implements Bean<SongbookEntity> {
   final name = StrField('name');
   final shortcut = StrField('shortcut');
   final color = StrField('color');
+  final colorText = StrField('color_text');
   final isPrivate = BoolField('is_private');
   final isPinned = BoolField('is_pinned');
   Map<String, Field> _fields;
@@ -797,6 +798,7 @@ abstract class _SongbookBean implements Bean<SongbookEntity> {
         name.name: name,
         shortcut.name: shortcut,
         color.name: color,
+        colorText.name: colorText,
         isPrivate.name: isPrivate,
         isPinned.name: isPinned,
       };
@@ -806,6 +808,7 @@ abstract class _SongbookBean implements Bean<SongbookEntity> {
       name: adapter.parseValue(map['name']),
       shortcut: adapter.parseValue(map['shortcut']),
       color: adapter.parseValue(map['color']),
+      colorText: adapter.parseValue(map['color_text']),
       isPrivate: adapter.parseValue(map['is_private']),
     );
     model.isPinned = adapter.parseValue(map['is_pinned']);
@@ -822,6 +825,7 @@ abstract class _SongbookBean implements Bean<SongbookEntity> {
       ret.add(name.set(model.name));
       ret.add(shortcut.set(model.shortcut));
       ret.add(color.set(model.color));
+      ret.add(colorText.set(model.colorText));
       ret.add(isPrivate.set(model.isPrivate));
       ret.add(isPinned.set(model.isPinned));
     } else if (only != null) {
@@ -829,6 +833,8 @@ abstract class _SongbookBean implements Bean<SongbookEntity> {
       if (only.contains(name.name)) ret.add(name.set(model.name));
       if (only.contains(shortcut.name)) ret.add(shortcut.set(model.shortcut));
       if (only.contains(color.name)) ret.add(color.set(model.color));
+      if (only.contains(colorText.name))
+        ret.add(colorText.set(model.colorText));
       if (only.contains(isPrivate.name))
         ret.add(isPrivate.set(model.isPrivate));
       if (only.contains(isPinned.name)) ret.add(isPinned.set(model.isPinned));
@@ -844,6 +850,9 @@ abstract class _SongbookBean implements Bean<SongbookEntity> {
       }
       if (model.color != null) {
         ret.add(color.set(model.color));
+      }
+      if (model.colorText != null) {
+        ret.add(colorText.set(model.colorText));
       }
       if (model.isPrivate != null) {
         ret.add(isPrivate.set(model.isPrivate));
@@ -862,6 +871,7 @@ abstract class _SongbookBean implements Bean<SongbookEntity> {
     st.addStr(name.name, isNullable: false);
     st.addStr(shortcut.name, isNullable: false);
     st.addStr(color.name, isNullable: true);
+    st.addStr(colorText.name, isNullable: true);
     st.addBool(isPrivate.name, isNullable: false);
     st.addBool(isPinned.name, isNullable: false);
     return adapter.createTable(st);
@@ -1970,16 +1980,12 @@ abstract class _PlaylistBean implements Bean<PlaylistEntity> {
     List<SetColumn> ret = [];
 
     if (only == null && !onlyNonNull) {
-      if (model.id != null) {
-        ret.add(id.set(model.id));
-      }
+      ret.add(id.set(model.id));
       ret.add(name.set(model.name));
       ret.add(isArchived.set(model.isArchived));
       ret.add(orderValue.set(model.orderValue));
     } else if (only != null) {
-      if (model.id != null) {
-        if (only.contains(id.name)) ret.add(id.set(model.id));
-      }
+      if (only.contains(id.name)) ret.add(id.set(model.id));
       if (only.contains(name.name)) ret.add(name.set(model.name));
       if (only.contains(isArchived.name))
         ret.add(isArchived.set(model.isArchived));
@@ -2005,7 +2011,7 @@ abstract class _PlaylistBean implements Bean<PlaylistEntity> {
 
   Future<void> createTable({bool ifNotExists = false}) async {
     final st = Sql.create(tableName, ifNotExists: ifNotExists);
-    st.addInt(id.name, primary: true, autoIncrement: true, isNullable: false);
+    st.addInt(id.name, primary: true, isNullable: false);
     st.addStr(name.name, isNullable: false);
     st.addBool(isArchived.name, isNullable: false);
     st.addInt(orderValue.name, isNullable: false);
@@ -2017,13 +2023,12 @@ abstract class _PlaylistBean implements Bean<PlaylistEntity> {
       bool onlyNonNull = false,
       Set<String> only}) async {
     final Insert insert = inserter
-        .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull))
-        .id(id.name);
+        .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
     var retId = await adapter.insert(insert);
     if (cascade) {
       PlaylistEntity newModel;
       if (model.songLyrics != null) {
-        newModel ??= await find(retId);
+        newModel ??= await find(model.id);
         for (final child in model.songLyrics) {
           await songLyricEntityBean.insert(child, cascade: cascade);
           await songLyricPlaylistBean.attach(child, newModel);
@@ -2073,14 +2078,13 @@ abstract class _PlaylistBean implements Bean<PlaylistEntity> {
       }
     } else {
       final Upsert upsert = upserter
-          .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull))
-          .id(id.name);
+          .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
       retId = await adapter.upsert(upsert);
     }
     if (cascade) {
       PlaylistEntity newModel;
       if (model.songLyrics != null) {
-        newModel ??= await find(retId);
+        newModel ??= await find(model.id);
         for (final child in model.songLyrics) {
           await songLyricEntityBean.upsert(child, cascade: cascade);
           await songLyricPlaylistBean.attach(child, newModel, upsert: true);

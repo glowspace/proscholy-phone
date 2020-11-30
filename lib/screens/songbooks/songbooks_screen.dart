@@ -6,7 +6,7 @@ import 'package:zpevnik/providers/data_provider.dart';
 import 'package:zpevnik/providers/songbooks_provider.dart';
 import 'package:zpevnik/screens/components/highlightable_button.dart';
 import 'package:zpevnik/screens/songbooks/componenets/songbooks_list.dart';
-import 'package:zpevnik/theme.dart';
+import 'package:zpevnik/status_bar_wrapper.dart';
 import 'package:zpevnik/utils/platform.dart';
 import 'package:zpevnik/screens/components/search_widget.dart';
 
@@ -34,14 +34,17 @@ class _SongbooksScreenState extends State<SongbooksScreen> with PlatformStateMix
   }
 
   @override
-  Widget iOSWidget(BuildContext context) => CupertinoPageScaffold(child: _body(context));
+  Widget iOSWidget(BuildContext context) => StatusBarWrapper(child: CupertinoPageScaffold(child: _body(context)));
 
   @override
-  Widget androidWidget(BuildContext context) => Scaffold(body: _body(context));
+  Widget androidWidget(BuildContext context) => StatusBarWrapper(child: Scaffold(body: _body(context)));
 
   Widget _body(BuildContext context) => SafeArea(
         child: Column(children: [
-          Container(padding: EdgeInsets.symmetric(horizontal: kDefaultPadding), child: _searchWidget(context)),
+          Container(
+            padding: EdgeInsets.fromLTRB(kDefaultPadding, 0, kDefaultPadding, kDefaultPadding),
+            child: _searchWidget(context),
+          ),
           Expanded(
             child: ChangeNotifierProvider.value(
               value: _songbooksProvider,
@@ -57,7 +60,7 @@ class _SongbooksScreenState extends State<SongbooksScreen> with PlatformStateMix
         focusNode: searchFieldFocusNode,
         search: _songbooksProvider.search,
         prefix: HighlightableButton(
-          icon: Icons.search,
+          icon: Icon(Icons.search),
           onPressed: () => FocusScope.of(context).requestFocus(searchFieldFocusNode),
         ),
       );

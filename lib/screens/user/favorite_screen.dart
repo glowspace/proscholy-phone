@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/data_provider.dart';
 import 'package:zpevnik/providers/song_lyrics_provider.dart';
-import 'package:zpevnik/screens/components/custom_icon_button.dart';
+import 'package:zpevnik/screens/components/highlightable_button.dart';
 import 'package:zpevnik/screens/components/search_widget.dart';
 import 'package:zpevnik/screens/components/reorderable_row.dart';
 import 'package:zpevnik/screens/components/song_lyric_row.dart';
@@ -48,6 +48,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> with PlatformStateMixin
         appBar: AppBar(
           leading: _leading(context),
           title: _middle(context),
+          titleSpacing: kDefaultPadding,
           actions: [_trailing(context)],
           leadingWidth: _searching ? 0 : null,
           shadowColor: AppTheme.shared.appBarDividerColor(context),
@@ -62,16 +63,16 @@ class _FavoriteScreenState extends State<FavoriteScreen> with PlatformStateMixin
           key: PageStorageKey('favorite_search_widget'),
           placeholder: 'Zadejte slovo nebo číslo',
           search: _songLyricsProvider.search,
-          prefix: CustomIconButton(
+          prefix: HighlightableButton(
+            icon: Icon(Icons.arrow_back),
             onPressed: () => setState(() {
               _songLyricsProvider.search('');
               _searching = false;
             }),
-            icon: Icon(Icons.arrow_back),
           ),
-          suffix: CustomIconButton(
-            onPressed: () => _songLyricsProvider.tagsProvider.showFilters(context),
+          suffix: HighlightableButton(
             icon: Icon(Icons.filter_list),
+            onPressed: () => _songLyricsProvider.tagsProvider.showFilters(context),
           ),
         )
       : Text('Písně s hvězdičkou');

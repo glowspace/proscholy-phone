@@ -4,7 +4,7 @@ import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/platform.dart';
 
 class HighlightableButton extends StatefulWidget {
-  final IconData icon;
+  final Widget icon;
   final Color color;
   final Color highlightColor;
   final EdgeInsets padding;
@@ -12,7 +12,7 @@ class HighlightableButton extends StatefulWidget {
 
   const HighlightableButton({
     Key key,
-    this.icon,
+    @required this.icon,
     this.color,
     this.highlightColor,
     this.padding = const EdgeInsets.symmetric(vertical: kDefaultPadding),
@@ -33,15 +33,10 @@ class _HighlightableButtonState extends State<HighlightableButton> with Platform
     _isHighlighted = false;
   }
 
-  Color get _color => widget.color == null ? AppThemeNew.of(context).iconColor : widget.color;
-
-  Color get _iconColor =>
-      _isHighlighted ? (widget.highlightColor == null ? _color.withAlpha(0x80) : widget.highlightColor) : _color;
-
   @override
   Widget androidWidget(BuildContext context) => IconButton(
         onPressed: widget.onPressed,
-        icon: Icon(widget.icon),
+        icon: widget.icon,
         visualDensity: VisualDensity.compact,
         splashColor: widget.highlightColor,
         highlightColor: widget.highlightColor,
@@ -57,12 +52,18 @@ class _HighlightableButtonState extends State<HighlightableButton> with Platform
         child: FittedBox(
           fit: BoxFit.scaleDown,
           child: Container(
-            padding: widget.padding,
-            child: Icon(
-              widget.icon,
-              color: widget.onPressed == null ? AppThemeNew.of(context).disabledColor : _iconColor,
-            ),
-          ),
+              padding: widget.padding,
+              child: IconTheme(
+                data: IconThemeData(
+                  color: widget.onPressed == null ? AppThemeNew.of(context).disabledColor : _iconColor,
+                ),
+                child: widget.icon,
+              )),
         ),
       );
+
+  Color get _color => widget.color == null ? AppThemeNew.of(context).iconColor : widget.color;
+
+  Color get _iconColor =>
+      _isHighlighted ? (widget.highlightColor == null ? _color.withAlpha(0x80) : widget.highlightColor) : _color;
 }

@@ -20,17 +20,17 @@ class LyricsWidget extends StatelessWidget {
               Text(songLyric.name,
                   style: Theme.of(context).textTheme.headline6.copyWith(
                         color: AppTheme.shared.textColor(context),
-                        fontSize: 1.3 * SettingsProvider.shared.fontSize,
+                        fontSize: 1.3 * settingsProvider.fontSize,
                         fontWeight: FontWeight.bold,
                       )),
               Container(
                 color: AppThemeNew.of(context).backgroundColor,
-                padding: EdgeInsets.only(top: 1.5 * SettingsProvider.shared.fontSize),
+                padding: EdgeInsets.only(top: 1.5 * settingsProvider.fontSize),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: List.generate(
                     songLyric.verses.length,
-                    (index) => _verse(context, songLyric.verses[index]),
+                    (index) => _verse(context, songLyric.verses[index], settingsProvider),
                   ),
                 ),
               ),
@@ -39,7 +39,7 @@ class LyricsWidget extends StatelessWidget {
         ),
       );
 
-  Container _verse(BuildContext context, Verse verse) => Container(
+  Container _verse(BuildContext context, Verse verse, SettingsProvider settingsProvider) => Container(
         padding: EdgeInsets.only(bottom: kDefaultPadding),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -49,7 +49,7 @@ class LyricsWidget extends StatelessWidget {
                 verse.number,
                 style: AppThemeNew.of(context).bodyTextStyle.copyWith(
                       color: AppTheme.shared.textColor(context),
-                      fontSize: SettingsProvider.shared.fontSize,
+                      fontSize: settingsProvider.fontSize,
                     ),
               ),
             Flexible(
@@ -59,7 +59,7 @@ class LyricsWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: List.generate(
                     verse.lines.length,
-                    (index) => _line(context, verse.lines[index]),
+                    (index) => _line(context, verse.lines[index], settingsProvider),
                   ),
                 ),
               ),
@@ -68,32 +68,32 @@ class LyricsWidget extends StatelessWidget {
         ),
       );
 
-  Widget _line(BuildContext context, Line line) => RichText(
+  Widget _line(BuildContext context, Line line, SettingsProvider settingsProvider) => RichText(
         text: TextSpan(
           text: '',
           children: List.generate(
             line.groupedBlocks.length,
-            (index) => _blocks(context, line.groupedBlocks[index]),
+            (index) => _blocks(context, line.groupedBlocks[index], settingsProvider),
           ),
         ),
       );
 
-  InlineSpan _blocks(BuildContext context, List<Block> blocks) => blocks.length == 1
-      ? WidgetSpan(child: _block(context, blocks[0]))
+  InlineSpan _blocks(BuildContext context, List<Block> blocks, SettingsProvider settingsProvider) => blocks.length == 1
+      ? WidgetSpan(child: _block(context, blocks[0], settingsProvider))
       : WidgetSpan(
           child: Wrap(
           children: List.generate(
             blocks.length,
-            (index) => _block(context, blocks[index]),
+            (index) => _block(context, blocks[index], settingsProvider),
           ),
         ));
 
   // displays block of text with chords above it
-  Widget _block(BuildContext context, Block block) => Stack(
+  Widget _block(BuildContext context, Block block, SettingsProvider settingsProvider) => Stack(
         alignment: AlignmentDirectional.topStart,
         children: [
           Transform.translate(
-            offset: Offset(0, -1.45 * SettingsProvider.shared.fontSize),
+            offset: Offset(0, -1.45 * settingsProvider.fontSize),
             child: Container(
               decoration: BoxDecoration(
                 border: Border(
@@ -103,12 +103,12 @@ class LyricsWidget extends StatelessWidget {
                 ),
               ),
               child: Transform.translate(
-                offset: Offset(0, -0.5 * SettingsProvider.shared.fontSize),
+                offset: Offset(0, -0.5 * settingsProvider.fontSize),
                 child: Text(
                   block.chord,
                   style: AppThemeNew.of(context).bodyTextStyle.copyWith(
                         color: AppThemeNew.of(context).chordColor,
-                        fontSize: SettingsProvider.shared.fontSize,
+                        fontSize: settingsProvider.fontSize,
                         height: songLyric.showChords ? 2.4 : 1,
                       ),
                 ),
@@ -119,7 +119,7 @@ class LyricsWidget extends StatelessWidget {
             color: AppThemeNew.of(context).backgroundColor,
             child: Text(
               block.lyricsPart,
-              style: AppThemeNew.of(context).bodyTextStyle.copyWith(fontSize: SettingsProvider.shared.fontSize),
+              style: AppThemeNew.of(context).bodyTextStyle.copyWith(fontSize: settingsProvider.fontSize),
             ),
           ),
         ],

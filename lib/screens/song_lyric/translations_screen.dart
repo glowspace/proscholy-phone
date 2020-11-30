@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songLyric.dart';
+import 'package:zpevnik/screens/components/data_container.dart';
 import 'package:zpevnik/screens/components/song_lyric_row.dart';
-import 'package:zpevnik/screens/song_lyric/components/song_lyric_container.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/platform.dart';
 
@@ -21,7 +21,7 @@ class TranslationsScreen extends StatelessWidget with PlatformWidgetMixin {
       );
 
   Widget _body(BuildContext context) {
-    final songLyric = SongLyricContainer.of(context).songLyric;
+    final songLyric = DataContainer.of<SongLyric>(context).data;
 
     return SafeArea(
       child: Container(

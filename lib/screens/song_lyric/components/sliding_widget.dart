@@ -1,45 +1,48 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/scroll_provider.dart';
-import 'package:zpevnik/screens/components/custom_icon_button.dart';
+import 'package:zpevnik/screens/components/highlightable_button.dart';
 import 'package:zpevnik/theme.dart';
 
 class SlidingWidget extends StatefulWidget {
   final Function() showSettings;
   final Function() showExternals;
+  final ScrollProvider scrollProvider;
 
-  const SlidingWidget({Key key, this.showSettings, this.showExternals}) : super(key: key);
+  const SlidingWidget({Key key, this.showSettings, this.showExternals, this.scrollProvider}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _SlidingWidgetState();
 }
 
 class _SlidingWidgetState extends State<SlidingWidget> with SingleTickerProviderStateMixin {
-  Animation<double> _collapseAnimation;
-  AnimationController _collapseController;
+  ValueNotifier<bool> _collapsed;
+  ValueNotifier<bool> _scrollSpeedcollapsed;
 
-  bool _collapsed;
+  Animation<double> _animation;
+  AnimationController _controller;
 
   @override
   void initState() {
     super.initState();
 
-    _collapsed = false;
+    _collapsed = ValueNotifier(false);
 
-    _collapseController =
-        AnimationController(duration: const Duration(milliseconds: kDefaultAnimationTime), vsync: this);
-    _collapseAnimation = Tween<double>(begin: 1, end: 0).animate(_collapseController)
-      ..addListener(() => setState(() {}));
+    _controller = AnimationController(duration: const Duration(milliseconds: kDefaultAnimationTime), vsync: this);
+    _animation = Tween<double>(begin: 1, end: 0).animate(_controller)..addListener(() => setState(() {}));
+
+    _scrollSpeedcollapsed = ValueNotifier(true);
+
+    widget.scrollProvider.scrolling.addListener(_scrollingChanged);
   }
 
   @override
   Widget build(BuildContext context) => Transform.translate(
         offset: Offset(1, 0), // just to hide right border
         child: Container(
-          padding: EdgeInsets.only(left: kDefaultPadding / 2),
+          padding: EdgeInsets.only(left: kDefaultPadding),
           decoration: BoxDecoration(
             color: AppThemeNew.of(context).backgroundColor,
             border: Border.all(color: AppTheme.shared.borderColor(context)),
@@ -51,55 +54,89 @@ class _SlidingWidgetState extends State<SlidingWidget> with SingleTickerProvider
         ),
       );
 
-  List<Widget> _options(BuildContext context) => [
-        _collapseable(
-            context,
-            CustomIconButton(
-              onPressed: widget.showSettings,
-              icon: Icon(Icons.tune),
-            ),
-            _collapseAnimation),
-        _collapseable(
-            context,
-            CustomIconButton(
-              onPressed: widget.showExternals,
-              icon: Icon(Icons.headset),
-            ),
-            _collapseAnimation),
-        // _collapseable(context, Icon(Icons.add), _collapseAnimation),
-        // _collapseable(context, Icon(Icons.remove), _collapseAnimation),
-        Consumer<ScrollProvider>(
-          builder: (context, provider, _) => _collapseable(
-              context,
-              CustomIconButton(
-                onPressed: provider.canScroll ? provider.toggleScroll : null,
-                icon: Icon(provider.scrolling ? Icons.stop : Icons.arrow_downward),
-              ),
-              _collapseAnimation),
-        ),
-        CustomIconButton(
-          onPressed: _toggleCollapse,
-          icon: Transform.rotate(
-            angle: _collapseAnimation.value * pi,
-            child: Icon(Icons.arrow_back),
-          ),
-        ),
-      ];
+  List<Widget> _options(BuildContext context) {
+    final padding = EdgeInsets.symmetric(horizontal: kDefaultPadding / 2, vertical: kDefaultPadding);
 
-  Widget _collapseable(BuildContext context, Widget child, Animation<double> animation) => SizeTransition(
-        sizeFactor: animation,
-        axis: Axis.horizontal,
-        child: Opacity(opacity: animation.value, child: child),
-      );
+    return [
+      _CollapseableWidget(collapsed: _collapsed, children: [
+        HighlightableButton(icon: Icon(Icons.tune), padding: padding, onPressed: widget.showSettings),
+        HighlightableButton(icon: Icon(Icons.headset), padding: padding, onPressed: widget.showExternals),
+        _CollapseableWidget(collapsed: _scrollSpeedcollapsed, children: [
+          HighlightableButton(icon: Icon(Icons.add), padding: padding, onPressed: widget.scrollProvider.faster),
+          HighlightableButton(icon: Icon(Icons.remove), padding: padding, onPressed: widget.scrollProvider.slower),
+        ]),
+        HighlightableButton(
+          icon: Icon(widget.scrollProvider.scrolling.value ? Icons.stop : Icons.arrow_downward),
+          padding: padding,
+          onPressed: widget.scrollProvider.canScroll ? widget.scrollProvider.toggleScroll : null,
+        ),
+      ]),
+      HighlightableButton(
+        icon: Transform.rotate(angle: _animation.value * pi, child: Icon(Icons.arrow_back)),
+        padding: padding,
+        onPressed: _toggleCollapsed,
+      ),
+    ];
+  }
 
-  void _toggleCollapse() {
-    _collapsed ? _collapseController.reverse() : _collapseController.forward();
-    _collapsed = !_collapsed;
+  void _scrollingChanged() => setState(() => _scrollSpeedcollapsed.value = !widget.scrollProvider.scrolling.value);
+
+  void _toggleCollapsed() {
+    _collapsed.value = !_collapsed.value;
+    _collapsed.value ? _controller.reverse() : _controller.forward();
   }
 
   @override
   void dispose() {
-    _collapseController.dispose();
+    widget.scrollProvider.scrolling.removeListener(_scrollingChanged);
+
+    super.dispose();
+  }
+}
+
+class _CollapseableWidget extends StatefulWidget {
+  final ValueNotifier<bool> collapsed;
+  final List<Widget> children;
+
+  const _CollapseableWidget({
+    Key key,
+    @required this.collapsed,
+    this.children,
+  }) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => _CollapseableWidgetState();
+}
+
+class _CollapseableWidgetState extends State<_CollapseableWidget> with SingleTickerProviderStateMixin {
+  Animation<double> _animation;
+  AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(duration: const Duration(milliseconds: kDefaultAnimationTime), vsync: this);
+    _animation = Tween<double>(begin: widget.collapsed.value ? 0 : 1, end: widget.collapsed.value ? 1 : 0)
+        .animate(_controller)
+          ..addListener(() => setState(() {}));
+
+    widget.collapsed.addListener(_update);
+  }
+
+  @override
+  Widget build(BuildContext context) => SizeTransition(
+        sizeFactor: _animation,
+        axis: Axis.horizontal,
+        child: Opacity(opacity: _animation.value, child: Row(children: widget.children)),
+      );
+
+  void _update() => widget.collapsed.value ? _controller.reverse() : _controller.forward();
+
+  @override
+  void dispose() {
+    widget.collapsed.removeListener(_update);
+    _controller.dispose();
 
     super.dispose();
   }
