@@ -1,13 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/custom_appbar.dart';
 import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/providers/song_lyrics_provider.dart';
 import 'package:zpevnik/screens/components/highlightable_button.dart';
 import 'package:zpevnik/screens/components/search_widget.dart';
 import 'package:zpevnik/screens/components/song_lyrics_list.dart';
 import 'package:zpevnik/screens/components/data_container.dart';
+import 'package:zpevnik/status_bar_wrapper.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/hex_color.dart';
 import 'package:zpevnik/utils/platform.dart';
@@ -39,9 +42,7 @@ class _SongbookScreenState extends State<SongbookScreen> with PlatformStateMixin
   Widget iOSWidget(BuildContext context) => CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
           actionsForegroundColor: _textColor,
-          backgroundColor: (widget.songbook.color == null || !AppThemeNew.of(context).isLight)
-              ? null
-              : HexColor(widget.songbook.color),
+          backgroundColor: _navbarColor,
           leading: _leading(context),
           middle: _middle(context),
           trailing: _trailing(context),
@@ -52,11 +53,9 @@ class _SongbookScreenState extends State<SongbookScreen> with PlatformStateMixin
 
   @override
   Widget androidWidget(BuildContext context) => Scaffold(
-        appBar: AppBar(
+        appBar: CustomAppBar(
           iconTheme: IconThemeData(color: _textColor),
-          backgroundColor: (widget.songbook.color == null || !AppThemeNew.of(context).isLight)
-              ? null
-              : HexColor(widget.songbook.color),
+          backgroundColor: _navbarColor,
           leading: _leading(context),
           title: _middle(context),
           titleSpacing: kDefaultPadding,
@@ -64,7 +63,10 @@ class _SongbookScreenState extends State<SongbookScreen> with PlatformStateMixin
           leadingWidth: _searching ? 0 : null,
           shadowColor: AppTheme.shared.appBarDividerColor(context),
         ),
-        body: _body(context),
+        body: AnnotatedRegion<SystemUiOverlayStyle>(
+          value: SystemUiOverlayStyle(statusBarColor: _navbarColor),
+          child: _body(context),
+        ),
       );
 
   Widget _leading(BuildContext context) => _searching ? Container(width: 0) : null;
@@ -103,6 +105,9 @@ class _SongbookScreenState extends State<SongbookScreen> with PlatformStateMixin
           data: widget.songbook,
         ),
       );
+
+  HexColor get _navbarColor =>
+      (widget.songbook.color == null || !AppThemeNew.of(context).isLight) ? null : HexColor(widget.songbook.color);
 
   Color get _textColor => (widget.songbook.colorText == null || !AppThemeNew.of(context).isLight)
       ? null

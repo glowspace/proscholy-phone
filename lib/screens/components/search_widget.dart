@@ -74,6 +74,7 @@ class _SearchWidgetState extends State<SearchWidget> with PlatformStateMixin {
 
   Widget _body(BuildContext context, Widget child) => Container(
         padding: EdgeInsets.symmetric(horizontal: kDefaultPadding),
+        margin: AppThemeNew.of(context).isIOS ? null : EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
         decoration: BoxDecoration(
           color: AppThemeNew.of(context).backgroundColor,
           border: Border.all(color: AppThemeNew.of(context).borderColor),
