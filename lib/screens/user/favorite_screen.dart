@@ -7,8 +7,10 @@ import 'package:zpevnik/providers/data_provider.dart';
 import 'package:zpevnik/providers/song_lyrics_provider.dart';
 import 'package:zpevnik/screens/components/highlightable_button.dart';
 import 'package:zpevnik/screens/components/search_widget.dart';
-import 'package:zpevnik/screens/components/reorderable_row.dart';
+import 'package:zpevnik/screens/components/reorderable.dart';
 import 'package:zpevnik/screens/components/song_lyric_row.dart';
+import 'package:zpevnik/screens/song_lyric/song_lyric_screen.dart';
+import 'package:zpevnik/status_bar_wrapper.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/platform.dart';
 
@@ -52,6 +54,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> with PlatformStateMixin
           actions: [_trailing(context)],
           leadingWidth: _searching ? 0 : null,
           shadowColor: AppTheme.shared.appBarDividerColor(context),
+          brightness: AppThemeNew.of(context).brightness,
         ),
         body: _body(context),
       );
@@ -63,6 +66,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> with PlatformStateMixin
           key: PageStorageKey('favorite_search_widget'),
           placeholder: 'Zadejte slovo nebo číslo',
           search: _songLyricsProvider.search,
+          onSubmitted: (_) => _pushSelectedSongLyric(context),
           prefix: HighlightableButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () => setState(() {
@@ -75,7 +79,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> with PlatformStateMixin
             onPressed: () => _songLyricsProvider.tagsProvider.showFilters(context),
           ),
         )
-      : Text('Písně s hvězdičkou');
+      : Text('Písně s hvězdičkou', style: AppThemeNew.of(context).bodyTextStyle);
 
   Widget _trailing(BuildContext context) => _searching
       ? Container(width: 0)
@@ -114,9 +118,15 @@ class _FavoriteScreenState extends State<FavoriteScreen> with PlatformStateMixin
                           for (int i = 0; i < provider.songLyrics.length; i++) provider.songLyrics[i].favoriteOrder = i;
                         },
                         child: ListView.builder(
-                          itemBuilder: (context, index) => ReorderableRow(
+                          itemBuilder: (context, index) => Reorderable(
                             key: provider.songLyrics[index].key,
-                            child: SongLyricRow(songLyric: provider.songLyrics[index], showStar: false),
+                            child: SongLyricRowNew(
+                              songLyric: provider.songLyrics[index],
+                              showStar: false,
+                              prefix: ReorderableListener(
+                                child: Icon(Icons.drag_handle, color: Theme.of(context).textTheme.caption.color),
+                              ),
+                            ),
                           ),
                           itemCount: provider.songLyrics.length,
                         ),
@@ -126,4 +136,11 @@ class _FavoriteScreenState extends State<FavoriteScreen> with PlatformStateMixin
                 ),
               ),
       );
+
+  void _pushSelectedSongLyric(BuildContext context) {
+    if (_songLyricsProvider.matchedById == null) return;
+
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => SongLyricScreen(songLyric: _songLyricsProvider.matchedById)));
+  }
 }

@@ -45,7 +45,11 @@ class _MusicNotesScreenState extends State<MusicNotesScreen> with PlatformStateM
 
   @override
   Widget androidWidget(BuildContext context) => Scaffold(
-        appBar: AppBar(title: Text('Noty'), shadowColor: AppTheme.shared.appBarDividerColor(context)),
+        appBar: AppBar(
+          title: Text('Noty'),
+          shadowColor: AppTheme.shared.appBarDividerColor(context),
+          brightness: AppThemeNew.of(context).brightness,
+        ),
         body: SafeArea(child: _body(context)),
       );
 

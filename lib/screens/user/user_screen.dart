@@ -10,7 +10,7 @@ import 'package:zpevnik/screens/components/highlightable_button.dart';
 import 'package:zpevnik/screens/components/menu_item.dart';
 import 'package:zpevnik/screens/components/playlist_row.dart';
 import 'package:zpevnik/screens/components/popup_menu.dart';
-import 'package:zpevnik/screens/components/reorderable_row.dart';
+import 'package:zpevnik/screens/components/reorderable.dart';
 import 'package:zpevnik/screens/user/components/user_menu.dart';
 import 'package:zpevnik/screens/user/favorite_screen.dart';
 import 'package:zpevnik/status_bar_wrapper.dart';
@@ -66,10 +66,7 @@ class _UserScreenState extends State<UserScreen> with PlatformStateMixin {
             behavior: HitTestBehavior.translucent,
             child: Column(
               children: [
-                Container(
-                  padding: EdgeInsets.fromLTRB(kDefaultPadding, 0, kDefaultPadding, kDefaultPadding / 2),
-                  child: _searchWidget(context),
-                ),
+                Container(padding: EdgeInsets.symmetric(horizontal: kDefaultPadding), child: _searchWidget(context)),
                 Scrollbar(
                   child: SingleChildScrollView(
                     child: Column(
@@ -103,7 +100,7 @@ class _UserScreenState extends State<UserScreen> with PlatformStateMixin {
                             physics: NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
                             itemCount: playlists.length,
-                            itemBuilder: (context, index) => ReorderableRow(
+                            itemBuilder: (context, index) => Reorderable(
                               key: Key('${playlists[index].id}'),
                               child: PlaylistRow(
                                 playlist: playlists[index],

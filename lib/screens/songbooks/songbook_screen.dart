@@ -10,6 +10,7 @@ import 'package:zpevnik/screens/components/highlightable_button.dart';
 import 'package:zpevnik/screens/components/search_widget.dart';
 import 'package:zpevnik/screens/components/song_lyrics_list.dart';
 import 'package:zpevnik/screens/components/data_container.dart';
+import 'package:zpevnik/screens/song_lyric/song_lyric_screen.dart';
 import 'package:zpevnik/status_bar_wrapper.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/hex_color.dart';
@@ -76,6 +77,7 @@ class _SongbookScreenState extends State<SongbookScreen> with PlatformStateMixin
           key: PageStorageKey('songbook_search_widget'),
           placeholder: 'Zadejte slovo nebo číslo',
           search: _songLyricsProvider.search,
+          onSubmitted: (_) => _pushSelectedSongLyric(context),
           prefix: HighlightableButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () => setState(() {
@@ -112,4 +114,11 @@ class _SongbookScreenState extends State<SongbookScreen> with PlatformStateMixin
   Color get _textColor => (widget.songbook.colorText == null || !AppThemeNew.of(context).isLight)
       ? null
       : HexColor(widget.songbook.colorText);
+
+  void _pushSelectedSongLyric(BuildContext context) {
+    if (_songLyricsProvider.matchedById == null) return;
+
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => SongLyricScreen(songLyric: _songLyricsProvider.matchedById)));
+  }
 }

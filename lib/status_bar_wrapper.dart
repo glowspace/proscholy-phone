@@ -4,8 +4,9 @@ import 'package:zpevnik/theme.dart';
 
 class StatusBarWrapper extends StatelessWidget {
   final Widget child;
+  final Color color;
 
-  StatusBarWrapper({this.child});
+  StatusBarWrapper({this.child, this.color});
 
   @override
   Widget build(BuildContext context) => AnnotatedRegion<SystemUiOverlayStyle>(
@@ -13,7 +14,7 @@ class StatusBarWrapper extends StatelessWidget {
           statusBarBrightness: AppThemeNew.of(context).brightness,
           statusBarIconBrightness:
               AppThemeNew.of(context).brightness == Brightness.light ? Brightness.dark : Brightness.light,
-          statusBarColor: AppThemeNew.of(context).backgroundColor,
+          statusBarColor: color == null ? AppThemeNew.of(context).backgroundColor : color,
         ),
         child: child,
       );

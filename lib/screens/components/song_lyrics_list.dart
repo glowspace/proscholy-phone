@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/song_lyrics_provider.dart';
 import 'package:zpevnik/screens/components/song_lyric_row.dart';
 import 'package:zpevnik/screens/filters/active_filters_row.dart';
@@ -19,12 +18,9 @@ class SongLyricsListView extends StatelessWidget {
           Expanded(
             child: Scrollbar(
               child: ListView.builder(
-                itemBuilder: (context, index) => Container(
-                  padding: index == 0 ? EdgeInsets.only(top: kDefaultPadding) : null,
-                  child: SongLyricRowNew(
-                    key: provider.songLyrics[index].key,
-                    songLyric: provider.songLyrics[index],
-                  ),
+                itemBuilder: (context, index) => SongLyricRowNew(
+                  key: provider.songLyrics[index].key,
+                  songLyric: provider.songLyrics[index],
                 ),
                 itemCount: provider.songLyrics.length,
               ),

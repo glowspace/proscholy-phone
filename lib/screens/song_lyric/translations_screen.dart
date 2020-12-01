@@ -16,7 +16,11 @@ class TranslationsScreen extends StatelessWidget with PlatformWidgetMixin {
 
   @override
   Widget androidWidget(BuildContext context) => Scaffold(
-        appBar: AppBar(title: Text('Překlady'), shadowColor: AppTheme.shared.appBarDividerColor(context)),
+        appBar: AppBar(
+          title: Text('Překlady'),
+          shadowColor: AppTheme.shared.appBarDividerColor(context),
+          brightness: AppThemeNew.of(context).brightness,
+        ),
         body: _body(context),
       );
 

@@ -16,7 +16,11 @@ class SettingsScreen extends StatelessWidget with PlatformWidgetMixin {
 
   @override
   Widget androidWidget(BuildContext context) => Scaffold(
-        appBar: AppBar(title: Text('Nastavení'), shadowColor: AppTheme.shared.appBarDividerColor(context)),
+        appBar: AppBar(
+          title: Text('Nastavení', style: AppThemeNew.of(context).bodyTextStyle),
+          shadowColor: AppTheme.shared.appBarDividerColor(context),
+          brightness: AppThemeNew.of(context).brightness,
+        ),
         body: _body(context),
       );
 

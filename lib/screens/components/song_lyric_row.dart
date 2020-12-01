@@ -13,8 +13,9 @@ import 'package:zpevnik/theme.dart';
 class SongLyricRowNew extends StatefulWidget {
   final SongLyric songLyric;
   final bool showStar;
+  final Widget prefix;
 
-  const SongLyricRowNew({Key key, @required this.songLyric, this.showStar = true}) : super(key: key);
+  const SongLyricRowNew({Key key, @required this.songLyric, this.showStar = true, this.prefix}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _SongLyricRowStateNew();
@@ -23,31 +24,44 @@ class SongLyricRowNew extends StatefulWidget {
 class _SongLyricRowStateNew extends State<SongLyricRowNew> {
   @override
   Widget build(BuildContext context) {
-    final songbookContainer = DataContainer.of<Songbook>(context);
-    final numberWidth = MediaQuery.of(context).size.width;
+    final selectionProvider = Provider.of<SongLyricsProvider>(context, listen: false).selectionProvider;
+    final selectionEnabled = selectionProvider?.selectionEnabled ?? false;
+    final selected = selectionProvider?.isSelected(widget.songLyric) ?? false;
 
-    return HighlightableRow(
-      onPressed: () => _pushSongLyric(context),
-      padding: EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding, vertical: kDefaultPadding),
-      highlightColor: AppThemeNew.of(context).highlightColor,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          if (songbookContainer != null)
-            Container(
-              padding: EdgeInsets.only(right: kDefaultPadding),
-              child: _songLyricNumber(context, widget.songLyric.number(songbookContainer.data), numberWidth),
-            ),
-          Expanded(child: Text(widget.songLyric.name, style: AppThemeNew.of(context).bodyTextStyle)),
-          if (widget.showStar && widget.songLyric.isFavorite)
-            Icon(Icons.star, color: AppThemeNew.of(context).iconColor, size: 16),
-          _songLyricNumber(context, widget.songLyric.id.toString(), numberWidth),
-        ],
+    final songbookContainer = DataContainer.of<Songbook>(context);
+
+    return GestureDetector(
+      onLongPress: selectionProvider == null ? null : () => selectionProvider.toggleSongLyric(widget.songLyric),
+      behavior: HitTestBehavior.translucent,
+      child: HighlightableRow(
+        onPressed: () =>
+            selectionEnabled ? selectionProvider.toggleSongLyric(widget.songLyric) : _pushSongLyric(context),
+        padding: EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding, vertical: kDefaultPadding),
+        highlightColor: AppThemeNew.of(context).highlightColor,
+        color: selected ? AppThemeNew.of(context).selectedRowColor : null,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            if (widget.prefix != null)
+              Container(padding: EdgeInsets.only(right: kDefaultPadding), child: widget.prefix),
+            if (songbookContainer != null)
+              Container(
+                padding: EdgeInsets.only(right: kDefaultPadding),
+                child: _songLyricNumber(context, widget.songLyric.number(songbookContainer.data)),
+              ),
+            if (selectionEnabled)
+              Container(padding: EdgeInsets.only(right: kDefaultPadding), child: CircularCheckbox(selected: selected)),
+            Expanded(child: Text(widget.songLyric.name, style: AppThemeNew.of(context).bodyTextStyle)),
+            if (widget.showStar && widget.songLyric.isFavorite)
+              Icon(Icons.star, color: AppThemeNew.of(context).iconColor, size: 16),
+            _songLyricNumber(context, widget.songLyric.id.toString()),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _songLyricNumber(BuildContext context, String number, double width) => SizedBox(
+  Widget _songLyricNumber(BuildContext context, String number) => SizedBox(
         width: 36,
         child: FittedBox(
           fit: BoxFit.scaleDown,

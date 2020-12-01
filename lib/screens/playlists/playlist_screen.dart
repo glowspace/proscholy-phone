@@ -7,6 +7,7 @@ import 'package:zpevnik/providers/song_lyrics_provider.dart';
 import 'package:zpevnik/screens/components/highlightable_button.dart';
 import 'package:zpevnik/screens/components/search_widget.dart';
 import 'package:zpevnik/screens/components/song_lyrics_list.dart';
+import 'package:zpevnik/screens/song_lyric/song_lyric_screen.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/platform.dart';
 
@@ -64,6 +65,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> with PlatformStateMixin
           key: PageStorageKey('playlist_search_widget'),
           placeholder: 'Zadejte slovo nebo číslo',
           search: _songLyricsProvider.search,
+          onSubmitted: (_) => _pushSelectedSongLyric(context),
           prefix: HighlightableButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () => setState(() {
@@ -76,7 +78,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> with PlatformStateMixin
             onPressed: () => _songLyricsProvider.tagsProvider.showFilters(context),
           ),
         )
-      : Text(widget.playlist.name);
+      : Text(widget.playlist.name, style: AppThemeNew.of(context).bodyTextStyle);
 
   Widget _trailing(BuildContext context) => _searching
       ? Container(width: 0)
@@ -85,4 +87,11 @@ class _PlaylistScreenState extends State<PlaylistScreen> with PlatformStateMixin
   Widget _body(BuildContext context) => SafeArea(
         child: ChangeNotifierProvider.value(value: _songLyricsProvider, child: SongLyricsListView()),
       );
+
+  void _pushSelectedSongLyric(BuildContext context) {
+    if (_songLyricsProvider.matchedById == null) return;
+
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => SongLyricScreen(songLyric: _songLyricsProvider.matchedById)));
+  }
 }

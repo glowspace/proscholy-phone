@@ -5,7 +5,6 @@ import 'package:zpevnik/models/entities/song_lyric.dart';
 import 'package:zpevnik/models/song.dart';
 import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/providers/data_provider.dart';
-import 'package:zpevnik/providers/settings_provider.dart';
 import 'package:zpevnik/utils/database.dart';
 import 'package:zpevnik/utils/song_lyrics_parser.dart';
 
@@ -82,9 +81,10 @@ class SongLyric extends ChangeNotifier {
   String number(Songbook songbook) =>
       '${songbook.shortcut} ${_entity.songbookRecords.firstWhere((record) => record.songbookId == songbook.id).number}';
 
-  // todo: add songbook shortcut
-  List<String> get numbers =>
-      _numbers ??= [id.toString()] + _entity.songbookRecords.map((record) => '${record.number}').toList();
+  List<String> get numbers => _numbers ??= [id.toString()] +
+      _entity.songbookRecords
+          .map((record) => '${DataProvider.shared.songbooksMap[record.songbookId]?.shortcut ?? ""}${record.number}')
+          .toList();
 
   String get name => _entity.name;
 

@@ -8,6 +8,7 @@ class SearchWidget extends StatefulWidget {
   final String placeholder;
   final FocusNode focusNode;
   final Function(String) search;
+  final Function(String) onSubmitted;
 
   final Widget prefix;
   final Widget suffix;
@@ -17,6 +18,7 @@ class SearchWidget extends StatefulWidget {
     this.placeholder,
     this.focusNode,
     @required this.search,
+    this.onSubmitted,
     this.prefix,
     this.suffix,
   }) : super(key: key);
@@ -48,6 +50,7 @@ class _SearchWidgetState extends State<SearchWidget> with PlatformStateMixin {
               placeholderStyle: _placeholderStyle(context, constraints.maxWidth - 12), // - 12 for textfield padding
               controller: _textController,
               onChanged: _searchTextChanged,
+              onSubmitted: widget.onSubmitted,
               clearButtonMode: OverlayVisibilityMode.editing,
             ),
           ),
@@ -68,6 +71,7 @@ class _SearchWidgetState extends State<SearchWidget> with PlatformStateMixin {
             focusNode: widget.focusNode,
             controller: _textController,
             onChanged: _searchTextChanged,
+            onSubmitted: widget.onSubmitted,
           ),
         ),
       );

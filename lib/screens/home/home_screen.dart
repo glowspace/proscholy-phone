@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/data_provider.dart';
@@ -9,6 +8,7 @@ import 'package:zpevnik/providers/selection_provider.dart';
 import 'package:zpevnik/providers/song_lyrics_provider.dart';
 import 'package:zpevnik/screens/components/highlightable_button.dart';
 import 'package:zpevnik/screens/components/song_lyrics_list.dart';
+import 'package:zpevnik/screens/song_lyric/song_lyric_screen.dart';
 import 'package:zpevnik/status_bar_wrapper.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/platform.dart';
@@ -67,6 +67,8 @@ class _HomeScreenState extends State<HomeScreen> with PlatformStateMixin {
                   leading: _leading(context),
                   title: _middle(context),
                   actions: _selectionProvider.selectionEnabled ? _actions(context) : null,
+                  shadowColor: AppTheme.shared.appBarDividerColor(context),
+                  brightness: AppThemeNew.of(context).brightness,
                 )
               : null,
           body: _body(context),
@@ -75,10 +77,8 @@ class _HomeScreenState extends State<HomeScreen> with PlatformStateMixin {
 
   Widget _body(BuildContext context) => SafeArea(
         child: Column(children: [
-          Container(
-            padding: EdgeInsets.fromLTRB(kDefaultPadding, 0, kDefaultPadding, kDefaultPadding / 2),
-            child: _searchWidget(context),
-          ),
+          if (!_selectionProvider.selectionEnabled)
+            Container(padding: EdgeInsets.symmetric(horizontal: kDefaultPadding), child: _searchWidget(context)),
           Expanded(
             child: ChangeNotifierProvider.value(
               value: _songLyricsProvider,
@@ -136,6 +136,7 @@ class _HomeScreenState extends State<HomeScreen> with PlatformStateMixin {
         key: PageStorageKey('home_screen_search_widget'),
         placeholder: 'Zadejte slovo nebo číslo',
         search: _songLyricsProvider.search,
+        onSubmitted: (_) => _pushSelectedSongLyric(context),
         focusNode: searchFieldFocusNode,
         prefix: HighlightableButton(
           icon: Icon(Icons.search),
@@ -146,6 +147,13 @@ class _HomeScreenState extends State<HomeScreen> with PlatformStateMixin {
           onPressed: () => _songLyricsProvider.tagsProvider.showFilters(context),
         ),
       );
+
+  void _pushSelectedSongLyric(BuildContext context) {
+    if (_songLyricsProvider.matchedById == null) return;
+
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => SongLyricScreen(songLyric: _songLyricsProvider.matchedById)));
+  }
 
   void _update() => setState(() => {});
 

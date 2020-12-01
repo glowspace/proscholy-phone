@@ -16,6 +16,8 @@ class DataProvider {
   List<Tag> _tags;
   List<Playlist> _playlists;
 
+  Map<int, Songbook> _songbooksMap;
+
   // fixme: temporary solution, needed by `SongLyric`
   SharedPreferences prefs;
 
@@ -34,6 +36,8 @@ class DataProvider {
       ..sort((first, second) => first.name.compareTo(second.name));
 
     _songbooks = (await Database.shared.songbooks).map((songbookEntity) => Songbook(songbookEntity)).toList();
+    _songbooksMap = {};
+    for (final songbook in songbooks) _songbooksMap[songbook.id] = songbook;
 
     _tags = (await Database.shared.tags).map((tagEntity) => Tag(tagEntity)).toList();
 
@@ -44,4 +48,6 @@ class DataProvider {
   List<Songbook> get songbooks => _songbooks;
   List<Tag> get tags => _tags;
   List<Playlist> get playlists => _playlists;
+
+  Map<int, Songbook> get songbooksMap => _songbooksMap;
 }

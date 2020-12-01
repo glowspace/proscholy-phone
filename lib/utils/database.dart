@@ -123,6 +123,7 @@ class Database {
     final songLyrics = await bean.findWhere(bean.lyrics.isNot(null)).catchError((error) => print(error));
 
     // custom preloading, normal preload is too slow
+    Map<int, SongbookEntity> _songbooks = {};
     Map<int, List<SongbookRecord>> songbookRecords = {};
     Map<int, List<TagEntity>> songLyricTags = {};
     Map<int, AuthorEntity> authors = {};
@@ -131,8 +132,13 @@ class Database {
     Map<int, List<int>> songLyricPlaylists = {};
     Map<int, List<PlaylistEntity>> playlists = {};
 
+    for (final songbook in await songbooks) _songbooks[songbook.id] = songbook;
+
     for (final songbookRecord in await SongbookRecordBean(_adapter).getAll()) {
       if (!songbookRecords.containsKey(songbookRecord.songLyricId)) songbookRecords[songbookRecord.songLyricId] = [];
+
+      // if (_songbooks.containsKey(songbookRecord.songbookId)
+      //   songbookRecord.
 
       songbookRecords[songbookRecord.songLyricId].add(songbookRecord);
     }
