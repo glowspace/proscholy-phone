@@ -11,6 +11,8 @@ class StatusBarWrapper extends StatelessWidget {
   Widget build(BuildContext context) => AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle(
           statusBarBrightness: AppThemeNew.of(context).brightness,
+          statusBarIconBrightness:
+              AppThemeNew.of(context).brightness == Brightness.light ? Brightness.dark : Brightness.light,
           statusBarColor: AppThemeNew.of(context).backgroundColor,
         ),
         child: child,

@@ -45,6 +45,7 @@ class AppThemeNew extends InheritedWidget {
       );
 
   Color get backgroundColor => isLight ? Color(0xffffffff) : Color(0xff000000);
+  Color get invertBackgroundColor => isLight ? Color(0xff000000) : Color(0xffffffff);
   Color get fillColor => _isIOS ? CupertinoColors.systemFill : (isLight ? Color(0xffffffff) : Color(0xff252525));
 
   Color get textColor => isLight ? Color(0xff222222) : Color(0xffdddddd);

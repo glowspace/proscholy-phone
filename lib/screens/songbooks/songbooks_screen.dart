@@ -42,7 +42,7 @@ class _SongbooksScreenState extends State<SongbooksScreen> with PlatformStateMix
   Widget _body(BuildContext context) => SafeArea(
         child: Column(children: [
           Container(
-            padding: EdgeInsets.fromLTRB(kDefaultPadding, 0, kDefaultPadding, kDefaultPadding),
+            padding: EdgeInsets.fromLTRB(kDefaultPadding, 0, kDefaultPadding, kDefaultPadding / 2),
             child: _searchWidget(context),
           ),
           Expanded(

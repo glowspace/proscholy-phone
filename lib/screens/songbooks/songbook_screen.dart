@@ -38,6 +38,7 @@ class _SongbookScreenState extends State<SongbookScreen> with PlatformStateMixin
   @override
   Widget iOSWidget(BuildContext context) => CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
+          actionsForegroundColor: _textColor,
           backgroundColor: (widget.songbook.color == null || !AppThemeNew.of(context).isLight)
               ? null
               : HexColor(widget.songbook.color),
@@ -52,6 +53,7 @@ class _SongbookScreenState extends State<SongbookScreen> with PlatformStateMixin
   @override
   Widget androidWidget(BuildContext context) => Scaffold(
         appBar: AppBar(
+          iconTheme: IconThemeData(color: _textColor),
           backgroundColor: (widget.songbook.color == null || !AppThemeNew.of(context).isLight)
               ? null
               : HexColor(widget.songbook.color),
@@ -84,14 +86,16 @@ class _SongbookScreenState extends State<SongbookScreen> with PlatformStateMixin
             onPressed: () => _songLyricsProvider.tagsProvider.showFilters(context),
           ),
         )
-      : Text(widget.songbook.name,
-          style: (widget.songbook.colorText == null || !AppThemeNew.of(context).isLight)
-              ? null
-              : AppThemeNew.of(context).bodyTextStyle.copyWith(color: HexColor(widget.songbook.colorText)));
+      : Text(widget.songbook.name, style: AppThemeNew.of(context).bodyTextStyle.copyWith(color: _textColor));
 
   Widget _trailing(BuildContext context) => _searching
       ? Container(width: 0)
-      : HighlightableButton(icon: Icon(Icons.search), onPressed: () => setState(() => _searching = true));
+      : HighlightableButton(
+          icon: Icon(Icons.search),
+          color: _textColor,
+          highlightColor: AppThemeNew.of(context).highlightColor,
+          onPressed: () => setState(() => _searching = true),
+        );
 
   Widget _body(BuildContext context) => SafeArea(
         child: DataContainer(
@@ -99,4 +103,8 @@ class _SongbookScreenState extends State<SongbookScreen> with PlatformStateMixin
           data: widget.songbook,
         ),
       );
+
+  Color get _textColor => (widget.songbook.colorText == null || !AppThemeNew.of(context).isLight)
+      ? null
+      : HexColor(widget.songbook.colorText);
 }

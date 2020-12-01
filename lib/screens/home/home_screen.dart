@@ -76,7 +76,7 @@ class _HomeScreenState extends State<HomeScreen> with PlatformStateMixin {
   Widget _body(BuildContext context) => SafeArea(
         child: Column(children: [
           Container(
-            padding: EdgeInsets.symmetric(horizontal: kDefaultPadding),
+            padding: EdgeInsets.fromLTRB(kDefaultPadding, 0, kDefaultPadding, kDefaultPadding / 2),
             child: _searchWidget(context),
           ),
           Expanded(

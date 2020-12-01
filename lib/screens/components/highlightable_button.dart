@@ -37,6 +37,7 @@ class _HighlightableButtonState extends State<HighlightableButton> with Platform
   Widget androidWidget(BuildContext context) => IconButton(
         onPressed: widget.onPressed,
         icon: widget.icon,
+        color: _iconColor,
         visualDensity: VisualDensity.compact,
         splashColor: widget.highlightColor,
         highlightColor: widget.highlightColor,

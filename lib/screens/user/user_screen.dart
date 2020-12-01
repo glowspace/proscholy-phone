@@ -67,7 +67,7 @@ class _UserScreenState extends State<UserScreen> with PlatformStateMixin {
             child: Column(
               children: [
                 Container(
-                  padding: EdgeInsets.fromLTRB(kDefaultPadding, 0, kDefaultPadding, kDefaultPadding),
+                  padding: EdgeInsets.fromLTRB(kDefaultPadding, 0, kDefaultPadding, kDefaultPadding / 2),
                   child: _searchWidget(context),
                 ),
                 Scrollbar(

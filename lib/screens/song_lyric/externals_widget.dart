@@ -25,7 +25,7 @@ class _ExternalsWidgetState extends State<ExternalsWidget> {
     _controllers = widget.songLyric.youtubes
         .map((youtube) => YoutubePlayerController(
               initialVideoId: youtube.mediaId,
-              flags: YoutubePlayerFlags(autoPlay: false, mute: false, hideControls: true),
+              flags: YoutubePlayerFlags(autoPlay: false, mute: false),
             ))
         .toList();
   }
