@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
@@ -17,15 +19,13 @@ class LyricsWidget extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(songLyric.name,
-                  style: Theme.of(context).textTheme.headline6.copyWith(
-                        color: AppTheme.shared.textColor(context),
-                        fontSize: 1.3 * settingsProvider.fontSize,
-                        fontWeight: FontWeight.bold,
-                      )),
+              RichText(
+                text: TextSpan(text: songLyric.name, style: AppThemeNew.of(context).titleTextStyle),
+                textScaleFactor: settingsProvider.fontSizeScale,
+              ),
               Container(
                 color: AppThemeNew.of(context).backgroundColor,
-                padding: EdgeInsets.only(top: 1.5 * settingsProvider.fontSize),
+                padding: EdgeInsets.only(top: kDefaultPadding * settingsProvider.fontSizeScale),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: List.generate(
@@ -45,16 +45,26 @@ class LyricsWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (verse.number.isNotEmpty)
-              Text(
-                verse.number,
-                style: AppThemeNew.of(context).bodyTextStyle.copyWith(
-                      color: AppTheme.shared.textColor(context),
-                      fontSize: settingsProvider.fontSize,
+              RichText(
+                text: TextSpan(text: '', children: [
+                  WidgetSpan(
+                    child: RichText(
+                      text: TextSpan(
+                        text: verse.number,
+                        style: AppThemeNew.of(context).bodyTextStyle.copyWith(
+                              height: (songLyric.showChords ? 2.25 : 1.5),
+                            ),
+                      ),
                     ),
+                  ),
+                ]),
+                textScaleFactor: settingsProvider.fontSizeScale,
               ),
             Flexible(
               child: Container(
-                padding: EdgeInsets.only(left: verse.number.isEmpty ? 0 : (kDefaultPadding)),
+                padding: EdgeInsets.only(
+                  left: verse.number.isEmpty ? 0 : (kDefaultPadding * settingsProvider.fontSizeScale),
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: List.generate(
@@ -75,11 +85,22 @@ class LyricsWidget extends StatelessWidget {
             line.groupedBlocks.length,
             (index) => _blocks(context, line.groupedBlocks[index], settingsProvider),
           ),
+          style: AppThemeNew.of(context).bodyTextStyle,
         ),
+        textScaleFactor: settingsProvider.fontSizeScale,
       );
 
   InlineSpan _blocks(BuildContext context, List<Block> blocks, SettingsProvider settingsProvider) => blocks.length == 1
-      ? WidgetSpan(child: _block(context, blocks[0], settingsProvider))
+      ? (blocks[0].chord.isEmpty
+          ? WidgetSpan(
+              child: RichText(
+                text: TextSpan(
+                  text: blocks[0].lyricsPart,
+                  style: AppThemeNew.of(context).bodyTextStyle.copyWith(height: (songLyric.showChords ? 2.25 : 1.5)),
+                ),
+              ),
+            )
+          : WidgetSpan(child: _block(context, blocks[0], settingsProvider)))
       : WidgetSpan(
           child: Wrap(
           children: List.generate(
@@ -90,38 +111,44 @@ class LyricsWidget extends StatelessWidget {
 
   // displays block of text with chords above it
   Widget _block(BuildContext context, Block block, SettingsProvider settingsProvider) => Stack(
-        alignment: AlignmentDirectional.topStart,
         children: [
-          Transform.translate(
-            offset: Offset(0, -1.45 * settingsProvider.fontSize),
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(
-                    color: block.shouldShowLine ? AppThemeNew.of(context).textColor : Colors.transparent,
+          if (songLyric.showChords)
+            Transform.translate(
+              offset: Offset(0, -3),
+              child: Container(
+                // todo: disable line between divided word
+
+                // decoration: BoxDecoration(
+                //   border: Border(
+                //     bottom: BorderSide(
+                //         color: block.shouldShowLine ? AppThemeNew.of(context).textColor : Colors.transparent),
+                //   ),
+                // ),
+                child: Transform.translate(
+                  offset: Offset(0, -(AppThemeNew.of(context).bodyTextStyle.fontSize - 3)),
+                  child: RichText(
+                    text: TextSpan(
+                      text: block.chord,
+                      style: AppThemeNew.of(context).bodyTextStyle.copyWith(
+                            color: AppThemeNew.of(context).chordColor,
+                            height: (songLyric.showChords ? 2.25 : 1.5),
+                          ),
+                    ),
                   ),
                 ),
               ),
-              child: Transform.translate(
-                offset: Offset(0, -0.5 * settingsProvider.fontSize),
-                child: Text(
-                  block.chord,
-                  style: AppThemeNew.of(context).bodyTextStyle.copyWith(
-                        color: AppThemeNew.of(context).chordColor,
-                        fontSize: settingsProvider.fontSize,
-                        height: songLyric.showChords ? 2.4 : 1,
-                      ),
+            ),
+          Transform.translate(
+            offset: Offset(0, 0), // because of the border
+            child: Container(
+              child: RichText(
+                text: TextSpan(
+                  text: block.lyricsPart,
+                  style: AppThemeNew.of(context).bodyTextStyle.copyWith(height: (songLyric.showChords ? 2.25 : 1.5)),
                 ),
               ),
             ),
-          ),
-          Container(
-            color: AppThemeNew.of(context).backgroundColor,
-            child: Text(
-              block.lyricsPart,
-              style: AppThemeNew.of(context).bodyTextStyle.copyWith(fontSize: settingsProvider.fontSize),
-            ),
-          ),
+          )
         ],
       );
 }

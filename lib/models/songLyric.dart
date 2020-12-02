@@ -89,8 +89,8 @@ class SongLyric extends ChangeNotifier {
   String get name => _entity.name;
 
   List<Verse> get verses => showChords
-      ? _verses ??= SongLyricsParser.shared.parseLyrics(_entity.lyrics, transposition, accidentals)
-      : _versesNoChords ??= SongLyricsParser.shared.parseLyrics(_entity.lyrics.replaceAll(_chordsRE, ''), 0, false);
+      ? SongLyricsParser.shared.parseLyrics(_entity.lyrics, transposition, accidentals)
+      : SongLyricsParser.shared.parseLyrics(_entity.lyrics.replaceAll(_chordsRE, ''), 0, false);
 
   String get lilypond => _entity.lilypond;
 
@@ -221,6 +221,11 @@ class Line {
     grouped.add(tmp);
 
     _groupedBlocks = grouped;
+
+    // for (final blocks in grouped) {
+    //   print('----');
+    //   for (final block in blocks) print('${block.lyricsPart}: ${block.chord}');
+    // }
 
     return grouped;
   }

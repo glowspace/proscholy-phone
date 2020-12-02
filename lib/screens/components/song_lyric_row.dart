@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songLyric.dart';
 import 'package:zpevnik/models/songbook.dart';
+import 'package:zpevnik/providers/selection_provider.dart';
 import 'package:zpevnik/providers/song_lyrics_provider.dart';
 import 'package:zpevnik/screens/components/circular_checkbox.dart';
 import 'package:zpevnik/screens/components/highlightable_row.dart';
@@ -24,7 +25,7 @@ class SongLyricRowNew extends StatefulWidget {
 class _SongLyricRowStateNew extends State<SongLyricRowNew> {
   @override
   Widget build(BuildContext context) {
-    final selectionProvider = Provider.of<SongLyricsProvider>(context, listen: false).selectionProvider;
+    final selectionProvider = DataContainer.of<SelectionProvider>(context)?.data;
     final selectionEnabled = selectionProvider?.selectionEnabled ?? false;
     final selected = selectionProvider?.isSelected(widget.songLyric) ?? false;
 

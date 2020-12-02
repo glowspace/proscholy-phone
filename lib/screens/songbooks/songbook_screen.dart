@@ -63,6 +63,7 @@ class _SongbookScreenState extends State<SongbookScreen> with PlatformStateMixin
           actions: [_trailing(context)],
           leadingWidth: _searching ? 0 : null,
           shadowColor: AppTheme.shared.appBarDividerColor(context),
+          brightness: _appBarBrightness,
         ),
         body: AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle(statusBarColor: _navbarColor),
@@ -114,6 +115,9 @@ class _SongbookScreenState extends State<SongbookScreen> with PlatformStateMixin
   Color get _textColor => (widget.songbook.colorText == null || !AppThemeNew.of(context).isLight)
       ? null
       : HexColor(widget.songbook.colorText);
+
+  Brightness get _appBarBrightness =>
+      _textColor == null ? null : (_textColor.computeLuminance() < 0.5 ? Brightness.light : Brightness.dark);
 
   void _pushSelectedSongLyric(BuildContext context) {
     if (_songLyricsProvider.matchedById == null) return;

@@ -4,15 +4,15 @@ import 'package:wakelock/wakelock.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/data_provider.dart';
 
-const String _fontSizeKey = 'font_size';
+const String _fontSizeScaleScaleKey = 'font_size_scale';
 const String _showChordsKey = 'show_chords';
 const String _accidentalsKey = 'accidentals';
 const String _blockDisplayOffKey = 'block_display';
 const String _showBottomOptionsKey = 'show_bottom_options';
 
 class SettingsProvider extends ChangeNotifier {
-  double _fontSize;
-  double _fontSizeBeforeScale;
+  double _fontSizeScale;
+  double _fontSizeScaleBeforeScale;
   bool _showChords;
   bool _accidentals;
   bool _blockDisplayOff;
@@ -23,7 +23,7 @@ class SettingsProvider extends ChangeNotifier {
   SettingsProvider() {
     _prefs = DataProvider.shared.prefs;
 
-    _fontSize = _prefs.getDouble(_fontSizeKey) ?? 17;
+    _fontSizeScale = _prefs.getDouble(_fontSizeScaleScaleKey) ?? 1;
     _showChords = _prefs.getBool(_showChordsKey) ?? true;
     _accidentals = _prefs.getBool(_accidentalsKey) ?? false;
     _blockDisplayOff = _prefs.getBool(_blockDisplayOffKey) ?? false;
@@ -32,7 +32,7 @@ class SettingsProvider extends ChangeNotifier {
     if (_blockDisplayOff) Wakelock.enable();
   }
 
-  double get fontSize => _fontSize;
+  double get fontSizeScale => _fontSizeScale;
 
   bool get showChords => _showChords;
 
@@ -42,14 +42,14 @@ class SettingsProvider extends ChangeNotifier {
 
   bool get showBottomOptions => _showBottomOptions;
 
-  void changeFontSize(double value) {
-    if (value < kMinimumFontSize)
-      value = kMinimumFontSize;
-    else if (value > kMaximumFontSize) value = kMaximumFontSize;
+  void changeFontSizeScale(double value) {
+    if (value < kMinimumFontSizeScale)
+      value = kMinimumFontSizeScale;
+    else if (value > kMaximumFontSizeScale) value = kMaximumFontSizeScale;
 
-    _fontSize = value;
+    _fontSizeScale = value;
 
-    _prefs.setDouble(_fontSizeKey, value);
+    _prefs.setDouble(_fontSizeScaleScaleKey, value);
 
     notifyListeners();
   }
@@ -91,7 +91,7 @@ class SettingsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void fontScaleStarted(_) => _fontSizeBeforeScale = fontSize;
+  void fontScaleStarted(_) => _fontSizeScaleBeforeScale = fontSizeScale;
 
-  void fontScaleUpdated(ScaleUpdateDetails details) => changeFontSize(_fontSizeBeforeScale * details.scale);
+  void fontScaleUpdated(ScaleUpdateDetails details) => changeFontSizeScale(_fontSizeScaleBeforeScale * details.scale);
 }

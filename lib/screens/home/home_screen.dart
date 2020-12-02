@@ -6,6 +6,7 @@ import 'package:zpevnik/providers/data_provider.dart';
 import 'package:zpevnik/providers/playlists_provider.dart';
 import 'package:zpevnik/providers/selection_provider.dart';
 import 'package:zpevnik/providers/song_lyrics_provider.dart';
+import 'package:zpevnik/screens/components/data_container.dart';
 import 'package:zpevnik/screens/components/highlightable_button.dart';
 import 'package:zpevnik/screens/components/song_lyrics_list.dart';
 import 'package:zpevnik/screens/song_lyric/song_lyric_screen.dart';
@@ -82,7 +83,10 @@ class _HomeScreenState extends State<HomeScreen> with PlatformStateMixin {
           Expanded(
             child: ChangeNotifierProvider.value(
               value: _songLyricsProvider,
-              child: SongLyricsListView(key: PageStorageKey('home_screen_list_view')),
+              child: DataContainer(
+                data: _selectionProvider,
+                child: SongLyricsListView(key: PageStorageKey('home_screen_list_view')),
+              ),
             ),
           ),
         ]),

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/custom_appbar.dart';
 import 'package:zpevnik/models/songLyric.dart';
 import 'package:zpevnik/providers/scroll_provider.dart';
 import 'package:zpevnik/providers/settings_provider.dart';
@@ -58,11 +59,10 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
 
   @override
   Widget androidWidget(BuildContext context) => StatusBarWrapper(
-        color: Colors.red,
         child: Scaffold(
           appBar: _fullScreen
               ? null
-              : AppBar(
+              : CustomAppBar(
                   title: Text(widget.songLyric.id.toString(), style: AppThemeNew.of(context).bodyTextStyle),
                   shadowColor: AppTheme.shared.appBarDividerColor(context),
                   actions: _actions(context),

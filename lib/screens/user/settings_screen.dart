@@ -107,18 +107,24 @@ class SettingsScreen extends StatelessWidget with PlatformWidgetMixin {
         child: Consumer<SettingsProvider>(
           builder: (context, settingsProvider, _) => Row(
             children: [
-              Text('A', style: AppThemeNew.of(context).bodyTextStyle.copyWith(fontSize: kMinimumFontSize)),
+              RichText(
+                text: TextSpan(text: 'A', style: AppThemeNew.of(context).bodyTextStyle),
+                textScaleFactor: kMinimumFontSizeScale,
+              ),
               Flexible(
                 child: Slider(
-                  min: kMinimumFontSize,
-                  max: kMaximumFontSize,
-                  value: settingsProvider.fontSize,
-                  onChanged: settingsProvider.changeFontSize,
+                  min: kMinimumFontSizeScale,
+                  max: kMaximumFontSizeScale,
+                  value: settingsProvider.fontSizeScale,
+                  onChanged: settingsProvider.changeFontSizeScale,
                   activeColor: AppThemeNew.of(context).chordColor,
                   inactiveColor: AppTheme.shared.unSelectedColor(context),
                 ),
               ),
-              Text('A', style: AppThemeNew.of(context).bodyTextStyle.copyWith(fontSize: kMaximumFontSize)),
+              RichText(
+                text: TextSpan(text: 'A', style: AppThemeNew.of(context).bodyTextStyle),
+                textScaleFactor: kMaximumFontSizeScale,
+              ),
             ],
           ),
         ),
