@@ -89,8 +89,8 @@ class SongLyric extends ChangeNotifier {
   String get name => _entity.name;
 
   List<Verse> get verses => showChords
-      ? SongLyricsParser.shared.parseLyrics(_entity.lyrics, transposition, accidentals)
-      : SongLyricsParser.shared.parseLyrics(_entity.lyrics.replaceAll(_chordsRE, ''), 0, false);
+      ? _verses ??= SongLyricsParser.shared.parseLyrics(_entity.lyrics, transposition, accidentals)
+      : _versesNoChords ??= SongLyricsParser.shared.parseLyrics(_entity.lyrics.replaceAll(_chordsRE, ''), 0, false);
 
   String get lilypond => _entity.lilypond;
 
@@ -109,6 +109,28 @@ class SongLyric extends ChangeNotifier {
   bool get hasTranslations => _song.songLyrics.length > 1;
 
   bool get hasExternals => _entity.externals.isNotEmpty;
+
+  String get authorsText {
+    if (type == SongLyricType.original) {
+      if (entity.authors.length == 0)
+        return 'Autor neznámý';
+      else if (entity.authors.length == 1)
+        return 'Autor: ${entity.authors[0].name}';
+      else
+        return 'Autoři: ${entity.authors.map((author) => author.name).toList().join(", ")}';
+    } else {
+      String originalText = '';
+
+      if (original.isNotEmpty) originalText = '${original[0].authorsText}\n';
+
+      if (entity.authors.length == 0)
+        return '${originalText}Autor překladu neznámý';
+      else if (entity.authors.length == 1)
+        return '${originalText}Autor předkladu: ${entity.authors[0].name}';
+      else
+        return '${originalText}Autoři překladu: ${entity.authors.map((author) => author.name).toList().join(", ")}';
+    }
+  }
 
   List<SongLyric> get original =>
       _song.songLyrics.where((songLyric) => songLyric.type == SongLyricType.original).toList();
@@ -221,11 +243,6 @@ class Line {
     grouped.add(tmp);
 
     _groupedBlocks = grouped;
-
-    // for (final blocks in grouped) {
-    //   print('----');
-    //   for (final block in blocks) print('${block.lyricsPart}: ${block.chord}');
-    // }
 
     return grouped;
   }

@@ -85,56 +85,48 @@ class _FavoriteScreenState extends State<FavoriteScreen> with PlatformStateMixin
       : IconButton(onPressed: () => setState(() => _searching = true), icon: Icon(Icons.search));
 
   Widget _body(BuildContext context) => SafeArea(
-        child: _songLyricsProvider.songLyrics.isEmpty
-            ? Container(
-                padding: EdgeInsets.all(kDefaultPadding),
-                child: Center(
-                  child: Text(
-                    'Nemáte vybrané žádné oblíbené písně. Píseň si můžete přidat do oblíbených v${unbreakableSpace}náhledu písně.',
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              )
-            : Container(
-                padding: EdgeInsets.only(top: kDefaultPadding),
-                child: ChangeNotifierProvider.value(
-                  value: _songLyricsProvider,
-                  child: Scrollbar(
-                    child: Consumer<SongLyricsProvider>(
-                      builder: (context, provider, child) => ReorderableList(
-                        onReorder: (Key from, Key to) {
-                          int fromIndex = provider.songLyrics.indexWhere((songLyric) => songLyric.key == from);
-                          int toIndex = provider.songLyrics.indexWhere((songLyric) => songLyric.key == to);
+        child: Container(
+          padding: EdgeInsets.only(top: kDefaultPadding),
+          child: ChangeNotifierProvider.value(
+            value: _songLyricsProvider,
+            child: Scrollbar(
+              child: Consumer<SongLyricsProvider>(
+                builder: (context, provider, child) => ReorderableList(
+                  onReorder: (Key from, Key to) {
+                    int fromIndex = provider.songLyrics.indexWhere((songLyric) => songLyric.key == from);
+                    int toIndex = provider.songLyrics.indexWhere((songLyric) => songLyric.key == to);
 
-                          final songLyric = provider.songLyrics[fromIndex];
-                          setState(() {
-                            provider.songLyrics.removeAt(fromIndex);
-                            provider.songLyrics.insert(toIndex, songLyric);
-                          });
-                          return true;
-                        },
-                        onReorderDone: (_) {
-                          for (int i = 0; i < provider.songLyrics.length; i++) provider.songLyrics[i].favoriteOrder = i;
-                        },
-                        child: ListView.builder(
-                          itemBuilder: (context, index) => Reorderable(
-                            key: provider.songLyrics[index].key,
-                            child: SongLyricRowNew(
-                              songLyric: provider.songLyrics[index],
-                              showStar: false,
-                              prefix: ReorderableListener(
-                                child: Icon(Icons.drag_handle, color: Theme.of(context).textTheme.caption.color),
-                              ),
-                            ),
-                          ),
-                          itemCount: provider.songLyrics.length,
+                    final songLyric = provider.songLyrics[fromIndex];
+                    setState(() {
+                      provider.songLyrics.removeAt(fromIndex);
+                      provider.songLyrics.insert(toIndex, songLyric);
+                    });
+                    return true;
+                  },
+                  onReorderDone: (_) {
+                    for (int i = 0; i < provider.songLyrics.length; i++) provider.songLyrics[i].favoriteOrder = i;
+                  },
+                  child: ListView.builder(
+                    itemBuilder: (context, index) => Reorderable(
+                      key: provider.songLyrics[index].key,
+                      child: SongLyricRow(
+                        songLyric: provider.songLyrics[index],
+                        showStar: false,
+                        prefix: ReorderableListener(
+                          child: Icon(Icons.drag_handle, color: Theme.of(context).textTheme.caption.color),
                         ),
                       ),
                     ),
+                    itemCount: provider.songLyrics.length,
                   ),
                 ),
               ),
+            ),
+          ),
+        ),
       );
+
+  // 'Nemáte vybrané žádné oblíbené písně. Píseň si můžete přidat do oblíbených v${unbreakableSpace}náhledu písně.'
 
   void _pushSelectedSongLyric(BuildContext context) {
     if (_songLyricsProvider.matchedById == null) return;

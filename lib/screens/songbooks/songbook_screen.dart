@@ -11,7 +11,6 @@ import 'package:zpevnik/screens/components/search_widget.dart';
 import 'package:zpevnik/screens/components/song_lyrics_list.dart';
 import 'package:zpevnik/screens/components/data_container.dart';
 import 'package:zpevnik/screens/song_lyric/song_lyric_screen.dart';
-import 'package:zpevnik/status_bar_wrapper.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/hex_color.dart';
 import 'package:zpevnik/utils/platform.dart';
@@ -104,7 +103,10 @@ class _SongbookScreenState extends State<SongbookScreen> with PlatformStateMixin
 
   Widget _body(BuildContext context) => SafeArea(
         child: DataContainer(
-          child: ChangeNotifierProvider.value(value: _songLyricsProvider, child: SongLyricsListView()),
+          child: ChangeNotifierProvider.value(
+            value: _songLyricsProvider,
+            child: SongLyricsListView(placeholder: 'Tento zpěvník neobsahuje žádné písně.'),
+          ),
           data: widget.songbook,
         ),
       );

@@ -78,12 +78,11 @@ class Database {
   void savePlaylist(PlaylistEntity playlist) {
     PlaylistBean(_adapter).insert(playlist).catchError((error) => print(error));
     SongLyricPlaylistBean(_adapter)
-        .insertMany(playlist.songLyrics.map((songLyric) {
-          print('test');
-          SongLyricPlaylist()
-            ..playlistId = playlist.id
-            ..songLyricId = songLyric.id;
-        }).toList())
+        .insertMany(playlist.songLyrics
+            .map((songLyric) => SongLyricPlaylist()
+              ..playlistId = playlist.id
+              ..songLyricId = songLyric.id)
+            .toList())
         .catchError((error) => print(error));
   }
 
@@ -127,7 +126,7 @@ class Database {
     Map<int, List<SongbookRecord>> songbookRecords = {};
     Map<int, List<TagEntity>> songLyricTags = {};
     Map<int, AuthorEntity> authors = {};
-    Map<int, List<SongLyricAuthor>> songLyricAuthors = {};
+    Map<int, List<AuthorEntity>> songLyricAuthors = {};
     Map<int, List<ExternalEntity>> externals = {};
     Map<int, List<int>> songLyricPlaylists = {};
     Map<int, List<PlaylistEntity>> playlists = {};
@@ -136,9 +135,6 @@ class Database {
 
     for (final songbookRecord in await SongbookRecordBean(_adapter).getAll()) {
       if (!songbookRecords.containsKey(songbookRecord.songLyricId)) songbookRecords[songbookRecord.songLyricId] = [];
-
-      // if (_songbooks.containsKey(songbookRecord.songbookId)
-      //   songbookRecord.
 
       songbookRecords[songbookRecord.songLyricId].add(songbookRecord);
     }
@@ -155,7 +151,7 @@ class Database {
       if (!songLyricAuthors.containsKey(songLyricAuthor.songLyricId))
         songLyricAuthors[songLyricAuthor.songLyricId] = [];
 
-      songLyricAuthors[songLyricAuthor.songLyricId].add(songLyricAuthor);
+      songLyricAuthors[songLyricAuthor.songLyricId].add(authors[songLyricAuthor.authorId]);
     }
 
     for (final ext in await ExternalBean(_adapter).getAll()) {

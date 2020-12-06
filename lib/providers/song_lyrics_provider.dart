@@ -3,14 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:zpevnik/models/songLyric.dart';
 import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/providers/data_provider.dart';
-import 'package:zpevnik/providers/selection_provider.dart';
 import 'package:zpevnik/providers/tags_provider.dart';
 
 class SongLyricsProvider extends ChangeNotifier {
-  final List<SongLyric> _allSongLyrics;
+  final List<SongLyric> allSongLyrics;
 
   final TagsProvider tagsProvider;
-  final SelectionProvider selectionProvider;
 
   List<SongLyric> _songLyrics;
 
@@ -18,9 +16,9 @@ class SongLyricsProvider extends ChangeNotifier {
 
   String _searchText;
 
-  SongLyricsProvider(this._allSongLyrics, {this.selectionProvider})
+  SongLyricsProvider(this.allSongLyrics)
       : _searchText = '',
-        _songLyrics = _allSongLyrics,
+        _songLyrics = allSongLyrics,
         tagsProvider = TagsProvider(DataProvider.shared.tags) {
     tagsProvider.addListener(_update);
   }
@@ -67,7 +65,7 @@ class SongLyricsProvider extends ChangeNotifier {
   void _update() {
     final predicates = _predicates;
 
-    List<SongLyric> filtered = tagsProvider.selectedTags.isEmpty ? _allSongLyrics : _filter(_allSongLyrics);
+    List<SongLyric> filtered = tagsProvider.selectedTags.isEmpty ? allSongLyrics : _filter(allSongLyrics);
 
     List<List<SongLyric>> searchResults = List<List<SongLyric>>.generate(predicates.length, (index) => []);
 

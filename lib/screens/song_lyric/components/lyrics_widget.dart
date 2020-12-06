@@ -34,6 +34,10 @@ class LyricsWidget extends StatelessWidget {
                   ),
                 ),
               ),
+              RichText(
+                text: TextSpan(text: songLyric.authorsText, style: AppThemeNew.of(context).bodyTextStyle),
+                textScaleFactor: settingsProvider.fontSizeScale,
+              ),
             ],
           ),
         ),

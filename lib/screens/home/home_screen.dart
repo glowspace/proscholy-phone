@@ -34,14 +34,11 @@ class _HomeScreenState extends State<HomeScreen> with PlatformStateMixin {
 
     // fixme: there might be better way to persist this, but I don't know it yet
     _songLyricsProvider = PageStorage.of(context)?.readState(context) as SongLyricsProvider ??
-        SongLyricsProvider(
-          DataProvider.shared.songLyrics,
-          selectionProvider: SelectionProvider(),
-        );
+        SongLyricsProvider(DataProvider.shared.songLyrics);
 
     PageStorage.of(context)?.writeState(context, _songLyricsProvider);
 
-    _selectionProvider = _songLyricsProvider.selectionProvider;
+    _selectionProvider = SelectionProvider();
     _selectionProvider.addListener(_update);
   }
 

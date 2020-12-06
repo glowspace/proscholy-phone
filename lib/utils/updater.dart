@@ -30,7 +30,7 @@ class Updater {
 
   final String _query = '''
   {
-    "query": "query$_lastUpdatePlaceholder {
+    "query": "query {
       authors {
         id
         name
@@ -52,7 +52,7 @@ class Updater {
           id
           name
       }
-      song_lyrics {
+      song_lyrics$_lastUpdatePlaceholder {
         id
         name
         lyrics
@@ -117,7 +117,7 @@ class Updater {
     final response = await Client().post(_url,
         body: _query
             .replaceAll('\n', '')
-            .replaceFirst(_lastUpdatePlaceholder, lastUpdate == null ? '' : '(last_update: $lastUpdate)'),
+            .replaceFirst(_lastUpdatePlaceholder, lastUpdate == null ? '' : '(updated_after: \\"$lastUpdate\\")'),
         headers: <String, String>{'Content-Type': 'application/json; charset=utf-8'});
 
     await _parse(response.body);
@@ -162,6 +162,17 @@ class Updater {
               (index) => SongLyricTag()
                 ..songLyricId = songLyric.id
                 ..tagId = songLyric.tags[index].id))
+          .toList()
+          .reduce((result, list) {
+        result.addAll(list);
+        return result;
+      })),
+      Database.shared.saveSongLyricAuthors(songLyrics
+          .map((songLyric) => List.generate(
+              songLyric.authors.length,
+              (index) => SongLyricAuthor()
+                ..songLyricId = songLyric.id
+                ..authorId = songLyric.authors[index].id))
           .toList()
           .reduce((result, list) {
         result.addAll(list);
