@@ -29,6 +29,8 @@ class SongLyricsProvider extends ChangeNotifier {
 
   String get searchText => _searchText;
 
+  bool get showingAll => _searchText.isEmpty && tagsProvider.selectedTags.isEmpty;
+
   void search(String searchText) {
     _searchText = searchText;
 

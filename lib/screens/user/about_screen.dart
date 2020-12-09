@@ -31,28 +31,30 @@ class AboutScreen extends StatelessWidget with PlatformWidgetMixin {
 
     final linkOpener = TapGestureRecognizer()..onTap = () => launch(proscholyUrl);
 
-    return Container(
-      padding: EdgeInsets.all(kDefaultPadding),
-      child: RichText(
-        text: TextSpan(
-          text: 'Zpěvník ',
-          style: textStyle,
-          children: [
-            TextSpan(text: 'ProScholy.cz', style: highlightedStyle, recognizer: linkOpener),
-            TextSpan(
-              text:
-                  ', který přichází na${unbreakableSpace}pomoc všem scholám, křesťanským kapelám, společenstvím a${unbreakableSpace}všem, kdo se chtějí modlit hudbou!\n\nProjekt vzniká se svolením ',
-              style: textStyle,
-            ),
-            TextSpan(text: 'České biskupské konference', style: boldStyle),
-            TextSpan(
-              text:
-                  '.\n\nDalší informace o${unbreakableSpace}stavu a${unbreakableSpace}rozvoji projektu naleznete na$unbreakableSpace',
-              style: textStyle,
-            ),
-            TextSpan(text: proscholyUrl, style: highlightedStyle, recognizer: linkOpener),
-            TextSpan(text: '.', style: textStyle),
-          ],
+    return SafeArea(
+      child: Container(
+        padding: EdgeInsets.all(kDefaultPadding),
+        child: RichText(
+          text: TextSpan(
+            text: 'Zpěvník ',
+            style: textStyle,
+            children: [
+              TextSpan(text: 'ProScholy.cz', style: highlightedStyle, recognizer: linkOpener),
+              TextSpan(
+                text:
+                    ', který přichází na${unbreakableSpace}pomoc všem scholám, křesťanským kapelám, společenstvím a${unbreakableSpace}všem, kdo se chtějí modlit hudbou!\n\nProjekt vzniká se svolením ',
+                style: textStyle,
+              ),
+              TextSpan(text: 'České biskupské konference', style: boldStyle),
+              TextSpan(
+                text:
+                    '.\n\nDalší informace o${unbreakableSpace}stavu a${unbreakableSpace}rozvoji projektu naleznete na$unbreakableSpace',
+                style: textStyle,
+              ),
+              TextSpan(text: proscholyUrl, style: highlightedStyle, recognizer: linkOpener),
+              TextSpan(text: '.', style: textStyle),
+            ],
+          ),
         ),
       ),
     );

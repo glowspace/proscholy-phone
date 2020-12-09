@@ -43,6 +43,7 @@ class _UserScreenState extends State<UserScreen> with PlatformStateMixin {
     _showingMenuKey = ValueNotifier(null)
       ..addListener(() {
         _showingMenu.value = _showingMenuKey.value != null;
+
         if (_showingMenu.value) setState(() => {});
       });
     _activePlaylist = null;
@@ -104,6 +105,7 @@ class _UserScreenState extends State<UserScreen> with PlatformStateMixin {
                               playlist: playlists[index],
                               select: (playlist) => _activePlaylist = playlist,
                               showingMenuKey: _showingMenuKey,
+                              reorderable: true,
                             ),
                           ),
                         ),
@@ -111,7 +113,10 @@ class _UserScreenState extends State<UserScreen> with PlatformStateMixin {
                           GestureDetector(
                             onTap: () => setState(() => _showingArchived = !_showingArchived),
                             child: Container(
-                              padding: EdgeInsets.all(kDefaultPadding),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 1.5 * kDefaultPadding,
+                                vertical: kDefaultPadding,
+                              ),
                               child: Row(children: [
                                 Container(
                                   padding: EdgeInsets.only(right: kDefaultPadding),
@@ -132,6 +137,7 @@ class _UserScreenState extends State<UserScreen> with PlatformStateMixin {
                               playlist: archivedPlaylists[index],
                               select: (playlist) => _activePlaylist = playlist,
                               showingMenuKey: _showingMenuKey,
+                              reorderable: false,
                             ),
                           ),
                       ],
@@ -163,65 +169,63 @@ class _UserScreenState extends State<UserScreen> with PlatformStateMixin {
                 ),
               ),
             ),
-          Positioned(
-            right: kDefaultPadding,
-            top: _top,
-            child: _popupWidget,
-          )
+          Positioned(right: kDefaultPadding, top: _top, child: _popupWidget)
         ],
       ),
     );
   }
 
   double get _top {
-    if (_showingMenuKey.value == null) return 0;
+    if (_showingMenuKey.value == null || _showingMenuKey.value.currentContext == null) return 0;
 
     RenderBox box = _showingMenuKey.value.currentContext.findRenderObject();
 
     return box.localToGlobal(Offset.zero).dy;
   }
 
-  Widget get _popupWidget => _activePlaylist == null
-      ? Container()
-      : PopupMenu(
-          showing: _showingMenu,
-          border: Border.all(color: AppTheme.shared.borderColor(context)),
-          animateHide: false, // todo: animate hide, it looks really bad now
-          children: [
-            MenuItem(
-              title: 'Přejmenovat',
-              icon: Icons.drive_file_rename_outline,
-              onPressed: () => _showRenameDialog(context),
-            ),
-            if (!_activePlaylist.isArchived)
-              MenuItem(
-                title: 'Duplikovat',
-                icon: CustomIcon.content_duplicate,
-                onPressed: () {
-                  setState(() => PlaylistsProvider.shared.duplicate(_activePlaylist));
-                  _showingMenuKey.value = null;
-                },
-              ),
-            MenuItem(
-              title: _activePlaylist.isArchived ? 'Zrušit archivaci' : 'Archivovat',
-              icon: Icons.archive,
-              onPressed: () {
-                setState(() => _activePlaylist.isArchived = !_activePlaylist.isArchived);
-                _showingMenuKey.value = null;
-              },
-            ),
-            if (_activePlaylist.isArchived)
-              MenuItem(
-                title: 'Odstranit',
-                icon: Icons.delete,
-                onPressed: () {
-                  setState(() => PlaylistsProvider.shared.remove(_activePlaylist));
-                  _showingArchived &= PlaylistsProvider.shared.archivedPlaylists.isNotEmpty;
-                  _showingMenuKey.value = null;
-                },
-              ),
-          ],
-        );
+  Widget get _popupWidget {
+    final isArchived = _activePlaylist != null && _activePlaylist.isArchived;
+
+    return PopupMenu(
+      showing: _showingMenu,
+      border: Border.all(color: AppTheme.shared.borderColor(context)),
+      animateHide: false, // todo: animate hide, it looks really bad now
+      children: [
+        MenuItem(
+          title: 'Přejmenovat',
+          icon: Icons.drive_file_rename_outline,
+          onPressed: () => _showRenameDialog(context),
+        ),
+        if (!isArchived)
+          MenuItem(
+            title: 'Duplikovat',
+            icon: CustomIcon.content_duplicate,
+            onPressed: () {
+              setState(() => PlaylistsProvider.shared.duplicate(_activePlaylist));
+              _showingMenuKey.value = null;
+            },
+          ),
+        MenuItem(
+          title: isArchived ? 'Zrušit archivaci' : 'Archivovat',
+          icon: Icons.archive,
+          onPressed: () {
+            setState(() => _activePlaylist.isArchived = !_activePlaylist.isArchived);
+            _showingMenuKey.value = null;
+          },
+        ),
+        if (isArchived)
+          MenuItem(
+            title: 'Odstranit',
+            icon: Icons.delete,
+            onPressed: () {
+              setState(() => PlaylistsProvider.shared.remove(_activePlaylist));
+              _showingArchived &= PlaylistsProvider.shared.archivedPlaylists.isNotEmpty;
+              _showingMenuKey.value = null;
+            },
+          ),
+      ],
+    );
+  }
 
   Widget _searchWidget(BuildContext context) => SearchWidget(
         key: PageStorageKey('user_screen_search_widget'),

@@ -17,7 +17,7 @@ class MenuItem extends StatelessWidget {
         highlightColor: AppThemeNew.of(context).highlightColor,
         child: Row(children: [
           Container(padding: EdgeInsets.only(right: kDefaultPadding), child: Icon(icon)),
-          Text(title),
+          Text(title, style: AppThemeNew.of(context).bodyTextStyle),
         ]),
       );
 }

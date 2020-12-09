@@ -33,7 +33,7 @@ class SongLyricsListView extends StatelessWidget {
         ? 'Nebyla nalezena žádná píseň pro${unbreakableSpace}hledaný výraz: "${provider.searchText}"'
         : (placeholder != null ? placeholder : 'Seznam neobsahuje žádnou píseň.');
 
-    final showTitle = title != null && provider.searchText.isEmpty;
+    final showTitle = title != null && provider.showingAll;
 
     final content = provider.songLyrics.isNotEmpty
         ? Scrollbar(

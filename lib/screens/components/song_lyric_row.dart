@@ -46,8 +46,6 @@ class _SongLyricRowStateNew extends State<SongLyricRow> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            if (widget.prefix != null)
-              Container(padding: EdgeInsets.only(right: kDefaultPadding), child: widget.prefix),
             if (songbookContainer != null)
               Container(
                 padding: EdgeInsets.only(right: kDefaultPadding),
@@ -61,6 +59,7 @@ class _SongLyricRowStateNew extends State<SongLyricRow> {
             _songLyricNumber(context, widget.songLyric.id.toString()),
           ],
         ),
+        prefix: widget.prefix,
       ),
     );
   }

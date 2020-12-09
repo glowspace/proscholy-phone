@@ -27,57 +27,61 @@ class SettingsScreen extends StatelessWidget with PlatformWidgetMixin {
   Widget _body(BuildContext context) {
     final accidentalsStyle = AppThemeNew.of(context).bodyTextStyle.copyWith(fontSize: 20, fontFamily: 'Hiragino Sans');
 
-    return Container(
-      padding: EdgeInsets.all(kDefaultPadding),
-      child: Consumer<SettingsProvider>(
-        builder: (context, settingsProvider, _) => Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _section(
-              context,
-              'Nastavení zobrazení',
-              [
-                _row('Blokovat zhasínání displeje',
-                    Switch(value: settingsProvider.blockDisplayOff, onChanged: settingsProvider.changeBlockDisplayOff)),
-              ],
-            ),
-            _section(
-              context,
-              'Nastavení písní',
-              [
-                _row(
-                  'Posuvky',
-                  SelectorWidget(
-                    onSelected: (index) => settingsProvider.accidentals = index == 1,
-                    options: [
-                      Text('#', style: accidentalsStyle, textAlign: TextAlign.center),
-                      Text('♭', style: accidentalsStyle, textAlign: TextAlign.center)
-                    ],
-                    selected: settingsProvider.accidentals ? 1 : 0,
+    return SafeArea(
+      child: Container(
+        padding: EdgeInsets.all(kDefaultPadding),
+        child: Consumer<SettingsProvider>(
+          builder: (context, settingsProvider, _) => Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _section(
+                context,
+                'Nastavení zobrazení',
+                [
+                  _row(
+                      'Blokovat zhasínání displeje',
+                      Switch(
+                          value: settingsProvider.blockDisplayOff, onChanged: settingsProvider.changeBlockDisplayOff)),
+                ],
+              ),
+              _section(
+                context,
+                'Nastavení písní',
+                [
+                  _row(
+                    'Posuvky',
+                    SelectorWidget(
+                      onSelected: (index) => settingsProvider.accidentals = index == 1,
+                      options: [
+                        Text('#', style: accidentalsStyle, textAlign: TextAlign.center),
+                        Text('♭', style: accidentalsStyle, textAlign: TextAlign.center)
+                      ],
+                      selected: settingsProvider.accidentals ? 1 : 0,
+                    ),
                   ),
-                ),
-                _row(
-                  'Akordy',
-                  SelectorWidget(
-                    onSelected: (index) => settingsProvider.showChords = index == 1,
-                    options: [
-                      Icon(Icons.visibility_off),
-                      Icon(Icons.visibility),
-                    ],
-                    selected: settingsProvider.showChords ? 1 : 0,
+                  _row(
+                    'Akordy',
+                    SelectorWidget(
+                      onSelected: (index) => settingsProvider.showChords = index == 1,
+                      options: [
+                        Icon(Icons.visibility_off),
+                        Icon(Icons.visibility),
+                      ],
+                      selected: settingsProvider.showChords ? 1 : 0,
+                    ),
                   ),
-                ),
-                _fontSizeSlider(context),
-                _row(
-                  'Zobrazit spodní nabídku',
-                  Switch(
-                    value: settingsProvider.showBottomOptions,
-                    onChanged: settingsProvider.changeShowBottomOptions,
+                  _fontSizeSlider(context),
+                  _row(
+                    'Zobrazit spodní nabídku',
+                    Switch(
+                      value: settingsProvider.showBottomOptions,
+                      onChanged: settingsProvider.changeShowBottomOptions,
+                    ),
                   ),
-                ),
-              ],
-            )
-          ],
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -88,7 +92,7 @@ class SettingsScreen extends StatelessWidget with PlatformWidgetMixin {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title, style: Theme.of(context).textTheme.subtitle1.copyWith(fontSize: 18)),
+            Text(title, style: AppThemeNew.of(context).subTitleTextStyle.copyWith(fontSize: 18)),
             Container(child: Column(children: children)),
           ],
         ),
