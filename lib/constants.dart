@@ -4,7 +4,7 @@ const double kDefaultPadding = 10;
 const int kDefaultAnimationTime = 300;
 
 const double kMinimumFontSizeScale = 0.5;
-const double kMaximumFontSizeScale = 5;
+const double kMaximumFontSizeScale = 4;
 
 const Color blue = Color(0xff3861ac);
 const Color green = Color(0xff098845);

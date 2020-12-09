@@ -119,9 +119,9 @@ class SongLyric extends ChangeNotifier {
       else
         return 'Autoři: ${entity.authors.map((author) => author.name).toList().join(", ")}';
     } else {
-      String originalText = '';
+      String originalText = 'Originál: ${original.isEmpty ? "" : original[0].name}\n';
 
-      if (original.isNotEmpty) originalText = '${original[0].authorsText}\n';
+      if (original.isNotEmpty) originalText += '${original[0].authorsText}\n';
 
       if (entity.authors.length == 0)
         return '${originalText}Autor překladu neznámý';
