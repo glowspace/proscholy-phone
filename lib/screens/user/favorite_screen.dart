@@ -108,10 +108,13 @@ class _FavoriteScreenState extends State<FavoriteScreen> with PlatformStateMixin
                     for (int i = 0; i < provider.songLyrics.length; i++) provider.songLyrics[i].favoriteOrder = i;
                   },
                   child: SongLyricsListView(
-                      placeholder:
-                          'Nemáte vybrané žádné oblíbené písně. Píseň si můžete přidat do oblíbených v${unbreakableSpace}náhledu písně.',
-                      reorderable: true,
-                      showStar: false),
+                    placeholder:
+                        'Nemáte vybrané žádné oblíbené písně. Píseň si můžete přidat do oblíbených v${unbreakableSpace}náhledu písně.',
+                    title: 'Písně s hvězdičkou',
+                    titleColor: red,
+                    reorderable: true,
+                    showStar: false,
+                  ),
                 ),
               ),
             ),

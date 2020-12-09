@@ -72,7 +72,16 @@ class _UserScreenState extends State<UserScreen> with PlatformStateMixin {
                 Scrollbar(
                   child: SingleChildScrollView(
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        if (PlaylistsProvider.shared.searchText.isEmpty)
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding, vertical: kDefaultPadding),
+                            child: Text(
+                              'Seznamy písní',
+                              style: AppThemeNew.of(context).bodyTextStyle.copyWith(color: red),
+                            ),
+                          ),
                         if (PlaylistsProvider.shared.searchText.isEmpty)
                           HighlightableRow(
                               onPressed: () => Navigator.of(context).push(

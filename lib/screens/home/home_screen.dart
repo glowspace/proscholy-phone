@@ -82,7 +82,11 @@ class _HomeScreenState extends State<HomeScreen> with PlatformStateMixin {
               value: _songLyricsProvider,
               child: DataContainer(
                 data: _selectionProvider,
-                child: SongLyricsListView(key: PageStorageKey('home_screen_list_view')),
+                child: SongLyricsListView(
+                  key: PageStorageKey('home_screen_list_view'),
+                  title: 'Abecední seznam všech písní',
+                  titleColor: blue,
+                ),
               ),
             ),
           ),

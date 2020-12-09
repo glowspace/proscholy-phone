@@ -12,11 +12,19 @@ import 'package:zpevnik/theme.dart';
 
 class SongLyricsListView extends StatelessWidget {
   final String placeholder;
+  final String title;
+  final Color titleColor;
   final bool reorderable;
   final bool showStar;
 
-  const SongLyricsListView({Key key, this.placeholder, this.reorderable = false, this.showStar = true})
-      : super(key: key);
+  const SongLyricsListView({
+    Key key,
+    this.placeholder,
+    this.title,
+    this.titleColor,
+    this.reorderable = false,
+    this.showStar = true,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,16 +33,28 @@ class SongLyricsListView extends StatelessWidget {
         ? 'Nebyla nalezena žádná píseň pro${unbreakableSpace}hledaný výraz: "${provider.searchText}"'
         : (placeholder != null ? placeholder : 'Seznam neobsahuje žádnou píseň.');
 
+    final showTitle = title != null && provider.searchText.isEmpty;
+
     final content = provider.songLyrics.isNotEmpty
         ? Scrollbar(
             child: ListView.builder(
-              itemBuilder: (context, index) => reorderable
-                  ? Reorderable(
-                      key: provider.songLyrics[index].key,
-                      child: _row(context, provider.songLyrics[index]),
-                    )
-                  : _row(context, provider.songLyrics[index]),
-              itemCount: provider.songLyrics.length,
+              itemBuilder: (context, index) {
+                if (index == 0 && showTitle)
+                  return Container(
+                    padding: EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding, vertical: kDefaultPadding),
+                    child: Text(title, style: AppThemeNew.of(context).bodyTextStyle.copyWith(color: titleColor)),
+                  );
+
+                if (showTitle) index -= 1;
+
+                return reorderable
+                    ? Reorderable(
+                        key: provider.songLyrics[index].key,
+                        child: _row(context, provider.songLyrics[index]),
+                      )
+                    : _row(context, provider.songLyrics[index]);
+              },
+              itemCount: provider.songLyrics.length + (showTitle ? 1 : 0),
             ),
           )
         : Container(
