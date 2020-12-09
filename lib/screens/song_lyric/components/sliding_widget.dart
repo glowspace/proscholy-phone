@@ -2,9 +2,12 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/providers/data_provider.dart';
 import 'package:zpevnik/providers/scroll_provider.dart';
 import 'package:zpevnik/screens/components/highlightable_button.dart';
 import 'package:zpevnik/theme.dart';
+
+const _collapsedKey = 'collapsed';
 
 class SlidingWidget extends StatefulWidget {
   final Function() showSettings;
@@ -18,6 +21,7 @@ class SlidingWidget extends StatefulWidget {
 }
 
 class _SlidingWidgetState extends State<SlidingWidget> with SingleTickerProviderStateMixin {
+  bool _initial;
   ValueNotifier<bool> _collapsed;
   ValueNotifier<bool> _scrollSpeedcollapsed;
 
@@ -28,10 +32,12 @@ class _SlidingWidgetState extends State<SlidingWidget> with SingleTickerProvider
   void initState() {
     super.initState();
 
-    _collapsed = ValueNotifier(false);
+    _initial = DataProvider.shared.prefs.getBool(_collapsedKey) ?? false;
+    _collapsed = ValueNotifier(_initial);
 
     _controller = AnimationController(duration: const Duration(milliseconds: kDefaultAnimationTime), vsync: this);
-    _animation = Tween<double>(begin: 1, end: 0).animate(_controller)..addListener(() => setState(() {}));
+    _animation = Tween<double>(begin: _initial ? 0 : 1, end: _initial ? 1 : 0).animate(_controller)
+      ..addListener(() => setState(() {}));
 
     _scrollSpeedcollapsed = ValueNotifier(true);
 
@@ -82,8 +88,12 @@ class _SlidingWidgetState extends State<SlidingWidget> with SingleTickerProvider
   void _scrollingChanged() => setState(() => _scrollSpeedcollapsed.value = !widget.scrollProvider.scrolling.value);
 
   void _toggleCollapsed() {
+    _collapsed.value
+        ? (_initial ? _controller.forward() : _controller.reverse())
+        : (_initial ? _controller.reverse() : _controller.forward());
     _collapsed.value = !_collapsed.value;
-    _collapsed.value ? _controller.reverse() : _controller.forward();
+
+    DataProvider.shared.prefs.setBool(_collapsedKey, _collapsed.value);
   }
 
   @override
@@ -109,6 +119,7 @@ class _CollapseableWidget extends StatefulWidget {
 }
 
 class _CollapseableWidgetState extends State<_CollapseableWidget> with SingleTickerProviderStateMixin {
+  bool _initial;
   Animation<double> _animation;
   AnimationController _controller;
 
@@ -116,10 +127,11 @@ class _CollapseableWidgetState extends State<_CollapseableWidget> with SingleTic
   void initState() {
     super.initState();
 
+    _initial = widget.collapsed.value;
+
     _controller = AnimationController(duration: const Duration(milliseconds: kDefaultAnimationTime), vsync: this);
-    _animation = Tween<double>(begin: widget.collapsed.value ? 0 : 1, end: widget.collapsed.value ? 1 : 0)
-        .animate(_controller)
-          ..addListener(() => setState(() {}));
+    _animation = Tween<double>(begin: _initial ? 0 : 1, end: _initial ? 1 : 0).animate(_controller)
+      ..addListener(() => setState(() {}));
 
     widget.collapsed.addListener(_update);
   }
@@ -131,7 +143,9 @@ class _CollapseableWidgetState extends State<_CollapseableWidget> with SingleTic
         child: Opacity(opacity: _animation.value, child: Row(children: widget.children)),
       );
 
-  void _update() => widget.collapsed.value ? _controller.reverse() : _controller.forward();
+  void _update() => widget.collapsed.value
+      ? (_initial ? _controller.reverse() : _controller.forward())
+      : (_initial ? _controller.forward() : _controller.reverse());
 
   @override
   void dispose() {
