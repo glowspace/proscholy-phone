@@ -7,10 +7,10 @@ import 'package:zpevnik/custom_icon_icons.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/providers/playlists_provider.dart';
 import 'package:zpevnik/screens/components/highlightable_button.dart';
+import 'package:zpevnik/screens/components/highlightable_row.dart';
 import 'package:zpevnik/screens/components/menu_item.dart';
 import 'package:zpevnik/screens/components/playlist_row.dart';
 import 'package:zpevnik/screens/components/popup_menu.dart';
-import 'package:zpevnik/screens/components/reorderable.dart';
 import 'package:zpevnik/screens/user/components/user_menu.dart';
 import 'package:zpevnik/screens/user/favorite_screen.dart';
 import 'package:zpevnik/status_bar_wrapper.dart';
@@ -26,7 +26,7 @@ class UserScreen extends StatefulWidget {
 }
 
 class _UserScreenState extends State<UserScreen> with PlatformStateMixin {
-  final searchFieldFocusNode = FocusNode();
+  final _searchFieldFocusNode = FocusNode();
 
   ValueNotifier<bool> _showingMenu;
   ValueNotifier<GlobalKey> _showingMenuKey;
@@ -46,6 +46,8 @@ class _UserScreenState extends State<UserScreen> with PlatformStateMixin {
         if (_showingMenu.value) setState(() => {});
       });
     _activePlaylist = null;
+
+    PlaylistsProvider.shared.addListener(_update);
   }
 
   @override
@@ -71,42 +73,28 @@ class _UserScreenState extends State<UserScreen> with PlatformStateMixin {
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
-                        MenuItem(
-                          onPressed: () => Navigator.of(context).push(
-                            MaterialPageRoute(builder: (context) => FavoriteScreen()),
-                          ),
-                          icon: Icons.star,
-                          title: 'Písně s hvězdičkou',
-                        ),
+                        if (PlaylistsProvider.shared.searchText.isEmpty)
+                          HighlightableRow(
+                              onPressed: () => Navigator.of(context).push(
+                                    MaterialPageRoute(builder: (context) => FavoriteScreen()),
+                                  ),
+                              child: Row(
+                                children: [
+                                  Container(padding: EdgeInsets.only(right: kDefaultPadding), child: Icon(Icons.star)),
+                                  Text('Písně s hvězdičkou', style: AppThemeNew.of(context).bodyTextStyle),
+                                ],
+                              )),
                         ReorderableList(
-                          onReorder: (Key from, Key to) {
-                            int fromIndex =
-                                PlaylistsProvider.shared.allPlaylists.indexWhere((playlist) => playlist.key == from);
-                            int toIndex =
-                                PlaylistsProvider.shared.allPlaylists.indexWhere((playlist) => playlist.key == to);
-
-                            final playlist = PlaylistsProvider.shared.allPlaylists[fromIndex];
-                            setState(() {
-                              PlaylistsProvider.shared.allPlaylists.removeAt(fromIndex);
-                              PlaylistsProvider.shared.allPlaylists.insert(toIndex, playlist);
-                            });
-                            return true;
-                          },
-                          onReorderDone: (_) {
-                            for (int i = 0; i < PlaylistsProvider.shared.allPlaylists.length; i++)
-                              PlaylistsProvider.shared.allPlaylists[i].orderValue = i;
-                          },
+                          onReorder: _onReorder,
+                          onReorderDone: _onReorderDone,
                           child: ListView.builder(
                             physics: NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
                             itemCount: playlists.length,
-                            itemBuilder: (context, index) => Reorderable(
-                              key: Key('${playlists[index].id}'),
-                              child: PlaylistRow(
-                                playlist: playlists[index],
-                                select: (playlist) => _activePlaylist = playlist,
-                                showingMenuKey: _showingMenuKey,
-                              ),
+                            itemBuilder: (context, index) => PlaylistRow(
+                              playlist: playlists[index],
+                              select: (playlist) => _activePlaylist = playlist,
+                              showingMenuKey: _showingMenuKey,
                             ),
                           ),
                         ),
@@ -180,11 +168,8 @@ class _UserScreenState extends State<UserScreen> with PlatformStateMixin {
     if (_showingMenuKey.value == null) return 0;
 
     RenderBox box = _showingMenuKey.value.currentContext.findRenderObject();
-    final position = box.localToGlobal(Offset.zero);
 
-    RenderBox navBarBox = _showingMenuKey.value.currentContext.findRenderObject();
-
-    return position.dy - navBarBox.size.height - 2 * kDefaultPadding - box.size.height;
+    return box.localToGlobal(Offset.zero).dy;
   }
 
   Widget get _popupWidget => _activePlaylist == null
@@ -232,20 +217,18 @@ class _UserScreenState extends State<UserScreen> with PlatformStateMixin {
   Widget _searchWidget(BuildContext context) => SearchWidget(
         key: PageStorageKey('user_screen_search_widget'),
         placeholder: 'Zadejte název seznamu písní',
-        focusNode: searchFieldFocusNode,
+        focusNode: _searchFieldFocusNode,
+        search: PlaylistsProvider.shared.search,
         prefix: HighlightableButton(
           icon: Icon(Icons.search),
-          onPressed: () => FocusScope.of(context).requestFocus(searchFieldFocusNode),
+          onPressed: () => FocusScope.of(context).requestFocus(_searchFieldFocusNode),
         ),
       );
 
-  void _showUserMenu(BuildContext context) => showModalBottomSheet(
+  void _showUserMenu(BuildContext context) => showPlatformBottomSheet(
         context: context,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(15))),
-        builder: (context) => SizedBox(
-          height: 0.5 * MediaQuery.of(context).size.height,
-          child: UserMenuWidget(),
-        ),
+        child: UserMenuWidget(),
+        height: 0.5 * MediaQuery.of(context).size.height,
       );
 
   void _showRenameDialog(BuildContext context) {
@@ -289,5 +272,31 @@ class _UserScreenState extends State<UserScreen> with PlatformStateMixin {
         ],
       ),
     );
+  }
+
+  bool _onReorder(Key from, Key to) {
+    int fromIndex = PlaylistsProvider.shared.allPlaylists.indexWhere((playlist) => playlist.key == from);
+    int toIndex = PlaylistsProvider.shared.allPlaylists.indexWhere((playlist) => playlist.key == to);
+
+    final playlist = PlaylistsProvider.shared.allPlaylists[fromIndex];
+    setState(() {
+      PlaylistsProvider.shared.allPlaylists.removeAt(fromIndex);
+      PlaylistsProvider.shared.allPlaylists.insert(toIndex, playlist);
+    });
+    return true;
+  }
+
+  void _onReorderDone(_) {
+    for (int i = 0; i < PlaylistsProvider.shared.allPlaylists.length; i++)
+      PlaylistsProvider.shared.allPlaylists[i].orderValue = i;
+  }
+
+  void _update() => setState(() {});
+
+  @override
+  void dispose() {
+    PlaylistsProvider.shared.removeListener(_update);
+
+    super.dispose();
   }
 }

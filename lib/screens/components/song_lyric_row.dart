@@ -42,8 +42,6 @@ class _SongLyricRowStateNew extends State<SongLyricRow> {
       child: HighlightableRow(
         onPressed: () =>
             selectionEnabled ? selectionProvider.toggleSongLyric(widget.songLyric) : _pushSongLyric(context),
-        padding: EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding, vertical: kDefaultPadding),
-        highlightColor: AppThemeNew.of(context).highlightColor,
         color: selected ? AppThemeNew.of(context).selectedRowColor : null,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/theme.dart';
 
 class BottomFormSheet extends StatelessWidget {
   final String title;
@@ -17,7 +18,7 @@ class BottomFormSheet extends StatelessWidget {
               if (title.isNotEmpty)
                 Container(
                   padding: EdgeInsets.fromLTRB(kDefaultPadding, 0, kDefaultPadding, kDefaultPadding),
-                  child: Text(title, style: Theme.of(context).textTheme.headline6),
+                  child: Text(title, style: AppThemeNew.of(context).titleTextStyle),
                 ),
               for (final item in items) item
             ],

@@ -13,13 +13,11 @@ class MenuItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) => HighlightableRow(
         onPressed: onPressed,
+        padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: 0.75 * kDefaultPadding),
         highlightColor: AppThemeNew.of(context).highlightColor,
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding),
-          child: Row(children: [
-            Container(padding: EdgeInsets.only(right: kDefaultPadding), child: Icon(icon)),
-            Text(title),
-          ]),
-        ),
+        child: Row(children: [
+          Container(padding: EdgeInsets.only(right: kDefaultPadding), child: Icon(icon)),
+          Text(title),
+        ]),
       );
 }

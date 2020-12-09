@@ -9,6 +9,7 @@ import 'package:zpevnik/screens/components/highlightable_button.dart';
 import 'package:zpevnik/screens/components/search_widget.dart';
 import 'package:zpevnik/screens/components/reorderable.dart';
 import 'package:zpevnik/screens/components/song_lyric_row.dart';
+import 'package:zpevnik/screens/components/song_lyrics_list.dart';
 import 'package:zpevnik/screens/song_lyric/song_lyric_screen.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/platform.dart';
@@ -106,27 +107,17 @@ class _FavoriteScreenState extends State<FavoriteScreen> with PlatformStateMixin
                   onReorderDone: (_) {
                     for (int i = 0; i < provider.songLyrics.length; i++) provider.songLyrics[i].favoriteOrder = i;
                   },
-                  child: ListView.builder(
-                    itemBuilder: (context, index) => Reorderable(
-                      key: provider.songLyrics[index].key,
-                      child: SongLyricRow(
-                        songLyric: provider.songLyrics[index],
-                        showStar: false,
-                        prefix: ReorderableListener(
-                          child: Icon(Icons.drag_handle, color: Theme.of(context).textTheme.caption.color),
-                        ),
-                      ),
-                    ),
-                    itemCount: provider.songLyrics.length,
-                  ),
+                  child: SongLyricsListView(
+                      placeholder:
+                          'Nemáte vybrané žádné oblíbené písně. Píseň si můžete přidat do oblíbených v${unbreakableSpace}náhledu písně.',
+                      reorderable: true,
+                      showStar: false),
                 ),
               ),
             ),
           ),
         ),
       );
-
-  // 'Nemáte vybrané žádné oblíbené písně. Píseň si můžete přidat do oblíbených v${unbreakableSpace}náhledu písně.'
 
   void _pushSelectedSongLyric(BuildContext context) {
     if (_songLyricsProvider.matchedById == null) return;

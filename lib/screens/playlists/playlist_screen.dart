@@ -85,7 +85,12 @@ class _PlaylistScreenState extends State<PlaylistScreen> with PlatformStateMixin
       : HighlightableButton(icon: Icon(Icons.search), onPressed: () => setState(() => _searching = true));
 
   Widget _body(BuildContext context) => SafeArea(
-        child: ChangeNotifierProvider.value(value: _songLyricsProvider, child: SongLyricsListView()),
+        child: ChangeNotifierProvider.value(
+            value: _songLyricsProvider,
+            child: SongLyricsListView(
+              placeholder:
+                  'V tomto seznamu nemáte vybranou žádnou píseň. Píseň si můžete přidat do oblíbených v${unbreakableSpace}náhledu písně.',
+            )),
       );
 
   void _pushSelectedSongLyric(BuildContext context) {

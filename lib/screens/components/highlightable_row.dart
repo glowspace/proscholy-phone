@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/theme.dart';
 
 class HighlightableRow extends StatefulWidget {
@@ -14,7 +15,7 @@ class HighlightableRow extends StatefulWidget {
     this.color,
     this.highlightColor,
     this.onPressed,
-    this.padding,
+    this.padding = const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding, vertical: kDefaultPadding),
   }) : super(key: key);
 
   @override
@@ -33,9 +34,9 @@ class _HighlightableRowState extends State<HighlightableRow> {
 
   @override
   Widget build(BuildContext context) => GestureDetector(
-        onPanDown: (_) => setState(() => _isHighlighted = true),
-        onPanCancel: () => setState(() => _isHighlighted = false),
-        onPanEnd: (_) => setState(() => _isHighlighted = false),
+        onTapDown: (_) => setState(() => _isHighlighted = true),
+        onTapCancel: () => setState(() => _isHighlighted = false),
+        onTapUp: (_) => setState(() => _isHighlighted = false),
         onTap: widget.onPressed,
         behavior: HitTestBehavior.translucent,
         child: Container(
@@ -46,6 +47,8 @@ class _HighlightableRowState extends State<HighlightableRow> {
       );
 
   Color get _color => _isHighlighted
-      ? (widget.highlightColor == null ? widget.color.withAlpha(0x80) : widget.highlightColor)
+      ? (widget.highlightColor == null
+          ? (widget.color == null ? AppThemeNew.of(context).highlightColor : widget.color.withAlpha(0x80))
+          : widget.highlightColor)
       : widget.color;
 }

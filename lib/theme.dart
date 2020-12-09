@@ -29,11 +29,9 @@ class AppThemeNew extends InheritedWidget {
       ? cupertinoTheme.textTheme.textStyle.copyWith(color: textColor, fontSize: 15)
       : materialTheme.textTheme.bodyText1.copyWith(color: textColor, fontSize: 16);
 
-  TextStyle get titleTextStyle =>
-      isIOS ? cupertinoTheme.textTheme.textStyle.copyWith(fontSize: 21) : materialTheme.textTheme.headline5;
+  TextStyle get titleTextStyle => isIOS ? bodyTextStyle.copyWith(fontSize: 21) : materialTheme.textTheme.headline5;
 
-  TextStyle get subTitleTextStyle =>
-      isIOS ? cupertinoTheme.textTheme.textStyle.copyWith(fontSize: 17) : materialTheme.textTheme.subtitle1;
+  TextStyle get subTitleTextStyle => isIOS ? bodyTextStyle.copyWith(fontSize: 17) : materialTheme.textTheme.subtitle1;
 
   TextStyle get placeholderTextStyle => bodyTextStyle.copyWith(
         color: isLight ? Color(0xff9aa0a5) : Color(0xff655f5a),
@@ -45,7 +43,6 @@ class AppThemeNew extends InheritedWidget {
       );
 
   Color get backgroundColor => isLight ? Color(0xffffffff) : Color(0xff000000);
-  Color get invertBackgroundColor => isLight ? Color(0xff000000) : Color(0xffffffff);
   Color get fillColor => isIOS ? CupertinoColors.systemFill : (isLight ? Color(0xffffffff) : Color(0xff252525));
 
   Color get textColor => isLight ? Color(0xff222222) : Color(0xffdddddd);

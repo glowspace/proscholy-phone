@@ -1,3 +1,4 @@
+import 'package:diacritic/diacritic.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/models/entities/playlist.dart';
@@ -8,25 +9,60 @@ import 'package:zpevnik/screens/components/bottom_form_sheet.dart';
 import 'package:zpevnik/screens/components/menu_item.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/database.dart';
+import 'package:zpevnik/utils/platform.dart';
 
 class PlaylistsProvider extends ChangeNotifier {
+  List<Playlist> _allPlaylists;
   List<Playlist> _playlists;
+
   String _searchText;
 
   PlaylistsProvider._()
-      : _playlists = DataProvider.shared.playlists
+      : _allPlaylists = DataProvider.shared.playlists
           ..sort((first, second) => second.entity.orderValue.compareTo(first.entity.orderValue)),
         _searchText = '';
 
   static final PlaylistsProvider shared = PlaylistsProvider._();
 
-  List<Playlist> get allPlaylists => _playlists;
+  String get searchText => _searchText;
+
+  List<Playlist> get allPlaylists => _playlists ??= _allPlaylists;
 
   List<Playlist> get playlists =>
-      _playlists.where((playlist) => !playlist.isArchived && playlist.name.contains(_searchText)).toList();
+      allPlaylists.where((playlist) => !playlist.isArchived && playlist.name.contains(_searchText)).toList();
 
   List<Playlist> get archivedPlaylists =>
-      _playlists.where((playlist) => playlist.isArchived && playlist.name.contains(_searchText)).toList();
+      allPlaylists.where((playlist) => playlist.isArchived && playlist.name.contains(_searchText)).toList();
+
+  void search(String searchText) {
+    _searchText = searchText;
+
+    final predicates = _predicates;
+    List<List<Playlist>> searchResults = List<List<Playlist>>.generate(predicates.length, (index) => []);
+
+    for (final playlist in _allPlaylists) {
+      for (int i = 0; i < predicates.length; i++) {
+        if (predicates[i](playlist, _searchText.toLowerCase())) {
+          searchResults[i].add(playlist);
+          break;
+        }
+      }
+    }
+
+    _playlists = searchResults.reduce((result, list) {
+      result.addAll(list);
+      return result;
+    }).toList();
+
+    notifyListeners();
+  }
+
+  List<bool Function(Playlist, String)> get _predicates => [
+        (playlist, searchText) => playlist.name.toLowerCase().startsWith(searchText),
+        (playlist, searchText) => removeDiacritics(playlist.name.toLowerCase()).startsWith(searchText),
+        (playlist, searchText) => playlist.name.toLowerCase().contains(searchText),
+        (playlist, searchText) => removeDiacritics(playlist.name.toLowerCase()).contains(searchText),
+      ];
 
   void _addPlaylist(String name, List<SongLyric> songLyrics, {bool append = false}) {
     final playlist = PlaylistEntity(id: Playlist.nextId, name: name, orderValue: Playlist.nextOrder++);
@@ -38,9 +74,9 @@ class PlaylistsProvider extends ChangeNotifier {
 
     Database.shared.savePlaylist(playlist);
     if (append)
-      _playlists.add(Playlist(playlist));
+      _allPlaylists.add(Playlist(playlist));
     else
-      _playlists.insert(0, Playlist(playlist));
+      _allPlaylists.insert(0, Playlist(playlist));
 
     notifyListeners();
   }
@@ -48,7 +84,7 @@ class PlaylistsProvider extends ChangeNotifier {
   void duplicate(Playlist playlist) => _addPlaylist('${playlist.name} (kopie)', playlist.songLyrics, append: true);
 
   void remove(Playlist playlist) {
-    _playlists.remove(playlist);
+    _allPlaylists.remove(playlist);
 
     Database.shared.removePlaylist(playlist.entity);
   }
@@ -56,30 +92,27 @@ class PlaylistsProvider extends ChangeNotifier {
   void showPlaylists(BuildContext context, List<SongLyric> songLyrics) {
     FocusScope.of(context).unfocus();
 
-    showModalBottomSheet(
+    showPlatformBottomSheet(
       context: context,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(15))),
-      builder: (context) => SizedBox(
-        height: 0.67 * MediaQuery.of(context).size.height,
-        child: BottomFormSheet(
-          title: 'Playlisty',
-          items: [
+      child: BottomFormSheet(
+        title: 'Playlisty',
+        items: [
+          MenuItem(
+            title: 'Nový playlist',
+            icon: Icons.add,
+            onPressed: () => showPlaylistDialog(context),
+          ),
+          for (final playlist in playlists)
             MenuItem(
-              title: 'Nový playlist',
-              icon: Icons.add,
-              onPressed: () => showPlaylistDialog(context),
+              title: playlist.name,
+              onPressed: () {
+                playlist.addSongLyrics(songLyrics);
+                Navigator.pop(context);
+              },
             ),
-            for (final playlist in playlists)
-              MenuItem(
-                title: playlist.name,
-                onPressed: () {
-                  playlist.addSongLyrics(songLyrics);
-                  Navigator.pop(context);
-                },
-              ),
-          ],
-        ),
+        ],
       ),
+      height: 0.67 * MediaQuery.of(context).size.height,
     );
   }
 

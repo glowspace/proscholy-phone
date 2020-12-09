@@ -37,13 +37,19 @@ mixin PlatformStateMixin<T extends StatefulWidget> on State<T> {
 }
 
 void showPlatformBottomSheet({BuildContext context, Widget child, double height}) {
-  final content = SizedBox(height: height, child: child);
+  final content = SizedBox(
+    height: height,
+    child: child,
+  );
 
   if (AppThemeNew.of(context).platform == TargetPlatform.iOS)
     showCupertinoModalBottomSheet(
       context: context,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(15))),
-      builder: (context, scrollController) => content,
+      builder: (context, scrollController) => Container(
+        child: content,
+        color: AppThemeNew.of(context).fillColor,
+      ),
       useRootNavigator: true,
     );
   else

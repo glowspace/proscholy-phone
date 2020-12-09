@@ -35,9 +35,11 @@ class _HighlightableButtonState extends State<HighlightableButton> with Platform
 
   @override
   Widget androidWidget(BuildContext context) => IconButton(
-        onPressed: widget.onPressed,
+        onPressed: () => widget.onPressed(),
         icon: widget.icon,
         color: _iconColor,
+        padding: widget.padding == null ? EdgeInsets.zero : widget.padding,
+        constraints: widget.padding == null ? BoxConstraints() : null,
         visualDensity: VisualDensity.compact,
         splashColor: widget.highlightColor,
         highlightColor: widget.highlightColor,
@@ -45,9 +47,9 @@ class _HighlightableButtonState extends State<HighlightableButton> with Platform
 
   @override
   Widget iOSWidget(BuildContext context) => GestureDetector(
-        onPanDown: (_) => setState(() => _isHighlighted = true),
-        onPanCancel: () => setState(() => _isHighlighted = false),
-        onPanEnd: (_) => setState(() => _isHighlighted = false),
+        onTapDown: (_) => setState(() => _isHighlighted = true),
+        onTapCancel: () => setState(() => _isHighlighted = false),
+        onTapUp: (_) => setState(() => _isHighlighted = false),
         onTap: widget.onPressed,
         behavior: HitTestBehavior.translucent,
         child: FittedBox(
