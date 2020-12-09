@@ -122,7 +122,7 @@ class _UserScreenState extends State<UserScreen> with PlatformStateMixin {
                                   padding: EdgeInsets.only(right: kDefaultPadding),
                                   child: Icon(Icons.archive_outlined),
                                 ),
-                                Expanded(child: Text('Archiv')),
+                                Expanded(child: Text('Archiv', style: AppTheme.of(context).bodyTextStyle)),
                                 // todo: add animation
                                 Icon(_showingArchived ? Icons.arrow_upward : Icons.arrow_downward),
                               ]),
@@ -148,7 +148,7 @@ class _UserScreenState extends State<UserScreen> with PlatformStateMixin {
                 Container(
                   padding: EdgeInsets.all(kDefaultPadding),
                   child: Row(children: [
-                    Text('Ostatní'),
+                    Text('Ostatní', style: AppTheme.of(context).bodyTextStyle),
                     Spacer(),
                     GestureDetector(onTap: () => _showUserMenu(context), child: Icon(Icons.menu)),
                   ]),
@@ -169,7 +169,7 @@ class _UserScreenState extends State<UserScreen> with PlatformStateMixin {
                 ),
               ),
             ),
-          Positioned(right: kDefaultPadding, top: _top, child: _popupWidget)
+          Positioned(right: 1.5 * kDefaultPadding, top: _top, child: _popupWidget)
         ],
       ),
     );
@@ -238,11 +238,15 @@ class _UserScreenState extends State<UserScreen> with PlatformStateMixin {
         ),
       );
 
-  void _showUserMenu(BuildContext context) => showPlatformBottomSheet(
-        context: context,
-        child: UserMenuWidget(),
-        height: 0.5 * MediaQuery.of(context).size.height,
-      );
+  void _showUserMenu(BuildContext context) {
+    FocusScope.of(context).unfocus();
+
+    return showPlatformBottomSheet(
+      context: context,
+      child: UserMenuWidget(),
+      height: 0.5 * MediaQuery.of(context).size.height,
+    );
+  }
 
   void _showRenameDialog(BuildContext context) {
     final textFieldController = TextEditingController()..text = _activePlaylist.name;

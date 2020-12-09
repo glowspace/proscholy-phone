@@ -59,7 +59,9 @@ class SongLyricsProvider extends ChangeNotifier {
 
     return songLyrics
         .where((songLyric) => tagGroups.entries
-            .map((entry) => songLyric.entity.tags.any((tag) => entry.value.any((other) => tag.id == other.id)))
+            .map((entry) => entry.key == TagType.language
+                ? entry.value.any((tag) => tag.name == songLyric.entity.language)
+                : songLyric.entity.tags.any((tag) => entry.value.any((other) => tag.id == other.id)))
             .reduce((value, element) => value && element))
         .toList();
   }

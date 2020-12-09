@@ -47,6 +47,7 @@ class PlaylistRow extends StatelessWidget {
           onPressed: () {
             select(playlist);
             showingMenuKey.value = showingMenuKey.value == null ? _globalKey : null;
+            FocusScope.of(context).unfocus();
           },
           padding: null,
           icon: Icon(Icons.more_vert, key: dragging ? null : _globalKey),
