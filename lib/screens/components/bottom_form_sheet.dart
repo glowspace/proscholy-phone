@@ -18,7 +18,7 @@ class BottomFormSheet extends StatelessWidget {
               if (title.isNotEmpty)
                 Container(
                   padding: EdgeInsets.fromLTRB(kDefaultPadding, 0, kDefaultPadding, kDefaultPadding),
-                  child: Text(title, style: AppThemeNew.of(context).titleTextStyle),
+                  child: Text(title, style: AppTheme.of(context).titleTextStyle),
                 ),
               for (final item in items) item
             ],

@@ -12,7 +12,7 @@ import 'package:zpevnik/theme.dart';
 class SongLyricSettings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final accidentalsStyle = AppThemeNew.of(context).bodyTextStyle.copyWith(fontSize: 20, fontFamily: 'Hiragino Sans');
+    final accidentalsStyle = AppTheme.of(context).bodyTextStyle.copyWith(fontSize: 20, fontFamily: 'Hiragino Sans');
 
     return Consumer<SongLyric>(
       builder: (context, songLyric, _) => BottomFormSheet(
@@ -62,7 +62,7 @@ class SongLyricSettings extends StatelessWidget {
               HighlightableButton(
                 padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
                 icon: Icon(Icons.remove),
-                highlightColor: AppTheme.shared.highlightColor(context),
+                highlightColor: AppTheme.of(context).highlightColor,
                 onPressed: () => songLyric.changeTransposition(-1),
               ),
               SizedBox(
@@ -72,7 +72,7 @@ class SongLyricSettings extends StatelessWidget {
               HighlightableButton(
                 padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
                 icon: Icon(Icons.add),
-                highlightColor: AppTheme.shared.highlightColor(context),
+                highlightColor: AppTheme.of(context).highlightColor,
                 onPressed: () => songLyric.changeTransposition(1),
               ),
             ],
@@ -85,7 +85,7 @@ class SongLyricSettings extends StatelessWidget {
         child: Consumer<SettingsProvider>(
           builder: (context, settingsProvider, _) => Row(children: [
             RichText(
-              text: TextSpan(text: 'A', style: AppThemeNew.of(context).bodyTextStyle),
+              text: TextSpan(text: 'A', style: AppTheme.of(context).bodyTextStyle),
               textScaleFactor: kMinimumFontSizeScale,
             ),
             Flexible(
@@ -94,12 +94,12 @@ class SongLyricSettings extends StatelessWidget {
                 max: kMaximumFontSizeScale,
                 value: settingsProvider.fontSizeScale,
                 onChanged: settingsProvider.changeFontSizeScale,
-                activeColor: AppThemeNew.of(context).chordColor,
-                inactiveColor: AppTheme.shared.unSelectedColor(context),
+                activeColor: AppTheme.of(context).chordColor,
+                inactiveColor: AppTheme.of(context).disabledColor,
               ),
             ),
             RichText(
-              text: TextSpan(text: 'A', style: AppThemeNew.of(context).bodyTextStyle),
+              text: TextSpan(text: 'A', style: AppTheme.of(context).bodyTextStyle),
               textScaleFactor: kMaximumFontSizeScale,
             ),
           ]),

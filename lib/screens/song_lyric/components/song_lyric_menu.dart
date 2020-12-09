@@ -22,8 +22,8 @@ class SongLyricMenu extends StatelessWidget {
     return PopupMenu(
       showing: showing,
       border: Border(
-        left: BorderSide(color: AppTheme.shared.borderColor(context)),
-        bottom: BorderSide(color: AppTheme.shared.borderColor(context)),
+        left: BorderSide(color: AppTheme.of(context).borderColor),
+        bottom: BorderSide(color: AppTheme.of(context).borderColor),
       ),
       children: [
         MenuItem(

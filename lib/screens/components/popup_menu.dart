@@ -33,7 +33,7 @@ class _PopupMenuState extends State<PopupMenu> with SingleTickerProviderStateMix
         sizeFactor: _animation,
         axis: Axis.vertical,
         child: Container(
-          decoration: BoxDecoration(color: AppThemeNew.of(context).backgroundColor, border: widget.border),
+          decoration: BoxDecoration(color: AppTheme.of(context).backgroundColor, border: widget.border),
           child: IntrinsicWidth(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: widget.children)),
         ),
       );

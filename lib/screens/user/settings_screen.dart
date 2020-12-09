@@ -17,15 +17,15 @@ class SettingsScreen extends StatelessWidget with PlatformWidgetMixin {
   @override
   Widget androidWidget(BuildContext context) => Scaffold(
         appBar: AppBar(
-          title: Text('Nastavení', style: AppThemeNew.of(context).bodyTextStyle),
-          shadowColor: AppTheme.shared.appBarDividerColor(context),
-          brightness: AppThemeNew.of(context).brightness,
+          title: Text('Nastavení', style: AppTheme.of(context).bodyTextStyle),
+          shadowColor: AppTheme.of(context).appBarDividerColor,
+          brightness: AppTheme.of(context).brightness,
         ),
         body: _body(context),
       );
 
   Widget _body(BuildContext context) {
-    final accidentalsStyle = AppThemeNew.of(context).bodyTextStyle.copyWith(fontSize: 20, fontFamily: 'Hiragino Sans');
+    final accidentalsStyle = AppTheme.of(context).bodyTextStyle.copyWith(fontSize: 20, fontFamily: 'Hiragino Sans');
 
     return SafeArea(
       child: Container(
@@ -92,7 +92,7 @@ class SettingsScreen extends StatelessWidget with PlatformWidgetMixin {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title, style: AppThemeNew.of(context).subTitleTextStyle.copyWith(fontSize: 18)),
+            Text(title, style: AppTheme.of(context).subTitleTextStyle.copyWith(fontSize: 18)),
             Container(child: Column(children: children)),
           ],
         ),
@@ -112,7 +112,7 @@ class SettingsScreen extends StatelessWidget with PlatformWidgetMixin {
           builder: (context, settingsProvider, _) => Row(
             children: [
               RichText(
-                text: TextSpan(text: 'A', style: AppThemeNew.of(context).bodyTextStyle),
+                text: TextSpan(text: 'A', style: AppTheme.of(context).bodyTextStyle),
                 textScaleFactor: kMinimumFontSizeScale,
               ),
               Flexible(
@@ -121,12 +121,12 @@ class SettingsScreen extends StatelessWidget with PlatformWidgetMixin {
                   max: kMaximumFontSizeScale,
                   value: settingsProvider.fontSizeScale,
                   onChanged: settingsProvider.changeFontSizeScale,
-                  activeColor: AppThemeNew.of(context).chordColor,
-                  inactiveColor: AppTheme.shared.unSelectedColor(context),
+                  activeColor: AppTheme.of(context).chordColor,
+                  inactiveColor: AppTheme.of(context).disabledColor,
                 ),
               ),
               RichText(
-                text: TextSpan(text: 'A', style: AppThemeNew.of(context).bodyTextStyle),
+                text: TextSpan(text: 'A', style: AppTheme.of(context).bodyTextStyle),
                 textScaleFactor: kMaximumFontSizeScale,
               ),
             ],

@@ -42,7 +42,7 @@ class SongLyricsListView extends StatelessWidget {
                 if (index == 0 && showTitle)
                   return Container(
                     padding: EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding, vertical: kDefaultPadding),
-                    child: Text(title, style: AppThemeNew.of(context).bodyTextStyle.copyWith(color: titleColor)),
+                    child: Text(title, style: AppTheme.of(context).bodyTextStyle.copyWith(color: titleColor)),
                   );
 
                 if (showTitle) index -= 1;
@@ -59,7 +59,7 @@ class SongLyricsListView extends StatelessWidget {
           )
         : Container(
             padding: EdgeInsets.all(kDefaultPadding),
-            child: Center(child: Text(text, style: AppThemeNew.of(context).bodyTextStyle, textAlign: TextAlign.center)),
+            child: Center(child: Text(text, style: AppTheme.of(context).bodyTextStyle, textAlign: TextAlign.center)),
           );
 
     return Column(children: [
@@ -76,7 +76,7 @@ class SongLyricsListView extends StatelessWidget {
         songLyric: songLyric,
         showStar: showStar,
         prefix: reorderable
-            ? ReorderableListener(child: Icon(Icons.drag_handle, color: AppThemeNew.of(context).iconColor))
+            ? ReorderableListener(child: Icon(Icons.drag_handle, color: AppTheme.of(context).iconColor))
             : null,
       );
 }

@@ -58,14 +58,14 @@ class _HighlightableButtonState extends State<HighlightableButton> with Platform
               padding: widget.padding,
               child: IconTheme(
                 data: IconThemeData(
-                  color: widget.onPressed == null ? AppThemeNew.of(context).disabledColor : _iconColor,
+                  color: widget.onPressed == null ? AppTheme.of(context).disabledColor : _iconColor,
                 ),
                 child: widget.icon,
               )),
         ),
       );
 
-  Color get _color => widget.color == null ? AppThemeNew.of(context).iconColor : widget.color;
+  Color get _color => widget.color == null ? AppTheme.of(context).iconColor : widget.color;
 
   Color get _iconColor =>
       _isHighlighted ? (widget.highlightColor == null ? _color.withAlpha(0x80) : widget.highlightColor) : _color;

@@ -80,7 +80,7 @@ class _UserScreenState extends State<UserScreen> with PlatformStateMixin {
                             padding: EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding, vertical: kDefaultPadding),
                             child: Text(
                               'Seznamy písní',
-                              style: AppThemeNew.of(context).bodyTextStyle.copyWith(color: red),
+                              style: AppTheme.of(context).bodyTextStyle.copyWith(color: red),
                             ),
                           ),
                         if (PlaylistsProvider.shared.searchText.isEmpty)
@@ -91,7 +91,7 @@ class _UserScreenState extends State<UserScreen> with PlatformStateMixin {
                               child: Row(
                                 children: [
                                   Container(padding: EdgeInsets.only(right: kDefaultPadding), child: Icon(Icons.star)),
-                                  Text('Písně s hvězdičkou', style: AppThemeNew.of(context).bodyTextStyle),
+                                  Text('Písně s hvězdičkou', style: AppTheme.of(context).bodyTextStyle),
                                 ],
                               )),
                         ReorderableList(
@@ -188,7 +188,7 @@ class _UserScreenState extends State<UserScreen> with PlatformStateMixin {
 
     return PopupMenu(
       showing: _showingMenu,
-      border: Border.all(color: AppTheme.shared.borderColor(context)),
+      border: Border.all(color: AppTheme.of(context).borderColor),
       animateHide: false, // todo: animate hide, it looks really bad now
       children: [
         MenuItem(
@@ -260,7 +260,7 @@ class _UserScreenState extends State<UserScreen> with PlatformStateMixin {
         ),
         actions: [
           TextButton(
-            child: Text('Zrušit', style: AppThemeNew.of(context).bodyTextStyle.copyWith(color: Colors.red)),
+            child: Text('Zrušit', style: AppTheme.of(context).bodyTextStyle.copyWith(color: Colors.red)),
             onPressed: () {
               Navigator.of(context).pop();
               _showingMenuKey.value = null;

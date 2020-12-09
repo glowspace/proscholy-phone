@@ -18,8 +18,8 @@ class TranslationsScreen extends StatelessWidget with PlatformWidgetMixin {
   Widget androidWidget(BuildContext context) => Scaffold(
         appBar: AppBar(
           title: Text('Překlady'),
-          shadowColor: AppTheme.shared.appBarDividerColor(context),
-          brightness: AppThemeNew.of(context).brightness,
+          shadowColor: AppTheme.of(context).appBarDividerColor,
+          brightness: AppTheme.of(context).brightness,
         ),
         body: _body(context),
       );
@@ -54,7 +54,7 @@ class TranslationsScreen extends StatelessWidget with PlatformWidgetMixin {
               padding: EdgeInsets.symmetric(horizontal: kDefaultPadding),
               child: Text(
                 songLyricType.description,
-                style: AppThemeNew.of(context).subTitleTextStyle.copyWith(color: songLyricType.color),
+                style: AppTheme.of(context).subTitleTextStyle.copyWith(color: songLyricType.color),
               ),
             ),
             for (final songLyric in songLyrics) SongLyricRow(songLyric: songLyric),

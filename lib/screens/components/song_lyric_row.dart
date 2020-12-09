@@ -42,7 +42,7 @@ class _SongLyricRowStateNew extends State<SongLyricRow> {
       child: HighlightableRow(
         onPressed: () =>
             selectionEnabled ? selectionProvider.toggleSongLyric(widget.songLyric) : _pushSongLyric(context),
-        color: selected ? AppThemeNew.of(context).selectedRowColor : null,
+        color: selected ? AppTheme.of(context).selectedRowColor : null,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -53,9 +53,9 @@ class _SongLyricRowStateNew extends State<SongLyricRow> {
               ),
             if (selectionEnabled)
               Container(padding: EdgeInsets.only(right: kDefaultPadding), child: CircularCheckbox(selected: selected)),
-            Expanded(child: Text(widget.songLyric.name, style: AppThemeNew.of(context).bodyTextStyle)),
+            Expanded(child: Text(widget.songLyric.name, style: AppTheme.of(context).bodyTextStyle)),
             if (widget.showStar && widget.songLyric.isFavorite)
-              Icon(Icons.star, color: AppThemeNew.of(context).iconColor, size: 16),
+              Icon(Icons.star, color: AppTheme.of(context).iconColor, size: 16),
             _songLyricNumber(context, widget.songLyric.id.toString()),
           ],
         ),
@@ -69,7 +69,7 @@ class _SongLyricRowStateNew extends State<SongLyricRow> {
         child: FittedBox(
           fit: BoxFit.scaleDown,
           alignment: Alignment.centerRight,
-          child: Text(number, style: AppThemeNew.of(context).captionTextStyle),
+          child: Text(number, style: AppTheme.of(context).captionTextStyle),
         ),
       );
 

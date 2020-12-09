@@ -32,7 +32,7 @@ class LoadingScreen extends StatelessWidget {
                     padding: EdgeInsets.only(bottom: 2 * kDefaultPadding),
                     child: CircularProgressIndicator(),
                   ),
-                  Text('Probíhá příprava písní.', style: AppThemeNew.of(context).bodyTextStyle),
+                  Text('Probíhá příprava písní.', style: AppTheme.of(context).bodyTextStyle),
                 ]),
               ),
             ],

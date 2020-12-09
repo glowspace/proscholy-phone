@@ -34,7 +34,7 @@ class _MusicNotesScreenState extends State<MusicNotesScreen> with PlatformStateM
     _offset = Offset.zero;
 
     _preparedLilyPond = widget.songLyric.lilypond.replaceAll('currentColor',
-        AppThemeNew.of(context).textColor.toString().replaceAllMapped(_colorRE, (match) => '#${match.group(1)}'));
+        AppTheme.of(context).textColor.toString().replaceAllMapped(_colorRE, (match) => '#${match.group(1)}'));
   }
 
   @override
@@ -47,8 +47,8 @@ class _MusicNotesScreenState extends State<MusicNotesScreen> with PlatformStateM
   Widget androidWidget(BuildContext context) => Scaffold(
         appBar: AppBar(
           title: Text('Noty'),
-          shadowColor: AppTheme.shared.appBarDividerColor(context),
-          brightness: AppThemeNew.of(context).brightness,
+          shadowColor: AppTheme.of(context).appBarDividerColor,
+          brightness: AppTheme.of(context).brightness,
         ),
         body: SafeArea(child: _body(context)),
       );

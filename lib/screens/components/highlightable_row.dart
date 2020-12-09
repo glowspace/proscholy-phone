@@ -40,7 +40,7 @@ class _HighlightableRowState extends State<HighlightableRow> {
   @override
   Widget build(BuildContext context) => Container(
         // color must be set in box decoration here, otherwise it conflicts with gesture detector defined lower
-        decoration: BoxDecoration(color: widget.onPressed == null ? AppThemeNew.of(context).disabledColor : _color),
+        decoration: BoxDecoration(color: widget.onPressed == null ? AppTheme.of(context).disabledColor : _color),
         padding: widget.padding,
         child: Row(children: [
           if (widget.prefix != null)
@@ -70,7 +70,7 @@ class _HighlightableRowState extends State<HighlightableRow> {
 
   Color get _color => _isHighlighted
       ? (widget.highlightColor == null
-          ? (widget.color == null ? AppThemeNew.of(context).highlightColor : widget.color.withAlpha(0x80))
+          ? (widget.color == null ? AppTheme.of(context).highlightColor : widget.color.withAlpha(0x80))
           : widget.highlightColor)
       : widget.color;
 }

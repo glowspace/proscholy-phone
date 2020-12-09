@@ -17,15 +17,15 @@ class AboutScreen extends StatelessWidget with PlatformWidgetMixin {
   @override
   Widget androidWidget(BuildContext context) => Scaffold(
         appBar: AppBar(
-          title: Text('O projektu', style: AppThemeNew.of(context).bodyTextStyle),
-          shadowColor: AppTheme.shared.appBarDividerColor(context),
-          brightness: AppThemeNew.of(context).brightness,
+          title: Text('O projektu', style: AppTheme.of(context).bodyTextStyle),
+          shadowColor: AppTheme.of(context).appBarDividerColor,
+          brightness: AppTheme.of(context).brightness,
         ),
         body: _body(context),
       );
 
   Widget _body(BuildContext context) {
-    final textStyle = AppThemeNew.of(context).bodyTextStyle;
+    final textStyle = AppTheme.of(context).bodyTextStyle;
     final highlightedStyle = textStyle.copyWith(color: Colors.blue);
     final boldStyle = textStyle.copyWith(fontWeight: FontWeight.bold);
 

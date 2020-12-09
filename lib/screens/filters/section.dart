@@ -13,7 +13,7 @@ class FiltersSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textStyle = Theme.of(context).textTheme.headline6.copyWith(color: AppTheme.shared.filtersTextColor(context));
+    final textStyle = Theme.of(context).textTheme.headline6.copyWith(color: AppTheme.of(context).filtersTextColor);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -23,10 +23,7 @@ class FiltersSection extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                padding: EdgeInsets.only(bottom: kDefaultPadding),
-                child: Text(title, style: textStyle),
-              ),
+              Container(padding: EdgeInsets.only(bottom: kDefaultPadding), child: Text(title, style: textStyle)),
               Wrap(
                 spacing: kDefaultPadding / 2,
                 runSpacing: kDefaultPadding / 2,
@@ -35,7 +32,7 @@ class FiltersSection extends StatelessWidget {
             ],
           ),
         ),
-        Divider(thickness: 2, color: AppTheme.shared.filtersSectionSeparatorColor(context)),
+        Divider(thickness: 2, color: AppTheme.of(context).filtersSectionSeparatorColor),
       ],
     );
   }

@@ -61,7 +61,7 @@ class _SongbookScreenState extends State<SongbookScreen> with PlatformStateMixin
           titleSpacing: kDefaultPadding,
           actions: [_trailing(context)],
           leadingWidth: _searching ? 0 : null,
-          shadowColor: AppTheme.shared.appBarDividerColor(context),
+          shadowColor: AppTheme.of(context).appBarDividerColor,
           brightness: _appBarBrightness,
         ),
         body: AnnotatedRegion<SystemUiOverlayStyle>(
@@ -90,14 +90,14 @@ class _SongbookScreenState extends State<SongbookScreen> with PlatformStateMixin
             onPressed: () => _songLyricsProvider.tagsProvider.showFilters(context),
           ),
         )
-      : Text(widget.songbook.name, style: AppThemeNew.of(context).bodyTextStyle.copyWith(color: _textColor));
+      : Text(widget.songbook.name, style: AppTheme.of(context).bodyTextStyle.copyWith(color: _textColor));
 
   Widget _trailing(BuildContext context) => _searching
       ? Container(width: 0)
       : HighlightableButton(
           icon: Icon(Icons.search),
           color: _textColor,
-          highlightColor: AppThemeNew.of(context).highlightColor,
+          highlightColor: AppTheme.of(context).highlightColor,
           onPressed: () => setState(() => _searching = true),
         );
 
@@ -112,11 +112,10 @@ class _SongbookScreenState extends State<SongbookScreen> with PlatformStateMixin
       );
 
   HexColor get _navbarColor =>
-      (widget.songbook.color == null || !AppThemeNew.of(context).isLight) ? null : HexColor(widget.songbook.color);
+      (widget.songbook.color == null || !AppTheme.of(context).isLight) ? null : HexColor(widget.songbook.color);
 
-  Color get _textColor => (widget.songbook.colorText == null || !AppThemeNew.of(context).isLight)
-      ? null
-      : HexColor(widget.songbook.colorText);
+  Color get _textColor =>
+      (widget.songbook.colorText == null || !AppTheme.of(context).isLight) ? null : HexColor(widget.songbook.colorText);
 
   Brightness get _appBarBrightness =>
       _textColor == null ? null : (_textColor.computeLuminance() < 0.5 ? Brightness.light : Brightness.dark);

@@ -65,8 +65,8 @@ class _HomeScreenState extends State<HomeScreen> with PlatformStateMixin {
                   leading: _leading(context),
                   title: _middle(context),
                   actions: _selectionProvider.selectionEnabled ? _actions(context) : null,
-                  shadowColor: AppTheme.shared.appBarDividerColor(context),
-                  brightness: AppThemeNew.of(context).brightness,
+                  shadowColor: AppTheme.of(context).appBarDividerColor,
+                  brightness: AppTheme.of(context).brightness,
                 )
               : null,
           body: _body(context),
@@ -95,7 +95,7 @@ class _HomeScreenState extends State<HomeScreen> with PlatformStateMixin {
 
   Widget _leading(BuildContext context) => HighlightableButton(
         icon: Icon(Icons.close),
-        color: AppTheme.shared.selectedRowColor(context),
+        color: AppTheme.of(context).selectedRowColor,
         padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2, vertical: kDefaultPadding / 2),
         onPressed: () => setState(() => _selectionProvider.selectionEnabled = false),
       );
@@ -118,19 +118,19 @@ class _HomeScreenState extends State<HomeScreen> with PlatformStateMixin {
     return [
       HighlightableButton(
         icon: Icon(_selectionProvider.allFavorited ? Icons.star : Icons.star_outline),
-        color: AppTheme.shared.selectedRowColor(context),
+        color: AppTheme.of(context).selectedRowColor,
         padding: padding,
         onPressed: _selectionProvider.selectedCount > 0 ? () => _selectionProvider.toggleFavorite() : null,
       ),
       HighlightableButton(
         icon: Icon(Icons.playlist_add),
-        color: AppTheme.shared.selectedRowColor(context),
+        color: AppTheme.of(context).selectedRowColor,
         padding: padding,
         onPressed: () => PlaylistsProvider.shared.showPlaylists(context, _selectionProvider.selected),
       ),
       HighlightableButton(
         icon: Icon(Icons.select_all),
-        color: AppTheme.shared.selectedRowColor(context),
+        color: AppTheme.of(context).selectedRowColor,
         padding: padding,
         onPressed: () => _selectionProvider.toggleAll(_songLyricsProvider.songLyrics),
       )

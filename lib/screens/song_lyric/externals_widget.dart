@@ -52,7 +52,7 @@ class _ExternalsWidgetState extends State<ExternalsWidget> {
             YoutubePlayer(controller: controller),
             Container(
               padding: EdgeInsets.symmetric(vertical: kDefaultPadding / 2, horizontal: kDefaultPadding / 2),
-              color: AppThemeNew.of(context).highlightColor,
+              color: AppTheme.of(context).highlightColor,
               child: Text(name),
             ),
           ],

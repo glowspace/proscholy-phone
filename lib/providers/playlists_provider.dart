@@ -132,7 +132,7 @@ class PlaylistsProvider extends ChangeNotifier {
         ),
         actions: [
           TextButton(
-            child: Text('Zrušit', style: AppThemeNew.of(context).bodyTextStyle.copyWith(color: Colors.red)),
+            child: Text('Zrušit', style: AppTheme.of(context).bodyTextStyle.copyWith(color: Colors.red)),
             onPressed: () => Navigator.of(context).pop(),
           ),
           // fixme: don't know better way to do it now, but there must be

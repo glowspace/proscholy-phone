@@ -42,13 +42,13 @@ void showPlatformBottomSheet({BuildContext context, Widget child, double height}
     child: child,
   );
 
-  if (AppThemeNew.of(context).platform == TargetPlatform.iOS)
+  if (AppTheme.of(context).platform == TargetPlatform.iOS)
     showCupertinoModalBottomSheet(
       context: context,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(15))),
       builder: (context, scrollController) => Container(
         child: content,
-        color: AppThemeNew.of(context).fillColor,
+        color: AppTheme.of(context).fillColor,
       ),
       useRootNavigator: true,
     );

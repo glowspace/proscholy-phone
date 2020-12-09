@@ -14,10 +14,10 @@ class MenuItem extends StatelessWidget {
   Widget build(BuildContext context) => HighlightableRow(
         onPressed: onPressed,
         padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: 0.75 * kDefaultPadding),
-        highlightColor: AppThemeNew.of(context).highlightColor,
+        highlightColor: AppTheme.of(context).highlightColor,
         child: Row(children: [
           Container(padding: EdgeInsets.only(right: kDefaultPadding), child: Icon(icon)),
-          Text(title, style: AppThemeNew.of(context).bodyTextStyle),
+          Text(title, style: AppTheme.of(context).bodyTextStyle),
         ]),
       );
 }

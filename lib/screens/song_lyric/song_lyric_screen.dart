@@ -63,10 +63,10 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
           appBar: _fullScreen
               ? null
               : CustomAppBar(
-                  title: Text(widget.songLyric.id.toString(), style: AppThemeNew.of(context).bodyTextStyle),
-                  shadowColor: AppTheme.shared.appBarDividerColor(context),
+                  title: Text(widget.songLyric.id.toString(), style: AppTheme.of(context).bodyTextStyle),
+                  shadowColor: AppTheme.of(context).appBarDividerColor,
                   actions: _actions(context),
-                  brightness: AppThemeNew.of(context).brightness,
+                  brightness: AppTheme.of(context).brightness,
                 ),
           body: _body(context),
         ),

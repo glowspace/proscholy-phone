@@ -24,8 +24,7 @@ class _SelectorWidgetState extends State<SelectorWidget> {
 
   @override
   Widget build(BuildContext context) => Container(
-        decoration:
-            BoxDecoration(color: AppTheme.shared.unSelectedColor(context), borderRadius: BorderRadius.circular(8)),
+        decoration: BoxDecoration(color: AppTheme.of(context).disabledColor, borderRadius: BorderRadius.circular(8)),
         child: Row(
           children: List.generate(
             widget.options.length,
@@ -37,7 +36,7 @@ class _SelectorWidgetState extends State<SelectorWidget> {
               },
               child: Container(
                 decoration: BoxDecoration(
-                    color: index == _selected ? AppTheme.shared.selectedColor(context) : Colors.transparent,
+                    color: index == _selected ? AppTheme.of(context).activeColor : Colors.transparent,
                     borderRadius: BorderRadius.circular(8)),
                 child: SizedBox(
                   height: 28,

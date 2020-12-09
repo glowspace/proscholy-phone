@@ -47,7 +47,7 @@ class SongbookWidget extends StatelessWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Expanded(child: Text(songbook.name, style: AppThemeNew.of(context).bodyTextStyle, maxLines: 2)),
+                    Expanded(child: Text(songbook.name, style: AppTheme.of(context).bodyTextStyle, maxLines: 2)),
                     Consumer<SongbooksProvider>(
                       builder: (context, provider, _) => Transform.scale(
                         scale: 0.75,

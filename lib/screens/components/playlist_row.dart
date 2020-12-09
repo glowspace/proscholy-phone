@@ -38,10 +38,10 @@ class PlaylistRow extends StatelessWidget {
   Widget _row(BuildContext context, bool dragging) => HighlightableRow(
         onPressed: () => _pushPlaylist(context),
         child: Row(children: [
-          Expanded(child: Text(playlist.name, style: AppThemeNew.of(context).bodyTextStyle)),
+          Expanded(child: Text(playlist.name, style: AppTheme.of(context).bodyTextStyle)),
         ]),
         prefix: reorderable
-            ? ReorderableListener(child: Icon(Icons.drag_handle, color: AppThemeNew.of(context).iconColor))
+            ? ReorderableListener(child: Icon(Icons.drag_handle, color: AppTheme.of(context).iconColor))
             : null,
         suffix: HighlightableButton(
           onPressed: () {

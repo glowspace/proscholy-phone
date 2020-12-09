@@ -20,11 +20,11 @@ class LyricsWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               RichText(
-                text: TextSpan(text: songLyric.name, style: AppThemeNew.of(context).titleTextStyle),
+                text: TextSpan(text: songLyric.name, style: AppTheme.of(context).titleTextStyle),
                 textScaleFactor: settingsProvider.fontSizeScale,
               ),
               Container(
-                color: AppThemeNew.of(context).backgroundColor,
+                color: AppTheme.of(context).backgroundColor,
                 padding: EdgeInsets.only(top: kDefaultPadding * settingsProvider.fontSizeScale),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -35,7 +35,7 @@ class LyricsWidget extends StatelessWidget {
                 ),
               ),
               RichText(
-                text: TextSpan(text: songLyric.authorsText, style: AppThemeNew.of(context).bodyTextStyle),
+                text: TextSpan(text: songLyric.authorsText, style: AppTheme.of(context).bodyTextStyle),
                 textScaleFactor: settingsProvider.fontSizeScale,
               ),
             ],
@@ -55,7 +55,7 @@ class LyricsWidget extends StatelessWidget {
                     child: RichText(
                       text: TextSpan(
                         text: verse.number,
-                        style: AppThemeNew.of(context).bodyTextStyle.copyWith(
+                        style: AppTheme.of(context).bodyTextStyle.copyWith(
                               height: (songLyric.showChords ? 2.25 : 1.5),
                             ),
                       ),
@@ -89,7 +89,7 @@ class LyricsWidget extends StatelessWidget {
             line.groupedBlocks.length,
             (index) => _blocks(context, line.groupedBlocks[index], settingsProvider),
           ),
-          style: AppThemeNew.of(context).bodyTextStyle,
+          style: AppTheme.of(context).bodyTextStyle,
         ),
         textScaleFactor: settingsProvider.fontSizeScale,
       );
@@ -100,7 +100,7 @@ class LyricsWidget extends StatelessWidget {
               child: RichText(
                 text: TextSpan(
                   text: blocks[0].lyricsPart,
-                  style: AppThemeNew.of(context).bodyTextStyle.copyWith(height: (songLyric.showChords ? 2.25 : 1.5)),
+                  style: AppTheme.of(context).bodyTextStyle.copyWith(height: (songLyric.showChords ? 2.25 : 1.5)),
                 ),
               ),
             )
@@ -125,16 +125,16 @@ class LyricsWidget extends StatelessWidget {
                 // decoration: BoxDecoration(
                 //   border: Border(
                 //     bottom: BorderSide(
-                //         color: block.shouldShowLine ? AppThemeNew.of(context).textColor : Colors.transparent),
+                //         color: block.shouldShowLine ? AppTheme.of(context).textColor : Colors.transparent),
                 //   ),
                 // ),
                 child: Transform.translate(
-                  offset: Offset(0, -(AppThemeNew.of(context).bodyTextStyle.fontSize - 3)),
+                  offset: Offset(0, -(AppTheme.of(context).bodyTextStyle.fontSize - 3)),
                   child: RichText(
                     text: TextSpan(
                       text: block.chord,
-                      style: AppThemeNew.of(context).bodyTextStyle.copyWith(
-                            color: AppThemeNew.of(context).chordColor,
+                      style: AppTheme.of(context).bodyTextStyle.copyWith(
+                            color: AppTheme.of(context).chordColor,
                             height: (songLyric.showChords ? 2.25 : 1.5),
                           ),
                     ),
@@ -148,7 +148,7 @@ class LyricsWidget extends StatelessWidget {
               child: RichText(
                 text: TextSpan(
                   text: block.lyricsPart,
-                  style: AppThemeNew.of(context).bodyTextStyle.copyWith(height: (songLyric.showChords ? 2.25 : 1.5)),
+                  style: AppTheme.of(context).bodyTextStyle.copyWith(height: (songLyric.showChords ? 2.25 : 1.5)),
                 ),
               ),
             ),

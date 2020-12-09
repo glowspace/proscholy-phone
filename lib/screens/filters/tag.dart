@@ -13,7 +13,7 @@ class FilterTag extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textStyle = AppThemeNew.of(context).bodyTextStyle.copyWith(color: AppTheme.shared.filtersTextColor(context));
+    final textStyle = AppTheme.of(context).bodyTextStyle.copyWith(color: AppTheme.of(context).filtersTextColor);
 
     return Consumer<TagsProvider>(
       builder: (context, provider, _) => GestureDetector(
@@ -21,7 +21,7 @@ class FilterTag extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             color: provider.isSelected(tag) && !cancellable ? tag.type.selectedColor : Colors.transparent,
-            border: Border.all(color: AppTheme.shared.filterBorderColor(context)),
+            border: Border.all(color: AppTheme.of(context).filterBorderColor),
             borderRadius: BorderRadius.all(Radius.circular(100)), // big enough number to make it always full circular
           ),
           padding: EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),

@@ -78,10 +78,10 @@ class _SearchWidgetState extends State<SearchWidget> with PlatformStateMixin {
 
   Widget _body(BuildContext context, Widget child) => Container(
         padding: EdgeInsets.symmetric(horizontal: kDefaultPadding),
-        margin: AppThemeNew.of(context).isIOS ? null : EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
+        margin: AppTheme.of(context).isIOS ? null : EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
         decoration: BoxDecoration(
-          color: AppThemeNew.of(context).backgroundColor,
-          border: Border.all(color: AppThemeNew.of(context).borderColor),
+          color: AppTheme.of(context).backgroundColor,
+          border: Border.all(color: AppTheme.of(context).borderColor),
           borderRadius: BorderRadius.all(Radius.circular(10)),
         ),
         child: Row(children: [
@@ -105,7 +105,7 @@ class _SearchWidgetState extends State<SearchWidget> with PlatformStateMixin {
     double textWidth;
 
     do {
-      textStyle = AppThemeNew.of(context).placeholderTextStyle.copyWith(fontSize: fontSize);
+      textStyle = AppTheme.of(context).placeholderTextStyle.copyWith(fontSize: fontSize);
       fontSize -= 0.5;
 
       textWidth = (TextPainter(

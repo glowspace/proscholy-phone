@@ -53,7 +53,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> with PlatformStateMixin
           titleSpacing: kDefaultPadding,
           actions: [_trailing(context)],
           leadingWidth: _searching ? 0 : null,
-          shadowColor: AppTheme.shared.appBarDividerColor(context),
+          shadowColor: AppTheme.of(context).appBarDividerColor,
         ),
         body: _body(context),
       );
@@ -78,7 +78,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> with PlatformStateMixin
             onPressed: () => _songLyricsProvider.tagsProvider.showFilters(context),
           ),
         )
-      : Text(widget.playlist.name, style: AppThemeNew.of(context).bodyTextStyle);
+      : Text(widget.playlist.name, style: AppTheme.of(context).bodyTextStyle);
 
   Widget _trailing(BuildContext context) => _searching
       ? Container(width: 0)
