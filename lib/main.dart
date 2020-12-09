@@ -32,6 +32,7 @@ class _MainWidgetstate extends State<MainWidget> with PlatformStateMixin, Widget
   Widget iOSWidget(BuildContext context) => _wrap(
         context,
         (context, home) => CupertinoApp(
+          // needed by youtube player
           localizationsDelegates: [DefaultMaterialLocalizations.delegate],
           title: _title,
           theme: AppThemeNew.of(context).cupertinoTheme,
