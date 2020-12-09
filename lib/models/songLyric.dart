@@ -83,7 +83,7 @@ class SongLyric extends ChangeNotifier {
 
   List<String> get numbers => _numbers ??= [id.toString()] +
       _entity.songbookRecords
-          .map((record) => '${DataProvider.shared.songbooksMap[record.songbookId]?.shortcut ?? ""}${record.number}')
+          .map((record) => '${DataProvider.shared.songbook(record.songbookId)?.shortcut ?? ""}${record.number}')
           .toList();
 
   String get name => _entity.name;

@@ -49,5 +49,5 @@ class DataProvider {
   List<Tag> get tags => _tags;
   List<Playlist> get playlists => _playlists;
 
-  Map<int, Songbook> get songbooksMap => _songbooksMap;
+  Songbook songbook(int id) => _songbooksMap[id];
 }
