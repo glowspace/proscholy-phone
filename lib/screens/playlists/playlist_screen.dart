@@ -40,6 +40,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> with PlatformStateMixin
           leading: _leading(context),
           middle: _middle(context),
           trailing: _trailing(context),
+          padding: _searching ? EdgeInsetsDirectional.only(start: kDefaultPadding / 2, end: kDefaultPadding / 2) : null,
           transitionBetweenRoutes: false, // needed because of search widget
         ),
         child: _body(context),
@@ -78,7 +79,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> with PlatformStateMixin
             onPressed: () => _songLyricsProvider.tagsProvider.showFilters(context),
           ),
         )
-      : Text(widget.playlist.name, style: AppTheme.of(context).bodyTextStyle);
+      : Text(widget.playlist.name, style: AppTheme.of(context).navBarTitleTextStyle);
 
   Widget _trailing(BuildContext context) => _searching
       ? Container(width: 0)

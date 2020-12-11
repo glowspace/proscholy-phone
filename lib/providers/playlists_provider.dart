@@ -7,6 +7,8 @@ import 'package:zpevnik/models/songLyric.dart';
 import 'package:zpevnik/providers/data_provider.dart';
 import 'package:zpevnik/screens/components/bottom_form_sheet.dart';
 import 'package:zpevnik/screens/components/menu_item.dart';
+import 'package:zpevnik/screens/components/platform/platform_dialog.dart';
+import 'package:zpevnik/screens/playlists/playlist_sheet.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/database.dart';
 import 'package:zpevnik/utils/platform.dart';
@@ -94,65 +96,20 @@ class PlaylistsProvider extends ChangeNotifier {
 
     showPlatformBottomSheet(
       context: context,
-      child: BottomFormSheet(
-        title: 'Playlisty',
-        items: [
-          MenuItem(
-            title: 'Nový playlist',
-            icon: Icons.add,
-            onPressed: () => showPlaylistDialog(context),
-          ),
-          for (final playlist in playlists)
-            MenuItem(
-              title: playlist.name,
-              onPressed: () {
-                playlist.addSongLyrics(songLyrics);
-                Navigator.pop(context);
-              },
-            ),
-        ],
-      ),
+      child: PlaylistSheet(songLyrics: songLyrics),
       height: 0.67 * MediaQuery.of(context).size.height,
     );
   }
 
-  void showPlaylistDialog(BuildContext context, {Function() callback}) {
-    final textFieldController = TextEditingController();
-
-    showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        title: Text('Vytvořit playlist'),
-        content: Container(
-          child: TextField(
-            decoration: InputDecoration(border: InputBorder.none, hintText: 'Název'),
-            controller: textFieldController,
-          ),
+  void showPlaylistDialog(BuildContext context, {Function() callback}) => showDialog<void>(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => PlatformDialog(
+          title: 'Vytvořit playlist',
+          onSubmit: (text) {
+            _addPlaylist(text, []);
+            if (callback != null) callback();
+          },
         ),
-        actions: [
-          TextButton(
-            child: Text('Zrušit', style: AppTheme.of(context).bodyTextStyle.copyWith(color: Colors.red)),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          // fixme: don't know better way to do it now, but there must be
-          ChangeNotifierProvider.value(
-            value: textFieldController,
-            child: Consumer<TextEditingController>(
-              builder: (context, controller, _) => TextButton(
-                child: Text('Vytvořit'),
-                onPressed: controller.text.isEmpty
-                    ? null
-                    : () {
-                        _addPlaylist(controller.text, []);
-                        if (callback != null) callback();
-                        Navigator.of(context).pop();
-                      },
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+      );
 }

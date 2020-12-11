@@ -11,18 +11,20 @@ class BottomFormSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
         padding: EdgeInsets.symmetric(vertical: kDefaultPadding),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (title.isNotEmpty)
-                Container(
-                  padding: EdgeInsets.fromLTRB(kDefaultPadding, 0, kDefaultPadding, kDefaultPadding),
-                  child: Text(title, style: AppTheme.of(context).titleTextStyle),
-                ),
-              for (final item in items) item
-            ],
-          ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (title.isNotEmpty)
+              Container(
+                padding: EdgeInsets.fromLTRB(kDefaultPadding, 0, kDefaultPadding, kDefaultPadding),
+                child: Text(title, style: AppTheme.of(context).titleTextStyle),
+              ),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: items),
+              ),
+            )
+          ],
         ),
       );
 }

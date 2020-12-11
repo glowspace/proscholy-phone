@@ -50,7 +50,7 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
   @override
   Widget iOSWidget(BuildContext context) => CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
-          middle: Text(widget.songLyric.id.toString()),
+          middle: Text(widget.songLyric.id.toString(), style: AppTheme.of(context).navBarTitleTextStyle),
           trailing: Row(mainAxisSize: MainAxisSize.min, children: _actions(context)),
           padding: EdgeInsetsDirectional.only(start: kDefaultPadding, end: kDefaultPadding),
         ),
@@ -63,7 +63,7 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
           appBar: _fullScreen
               ? null
               : CustomAppBar(
-                  title: Text(widget.songLyric.id.toString(), style: AppTheme.of(context).bodyTextStyle),
+                  title: Text(widget.songLyric.id.toString(), style: AppTheme.of(context).navBarTitleTextStyle),
                   shadowColor: AppTheme.of(context).appBarDividerColor,
                   actions: _actions(context),
                   brightness: AppTheme.of(context).brightness,

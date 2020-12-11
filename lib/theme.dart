@@ -33,6 +33,8 @@ class AppTheme extends InheritedWidget {
 
   TextStyle get subTitleTextStyle => isIOS ? bodyTextStyle.copyWith(fontSize: 17) : materialTheme.textTheme.subtitle1;
 
+  TextStyle get navBarTitleTextStyle => bodyTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 17);
+
   TextStyle get placeholderTextStyle => bodyTextStyle.copyWith(
         color: isLight ? Color(0xff9aa0a5) : Color(0xff655f5a),
       );

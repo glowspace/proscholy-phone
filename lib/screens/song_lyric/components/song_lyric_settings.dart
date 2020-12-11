@@ -6,6 +6,7 @@ import 'package:zpevnik/models/songLyric.dart';
 import 'package:zpevnik/providers/settings_provider.dart';
 import 'package:zpevnik/screens/components/bottom_form_sheet.dart';
 import 'package:zpevnik/screens/components/highlightable_button.dart';
+import 'package:zpevnik/screens/components/platform/platform_slider.dart';
 import 'package:zpevnik/screens/song_lyric/components/selector_widget.dart';
 import 'package:zpevnik/theme.dart';
 
@@ -18,27 +19,33 @@ class SongLyricSettings extends StatelessWidget {
       builder: (context, songLyric, _) => BottomFormSheet(
         title: 'Nastavení zobrazení',
         items: [
-          _row('Transpozice', _transpositionStepper()),
+          _row('Transpozice', SizedBox(width: 96, child: _transpositionStepper())),
           _row(
             'Posuvky',
-            SelectorWidget(
-              onSelected: (index) => songLyric.accidentals = index == 1,
-              options: [
-                Text('#', style: accidentalsStyle, textAlign: TextAlign.center),
-                Text('♭', style: accidentalsStyle, textAlign: TextAlign.center)
-              ],
-              selected: songLyric.accidentals ? 1 : 0,
+            SizedBox(
+              width: 96,
+              child: SelectorWidget(
+                onSelected: (index) => songLyric.accidentals = index == 1,
+                options: [
+                  Text('#', style: accidentalsStyle, textAlign: TextAlign.center),
+                  Text('♭', style: accidentalsStyle, textAlign: TextAlign.center)
+                ],
+                selected: songLyric.accidentals ? 1 : 0,
+              ),
             ),
           ),
           _row(
             'Akordy',
-            SelectorWidget(
-              onSelected: (index) => songLyric.showChords = index == 1,
-              options: [
-                Icon(Icons.visibility_off),
-                Icon(Icons.visibility),
-              ],
-              selected: songLyric.showChords ? 1 : 0,
+            SizedBox(
+              width: 96,
+              child: SelectorWidget(
+                onSelected: (index) => songLyric.showChords = index == 1,
+                options: [
+                  Icon(Icons.visibility_off),
+                  Icon(Icons.visibility),
+                ],
+                selected: songLyric.showChords ? 1 : 0,
+              ),
             ),
           ),
           _fontSizeSlider(context),
@@ -48,7 +55,7 @@ class SongLyricSettings extends StatelessWidget {
   }
 
   Widget _row(String name, Widget widget) => Container(
-        padding: EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
+        padding: EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [Text(name), widget],
@@ -88,8 +95,8 @@ class SongLyricSettings extends StatelessWidget {
               text: TextSpan(text: 'A', style: AppTheme.of(context).bodyTextStyle),
               textScaleFactor: kMinimumFontSizeScale,
             ),
-            Flexible(
-              child: Slider(
+            Expanded(
+              child: PlatformSlider(
                 min: kMinimumFontSizeScale,
                 max: kMaximumFontSizeScale,
                 value: settingsProvider.fontSizeScale,

@@ -41,6 +41,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> with PlatformStateMixin
           leading: _leading(context),
           middle: _middle(context),
           trailing: _trailing(context),
+          padding: _searching ? EdgeInsetsDirectional.only(start: kDefaultPadding / 2, end: kDefaultPadding / 2) : null,
         ),
         child: _body(context),
       );
@@ -79,11 +80,11 @@ class _FavoriteScreenState extends State<FavoriteScreen> with PlatformStateMixin
             onPressed: () => _songLyricsProvider.tagsProvider.showFilters(context),
           ),
         )
-      : Text('Písně s hvězdičkou', style: AppTheme.of(context).bodyTextStyle);
+      : Text('Písně s hvězdičkou', style: AppTheme.of(context).navBarTitleTextStyle);
 
   Widget _trailing(BuildContext context) => _searching
       ? Container(width: 0)
-      : IconButton(onPressed: () => setState(() => _searching = true), icon: Icon(Icons.search));
+      : HighlightableButton(onPressed: () => setState(() => _searching = true), icon: Icon(Icons.search));
 
   Widget _body(BuildContext context) => SafeArea(
         child: Container(

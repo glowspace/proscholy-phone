@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:zpevnik/links.dart';
-import 'package:zpevnik/providers/settings_provider.dart';
 import 'package:zpevnik/screens/components/bottom_form_sheet.dart';
 import 'package:zpevnik/screens/components/menu_item.dart';
 import 'package:zpevnik/screens/user/about_screen.dart';

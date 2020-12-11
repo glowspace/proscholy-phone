@@ -82,5 +82,5 @@ class _MainWidgetstate extends State<MainWidget> with PlatformStateMixin, Widget
 // widget for setting platform for debugging
 class DebugWidget extends StatelessWidget {
   @override
-  Widget build(BuildContext context) => Theme(data: ThemeData(platform: TargetPlatform.android), child: MainWidget());
+  Widget build(BuildContext context) => Theme(data: ThemeData(platform: TargetPlatform.iOS), child: MainWidget());
 }

@@ -8,7 +8,7 @@ import 'package:zpevnik/screens/filters/section.dart';
 class FiltersWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
-        padding: EdgeInsets.symmetric(horizontal: kDefaultPadding),
+        padding: EdgeInsets.all(kDefaultPadding),
         child: Consumer<TagsProvider>(
           builder: (context, provider, _) => ListView.builder(
             itemCount: provider.sections.length,

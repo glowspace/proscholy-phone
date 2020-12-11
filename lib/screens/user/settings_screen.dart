@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/settings_provider.dart';
+import 'package:zpevnik/screens/components/platform/platform_slider.dart';
+import 'package:zpevnik/screens/components/platform/platform_switch.dart';
 import 'package:zpevnik/screens/song_lyric/components/selector_widget.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/platform.dart';
@@ -39,9 +41,12 @@ class SettingsScreen extends StatelessWidget with PlatformWidgetMixin {
                 'Nastavení zobrazení',
                 [
                   _row(
-                      'Blokovat zhasínání displeje',
-                      Switch(
-                          value: settingsProvider.blockDisplayOff, onChanged: settingsProvider.changeBlockDisplayOff)),
+                    'Blokovat zhasínání displeje',
+                    PlatformSwitch(
+                      value: settingsProvider.blockDisplayOff,
+                      onChanged: settingsProvider.changeBlockDisplayOff,
+                    ),
+                  ),
                 ],
               ),
               _section(
@@ -50,30 +55,36 @@ class SettingsScreen extends StatelessWidget with PlatformWidgetMixin {
                 [
                   _row(
                     'Posuvky',
-                    SelectorWidget(
-                      onSelected: (index) => settingsProvider.accidentals = index == 1,
-                      options: [
-                        Text('#', style: accidentalsStyle, textAlign: TextAlign.center),
-                        Text('♭', style: accidentalsStyle, textAlign: TextAlign.center)
-                      ],
-                      selected: settingsProvider.accidentals ? 1 : 0,
+                    SizedBox(
+                      width: 96,
+                      child: SelectorWidget(
+                        onSelected: (index) => settingsProvider.accidentals = index == 1,
+                        options: [
+                          Text('#', style: accidentalsStyle, textAlign: TextAlign.center),
+                          Text('♭', style: accidentalsStyle, textAlign: TextAlign.center)
+                        ],
+                        selected: settingsProvider.accidentals ? 1 : 0,
+                      ),
                     ),
                   ),
                   _row(
                     'Akordy',
-                    SelectorWidget(
-                      onSelected: (index) => settingsProvider.showChords = index == 1,
-                      options: [
-                        Icon(Icons.visibility_off),
-                        Icon(Icons.visibility),
-                      ],
-                      selected: settingsProvider.showChords ? 1 : 0,
+                    SizedBox(
+                      width: 96,
+                      child: SelectorWidget(
+                        onSelected: (index) => settingsProvider.showChords = index == 1,
+                        options: [
+                          Icon(Icons.visibility_off),
+                          Icon(Icons.visibility),
+                        ],
+                        selected: settingsProvider.showChords ? 1 : 0,
+                      ),
                     ),
                   ),
                   _fontSizeSlider(context),
                   _row(
                     'Zobrazit spodní nabídku',
-                    Switch(
+                    PlatformSwitch(
                       value: settingsProvider.showBottomOptions,
                       onChanged: settingsProvider.changeShowBottomOptions,
                     ),
@@ -100,10 +111,7 @@ class SettingsScreen extends StatelessWidget with PlatformWidgetMixin {
 
   Widget _row(String name, Widget widget) => Container(
         padding: EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [Text(name), widget],
-        ),
+        child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [Text(name), widget]),
       );
 
   Widget _fontSizeSlider(BuildContext context) => Container(
@@ -115,8 +123,8 @@ class SettingsScreen extends StatelessWidget with PlatformWidgetMixin {
                 text: TextSpan(text: 'A', style: AppTheme.of(context).bodyTextStyle),
                 textScaleFactor: kMinimumFontSizeScale,
               ),
-              Flexible(
-                child: Slider(
+              Expanded(
+                child: PlatformSlider(
                   min: kMinimumFontSizeScale,
                   max: kMaximumFontSizeScale,
                   value: settingsProvider.fontSizeScale,
