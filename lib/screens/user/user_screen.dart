@@ -46,8 +46,28 @@ class _UserScreenState extends State<UserScreen> with PlatformStateMixin {
 
     return SafeArea(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(padding: EdgeInsets.symmetric(horizontal: kDefaultPadding), child: _searchWidget(context)),
+          if (playlists.isEmpty && archivedPlaylists.isEmpty)
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding, vertical: kDefaultPadding),
+              child: Text(
+                'Seznamy písní',
+                style: AppTheme.of(context).bodyTextStyle.copyWith(color: red),
+              ),
+            ),
+          if (playlists.isEmpty && archivedPlaylists.isEmpty)
+            HighlightableRow(
+                onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => FavoriteScreen()),
+                    ),
+                child: Row(
+                  children: [
+                    Container(padding: EdgeInsets.only(right: kDefaultPadding), child: Icon(Icons.star)),
+                    Text('Písně s hvězdičkou', style: AppTheme.of(context).bodyTextStyle),
+                  ],
+                )),
           Expanded(child: () {
             if (playlists.isEmpty && archivedPlaylists.isEmpty)
               return Center(
@@ -58,6 +78,7 @@ class _UserScreenState extends State<UserScreen> with PlatformStateMixin {
                     child: Text(
                       'Nemáte žádný playlist. Vytvořit si jej můžete v${unbreakableSpace}náhledu písně nebo kliknutím na${unbreakableSpace}tento text.',
                       textAlign: TextAlign.center,
+                      style: AppTheme.of(context).bodyTextStyle,
                     ),
                   ),
                 ),

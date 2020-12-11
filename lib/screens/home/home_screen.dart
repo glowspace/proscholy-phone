@@ -95,7 +95,7 @@ class _HomeScreenState extends State<HomeScreen> with PlatformStateMixin {
 
   Widget _leading(BuildContext context) => HighlightableButton(
         icon: Icon(Icons.close),
-        color: AppTheme.of(context).selectedRowColor,
+        color: AppTheme.of(context).chordColor,
         padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2, vertical: kDefaultPadding / 2),
         onPressed: () => setState(() => _selectionProvider.selectionEnabled = false),
       );
@@ -118,19 +118,19 @@ class _HomeScreenState extends State<HomeScreen> with PlatformStateMixin {
     return [
       HighlightableButton(
         icon: Icon(_selectionProvider.allFavorited ? Icons.star : Icons.star_outline),
-        color: AppTheme.of(context).selectedRowColor,
+        color: AppTheme.of(context).chordColor,
         padding: padding,
         onPressed: _selectionProvider.selectedCount > 0 ? () => _selectionProvider.toggleFavorite() : null,
       ),
       HighlightableButton(
         icon: Icon(Icons.playlist_add),
-        color: AppTheme.of(context).selectedRowColor,
+        color: AppTheme.of(context).chordColor,
         padding: padding,
         onPressed: () => PlaylistsProvider.shared.showPlaylists(context, _selectionProvider.selected),
       ),
       HighlightableButton(
         icon: Icon(Icons.select_all),
-        color: AppTheme.of(context).selectedRowColor,
+        color: AppTheme.of(context).chordColor,
         padding: padding,
         onPressed: () => _selectionProvider.toggleAll(_songLyricsProvider.songLyrics),
       )

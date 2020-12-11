@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:zpevnik/providers/settings_provider.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/platform.dart';
+import 'package:zpevnik/utils/preloader.dart';
 import 'package:zpevnik/utils/updater.dart';
 import 'package:zpevnik/screens/content_screen.dart';
 import 'package:zpevnik/screens/loading_screen.dart';
@@ -25,7 +26,14 @@ class _MainWidgetstate extends State<MainWidget> with PlatformStateMixin, Widget
   void initState() {
     super.initState();
 
+    Preloader.preloadImages(context);
+
     WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
   }
 
   @override

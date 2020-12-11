@@ -10,13 +10,15 @@ class LoadingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final isLight = MediaQuery.platformBrightnessOf(context) == Brightness.light;
 
-    final backgroundImage = isLight ? '$imagesPath/background.png' : '$imagesPath/background_dark.png';
-    final titleImage = isLight ? '$imagesPath/title.png' : '$imagesPath/title_dark.png';
+    final backgroundImage =
+        isLight ? const AssetImage('$imagesPath/background.png') : const AssetImage('$imagesPath/background_dark.png');
+    final titleImage =
+        isLight ? const AssetImage('$imagesPath/title.png') : const AssetImage('$imagesPath/title_dark.png');
 
     final size = MediaQuery.of(context).size;
 
     return Container(
-      decoration: BoxDecoration(image: DecorationImage(image: AssetImage(backgroundImage), fit: BoxFit.cover)),
+      decoration: BoxDecoration(image: DecorationImage(image: backgroundImage, fit: BoxFit.cover)),
       child: StatusBarWrapper(
         child: Scaffold(
           backgroundColor: Colors.transparent,
@@ -24,7 +26,7 @@ class LoadingScreen extends StatelessWidget {
             children: [
               Transform.translate(
                 offset: Offset(0, 0.2 * size.height),
-                child: Image.asset(titleImage),
+                child: Image(image: titleImage),
               ),
               Spacer(),
               Container(

@@ -6,28 +6,7 @@ import 'package:zpevnik/providers/songbooks_provider.dart';
 import 'package:zpevnik/screens/components/highlightable_button.dart';
 import 'package:zpevnik/screens/songbooks/songbook_screen.dart';
 import 'package:zpevnik/theme.dart';
-
-const List<String> _existingLogos = [
-  '1ch',
-  '2ch',
-  '3ch',
-  '4ch',
-  '5ch',
-  '6ch',
-  '7ch',
-  '8ch',
-  '9ch',
-  'c',
-  'csach',
-  'csatr',
-  'csmom',
-  'csmta',
-  'csmzd',
-  'dbl',
-  'k',
-  'kan',
-  'sdmkr'
-];
+import 'package:zpevnik/utils/preloader.dart';
 
 class SongbookWidget extends StatelessWidget {
   final Songbook songbook;
@@ -70,11 +49,7 @@ class SongbookWidget extends StatelessWidget {
         child: AspectRatio(
           aspectRatio: 4 / 3,
           child: FittedBox(
-            child: Image.asset(
-                _existingLogos.contains(songbook.shortcut.toLowerCase())
-                    ? '$imagesPath/songbooks/${songbook.shortcut.toLowerCase()}.png'
-                    : '$imagesPath/songbooks/default.png',
-                key: Key(songbook.shortcut)),
+            child: Image(image: Preloader.songbookLogo(songbook.shortcut.toLowerCase()), key: Key(songbook.shortcut)),
           ),
         ),
       );
