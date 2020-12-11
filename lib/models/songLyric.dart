@@ -78,12 +78,14 @@ class SongLyric extends ChangeNotifier {
 
   Key get key => Key(_entity.id.toString());
 
-  String number(Songbook songbook) =>
-      '${songbook.shortcut} ${_entity.songbookRecords.firstWhere((record) => record.songbookId == songbook.id).number}';
+  String number(Songbook songbook) {
+    return '${songbook.shortcut} ${_entity.songbookRecords.firstWhere((record) => record.songbookId == songbook.id).number}';
+  }
 
   List<String> get numbers => _numbers ??= [id.toString()] +
       _entity.songbookRecords
-          .map((record) => '${DataProvider.shared.songbook(record.songbookId)?.shortcut ?? ""}${record.number}')
+          .where((record) => DataProvider.shared.songbook(record.songbookId) != null)
+          .map((record) => '${DataProvider.shared.songbook(record.songbookId).shortcut}${record.number}')
           .toList();
 
   String get name => _entity.name;
@@ -119,7 +121,9 @@ class SongLyric extends ChangeNotifier {
       else
         return 'Autoři: ${entity.authors.map((author) => author.name).toList().join(", ")}';
     } else {
-      String originalText = 'Originál: ${original.isEmpty ? "" : original[0].name}\n';
+      String originalText = '';
+
+      if (original.isNotEmpty) originalText = 'Originál: ${original[0].name}\n';
 
       if (original.isNotEmpty) originalText += '${original[0].authorsText}\n';
 

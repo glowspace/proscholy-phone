@@ -32,9 +32,6 @@ class _MusicNotesScreenState extends State<MusicNotesScreen> with PlatformStateM
 
     _scaleFactor = 1;
     _offset = Offset.zero;
-
-    _preparedLilyPond = widget.songLyric.lilypond.replaceAll('currentColor',
-        AppTheme.of(context).textColor.toString().replaceAllMapped(_colorRE, (match) => '#${match.group(1)}'));
   }
 
   @override
@@ -53,25 +50,29 @@ class _MusicNotesScreenState extends State<MusicNotesScreen> with PlatformStateM
         body: SafeArea(child: _body(context)),
       );
 
-  Widget _body(BuildContext context) => GestureDetector(
-        onScaleStart: (details) {
-          _baseScaleFactor = _scaleFactor;
-          _scaleStart = details.focalPoint;
-          _baseOffset = _offset;
-        },
-        onScaleUpdate: (details) => setState(() {
-          _offset =
-              _baseOffset.translate(details.focalPoint.dx - _scaleStart.dx, details.focalPoint.dy - _scaleStart.dy);
-          _scaleFactor = _baseScaleFactor * details.scale;
-        }),
-        child: Center(
-          child: Transform.translate(
-            offset: _offset,
-            child: Transform.scale(
-              scale: _scaleFactor,
-              child: SvgPicture.string(_preparedLilyPond, height: MediaQuery.of(context).size.height),
-            ),
+  Widget _body(BuildContext context) {
+    _preparedLilyPond ??= widget.songLyric.lilypond.replaceAll('currentColor',
+        AppTheme.of(context).textColor.toString().replaceAllMapped(_colorRE, (match) => '#${match.group(1)}'));
+
+    return GestureDetector(
+      onScaleStart: (details) {
+        _baseScaleFactor = _scaleFactor;
+        _scaleStart = details.focalPoint;
+        _baseOffset = _offset;
+      },
+      onScaleUpdate: (details) => setState(() {
+        _offset = _baseOffset.translate(details.focalPoint.dx - _scaleStart.dx, details.focalPoint.dy - _scaleStart.dy);
+        _scaleFactor = _baseScaleFactor * details.scale;
+      }),
+      child: Center(
+        child: Transform.translate(
+          offset: _offset,
+          child: Transform.scale(
+            scale: _scaleFactor,
+            child: SvgPicture.string(_preparedLilyPond, height: MediaQuery.of(context).size.height),
           ),
         ),
-      );
+      ),
+    );
+  }
 }

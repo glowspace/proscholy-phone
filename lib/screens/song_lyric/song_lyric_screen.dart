@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/custom_appbar.dart';
 import 'package:zpevnik/models/songLyric.dart';
+import 'package:zpevnik/providers/full_screen_provider.dart';
 import 'package:zpevnik/providers/scroll_provider.dart';
 import 'package:zpevnik/providers/settings_provider.dart';
 import 'package:zpevnik/screens/components/data_container.dart';
@@ -28,18 +29,12 @@ class SongLyricScreen extends StatefulWidget {
 }
 
 class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
-  ScrollController _scrollController;
-  ScrollProvider _scrollProvider;
-
   bool _fullScreen;
   ValueNotifier<bool> _showingMenu;
 
   @override
   void initState() {
     super.initState();
-
-    _scrollController = ScrollController();
-    _scrollProvider = ScrollProvider(_scrollController);
 
     _fullScreen = false;
     _showingMenu = ValueNotifier(false);
@@ -49,11 +44,13 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
 
   @override
   Widget iOSWidget(BuildContext context) => CupertinoPageScaffold(
-        navigationBar: CupertinoNavigationBar(
-          middle: Text(widget.songLyric.id.toString(), style: AppTheme.of(context).navBarTitleTextStyle),
-          trailing: Row(mainAxisSize: MainAxisSize.min, children: _actions(context)),
-          padding: EdgeInsetsDirectional.only(start: kDefaultPadding, end: kDefaultPadding),
-        ),
+        navigationBar: _fullScreen
+            ? null
+            : CupertinoNavigationBar(
+                middle: Text(widget.songLyric.id.toString(), style: AppTheme.of(context).navBarTitleTextStyle),
+                trailing: Row(mainAxisSize: MainAxisSize.min, children: _actions(context)),
+                padding: EdgeInsetsDirectional.only(start: kDefaultPadding, end: kDefaultPadding),
+              ),
         child: _body(context),
       );
 
@@ -74,6 +71,9 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
 
   Widget _body(BuildContext context) {
     final settingsProvider = Provider.of<SettingsProvider>(context, listen: false);
+    final fullScreenProvider = Provider.of<FullScreenProvider>(context, listen: false);
+    final scrollController = ScrollController();
+    final scrollProvider = ScrollProvider(scrollController);
 
     return DataContainer(
       data: widget.songLyric,
@@ -81,19 +81,22 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
         child: GestureDetector(
           onScaleStart: settingsProvider.fontScaleStarted,
           onScaleUpdate: settingsProvider.fontScaleUpdated,
-          onTap: _toggleFullScreen,
+          onTap: () {
+            fullScreenProvider.toggle();
+            _toggleFullScreen();
+          },
           child: Stack(
             children: [
               NotificationListener(
                 onNotification: (notif) {
-                  if (notif is ScrollEndNotification) setState(() => _scrollProvider.scrollEnded());
+                  if (notif is ScrollEndNotification) setState(() => scrollProvider.scrollEnded());
 
                   return true;
                 },
                 child: Container(
                   height: double.infinity,
                   child: SingleChildScrollView(
-                    controller: _scrollController,
+                    controller: scrollController,
                     child: Container(
                       padding:
                           EdgeInsets.fromLTRB(kDefaultPadding, kDefaultPadding, kDefaultPadding, 6 * kDefaultPadding),
@@ -108,11 +111,11 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
                   right: 0,
                   bottom: kDefaultPadding,
                   child: DataContainer(
-                    data: _scrollProvider,
+                    data: scrollProvider,
                     child: SlidingWidget(
                       showSettings: _showSettings,
                       showExternals: widget.songLyric.youtubes.isNotEmpty ? _showExternals : null,
-                      scrollProvider: _scrollProvider,
+                      scrollProvider: scrollProvider,
                     ),
                   ),
                 ),

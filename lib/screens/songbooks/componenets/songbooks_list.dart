@@ -13,14 +13,19 @@ class SongbookListView extends StatelessWidget {
   Widget build(BuildContext context) {
     final count = (MediaQuery.of(context).size.width / _maxWidgetSize).ceil();
 
-    return Scrollbar(
-      child: Consumer<SongbooksProvider>(
-        builder: (context, provider, _) => GridView.count(
-          childAspectRatio: 1 / 1.2, // to fit multiline songbook names on small devices
-          crossAxisCount: count,
-          children: List.generate(
-            provider.songbooks.length,
-            (index) => SongbookWidget(songbook: provider.songbooks[index]),
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onPanDown: (_) => FocusScope.of(context).unfocus(),
+      child: Scrollbar(
+        child: Consumer<SongbooksProvider>(
+          builder: (context, provider, _) => GridView.count(
+            childAspectRatio: 1 / 1.2, // to fit multiline songbook names on small devices
+            crossAxisCount: count,
+            controller: provider.scrollController,
+            children: List.generate(
+              provider.songbooks.length,
+              (index) => SongbookWidget(songbook: provider.songbooks[index]),
+            ),
           ),
         ),
       ),

@@ -38,6 +38,7 @@ class SongLyricsListView extends StatelessWidget {
     final content = provider.songLyrics.isNotEmpty
         ? Scrollbar(
             child: ListView.builder(
+              controller: provider.scrollController,
               itemBuilder: (context, index) {
                 if (index == 0 && showTitle)
                   return Container(
@@ -62,13 +63,17 @@ class SongLyricsListView extends StatelessWidget {
             child: Center(child: Text(text, style: AppTheme.of(context).bodyTextStyle, textAlign: TextAlign.center)),
           );
 
-    return Column(children: [
-      ChangeNotifierProvider.value(
-        value: provider.tagsProvider,
-        child: ActiveFiltersRow(selectedTags: provider.tagsProvider.selectedTags),
-      ),
-      Expanded(child: content),
-    ]);
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onPanDown: (_) => FocusScope.of(context).unfocus(),
+      child: Column(children: [
+        ChangeNotifierProvider.value(
+          value: provider.tagsProvider,
+          child: ActiveFiltersRow(selectedTags: provider.tagsProvider.selectedTags),
+        ),
+        Expanded(child: content),
+      ]),
+    );
   }
 
   Widget _row(BuildContext context, SongLyric songLyric) => SongLyricRow(

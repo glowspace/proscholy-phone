@@ -43,11 +43,7 @@ class _HighlightableRowState extends State<HighlightableRow> {
         decoration: BoxDecoration(color: widget.onPressed == null ? AppTheme.of(context).disabledColor : _color),
         padding: widget.padding,
         child: Row(children: [
-          if (widget.prefix != null)
-            Container(
-              padding: EdgeInsets.only(right: kDefaultPadding),
-              child: widget.prefix,
-            ),
+          if (widget.prefix != null) Container(padding: EdgeInsets.only(right: kDefaultPadding), child: widget.prefix),
           Expanded(
             child: GestureDetector(
               onPanDown: (_) => setState(() => _isHighlighted = true),
@@ -55,9 +51,7 @@ class _HighlightableRowState extends State<HighlightableRow> {
               onPanEnd: (_) => setState(() => _isHighlighted = false),
               onTap: widget.onPressed,
               behavior: HitTestBehavior.translucent,
-              child: Container(
-                child: widget.child,
-              ),
+              child: Container(child: widget.child),
             ),
           ),
           if (widget.suffix != null)

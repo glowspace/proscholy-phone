@@ -5,10 +5,14 @@ import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/providers/data_provider.dart';
 import 'package:zpevnik/providers/tags_provider.dart';
 
+final _numberRE = RegExp('[0-9]');
+
 class SongLyricsProvider extends ChangeNotifier {
   final List<SongLyric> allSongLyrics;
 
   final TagsProvider tagsProvider;
+
+  final ScrollController scrollController;
 
   List<SongLyric> _songLyrics;
 
@@ -19,7 +23,8 @@ class SongLyricsProvider extends ChangeNotifier {
   SongLyricsProvider(this.allSongLyrics)
       : _searchText = '',
         _songLyrics = allSongLyrics,
-        tagsProvider = TagsProvider(DataProvider.shared.tags) {
+        tagsProvider = TagsProvider(DataProvider.shared.tags),
+        scrollController = ScrollController() {
     tagsProvider.addListener(_update);
   }
 
@@ -39,12 +44,16 @@ class SongLyricsProvider extends ChangeNotifier {
 
   List<bool Function(SongLyric, String)> get _predicates => [
         (songLyric, searchText) => songLyric.numbers.any((number) => number.toLowerCase() == searchText),
-        (songLyric, searchText) => songLyric.numbers.any((number) => number.toLowerCase().startsWith(searchText)),
-        (songLyric, searchText) => songLyric.numbers.any((number) => number.toLowerCase().contains(searchText)),
+        (songLyric, searchText) => songLyric.numbers
+            .any((number) => _numberRE.hasMatch(searchText) && number.toLowerCase().startsWith(searchText)),
+        (songLyric, searchText) => songLyric.numbers
+            .any((number) => _numberRE.hasMatch(searchText) && number.toLowerCase().contains(searchText)),
         (songLyric, searchText) => songLyric.name.toLowerCase().startsWith(searchText),
         (songLyric, searchText) => removeDiacritics(songLyric.name.toLowerCase()).startsWith(searchText),
         (songLyric, searchText) => songLyric.name.toLowerCase().contains(searchText),
         (songLyric, searchText) => removeDiacritics(songLyric.name.toLowerCase()).contains(searchText),
+        (songLyric, searchText) => songLyric.numbers.any((number) => number.toLowerCase().startsWith(searchText)),
+        (songLyric, searchText) => songLyric.numbers.any((number) => number.toLowerCase().contains(searchText)),
         (songLyric, searchText) => removeDiacritics(songLyric.entity.lyrics.toLowerCase()).contains(searchText),
       ];
 
@@ -89,6 +98,8 @@ class SongLyricsProvider extends ChangeNotifier {
       result.addAll(list);
       return result;
     }).toList();
+
+    scrollController.jumpTo(0.0);
 
     notifyListeners();
   }

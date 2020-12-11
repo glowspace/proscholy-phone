@@ -8,15 +8,33 @@ import 'package:zpevnik/screens/songbooks/songbook_screen.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/preloader.dart';
 
-class SongbookWidget extends StatelessWidget {
+class SongbookWidget extends StatefulWidget {
   final Songbook songbook;
 
   const SongbookWidget({Key key, @required this.songbook}) : super(key: key);
 
   @override
+  State<StatefulWidget> createState() => _SongbookWidgetState();
+}
+
+class _SongbookWidgetState extends State<SongbookWidget> {
+  bool _isHighlighted;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _isHighlighted = false;
+  }
+
+  @override
   Widget build(BuildContext context) => GestureDetector(
+        onPanDown: (_) => setState(() => _isHighlighted = true),
+        onPanCancel: () => setState(() => _isHighlighted = false),
+        onPanEnd: (_) => setState(() => _isHighlighted = false),
         onTap: () => _pushSongbook(context),
         child: Container(
+          color: _isHighlighted ? AppTheme.of(context).highlightColor : null,
           padding: EdgeInsets.all(kDefaultPadding),
           child: Column(
             children: [
@@ -26,13 +44,13 @@ class SongbookWidget extends StatelessWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Expanded(child: Text(songbook.name, style: AppTheme.of(context).bodyTextStyle, maxLines: 2)),
+                    Expanded(child: Text(widget.songbook.name, style: AppTheme.of(context).bodyTextStyle, maxLines: 2)),
                     Consumer<SongbooksProvider>(
                       builder: (context, provider, _) => Transform.scale(
                         scale: 0.75,
                         child: HighlightableButton(
-                          onPressed: () => provider.togglePinned(songbook),
-                          icon: Icon(songbook.isPinned ? Icons.push_pin : Icons.push_pin_outlined),
+                          onPressed: () => provider.togglePinned(widget.songbook),
+                          icon: Icon(widget.songbook.isPinned ? Icons.push_pin : Icons.push_pin_outlined),
                         ),
                       ),
                     ),
@@ -49,12 +67,14 @@ class SongbookWidget extends StatelessWidget {
         child: AspectRatio(
           aspectRatio: 4 / 3,
           child: FittedBox(
-            child: Image(image: Preloader.songbookLogo(songbook.shortcut.toLowerCase()), key: Key(songbook.shortcut)),
+            child: Image(
+                image: Preloader.songbookLogo(widget.songbook.shortcut.toLowerCase()),
+                key: Key(widget.songbook.shortcut)),
           ),
         ),
       );
 
   void _pushSongbook(BuildContext context) => Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => SongbookScreen(songbook: songbook)),
+        MaterialPageRoute(builder: (context) => SongbookScreen(songbook: widget.songbook)),
       );
 }

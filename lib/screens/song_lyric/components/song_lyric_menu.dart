@@ -29,35 +29,50 @@ class SongLyricMenu extends StatelessWidget {
         MenuItem(
           title: 'Přidat do seznamu',
           icon: Icons.playlist_add,
-          onPressed: () => PlaylistsProvider.shared.showPlaylists(context, [songLyric]),
+          onPressed: () {
+            PlaylistsProvider.shared.showPlaylists(context, [songLyric]);
+            showing.value = false;
+          },
         ),
         // MenuItem('Zpěvníky', Icons.import_contacts, null),
         if (songLyric.lilypond != null)
           MenuItem(
-            title: 'Noty',
-            icon: Icons.insert_drive_file,
-            onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => MusicNotesScreen(songLyric: songLyric)),
-            ),
-          ),
+              title: 'Noty',
+              icon: Icons.insert_drive_file,
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => MusicNotesScreen(songLyric: songLyric)),
+                );
+
+                showing.value = false;
+              }),
         MenuItem(
           title: 'Sdílet',
           icon: Icons.share,
-          onPressed: () => FlutterShare.share(
-            title: songLyric.name,
-            linkUrl: '$songUrl/${songLyric.id}/',
-            chooserTitle: songLyric.name,
-          ),
+          onPressed: () {
+            FlutterShare.share(
+              title: songLyric.name,
+              linkUrl: '$songUrl/${songLyric.id}/',
+              chooserTitle: songLyric.name,
+            );
+            showing.value = false;
+          },
         ),
         MenuItem(
           title: 'Otevřít na webu',
           icon: Icons.language,
-          onPressed: () => launch('$songUrl/${songLyric.id}/'),
+          onPressed: () {
+            launch('$songUrl/${songLyric.id}/');
+            showing.value = false;
+          },
         ),
         MenuItem(
           title: 'Nahlásit',
           icon: Icons.warning,
-          onPressed: () => launch('$reportUrl=${songLyric.id}'),
+          onPressed: () {
+            launch('$reportUrl=${songLyric.id}');
+            showing.value = false;
+          },
         ),
       ],
     );
