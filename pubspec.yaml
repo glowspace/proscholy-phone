@@ -50,5 +50,4 @@ flutter:
   assets:
     - assets/data.json
     - assets/images/
-    - assets/images/songbooks/
-    - assets/icons/
+    - assets/images/songbooks
