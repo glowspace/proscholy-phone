@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-const double kDefaultPadding = 16;
+const double kDefaultPadding = 10;
 const int kDefaultAnimationTime = 300;
 
-const double kMinimumFontSize = 8;
-const double kMaximumFontSize = 52;
+const double kMinimumFontSizeScale = 0.5;
+const double kMaximumFontSizeScale = 4;
 
 const Color blue = Color(0xff3861ac);
 const Color green = Color(0xff098845);

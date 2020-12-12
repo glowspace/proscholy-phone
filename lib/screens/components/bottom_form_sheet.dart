@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/theme.dart';
 
 class BottomFormSheet extends StatelessWidget {
   final String title;
@@ -10,17 +11,20 @@ class BottomFormSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
         padding: EdgeInsets.symmetric(vertical: kDefaultPadding),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (title.isNotEmpty)
               Container(
-                padding: EdgeInsets.fromLTRB(kDefaultPadding, 0, kDefaultPadding, kDefaultPadding / 2),
-                child: Text(title, style: Theme.of(context).textTheme.headline6),
+                padding: EdgeInsets.fromLTRB(kDefaultPadding, 0, kDefaultPadding, kDefaultPadding),
+                child: Text(title, style: AppTheme.of(context).titleTextStyle),
               ),
-              for (final item in items) item
-            ],
-          ),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: items),
+              ),
+            )
+          ],
         ),
       );
 }

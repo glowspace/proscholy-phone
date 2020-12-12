@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:zpevnik/theme.dart';
+import 'package:zpevnik/utils/platform.dart';
 
 class SelectorWidget extends StatefulWidget {
   final Function(int p1) onSelected;
@@ -17,36 +19,40 @@ class SelectorWidget extends StatefulWidget {
   State<StatefulWidget> createState() => _SelectorWidgetState(selected);
 }
 
-class _SelectorWidgetState extends State<SelectorWidget> {
+class _SelectorWidgetState extends State<SelectorWidget> with PlatformStateMixin {
   int _selected;
 
   _SelectorWidgetState(int selected) : _selected = selected ?? 0;
 
   @override
-  Widget build(BuildContext context) => Container(
-        decoration:
-            BoxDecoration(color: AppTheme.shared.unSelectedColor(context), borderRadius: BorderRadius.circular(8)),
+  Widget androidWidget(BuildContext context) => Container(
+        decoration: BoxDecoration(color: AppTheme.of(context).disabledColor, borderRadius: BorderRadius.circular(8)),
         child: Row(
           children: List.generate(
             widget.options.length,
             (index) => GestureDetector(
-              onTap: () {
-                setState(() => _selected = index);
-
-                if (widget.onSelected != null) widget.onSelected(index);
-              },
+              onTap: () => _selectedChanged(index),
               child: Container(
                 decoration: BoxDecoration(
-                    color: index == _selected ? AppTheme.shared.selectedColor(context) : Colors.transparent,
+                    color: index == _selected ? AppTheme.of(context).activeColor : Colors.transparent,
                     borderRadius: BorderRadius.circular(8)),
-                child: SizedBox(
-                  height: 28,
-                  width: 40,
-                  child: widget.options[index],
-                ),
+                child: SizedBox(height: 28, width: 40, child: widget.options[index]),
               ),
             ),
           ),
         ),
       );
+
+  @override
+  Widget iOSWidget(BuildContext context) => CupertinoSlidingSegmentedControl(
+        children: widget.options.asMap(),
+        groupValue: _selected,
+        onValueChanged: _selectedChanged,
+      );
+
+  void _selectedChanged(int index) {
+    setState(() => _selected = index);
+
+    widget.onSelected(index);
+  }
 }

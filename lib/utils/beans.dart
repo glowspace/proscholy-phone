@@ -148,10 +148,10 @@ class SongbookRecordBean extends Bean<SongbookRecord> with _SongbookRecordBean {
 }
 
 class SongLyricAuthor {
-  @BelongsTo.many(SongLyricBean)
+  @BelongsTo.many(SongLyricBean, isPrimary: true)
   int songLyricId;
 
-  @BelongsTo.many(AuthorBean)
+  @BelongsTo.many(AuthorBean, isPrimary: true)
   int authorId;
 }
 
@@ -170,10 +170,10 @@ class SongLyricAuthorBean extends Bean<SongLyricAuthor> with _SongLyricAuthorBea
 }
 
 class SongLyricTag {
-  @BelongsTo.many(SongLyricBean)
+  @BelongsTo.many(SongLyricBean, isPrimary: true)
   int songLyricId;
 
-  @BelongsTo.many(TagBean)
+  @BelongsTo.many(TagBean, isPrimary: true)
   int tagId;
 
   @override
@@ -197,10 +197,10 @@ class SongLyricTagBean extends Bean<SongLyricTag> with _SongLyricTagBean {
 }
 
 class SongLyricPlaylist {
-  @BelongsTo.many(SongLyricBean)
+  @BelongsTo.many(SongLyricBean, isPrimary: true)
   int songLyricId;
 
-  @BelongsTo.many(PlaylistBean)
+  @BelongsTo.many(PlaylistBean, isPrimary: true)
   int playlistId;
 }
 
@@ -219,10 +219,10 @@ class SongLyricPlaylistBean extends Bean<SongLyricPlaylist> with _SongLyricPlayl
 }
 
 class AuthorExternal {
-  @BelongsTo.many(AuthorBean)
+  @BelongsTo.many(AuthorBean, isPrimary: true)
   int authorId;
 
-  @BelongsTo.many(ExternalBean)
+  @BelongsTo.many(ExternalBean, isPrimary: true)
   int externalId;
 }
 

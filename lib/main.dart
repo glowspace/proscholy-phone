@@ -1,44 +1,99 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:zpevnik/providers/full_screen_provider.dart';
+import 'package:zpevnik/providers/settings_provider.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/platform.dart';
+import 'package:zpevnik/utils/preloader.dart';
 import 'package:zpevnik/utils/updater.dart';
 import 'package:zpevnik/screens/content_screen.dart';
 import 'package:zpevnik/screens/loading_screen.dart';
 
-void main() => runApp(MainWidget());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
-class MainWidget extends StatelessWidget with PlatformWidgetMixin {
+  await Preloader.preloadImages();
+
+  runApp(kDebugMode ? DebugWidget() : const MainWidget());
+}
+
+class MainWidget extends StatefulWidget {
+  const MainWidget();
+
+  @override
+  State<StatefulWidget> createState() => _MainWidgetstate();
+}
+
+class _MainWidgetstate extends State<MainWidget> with PlatformStateMixin, WidgetsBindingObserver {
   final String _title = 'Zpěvník';
 
   @override
-  Widget iOSWidget(BuildContext context) => CupertinoApp(
-        title: _title,
-        home: Builder(
-          builder: (context) => AppThemeNew(
-            child: Builder(
-              builder: (context) => CupertinoTheme(data: AppThemeNew.of(context).cupertinoTheme, child: _home(context)),
-            ),
-            brightness: MediaQuery.platformBrightnessOf(context),
-          ),
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  Widget iOSWidget(BuildContext context) => _wrap(
+        context,
+        (context, home) => CupertinoApp(
+          // needed by youtube player
+          localizationsDelegates: [DefaultMaterialLocalizations.delegate],
+          title: _title,
+          theme: AppTheme.of(context).cupertinoTheme,
+          home: home,
         ),
       );
 
   @override
-  Widget androidWidget(BuildContext context) => MaterialApp(
-        title: _title,
-        home: Builder(
-          builder: (context) => AppThemeNew(
-            child: Builder(
-              builder: (context) => Theme(data: AppThemeNew.of(context).materialTheme, child: _home(context)),
-            ),
-            brightness: MediaQuery.platformBrightnessOf(context),
-          ),
-        ),
+  Widget androidWidget(BuildContext context) => _wrap(
+        context,
+        (context, home) => MaterialApp(title: _title, theme: AppTheme.of(context).materialTheme, home: home),
       );
 
-  Widget _home(BuildContext context) => FutureBuilder<bool>(
-        future: Updater.shared.update(),
-        builder: (context, snapshot) => snapshot.hasData ? ContentScreen() : LoadingScreen(),
-      );
+  // wraps platform specific app with `AppTheme`
+  Widget _wrap(BuildContext context, Widget Function(BuildContext, Widget) builder) {
+    final platform = Theme.of(context).platform;
+
+    return AppTheme(
+      child: ChangeNotifierProvider(
+        create: (context) => FullScreenProvider(),
+        builder: (context, _) => ChangeNotifierProvider(
+          create: (context) => SettingsProvider(),
+          builder: builder,
+          child: FutureBuilder<bool>(
+            future: Updater.shared.update(),
+            builder: (context, snapshot) => snapshot.hasData ? ContentScreen() : LoadingScreen(),
+          ),
+        ),
+      ),
+      brightness: WidgetsBinding.instance.window.platformBrightness,
+      platform: platform,
+    );
+  }
+
+  @override
+  void didChangePlatformBrightness() {
+    setState(() {});
+
+    super.didChangePlatformBrightness();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+
+    super.dispose();
+  }
+}
+
+// widget for setting platform for debugging
+class DebugWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) => Theme(data: ThemeData(platform: TargetPlatform.iOS), child: MainWidget());
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/screens/filters/widget.dart';
+import 'package:zpevnik/utils/platform.dart';
 
 class TagsProvider extends ChangeNotifier {
   List<TagsSection> _sections;
@@ -39,22 +40,13 @@ class TagsProvider extends ChangeNotifier {
 
   bool isSelected(Tag tag) => _selectedTags.containsKey(tag);
 
-  void showFilters(BuildContext context, TagsProvider tagsProvider) {
+  void showFilters(BuildContext context) {
     FocusScope.of(context).unfocus();
 
-    showModalBottomSheet(
+    showPlatformBottomSheet(
       context: context,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
-      ),
-      builder: (context) => SizedBox(
-        height: 0.67 * MediaQuery.of(context).size.height,
-        child: ChangeNotifierProvider.value(
-          value: tagsProvider,
-          child: FiltersWidget(),
-        ),
-      ),
-      useRootNavigator: true,
+      child: ChangeNotifierProvider.value(value: this, child: FiltersWidget()),
+      height: 0.67 * MediaQuery.of(context).size.height,
     );
   }
 }

@@ -4,13 +4,17 @@ import 'package:zpevnik/models/songbook.dart';
 
 class SongbooksProvider extends ChangeNotifier {
   final List<Songbook> _allSongbooks;
+
+  final ScrollController scrollController;
+
   List<Songbook> _songbooks;
 
   String _searchText;
 
   SongbooksProvider(this._allSongbooks)
       : _searchText = '',
-        _songbooks = _allSongbooks {
+        _songbooks = _allSongbooks,
+        scrollController = ScrollController() {
     _sort();
   }
 
@@ -39,12 +43,12 @@ class SongbooksProvider extends ChangeNotifier {
       }
     }
 
-    print(searchResults);
-
     _songbooks = searchResults.reduce((result, list) {
       result.addAll(list);
       return result;
     }).toList();
+
+    scrollController.jumpTo(0.0);
 
     notifyListeners();
   }

@@ -3,29 +3,38 @@ import 'package:flutter/material.dart';
 import 'package:zpevnik/models/songLyric.dart';
 import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/providers/data_provider.dart';
-import 'package:zpevnik/providers/selection_provider.dart';
 import 'package:zpevnik/providers/tags_provider.dart';
 
+final _numberRE = RegExp('[0-9]');
+
 class SongLyricsProvider extends ChangeNotifier {
-  final List<SongLyric> _allSongLyrics;
+  final List<SongLyric> allSongLyrics;
 
   final TagsProvider tagsProvider;
-  final SelectionProvider selectionProvider;
+
+  final ScrollController scrollController;
 
   List<SongLyric> _songLyrics;
 
+  SongLyric _matchedById;
+
   String _searchText;
 
-  SongLyricsProvider(this._allSongLyrics, {this.selectionProvider})
+  SongLyricsProvider(this.allSongLyrics)
       : _searchText = '',
-        _songLyrics = _allSongLyrics,
-        tagsProvider = TagsProvider(DataProvider.shared.tags) {
+        _songLyrics = allSongLyrics,
+        tagsProvider = TagsProvider(DataProvider.shared.tags),
+        scrollController = ScrollController() {
     tagsProvider.addListener(_update);
   }
 
   List<SongLyric> get songLyrics => _songLyrics;
 
+  SongLyric get matchedById => _matchedById;
+
   String get searchText => _searchText;
+
+  bool get showingAll => _searchText.isEmpty && tagsProvider.selectedTags.isEmpty;
 
   void search(String searchText) {
     _searchText = searchText;
@@ -34,10 +43,16 @@ class SongLyricsProvider extends ChangeNotifier {
   }
 
   List<bool Function(SongLyric, String)> get _predicates => [
+        (songLyric, searchText) => songLyric.numbers.any((number) => number.toLowerCase() == searchText),
+        (songLyric, searchText) => songLyric.numbers
+            .any((number) => _numberRE.hasMatch(searchText) && number.toLowerCase().startsWith(searchText)),
+        (songLyric, searchText) => songLyric.numbers
+            .any((number) => _numberRE.hasMatch(searchText) && number.toLowerCase().contains(searchText)),
         (songLyric, searchText) => songLyric.name.toLowerCase().startsWith(searchText),
         (songLyric, searchText) => removeDiacritics(songLyric.name.toLowerCase()).startsWith(searchText),
         (songLyric, searchText) => songLyric.name.toLowerCase().contains(searchText),
         (songLyric, searchText) => removeDiacritics(songLyric.name.toLowerCase()).contains(searchText),
+        (songLyric, searchText) => songLyric.numbers.any((number) => number.toLowerCase().startsWith(searchText)),
         (songLyric, searchText) => songLyric.numbers.any((number) => number.toLowerCase().contains(searchText)),
         (songLyric, searchText) => removeDiacritics(songLyric.entity.lyrics.toLowerCase()).contains(searchText),
       ];
@@ -53,7 +68,9 @@ class SongLyricsProvider extends ChangeNotifier {
 
     return songLyrics
         .where((songLyric) => tagGroups.entries
-            .map((entry) => songLyric.entity.tags.any((tag) => entry.value.any((other) => tag.id == other.id)))
+            .map((entry) => entry.key == TagType.language
+                ? entry.value.any((tag) => tag.name == songLyric.entity.language)
+                : songLyric.entity.tags.any((tag) => entry.value.any((other) => tag.id == other.id)))
             .reduce((value, element) => value && element))
         .toList();
   }
@@ -61,11 +78,14 @@ class SongLyricsProvider extends ChangeNotifier {
   void _update() {
     final predicates = _predicates;
 
-    List<SongLyric> filtered = tagsProvider.selectedTags.isEmpty ? _allSongLyrics : _filter(_allSongLyrics);
+    List<SongLyric> filtered = tagsProvider.selectedTags.isEmpty ? allSongLyrics : _filter(allSongLyrics);
 
     List<List<SongLyric>> searchResults = List<List<SongLyric>>.generate(predicates.length, (index) => []);
 
+    _matchedById = null;
     for (final songLyric in filtered) {
+      if (songLyric.numbers.any((number) => number.toLowerCase() == (searchText))) _matchedById = songLyric;
+
       for (int i = 0; i < predicates.length; i++) {
         if (predicates[i](songLyric, _searchText.toLowerCase())) {
           searchResults[i].add(songLyric);
@@ -78,6 +98,8 @@ class SongLyricsProvider extends ChangeNotifier {
       result.addAll(list);
       return result;
     }).toList();
+
+    scrollController.jumpTo(0.0);
 
     notifyListeners();
   }

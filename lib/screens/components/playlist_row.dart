@@ -1,60 +1,140 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_reorderable_list/flutter_reorderable_list.dart';
 import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/custom_icon_icons.dart';
 import 'package:zpevnik/models/playlist.dart';
+import 'package:zpevnik/providers/playlists_provider.dart';
+import 'package:zpevnik/screens/components/highlightable_row.dart';
+import 'package:zpevnik/screens/components/menu_item.dart';
+import 'package:zpevnik/screens/components/platform/platform_dialog.dart';
+import 'package:zpevnik/screens/components/platform/platform_popup_menu_button.dart';
 import 'package:zpevnik/screens/playlists/playlist_screen.dart';
 import 'package:zpevnik/theme.dart';
 
+enum PlaylistAction { rename, duplicate, toggleArchive, remove }
+
 class PlaylistRow extends StatefulWidget {
   final Playlist playlist;
-  final Function(Playlist) select;
-  final ValueNotifier<GlobalKey> showingMenuKey;
+  final Function() onSelect;
+  final bool reorderable;
 
-  const PlaylistRow({Key key, this.playlist, this.select, this.showingMenuKey}) : super(key: key);
+  PlaylistRow({
+    Key key,
+    @required this.playlist,
+    @required this.onSelect,
+    @required this.reorderable,
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _PlaylistRowState();
 }
 
 class _PlaylistRowState extends State<PlaylistRow> {
-  final _key = GlobalKey();
-
-  bool _highlighted;
-
   @override
-  void initState() {
-    super.initState();
+  Widget build(BuildContext context) => widget.reorderable
+      ? ReorderableItem(key: Key('${widget.playlist.id}'), childBuilder: _childBuilder)
+      : _row(context, false);
 
-    _highlighted = false;
+  Widget _childBuilder(BuildContext context, ReorderableItemState state) {
+    final dragging = state == ReorderableItemState.dragProxy || state == ReorderableItemState.dragProxyFinished;
+
+    return Opacity(
+      opacity: state == ReorderableItemState.placeholder ? 0 : (state == ReorderableItemState.dragProxy ? 0.75 : 1),
+      child: _row(context, dragging),
+    );
   }
 
-  @override
-  Widget build(BuildContext context) => GestureDetector(
-        onTap: () => _pushPlaylist(context),
-        // fixme: doesn't work well with menu button
+  Widget _row(BuildContext context, bool dragging) {
+    final textStyle = AppTheme.of(context).bodyTextStyle;
+    final iconColor = AppTheme.of(context).iconColor;
 
-        // onPanDown: (_) => setState(() => _highlighted = true),
-        // onPanCancel: () => _highlighted = false,
-        // onPanEnd: (_) => setState(() => _highlighted = false),
-        behavior: HitTestBehavior.translucent,
-        child: Container(
-          color: (_highlighted ? AppTheme.shared.highlightColor(context) : null),
-          padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2, vertical: kDefaultPadding / 2),
-          child: Row(children: [
-            Expanded(child: Text(widget.playlist.name, style: AppThemeNew.of(context).bodyTextStyle)),
-            GestureDetector(
-              onTap: () {
-                widget.select(widget.playlist);
-                widget.showingMenuKey.value = widget.showingMenuKey.value == null ? _key : null;
-              },
-              child: Icon(Icons.more_vert, key: _key),
+    return HighlightableRow(
+      onPressed: () => _pushPlaylist(context),
+      child: Row(children: [
+        Expanded(child: Text(widget.playlist.name, style: AppTheme.of(context).bodyTextStyle)),
+      ]),
+      prefix: widget.reorderable ? ReorderableListener(child: Icon(Icons.drag_handle, color: iconColor)) : null,
+      suffix: PlatformPopupMenuButton(
+        itemBuilder: (context) => [
+          PopupMenuItem<PlaylistAction>(
+            value: PlaylistAction.rename,
+            child: Row(children: [
+              Container(
+                padding: EdgeInsets.only(right: kDefaultPadding),
+                child: Icon(Icons.drive_file_rename_outline, color: iconColor),
+              ),
+              Text('Přejmenovat', style: textStyle),
+            ]),
+          ),
+          if (!widget.playlist.isArchived)
+            PopupMenuItem<PlaylistAction>(
+              value: PlaylistAction.duplicate,
+              child: Row(children: [
+                Container(
+                  padding: EdgeInsets.only(right: kDefaultPadding),
+                  child: Icon(CustomIcon.content_duplicate, color: iconColor),
+                ),
+                Text('Duplikovat', style: textStyle),
+              ]),
             ),
-          ]),
-        ),
-      );
+          PopupMenuItem<PlaylistAction>(
+            value: PlaylistAction.toggleArchive,
+            child: Row(children: [
+              Container(
+                padding: EdgeInsets.only(right: kDefaultPadding),
+                child: Icon(Icons.archive, color: iconColor),
+              ),
+              Text(widget.playlist.isArchived ? 'Zrušit archivaci' : 'Archivovat', style: textStyle),
+            ]),
+          ),
+          if (widget.playlist.isArchived)
+            PopupMenuItem<PlaylistAction>(
+              value: PlaylistAction.remove,
+              child: Row(children: [
+                Container(
+                  padding: EdgeInsets.only(right: kDefaultPadding),
+                  child: Icon(Icons.delete, color: iconColor),
+                ),
+                Text('Odstranit', style: textStyle),
+              ]),
+            ),
+        ],
+        onSelected: (action) {
+          switch (action) {
+            case PlaylistAction.rename:
+              _showRenameDialog(context);
+              break;
+            case PlaylistAction.duplicate:
+              PlaylistsProvider.shared.duplicate(widget.playlist);
+              break;
+            case PlaylistAction.toggleArchive:
+              widget.playlist.isArchived = !widget.playlist.isArchived;
+              break;
+            case PlaylistAction.remove:
+              PlaylistsProvider.shared.remove(widget.playlist);
+              break;
+          }
+
+          widget.onSelect();
+        },
+      ),
+    );
+  }
 
   void _pushPlaylist(BuildContext context) {
     FocusScope.of(context).unfocus();
 
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => PlaylistScreen(playlist: widget.playlist)));
   }
+
+  void _showRenameDialog(BuildContext context) => showDialog<void>(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => PlatformDialog(
+          title: 'Přejmenovat playlist',
+          initialValue: widget.playlist.name,
+          onSubmit: (text) => setState(() => widget.playlist.name = text),
+        ),
+      );
 }

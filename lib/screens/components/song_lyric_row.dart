@@ -1,102 +1,89 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songLyric.dart';
-import 'package:zpevnik/providers/song_lyrics_provider.dart';
+import 'package:zpevnik/models/songbook.dart';
+import 'package:zpevnik/providers/selection_provider.dart';
+import 'package:zpevnik/screens/components/circular_checkbox.dart';
+import 'package:zpevnik/screens/components/highlightable_row.dart';
 import 'package:zpevnik/screens/song_lyric/song_lyric_screen.dart';
-import 'package:zpevnik/screens/songbooks/componenets/songbook_provider.dart';
+import 'package:zpevnik/screens/components/data_container.dart';
 import 'package:zpevnik/theme.dart';
-
-import 'circular_checkbox.dart';
 
 class SongLyricRow extends StatefulWidget {
   final SongLyric songLyric;
   final bool showStar;
+  final Widget prefix;
 
-  const SongLyricRow({Key key, this.songLyric, this.showStar = true}) : super(key: key);
+  const SongLyricRow({Key key, @required this.songLyric, this.showStar = true, this.prefix}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _SongLyricRowState();
+  State<StatefulWidget> createState() => _SongLyricRowStateNew();
 }
 
-class _SongLyricRowState extends State<SongLyricRow> {
-  bool _highlighted;
-
+class _SongLyricRowStateNew extends State<SongLyricRow> {
   @override
   void initState() {
     super.initState();
-
-    _highlighted = false;
 
     widget.songLyric.addListener(_update);
   }
 
   @override
   Widget build(BuildContext context) {
-    final selectionProvider = Provider.of<SongLyricsProvider>(context, listen: false).selectionProvider;
-    final songbookProvider = SongbookProvider.of(context);
+    final selectionProvider = DataContainer.of<SelectionProvider>(context)?.data;
+    final selectionEnabled = selectionProvider?.selectionEnabled ?? false;
+    final selected = selectionProvider?.isSelected(widget.songLyric) ?? false;
+
+    final songbookContainer = DataContainer.of<Songbook>(context);
 
     return GestureDetector(
-      onLongPress: selectionProvider == null ? null : () => selectionProvider?.toggleSongLyric(widget.songLyric),
-      onTap: () => (selectionProvider?.selectionEnabled ?? false)
-          ? selectionProvider?.toggleSongLyric(widget.songLyric)
-          : _pushSongLyric(context),
-      onPanDown: (_) => setState(() => _highlighted = true),
-      onPanCancel: () => setState(() => _highlighted = false),
-      onPanEnd: (_) => setState(() => _highlighted = false),
+      onLongPress: selectionProvider == null ? null : () => selectionProvider.toggleSongLyric(widget.songLyric),
       behavior: HitTestBehavior.translucent,
-      child: Container(
-        color: (selectionProvider?.isSelected(widget.songLyric) ?? false)
-            ? AppTheme.shared.selectedRowBackgroundColor(context)
-            : (_highlighted ? AppTheme.shared.highlightColor(context) : null),
-        padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2, vertical: kDefaultPadding / 2),
+      child: HighlightableRow(
+        onPressed: () =>
+            selectionEnabled ? selectionProvider.toggleSongLyric(widget.songLyric) : _pushSongLyric(context),
+        color: selected ? AppTheme.of(context).selectedRowColor : null,
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            if (selectionProvider?.selectionEnabled ?? false)
+            if (songbookContainer != null)
               Container(
-                padding: EdgeInsets.only(right: kDefaultPadding / 2),
-                child: CircularCheckbox(selected: selectionProvider?.isSelected(widget.songLyric) ?? false),
-              )
-            else if (songbookProvider != null)
-              Container(
-                padding: EdgeInsets.only(right: kDefaultPadding / 2),
-                child: _songLyricNumber(context, widget.songLyric.number(songbookProvider.songbook)),
+                padding: EdgeInsets.only(right: kDefaultPadding),
+                child: _songLyricNumber(context, widget.songLyric.number(songbookContainer.data)),
               ),
-            Expanded(child: Text(widget.songLyric.name, style: AppThemeNew.of(context).bodyTextStyle)),
+            if (selectionEnabled)
+              Container(padding: EdgeInsets.only(right: kDefaultPadding), child: CircularCheckbox(selected: selected)),
+            Expanded(child: Text(widget.songLyric.name, style: AppTheme.of(context).bodyTextStyle)),
             if (widget.showStar && widget.songLyric.isFavorite)
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
-                child: Transform.scale(
-                  scale: 0.75,
-                  child: Icon(Icons.star,
-                      color: (selectionProvider?.isSelected(widget.songLyric) ?? false)
-                          ? AppTheme.shared.selectedRowColor(context)
-                          : Theme.of(context).textTheme.caption.color),
-                ),
-              ),
+              Icon(Icons.star, color: AppTheme.of(context).iconColor, size: 16),
             _songLyricNumber(context, widget.songLyric.id.toString()),
           ],
         ),
+        prefix: widget.prefix,
       ),
     );
   }
 
   Widget _songLyricNumber(BuildContext context, String number) => SizedBox(
-        width: 32,
+        width: 36,
         child: FittedBox(
           fit: BoxFit.scaleDown,
           alignment: Alignment.centerRight,
-          child: Text(number, style: Theme.of(context).textTheme.caption),
+          child: Text(number, style: AppTheme.of(context).captionTextStyle),
         ),
       );
 
   void _pushSongLyric(BuildContext context) {
     FocusScope.of(context).unfocus();
 
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => SongLyricScreen(songLyric: widget.songLyric)));
+    // if selecte songLyric is already in context pop back to it (used for translation screen)
+    if (widget.songLyric == DataContainer.of<SongLyric>(context)?.data)
+      Navigator.of(context).pop();
+    else
+      Navigator.of(context).push(MaterialPageRoute(builder: (context) => SongLyricScreen(songLyric: widget.songLyric)));
   }
 
-  void _update() => setState(() => {});
+  void _update() => setState(() {});
 
   @override
   void dispose() {

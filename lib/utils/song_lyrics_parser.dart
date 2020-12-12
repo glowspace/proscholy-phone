@@ -1,22 +1,24 @@
 import 'package:zpevnik/models/songLyric.dart';
 
-final RegExp _verseRE =
-    RegExp(r'\s*(\d\.|\(?[BCR]\d?[:.]\)?)?\s*((?:=\s*(\d\.)|.|\n)*?)\n*(?=$|[^=]?\d\.|\(?[BCR]\d?[:.]\)?)');
-final RegExp _chordsRE = RegExp(r'\[[^\]]+\]');
-final RegExp _placeholderRE = RegExp(r'\[%\]');
-final RegExp _firstVerseRE = RegExp(r'1\.(?:.|\n)+?(?=\n+\d\.|\n+\(?[BCR][:.]\)?)', multiLine: true);
+final _verseRE =
+    RegExp(r'\s*(\d+\.|\(?[BCR]\d?[:.]\)?)?\s*((?:=\s*(\d\.)|.|\n)*?)\n*(?=$|[^=]?\d\.|\(?[BCR]\d?[:.]\)?)');
+final _chordsRE = RegExp(r'\[[^\]]+\]');
+final _placeholderRE = RegExp(r'\[%\]');
+final _firstVerseRE = RegExp(r'1\.(?:.|\n)+?(?=\n+\d\.|\n+\(?[BCR][:.]\)?)', multiLine: true);
 
-final List<String> _plainChords = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'H'];
-final RegExp _plainChordsRE = RegExp(r'[CDEFGAH]#?');
+final _plainChords = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'H'];
+final _plainChordsRE = RegExp(r'[CDEFGAH]#?');
 
-final Map<String, String> _toFlat = {'C#': 'Db', 'D#': 'Eb', 'F#': 'Gb', 'G#': 'Ab', 'A#': 'B'};
-final RegExp _toFlatRE = RegExp(r'[CDEFGAH]#');
+final _toFlat = {'C#': 'Db', 'D#': 'Eb', 'F#': 'Gb', 'G#': 'Ab', 'A#': 'B'};
+final _toFlatRE = RegExp(r'[CDEFGAH]#');
 
-final Map<String, String> _fromFlat = {'Db': 'C#', 'Eb': 'D#', 'Gb': 'F#', 'Ab': 'G#', 'B': 'A#'};
-final RegExp _fromFlatRE = RegExp(r'([CDEFGAH]b|B)');
+final _fromFlat = {'Db': 'C#', 'Eb': 'D#', 'Gb': 'F#', 'Ab': 'G#', 'B': 'A#'};
+final _fromFlatRE = RegExp(r'([CDEFGAH]b|B)');
 
-final RegExp _parenthesesRE = RegExp(r'\(?\)?');
-final RegExp _multipleSpacesRE = RegExp(r' +');
+final _parenthesesRE = RegExp(r'\(?\)?');
+final _multipleSpacesRE = RegExp(r' +');
+
+final _letterRE = RegExp(r'[a-zA-ZěščřžýáíéĚŠČŘŽÝÁÍÉ]');
 
 class SongLyricsParser {
   SongLyricsParser._();
@@ -107,22 +109,40 @@ class SongLyricsParser {
       // don't create empty blocks
       if (previous.length > 0 || text.length > 0) {
         final words = text.split(_multipleSpacesRE);
-        final isNextLetter = match.end != line.length && RegExp(r'[a-zA-Z]').hasMatch(line[match.end]);
+        final isNextLetter = match.end != line.length && _letterRE.hasMatch(line[match.end]);
+        final isLastSpace = text.length > 0 && !_letterRE.hasMatch(text.substring(text.length - 1));
 
         int i = 0;
-        // temporary solution to handle shorter chord than word
-        if (words[i].length <= previous.length && words.length > 1)
-          blocks.add(Block(previous, '${words[i++]} ${words[i++]}' + (words.length > 2 ? ' ' : ''),
-              words.length == 2 && isNextLetter));
-        else
-          blocks.add(Block(previous, words[i++] + (words.length > 1 ? ' ' : ''), words.length == 1 && isNextLetter));
+        if (previous.isNotEmpty) {
+          // temporary solution to handle shorter chord than word
+          if (words[i].length <= previous.length && words.length > 1)
+            blocks.add(Block(
+              previous,
+              '${words[i++]} ${words[i++]}' + (words.length > 2 || text.endsWith(' ') ? ' ' : ''),
+              words.length == 2 && isNextLetter && !isLastSpace,
+            ));
+          else
+            blocks.add(Block(
+              previous,
+              words[i++] + (words.length > 1 || text.endsWith(' ') ? ' ' : ''),
+              words.length == 1 && isNextLetter && !isLastSpace,
+            ));
+        }
 
-        for (; i < words.length - 1; i++) if (words[i].isNotEmpty) blocks.add(Block('', '${words[i]} ', false));
+        // print('$words, $isNextLetter, $isLastSpace');
+        if (words.length > i && (!isNextLetter || isLastSpace)) {
+          final text = words.sublist(i).join(' ');
 
-        if (words.length > 1 && words[0].length > previous.length) if (isNextLetter)
-          blocks.add(Block('', '${words[i]}', true));
-        else
-          blocks.add(Block('', '${words[i]} ', false));
+          if (isNextLetter || isLastSpace)
+            blocks.add(Block('', '$text', isNextLetter && !isLastSpace));
+          else
+            blocks.add(Block('', '$text ', false));
+        } else if (words.length > i) {
+          final text = words.sublist(i, words.length - 1).join(' ');
+          if (text.isNotEmpty) blocks.add(Block('', '$text ', false));
+
+          blocks.add(Block('', '${words[words.length - 1]}', isNextLetter && !isLastSpace));
+        }
       }
 
       index = match.end;
@@ -133,13 +153,19 @@ class SongLyricsParser {
     final words = line.substring(index).split(' ');
 
     int i = 0;
-    // temporary solution to handle shorter chord than word
-    if (words[i].length < 4 && words.length > 1)
-      blocks.add(Block(previous, '${words[i++]} ${words[i++]}' + (words.length > 2 ? ' ' : ''), false));
-    else
-      blocks.add(Block(previous, words[i++] + (words.length > 1 ? ' ' : ''), words.length == 1));
+    if (previous.isNotEmpty) {
+      // temporary solution to handle shorter chord than word
+      if (words[i].length < 4 && words.length > 1)
+        blocks.add(Block(previous, '${words[i++]} ${words[i++]}' + (words.length > 2 ? ' ' : ''), false));
+      else
+        blocks.add(Block(previous, words[i++] + (words.length > 1 ? ' ' : ''), false));
+    }
 
-    for (; i < words.length; i++) if (words[i].isNotEmpty) blocks.add(Block('', '${words[i]} ', false));
+    if (words.length > i) {
+      final text = words.sublist(i).join(' ');
+
+      blocks.add(Block('', '$text', false));
+    }
 
     return blocks;
   }

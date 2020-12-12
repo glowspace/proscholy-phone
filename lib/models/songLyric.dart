@@ -4,7 +4,7 @@ import 'package:zpevnik/models/entities/external.dart';
 import 'package:zpevnik/models/entities/song_lyric.dart';
 import 'package:zpevnik/models/song.dart';
 import 'package:zpevnik/models/songbook.dart';
-import 'package:zpevnik/providers/settings_provider.dart';
+import 'package:zpevnik/providers/data_provider.dart';
 import 'package:zpevnik/utils/database.dart';
 import 'package:zpevnik/utils/song_lyrics_parser.dart';
 
@@ -78,12 +78,15 @@ class SongLyric extends ChangeNotifier {
 
   Key get key => Key(_entity.id.toString());
 
-  String number(Songbook songbook) =>
-      '${songbook.shortcut}${_entity.songbookRecords.firstWhere((record) => record.songbookId == songbook.id).number}';
+  String number(Songbook songbook) {
+    return '${songbook.shortcut} ${_entity.songbookRecords.firstWhere((record) => record.songbookId == songbook.id).number}';
+  }
 
-  // todo: add songbook shortcut
-  List<String> get numbers =>
-      _numbers ??= [id.toString()] + _entity.songbookRecords.map((record) => '${record.number}').toList();
+  List<String> get numbers => _numbers ??= [id.toString()] +
+      _entity.songbookRecords
+          .where((record) => DataProvider.shared.songbook(record.songbookId) != null)
+          .map((record) => '${DataProvider.shared.songbook(record.songbookId).shortcut}${record.number}')
+          .toList();
 
   String get name => _entity.name;
 
@@ -101,13 +104,37 @@ class SongLyric extends ChangeNotifier {
 
   bool get hasChords => _hasChords ??= _entity.lyrics.contains(_chordsRE);
 
-  bool get showChords => _entity.showChords ?? SettingsProvider.shared.showChords;
+  bool get showChords => _entity.showChords ?? hasChords && (DataProvider.shared.prefs.getBool('show_chords') ?? true);
 
-  bool get accidentals => _entity.accidentals ?? SettingsProvider.shared.accidentals;
+  bool get accidentals => _entity.accidentals ?? (DataProvider.shared.prefs.getBool('accidentals') ?? false);
 
   bool get hasTranslations => _song.songLyrics.length > 1;
 
   bool get hasExternals => _entity.externals.isNotEmpty;
+
+  String get authorsText {
+    if (type == SongLyricType.original) {
+      if (entity.authors.length == 0)
+        return 'Autor neznámý';
+      else if (entity.authors.length == 1)
+        return 'Autor: ${entity.authors[0].name}';
+      else
+        return 'Autoři: ${entity.authors.map((author) => author.name).toList().join(", ")}';
+    } else {
+      String originalText = '';
+
+      if (original.isNotEmpty) originalText = 'Originál: ${original[0].name}\n';
+
+      if (original.isNotEmpty) originalText += '${original[0].authorsText}\n';
+
+      if (entity.authors.length == 0)
+        return '${originalText}Autor překladu neznámý';
+      else if (entity.authors.length == 1)
+        return '${originalText}Autor předkladu: ${entity.authors[0].name}';
+      else
+        return '${originalText}Autoři překladu: ${entity.authors.map((author) => author.name).toList().join(", ")}';
+    }
+  }
 
   List<SongLyric> get original =>
       _song.songLyrics.where((songLyric) => songLyric.type == SongLyricType.original).toList();
@@ -129,6 +156,7 @@ class SongLyric extends ChangeNotifier {
     Database.shared.updateSongLyric(_entity, ['favorite_order'].toSet());
 
     // fixme: it will also redraw lyrics because of this
+    // it makes slower animation of filled star change
     notifyListeners();
   }
 

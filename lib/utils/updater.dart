@@ -11,7 +11,6 @@ import 'package:zpevnik/models/entities/song_lyric.dart';
 import 'package:zpevnik/models/entities/songbook.dart';
 import 'package:zpevnik/models/entities/tag.dart';
 import 'package:zpevnik/providers/data_provider.dart';
-import 'package:zpevnik/providers/settings_provider.dart';
 import 'package:zpevnik/utils/beans.dart';
 import 'package:zpevnik/utils/database.dart';
 
@@ -19,6 +18,7 @@ const String _initialLoadKey = 'initial_load';
 const String _lastUpdateKey = 'last_update';
 
 const String _lastUpdatePlaceholder = '[LAST_UPDATE]';
+const String _initialLastUpdate = '2020-12-09 11:30:00';
 
 const Duration _updatePeriod = Duration(hours: 12);
 
@@ -31,7 +31,7 @@ class Updater {
 
   final String _query = '''
   {
-    "query": "query$_lastUpdatePlaceholder {
+    "query": "query {
       authors {
         id
         name
@@ -46,13 +46,14 @@ class Updater {
         name
         shortcut
         color
+        color_text
         is_private
       }
       songs {
           id
           name
       }
-      song_lyrics {
+      song_lyrics$_lastUpdatePlaceholder {
         id
         name
         lyrics
@@ -98,15 +99,19 @@ class Updater {
 
     await Database.shared.init();
 
+    if (!prefs.containsKey(_initialLoadKey)) {
+      await _loadLocal();
+      prefs.setBool(_initialLoadKey, true);
+    }
+
     if (connectivityResult == ConnectivityResult.wifi) {
       if (prefs.containsKey(_initialLoadKey))
         _update(prefs.getString(_lastUpdateKey));
       else
-        await _update(null);
-    } else if (!prefs.containsKey(_initialLoadKey)) await _loadLocal();
+        await _update(_initialLastUpdate);
+    }
 
     await DataProvider.shared.init();
-    SettingsProvider.shared.init();
 
     return true;
   }
@@ -118,7 +123,7 @@ class Updater {
     final response = await Client().post(_url,
         body: _query
             .replaceAll('\n', '')
-            .replaceFirst(_lastUpdatePlaceholder, lastUpdate == null ? '' : '(last_update: $lastUpdate)'),
+            .replaceFirst(_lastUpdatePlaceholder, lastUpdate == null ? '' : '(updated_after: \\"$lastUpdate\\")'),
         headers: <String, String>{'Content-Type': 'application/json; charset=utf-8'});
 
     await _parse(response.body);
@@ -142,32 +147,50 @@ class Updater {
 
     final songLyrics = (data['song_lyrics'] as List<dynamic>).map((json) => SongLyricEntity.fromJson(json)).toList();
 
+    final externals = songLyrics.map((songLyric) => songLyric.externals).reduce((result, list) {
+      result.addAll(list);
+      return result;
+    });
+
+    final songbookRecords = songLyrics.map((songLyric) => songLyric.songbookRecords).toList().reduce((result, list) {
+      result.addAll(list);
+      return result;
+    }).toList();
+
+    final songLyricAuthors = songLyrics
+        .map((songLyric) => List.generate(
+            songLyric.authors.length,
+            (index) => SongLyricAuthor()
+              ..songLyricId = songLyric.id
+              ..authorId = songLyric.authors[index].id))
+        .toList()
+        .reduce((result, list) {
+      result.addAll(list);
+      return result;
+    });
+
+    final songLyricTags = songLyrics
+        .map((songLyric) => List.generate(
+            songLyric.tags.length,
+            (index) => SongLyricTag()
+              ..songLyricId = songLyric.id
+              ..tagId = songLyric.tags[index].id))
+        .toList()
+        .reduce((result, list) {
+      result.addAll(list);
+      return result;
+    });
+
     await Future.wait([
       Database.shared.saveAuthors(authors),
       Database.shared.saveTags(tags),
       Database.shared.saveSongbooks(songbooks),
       Database.shared.saveSongs(songs),
       Database.shared.saveSongLyrics(songLyrics),
-      Database.shared.saveExternals(songLyrics.map((songLyric) => songLyric.externals).reduce((result, list) {
-        result.addAll(list);
-        return result;
-      })),
-      Database.shared
-          .saveSongbookRecords(songLyrics.map((songLyric) => songLyric.songbookRecords).toList().reduce((result, list) {
-        result.addAll(list);
-        return result;
-      }).toList()),
-      Database.shared.saveSongLyricTags(songLyrics
-          .map((songLyric) => List.generate(
-              songLyric.tags.length,
-              (index) => SongLyricTag()
-                ..songLyricId = songLyric.id
-                ..tagId = songLyric.tags[index].id))
-          .toList()
-          .reduce((result, list) {
-        result.addAll(list);
-        return result;
-      })),
-    ]).then((_) => SharedPreferences.getInstance().then((prefs) => prefs.setBool(_initialLoadKey, true)));
+      Database.shared.saveExternals(externals),
+      Database.shared.saveSongbookRecords(songbookRecords),
+      Database.shared.saveSongLyricTags(songLyricTags),
+      Database.shared.saveSongLyricAuthors(songLyricAuthors),
+    ]);
   }
 }

@@ -18,14 +18,14 @@ class ActiveFiltersRow extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               child: Row(children: [
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
+                  padding: EdgeInsets.symmetric(horizontal: kDefaultPadding),
                   child: Icon(Icons.filter_list),
                 ),
                 Row(
                   children: List.generate(
                     selectedTags.length,
                     (index) => Container(
-                      padding: EdgeInsets.only(right: kDefaultPadding / 4),
+                      padding: EdgeInsets.only(right: kDefaultPadding / 2),
                       child: FilterTag(tag: selectedTags[index], cancellable: true),
                     ),
                   ),

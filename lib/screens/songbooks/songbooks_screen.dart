@@ -1,11 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/data_provider.dart';
 import 'package:zpevnik/providers/songbooks_provider.dart';
-import 'package:zpevnik/screens/components/custom_icon_button.dart';
+import 'package:zpevnik/screens/components/highlightable_button.dart';
 import 'package:zpevnik/screens/songbooks/componenets/songbooks_list.dart';
-import 'package:zpevnik/theme.dart';
+import 'package:zpevnik/status_bar_wrapper.dart';
 import 'package:zpevnik/utils/platform.dart';
 import 'package:zpevnik/screens/components/search_widget.dart';
 
@@ -33,22 +34,21 @@ class _SongbooksScreenState extends State<SongbooksScreen> with PlatformStateMix
   }
 
   @override
-  Widget iOSWidget(BuildContext context) => CupertinoPageScaffold(
-        navigationBar: CupertinoNavigationBar(middle: _searchWidget(context)),
-        child: _body(context),
-      );
+  Widget iOSWidget(BuildContext context) => StatusBarWrapper(child: CupertinoPageScaffold(child: _body(context)));
 
   @override
-  Widget androidWidget(BuildContext context) => Scaffold(
-        appBar: AppBar(title: _searchWidget(context)),
-        body: _body(context),
-      );
+  Widget androidWidget(BuildContext context) => StatusBarWrapper(child: Scaffold(body: _body(context)));
 
   Widget _body(BuildContext context) => SafeArea(
-        child: ChangeNotifierProvider.value(
-          value: _songbooksProvider,
-          child: SongbookListView(key: PageStorageKey('songbooks_grid_view')),
-        ),
+        child: Column(children: [
+          Container(padding: EdgeInsets.symmetric(horizontal: kDefaultPadding), child: _searchWidget(context)),
+          Expanded(
+            child: ChangeNotifierProvider.value(
+              value: _songbooksProvider,
+              child: SongbookListView(key: PageStorageKey('songbooks_grid_view')),
+            ),
+          ),
+        ]),
       );
 
   Widget _searchWidget(BuildContext context) => SearchWidget(
@@ -56,9 +56,9 @@ class _SongbooksScreenState extends State<SongbooksScreen> with PlatformStateMix
         placeholder: 'Zadejte název nebo zkratku zpěvníku',
         focusNode: searchFieldFocusNode,
         search: _songbooksProvider.search,
-        leading: CustomIconButton(
+        prefix: HighlightableButton(
+          icon: Icon(Icons.search),
           onPressed: () => FocusScope.of(context).requestFocus(searchFieldFocusNode),
-          icon: Icon(Icons.search, color: AppTheme.shared.searchFieldIconColor(context)),
         ),
       );
 }

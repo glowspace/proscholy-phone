@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/settings_provider.dart';
+import 'package:zpevnik/screens/components/platform/platform_slider.dart';
+import 'package:zpevnik/screens/components/platform/platform_switch.dart';
 import 'package:zpevnik/screens/song_lyric/components/selector_widget.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/platform.dart';
@@ -16,64 +18,81 @@ class SettingsScreen extends StatelessWidget with PlatformWidgetMixin {
 
   @override
   Widget androidWidget(BuildContext context) => Scaffold(
-        appBar: AppBar(title: Text('Nastavení'), shadowColor: AppTheme.shared.appBarDividerColor(context)),
+        appBar: AppBar(
+          title: Text('Nastavení', style: AppTheme.of(context).bodyTextStyle),
+          shadowColor: AppTheme.of(context).appBarDividerColor,
+          brightness: AppTheme.of(context).brightness,
+        ),
         body: _body(context),
       );
 
   Widget _body(BuildContext context) {
-    final accidentalsStyle = AppThemeNew.of(context).bodyTextStyle.copyWith(fontSize: 20, fontFamily: 'Hiragino Sans');
+    final accidentalsStyle = AppTheme.of(context).bodyTextStyle.copyWith(fontSize: 20, fontFamily: 'Hiragino Sans');
 
-    return Container(
-      padding: EdgeInsets.all(kDefaultPadding),
-      child: Consumer<SettingsProvider>(
-        builder: (context, settingsProvider, _) => Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _section(
-              context,
-              'Nastavení zobrazení',
-              [
-                _row('Blokovat zhasínání displeje',
-                    Switch(value: settingsProvider.blockDisplayOff, onChanged: settingsProvider.changeBlockDisplayOff)),
-              ],
-            ),
-            _section(
-              context,
-              'Nastavení písní',
-              [
-                _row(
-                  'Posuvky',
-                  SelectorWidget(
-                    onSelected: (index) => settingsProvider.accidentals = index == 1,
-                    options: [
-                      Text('#', style: accidentalsStyle, textAlign: TextAlign.center),
-                      Text('♭', style: accidentalsStyle, textAlign: TextAlign.center)
-                    ],
-                    selected: settingsProvider.accidentals ? 1 : 0,
+    return SafeArea(
+      child: Container(
+        padding: EdgeInsets.all(kDefaultPadding),
+        child: Consumer<SettingsProvider>(
+          builder: (context, settingsProvider, _) => Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _section(
+                context,
+                'Nastavení zobrazení',
+                [
+                  _row(
+                    'Blokovat zhasínání displeje',
+                    PlatformSwitch(
+                      value: settingsProvider.blockDisplayOff,
+                      onChanged: settingsProvider.changeBlockDisplayOff,
+                    ),
                   ),
-                ),
-                _row(
-                  'Akordy',
-                  SelectorWidget(
-                    onSelected: (index) => settingsProvider.showChords = index == 1,
-                    options: [
-                      Icon(Icons.visibility_off),
-                      Icon(Icons.visibility),
-                    ],
-                    selected: settingsProvider.showChords ? 1 : 0,
+                ],
+              ),
+              _section(
+                context,
+                'Nastavení písní',
+                [
+                  _row(
+                    'Posuvky',
+                    SizedBox(
+                      width: 96,
+                      child: SelectorWidget(
+                        onSelected: (index) => settingsProvider.accidentals = index == 1,
+                        options: [
+                          Text('#', style: accidentalsStyle, textAlign: TextAlign.center),
+                          Text('♭', style: accidentalsStyle, textAlign: TextAlign.center)
+                        ],
+                        selected: settingsProvider.accidentals ? 1 : 0,
+                      ),
+                    ),
                   ),
-                ),
-                _fontSizeSlider(context),
-                _row(
-                  'Zobrazit spodní nabídku',
-                  Switch(
-                    value: settingsProvider.showBottomOptions,
-                    onChanged: settingsProvider.changeShowBottomOptions,
+                  _row(
+                    'Akordy',
+                    SizedBox(
+                      width: 96,
+                      child: SelectorWidget(
+                        onSelected: (index) => settingsProvider.showChords = index == 1,
+                        options: [
+                          Icon(Icons.visibility_off),
+                          Icon(Icons.visibility),
+                        ],
+                        selected: settingsProvider.showChords ? 1 : 0,
+                      ),
+                    ),
                   ),
-                ),
-              ],
-            )
-          ],
+                  _fontSizeSlider(context),
+                  _row(
+                    'Zobrazit spodní nabídku',
+                    PlatformSwitch(
+                      value: settingsProvider.showBottomOptions,
+                      onChanged: settingsProvider.changeShowBottomOptions,
+                    ),
+                  ),
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -84,37 +103,40 @@ class SettingsScreen extends StatelessWidget with PlatformWidgetMixin {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title, style: Theme.of(context).textTheme.subtitle1.copyWith(fontSize: 18)),
+            Text(title, style: AppTheme.of(context).subTitleTextStyle.copyWith(fontSize: 18)),
             Container(child: Column(children: children)),
           ],
         ),
       );
 
   Widget _row(String name, Widget widget) => Container(
-        padding: EdgeInsets.symmetric(vertical: kDefaultPadding / 3),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [Text(name), widget],
-        ),
+        padding: EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
+        child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [Text(name), widget]),
       );
 
   Widget _fontSizeSlider(BuildContext context) => Container(
-        padding: EdgeInsets.symmetric(vertical: kDefaultPadding / 3),
+        padding: EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
         child: Consumer<SettingsProvider>(
           builder: (context, settingsProvider, _) => Row(
             children: [
-              Text('A', style: AppThemeNew.of(context).bodyTextStyle.copyWith(fontSize: kMinimumFontSize)),
-              Flexible(
-                child: Slider(
-                  min: kMinimumFontSize,
-                  max: kMaximumFontSize,
-                  value: settingsProvider.fontSize,
-                  onChanged: settingsProvider.changeFontSize,
-                  activeColor: AppThemeNew.of(context).chordColor,
-                  inactiveColor: AppTheme.shared.unSelectedColor(context),
+              RichText(
+                text: TextSpan(text: 'A', style: AppTheme.of(context).bodyTextStyle),
+                textScaleFactor: kMinimumFontSizeScale,
+              ),
+              Expanded(
+                child: PlatformSlider(
+                  min: kMinimumFontSizeScale,
+                  max: kMaximumFontSizeScale,
+                  value: settingsProvider.fontSizeScale,
+                  onChanged: settingsProvider.changeFontSizeScale,
+                  activeColor: AppTheme.of(context).chordColor,
+                  inactiveColor: AppTheme.of(context).disabledColor,
                 ),
               ),
-              Text('A', style: AppThemeNew.of(context).bodyTextStyle.copyWith(fontSize: kMaximumFontSize)),
+              RichText(
+                text: TextSpan(text: 'A', style: AppTheme.of(context).bodyTextStyle),
+                textScaleFactor: kMaximumFontSizeScale,
+              ),
             ],
           ),
         ),

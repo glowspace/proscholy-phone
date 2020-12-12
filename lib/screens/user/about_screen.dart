@@ -17,41 +17,44 @@ class AboutScreen extends StatelessWidget with PlatformWidgetMixin {
   @override
   Widget androidWidget(BuildContext context) => Scaffold(
         appBar: AppBar(
-          title: Text('O projektu'),
-          shadowColor: AppTheme.shared.appBarDividerColor(context),
+          title: Text('O projektu', style: AppTheme.of(context).bodyTextStyle),
+          shadowColor: AppTheme.of(context).appBarDividerColor,
+          brightness: AppTheme.of(context).brightness,
         ),
         body: _body(context),
       );
 
   Widget _body(BuildContext context) {
-    final textStyle = AppThemeNew.of(context).bodyTextStyle;
+    final textStyle = AppTheme.of(context).bodyTextStyle;
     final highlightedStyle = textStyle.copyWith(color: Colors.blue);
     final boldStyle = textStyle.copyWith(fontWeight: FontWeight.bold);
 
     final linkOpener = TapGestureRecognizer()..onTap = () => launch(proscholyUrl);
 
-    return Container(
-      padding: EdgeInsets.all(kDefaultPadding),
-      child: RichText(
-        text: TextSpan(
-          text: 'Zpěvník ',
-          style: textStyle,
-          children: [
-            TextSpan(text: 'ProScholy.cz', style: highlightedStyle, recognizer: linkOpener),
-            TextSpan(
-              text:
-                  ', který přichází na${unbreakableSpace}pomoc všem scholám, křesťanským kapelám, společenstvím a${unbreakableSpace}všem, kdo se chtějí modlit hudbou!\n\nProjekt vzniká se svolením ',
-              style: textStyle,
-            ),
-            TextSpan(text: 'České biskupské konference', style: boldStyle),
-            TextSpan(
-              text:
-                  '.\n\nDalší informace o${unbreakableSpace}stavu a${unbreakableSpace}rozvoji projektu naleznete na$unbreakableSpace',
-              style: textStyle,
-            ),
-            TextSpan(text: proscholyUrl, style: highlightedStyle, recognizer: linkOpener),
-            TextSpan(text: '.', style: textStyle),
-          ],
+    return SafeArea(
+      child: Container(
+        padding: EdgeInsets.all(kDefaultPadding),
+        child: RichText(
+          text: TextSpan(
+            text: 'Zpěvník ',
+            style: textStyle,
+            children: [
+              TextSpan(text: 'ProScholy.cz', style: highlightedStyle, recognizer: linkOpener),
+              TextSpan(
+                text:
+                    ', který přichází na${unbreakableSpace}pomoc všem scholám, křesťanským kapelám, společenstvím a${unbreakableSpace}všem, kdo se chtějí modlit hudbou!\n\nProjekt vzniká se svolením ',
+                style: textStyle,
+              ),
+              TextSpan(text: 'České biskupské konference', style: boldStyle),
+              TextSpan(
+                text:
+                    '.\n\nDalší informace o${unbreakableSpace}stavu a${unbreakableSpace}rozvoji projektu naleznete na$unbreakableSpace',
+                style: textStyle,
+              ),
+              TextSpan(text: proscholyUrl, style: highlightedStyle, recognizer: linkOpener),
+              TextSpan(text: '.', style: textStyle),
+            ],
+          ),
         ),
       ),
     );

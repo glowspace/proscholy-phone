@@ -1,3 +1,5 @@
+import 'dart:io';
+
 const proscholyUrl = 'https://zpevnik.proscholy.cz';
 
 const songUrl = '$proscholyUrl/pisen';

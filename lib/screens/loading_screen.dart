@@ -1,24 +1,52 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/status_bar_wrapper.dart';
+import 'package:zpevnik/theme.dart';
+import 'package:zpevnik/utils/platform.dart';
+import 'package:zpevnik/utils/preloader.dart';
 
 class LoadingScreen extends StatelessWidget {
+  @override
   Widget build(BuildContext context) {
-    final brightness = MediaQuery.platformBrightnessOf(context);
+    final isLight = MediaQuery.platformBrightnessOf(context) == Brightness.light;
 
-    final backgroundImage =
-        brightness == Brightness.light ? '$imagesPath/background.png' : '$imagesPath/background_dark.png';
-    final titleImage = brightness == Brightness.light ? '$imagesPath/title.png' : '$imagesPath/title_dark.png';
+    final backgroundImage = isLight ? Preloader.background : Preloader.backgroundDark;
+    final titleImage = isLight ? Preloader.title : Preloader.titleDark;
+
+    final size = MediaQuery.of(context).size;
 
     return Container(
-      decoration: BoxDecoration(image: DecorationImage(image: AssetImage(backgroundImage), fit: BoxFit.cover)),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: Transform.translate(
-          offset: Offset(0, 0.2 * MediaQuery.of(context).size.height),
-          child: Image.asset(titleImage),
+      decoration: BoxDecoration(image: DecorationImage(image: backgroundImage, fit: BoxFit.cover)),
+      child: StatusBarWrapper(
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          body: Column(
+            children: [
+              Transform.translate(
+                offset: Offset(0, 0.2 * size.height),
+                child: Image(image: titleImage),
+              ),
+              Spacer(),
+              Container(
+                padding: EdgeInsets.only(bottom: kDefaultPadding),
+                child: Column(children: [
+                  Container(padding: EdgeInsets.only(bottom: kDefaultPadding), child: ProgressIndicator()),
+                  Text('Probíhá příprava písní.', style: AppTheme.of(context).bodyTextStyle),
+                ]),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
+}
+
+class ProgressIndicator extends StatelessWidget with PlatformWidgetMixin {
+  @override
+  Widget androidWidget(BuildContext context) => CircularProgressIndicator();
+
+  @override
+  Widget iOSWidget(BuildContext context) => CupertinoActivityIndicator();
 }

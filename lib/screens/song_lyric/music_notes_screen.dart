@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import 'package:zpevnik/models/songLyric.dart';
+import 'package:zpevnik/providers/full_screen_provider.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/platform.dart';
 
-final RegExp _colorRE = RegExp(r'Color\(0xff(.+)\)');
+final _colorRE = RegExp(r'Color\(0xff(.+)\)');
 
 class MusicNotesScreen extends StatefulWidget {
   final SongLyric songLyric;
@@ -24,6 +26,8 @@ class _MusicNotesScreenState extends State<MusicNotesScreen> with PlatformStateM
   Offset _scaleStart;
   Offset _offset;
 
+  String _preparedLilyPond;
+
   @override
   void initState() {
     super.initState();
@@ -33,24 +37,35 @@ class _MusicNotesScreenState extends State<MusicNotesScreen> with PlatformStateM
   }
 
   @override
-  Widget iOSWidget(BuildContext context) => CupertinoPageScaffold(
-        navigationBar: CupertinoNavigationBar(
-          middle: Text('Noty'),
+  Widget iOSWidget(BuildContext context) => Consumer<FullScreenProvider>(
+        builder: (context, provider, _) => WillPopScope(
+          onWillPop: provider.fullScreen ? () async => !Navigator.of(context).userGestureInProgress : null,
+          child: CupertinoPageScaffold(
+            navigationBar: provider.fullScreen ? null : CupertinoNavigationBar(middle: Text('Noty')),
+            child: SafeArea(child: _body(context)),
+          ),
         ),
-        child: SafeArea(child: _body(context)),
       );
 
   @override
-  Widget androidWidget(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          title: Text('Noty'),
-          shadowColor: AppTheme.shared.appBarDividerColor(context),
+  Widget androidWidget(BuildContext context) => Consumer<FullScreenProvider>(
+        builder: (context, provider, _) => Scaffold(
+          appBar: provider.fullScreen
+              ? null
+              : AppBar(
+                  title: Text('Noty'),
+                  shadowColor: AppTheme.of(context).appBarDividerColor,
+                  brightness: AppTheme.of(context).brightness,
+                ),
+          body: SafeArea(child: _body(context)),
         ),
-        body: SafeArea(child: _body(context)),
       );
 
   Widget _body(BuildContext context) {
-    final size = MediaQuery.of(context).size;
+    final fullScreenProvider = Provider.of<FullScreenProvider>(context, listen: false);
+
+    _preparedLilyPond ??= widget.songLyric.lilypond.replaceAll('currentColor',
+        AppTheme.of(context).textColor.toString().replaceAllMapped(_colorRE, (match) => '#${match.group(1)}'));
 
     return GestureDetector(
       onScaleStart: (details) {
@@ -62,19 +77,13 @@ class _MusicNotesScreenState extends State<MusicNotesScreen> with PlatformStateM
         _offset = _baseOffset.translate(details.focalPoint.dx - _scaleStart.dx, details.focalPoint.dy - _scaleStart.dy);
         _scaleFactor = _baseScaleFactor * details.scale;
       }),
+      onTap: fullScreenProvider.toggle,
       child: Center(
         child: Transform.translate(
           offset: _offset,
           child: Transform.scale(
             scale: _scaleFactor,
-            child: SvgPicture.string(
-                widget.songLyric.lilypond.replaceAll(
-                    'currentColor',
-                    AppTheme.shared
-                        .textColor(context)
-                        .toString()
-                        .replaceAllMapped(_colorRE, (match) => '#${match.group(1)}')),
-                height: size.height),
+            child: SvgPicture.string(_preparedLilyPond, height: MediaQuery.of(context).size.height),
           ),
         ),
       ),
