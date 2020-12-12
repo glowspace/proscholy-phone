@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/custom_appbar.dart';
+import 'package:zpevnik/custom/custom_appbar.dart';
 import 'package:zpevnik/models/songLyric.dart';
 import 'package:zpevnik/providers/full_screen_provider.dart';
 import 'package:zpevnik/providers/scroll_provider.dart';
@@ -29,43 +29,48 @@ class SongLyricScreen extends StatefulWidget {
 }
 
 class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
-  bool _fullScreen;
   ValueNotifier<bool> _showingMenu;
 
   @override
   void initState() {
     super.initState();
 
-    _fullScreen = false;
     _showingMenu = ValueNotifier(false);
 
     widget.songLyric.addListener(_update);
   }
 
   @override
-  Widget iOSWidget(BuildContext context) => CupertinoPageScaffold(
-        navigationBar: _fullScreen
-            ? null
-            : CupertinoNavigationBar(
-                middle: Text(widget.songLyric.id.toString(), style: AppTheme.of(context).navBarTitleTextStyle),
-                trailing: Row(mainAxisSize: MainAxisSize.min, children: _actions(context)),
-                padding: EdgeInsetsDirectional.only(start: kDefaultPadding, end: kDefaultPadding),
-              ),
-        child: _body(context),
+  Widget iOSWidget(BuildContext context) => Consumer<FullScreenProvider>(
+        builder: (context, provider, _) => WillPopScope(
+          onWillPop: provider.fullScreen ? () async => !Navigator.of(context).userGestureInProgress : null,
+          child: CupertinoPageScaffold(
+            navigationBar: provider.fullScreen
+                ? null
+                : CupertinoNavigationBar(
+                    middle: Text(widget.songLyric.id.toString(), style: AppTheme.of(context).navBarTitleTextStyle),
+                    trailing: Row(mainAxisSize: MainAxisSize.min, children: _actions(context)),
+                    padding: EdgeInsetsDirectional.only(start: kDefaultPadding, end: kDefaultPadding),
+                  ),
+            child: _body(context),
+          ),
+        ),
       );
 
   @override
-  Widget androidWidget(BuildContext context) => StatusBarWrapper(
-        child: Scaffold(
-          appBar: _fullScreen
-              ? null
-              : CustomAppBar(
-                  title: Text(widget.songLyric.id.toString(), style: AppTheme.of(context).navBarTitleTextStyle),
-                  shadowColor: AppTheme.of(context).appBarDividerColor,
-                  actions: _actions(context),
-                  brightness: AppTheme.of(context).brightness,
-                ),
-          body: _body(context),
+  Widget androidWidget(BuildContext context) => Consumer<FullScreenProvider>(
+        builder: (context, provider, _) => StatusBarWrapper(
+          child: Scaffold(
+            appBar: provider.fullScreen
+                ? null
+                : CustomAppBar(
+                    title: Text(widget.songLyric.id.toString(), style: AppTheme.of(context).navBarTitleTextStyle),
+                    shadowColor: AppTheme.of(context).appBarDividerColor,
+                    actions: _actions(context),
+                    brightness: AppTheme.of(context).brightness,
+                  ),
+            body: _body(context),
+          ),
         ),
       );
 
@@ -81,10 +86,7 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
         child: GestureDetector(
           onScaleStart: settingsProvider.fontScaleStarted,
           onScaleUpdate: settingsProvider.fontScaleUpdated,
-          onTap: () {
-            fullScreenProvider.toggle();
-            _toggleFullScreen();
-          },
+          onTap: fullScreenProvider.toggle,
           child: Stack(
             children: [
               NotificationListener(
@@ -177,11 +179,6 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
         ),
       );
   }
-
-  void _toggleFullScreen() => setState(() {
-        _showingMenu.value = false;
-        _fullScreen = !_fullScreen;
-      });
 
   void _update() => setState(() => {});
 

@@ -7,6 +7,7 @@ import 'package:zpevnik/utils/platform.dart';
 import 'package:zpevnik/screens/home/home_screen.dart';
 import 'package:zpevnik/screens/songbooks/songbooks_screen.dart';
 import 'package:zpevnik/screens/user/user_screen.dart';
+import 'package:zpevnik/custom/custom_cupertino_tab.dart' as custom;
 
 class ContentScreen extends StatefulWidget {
   @override
@@ -28,13 +29,16 @@ class _ContentScreenState extends State<ContentScreen> with PlatformStateMixin {
   }
 
   @override
-  Widget iOSWidget(BuildContext context) => CupertinoTabScaffold(
-        tabBuilder: (context, _) => CupertinoTabView(builder: (context) => _activeWidget),
-        tabBar: CupertinoTabBar(
-          backgroundColor: CupertinoColors.quaternarySystemFill,
-          activeColor: _activeColor,
-          items: _tabBarItems,
-          onTap: _indexChanged,
+  Widget iOSWidget(BuildContext context) => Consumer<FullScreenProvider>(
+        builder: (context, provider, _) => custom.CupertinoTabScaffold(
+          showTabBar: !provider.fullScreen,
+          tabBuilder: (context, _) => CupertinoTabView(builder: (context) => _activeWidget),
+          tabBar: CupertinoTabBar(
+            backgroundColor: CupertinoColors.quaternarySystemFill,
+            activeColor: _activeColor,
+            items: _tabBarItems,
+            onTap: _indexChanged,
+          ),
         ),
       );
 

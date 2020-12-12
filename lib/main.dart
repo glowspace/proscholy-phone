@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:zpevnik/providers/full_screen_provider.dart';
 import 'package:zpevnik/providers/settings_provider.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/platform.dart';
@@ -10,7 +13,13 @@ import 'package:zpevnik/utils/updater.dart';
 import 'package:zpevnik/screens/content_screen.dart';
 import 'package:zpevnik/screens/loading_screen.dart';
 
-void main() => runApp(kDebugMode ? DebugWidget() : const MainWidget());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Preloader.preloadImages();
+
+  runApp(kDebugMode ? DebugWidget() : const MainWidget());
+}
 
 class MainWidget extends StatefulWidget {
   const MainWidget();
@@ -26,14 +35,7 @@ class _MainWidgetstate extends State<MainWidget> with PlatformStateMixin, Widget
   void initState() {
     super.initState();
 
-    Preloader.preloadImages(context);
-
     WidgetsBinding.instance.addObserver(this);
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
   }
 
   @override
@@ -60,11 +62,14 @@ class _MainWidgetstate extends State<MainWidget> with PlatformStateMixin, Widget
 
     return AppTheme(
       child: ChangeNotifierProvider(
-        create: (context) => SettingsProvider(),
-        builder: builder,
-        child: FutureBuilder<bool>(
-          future: Updater.shared.update(),
-          builder: (context, snapshot) => snapshot.hasData ? ContentScreen() : LoadingScreen(),
+        create: (context) => FullScreenProvider(),
+        builder: (context, _) => ChangeNotifierProvider(
+          create: (context) => SettingsProvider(),
+          builder: builder,
+          child: FutureBuilder<bool>(
+            future: Updater.shared.update(),
+            builder: (context, snapshot) => snapshot.hasData ? ContentScreen() : LoadingScreen(),
+          ),
         ),
       ),
       brightness: WidgetsBinding.instance.window.platformBrightness,

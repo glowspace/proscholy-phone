@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/custom_appbar.dart';
+import 'package:zpevnik/custom/custom_appbar.dart';
 import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/providers/song_lyrics_provider.dart';
 import 'package:zpevnik/screens/components/highlightable_button.dart';

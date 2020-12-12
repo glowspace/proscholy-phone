@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import 'package:zpevnik/models/songLyric.dart';
+import 'package:zpevnik/providers/full_screen_provider.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/platform.dart';
 
@@ -35,22 +37,33 @@ class _MusicNotesScreenState extends State<MusicNotesScreen> with PlatformStateM
   }
 
   @override
-  Widget iOSWidget(BuildContext context) => CupertinoPageScaffold(
-        navigationBar: CupertinoNavigationBar(middle: Text('Noty')),
-        child: SafeArea(child: _body(context)),
+  Widget iOSWidget(BuildContext context) => Consumer<FullScreenProvider>(
+        builder: (context, provider, _) => WillPopScope(
+          onWillPop: provider.fullScreen ? () async => !Navigator.of(context).userGestureInProgress : null,
+          child: CupertinoPageScaffold(
+            navigationBar: provider.fullScreen ? null : CupertinoNavigationBar(middle: Text('Noty')),
+            child: SafeArea(child: _body(context)),
+          ),
+        ),
       );
 
   @override
-  Widget androidWidget(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          title: Text('Noty'),
-          shadowColor: AppTheme.of(context).appBarDividerColor,
-          brightness: AppTheme.of(context).brightness,
+  Widget androidWidget(BuildContext context) => Consumer<FullScreenProvider>(
+        builder: (context, provider, _) => Scaffold(
+          appBar: provider.fullScreen
+              ? null
+              : AppBar(
+                  title: Text('Noty'),
+                  shadowColor: AppTheme.of(context).appBarDividerColor,
+                  brightness: AppTheme.of(context).brightness,
+                ),
+          body: SafeArea(child: _body(context)),
         ),
-        body: SafeArea(child: _body(context)),
       );
 
   Widget _body(BuildContext context) {
+    final fullScreenProvider = Provider.of<FullScreenProvider>(context, listen: false);
+
     _preparedLilyPond ??= widget.songLyric.lilypond.replaceAll('currentColor',
         AppTheme.of(context).textColor.toString().replaceAllMapped(_colorRE, (match) => '#${match.group(1)}'));
 
@@ -64,6 +77,7 @@ class _MusicNotesScreenState extends State<MusicNotesScreen> with PlatformStateM
         _offset = _baseOffset.translate(details.focalPoint.dx - _scaleStart.dx, details.focalPoint.dy - _scaleStart.dy);
         _scaleFactor = _baseScaleFactor * details.scale;
       }),
+      onTap: fullScreenProvider.toggle,
       child: Center(
         child: Transform.translate(
           offset: _offset,

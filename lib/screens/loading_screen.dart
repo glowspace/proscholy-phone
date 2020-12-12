@@ -4,16 +4,15 @@ import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/status_bar_wrapper.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/platform.dart';
+import 'package:zpevnik/utils/preloader.dart';
 
 class LoadingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isLight = MediaQuery.platformBrightnessOf(context) == Brightness.light;
 
-    final backgroundImage =
-        isLight ? const AssetImage('$imagesPath/background.png') : const AssetImage('$imagesPath/background_dark.png');
-    final titleImage =
-        isLight ? const AssetImage('$imagesPath/title.png') : const AssetImage('$imagesPath/title_dark.png');
+    final backgroundImage = isLight ? Preloader.background : Preloader.backgroundDark;
+    final titleImage = isLight ? Preloader.title : Preloader.titleDark;
 
     final size = MediaQuery.of(context).size;
 
