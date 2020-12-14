@@ -1,4 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:zpevnik/models/entities/song.dart';
 import 'package:zpevnik/models/entities/tag.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song.dart';
@@ -30,6 +31,10 @@ class DataProvider {
     Map<String, int> languageCounts = {};
 
     _songLyrics = (await Database.shared.songLyrics).map((songLyricEntity) {
+      // fixme: temporary solution for empty songs
+      if (!songs.containsKey(songLyricEntity.songId))
+        songs[songLyricEntity.songId] = Song(SongEntity(id: 0, name: songLyricEntity.name));
+
       if (songs[songLyricEntity.songId].songLyrics == null) songs[songLyricEntity.songId].songLyrics = [];
       final songLyric = SongLyric(songLyricEntity, songs[songLyricEntity.songId]);
 

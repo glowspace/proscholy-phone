@@ -6,9 +6,11 @@ import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zpevnik/models/entities/author.dart';
+import 'package:zpevnik/models/entities/external.dart';
 import 'package:zpevnik/models/entities/song.dart';
 import 'package:zpevnik/models/entities/song_lyric.dart';
 import 'package:zpevnik/models/entities/songbook.dart';
+import 'package:zpevnik/models/entities/songbook_record.dart';
 import 'package:zpevnik/models/entities/tag.dart';
 import 'package:zpevnik/providers/data_provider.dart';
 import 'package:zpevnik/utils/beans.dart';
@@ -104,12 +106,8 @@ class Updater {
       prefs.setBool(_initialLoadKey, true);
     }
 
-    if (connectivityResult == ConnectivityResult.wifi) {
-      if (prefs.containsKey(_initialLoadKey))
-        _update(prefs.getString(_lastUpdateKey));
-      else
-        await _update(_initialLastUpdate);
-    }
+    if (connectivityResult == ConnectivityResult.wifi)
+      await _update(prefs.getString(_lastUpdateKey) ?? _initialLastUpdate);
 
     await DataProvider.shared.init();
 
@@ -118,15 +116,14 @@ class Updater {
 
   Future<void> _update(String lastUpdate) async {
     final format = DateFormat('yyyy-MM-dd HH:mm:ss');
-    if (lastUpdate != null && format.parse(lastUpdate).isBefore(DateTime.now().subtract(_updatePeriod))) return;
+    if (format.parse(lastUpdate).isBefore(DateTime.now().subtract(_updatePeriod))) return;
 
     final response = await Client().post(_url,
-        body: _query
-            .replaceAll('\n', '')
-            .replaceFirst(_lastUpdatePlaceholder, lastUpdate == null ? '' : '(updated_after: \\"$lastUpdate\\")'),
+        body: _query.replaceAll('\n', '').replaceFirst(_lastUpdatePlaceholder, '(updated_after: \\"$lastUpdate\\")'),
         headers: <String, String>{'Content-Type': 'application/json; charset=utf-8'});
 
     await _parse(response.body);
+
     SharedPreferences.getInstance().then((prefs) => prefs.setString(_lastUpdateKey, format.format(DateTime.now())));
   }
 
@@ -147,39 +144,53 @@ class Updater {
 
     final songLyrics = (data['song_lyrics'] as List<dynamic>).map((json) => SongLyricEntity.fromJson(json)).toList();
 
-    final externals = songLyrics.map((songLyric) => songLyric.externals).reduce((result, list) {
-      result.addAll(list);
-      return result;
-    });
+    final externalsTmp = songLyrics.map((songLyric) => songLyric.externals).toList();
 
-    final songbookRecords = songLyrics.map((songLyric) => songLyric.songbookRecords).toList().reduce((result, list) {
-      result.addAll(list);
-      return result;
-    }).toList();
+    final List<ExternalEntity> externals = externalsTmp.isEmpty
+        ? []
+        : externalsTmp.reduce((result, list) {
+            result.addAll(list);
+            return result;
+          }).toList();
 
-    final songLyricAuthors = songLyrics
+    final songbookRecordsTmp = songLyrics.map((songLyric) => songLyric.songbookRecords).toList();
+
+    final List<SongbookRecord> songbookRecords = songbookRecordsTmp.isEmpty
+        ? []
+        : songbookRecordsTmp.reduce((result, list) {
+            result.addAll(list);
+            return result;
+          }).toList();
+
+    final songLyricAuthorsTmp = songLyrics
         .map((songLyric) => List.generate(
             songLyric.authors.length,
             (index) => SongLyricAuthor()
               ..songLyricId = songLyric.id
               ..authorId = songLyric.authors[index].id))
-        .toList()
-        .reduce((result, list) {
-      result.addAll(list);
-      return result;
-    });
+        .toList();
 
-    final songLyricTags = songLyrics
+    final List<SongLyricAuthor> songLyricAuthors = songLyricAuthorsTmp.isEmpty
+        ? []
+        : songLyricAuthorsTmp.reduce((result, list) {
+            result.addAll(list);
+            return result;
+          }).toList();
+
+    final songLyricTagsTmp = songLyrics
         .map((songLyric) => List.generate(
             songLyric.tags.length,
             (index) => SongLyricTag()
               ..songLyricId = songLyric.id
               ..tagId = songLyric.tags[index].id))
-        .toList()
-        .reduce((result, list) {
-      result.addAll(list);
-      return result;
-    });
+        .toList();
+
+    final List<SongLyricTag> songLyricTags = songLyricTagsTmp.isEmpty
+        ? []
+        : songLyricTagsTmp.reduce((result, list) {
+            result.addAll(list);
+            return result;
+          }).toList();
 
     await Future.wait([
       Database.shared.saveAuthors(authors),
