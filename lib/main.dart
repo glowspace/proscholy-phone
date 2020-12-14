@@ -44,6 +44,7 @@ class _MainWidgetstate extends State<MainWidget> with PlatformStateMixin, Widget
         (context, home) => CupertinoApp(
           // needed by youtube player
           localizationsDelegates: [DefaultMaterialLocalizations.delegate],
+          debugShowCheckedModeBanner: false,
           title: _title,
           theme: AppTheme.of(context).cupertinoTheme,
           home: home,
@@ -53,7 +54,12 @@ class _MainWidgetstate extends State<MainWidget> with PlatformStateMixin, Widget
   @override
   Widget androidWidget(BuildContext context) => _wrap(
         context,
-        (context, home) => MaterialApp(title: _title, theme: AppTheme.of(context).materialTheme, home: home),
+        (context, home) => MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: _title,
+          theme: AppTheme.of(context).materialTheme,
+          home: home,
+        ),
       );
 
   // wraps platform specific app with `AppTheme`
