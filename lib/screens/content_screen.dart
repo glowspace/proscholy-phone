@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/custom_navigator.dart';
 import 'package:zpevnik/providers/full_screen_provider.dart';
 import 'package:zpevnik/utils/platform.dart';
 import 'package:zpevnik/screens/home/home_screen.dart';
@@ -43,15 +44,36 @@ class _ContentScreenState extends State<ContentScreen> with PlatformStateMixin {
       );
 
   @override
-  Widget androidWidget(BuildContext context) => Scaffold(
-        body: _activeWidget,
-        bottomNavigationBar: BottomNavigationBar(
-          selectedItemColor: _activeColor,
-          items: _tabBarItems,
-          currentIndex: _currentIndex,
-          onTap: _indexChanged,
-        ),
-      );
+  Widget androidWidget(BuildContext context) {
+    final fullScreenProvider = Provider.of<FullScreenProvider>(context);
+
+    return Scaffold(
+      body: Stack(
+        children: [
+          Offstage(
+            offstage: _currentIndex != 0,
+            child: CustomNavigator(child: const HomeScreen(key: PageStorageKey('home_screen'))),
+          ),
+          Offstage(
+            offstage: _currentIndex != 1,
+            child: CustomNavigator(child: const SongbooksScreen(key: PageStorageKey('songbooks_screen'))),
+          ),
+          Offstage(
+            offstage: _currentIndex != 2,
+            child: CustomNavigator(child: const UserScreen(key: PageStorageKey('user_screen'))),
+          ),
+        ],
+      ),
+      bottomNavigationBar: fullScreenProvider.fullScreen
+          ? null
+          : BottomNavigationBar(
+              selectedItemColor: _activeColor,
+              items: _tabBarItems,
+              currentIndex: _currentIndex,
+              onTap: _indexChanged,
+            ),
+    );
+  }
 
   void _indexChanged(int index) => setState(() {
         _currentIndex = index;
