@@ -53,7 +53,8 @@ class _SongLyricRowStateNew extends State<SongLyricRow> {
               ),
             if (selectionEnabled)
               Container(padding: EdgeInsets.only(right: kDefaultPadding), child: CircularCheckbox(selected: selected)),
-            Expanded(child: Text(widget.songLyric.name, style: AppTheme.of(context).bodyTextStyle)),
+            Expanded(
+                child: Text(widget.songLyric.name, style: AppTheme.of(context).bodyTextStyle.copyWith(height: 1.5))),
             if (widget.showStar && widget.songLyric.isFavorite)
               Icon(Icons.star, color: AppTheme.of(context).iconColor, size: 16),
             _songLyricNumber(context, widget.songLyric.id.toString()),

@@ -8,7 +8,6 @@ import 'package:zpevnik/utils/platform.dart';
 import 'package:zpevnik/screens/home/home_screen.dart';
 import 'package:zpevnik/screens/songbooks/songbooks_screen.dart';
 import 'package:zpevnik/screens/user/user_screen.dart';
-import 'package:zpevnik/custom/custom_cupertino_tab.dart' as custom;
 
 class ContentScreen extends StatefulWidget {
   @override
@@ -16,31 +15,36 @@ class ContentScreen extends StatefulWidget {
 }
 
 class _ContentScreenState extends State<ContentScreen> with PlatformStateMixin {
-  Widget _activeWidget;
   Color _activeColor;
   int _currentIndex;
+
+  final homeNavigatorKey = GlobalKey<NavigatorState>();
+  final songbooksNavigatorKey = GlobalKey<NavigatorState>();
+  final userNavigatorKey = GlobalKey<NavigatorState>();
 
   @override
   void initState() {
     super.initState();
 
-    _activeWidget = const HomeScreen(key: PageStorageKey('home_screen'));
     _activeColor = blue;
     _currentIndex = 0;
   }
 
   @override
   Widget iOSWidget(BuildContext context) => Consumer<FullScreenProvider>(
-        builder: (context, provider, _) => custom.CupertinoTabScaffold(
-          showTabBar: !provider.fullScreen,
-          tabBuilder: (context, _) => CupertinoTabView(builder: (context) => _activeWidget),
-          tabBar: CupertinoTabBar(
-            backgroundColor: CupertinoColors.quaternarySystemFill,
-            activeColor: _activeColor,
-            items: _tabBarItems,
-            onTap: _indexChanged,
-          ),
-        ),
+        builder: (context, provider, _) => provider.fullScreen
+            ? CupertinoTabView(
+                navigatorKey: _navigatorKey(_currentIndex), builder: (context) => _activeWidget(_currentIndex))
+            : CupertinoTabScaffold(
+                tabBuilder: (context, index) =>
+                    CupertinoTabView(navigatorKey: _navigatorKey(index), builder: (context) => _activeWidget(index)),
+                tabBar: CupertinoTabBar(
+                  backgroundColor: CupertinoColors.quaternarySystemFill,
+                  activeColor: _activeColor,
+                  items: _tabBarItems,
+                  onTap: _indexChanged,
+                ),
+              ),
       );
 
   @override
@@ -75,23 +79,18 @@ class _ContentScreenState extends State<ContentScreen> with PlatformStateMixin {
     );
   }
 
+  Widget _activeWidget(int index) => index == 0
+      ? const HomeScreen(key: PageStorageKey('home_screen'))
+      : (index == 1
+          ? const SongbooksScreen(key: PageStorageKey('songbooks_screen'))
+          : const UserScreen(key: PageStorageKey('user_screen')));
+
+  GlobalKey<NavigatorState> _navigatorKey(int index) =>
+      index == 0 ? homeNavigatorKey : (index == 1 ? songbooksNavigatorKey : userNavigatorKey);
+
   void _indexChanged(int index) => setState(() {
         _currentIndex = index;
-
-        switch (index) {
-          case 0:
-            _activeWidget = const HomeScreen(key: PageStorageKey('home_screen'));
-            _activeColor = blue;
-            break;
-          case 1:
-            _activeWidget = const SongbooksScreen(key: PageStorageKey('songbooks_screen'));
-            _activeColor = green;
-            break;
-          case 2:
-            _activeWidget = const UserScreen(key: PageStorageKey('user_screen'));
-            _activeColor = red;
-            break;
-        }
+        _activeColor = index == 0 ? blue : (index == 1 ? green : red);
       });
 
   List<BottomNavigationBarItem> get _tabBarItems => [
