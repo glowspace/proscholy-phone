@@ -88,7 +88,27 @@ class SongLyric extends ChangeNotifier {
           .map((record) => '${DataProvider.shared.songbook(record.songbookId).shortcut}${record.number}')
           .toList();
 
-  String get name => _entity.name;
+  String get name {
+    String name = _entity.name;
+
+    if (_entity.secondaryName1 != null) name = '$name\n${_entity.secondaryName1}';
+    if (_entity.secondaryName2 != null) name = '$name\n${_entity.secondaryName2}';
+
+    return name;
+  }
+
+  String get displayName {
+    String name = _entity.name;
+
+    if (_entity.secondaryName1 != null) {
+      if (_entity.secondaryName2 != null)
+        name = '$name (${_entity.secondaryName1}, ${_entity.secondaryName2})';
+      else
+        name = '$name (${_entity.secondaryName1})';
+    }
+
+    return name;
+  }
 
   List<Verse> get verses => showChords
       ? _verses ??= SongLyricsParser.shared.parseLyrics(_entity.lyrics, transposition, accidentals)

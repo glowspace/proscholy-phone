@@ -20,7 +20,7 @@ class Database {
 
   static final Database shared = Database._();
 
-  Future<void> init() async {
+  Future<void> init(int oldVersion) async {
     _adapter = SqfliteAdapter(join(await getDatabasesPath(), 'zpevnik.db'));
 
     await _adapter.connect();
@@ -39,6 +39,22 @@ class Database {
       SongLyricPlaylistBean(_adapter).createTable(ifNotExists: true),
       AuthorExternalBean(_adapter).createTable(ifNotExists: true),
     ]).catchError((error) => print(error));
+
+    await migrate(oldVersion);
+  }
+
+  Future<void> migrate(int oldVersion) async {
+    if (oldVersion == 0) {
+      final songLyricBean = SongLyricBean(_adapter);
+      await _adapter
+          .alter(Alter(songLyricBean.tableName)
+              .addString(songLyricBean.secondaryName1.name, isNullable: true, length: 100))
+          .catchError((error) => print(error));
+      await _adapter
+          .alter(Alter(songLyricBean.tableName)
+              .addString(songLyricBean.secondaryName2.name, isNullable: true, length: 100))
+          .catchError((error) => print(error));
+    }
   }
 
   Future<void> saveAuthors(List<AuthorEntity> authors) async {

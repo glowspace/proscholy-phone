@@ -20,7 +20,7 @@ class LyricsWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               RichText(
-                text: TextSpan(text: songLyric.name, style: AppTheme.of(context).titleTextStyle),
+                text: TextSpan(text: songLyric.displayName, style: AppTheme.of(context).titleTextStyle),
                 textScaleFactor: settingsProvider.fontSizeScale,
               ),
               Container(

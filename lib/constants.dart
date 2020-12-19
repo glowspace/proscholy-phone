@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+const int kCurrentVersion = 1;
+
 const double kDefaultPadding = 10;
 const int kDefaultAnimationTime = 300;
 

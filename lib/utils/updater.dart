@@ -1,10 +1,12 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/entities/author.dart';
 import 'package:zpevnik/models/entities/external.dart';
 import 'package:zpevnik/models/entities/song.dart';
@@ -16,7 +18,7 @@ import 'package:zpevnik/providers/data_provider.dart';
 import 'package:zpevnik/utils/beans.dart';
 import 'package:zpevnik/utils/database.dart';
 
-const String _initialLoadKey = 'initial_load';
+const String _versionKey = 'version';
 const String _lastUpdateKey = 'last_update';
 
 const String _lastUpdatePlaceholder = '[LAST_UPDATE]';
@@ -58,6 +60,8 @@ class Updater {
       song_lyrics$_lastUpdatePlaceholder {
         id
         name
+        secondary_name_1
+        secondary_name_2
         lyrics
         lilypond_svg
         lang
@@ -98,12 +102,14 @@ class Updater {
   Future<bool> update() async {
     final prefs = await SharedPreferences.getInstance();
     final connectivityResult = await Connectivity().checkConnectivity();
+    final version = prefs.getInt(_versionKey) ?? 0;
 
-    await Database.shared.init();
+    await Database.shared.init(version);
 
-    if (!prefs.containsKey(_initialLoadKey)) {
+    if (version != kCurrentVersion) {
       await _loadLocal();
-      prefs.setBool(_initialLoadKey, true);
+      await prefs.remove(_lastUpdateKey);
+      prefs.setInt(_versionKey, kCurrentVersion);
     }
 
     if (connectivityResult == ConnectivityResult.wifi)
