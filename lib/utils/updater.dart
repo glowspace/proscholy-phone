@@ -112,8 +112,7 @@ class Updater {
       prefs.setInt(_versionKey, kCurrentVersion);
     }
 
-    if (connectivityResult == ConnectivityResult.wifi)
-      await _update(prefs.getString(_lastUpdateKey) ?? _initialLastUpdate);
+    if (connectivityResult == ConnectivityResult.wifi) _update(prefs.getString(_lastUpdateKey) ?? _initialLastUpdate);
 
     await DataProvider.shared.init();
 
@@ -122,7 +121,7 @@ class Updater {
 
   Future<void> _update(String lastUpdate) async {
     final format = DateFormat('yyyy-MM-dd HH:mm:ss');
-    if (format.parse(lastUpdate).isBefore(DateTime.now().subtract(_updatePeriod))) return;
+    if (!format.parse(lastUpdate).isBefore(DateTime.now().subtract(_updatePeriod))) return;
 
     final response = await Client().post(_url,
         body: _query.replaceAll('\n', '').replaceFirst(_lastUpdatePlaceholder, '(updated_after: \\"$lastUpdate\\")'),
