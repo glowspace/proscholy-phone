@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -30,6 +32,7 @@ class MainWidget extends StatefulWidget {
 
 class _MainWidgetstate extends State<MainWidget> with PlatformStateMixin, WidgetsBindingObserver {
   final String _title = 'Zpěvník';
+  final FirebaseAnalytics _analytics = FirebaseAnalytics();
 
   @override
   void initState() {
@@ -44,6 +47,7 @@ class _MainWidgetstate extends State<MainWidget> with PlatformStateMixin, Widget
         (context, home) => CupertinoApp(
           // needed by youtube player
           localizationsDelegates: [DefaultMaterialLocalizations.delegate],
+          navigatorObservers: [FirebaseAnalyticsObserver(analytics: _analytics)],
           debugShowCheckedModeBanner: false,
           title: _title,
           theme: AppTheme.of(context).cupertinoTheme,
@@ -56,6 +60,7 @@ class _MainWidgetstate extends State<MainWidget> with PlatformStateMixin, Widget
         context,
         (context, home) => MaterialApp(
           debugShowCheckedModeBanner: false,
+          navigatorObservers: [FirebaseAnalyticsObserver(analytics: _analytics)],
           title: _title,
           theme: AppTheme.of(context).materialTheme,
           home: home,
