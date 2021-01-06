@@ -1,47 +1,65 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songLyric.dart';
 import 'package:zpevnik/providers/settings_provider.dart';
 import 'package:zpevnik/theme.dart';
 
-class LyricsWidget extends StatelessWidget {
+final _colorRE = RegExp(r'Color\(0xff(.+)\)');
+
+class LyricsWidget extends StatefulWidget {
   final SongLyric songLyric;
 
   const LyricsWidget({Key key, this.songLyric}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) => Consumer<SettingsProvider>(
-        builder: (context, settingsProvider, _) => GestureDetector(
-          behavior: HitTestBehavior.translucent,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              RichText(
-                text: TextSpan(text: songLyric.displayName, style: AppTheme.of(context).titleTextStyle),
-                textScaleFactor: settingsProvider.fontSizeScale,
-              ),
-              Container(
-                color: AppTheme.of(context).backgroundColor,
-                padding: EdgeInsets.only(top: kDefaultPadding * settingsProvider.fontSizeScale),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: List.generate(
-                    songLyric.verses.length,
-                    (index) => _verse(context, songLyric.verses[index], settingsProvider),
-                  ),
+  _LyricsWidgetState createState() => _LyricsWidgetState();
+}
+
+class _LyricsWidgetState extends State<LyricsWidget> {
+  String _preparedLilyPond;
+
+  @override
+  Widget build(BuildContext context) {
+    if (widget.songLyric.lilypond != null)
+      _preparedLilyPond ??= widget.songLyric.lilypond.replaceAll('currentColor',
+          AppTheme.of(context).textColor.toString().replaceAllMapped(_colorRE, (match) => '#${match.group(1)}'));
+
+    return Consumer<SettingsProvider>(
+      builder: (context, settingsProvider, _) => GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            RichText(
+              text: TextSpan(text: widget.songLyric.displayName, style: AppTheme.of(context).titleTextStyle),
+              textScaleFactor: settingsProvider.fontSizeScale,
+            ),
+            if (widget.songLyric.lilypond != null)
+              SvgPicture.string(_preparedLilyPond, width: MediaQuery.of(context).size.width),
+            Container(
+              color: AppTheme.of(context).backgroundColor,
+              padding: EdgeInsets.only(top: kDefaultPadding * settingsProvider.fontSizeScale),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: List.generate(
+                  widget.songLyric.verses.length,
+                  (index) => _verse(context, widget.songLyric.verses[index], settingsProvider),
                 ),
               ),
-              RichText(
-                text: TextSpan(text: songLyric.authorsText, style: AppTheme.of(context).bodyTextStyle),
-                textScaleFactor: settingsProvider.fontSizeScale,
-              ),
-            ],
-          ),
+            ),
+            RichText(
+              text: TextSpan(text: widget.songLyric.authorsText, style: AppTheme.of(context).bodyTextStyle),
+              textScaleFactor: settingsProvider.fontSizeScale,
+            ),
+          ],
         ),
-      );
+      ),
+    );
+  }
 
   Container _verse(BuildContext context, Verse verse, SettingsProvider settingsProvider) => Container(
         padding: EdgeInsets.only(bottom: kDefaultPadding),
@@ -56,7 +74,7 @@ class LyricsWidget extends StatelessWidget {
                       text: TextSpan(
                         text: verse.number,
                         style: AppTheme.of(context).bodyTextStyle.copyWith(
-                              height: (songLyric.showChords ? 2.25 : 1.5),
+                              height: (widget.songLyric.showChords ? 2.25 : 1.5),
                             ),
                       ),
                     ),
@@ -100,7 +118,8 @@ class LyricsWidget extends StatelessWidget {
               child: RichText(
                 text: TextSpan(
                   text: blocks[0].lyricsPart,
-                  style: AppTheme.of(context).bodyTextStyle.copyWith(height: (songLyric.showChords ? 2.25 : 1.5)),
+                  style:
+                      AppTheme.of(context).bodyTextStyle.copyWith(height: (widget.songLyric.showChords ? 2.25 : 1.5)),
                 ),
               ),
             )
@@ -113,10 +132,9 @@ class LyricsWidget extends StatelessWidget {
           ),
         ));
 
-  // displays block of text with chords above it
   Widget _block(BuildContext context, Block block, SettingsProvider settingsProvider) => Stack(
         children: [
-          if (songLyric.showChords)
+          if (widget.songLyric.showChords)
             Transform.translate(
               offset: Offset(0, -3),
               child: Container(
@@ -135,7 +153,7 @@ class LyricsWidget extends StatelessWidget {
                       text: block.chord,
                       style: AppTheme.of(context).bodyTextStyle.copyWith(
                             color: AppTheme.of(context).chordColor,
-                            height: (songLyric.showChords ? 2.25 : 1.5),
+                            height: (widget.songLyric.showChords ? 2.25 : 1.5),
                           ),
                     ),
                   ),
@@ -148,7 +166,8 @@ class LyricsWidget extends StatelessWidget {
               child: RichText(
                 text: TextSpan(
                   text: block.lyricsPart,
-                  style: AppTheme.of(context).bodyTextStyle.copyWith(height: (songLyric.showChords ? 2.25 : 1.5)),
+                  style:
+                      AppTheme.of(context).bodyTextStyle.copyWith(height: (widget.songLyric.showChords ? 2.25 : 1.5)),
                 ),
               ),
             ),

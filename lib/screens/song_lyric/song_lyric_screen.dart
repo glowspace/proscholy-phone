@@ -100,8 +100,12 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
                   child: SingleChildScrollView(
                     controller: scrollController,
                     child: Container(
-                      padding:
-                          EdgeInsets.fromLTRB(kDefaultPadding, kDefaultPadding, kDefaultPadding, 6 * kDefaultPadding),
+                      padding: EdgeInsets.fromLTRB(
+                        kDefaultPadding,
+                        kDefaultPadding,
+                        kDefaultPadding,
+                        6 * kDefaultPadding,
+                      ),
                       child: LyricsWidget(songLyric: widget.songLyric),
                     ),
                   ),

@@ -35,17 +35,17 @@ class SongLyricMenu extends StatelessWidget {
           },
         ),
         // MenuItem('Zpěvníky', Icons.import_contacts, null),
-        if (songLyric.lilypond != null)
-          MenuItem(
-              title: 'Noty',
-              icon: Icons.insert_drive_file,
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => MusicNotesScreen(songLyric: songLyric)),
-                );
+        // if (songLyric.lilypond != null)
+        //   MenuItem(
+        //       title: 'Noty',
+        //       icon: Icons.insert_drive_file,
+        //       onPressed: () {
+        //         Navigator.of(context).push(
+        //           MaterialPageRoute(builder: (context) => MusicNotesScreen(songLyric: songLyric)),
+        //         );
 
-                showing.value = false;
-              }),
+        //         showing.value = false;
+        //       }),
         MenuItem(
           title: 'Sdílet',
           icon: Icons.share,
