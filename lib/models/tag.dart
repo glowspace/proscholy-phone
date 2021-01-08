@@ -11,7 +11,8 @@ enum TagType {
   genre,
   musicalForm,
   generic,
-  language
+  language,
+  unknown
 }
 
 extension TagTypeExtension on TagType {
@@ -31,8 +32,10 @@ extension TagTypeExtension on TagType {
         return TagType.genre;
       case "MUSICAL_FORM":
         return TagType.musicalForm;
-      default:
+      case "GENERIC":
         return TagType.generic;
+      default:
+        return TagType.unknown;
     }
   }
 

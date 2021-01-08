@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/entities/external.dart';
 import 'package:zpevnik/models/entities/song_lyric.dart';
@@ -114,7 +117,17 @@ class SongLyric extends ChangeNotifier {
       ? _verses ??= SongLyricsParser.shared.parseLyrics(_entity.lyrics, transposition, accidentals)
       : _versesNoChords ??= SongLyricsParser.shared.parseLyrics(_entity.lyrics.replaceAll(_chordsRE, ''), 0, false);
 
-  String get lilypond => _entity.lilypond;
+  String get lilypond {
+    rootBundle
+        .load('assets/a.svgz')
+        .then((value) => print(String.fromCharCodes(GZipCodec().decode(value.buffer.asUint8List()))));
+
+    // final decoded = GZipCodec().decode(bytes);
+
+    // print(decoded.toString());
+
+    return '';
+  }
 
   SongLyricType get type => SongLyricType.values[_entity.type];
 
