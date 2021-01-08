@@ -9,10 +9,8 @@ import 'package:zpevnik/utils/preloader.dart';
 class LoadingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final isLight = MediaQuery.platformBrightnessOf(context) == Brightness.light;
-
-    final backgroundImage = isLight ? Preloader.background : Preloader.backgroundDark;
-    final titleImage = isLight ? Preloader.title : Preloader.titleDark;
+    final backgroundImage = AppTheme.of(context).isLight ? Preloader.background : Preloader.backgroundDark;
+    final titleImage = AppTheme.of(context).isLight ? Preloader.title : Preloader.titleDark;
 
     final size = MediaQuery.of(context).size;
 

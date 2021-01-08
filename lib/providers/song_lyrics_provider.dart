@@ -1,6 +1,6 @@
 import 'package:diacritic/diacritic.dart';
 import 'package:flutter/material.dart';
-import 'package:zpevnik/models/songLyric.dart';
+import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/providers/data_provider.dart';
 import 'package:zpevnik/providers/tags_provider.dart';

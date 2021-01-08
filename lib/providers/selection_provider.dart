@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:zpevnik/models/songLyric.dart';
+import 'package:zpevnik/models/song_lyric.dart';
 
 class SelectionProvider with ChangeNotifier {
   bool _selectionEnabled;

@@ -1,14 +1,79 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:zpevnik/providers/settings_provider.dart';
 
-class AppTheme extends InheritedWidget {
+class AppTheme extends StatefulWidget {
+  final Widget child;
+  final TargetPlatform platform;
+
+  const AppTheme({Key key, this.child, this.platform}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => _AppThemeState();
+
+  static AppThemeData of(BuildContext context) => context.dependOnInheritedWidgetOfExactType();
+}
+
+class _AppThemeState extends State<AppTheme> with WidgetsBindingObserver {
+  Brightness brightness;
+
+  @override
+  void initState() {
+    super.initState();
+
+    final settingsProvider = Provider.of<SettingsProvider>(context, listen: false);
+
+    if (settingsProvider.darkMode != null)
+      brightness = settingsProvider.darkMode ? Brightness.dark : Brightness.light;
+    else
+      brightness = WidgetsBinding.instance.window.platformBrightness;
+
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  void onBrightnessChange(Brightness value) => setState(() => brightness = value);
+
+  @override
+  Widget build(BuildContext context) => AppThemeData(
+        child: widget.child,
+        brightness: brightness,
+        platform: widget.platform,
+        onBrightnessChange: onBrightnessChange,
+      );
+
+  @override
+  void didChangePlatformBrightness() {
+    setState(() {});
+
+    final settingsProvider = Provider.of<SettingsProvider>(context, listen: false);
+
+    if (settingsProvider.darkMode != null)
+      brightness = settingsProvider.darkMode ? Brightness.dark : Brightness.light;
+    else
+      brightness = WidgetsBinding.instance.window.platformBrightness;
+
+    super.didChangePlatformBrightness();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+
+    super.dispose();
+  }
+}
+
+class AppThemeData extends InheritedWidget {
   final Brightness brightness;
   final TargetPlatform platform; // for easier debugging
+  final ValueChanged<Brightness> onBrightnessChange;
 
-  const AppTheme({
+  const AppThemeData({
     @required Widget child,
     this.brightness = Brightness.light,
     @required this.platform,
+    @required this.onBrightnessChange,
   }) : super(child: child);
 
   CupertinoThemeData get cupertinoTheme => CupertinoThemeData(
@@ -71,7 +136,7 @@ class AppTheme extends InheritedWidget {
   bool get isIOS => platform == TargetPlatform.iOS;
 
   @override
-  bool updateShouldNotify(AppTheme oldWidget) => brightness != oldWidget.brightness;
+  bool updateShouldNotify(AppThemeData oldWidget) => brightness != oldWidget.brightness;
 
-  static AppTheme of(BuildContext context) => context.dependOnInheritedWidgetOfExactType();
+  static AppThemeData of(BuildContext context) => context.dependOnInheritedWidgetOfExactType();
 }

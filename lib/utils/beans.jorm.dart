@@ -9,6 +9,8 @@ part of 'beans.dart';
 abstract class _SongLyricBean implements Bean<SongLyricEntity> {
   final id = IntField('id');
   final name = StrField('name');
+  final secondaryName1 = StrField('secondary_name1');
+  final secondaryName2 = StrField('secondary_name2');
   final lyrics = StrField('lyrics');
   final language = StrField('language');
   final type = IntField('type');
@@ -22,6 +24,8 @@ abstract class _SongLyricBean implements Bean<SongLyricEntity> {
   Map<String, Field> get fields => _fields ??= {
         id.name: id,
         name.name: name,
+        secondaryName1.name: secondaryName1,
+        secondaryName2.name: secondaryName2,
         lyrics.name: lyrics,
         language.name: language,
         type.name: type,
@@ -36,6 +40,8 @@ abstract class _SongLyricBean implements Bean<SongLyricEntity> {
     SongLyricEntity model = SongLyricEntity(
       id: adapter.parseValue(map['id']),
       name: adapter.parseValue(map['name']),
+      secondaryName1: adapter.parseValue(map['secondary_name1']),
+      secondaryName2: adapter.parseValue(map['secondary_name2']),
       lyrics: adapter.parseValue(map['lyrics']),
       language: adapter.parseValue(map['language']),
       type: adapter.parseValue(map['type']),
@@ -57,6 +63,8 @@ abstract class _SongLyricBean implements Bean<SongLyricEntity> {
     if (only == null && !onlyNonNull) {
       ret.add(id.set(model.id));
       ret.add(name.set(model.name));
+      ret.add(secondaryName1.set(model.secondaryName1));
+      ret.add(secondaryName2.set(model.secondaryName2));
       ret.add(lyrics.set(model.lyrics));
       ret.add(language.set(model.language));
       ret.add(type.set(model.type));
@@ -69,6 +77,10 @@ abstract class _SongLyricBean implements Bean<SongLyricEntity> {
     } else if (only != null) {
       if (only.contains(id.name)) ret.add(id.set(model.id));
       if (only.contains(name.name)) ret.add(name.set(model.name));
+      if (only.contains(secondaryName1.name))
+        ret.add(secondaryName1.set(model.secondaryName1));
+      if (only.contains(secondaryName2.name))
+        ret.add(secondaryName2.set(model.secondaryName2));
       if (only.contains(lyrics.name)) ret.add(lyrics.set(model.lyrics));
       if (only.contains(language.name)) ret.add(language.set(model.language));
       if (only.contains(type.name)) ret.add(type.set(model.type));
@@ -88,6 +100,12 @@ abstract class _SongLyricBean implements Bean<SongLyricEntity> {
       }
       if (model.name != null) {
         ret.add(name.set(model.name));
+      }
+      if (model.secondaryName1 != null) {
+        ret.add(secondaryName1.set(model.secondaryName1));
+      }
+      if (model.secondaryName2 != null) {
+        ret.add(secondaryName2.set(model.secondaryName2));
       }
       if (model.lyrics != null) {
         ret.add(lyrics.set(model.lyrics));
@@ -125,6 +143,8 @@ abstract class _SongLyricBean implements Bean<SongLyricEntity> {
     final st = Sql.create(tableName, ifNotExists: ifNotExists);
     st.addInt(id.name, primary: true, isNullable: false);
     st.addStr(name.name, isNullable: false);
+    st.addStr(secondaryName1.name, isNullable: true);
+    st.addStr(secondaryName2.name, isNullable: true);
     st.addStr(lyrics.name, isNullable: true);
     st.addStr(language.name, isNullable: false);
     st.addInt(type.name, isNullable: false);

@@ -1,9 +1,12 @@
 import 'dart:async';
 
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:zpevnik/global.dart';
 import 'package:zpevnik/providers/full_screen_provider.dart';
 import 'package:zpevnik/providers/settings_provider.dart';
 import 'package:zpevnik/theme.dart';
@@ -17,6 +20,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Preloader.preloadImages();
+  await Global.shared.init();
 
   runApp(kDebugMode ? DebugWidget() : const MainWidget());
 }
@@ -28,14 +32,13 @@ class MainWidget extends StatefulWidget {
   State<StatefulWidget> createState() => _MainWidgetstate();
 }
 
-class _MainWidgetstate extends State<MainWidget> with PlatformStateMixin, WidgetsBindingObserver {
+class _MainWidgetstate extends State<MainWidget> with PlatformStateMixin {
   final String _title = 'Zpěvník';
+  final FirebaseAnalytics _analytics = FirebaseAnalytics();
 
   @override
   void initState() {
     super.initState();
-
-    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
@@ -44,6 +47,7 @@ class _MainWidgetstate extends State<MainWidget> with PlatformStateMixin, Widget
         (context, home) => CupertinoApp(
           // needed by youtube player
           localizationsDelegates: [DefaultMaterialLocalizations.delegate],
+          navigatorObservers: [FirebaseAnalyticsObserver(analytics: _analytics)],
           debugShowCheckedModeBanner: false,
           title: _title,
           theme: AppTheme.of(context).cupertinoTheme,
@@ -56,6 +60,7 @@ class _MainWidgetstate extends State<MainWidget> with PlatformStateMixin, Widget
         context,
         (context, home) => MaterialApp(
           debugShowCheckedModeBanner: false,
+          navigatorObservers: [FirebaseAnalyticsObserver(analytics: _analytics)],
           title: _title,
           theme: AppTheme.of(context).materialTheme,
           home: home,
@@ -66,35 +71,20 @@ class _MainWidgetstate extends State<MainWidget> with PlatformStateMixin, Widget
   Widget _wrap(BuildContext context, Widget Function(BuildContext, Widget) builder) {
     final platform = Theme.of(context).platform;
 
-    return AppTheme(
-      child: ChangeNotifierProvider(
-        create: (context) => FullScreenProvider(),
-        builder: (context, _) => ChangeNotifierProvider(
-          create: (context) => SettingsProvider(),
+    return ChangeNotifierProvider(
+      create: (context) => SettingsProvider(),
+      builder: (context, _) => AppTheme(
+        child: ChangeNotifierProvider(
+          create: (context) => FullScreenProvider(),
           builder: builder,
           child: FutureBuilder<bool>(
             future: Updater.shared.update(),
             builder: (context, snapshot) => snapshot.hasData ? ContentScreen() : LoadingScreen(),
           ),
         ),
+        platform: platform,
       ),
-      brightness: WidgetsBinding.instance.window.platformBrightness,
-      platform: platform,
     );
-  }
-
-  @override
-  void didChangePlatformBrightness() {
-    setState(() {});
-
-    super.didChangePlatformBrightness();
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-
-    super.dispose();
   }
 }
 
