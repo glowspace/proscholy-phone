@@ -59,21 +59,21 @@ class _ContentScreenState extends State<ContentScreen> with PlatformStateMixin {
             Offstage(
               offstage: _currentIndex != 0,
               child: CustomNavigator(
-                key: homeNavigatorKey,
+                navigatorKey: homeNavigatorKey,
                 child: const HomeScreen(key: PageStorageKey('home_screen')),
               ),
             ),
             Offstage(
               offstage: _currentIndex != 1,
               child: CustomNavigator(
-                key: songbooksNavigatorKey,
+                navigatorKey: songbooksNavigatorKey,
                 child: const SongbooksScreen(key: PageStorageKey('songbooks_screen')),
               ),
             ),
             Offstage(
               offstage: _currentIndex != 2,
               child: CustomNavigator(
-                key: userNavigatorKey,
+                navigatorKey: userNavigatorKey,
                 child: const UserScreen(key: PageStorageKey('user_screen')),
               ),
             ),

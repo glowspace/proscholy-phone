@@ -28,7 +28,7 @@ class SettingsProvider extends ChangeNotifier {
     _fontSizeScale = _prefs.getDouble(_fontSizeScaleScaleKey) ?? 1;
     _showChords = _prefs.getBool(_showChordsKey) ?? true;
     _accidentals = _prefs.getBool(_accidentalsKey) ?? false;
-    _blockDisplayOff = _prefs.getBool(_blockDisplayOffKey) ?? false;
+    _blockDisplayOff = _prefs.getBool(_blockDisplayOffKey) ?? true;
     _showBottomOptions = _prefs.getBool(_showBottomOptionsKey) ?? true;
     _darkMode = _prefs.getBool(_darkModeKey);
 
