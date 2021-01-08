@@ -1,9 +1,8 @@
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zpevnik/models/entities/song.dart';
 import 'package:zpevnik/models/entities/tag.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song.dart';
-import 'package:zpevnik/models/songLyric.dart';
+import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/utils/database.dart';
@@ -20,12 +19,7 @@ class DataProvider {
 
   Map<int, Songbook> _songbooksMap;
 
-  // fixme: temporary solution, needed by `SongLyric`
-  SharedPreferences prefs;
-
   Future<void> init() async {
-    prefs = await SharedPreferences.getInstance();
-
     final songs = (await Database.shared.songs).map((key, value) => MapEntry(key, Song(value)));
     Set<String> languages = Set();
     Map<String, int> languageCounts = {};

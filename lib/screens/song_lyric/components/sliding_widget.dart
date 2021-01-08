@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/providers/data_provider.dart';
+import 'package:zpevnik/global.dart';
 import 'package:zpevnik/providers/scroll_provider.dart';
 import 'package:zpevnik/screens/components/highlightable_button.dart';
 import 'package:zpevnik/theme.dart';
@@ -32,7 +32,7 @@ class _SlidingWidgetState extends State<SlidingWidget> with SingleTickerProvider
   void initState() {
     super.initState();
 
-    _initial = DataProvider.shared.prefs.getBool(_collapsedKey) ?? false;
+    _initial = Global.shared.prefs.getBool(_collapsedKey) ?? false;
     _collapsed = ValueNotifier(_initial);
 
     _controller = AnimationController(duration: const Duration(milliseconds: kDefaultAnimationTime), vsync: this);
@@ -93,7 +93,7 @@ class _SlidingWidgetState extends State<SlidingWidget> with SingleTickerProvider
         : (_initial ? _controller.reverse() : _controller.forward());
     _collapsed.value = !_collapsed.value;
 
-    DataProvider.shared.prefs.setBool(_collapsedKey, _collapsed.value);
+    Global.shared.prefs.setBool(_collapsedKey, _collapsed.value);
   }
 
   @override

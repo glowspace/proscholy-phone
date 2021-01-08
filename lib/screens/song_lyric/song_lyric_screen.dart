@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/custom/custom_appbar.dart';
-import 'package:zpevnik/models/songLyric.dart';
+import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/full_screen_provider.dart';
 import 'package:zpevnik/providers/scroll_provider.dart';
 import 'package:zpevnik/providers/settings_provider.dart';
@@ -100,8 +100,12 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
                   child: SingleChildScrollView(
                     controller: scrollController,
                     child: Container(
-                      padding:
-                          EdgeInsets.fromLTRB(kDefaultPadding, kDefaultPadding, kDefaultPadding, 6 * kDefaultPadding),
+                      padding: EdgeInsets.fromLTRB(
+                        kDefaultPadding,
+                        kDefaultPadding,
+                        kDefaultPadding,
+                        6 * kDefaultPadding,
+                      ),
                       child: LyricsWidget(songLyric: widget.songLyric),
                     ),
                   ),

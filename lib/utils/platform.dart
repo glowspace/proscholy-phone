@@ -46,7 +46,7 @@ void showPlatformBottomSheet({BuildContext context, Widget child, double height}
     showCupertinoModalBottomSheet(
       context: context,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(15))),
-      builder: (context, scrollController) => Container(
+      builder: (context) => Container(
         child: content,
         color: AppTheme.of(context).fillColor,
       ),
@@ -56,7 +56,7 @@ void showPlatformBottomSheet({BuildContext context, Widget child, double height}
     showMaterialModalBottomSheet(
       context: context,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(15))),
-      builder: (context, scrollController) => content,
+      builder: (context) => content,
       useRootNavigator: true,
     );
 }

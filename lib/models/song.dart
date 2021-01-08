@@ -1,5 +1,5 @@
 import 'package:zpevnik/models/entities/song.dart';
-import 'package:zpevnik/models/songLyric.dart';
+import 'package:zpevnik/models/song_lyric.dart';
 
 class Song {
   final SongEntity _entity;

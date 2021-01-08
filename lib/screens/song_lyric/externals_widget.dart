@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/models/songLyric.dart';
+import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/screens/components/bottom_form_sheet.dart';
 import 'package:zpevnik/theme.dart';
 

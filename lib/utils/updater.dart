@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/entities/author.dart';
 import 'package:zpevnik/models/entities/external.dart';
 import 'package:zpevnik/models/entities/song.dart';
@@ -16,11 +17,11 @@ import 'package:zpevnik/providers/data_provider.dart';
 import 'package:zpevnik/utils/beans.dart';
 import 'package:zpevnik/utils/database.dart';
 
-const String _initialLoadKey = 'initial_load';
+const String _versionKey = 'version';
 const String _lastUpdateKey = 'last_update';
 
 const String _lastUpdatePlaceholder = '[LAST_UPDATE]';
-const String _initialLastUpdate = '2020-12-09 11:30:00';
+const String _initialLastUpdate = '2021-01-08 11:30:00';
 
 const Duration _updatePeriod = Duration(hours: 12);
 
@@ -58,6 +59,8 @@ class Updater {
       song_lyrics$_lastUpdatePlaceholder {
         id
         name
+        secondary_name_1
+        secondary_name_2
         lyrics
         lilypond_svg
         lang
@@ -98,16 +101,17 @@ class Updater {
   Future<bool> update() async {
     final prefs = await SharedPreferences.getInstance();
     final connectivityResult = await Connectivity().checkConnectivity();
+    final version = prefs.getInt(_versionKey) ?? 0;
 
-    await Database.shared.init();
+    await Database.shared.init(version);
 
-    if (!prefs.containsKey(_initialLoadKey)) {
+    if (version != kCurrentVersion) {
       await _loadLocal();
-      prefs.setBool(_initialLoadKey, true);
+      await prefs.remove(_lastUpdateKey);
+      prefs.setInt(_versionKey, kCurrentVersion);
     }
 
-    if (connectivityResult == ConnectivityResult.wifi)
-      await _update(prefs.getString(_lastUpdateKey) ?? _initialLastUpdate);
+    if (connectivityResult == ConnectivityResult.wifi) _update(prefs.getString(_lastUpdateKey) ?? _initialLastUpdate);
 
     await DataProvider.shared.init();
 
@@ -116,7 +120,7 @@ class Updater {
 
   Future<void> _update(String lastUpdate) async {
     final format = DateFormat('yyyy-MM-dd HH:mm:ss');
-    if (format.parse(lastUpdate).isBefore(DateTime.now().subtract(_updatePeriod))) return;
+    if (!format.parse(lastUpdate).isBefore(DateTime.now().subtract(_updatePeriod))) return;
 
     final response = await Client().post(_url,
         body: _query.replaceAll('\n', '').replaceFirst(_lastUpdatePlaceholder, '(updated_after: \\"$lastUpdate\\")'),

@@ -1,11 +1,10 @@
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:jaguar_orm/jaguar_orm.dart';
 import 'package:zpevnik/models/entities/author.dart';
 import 'package:zpevnik/models/entities/external.dart';
 import 'package:zpevnik/models/entities/playlist.dart';
 import 'package:zpevnik/models/entities/songbook_record.dart';
 import 'package:zpevnik/models/entities/tag.dart';
-import 'package:zpevnik/models/songLyric.dart';
+import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/utils/beans.dart';
 
 class SongLyricEntity {
@@ -13,6 +12,12 @@ class SongLyricEntity {
   final int id;
 
   final String name;
+
+  @Column(isNullable: true)
+  final String secondaryName1;
+
+  @Column(isNullable: true)
+  final String secondaryName2;
 
   @Column(isNullable: true)
   final String lyrics;
@@ -57,6 +62,8 @@ class SongLyricEntity {
   SongLyricEntity({
     this.id,
     this.name,
+    this.secondaryName1,
+    this.secondaryName2,
     this.lyrics,
     this.language,
     this.type,
@@ -70,6 +77,8 @@ class SongLyricEntity {
     return SongLyricEntity(
       id: id,
       name: json['name'],
+      secondaryName1: json['secondary_name_1'],
+      secondaryName2: json['secondary_name_2'],
       lyrics: json['lyrics'],
       language: json['lang_string'],
       type: SongLyricTypeExtension.fromString(json['type_enum']).rawValue,

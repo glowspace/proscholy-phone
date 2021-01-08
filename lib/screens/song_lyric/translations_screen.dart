@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/models/songLyric.dart';
+import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/screens/components/data_container.dart';
 import 'package:zpevnik/screens/components/song_lyric_row.dart';
 import 'package:zpevnik/theme.dart';

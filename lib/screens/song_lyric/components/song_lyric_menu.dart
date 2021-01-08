@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:zpevnik/links.dart';
-import 'package:zpevnik/models/songLyric.dart';
+import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/playlists_provider.dart';
 import 'package:zpevnik/screens/components/data_container.dart';
 import 'package:zpevnik/screens/components/menu_item.dart';
@@ -35,17 +35,17 @@ class SongLyricMenu extends StatelessWidget {
           },
         ),
         // MenuItem('Zpěvníky', Icons.import_contacts, null),
-        if (songLyric.lilypond != null)
-          MenuItem(
-              title: 'Noty',
-              icon: Icons.insert_drive_file,
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => MusicNotesScreen(songLyric: songLyric)),
-                );
+        // if (songLyric.lilypond != null)
+        //   MenuItem(
+        //       title: 'Noty',
+        //       icon: Icons.insert_drive_file,
+        //       onPressed: () {
+        //         Navigator.of(context).push(
+        //           MaterialPageRoute(builder: (context) => MusicNotesScreen(songLyric: songLyric)),
+        //         );
 
-                showing.value = false;
-              }),
+        //         showing.value = false;
+        //       }),
         MenuItem(
           title: 'Sdílet',
           icon: Icons.share,
