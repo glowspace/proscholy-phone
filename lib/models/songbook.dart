@@ -4,6 +4,9 @@ import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/data_provider.dart';
 import 'package:zpevnik/utils/database.dart';
 
+// prioritized songbook shortcuts in sorting
+const prioritized = {'K': 0, 'Kan': 1, 'H1': 2, 'H2': 3};
+
 class Songbook extends Comparable {
   final SongbookEntity _entity;
 
@@ -39,6 +42,14 @@ class Songbook extends Comparable {
   @override
   int compareTo(_other) {
     Songbook other = _other;
+
+    final priority = prioritized[shortcut];
+    final otherPriority = prioritized[other.shortcut];
+
+    if (priority != null && otherPriority != null) return priority.compareTo(otherPriority);
+
+    if (priority != null) return -1;
+    if (otherPriority != null) return 1;
 
     if (isPinned && !other.isPinned) return -1;
     if (!isPinned && other.isPinned) return 1;
