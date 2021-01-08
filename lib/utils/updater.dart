@@ -21,7 +21,7 @@ const String _versionKey = 'version';
 const String _lastUpdateKey = 'last_update';
 
 const String _lastUpdatePlaceholder = '[LAST_UPDATE]';
-const String _initialLastUpdate = '2020-12-09 11:30:00';
+const String _initialLastUpdate = '2021-01-08 11:30:00';
 
 const Duration _updatePeriod = Duration(hours: 12);
 

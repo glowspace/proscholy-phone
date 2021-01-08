@@ -17,8 +17,6 @@ enum TagType {
 
 extension TagTypeExtension on TagType {
   static TagType fromString(String string) {
-    print(string);
-    
     switch (string) {
       case "LITURGY_PART":
         return TagType.liturgyPart;

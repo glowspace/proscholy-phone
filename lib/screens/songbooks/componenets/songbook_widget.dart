@@ -26,7 +26,9 @@ const List<String> _existingLogos = [
   'dbl',
   'k',
   'kan',
-  'sdmkr'
+  'sdmkr',
+  'h1',
+  'h2'
 ];
 
 class SongbookWidget extends StatelessWidget {

@@ -51,31 +51,43 @@ class _ContentScreenState extends State<ContentScreen> with PlatformStateMixin {
   Widget androidWidget(BuildContext context) {
     final fullScreenProvider = Provider.of<FullScreenProvider>(context);
 
-    return Scaffold(
-      body: Stack(
-        children: [
-          Offstage(
-            offstage: _currentIndex != 0,
-            child: CustomNavigator(child: const HomeScreen(key: PageStorageKey('home_screen'))),
-          ),
-          Offstage(
-            offstage: _currentIndex != 1,
-            child: CustomNavigator(child: const SongbooksScreen(key: PageStorageKey('songbooks_screen'))),
-          ),
-          Offstage(
-            offstage: _currentIndex != 2,
-            child: CustomNavigator(child: const UserScreen(key: PageStorageKey('user_screen'))),
-          ),
-        ],
-      ),
-      bottomNavigationBar: fullScreenProvider.fullScreen
-          ? null
-          : BottomNavigationBar(
-              selectedItemColor: _activeColor,
-              items: _tabBarItems,
-              currentIndex: _currentIndex,
-              onTap: _indexChanged,
+    return WillPopScope(
+      onWillPop: () async => !await _navigatorKey(_currentIndex).currentState.maybePop(),
+      child: Scaffold(
+        body: Stack(
+          children: [
+            Offstage(
+              offstage: _currentIndex != 0,
+              child: CustomNavigator(
+                key: homeNavigatorKey,
+                child: const HomeScreen(key: PageStorageKey('home_screen')),
+              ),
             ),
+            Offstage(
+              offstage: _currentIndex != 1,
+              child: CustomNavigator(
+                key: songbooksNavigatorKey,
+                child: const SongbooksScreen(key: PageStorageKey('songbooks_screen')),
+              ),
+            ),
+            Offstage(
+              offstage: _currentIndex != 2,
+              child: CustomNavigator(
+                key: userNavigatorKey,
+                child: const UserScreen(key: PageStorageKey('user_screen')),
+              ),
+            ),
+          ],
+        ),
+        bottomNavigationBar: fullScreenProvider.fullScreen
+            ? null
+            : BottomNavigationBar(
+                selectedItemColor: _activeColor,
+                items: _tabBarItems,
+                currentIndex: _currentIndex,
+                onTap: _indexChanged,
+              ),
+      ),
     );
   }
 
