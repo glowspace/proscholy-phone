@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:zpevnik/providers/data_provider.dart';
+import 'package:zpevnik/global.dart';
 
 const double _defaultScrollSpeed = 20;
 const double _minScrollSpeed = 10;
@@ -15,7 +15,7 @@ class ScrollProvider {
 
   ScrollProvider(this.scrollController)
       : _scrolling = ValueNotifier(false),
-        _speed = DataProvider.shared.prefs.getDouble('scroll_speed') ?? _defaultScrollSpeed;
+        _speed = Global.shared.prefs.getDouble('scroll_speed') ?? _defaultScrollSpeed;
 
   ValueNotifier<bool> get scrolling => _scrolling;
 
@@ -35,7 +35,7 @@ class ScrollProvider {
     if (_speed >= _maxScrollSpeed) return;
 
     _speed *= _scrollSpeedChangeMult;
-    DataProvider.shared.prefs.setDouble('scroll_speed', _speed);
+    Global.shared.prefs.setDouble('scroll_speed', _speed);
 
     _scroll();
   }
@@ -44,7 +44,7 @@ class ScrollProvider {
     if (_speed <= _minScrollSpeed) return;
 
     _speed /= _scrollSpeedChangeMult;
-    DataProvider.shared.prefs.setDouble('scroll_speed', _speed);
+    Global.shared.prefs.setDouble('scroll_speed', _speed);
 
     _scroll();
   }

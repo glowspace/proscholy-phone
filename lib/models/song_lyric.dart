@@ -1,8 +1,6 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/global.dart';
 import 'package:zpevnik/models/entities/external.dart';
 import 'package:zpevnik/models/entities/song_lyric.dart';
 import 'package:zpevnik/models/song.dart';
@@ -117,17 +115,7 @@ class SongLyric extends ChangeNotifier {
       ? _verses ??= SongLyricsParser.shared.parseLyrics(_entity.lyrics, transposition, accidentals)
       : _versesNoChords ??= SongLyricsParser.shared.parseLyrics(_entity.lyrics.replaceAll(_chordsRE, ''), 0, false);
 
-  String get lilypond {
-    rootBundle
-        .load('assets/a.svgz')
-        .then((value) => print(String.fromCharCodes(GZipCodec().decode(value.buffer.asUint8List()))));
-
-    // final decoded = GZipCodec().decode(bytes);
-
-    // print(decoded.toString());
-
-    return '';
-  }
+  String get lilypond => _entity.lilypond;
 
   SongLyricType get type => SongLyricType.values[_entity.type];
 
@@ -137,9 +125,9 @@ class SongLyric extends ChangeNotifier {
 
   bool get hasChords => _hasChords ??= _entity.lyrics.contains(_chordsRE);
 
-  bool get showChords => _entity.showChords ?? hasChords && (DataProvider.shared.prefs.getBool('show_chords') ?? true);
+  bool get showChords => _entity.showChords ?? hasChords && (Global.shared.prefs.getBool('show_chords') ?? true);
 
-  bool get accidentals => _entity.accidentals ?? (DataProvider.shared.prefs.getBool('accidentals') ?? false);
+  bool get accidentals => _entity.accidentals ?? (Global.shared.prefs.getBool('accidentals') ?? false);
 
   bool get hasTranslations => _song.songLyrics.length > 1;
 

@@ -28,6 +28,7 @@ class SettingsScreen extends StatelessWidget with PlatformWidgetMixin {
 
   Widget _body(BuildContext context) {
     final accidentalsStyle = AppTheme.of(context).bodyTextStyle.copyWith(fontSize: 20, fontFamily: 'Hiragino Sans');
+    final brightness = AppTheme.of(context).brightness;
 
     return SafeArea(
       child: Container(
@@ -46,6 +47,15 @@ class SettingsScreen extends StatelessWidget with PlatformWidgetMixin {
                       value: settingsProvider.blockDisplayOff,
                       onChanged: settingsProvider.changeBlockDisplayOff,
                     ),
+                  ),
+                  _row(
+                    'Tmavý mód',
+                    PlatformSwitch(
+                        value: settingsProvider.darkMode ?? (brightness == Brightness.dark),
+                        onChanged: (value) {
+                          settingsProvider.changeDarkMode(value);
+                          AppTheme.of(context).onBrightnessChange(value ? Brightness.dark : Brightness.light);
+                        }),
                   ),
                 ],
               ),

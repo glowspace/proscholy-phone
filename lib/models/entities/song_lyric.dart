@@ -4,7 +4,7 @@ import 'package:zpevnik/models/entities/external.dart';
 import 'package:zpevnik/models/entities/playlist.dart';
 import 'package:zpevnik/models/entities/songbook_record.dart';
 import 'package:zpevnik/models/entities/tag.dart';
-import 'package:zpevnik/models/songLyric.dart';
+import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/utils/beans.dart';
 
 class SongLyricEntity {

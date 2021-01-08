@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zpevnik/models/entities/playlist.dart';
-import 'package:zpevnik/models/songLyric.dart';
+import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/data_provider.dart';
 import 'package:zpevnik/utils/database.dart';
 
