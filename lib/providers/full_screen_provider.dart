@@ -5,8 +5,12 @@ class FullScreenProvider extends ChangeNotifier {
 
   bool get fullScreen => _fullScreen;
 
-  void toggle() {
-    _fullScreen = !_fullScreen;
-    notifyListeners();
+  void toggle() => fullScreen = !fullScreen;
+
+  set fullScreen(bool value) {
+    if (_fullScreen != value) {
+      _fullScreen = value;
+      notifyListeners();
+    }
   }
 }
