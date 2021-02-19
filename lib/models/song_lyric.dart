@@ -113,10 +113,12 @@ class SongLyric extends ChangeNotifier {
           .map((record) => '${DataProvider.shared.songbook(record.songbookId).shortcut}${record.number}')
           .toList();
 
-  String get name {
-    String name = _entity.name;
+  String get name => _entity.name;
 
-    if (_entity.secondaryName1 != null) name = '$name\n${_entity.secondaryName1}';
+  String get secondaryName {
+    String name;
+
+    if (_entity.secondaryName1 != null) name = '${_entity.secondaryName1}';
     if (_entity.secondaryName2 != null) name = '$name\n${_entity.secondaryName2}';
 
     return name;

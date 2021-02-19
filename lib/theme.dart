@@ -94,6 +94,12 @@ class AppThemeData extends InheritedWidget {
       ? cupertinoTheme.textTheme.textStyle.copyWith(color: textColor, fontSize: 15)
       : materialTheme.textTheme.bodyText1.copyWith(color: textColor, fontSize: 16);
 
+  TextStyle get secondaryTextStyle => isIOS
+      ? cupertinoTheme.textTheme.textStyle
+          .copyWith(color: isLight ? Color(0xff636365) : Color(0xff9c9c9a), fontSize: 14)
+      : materialTheme.textTheme.bodyText1
+          .copyWith(color: isLight ? Color(0xff636365) : Color(0xff9c9c9a), fontSize: 15);
+
   TextStyle get titleTextStyle => isIOS ? bodyTextStyle.copyWith(fontSize: 21) : materialTheme.textTheme.headline5;
 
   TextStyle get subTitleTextStyle => isIOS ? bodyTextStyle.copyWith(fontSize: 17) : materialTheme.textTheme.subtitle1;
