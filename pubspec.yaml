@@ -49,6 +49,10 @@ flutter:
       fonts:
       - asset: assets/fonts/CustomIcon.ttf
 
+    - family: Amiri
+      fonts:
+        - asset: assets/fonts/Amiri-Regular.ttf
+
   assets:
     - assets/data.json
     - assets/images/
