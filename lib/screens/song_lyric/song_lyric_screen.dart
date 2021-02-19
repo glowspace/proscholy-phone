@@ -122,6 +122,7 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
                       showSettings: _showSettings,
                       showExternals: widget.songLyric.youtubes.isNotEmpty ? _showExternals : null,
                       scrollProvider: scrollProvider,
+                      hasExternals: widget.songLyric.hasExternals,
                     ),
                   ),
                 ),
