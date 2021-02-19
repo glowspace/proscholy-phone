@@ -46,14 +46,11 @@ class SongLyricsProvider extends ChangeNotifier {
         (songLyric, searchText) => songLyric.numbers.any((number) => number.toLowerCase() == searchText),
         (songLyric, searchText) => songLyric.numbers
             .any((number) => _numberRE.hasMatch(searchText) && number.toLowerCase().startsWith(searchText)),
-        (songLyric, searchText) => songLyric.numbers
-            .any((number) => _numberRE.hasMatch(searchText) && number.toLowerCase().contains(searchText)),
         (songLyric, searchText) => songLyric.name.toLowerCase().startsWith(searchText),
         (songLyric, searchText) => removeDiacritics(songLyric.name.toLowerCase()).startsWith(searchText),
         (songLyric, searchText) => songLyric.name.toLowerCase().contains(searchText),
         (songLyric, searchText) => removeDiacritics(songLyric.name.toLowerCase()).contains(searchText),
         (songLyric, searchText) => songLyric.numbers.any((number) => number.toLowerCase().startsWith(searchText)),
-        (songLyric, searchText) => songLyric.numbers.any((number) => number.toLowerCase().contains(searchText)),
         (songLyric, searchText) => removeDiacritics(songLyric.entity.lyrics.toLowerCase()).contains(searchText),
       ];
 

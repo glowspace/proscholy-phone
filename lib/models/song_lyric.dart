@@ -9,7 +9,8 @@ import 'package:zpevnik/providers/data_provider.dart';
 import 'package:zpevnik/utils/database.dart';
 import 'package:zpevnik/utils/song_lyrics_parser.dart';
 
-final RegExp _chordsRE = RegExp(r'\[[^\]]+\]');
+final _chordsRE = RegExp(r'\[[^\]]+\]');
+final _numberRE = RegExp('[0-9]');
 
 enum SongLyricType {
   original,
@@ -78,6 +79,29 @@ class SongLyric extends ChangeNotifier {
   int get id => _entity.id;
 
   Key get key => Key(_entity.id.toString());
+
+  String showingNumber(String searchText) {
+    String bestMatch = id.toString();
+    int bestMatchValue = 0;
+    searchText = searchText.toLowerCase();
+
+    final predicates = [
+      (number, searchText) => number.toLowerCase() == searchText,
+      (number, searchText) => _numberRE.hasMatch(searchText) && number.toLowerCase().startsWith(searchText),
+      (number, searchText) => number.toLowerCase().startsWith(searchText),
+    ];
+
+    for (final number in numbers) {
+      for (int i = 0; i < predicates.length; i++) {
+        if (bestMatchValue <= i && predicates[i](number, searchText)) {
+          bestMatch = number;
+          bestMatchValue = i + 1;
+        }
+      }
+    }
+
+    return bestMatch;
+  }
 
   String number(Songbook songbook) {
     return '${songbook.shortcut} ${_entity.songbookRecords.firstWhere((record) => record.songbookId == songbook.id).number}';

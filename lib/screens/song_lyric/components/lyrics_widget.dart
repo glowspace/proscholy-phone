@@ -24,9 +24,8 @@ class _LyricsWidgetState extends State<LyricsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.songLyric.lilypond != null)
-      _preparedLilyPond ??= widget.songLyric.lilypond.replaceAll('currentColor',
-          AppTheme.of(context).textColor.toString().replaceAllMapped(_colorRE, (match) => '#${match.group(1)}'));
+    _preparedLilyPond ??= widget.songLyric.lilypond?.replaceAll('currentColor',
+        AppTheme.of(context).textColor.toString().replaceAllMapped(_colorRE, (match) => '#${match.group(1)}'));
 
     return Consumer<SettingsProvider>(
       builder: (context, settingsProvider, _) => GestureDetector(
@@ -38,7 +37,7 @@ class _LyricsWidgetState extends State<LyricsWidget> {
               text: TextSpan(text: widget.songLyric.displayName, style: AppTheme.of(context).titleTextStyle),
               textScaleFactor: settingsProvider.fontSizeScale,
             ),
-            if (widget.songLyric.lilypond != null)
+            if (_preparedLilyPond != null)
               SvgPicture.string(_preparedLilyPond, width: MediaQuery.of(context).size.width),
             Container(
               color: AppTheme.of(context).backgroundColor,

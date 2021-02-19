@@ -40,15 +40,11 @@ class TagsProvider extends ChangeNotifier {
 
   bool isSelected(Tag tag) => _selectedTags.containsKey(tag);
 
-  void showFilters(BuildContext context) {
-    FocusScope.of(context).unfocus();
-
-    showPlatformBottomSheet(
-      context: context,
-      child: ChangeNotifierProvider.value(value: this, child: FiltersWidget()),
-      height: 0.67 * MediaQuery.of(context).size.height,
-    );
-  }
+  void showFilters(BuildContext context) => showPlatformBottomSheet(
+        context: context,
+        child: ChangeNotifierProvider.value(value: this, child: FiltersWidget()),
+        height: 0.67 * MediaQuery.of(context).size.height,
+      );
 }
 
 class TagsSection {

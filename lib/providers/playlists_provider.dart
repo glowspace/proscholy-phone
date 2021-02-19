@@ -91,15 +91,11 @@ class PlaylistsProvider extends ChangeNotifier {
     Database.shared.removePlaylist(playlist.entity);
   }
 
-  void showPlaylists(BuildContext context, List<SongLyric> songLyrics) {
-    FocusScope.of(context).unfocus();
-
-    showPlatformBottomSheet(
-      context: context,
-      child: PlaylistSheet(songLyrics: songLyrics),
-      height: 0.67 * MediaQuery.of(context).size.height,
-    );
-  }
+  void showPlaylists(BuildContext context, List<SongLyric> songLyrics) => showPlatformBottomSheet(
+        context: context,
+        child: PlaylistSheet(songLyrics: songLyrics),
+        height: 0.67 * MediaQuery.of(context).size.height,
+      );
 
   void showPlaylistDialog(BuildContext context, {Function() callback}) => showDialog<void>(
         context: context,

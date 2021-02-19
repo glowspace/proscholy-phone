@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/providers/selection_provider.dart';
+import 'package:zpevnik/providers/song_lyrics_provider.dart';
 import 'package:zpevnik/screens/components/circular_checkbox.dart';
 import 'package:zpevnik/screens/components/highlightable_row.dart';
 import 'package:zpevnik/screens/song_lyric/song_lyric_screen.dart';
@@ -57,7 +59,10 @@ class _SongLyricRowStateNew extends State<SongLyricRow> {
                 child: Text(widget.songLyric.name, style: AppTheme.of(context).bodyTextStyle.copyWith(height: 1.5))),
             if (widget.showStar && widget.songLyric.isFavorite)
               Icon(Icons.star, color: AppTheme.of(context).iconColor, size: 16),
-            _songLyricNumber(context, widget.songLyric.id.toString()),
+            _songLyricNumber(
+              context,
+              widget.songLyric.showingNumber(Provider.of<SongLyricsProvider>(context).searchText),
+            ),
           ],
         ),
         prefix: widget.prefix,

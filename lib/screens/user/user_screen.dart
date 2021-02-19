@@ -163,6 +163,7 @@ class _UserScreenState extends State<UserScreen> with PlatformStateMixin {
             child: Row(children: [
               Text('Ostatní', style: AppTheme.of(context).bodyTextStyle),
               Spacer(),
+              GestureDetector(onTap: () => _showUserMenu(context), child: Icon(Icons.settings)),
               GestureDetector(onTap: () => _showUserMenu(context), child: Icon(Icons.menu)),
             ]),
           ),
@@ -182,15 +183,11 @@ class _UserScreenState extends State<UserScreen> with PlatformStateMixin {
         ),
       );
 
-  void _showUserMenu(BuildContext context) {
-    FocusScope.of(context).unfocus();
-
-    return showPlatformBottomSheet(
-      context: context,
-      child: UserMenuWidget(),
-      height: 0.5 * MediaQuery.of(context).size.height,
-    );
-  }
+  void _showUserMenu(BuildContext context) => showPlatformBottomSheet(
+        context: context,
+        child: UserMenuWidget(),
+        height: 0.5 * MediaQuery.of(context).size.height,
+      );
 
   bool _onReorder(Key from, Key to) {
     int fromIndex = PlaylistsProvider.shared.allPlaylists.indexWhere((playlist) => playlist.key == from);
