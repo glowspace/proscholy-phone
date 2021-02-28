@@ -74,7 +74,20 @@ class Database {
 
   Future<void> saveSongLyrics(List<SongLyricEntity> songLyrics) async {
     for (final batch in _splitInBatches(songLyrics))
-      await SongLyricBean(_adapter).upsertMany(batch).catchError((error) => print(error));
+      await SongLyricBean(_adapter)
+          .upsertMany(batch,
+              only: [
+                'id',
+                'name',
+                'secondary_name1',
+                'secondary_name2',
+                'lyrics',
+                'language',
+                'type',
+                'lilypond',
+                'song_id'
+              ].toSet())
+          .catchError((error) => print(error));
   }
 
   Future<void> saveExternals(List<ExternalEntity> externals) async {
