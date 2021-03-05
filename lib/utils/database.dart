@@ -13,6 +13,8 @@ import 'package:zpevnik/models/entities/songbook_record.dart';
 import 'package:zpevnik/models/entities/tag.dart';
 import 'package:zpevnik/utils/beans.dart';
 
+final _undesiredPartsRE = RegExp(r'(\d.|\[[^\]]+\])');
+
 class Database {
   SqfliteAdapter _adapter;
 
@@ -104,14 +106,59 @@ class Database {
   Future<void> saveSongLyricAuthors(List<SongLyricAuthor> songLyricAuthors) =>
       SongLyricAuthorBean(_adapter).upsertMany(songLyricAuthors).catchError((error) => print(error));
 
-  void savePlaylist(PlaylistEntity playlist) {
+  Future<void> savePlaylist(PlaylistEntity playlist) {
     PlaylistBean(_adapter).insert(playlist).catchError((error) => print(error));
-    SongLyricPlaylistBean(_adapter)
+    return SongLyricPlaylistBean(_adapter)
         .insertMany(playlist.songLyrics
             .map((songLyric) => SongLyricPlaylist()
               ..playlistId = playlist.id
               ..songLyricId = songLyric.id)
             .toList())
+        .catchError((error) => print(error));
+  }
+
+  Future<void> updateSongLyricsSearchTable(List<SongLyricEntity> songLyrics, List<SongbookEntity> songbooks) async {
+    // just drop the table and create new one, it is easier then finding, which song lyric needs to be inserted and which updated
+    await _adapter.connection.rawQuery('DROP TABLE song_lyrics_search;').catchError((error) => print(error));
+
+    await _adapter.connection
+        .rawQuery(
+            'CREATE VIRTUAL TABLE IF NOT EXISTS song_lyrics_search USING FTS5(id, name, secondary_name1, secondary_name2, lyrics, numbers);')
+        .catchError((error) => print(error));
+
+    Map<int, SongbookEntity> songbooksMap = {};
+    Map<int, List<String>> records = {};
+
+    for (final songbook in songbooks) songbooksMap[songbook.id] = songbook;
+
+    for (final record in await SongbookRecordBean(_adapter).getAll()) {
+      if (!records.containsKey(record.songLyricId)) records[record.songLyricId] = [];
+
+      if (songbooksMap.containsKey(record.songbookId))
+        records[record.songLyricId].add('${songbooksMap[record.songbookId].shortcut}${record.number}');
+    }
+
+    for (final batch in _splitInBatches(songLyrics)) {
+      final List<List<SetColumn>> data = [];
+      for (var i = 0; i < batch.length; ++i) {
+        var model = batch[i];
+
+        List<SetColumn> columns = SongLyricBean(_adapter)
+            .toSetColumns(model, only: ['id', 'name', 'secondary_name1', 'secondary_name2'].toSet())
+            .toList();
+
+        columns.add(StrField('lyrics').set(model.lyrics.replaceAll(_undesiredPartsRE, '')));
+        columns.add(StrField('numbers').set(records[model.id].toString()));
+
+        data.add(columns);
+      }
+      final InsertMany insert = Sql.insertMany('song_lyrics_search').addAll(data);
+      await _adapter.insertMany(insert).catchError((error) => print(error));
+    }
+
+    _adapter.connection
+        .rawQuery(
+            "INSERT INTO song_lyrics_search(song_lyrics_search, rank) VALUES('rank', 'bm25(25.0, 20.0, 15.0, 10.0, 5.0, 20.0)');")
         .catchError((error) => print(error));
   }
 
@@ -228,6 +275,10 @@ class Database {
     PlaylistBean(_adapter).remove(playlist.id);
     return SongLyricPlaylistBean(_adapter).removeByPlaylistEntity(playlist.id);
   }
+
+  Future<List<Map<String, dynamic>>> searchSongLyrics(String searchText) => _adapter.connection.rawQuery(
+      "SELECT id FROM song_lyrics_search WHERE song_lyrics_search MATCH ? ORDER BY rank;",
+      [searchText]).catchError((error) => print(error));
 
   List<List<T>> _splitInBatches<T>(List<T> list) {
     List<List<T>> batches = [];

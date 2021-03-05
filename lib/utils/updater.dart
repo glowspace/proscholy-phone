@@ -113,6 +113,7 @@ class Updater {
 
     if (connectivityResult == ConnectivityResult.wifi) _update(prefs.getString(_lastUpdateKey) ?? _initialLastUpdate);
 
+    // TODO: fix this, it's quite slow
     await DataProvider.shared.init();
 
     return true;
@@ -126,7 +127,7 @@ class Updater {
         body: _query.replaceAll('\n', '').replaceFirst(_lastUpdatePlaceholder, '(updated_after: \\"$lastUpdate\\")'),
         headers: <String, String>{'Content-Type': 'application/json; charset=utf-8'});
 
-    await _parse(response.body);
+    await _parse(response.body).catchError((error) => print(error));
 
     SharedPreferences.getInstance().then((prefs) => prefs.setString(_lastUpdateKey, format.format(DateTime.now())));
   }

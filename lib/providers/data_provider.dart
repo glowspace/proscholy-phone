@@ -24,7 +24,12 @@ class DataProvider {
     Set<String> languages = Set();
     Map<String, int> languageCounts = {};
 
-    _songLyrics = (await Database.shared.songLyrics).map((songLyricEntity) {
+    final songLyrics = await Database.shared.songLyrics;
+    final songBooks = await Database.shared.songbooks;
+
+    await Database.shared.updateSongLyricsSearchTable(songLyrics, songBooks);
+
+    _songLyrics = songLyrics.map((songLyricEntity) {
       // fixme: temporary solution for empty songs
       if (!songs.containsKey(songLyricEntity.songId))
         songs[songLyricEntity.songId] = Song(SongEntity(id: 0, name: songLyricEntity.name));
@@ -42,7 +47,7 @@ class DataProvider {
     }).toList()
       ..sort((first, second) => first.name.compareTo(second.name));
 
-    _songbooks = (await Database.shared.songbooks).map((songbookEntity) => Songbook(songbookEntity)).toList();
+    _songbooks = songBooks.map((songbookEntity) => Songbook(songbookEntity)).toList();
     _songbooksMap = {};
     for (final songbook in songbooks) _songbooksMap[songbook.id] = songbook;
 
