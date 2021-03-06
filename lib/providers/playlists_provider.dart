@@ -108,4 +108,15 @@ class PlaylistsProvider extends ChangeNotifier {
           },
         ),
       );
+
+  void addSharedPlaylist(BuildContext context, String playlistName, List<SongLyric> songLyrics) => showDialog<void>(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => PlatformDialog(
+          title: 'Přidat playlist',
+          initialValue: playlistName,
+          submitText: 'Přidat',
+          onSubmit: (text) => _addPlaylist(text, songLyrics),
+        ),
+      );
 }

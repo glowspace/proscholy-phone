@@ -15,8 +15,10 @@ class SongLyricRow extends StatefulWidget {
   final SongLyric songLyric;
   final bool showStar;
   final Widget prefix;
+  final bool hasProvider; // fixme: temporary solution for translations
 
-  const SongLyricRow({Key key, @required this.songLyric, this.showStar = true, this.prefix}) : super(key: key);
+  const SongLyricRow({Key key, @required this.songLyric, this.showStar = true, this.prefix, this.hasProvider = true})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _SongLyricRowStateNew();
@@ -37,6 +39,13 @@ class _SongLyricRowStateNew extends State<SongLyricRow> {
     final selected = selectionProvider?.isSelected(widget.songLyric) ?? false;
 
     final songbookContainer = DataContainer.of<Songbook>(context);
+    final showingNumber = songbookContainer == null
+        ? (widget.hasProvider
+            ? widget.songLyric.showingNumber(Provider.of<SongLyricsProvider>(context).searchText)
+            : widget.songLyric.id.toString())
+        : widget.songLyric.id.toString();
+
+    final appTheme = AppTheme.of(context);
 
     return GestureDetector(
       onLongPress: selectionProvider == null ? null : () => selectionProvider.toggleSongLyric(widget.songLyric),
@@ -44,53 +53,65 @@ class _SongLyricRowStateNew extends State<SongLyricRow> {
       child: HighlightableRow(
         onPressed: () =>
             selectionEnabled ? selectionProvider.toggleSongLyric(widget.songLyric) : _pushSongLyric(context),
-        color: selected ? AppTheme.of(context).selectedRowColor : null,
+        color: selected ? appTheme.selectedRowColor : null,
+        prefix: widget.prefix,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            if (songbookContainer != null)
-              Container(
-                padding: EdgeInsets.only(right: kDefaultPadding),
-                child: _songLyricNumber(context, widget.songLyric.number(songbookContainer.data)),
-              ),
             if (selectionEnabled)
               Container(padding: EdgeInsets.only(right: kDefaultPadding), child: CircularCheckbox(selected: selected)),
+            if (songbookContainer != null)
+              Expanded(
+                child: Container(
+                  padding:
+                      EdgeInsets.only(right: 2), // just to make some minimal space between shortcut and song number
+                  child: _songLyricNumber(context, songbookContainer.data.shortcut),
+                ),
+                flex: songbookContainer.data.shortcut.length,
+              ),
+            if (songbookContainer != null)
+              Expanded(
+                child: Container(
+                  padding: EdgeInsets.only(right: kDefaultPadding),
+                  child: _songLyricNumber(context, widget.songLyric.number(songbookContainer.data)),
+                ),
+                flex: 3,
+              ),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(widget.songLyric.name, style: AppTheme.of(context).bodyTextStyle.copyWith(height: 1.5)),
+                  Text(widget.songLyric.name, style: appTheme.bodyTextStyle.copyWith(height: 1.5)),
                   if (widget.songLyric.secondaryName != null)
-                    Text(widget.songLyric.secondaryName, style: AppTheme.of(context).secondaryTextStyle)
+                    Text(widget.songLyric.secondaryName, style: appTheme.secondaryTextStyle)
                 ],
               ),
+              flex: 24,
             ),
-            if (widget.showStar && widget.songLyric.isFavorite)
-              Icon(Icons.star, color: AppTheme.of(context).iconColor, size: 16),
-            _songLyricNumber(
-              context,
-              widget.songLyric.showingNumber(Provider.of<SongLyricsProvider>(context).searchText),
-            ),
+            if (widget.showStar && widget.songLyric.isFavorite) Icon(Icons.star, color: appTheme.iconColor, size: 16),
+            Expanded(
+              child: Container(
+                padding: EdgeInsets.only(left: kDefaultPadding),
+                child: _songLyricNumber(context, showingNumber),
+              ),
+              flex: 4,
+            )
           ],
         ),
-        prefix: widget.prefix,
       ),
     );
   }
 
-  Widget _songLyricNumber(BuildContext context, String number) => SizedBox(
-        width: 36,
-        child: FittedBox(
-          fit: BoxFit.scaleDown,
-          alignment: Alignment.centerRight,
-          child: Text(number, style: AppTheme.of(context).captionTextStyle),
-        ),
+  Widget _songLyricNumber(BuildContext context, String number) => FittedBox(
+        fit: BoxFit.scaleDown,
+        alignment: Alignment.centerRight,
+        child: Text(number, style: AppTheme.of(context).captionTextStyle.copyWith(fontFamily: 'Nunito')),
       );
 
   void _pushSongLyric(BuildContext context) {
     FocusScope.of(context).unfocus();
 
-    // if selecte songLyric is already in context pop back to it (used for translation screen)
+    // if selected songLyric is already in context pop back to it (used for translation screen)
     if (widget.songLyric == DataContainer.of<SongLyric>(context)?.data)
       Navigator.of(context).pop();
     else

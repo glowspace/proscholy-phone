@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:sqlite_bm25/sqlite_bm25.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/providers/data_provider.dart';
@@ -82,15 +83,22 @@ class SongLyricsProvider extends ChangeNotifier {
 
     Database.shared.searchSongLyrics(_searchText.trim().replaceAll(' ', '* ') + '*').then((values) {
       List<SongLyric> songLyrics = [];
+      Map<int, double> ranks = {};
 
-      for (final value in values)
-        if (songLyricsMap.containsKey(value['id'])) songLyrics.add(songLyricsMap[value['id']]);
+      for (final value in values) {
+        if (songLyricsMap.containsKey(value['id'])) {
+          songLyrics.add(songLyricsMap[value['id']]);
+
+          ranks[value['id']] = bm25(value['info'], weights: [50.0, 40.0, 35.0, 30.0, 1.0, 45.0]);
+        }
+      }
 
       // fixme: don't know how to return naturaly sorted results from FTS, so it will be sorted here
-      if (_numberRE.hasMatch(_searchText)) {
+      if (_numberRE.hasMatch(_searchText))
         songLyrics.sort(
             (first, second) => compareNatural(first.showingNumber(_searchText), second.showingNumber(_searchText)));
-      }
+      else
+        songLyrics.sort((first, second) => ranks[first.id].compareTo(ranks[second.id]));
 
       _setSongLyricsAndNotify(songLyrics);
     });

@@ -124,7 +124,7 @@ class Database {
 
     await _adapter.connection
         .rawQuery(
-            'CREATE VIRTUAL TABLE IF NOT EXISTS song_lyrics_search USING FTS5(id, name, secondary_name1, secondary_name2, lyrics, numbers);')
+            'CREATE VIRTUAL TABLE IF NOT EXISTS song_lyrics_search USING FTS4(id, name, secondary_name1, secondary_name2, lyrics, numbers, tokenize=unicode61);')
         .catchError((error) => print(error));
 
     Map<int, SongbookEntity> songbooksMap = {};
@@ -156,11 +156,6 @@ class Database {
       final InsertMany insert = Sql.insertMany('song_lyrics_search').addAll(data);
       await _adapter.insertMany(insert).catchError((error) => print(error));
     }
-
-    _adapter.connection
-        .rawQuery(
-            "INSERT INTO song_lyrics_search(song_lyrics_search, rank) VALUES('rank', 'bm25(50.0, 40.0, 35.0, 30.0, 1.0, 45.0)');")
-        .catchError((error) => print(error));
   }
 
   Future<void> updateSongbook(SongbookEntity songbook, Set<String> only) =>
@@ -278,7 +273,7 @@ class Database {
   }
 
   Future<List<Map<String, dynamic>>> searchSongLyrics(String searchText) => _adapter.connection.rawQuery(
-      "SELECT id FROM song_lyrics_search WHERE song_lyrics_search MATCH ? ORDER BY rank;",
+      "SELECT id, matchinfo(song_lyrics_search, 'pcnalx') as info FROM song_lyrics_search WHERE song_lyrics_search MATCH ?;",
       [searchText]).catchError((error) => print(error));
 
   Future<void> _removeOutdated<T>(List<int> ids, EntityBean<T> bean) async {

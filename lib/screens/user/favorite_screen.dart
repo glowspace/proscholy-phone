@@ -22,6 +22,8 @@ class FavoriteScreen extends StatefulWidget {
 class _FavoriteScreenState extends State<FavoriteScreen> with PlatformStateMixin {
   final SongLyricsProvider _songLyricsProvider;
 
+  final _searchFieldFocusNode = FocusNode();
+
   bool _searching;
 
   _FavoriteScreenState(this._songLyricsProvider);
@@ -39,7 +41,9 @@ class _FavoriteScreenState extends State<FavoriteScreen> with PlatformStateMixin
           leading: _leading(context),
           middle: _middle(context),
           trailing: _trailing(context),
-          padding: _searching ? EdgeInsetsDirectional.only(start: kDefaultPadding / 2, end: kDefaultPadding / 2) : null,
+          padding: _searching
+              ? EdgeInsetsDirectional.only(start: kDefaultPadding / 2, end: kDefaultPadding / 2)
+              : EdgeInsetsDirectional.zero,
         ),
         child: _body(context),
       );
@@ -66,6 +70,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> with PlatformStateMixin
           placeholder: 'Zadejte slovo nebo číslo',
           search: _songLyricsProvider.search,
           onSubmitted: (_) => _pushSelectedSongLyric(context),
+          focusNode: _searchFieldFocusNode,
           prefix: HighlightableButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () => setState(() {
@@ -82,7 +87,13 @@ class _FavoriteScreenState extends State<FavoriteScreen> with PlatformStateMixin
 
   Widget _trailing(BuildContext context) => _searching
       ? Container(width: 0)
-      : HighlightableButton(onPressed: () => setState(() => _searching = true), icon: Icon(Icons.search));
+      : HighlightableButton(
+          onPressed: () => setState(() {
+            _searching = true;
+            _searchFieldFocusNode.requestFocus();
+          }),
+          icon: Icon(Icons.search),
+        );
 
   Widget _body(BuildContext context) => SafeArea(
         child: Container(

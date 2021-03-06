@@ -7,7 +7,6 @@ import 'package:zpevnik/providers/playlists_provider.dart';
 import 'package:zpevnik/screens/components/data_container.dart';
 import 'package:zpevnik/screens/components/menu_item.dart';
 import 'package:zpevnik/screens/components/popup_menu.dart';
-import 'package:zpevnik/screens/song_lyric/music_notes_screen.dart';
 import 'package:zpevnik/theme.dart';
 
 class SongLyricMenu extends StatelessWidget {

@@ -53,6 +53,7 @@ class _SearchWidgetState extends State<SearchWidget> with PlatformStateMixin {
               onChanged: _searchTextChanged,
               onSubmitted: widget.onSubmitted,
               clearButtonMode: OverlayVisibilityMode.editing,
+              padding: EdgeInsets.zero,
             ),
           ),
         ),
@@ -86,7 +87,10 @@ class _SearchWidgetState extends State<SearchWidget> with PlatformStateMixin {
       );
 
   Widget _body(BuildContext context, Widget child) => Container(
-        padding: EdgeInsets.symmetric(horizontal: kDefaultPadding),
+        padding: EdgeInsets.only(
+          left: widget.prefix == null ? kDefaultPadding : 0,
+          right: widget.suffix == null ? kDefaultPadding : 0,
+        ),
         margin: AppTheme.of(context).isIOS ? null : EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
         decoration: BoxDecoration(
           color: AppTheme.of(context).backgroundColor,

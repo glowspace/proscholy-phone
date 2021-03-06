@@ -29,11 +29,17 @@ class SongLyricScreen extends StatefulWidget {
 }
 
 class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
+  ScrollController _scrollController;
+  ScrollProvider _scrollProvider;
+
   ValueNotifier<bool> _showingMenu;
 
   @override
   void initState() {
     super.initState();
+
+    _scrollController = ScrollController();
+    _scrollProvider = ScrollProvider(_scrollController);
 
     _showingMenu = ValueNotifier(false);
 
@@ -64,7 +70,10 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
             appBar: provider.fullScreen
                 ? null
                 : CustomAppBar(
-                    title: Text(widget.songLyric.id.toString(), style: AppTheme.of(context).navBarTitleTextStyle),
+                    title: Text(
+                      widget.songLyric.id.toString(),
+                      style: AppTheme.of(context).navBarTitleTextStyle.copyWith(color: AppTheme.of(context).iconColor),
+                    ),
                     shadowColor: AppTheme.of(context).appBarDividerColor,
                     actions: _actions(context),
                     brightness: AppTheme.of(context).brightness,
@@ -77,8 +86,6 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
   Widget _body(BuildContext context) {
     final settingsProvider = Provider.of<SettingsProvider>(context, listen: false);
     final fullScreenProvider = Provider.of<FullScreenProvider>(context, listen: false);
-    final scrollController = ScrollController();
-    final scrollProvider = ScrollProvider(scrollController);
 
     return DataContainer(
       data: widget.songLyric,
@@ -91,14 +98,14 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
             children: [
               NotificationListener(
                 onNotification: (notif) {
-                  if (notif is ScrollEndNotification) setState(() => scrollProvider.scrollEnded());
+                  if (notif is ScrollEndNotification) setState(() => _scrollProvider.scrollEnded());
 
                   return true;
                 },
                 child: Container(
                   height: double.infinity,
                   child: SingleChildScrollView(
-                    controller: scrollController,
+                    controller: _scrollController,
                     child: Container(
                       padding: EdgeInsets.fromLTRB(
                         kDefaultPadding,
@@ -117,11 +124,11 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
                   right: 0,
                   bottom: kDefaultPadding,
                   child: DataContainer(
-                    data: scrollProvider,
+                    data: _scrollProvider,
                     child: SlidingWidget(
                       showSettings: _showSettings,
                       showExternals: widget.songLyric.youtubes.isNotEmpty ? _showExternals : null,
-                      scrollProvider: scrollProvider,
+                      scrollProvider: _scrollProvider,
                       hasExternals: widget.songLyric.hasExternals,
                     ),
                   ),
@@ -150,7 +157,7 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
       ),
       HighlightableButton(
         icon: Icon(Icons.more_vert),
-        padding: padding,
+        padding: EdgeInsets.fromLTRB(kDefaultPadding / 2, kDefaultPadding, kDefaultPadding, kDefaultPadding),
         onPressed: () => _showingMenu.value = !_showingMenu.value,
       ),
     ];

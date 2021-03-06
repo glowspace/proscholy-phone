@@ -17,6 +17,7 @@ class DataProvider {
   List<Tag> _tags;
   List<Playlist> _playlists;
 
+  Map<int, SongLyric> _songLyricsMap;
   Map<int, Songbook> _songbooksMap;
 
   Future<void> init() async {
@@ -25,9 +26,9 @@ class DataProvider {
     Map<String, int> languageCounts = {};
 
     final songLyrics = await Database.shared.songLyrics;
-    final songBooks = await Database.shared.songbooks;
+    final songbooks = await Database.shared.songbooks;
 
-    await Database.shared.updateSongLyricsSearchTable(songLyrics, songBooks);
+    await Database.shared.updateSongLyricsSearchTable(songLyrics, songbooks);
 
     _songLyrics = songLyrics.map((songLyricEntity) {
       // fixme: temporary solution for empty songs
@@ -47,9 +48,12 @@ class DataProvider {
     }).toList()
       ..sort((first, second) => first.name.compareTo(second.name));
 
-    _songbooks = songBooks.map((songbookEntity) => Songbook(songbookEntity)).toList();
+    _songLyricsMap = {};
+    for (final songLyric in _songLyrics) _songLyricsMap[songLyric.id] = songLyric;
+
+    _songbooks = songbooks.map((songbookEntity) => Songbook(songbookEntity)).toList();
     _songbooksMap = {};
-    for (final songbook in songbooks) _songbooksMap[songbook.id] = songbook;
+    for (final songbook in _songbooks) _songbooksMap[songbook.id] = songbook;
 
     _tags = (await Database.shared.tags).map((tagEntity) => Tag(tagEntity)).toList();
 
@@ -63,6 +67,8 @@ class DataProvider {
   List<Songbook> get songbooks => _songbooks;
   List<Tag> get tags => _tags;
   List<Playlist> get playlists => _playlists;
+
+  SongLyric songLyric(int id) => _songLyricsMap[id];
 
   Songbook songbook(int id) => _songbooksMap[id];
 }

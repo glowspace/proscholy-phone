@@ -1,18 +1,21 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_reorderable_list/flutter_reorderable_list.dart';
+import 'package:flutter_share/flutter_share.dart';
 import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/custom_icon_icons.dart';
+import 'package:zpevnik/custom/custom_icon_icons.dart';
+import 'package:zpevnik/links.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/providers/playlists_provider.dart';
 import 'package:zpevnik/screens/components/highlightable_row.dart';
-import 'package:zpevnik/screens/components/menu_item.dart';
 import 'package:zpevnik/screens/components/platform/platform_dialog.dart';
 import 'package:zpevnik/screens/components/platform/platform_popup_menu_button.dart';
 import 'package:zpevnik/screens/playlists/playlist_screen.dart';
 import 'package:zpevnik/theme.dart';
 
-enum PlaylistAction { rename, duplicate, toggleArchive, remove }
+enum PlaylistAction { rename, duplicate, toggleArchive, remove, share }
 
 class PlaylistRow extends StatefulWidget {
   final Playlist playlist;
@@ -98,6 +101,17 @@ class _PlaylistRowState extends State<PlaylistRow> {
                 ),
                 Text('Odstranit', style: textStyle),
               ]),
+            )
+          else
+            PopupMenuItem<PlaylistAction>(
+              value: PlaylistAction.share,
+              child: Row(children: [
+                Container(
+                  padding: EdgeInsets.only(right: kDefaultPadding),
+                  child: Icon(Icons.share, color: iconColor),
+                ),
+                Text('Sdílet', style: textStyle),
+              ]),
             ),
         ],
         onSelected: (action) {
@@ -114,6 +128,9 @@ class _PlaylistRowState extends State<PlaylistRow> {
             case PlaylistAction.remove:
               PlaylistsProvider.shared.remove(widget.playlist);
               break;
+            case PlaylistAction.share:
+              _sharePlaylist();
+              break;
           }
 
           widget.onSelect();
@@ -126,6 +143,17 @@ class _PlaylistRowState extends State<PlaylistRow> {
     FocusScope.of(context).unfocus();
 
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => PlaylistScreen(playlist: widget.playlist)));
+  }
+
+  void _sharePlaylist() {
+    final ids = jsonEncode(widget.playlist.songLyrics.map((songLyric) => songLyric.id).toList());
+    final uri = Uri.encodeFull('$deepLinkUrl/add_playlist?name=${widget.playlist.name}&ids=${ids.toString()}');
+
+    FlutterShare.share(
+      title: widget.playlist.name,
+      linkUrl: uri,
+      chooserTitle: widget.playlist.name,
+    );
   }
 
   void _showRenameDialog(BuildContext context) => showDialog<void>(

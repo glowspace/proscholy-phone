@@ -35,6 +35,12 @@ dependencies:
 
   firebase_analytics: any
 
+  flutter_staggered_grid_view: any
+
+  uni_links: any
+
+  sqlite_bm25: any
+
   cupertino_icons: any
 
 dev_dependencies:
@@ -52,6 +58,10 @@ flutter:
     - family: Amiri
       fonts:
         - asset: assets/fonts/Amiri-Regular.ttf
+
+    - family: Nunito
+      fonts:
+        - asset: assets/fonts/Nunito-Regular.ttf
 
   assets:
     - assets/data.json

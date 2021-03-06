@@ -9,13 +9,18 @@ class StatusBarWrapper extends StatelessWidget {
   StatusBarWrapper({this.child, this.color});
 
   @override
-  Widget build(BuildContext context) => AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle(
-          statusBarBrightness: AppTheme.of(context).brightness,
-          statusBarIconBrightness:
-              AppTheme.of(context).brightness == Brightness.light ? Brightness.dark : Brightness.light,
-          statusBarColor: color == null ? AppTheme.of(context).backgroundColor : color,
-        ),
-        child: child,
-      );
+  Widget build(BuildContext context) {
+    final appTheme = AppTheme.of(context);
+    
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(
+        statusBarBrightness: appTheme.brightness,
+        statusBarIconBrightness:
+            appTheme.brightness == Brightness.light ? Brightness.dark : Brightness.light,
+        statusBarColor: color == null ? appTheme.backgroundColor : color,
+        systemNavigationBarColor: appTheme.backgroundColor,
+      ),
+      child: child,
+    );
+  }
 }

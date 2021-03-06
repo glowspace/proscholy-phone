@@ -103,9 +103,8 @@ class SongLyric extends ChangeNotifier {
     return bestMatch;
   }
 
-  String number(Songbook songbook) {
-    return '${songbook.shortcut} ${_entity.songbookRecords.firstWhere((record) => record.songbookId == songbook.id).number}';
-  }
+  String number(Songbook songbook) =>
+      _entity.songbookRecords.firstWhere((record) => record.songbookId == songbook.id).number;
 
   List<String> get numbers => _numbers ??= [id.toString()] +
       _entity.songbookRecords

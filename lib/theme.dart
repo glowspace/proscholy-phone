@@ -100,11 +100,12 @@ class AppThemeData extends InheritedWidget {
       : materialTheme.textTheme.bodyText1
           .copyWith(color: isLight ? Color(0xff636365) : Color(0xff9c9c9a), fontSize: 15);
 
-  TextStyle get titleTextStyle => isIOS ? bodyTextStyle.copyWith(fontSize: 21) : materialTheme.textTheme.headline5;
+  TextStyle get titleTextStyle => bodyTextStyle.copyWith(fontSize: 21, fontWeight: FontWeight.bold);
 
-  TextStyle get subTitleTextStyle => isIOS ? bodyTextStyle.copyWith(fontSize: 17) : materialTheme.textTheme.subtitle1;
+  TextStyle get subTitleTextStyle => bodyTextStyle.copyWith(fontSize: 17);
 
-  TextStyle get navBarTitleTextStyle => bodyTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 17);
+  TextStyle get navBarTitleTextStyle =>
+      isIOS ? bodyTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 17) : bodyTextStyle;
 
   TextStyle get placeholderTextStyle => bodyTextStyle.copyWith(
         color: isLight ? Color(0xff9aa0a5) : Color(0xff655f5a),

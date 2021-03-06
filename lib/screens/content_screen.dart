@@ -1,9 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:uni_links/uni_links.dart';
 import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/custom_navigator.dart';
+import 'package:zpevnik/custom/custom_navigator.dart';
+import 'package:zpevnik/models/song_lyric.dart';
+import 'package:zpevnik/providers/data_provider.dart';
 import 'package:zpevnik/providers/full_screen_provider.dart';
+import 'package:zpevnik/providers/playlists_provider.dart';
 import 'package:zpevnik/utils/platform.dart';
 import 'package:zpevnik/screens/home/home_screen.dart';
 import 'package:zpevnik/screens/songbooks/songbooks_screen.dart';
@@ -28,6 +34,9 @@ class _ContentScreenState extends State<ContentScreen> with PlatformStateMixin {
   @override
   void initState() {
     super.initState();
+
+    getInitialUri().then(_handleUri).catchError((error) => print(error));
+    getUriLinksStream()..listen(_handleUri);
 
     _activeColor = blue;
     _currentIndex = 0;
@@ -96,6 +105,28 @@ class _ContentScreenState extends State<ContentScreen> with PlatformStateMixin {
           activeIcon: Icon(Icons.person),
         ),
       ];
+
+  void _handleUri(Uri uri) {
+    if (uri == null) return;
+
+    switch (uri.path) {
+      case "/add_playlist":
+        final playlistName = uri.queryParameters['name'];
+        final songLyricIds = jsonDecode(uri.queryParameters['ids']) as List<dynamic>;
+
+        List<SongLyric> songLyrics = [];
+
+        for (final id in songLyricIds) {
+          final songLyric = DataProvider.shared.songLyric(id);
+          if (songLyric != null) songLyrics.add(songLyric);
+        }
+
+        PlaylistsProvider.shared.addSharedPlaylist(context, playlistName, songLyrics);
+        break;
+      default:
+        break;
+    }
+  }
 
   void _indexChanged(int index) => setState(() {
         // TODO: reset state

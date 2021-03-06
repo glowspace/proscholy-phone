@@ -24,8 +24,10 @@ class _LyricsWidgetState extends State<LyricsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    _preparedLilyPond ??= widget.songLyric.lilypond?.replaceAll('currentColor',
-        AppTheme.of(context).textColor.toString().replaceAllMapped(_colorRE, (match) => '#${match.group(1)}'));
+    final appTheme = AppTheme.of(context);
+
+    _preparedLilyPond ??= widget.songLyric.lilypond?.replaceAll(
+        'currentColor', appTheme.textColor.toString().replaceAllMapped(_colorRE, (match) => '#${match.group(1)}'));
 
     return Consumer<SettingsProvider>(
       builder: (context, settingsProvider, _) => GestureDetector(
@@ -34,13 +36,13 @@ class _LyricsWidgetState extends State<LyricsWidget> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             RichText(
-              text: TextSpan(text: widget.songLyric.displayName, style: AppTheme.of(context).titleTextStyle),
+              text: TextSpan(text: widget.songLyric.displayName, style: appTheme.titleTextStyle),
               textScaleFactor: settingsProvider.fontSizeScale,
             ),
             if (_preparedLilyPond != null)
               SvgPicture.string(_preparedLilyPond, width: MediaQuery.of(context).size.width),
             Container(
-              color: AppTheme.of(context).backgroundColor,
+              color: appTheme.backgroundColor,
               padding: EdgeInsets.only(top: kDefaultPadding * settingsProvider.fontSizeScale),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -51,7 +53,10 @@ class _LyricsWidgetState extends State<LyricsWidget> {
               ),
             ),
             RichText(
-              text: TextSpan(text: widget.songLyric.authorsText, style: AppTheme.of(context).bodyTextStyle),
+              text: TextSpan(
+                text: widget.songLyric.authorsText,
+                style: appTheme.bodyTextStyle.copyWith(fontSize: appTheme.bodyTextStyle.fontSize - 3),
+              ),
               textScaleFactor: settingsProvider.fontSizeScale,
             ),
           ],
@@ -142,7 +147,7 @@ class _LyricsWidgetState extends State<LyricsWidget> {
                 // decoration: BoxDecoration(
                 //   border: Border(
                 //     bottom: BorderSide(
-                //         color: block.shouldShowLine ? AppTheme.of(context).textColor : Colors.transparent),
+                //         color: block.shouldShowLine ? appTheme.textColor : Colors.transparent),
                 //   ),
                 // ),
                 child: Transform.translate(
