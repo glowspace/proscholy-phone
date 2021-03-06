@@ -4,6 +4,7 @@ import 'package:jaguar_query_sqflite/jaguar_query_sqflite.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:zpevnik/models/entities/author.dart';
+import 'package:zpevnik/models/entities/entity.dart';
 import 'package:zpevnik/models/entities/external.dart';
 import 'package:zpevnik/models/entities/playlist.dart';
 import 'package:zpevnik/models/entities/song.dart';
@@ -59,43 +60,30 @@ class Database {
     }
   }
 
-  Future<void> saveAuthors(List<AuthorEntity> authors) async {
-    for (final batch in _splitInBatches(authors))
-      await AuthorBean(_adapter).upsertMany(batch).catchError((error) => print(error));
-  }
+  Future<void> saveAuthors(List<AuthorEntity> authors) => _insertOrUpdateMany(authors, AuthorBean(_adapter));
 
-  Future<void> saveTags(List<TagEntity> tags) => TagBean(_adapter).upsertMany(tags).catchError((error) => print(error));
+  Future<void> saveTags(List<TagEntity> tags) => _insertOrUpdateMany(tags, TagBean(_adapter));
 
-  Future<void> saveSongbooks(List<SongbookEntity> songbooks) =>
-      SongbookBean(_adapter).upsertMany(songbooks).catchError((error) => print(error));
+  Future<void> saveSongbooks(List<SongbookEntity> songbooks) => _insertOrUpdateMany(songbooks, SongbookBean(_adapter),
+      only: ['id', 'name', 'shortcut', 'color', 'color_text', 'is_private'].toSet());
 
-  Future<void> saveSongs(List<SongEntity> songs) async {
-    for (final batch in _splitInBatches(songs))
-      await SongBean(_adapter).upsertMany(batch).catchError((error) => print(error));
-  }
+  Future<void> saveSongs(List<SongEntity> songs) => _insertOrUpdateMany(songs, SongBean(_adapter));
 
-  Future<void> saveSongLyrics(List<SongLyricEntity> songLyrics) async {
-    for (final batch in _splitInBatches(songLyrics))
-      await SongLyricBean(_adapter)
-          .upsertMany(batch,
-              only: [
-                'id',
-                'name',
-                'secondary_name1',
-                'secondary_name2',
-                'lyrics',
-                'language',
-                'type',
-                'lilypond',
-                'song_id'
-              ].toSet())
-          .catchError((error) => print(error));
-  }
+  Future<void> saveSongLyrics(List<SongLyricEntity> songLyrics) =>
+      _insertOrUpdateMany(songLyrics, SongLyricBean(_adapter),
+          only: [
+            'id',
+            'name',
+            'secondary_name1',
+            'secondary_name2',
+            'lyrics',
+            'language',
+            'type',
+            'lilypond',
+            'song_id'
+          ].toSet());
 
-  Future<void> saveExternals(List<ExternalEntity> externals) async {
-    for (final batch in _splitInBatches(externals))
-      await ExternalBean(_adapter).upsertMany(batch).catchError((error) => print(error));
-  }
+  Future<void> saveExternals(List<ExternalEntity> externals) => _insertOrUpdateMany(externals, ExternalBean(_adapter));
 
   Future<void> saveSongbookRecords(List<SongbookRecord> songbookRecords) =>
       SongbookRecordBean(_adapter).upsertMany(songbookRecords).catchError((error) => print(error));
@@ -108,6 +96,7 @@ class Database {
 
   Future<void> savePlaylist(PlaylistEntity playlist) {
     PlaylistBean(_adapter).insert(playlist).catchError((error) => print(error));
+
     return SongLyricPlaylistBean(_adapter)
         .insertMany(playlist.songLyrics
             .map((songLyric) => SongLyricPlaylist()
@@ -116,6 +105,18 @@ class Database {
             .toList())
         .catchError((error) => print(error));
   }
+
+  Future<void> removeOutdatedAuthors(List<int> ids) => _removeOutdated(ids, AuthorBean(_adapter));
+
+  Future<void> removeOutdatedTags(List<int> ids) => _removeOutdated(ids, TagBean(_adapter));
+
+  Future<void> removeOutdatedSongbooks(List<int> ids) => _removeOutdated(ids, SongbookBean(_adapter));
+
+  Future<void> removeOutdatedSongs(List<int> ids) => _removeOutdated(ids, SongBean(_adapter));
+
+  Future<void> removeOutdatedSongLyrics(List<int> ids) => _removeOutdated(ids, SongLyricBean(_adapter));
+
+  Future<void> removeOutdatedExternals(List<int> ids) => _removeOutdated(ids, ExternalBean(_adapter));
 
   Future<void> updateSongLyricsSearchTable(List<SongLyricEntity> songLyrics, List<SongbookEntity> songbooks) async {
     // just drop the table and create new one, it is easier then finding, which song lyric needs to be inserted and which updated
@@ -158,7 +159,7 @@ class Database {
 
     _adapter.connection
         .rawQuery(
-            "INSERT INTO song_lyrics_search(song_lyrics_search, rank) VALUES('rank', 'bm25(25.0, 20.0, 15.0, 10.0, 5.0, 20.0)');")
+            "INSERT INTO song_lyrics_search(song_lyrics_search, rank) VALUES('rank', 'bm25(50.0, 40.0, 35.0, 30.0, 1.0, 45.0)');")
         .catchError((error) => print(error));
   }
 
@@ -279,6 +280,37 @@ class Database {
   Future<List<Map<String, dynamic>>> searchSongLyrics(String searchText) => _adapter.connection.rawQuery(
       "SELECT id FROM song_lyrics_search WHERE song_lyrics_search MATCH ? ORDER BY rank;",
       [searchText]).catchError((error) => print(error));
+
+  Future<void> _removeOutdated<T>(List<int> ids, EntityBean<T> bean) async {
+    final existing = {};
+
+    for (final entity in await _adapter.connection.query(bean.tableName, columns: ['id']))
+      existing[entity['id']] = true;
+
+    for (final id in ids) if (!existing.containsKey(id)) await bean.remove(id, cascade: true);
+  }
+
+  Future<void> _insertOrUpdateMany<T extends Entity>(List<T> entities, EntityBean<T> bean, {Set<String> only}) async {
+    final existing = {};
+
+    for (final entity in await _adapter.connection.query(bean.tableName, columns: ['id']))
+      existing[entity['id']] = true;
+
+    List<T> inserts = [];
+    List<T> updates = [];
+
+    for (final entity in entities) {
+      if (existing.containsKey(entity.id))
+        updates.add(entity);
+      else
+        inserts.add(entity);
+    }
+
+    for (final batch in _splitInBatches(updates))
+      bean.updateMany(batch, only: only).catchError((error) => print(error));
+
+    for (final batch in _splitInBatches(inserts)) bean.insertMany(batch).catchError((error) => print(error));
+  }
 
   List<List<T>> _splitInBatches<T>(List<T> list) {
     List<List<T>> batches = [];

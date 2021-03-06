@@ -119,7 +119,7 @@ class SongLyric extends ChangeNotifier {
     String name;
 
     if (_entity.secondaryName1 != null) name = '${_entity.secondaryName1}';
-    if (_entity.secondaryName2 != null) name = '$name\n${_entity.secondaryName2}';
+    if (_entity.secondaryName2 != null) name = '${name == null ? '' : '$name\n'}${_entity.secondaryName2}';
 
     return name;
   }
@@ -132,7 +132,7 @@ class SongLyric extends ChangeNotifier {
         name = '$name (${_entity.secondaryName1}, ${_entity.secondaryName2})';
       else
         name = '$name (${_entity.secondaryName1})';
-    }
+    } else if (_entity.secondaryName2 != null) name = '$name (${_entity.secondaryName2})';
 
     return name;
   }

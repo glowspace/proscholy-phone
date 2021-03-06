@@ -94,6 +94,9 @@ class Updater {
           id
         }
       }
+      song_lyric_ids: song_lyrics {
+        id
+      }
     }"
   }
   ''';
@@ -101,17 +104,20 @@ class Updater {
   Future<bool> update() async {
     final prefs = await SharedPreferences.getInstance();
     final connectivityResult = await Connectivity().checkConnectivity();
-    final version = prefs.getInt(_versionKey) ?? 0;
+
+    final version = prefs.getInt(_versionKey) ?? -1;
+    String lastUpdate = prefs.getString(_lastUpdateKey) ?? _initialLastUpdate;
 
     await Database.shared.init(version);
 
     if (version != kCurrentVersion) {
-      await _loadLocal();
-      await prefs.remove(_lastUpdateKey);
+      await _loadLocal().catchError((error) => print(error));
+
       prefs.setInt(_versionKey, kCurrentVersion);
+      lastUpdate = _initialLastUpdate;
     }
 
-    if (connectivityResult == ConnectivityResult.wifi) _update(prefs.getString(_lastUpdateKey) ?? _initialLastUpdate);
+    if (connectivityResult == ConnectivityResult.wifi) _update(lastUpdate);
 
     // TODO: fix this, it's quite slow
     await DataProvider.shared.init();
@@ -148,6 +154,8 @@ class Updater {
     final songs = (data['songs'] as List<dynamic>).map((json) => SongEntity.fromJson(json)).toList();
 
     final songLyrics = (data['song_lyrics'] as List<dynamic>).map((json) => SongLyricEntity.fromJson(json)).toList();
+
+    final songLyricIds = (data['song_lyric_ids'] as List<dynamic>).map((json) => int.parse(json['id'])).toList();
 
     final externalsTmp = songLyrics.map((songLyric) => songLyric.externals).toList();
 
@@ -207,6 +215,13 @@ class Updater {
       Database.shared.saveSongbookRecords(songbookRecords),
       Database.shared.saveSongLyricTags(songLyricTags),
       Database.shared.saveSongLyricAuthors(songLyricAuthors),
+      // outdated removals
+      Database.shared.removeOutdatedAuthors(authors.map((author) => author.id).toList()),
+      Database.shared.removeOutdatedTags(tags.map((tag) => tag.id).toList()),
+      Database.shared.removeOutdatedSongbooks(songbooks.map((songbook) => songbook.id).toList()),
+      Database.shared.removeOutdatedSongs(songs.map((song) => song.id).toList()),
+      Database.shared.removeOutdatedSongLyrics(songLyricIds),
+      Database.shared.removeOutdatedExternals(externals.map((ext) => ext.id).toList()),
     ]);
   }
 }
