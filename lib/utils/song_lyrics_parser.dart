@@ -1,7 +1,7 @@
 import 'package:zpevnik/models/song_lyric.dart';
 
 final _verseRE = RegExp(
-    r'\s*(\d+\.|\(?[BCR]\d?[:.]\)?|@mezihra:|@dohra:)?\s*((?:=\s*(\d\.)|.|\n)*?)\n*(?=$|[^=]?\d\.|\(?[BCR]\d?[:.]\)?|@mezihra:|@dohra:)');
+    r'\s*(\d+\.|\(?[BCR]\d?[:.]\)?|@mezihra:|@dohra:|#)?\s*((?:=\s*(\d\.)|.|\n)*?)\n*(?=$|[^=]?\d\.|\(?[BCR]\d?[:.]\)?|@mezihra:|@dohra:|#)');
 final _chordsRE = RegExp(r'\[[^\]]+\]');
 final _placeholderRE = RegExp(r'\[%\]');
 final _firstVerseRE = RegExp(r'1\.(?:.|\n)+?(?=\n+\d\.|\n+\(?[BCR][:.]\)?)', multiLine: true);
@@ -73,12 +73,21 @@ class SongLyricsParser {
       if ((verses[i].lines.isEmpty ||
               verses[i].lines[0].blocks.isEmpty ||
               verses[i].lines[0].blocks[0].lyricsPart.isEmpty) &&
-          substitute != null) verses[i] = Verse(substitute.number, substitute.lines);
+          substitute != null) verses[i] = Verse(substitute.number, substitute.lines, false);
 
       substitutes[verses[i].number] = verses[i];
     }
 
-    return verses;
+    List<Verse> finalizedVerses = [];
+    for (final verse in verses) {
+      if (verse.isComment) {
+        finalizedVerses.add(Verse('', [verse.lines[0]], true));
+        if (verse.lines.length > 1) finalizedVerses.add(Verse('', verse.lines.sublist(1), false));
+      } else
+        finalizedVerses.add(verse);
+    }
+
+    return finalizedVerses;
   }
 
   // extracts chords from given lyrics
@@ -103,9 +112,6 @@ class SongLyricsParser {
   List<Block> _blocks(String line, bool isInterlude) {
     List<Block> blocks = [];
 
-    bool isComment = line.startsWith('#');
-    if (isComment) line = line.substring(2);
-
     if (isInterlude) line = line.replaceAll(_interludePartRE, '');
 
     String previous = '';
@@ -128,11 +134,10 @@ class SongLyricsParser {
                 previous,
                 '${words[i++]} ${words[i++]}' + (words.length > 2 || text.endsWith(' ') ? ' ' : ''),
                 words.length == 2 && isNextLetter && !isLastSpace,
-                isComment,
                 isInterlude));
           else
             blocks.add(Block(previous, words[i++] + (words.length > 1 || text.endsWith(' ') ? ' ' : ''),
-                words.length == 1 && isNextLetter && !isLastSpace, isComment, isInterlude));
+                words.length == 1 && isNextLetter && !isLastSpace, isInterlude));
         }
 
         // print('$words, $isNextLetter, $isLastSpace');
@@ -140,14 +145,14 @@ class SongLyricsParser {
           final text = words.sublist(i).join(' ');
 
           if (isNextLetter || isLastSpace)
-            blocks.add(Block('', '$text', isNextLetter && !isLastSpace, isComment, isInterlude));
+            blocks.add(Block('', '$text', isNextLetter && !isLastSpace, isInterlude));
           else
-            blocks.add(Block('', '$text ', false, isComment, isInterlude));
+            blocks.add(Block('', '$text ', false, isInterlude));
         } else if (words.length > i) {
           final text = words.sublist(i, words.length - 1).join(' ');
-          if (text.isNotEmpty) blocks.add(Block('', '$text ', false, isComment, isInterlude));
+          if (text.isNotEmpty) blocks.add(Block('', '$text ', false, isInterlude));
 
-          blocks.add(Block('', '${words[words.length - 1]}', isNextLetter && !isLastSpace, isComment, isInterlude));
+          blocks.add(Block('', '${words[words.length - 1]}', isNextLetter && !isLastSpace, isInterlude));
         }
       }
 
@@ -162,16 +167,15 @@ class SongLyricsParser {
     if (previous.isNotEmpty) {
       // temporary solution to handle shorter chord than word
       if (words[i].length < 4 && words.length > 1)
-        blocks.add(Block(
-            previous, '${words[i++]} ${words[i++]}' + (words.length > 2 ? ' ' : ''), false, isComment, isInterlude));
+        blocks.add(Block(previous, '${words[i++]} ${words[i++]}' + (words.length > 2 ? ' ' : ''), false, isInterlude));
       else
-        blocks.add(Block(previous, words[i++] + (words.length > 1 ? ' ' : ''), false, isComment, isInterlude));
+        blocks.add(Block(previous, words[i++] + (words.length > 1 ? ' ' : ''), false, isInterlude));
     }
 
     if (words.length > i) {
       final text = words.sublist(i).join(' ');
 
-      blocks.add(Block('', '$text', false, isComment, isInterlude));
+      blocks.add(Block('', '$text', false, isInterlude));
     }
 
     return blocks;

@@ -249,36 +249,42 @@ class SongLyric extends ChangeNotifier {
 
 class Verse {
   final String number;
-  final List<Line> lines;
+  List<Line> _lines;
+  final bool isComment;
 
-  Verse(this.number, this.lines);
+  Verse(this.number, this._lines, this.isComment);
+
+  List<Line> get lines => _lines;
+
+  set lines(value) => _lines = value;
 
   factory Verse.fromMatch(RegExpMatch match) {
     if (match.group(1) == null && match.group(2).isEmpty) return null;
 
-    if (match.group(1) == null)
-      return Verse(
-        '',
-        SongLyricsParser.shared.lines(match.group(2), false),
-      );
+    if (match.group(1) == null) return Verse('', SongLyricsParser.shared.lines(match.group(2), false), false);
 
     String number = match.group(1);
     bool isInterlude = false;
+    bool isComment = false;
     if (number == '@mezihra:') {
       number = 'M:';
       isInterlude = true;
     } else if (number == '@dohra:') {
       number = 'Z:';
       isInterlude = true;
+    } else if (number == '#') {
+      number = '';
+      isComment = true;
     }
 
     return Verse(
       number,
       SongLyricsParser.shared.lines(match.group(2), isInterlude),
+      isComment,
     );
   }
 
-  factory Verse.withoutNumber(String verse) => Verse('', SongLyricsParser.shared.lines(verse, false));
+  factory Verse.withoutNumber(String verse) => Verse('', SongLyricsParser.shared.lines(verse, false), false);
 }
 
 class Line {
@@ -298,12 +304,12 @@ class Line {
       tmp.add(block);
 
       if (!block.shouldShowLine) {
-        grouped.add(tmp);
+        if (tmp.isNotEmpty) grouped.add(tmp);
         tmp = [];
       }
     }
 
-    grouped.add(tmp);
+    if (tmp.isNotEmpty) grouped.add(tmp);
 
     _groupedBlocks = grouped;
 
@@ -315,13 +321,12 @@ class Block {
   final String _chord;
   final String lyricsPart;
   final bool _shouldShowLine;
-  final bool isComment;
   final bool isInterlude;
 
   int transposition;
   bool accidentals;
 
-  Block(this._chord, this.lyricsPart, this._shouldShowLine, this.isComment, this.isInterlude);
+  Block(this._chord, this.lyricsPart, this._shouldShowLine, this.isInterlude);
 
   String get chord =>
       SongLyricsParser.shared.convertAccidentals(SongLyricsParser.shared.transpose(_chord, transposition), accidentals);

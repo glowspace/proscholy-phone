@@ -66,7 +66,7 @@ class _LyricsWidgetState extends State<LyricsWidget> {
   }
 
   Container _verse(BuildContext context, Verse verse, SettingsProvider settingsProvider) => Container(
-        padding: EdgeInsets.only(bottom: 2 * kDefaultPadding),
+        padding: verse.isComment ? null : EdgeInsets.only(bottom: 2 * kDefaultPadding),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -95,7 +95,7 @@ class _LyricsWidgetState extends State<LyricsWidget> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: List.generate(
                     verse.lines.length,
-                    (index) => _line(context, verse.lines[index], settingsProvider),
+                    (index) => _line(context, verse.lines[index], settingsProvider, verse.isComment),
                   ),
                 ),
               ),
@@ -104,38 +104,38 @@ class _LyricsWidgetState extends State<LyricsWidget> {
         ),
       );
 
-  Widget _line(BuildContext context, Line line, SettingsProvider settingsProvider) => RichText(
+  Widget _line(BuildContext context, Line line, SettingsProvider settingsProvider, bool isComment) => RichText(
         text: TextSpan(
           text: '',
           children: List.generate(
             line.groupedBlocks.length,
-            (index) => _blocks(context, line.groupedBlocks[index], settingsProvider),
+            (index) => _blocks(context, line.groupedBlocks[index], settingsProvider, isComment),
           ),
           style: AppTheme.of(context).bodyTextStyle,
         ),
         textScaleFactor: settingsProvider.fontSizeScale,
       );
 
-  InlineSpan _blocks(BuildContext context, List<Block> blocks, SettingsProvider settingsProvider) => blocks.length == 1
-      ? (blocks[0].chord.isEmpty
-          ? WidgetSpan(
-              child: RichText(
-                text: TextSpan(
-                  text: blocks[0].lyricsPart,
-                  style:
-                      (blocks[0].isComment ? AppTheme.of(context).commentTextStyle : AppTheme.of(context).bodyTextStyle)
+  InlineSpan _blocks(BuildContext context, List<Block> blocks, SettingsProvider settingsProvider, bool isComment) =>
+      blocks.length == 1
+          ? (blocks[0].chord.isEmpty
+              ? WidgetSpan(
+                  child: RichText(
+                    text: TextSpan(
+                      text: blocks[0].lyricsPart,
+                      style: (isComment ? AppTheme.of(context).commentTextStyle : AppTheme.of(context).bodyTextStyle)
                           .copyWith(height: (widget.songLyric.showChords ? 2.25 : 1.5)),
-                ),
+                    ),
+                  ),
+                )
+              : WidgetSpan(child: _block(context, blocks[0], settingsProvider)))
+          : WidgetSpan(
+              child: Wrap(
+              children: List.generate(
+                blocks.length,
+                (index) => _block(context, blocks[index], settingsProvider),
               ),
-            )
-          : WidgetSpan(child: _block(context, blocks[0], settingsProvider)))
-      : WidgetSpan(
-          child: Wrap(
-          children: List.generate(
-            blocks.length,
-            (index) => _block(context, blocks[index], settingsProvider),
-          ),
-        ));
+            ));
 
   Widget _block(BuildContext context, Block block, SettingsProvider settingsProvider) => Stack(
         children: [
