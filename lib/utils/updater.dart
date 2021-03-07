@@ -21,7 +21,7 @@ const String _versionKey = 'version';
 const String _lastUpdateKey = 'last_update';
 
 const String _lastUpdatePlaceholder = '[LAST_UPDATE]';
-const String _initialLastUpdate = '2021-01-08 11:30:00';
+const String _initialLastUpdate = '2021-03-06 11:30:00';
 
 const Duration _updatePeriod = Duration(hours: 12);
 
@@ -97,6 +97,9 @@ class Updater {
       song_lyric_ids: song_lyrics {
         id
       }
+      external_ids: externals {
+        id
+      }
     }"
   }
   ''';
@@ -156,6 +159,8 @@ class Updater {
     final songLyrics = (data['song_lyrics'] as List<dynamic>).map((json) => SongLyricEntity.fromJson(json)).toList();
 
     final songLyricIds = (data['song_lyric_ids'] as List<dynamic>).map((json) => int.parse(json['id'])).toList();
+
+    final externalIds = (data['external_ids'] as List<dynamic>).map((json) => int.parse(json['id'])).toList();
 
     final externalsTmp = songLyrics.map((songLyric) => songLyric.externals).toList();
 
@@ -221,7 +226,7 @@ class Updater {
       Database.shared.removeOutdatedSongbooks(songbooks.map((songbook) => songbook.id).toList()),
       Database.shared.removeOutdatedSongs(songs.map((song) => song.id).toList()),
       Database.shared.removeOutdatedSongLyrics(songLyricIds),
-      Database.shared.removeOutdatedExternals(externals.map((ext) => ext.id).toList()),
+      Database.shared.removeOutdatedExternals(externalIds),
     ]);
   }
 }

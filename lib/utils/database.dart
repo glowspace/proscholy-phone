@@ -277,12 +277,11 @@ class Database {
       [searchText]).catchError((error) => print(error));
 
   Future<void> _removeOutdated<T>(List<int> ids, EntityBean<T> bean) async {
-    final existing = {};
+    final existing = [];
 
-    for (final entity in await _adapter.connection.query(bean.tableName, columns: ['id']))
-      existing[entity['id']] = true;
+    for (final entity in await _adapter.connection.query(bean.tableName, columns: ['id'])) existing.add(entity['id']);
 
-    for (final id in ids) if (!existing.containsKey(id)) await bean.remove(id, cascade: true);
+    for (final id in existing) if (!ids.contains(id)) await bean.remove(id, cascade: true);
   }
 
   Future<void> _insertOrUpdateMany<T extends Entity>(List<T> entities, EntityBean<T> bean, {Set<String> only}) async {
@@ -302,9 +301,9 @@ class Database {
     }
 
     for (final batch in _splitInBatches(updates))
-      bean.updateMany(batch, only: only).catchError((error) => print(error));
+      await bean.updateMany(batch, only: only).catchError((error) => print(error));
 
-    for (final batch in _splitInBatches(inserts)) bean.insertMany(batch).catchError((error) => print(error));
+    for (final batch in _splitInBatches(inserts)) await bean.insertMany(batch).catchError((error) => print(error));
   }
 
   List<List<T>> _splitInBatches<T>(List<T> list) {

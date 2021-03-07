@@ -78,7 +78,6 @@ class SongLyricsProvider extends ChangeNotifier {
       if (songLyric.numbers.any((number) => number.toLowerCase() == (searchText))) _matchedById = songLyric;
 
       songLyricsMap[songLyric.id] = songLyric;
-      if (songLyric.id == 2) print(songLyric.name);
     }
 
     Database.shared.searchSongLyrics(_searchText.trim().replaceAll(' ', '* ') + '*').then((values) {
