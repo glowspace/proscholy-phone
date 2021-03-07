@@ -116,6 +116,8 @@ class AppThemeData extends InheritedWidget {
         fontSize: 13,
       );
 
+  TextStyle get commentTextStyle => captionTextStyle.copyWith(fontStyle: FontStyle.italic);
+
   Color get appBarDividerColor => isLight ? Color(0xff888888) : Color(0xff777777);
 
   Color get backgroundColor => isLight ? Color(0xffffffff) : Color(0xff000000);

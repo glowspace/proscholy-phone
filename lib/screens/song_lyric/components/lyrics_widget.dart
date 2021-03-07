@@ -123,7 +123,8 @@ class _LyricsWidgetState extends State<LyricsWidget> {
                 text: TextSpan(
                   text: blocks[0].lyricsPart,
                   style:
-                      AppTheme.of(context).bodyTextStyle.copyWith(height: (widget.songLyric.showChords ? 2.25 : 1.5)),
+                      (blocks[0].isComment ? AppTheme.of(context).commentTextStyle : AppTheme.of(context).bodyTextStyle)
+                          .copyWith(height: (widget.songLyric.showChords ? 2.25 : 1.5)),
                 ),
               ),
             )

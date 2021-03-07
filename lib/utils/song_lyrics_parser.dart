@@ -100,6 +100,9 @@ class SongLyricsParser {
   List<Block> _blocks(String line) {
     List<Block> blocks = [];
 
+    bool isComment = line.startsWith('#');
+    if (isComment) line = line.substring(2);
+
     String previous = '';
     int index = 0;
 
@@ -120,12 +123,14 @@ class SongLyricsParser {
               previous,
               '${words[i++]} ${words[i++]}' + (words.length > 2 || text.endsWith(' ') ? ' ' : ''),
               words.length == 2 && isNextLetter && !isLastSpace,
+              isComment,
             ));
           else
             blocks.add(Block(
               previous,
               words[i++] + (words.length > 1 || text.endsWith(' ') ? ' ' : ''),
               words.length == 1 && isNextLetter && !isLastSpace,
+              isComment,
             ));
         }
 
@@ -134,14 +139,14 @@ class SongLyricsParser {
           final text = words.sublist(i).join(' ');
 
           if (isNextLetter || isLastSpace)
-            blocks.add(Block('', '$text', isNextLetter && !isLastSpace));
+            blocks.add(Block('', '$text', isNextLetter && !isLastSpace, isComment));
           else
-            blocks.add(Block('', '$text ', false));
+            blocks.add(Block('', '$text ', false, isComment));
         } else if (words.length > i) {
           final text = words.sublist(i, words.length - 1).join(' ');
-          if (text.isNotEmpty) blocks.add(Block('', '$text ', false));
+          if (text.isNotEmpty) blocks.add(Block('', '$text ', false, isComment));
 
-          blocks.add(Block('', '${words[words.length - 1]}', isNextLetter && !isLastSpace));
+          blocks.add(Block('', '${words[words.length - 1]}', isNextLetter && !isLastSpace, isComment));
         }
       }
 
@@ -156,15 +161,15 @@ class SongLyricsParser {
     if (previous.isNotEmpty) {
       // temporary solution to handle shorter chord than word
       if (words[i].length < 4 && words.length > 1)
-        blocks.add(Block(previous, '${words[i++]} ${words[i++]}' + (words.length > 2 ? ' ' : ''), false));
+        blocks.add(Block(previous, '${words[i++]} ${words[i++]}' + (words.length > 2 ? ' ' : ''), false, isComment));
       else
-        blocks.add(Block(previous, words[i++] + (words.length > 1 ? ' ' : ''), false));
+        blocks.add(Block(previous, words[i++] + (words.length > 1 ? ' ' : ''), false, isComment));
     }
 
     if (words.length > i) {
       final text = words.sublist(i).join(' ');
 
-      blocks.add(Block('', '$text', false));
+      blocks.add(Block('', '$text', false, isComment));
     }
 
     return blocks;

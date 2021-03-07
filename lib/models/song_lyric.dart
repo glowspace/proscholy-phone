@@ -302,11 +302,12 @@ class Block {
   final String _chord;
   final String lyricsPart;
   final bool _shouldShowLine;
+  final bool isComment;
 
   int transposition;
   bool accidentals;
 
-  Block(this._chord, this.lyricsPart, this._shouldShowLine);
+  Block(this._chord, this.lyricsPart, this._shouldShowLine, this.isComment);
 
   String get chord =>
       SongLyricsParser.shared.convertAccidentals(SongLyricsParser.shared.transpose(_chord, transposition), accidentals);
