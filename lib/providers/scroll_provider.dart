@@ -7,15 +7,19 @@ const double _maxScrollSpeed = 40;
 const double _scrollSpeedChangeMult = 1.1;
 
 class ScrollProvider {
-  final ScrollController scrollController;
+  ScrollController _scrollController;
 
   ValueNotifier<bool> _scrolling;
 
   double _speed;
 
-  ScrollProvider(this.scrollController)
+  ScrollProvider()
       : _scrolling = ValueNotifier(false),
         _speed = Global.shared.prefs.getDouble('scroll_speed') ?? _defaultScrollSpeed;
+
+  ScrollController get scrollController => _scrollController;
+
+  set scrollController(controller) => _scrollController = controller;
 
   ValueNotifier<bool> get scrolling => _scrolling;
 

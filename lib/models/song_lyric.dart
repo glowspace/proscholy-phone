@@ -259,16 +259,26 @@ class Verse {
     if (match.group(1) == null)
       return Verse(
         '',
-        SongLyricsParser.shared.lines(match.group(2)),
+        SongLyricsParser.shared.lines(match.group(2), false),
       );
 
+    String number = match.group(1);
+    bool isInterlude = false;
+    if (number == '@mezihra:') {
+      number = 'M:';
+      isInterlude = true;
+    } else if (number == '@dohra:') {
+      number = 'Z:';
+      isInterlude = true;
+    }
+
     return Verse(
-      match.group(1),
-      SongLyricsParser.shared.lines(match.group(2)),
+      number,
+      SongLyricsParser.shared.lines(match.group(2), isInterlude),
     );
   }
 
-  factory Verse.withoutNumber(String verse) => Verse('', SongLyricsParser.shared.lines(verse));
+  factory Verse.withoutNumber(String verse) => Verse('', SongLyricsParser.shared.lines(verse, false));
 }
 
 class Line {
@@ -306,11 +316,12 @@ class Block {
   final String lyricsPart;
   final bool _shouldShowLine;
   final bool isComment;
+  final bool isInterlude;
 
   int transposition;
   bool accidentals;
 
-  Block(this._chord, this.lyricsPart, this._shouldShowLine, this.isComment);
+  Block(this._chord, this.lyricsPart, this._shouldShowLine, this.isComment, this.isInterlude);
 
   String get chord =>
       SongLyricsParser.shared.convertAccidentals(SongLyricsParser.shared.transpose(_chord, transposition), accidentals);

@@ -141,7 +141,7 @@ class _LyricsWidgetState extends State<LyricsWidget> {
         children: [
           if (widget.songLyric.showChords)
             Transform.translate(
-              offset: Offset(0, -3),
+              offset: Offset(0, block.isInterlude ? 0 : -3),
               child: Container(
                 // todo: disable line between divided word
 
@@ -152,7 +152,7 @@ class _LyricsWidgetState extends State<LyricsWidget> {
                 //   ),
                 // ),
                 child: Transform.translate(
-                  offset: Offset(0, -(AppTheme.of(context).bodyTextStyle.fontSize - 3)),
+                  offset: Offset(0, block.isInterlude ? 0 : -(AppTheme.of(context).bodyTextStyle.fontSize - 3)),
                   child: RichText(
                     text: TextSpan(
                       text: block.chord + (block.chord.length > block.lyricsPart.length ? ' ' : ''),

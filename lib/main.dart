@@ -36,11 +36,6 @@ class _MainWidgetstate extends State<MainWidget> with PlatformStateMixin {
   final FirebaseAnalytics _analytics = FirebaseAnalytics();
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget iOSWidget(BuildContext context) => _wrap(
         context,
         (context, home) => CupertinoApp(

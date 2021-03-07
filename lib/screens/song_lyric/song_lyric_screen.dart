@@ -29,7 +29,6 @@ class SongLyricScreen extends StatefulWidget {
 }
 
 class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
-  ScrollController _scrollController;
   ScrollProvider _scrollProvider;
 
   ValueNotifier<bool> _showingMenu;
@@ -38,8 +37,7 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
   void initState() {
     super.initState();
 
-    _scrollController = ScrollController();
-    _scrollProvider = ScrollProvider(_scrollController);
+    _scrollProvider = ScrollProvider();
 
     _showingMenu = ValueNotifier(false);
 
@@ -87,6 +85,15 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
     final settingsProvider = Provider.of<SettingsProvider>(context, listen: false);
     final fullScreenProvider = Provider.of<FullScreenProvider>(context, listen: false);
 
+    final scrollController = ScrollController();
+    _scrollProvider.scrollController = scrollController;
+
+    // print(_scrollController.hasClients);
+    // print(_scrollController.position);
+    // print(context.hashCode);
+
+    // if (_scrollController.hasClients) _scrollController.detach(_scrollController.position);
+
     return DataContainer(
       data: widget.songLyric,
       child: SafeArea(
@@ -105,7 +112,8 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
                 child: Container(
                   height: double.infinity,
                   child: SingleChildScrollView(
-                    controller: _scrollController,
+                    key: PageStorageKey('song_lyric_scroll_view_${widget.songLyric.id}'),
+                    controller: scrollController,
                     child: Container(
                       padding: EdgeInsets.fromLTRB(
                         kDefaultPadding,

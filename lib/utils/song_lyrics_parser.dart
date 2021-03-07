@@ -1,7 +1,7 @@
 import 'package:zpevnik/models/song_lyric.dart';
 
-final _verseRE =
-    RegExp(r'\s*(\d+\.|\(?[BCR]\d?[:.]\)?)?\s*((?:=\s*(\d\.)|.|\n)*?)\n*(?=$|[^=]?\d\.|\(?[BCR]\d?[:.]\)?)');
+final _verseRE = RegExp(
+    r'\s*(\d+\.|\(?[BCR]\d?[:.]\)?|@mezihra:|@dohra:)?\s*((?:=\s*(\d\.)|.|\n)*?)\n*(?=$|[^=]?\d\.|\(?[BCR]\d?[:.]\)?|@mezihra:|@dohra:)');
 final _chordsRE = RegExp(r'\[[^\]]+\]');
 final _placeholderRE = RegExp(r'\[%\]');
 final _firstVerseRE = RegExp(r'1\.(?:.|\n)+?(?=\n+\d\.|\n+\(?[BCR][:.]\)?)', multiLine: true);
@@ -20,13 +20,15 @@ final _multipleSpacesRE = RegExp(r' +');
 
 final _letterRE = RegExp(r'[a-zA-ZěščřžýáíéĚŠČŘŽÝÁÍÉ]');
 
+final _interludePartRE = RegExp(r'(/:\s?|:/\s?)');
+
 class SongLyricsParser {
   SongLyricsParser._();
 
   static final SongLyricsParser shared = SongLyricsParser._();
 
   List<Verse> parseLyrics(String lyrics, int transposition, bool accidentals) =>
-      _verses(_substituteChordsPlaceholders(lyrics.replaceAll('\r', '').replaceAll('@', '')))
+      _verses(_substituteChordsPlaceholders(lyrics.replaceAll('\r', '')))
         ..forEach(
           (verse) => verse.lines.forEach(
             (line) => line.blocks.forEach(
@@ -93,15 +95,18 @@ class SongLyricsParser {
   }
 
   // extracts lines of verse
-  List<Line> lines(String verse) => verse.split('\n').map((line) => Line(_blocks(line))).toList();
+  List<Line> lines(String verse, bool isInterlude) =>
+      verse.split('\n').map((line) => Line(_blocks(line, isInterlude))).toList();
 
   // extracts blocks from verse lines, every block is either word or part of word with corresponding chord
   // it is generated like this only for easier displaying of song lyric
-  List<Block> _blocks(String line) {
+  List<Block> _blocks(String line, bool isInterlude) {
     List<Block> blocks = [];
 
     bool isComment = line.startsWith('#');
     if (isComment) line = line.substring(2);
+
+    if (isInterlude) line = line.replaceAll(_interludePartRE, '');
 
     String previous = '';
     int index = 0;
@@ -120,18 +125,14 @@ class SongLyricsParser {
           // temporary solution to handle shorter chord than word
           if (words[i].length <= previous.length && words.length > 1)
             blocks.add(Block(
-              previous,
-              '${words[i++]} ${words[i++]}' + (words.length > 2 || text.endsWith(' ') ? ' ' : ''),
-              words.length == 2 && isNextLetter && !isLastSpace,
-              isComment,
-            ));
+                previous,
+                '${words[i++]} ${words[i++]}' + (words.length > 2 || text.endsWith(' ') ? ' ' : ''),
+                words.length == 2 && isNextLetter && !isLastSpace,
+                isComment,
+                isInterlude));
           else
-            blocks.add(Block(
-              previous,
-              words[i++] + (words.length > 1 || text.endsWith(' ') ? ' ' : ''),
-              words.length == 1 && isNextLetter && !isLastSpace,
-              isComment,
-            ));
+            blocks.add(Block(previous, words[i++] + (words.length > 1 || text.endsWith(' ') ? ' ' : ''),
+                words.length == 1 && isNextLetter && !isLastSpace, isComment, isInterlude));
         }
 
         // print('$words, $isNextLetter, $isLastSpace');
@@ -139,14 +140,14 @@ class SongLyricsParser {
           final text = words.sublist(i).join(' ');
 
           if (isNextLetter || isLastSpace)
-            blocks.add(Block('', '$text', isNextLetter && !isLastSpace, isComment));
+            blocks.add(Block('', '$text', isNextLetter && !isLastSpace, isComment, isInterlude));
           else
-            blocks.add(Block('', '$text ', false, isComment));
+            blocks.add(Block('', '$text ', false, isComment, isInterlude));
         } else if (words.length > i) {
           final text = words.sublist(i, words.length - 1).join(' ');
-          if (text.isNotEmpty) blocks.add(Block('', '$text ', false, isComment));
+          if (text.isNotEmpty) blocks.add(Block('', '$text ', false, isComment, isInterlude));
 
-          blocks.add(Block('', '${words[words.length - 1]}', isNextLetter && !isLastSpace, isComment));
+          blocks.add(Block('', '${words[words.length - 1]}', isNextLetter && !isLastSpace, isComment, isInterlude));
         }
       }
 
@@ -161,15 +162,16 @@ class SongLyricsParser {
     if (previous.isNotEmpty) {
       // temporary solution to handle shorter chord than word
       if (words[i].length < 4 && words.length > 1)
-        blocks.add(Block(previous, '${words[i++]} ${words[i++]}' + (words.length > 2 ? ' ' : ''), false, isComment));
+        blocks.add(Block(
+            previous, '${words[i++]} ${words[i++]}' + (words.length > 2 ? ' ' : ''), false, isComment, isInterlude));
       else
-        blocks.add(Block(previous, words[i++] + (words.length > 1 ? ' ' : ''), false, isComment));
+        blocks.add(Block(previous, words[i++] + (words.length > 1 ? ' ' : ''), false, isComment, isInterlude));
     }
 
     if (words.length > i) {
       final text = words.sublist(i).join(' ');
 
-      blocks.add(Block('', '$text', false, isComment));
+      blocks.add(Block('', '$text', false, isComment, isInterlude));
     }
 
     return blocks;
