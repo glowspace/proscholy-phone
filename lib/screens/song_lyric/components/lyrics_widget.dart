@@ -55,7 +55,7 @@ class _LyricsWidgetState extends State<LyricsWidget> {
             RichText(
               text: TextSpan(
                 text: widget.songLyric.authorsText,
-                style: appTheme.bodyTextStyle.copyWith(fontSize: appTheme.bodyTextStyle.fontSize - 3),
+                style: appTheme.captionTextStyle,
               ),
               textScaleFactor: settingsProvider.fontSizeScale,
             ),
@@ -66,7 +66,7 @@ class _LyricsWidgetState extends State<LyricsWidget> {
   }
 
   Container _verse(BuildContext context, Verse verse, SettingsProvider settingsProvider) => Container(
-        padding: EdgeInsets.only(bottom: kDefaultPadding),
+        padding: EdgeInsets.only(bottom: 2 * kDefaultPadding),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -155,7 +155,7 @@ class _LyricsWidgetState extends State<LyricsWidget> {
                   offset: Offset(0, -(AppTheme.of(context).bodyTextStyle.fontSize - 3)),
                   child: RichText(
                     text: TextSpan(
-                      text: block.chord,
+                      text: block.chord + (block.chord.length > block.lyricsPart.length ? ' ' : ''),
                       style: AppTheme.of(context).bodyTextStyle.copyWith(
                             color: AppTheme.of(context).chordColor,
                             height: (widget.songLyric.showChords ? 2.25 : 1.5),

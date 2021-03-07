@@ -80,7 +80,11 @@ class SongLyricsProvider extends ChangeNotifier {
       songLyricsMap[songLyric.id] = songLyric;
     }
 
-    Database.shared.searchSongLyrics(_searchText.trim().replaceAll(' ', '* ') + '*').then((values) {
+    String preparedSearchText = _searchText.trim().replaceAll(' ', '* ');
+
+    if (int.tryParse(preparedSearchText) == null) preparedSearchText += '*';
+
+    Database.shared.searchSongLyrics(preparedSearchText).then((values) {
       List<SongLyric> songLyrics = [];
       Map<int, double> ranks = {};
 
@@ -88,16 +92,11 @@ class SongLyricsProvider extends ChangeNotifier {
         if (songLyricsMap.containsKey(value['id'])) {
           songLyrics.add(songLyricsMap[value['id']]);
 
-          ranks[value['id']] = bm25(value['info'], weights: [50.0, 40.0, 35.0, 30.0, 1.0, 45.0]);
+          ranks[value['id']] = bm25(value['info'], weights: [50.0, 40.0, 35.0, 30.0, 1.0, 48.0, 45.0]);
         }
       }
 
-      // fixme: don't know how to return naturaly sorted results from FTS, so it will be sorted here
-      if (_numberRE.hasMatch(_searchText))
-        songLyrics.sort(
-            (first, second) => compareNatural(first.showingNumber(_searchText), second.showingNumber(_searchText)));
-      else
-        songLyrics.sort((first, second) => ranks[first.id].compareTo(ranks[second.id]));
+      songLyrics.sort((first, second) => ranks[first.id].compareTo(ranks[second.id]));
 
       _setSongLyricsAndNotify(songLyrics);
     });

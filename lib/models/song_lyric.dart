@@ -83,12 +83,13 @@ class SongLyric extends ChangeNotifier {
   String showingNumber(String searchText) {
     String bestMatch = id.toString();
     int bestMatchValue = 0;
-    searchText = searchText.toLowerCase();
+    searchText = searchText.toLowerCase().replaceAll(' ', '');
 
     final predicates = [
       (number, searchText) => number.toLowerCase() == searchText,
       (number, searchText) => _numberRE.hasMatch(searchText) && number.toLowerCase().startsWith(searchText),
       (number, searchText) => number.toLowerCase().startsWith(searchText),
+      (number, searchText) => number.toLowerCase().contains(searchText),
     ];
 
     for (final number in numbers) {
@@ -100,6 +101,8 @@ class SongLyric extends ChangeNotifier {
       }
     }
 
+    if (id == 376) print(numbers);
+
     return bestMatch;
   }
 
@@ -109,7 +112,7 @@ class SongLyric extends ChangeNotifier {
   List<String> get numbers => _numbers ??= [id.toString()] +
       _entity.songbookRecords
           .where((record) => DataProvider.shared.songbook(record.songbookId) != null)
-          .map((record) => '${DataProvider.shared.songbook(record.songbookId).shortcut}${record.number}')
+          .map((record) => '${DataProvider.shared.songbook(record.songbookId).shortcut} ${record.number}')
           .toList();
 
   String get name => _entity.name;

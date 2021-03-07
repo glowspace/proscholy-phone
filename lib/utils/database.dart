@@ -124,19 +124,23 @@ class Database {
 
     await _adapter.connection
         .rawQuery(
-            'CREATE VIRTUAL TABLE IF NOT EXISTS song_lyrics_search USING FTS4(id, name, secondary_name1, secondary_name2, lyrics, numbers, tokenize=unicode61);')
+            'CREATE VIRTUAL TABLE IF NOT EXISTS song_lyrics_search USING FTS4(id, name, secondary_name1, secondary_name2, lyrics, numbers, numbers2, tokenize=unicode61);')
         .catchError((error) => print(error));
 
     Map<int, SongbookEntity> songbooksMap = {};
     Map<int, List<String>> records = {};
+    Map<int, List<String>> records2 = {};
 
     for (final songbook in songbooks) songbooksMap[songbook.id] = songbook;
 
     for (final record in await SongbookRecordBean(_adapter).getAll()) {
       if (!records.containsKey(record.songLyricId)) records[record.songLyricId] = [];
+      if (!records2.containsKey(record.songLyricId)) records2[record.songLyricId] = [];
 
-      if (songbooksMap.containsKey(record.songbookId))
+      if (songbooksMap.containsKey(record.songbookId)) {
         records[record.songLyricId].add('${songbooksMap[record.songbookId].shortcut}${record.number}');
+        records2[record.songLyricId].add(record.number);
+      }
     }
 
     for (final batch in _splitInBatches(songLyrics)) {
@@ -150,6 +154,7 @@ class Database {
 
         columns.add(StrField('lyrics').set(model.lyrics.replaceAll(_undesiredPartsRE, '')));
         columns.add(StrField('numbers').set(records[model.id].toString()));
+        columns.add(StrField('numbers2').set(records2[model.id].toString()));
 
         data.add(columns);
       }

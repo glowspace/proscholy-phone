@@ -157,7 +157,7 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
       ),
       HighlightableButton(
         icon: Icon(Icons.more_vert),
-        padding: EdgeInsets.fromLTRB(kDefaultPadding / 2, kDefaultPadding, kDefaultPadding, kDefaultPadding),
+        padding: padding.copyWith(right: AppTheme.of(context).platform == TargetPlatform.android ? kDefaultPadding : 0),
         onPressed: () => _showingMenu.value = !_showingMenu.value,
       ),
     ];
