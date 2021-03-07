@@ -65,6 +65,7 @@ class SongLyricsProvider extends ChangeNotifier {
   void _update() {
     List<SongLyric> filtered = tagsProvider.selectedTags.isEmpty ? allSongLyrics : _filter(allSongLyrics);
 
+    _matchedById = null;
     if (_searchText.isEmpty) {
       _setSongLyricsAndNotify(filtered);
 
@@ -73,7 +74,6 @@ class SongLyricsProvider extends ChangeNotifier {
 
     Map<int, SongLyric> songLyricsMap = {};
 
-    _matchedById = null;
     for (final songLyric in filtered) {
       if (songLyric.numbers.any((number) => number.toLowerCase() == (searchText))) _matchedById = songLyric;
 

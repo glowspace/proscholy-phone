@@ -58,6 +58,12 @@ class Database {
               .addString(songLyricBean.secondaryName2.name, isNullable: true, length: 100))
           .catchError((error) => print(error));
     }
+    if (oldVersion < 3) {
+      await _adapter.connection
+          .rawQuery(
+              'CREATE VIRTUAL TABLE IF NOT EXISTS song_lyrics_search USING FTS4(id, name, secondary_name1, secondary_name2, lyrics, numbers, numbers2, tokenize=unicode61);')
+          .catchError((error) => print(error));
+    }
   }
 
   Future<void> saveAuthors(List<AuthorEntity> authors) => _insertOrUpdateMany(authors, AuthorBean(_adapter));
@@ -119,13 +125,20 @@ class Database {
   Future<void> removeOutdatedExternals(List<int> ids) => _removeOutdated(ids, ExternalBean(_adapter));
 
   Future<void> updateSongLyricsSearchTable(List<SongLyricEntity> songLyrics, List<SongbookEntity> songbooks) async {
-    // just drop the table and create new one, it is easier then finding, which song lyric needs to be inserted and which updated
-    await _adapter.connection.rawQuery('DROP TABLE song_lyrics_search;').catchError((error) => print(error));
+    final existing = {};
 
-    await _adapter.connection
-        .rawQuery(
-            'CREATE VIRTUAL TABLE IF NOT EXISTS song_lyrics_search USING FTS4(id, name, secondary_name1, secondary_name2, lyrics, numbers, numbers2, tokenize=unicode61);')
-        .catchError((error) => print(error));
+    for (final entity in await _adapter.connection.query(SongLyricBean(_adapter).tableName, columns: ['id']))
+      existing[entity['id']] = true;
+
+    List<SongLyricEntity> inserts = [];
+    List<SongLyricEntity> updates = [];
+
+    for (final entity in songLyrics) {
+      if (existing.containsKey(entity.id))
+        updates.add(entity);
+      else
+        inserts.add(entity);
+    }
 
     Map<int, SongbookEntity> songbooksMap = {};
     Map<int, List<String>> records = {};
@@ -143,7 +156,29 @@ class Database {
       }
     }
 
-    for (final batch in _splitInBatches(songLyrics)) {
+    for (final batch in _splitInBatches(updates)) {
+      final List<List<SetColumn>> data = [];
+      final List<Expression> where = [];
+
+      for (var i = 0; i < batch.length; ++i) {
+        var model = batch[i];
+
+        List<SetColumn> columns = SongLyricBean(_adapter)
+            .toSetColumns(model, only: ['id', 'name', 'secondary_name1', 'secondary_name2'].toSet())
+            .toList();
+
+        columns.add(StrField('lyrics').set(model.lyrics.replaceAll(_undesiredPartsRE, '')));
+        columns.add(StrField('numbers').set(records[model.id].toString()));
+        columns.add(StrField('numbers2').set(records2[model.id].toString()));
+
+        data.add(columns);
+        where.add(IntField('id').eq(model.id));
+      }
+      final update = Sql.updateMany('song_lyrics_search').addAll(data, where);
+      await _adapter.updateMany(update).catchError((error) => print(error));
+    }
+
+    for (final batch in _splitInBatches(inserts)) {
       final List<List<SetColumn>> data = [];
       for (var i = 0; i < batch.length; ++i) {
         var model = batch[i];
@@ -158,7 +193,7 @@ class Database {
 
         data.add(columns);
       }
-      final InsertMany insert = Sql.insertMany('song_lyrics_search').addAll(data);
+      final insert = Sql.insertMany('song_lyrics_search').addAll(data);
       await _adapter.insertMany(insert).catchError((error) => print(error));
     }
   }

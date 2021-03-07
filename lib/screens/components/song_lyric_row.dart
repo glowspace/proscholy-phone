@@ -60,23 +60,6 @@ class _SongLyricRowStateNew extends State<SongLyricRow> {
           children: [
             if (selectionEnabled)
               Container(padding: EdgeInsets.only(right: kDefaultPadding), child: CircularCheckbox(selected: selected)),
-            if (songbookContainer != null)
-              Expanded(
-                child: Container(
-                  padding:
-                      EdgeInsets.only(right: 2), // just to make some minimal space between shortcut and song number
-                  child: _songLyricNumber(context, songbookContainer.data.shortcut),
-                ),
-                flex: songbookContainer.data.shortcut.length,
-              ),
-            if (songbookContainer != null)
-              Expanded(
-                child: Container(
-                  padding: EdgeInsets.only(right: kDefaultPadding),
-                  child: _songLyricNumber(context, widget.songLyric.number(songbookContainer.data)),
-                ),
-                flex: 3,
-              ),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -89,13 +72,28 @@ class _SongLyricRowStateNew extends State<SongLyricRow> {
               flex: 24,
             ),
             if (widget.showStar && widget.songLyric.isFavorite) Icon(Icons.star, color: appTheme.iconColor, size: 16),
-            Expanded(
-              child: Container(
-                padding: EdgeInsets.only(left: kDefaultPadding),
-                child: _songLyricNumber(context, showingNumber),
+            if (songbookContainer != null)
+              Expanded(
+                child: Container(
+                  padding:
+                      EdgeInsets.only(right: 2), // just to make some minimal space between shortcut and song number
+                  child: _songLyricNumber(context, songbookContainer.data.shortcut),
+                ),
+                flex: songbookContainer.data.shortcut.length,
               ),
-              flex: 4,
-            )
+            if (songbookContainer != null)
+              Expanded(
+                child: _songLyricNumber(context, widget.songLyric.number(songbookContainer.data)),
+                flex: 3,
+              )
+            else
+              Expanded(
+                child: Container(
+                  padding: EdgeInsets.only(left: kDefaultPadding),
+                  child: _songLyricNumber(context, showingNumber),
+                ),
+                flex: 4,
+              )
           ],
         ),
       ),

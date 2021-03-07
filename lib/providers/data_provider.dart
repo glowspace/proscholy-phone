@@ -28,8 +28,6 @@ class DataProvider {
     final songLyrics = await Database.shared.songLyrics;
     final songbooks = await Database.shared.songbooks;
 
-    await Database.shared.updateSongLyricsSearchTable(songLyrics, songbooks);
-
     _songLyrics = songLyrics.map((songLyricEntity) {
       // fixme: temporary solution for empty songs
       if (!songs.containsKey(songLyricEntity.songId))

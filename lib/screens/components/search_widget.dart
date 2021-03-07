@@ -72,7 +72,10 @@ class _SearchWidgetState extends State<SearchWidget> with PlatformStateMixin {
               suffixIcon: _textController.text.isEmpty
                   ? null
                   : HighlightableButton(
-                      onPressed: () => setState(() => _textController.clear()),
+                      onPressed: () {
+                        setState(() => _textController.clear());
+                        _searchTextChanged('');
+                      },
                       icon: Icon(Icons.clear),
                       padding: null,
                     ),

@@ -8,8 +8,9 @@ import 'package:zpevnik/theme.dart';
 class FiltersSection extends StatelessWidget {
   final String title;
   final List<Tag> tags;
+  final bool isLast;
 
-  const FiltersSection({Key key, this.title, this.tags}) : super(key: key);
+  const FiltersSection({Key key, this.title, this.tags, this.isLast = false}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +33,7 @@ class FiltersSection extends StatelessWidget {
             ],
           ),
         ),
-        Divider(thickness: 1, color: AppTheme.of(context).filtersSectionSeparatorColor),
+        if (!isLast) Divider(thickness: 1, color: AppTheme.of(context).filtersSectionSeparatorColor),
       ],
     );
   }

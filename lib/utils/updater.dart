@@ -122,7 +122,6 @@ class Updater {
 
     if (connectivityResult == ConnectivityResult.wifi) _update(lastUpdate);
 
-    // TODO: fix this, it's quite slow
     await DataProvider.shared.init();
 
     return true;
@@ -220,6 +219,8 @@ class Updater {
       Database.shared.saveSongbookRecords(songbookRecords),
       Database.shared.saveSongLyricTags(songLyricTags),
       Database.shared.saveSongLyricAuthors(songLyricAuthors),
+      // update search table
+      Database.shared.updateSongLyricsSearchTable(songLyrics, songbooks),
       // outdated removals
       Database.shared.removeOutdatedAuthors(authors.map((author) => author.id).toList()),
       Database.shared.removeOutdatedTags(tags.map((tag) => tag.id).toList()),

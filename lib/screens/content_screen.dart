@@ -130,7 +130,7 @@ class _ContentScreenState extends State<ContentScreen> with PlatformStateMixin {
 
   void _indexChanged(int index) => setState(() {
         // TODO: reset state
-        _navigatorKeys[_currentIndex].currentState.maybePop();
+        if (_currentIndex == index) _navigatorKeys[_currentIndex].currentState.maybePop();
 
         _currentIndex = index;
         _activeColor = index == 0 ? blue : (index == 1 ? green : red);

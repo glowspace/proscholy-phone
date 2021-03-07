@@ -38,10 +38,18 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
     super.initState();
 
     _scrollProvider = ScrollProvider();
+    _scrollProvider.scrollController = ScrollController();
 
     _showingMenu = ValueNotifier(false);
 
     widget.songLyric.addListener(_update);
+  }
+
+  @override
+  void didUpdateWidget(covariant SongLyricScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    _scrollProvider.scrollController = ScrollController();
   }
 
   @override
@@ -85,35 +93,36 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
     final settingsProvider = Provider.of<SettingsProvider>(context, listen: false);
     final fullScreenProvider = Provider.of<FullScreenProvider>(context, listen: false);
 
-    final scrollController = ScrollController();
-    _scrollProvider.scrollController = scrollController;
-
-    // print(_scrollController.hasClients);
-    // print(_scrollController.position);
-    // print(context.hashCode);
-
-    // if (_scrollController.hasClients) _scrollController.detach(_scrollController.position);
-
     return DataContainer(
       data: widget.songLyric,
       child: SafeArea(
         child: GestureDetector(
           onScaleStart: settingsProvider.fontScaleStarted,
           onScaleUpdate: settingsProvider.fontScaleUpdated,
-          onTap: fullScreenProvider.toggle,
+          onTap: () {
+            _showingMenu.value = false;
+            fullScreenProvider.toggle();
+          },
           child: Stack(
             children: [
               NotificationListener(
                 onNotification: (notif) {
                   if (notif is ScrollEndNotification) setState(() => _scrollProvider.scrollEnded());
 
+                  if (notif is ScrollUpdateNotification) {
+                    // fixme: prevents scroll first time
+                    // fullScreenProvider.fullScreen = true;
+                    _showingMenu.value = false;
+                  }
+
                   return true;
                 },
                 child: Container(
                   height: double.infinity,
                   child: SingleChildScrollView(
+                    restorationId: 'song_lyric_scroll_view_${widget.songLyric.id}',
                     key: PageStorageKey('song_lyric_scroll_view_${widget.songLyric.id}'),
-                    controller: scrollController,
+                    controller: _scrollProvider.scrollController,
                     child: Container(
                       padding: EdgeInsets.fromLTRB(
                         kDefaultPadding,

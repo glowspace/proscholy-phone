@@ -10,7 +10,7 @@ import 'package:zpevnik/utils/database.dart';
 import 'package:zpevnik/utils/song_lyrics_parser.dart';
 
 final _chordsRE = RegExp(r'\[[^\]]+\]');
-final _numberRE = RegExp('[0-9]');
+final _numberRE = RegExp('[0-9]+');
 
 enum SongLyricType {
   original,
@@ -86,10 +86,10 @@ class SongLyric extends ChangeNotifier {
     searchText = searchText.toLowerCase().replaceAll(' ', '');
 
     final predicates = [
-      (number, searchText) => number.toLowerCase() == searchText,
-      (number, searchText) => _numberRE.hasMatch(searchText) && number.toLowerCase().startsWith(searchText),
-      (number, searchText) => number.toLowerCase().startsWith(searchText),
       (number, searchText) => number.toLowerCase().contains(searchText),
+      (number, searchText) => number.toLowerCase().startsWith(searchText),
+      (number, searchText) => _numberRE.stringMatch(number) == searchText,
+      (number, searchText) => number.toLowerCase() == searchText,
     ];
 
     for (final number in numbers) {
@@ -100,8 +100,6 @@ class SongLyric extends ChangeNotifier {
         }
       }
     }
-
-    if (id == 376) print(numbers);
 
     return bestMatch;
   }
@@ -266,6 +264,7 @@ class Verse {
     String number = match.group(1);
     bool isInterlude = false;
     bool isComment = false;
+    print(number);
     if (number == '@mezihra:') {
       number = 'M:';
       isInterlude = true;

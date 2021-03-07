@@ -14,6 +14,7 @@ class FiltersWidget extends StatelessWidget {
           itemBuilder: (context, index) => FiltersSection(
             title: provider.sections[index].title,
             tags: provider.sections[index].tags,
+            isLast: index == provider.sections.length - 1,
           ),
         ),
       );
