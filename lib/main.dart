@@ -1,11 +1,10 @@
-import 'dart:async';
-
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:zpevnik/custom/custom_scroll_behavior.dart';
 import 'package:zpevnik/global.dart';
 import 'package:zpevnik/providers/full_screen_provider.dart';
 import 'package:zpevnik/providers/settings_provider.dart';
@@ -37,11 +36,6 @@ class _MainWidgetstate extends State<MainWidget> with PlatformStateMixin {
   final FirebaseAnalytics _analytics = FirebaseAnalytics();
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget iOSWidget(BuildContext context) => _wrap(
         context,
         (context, home) => CupertinoApp(
@@ -61,6 +55,7 @@ class _MainWidgetstate extends State<MainWidget> with PlatformStateMixin {
         (context, home) => MaterialApp(
           debugShowCheckedModeBanner: false,
           navigatorObservers: [FirebaseAnalyticsObserver(analytics: _analytics)],
+          builder: (context, child) => ScrollConfiguration(behavior: CustomScrollBehavior(), child: child),
           title: _title,
           theme: AppTheme.of(context).materialTheme,
           home: home,

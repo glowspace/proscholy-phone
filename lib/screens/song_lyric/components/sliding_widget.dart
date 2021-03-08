@@ -13,8 +13,10 @@ class SlidingWidget extends StatefulWidget {
   final Function() showSettings;
   final Function() showExternals;
   final ScrollProvider scrollProvider;
+  final bool hasExternals;
 
-  const SlidingWidget({Key key, this.showSettings, this.showExternals, this.scrollProvider}) : super(key: key);
+  const SlidingWidget({Key key, this.showSettings, this.showExternals, this.scrollProvider, this.hasExternals})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _SlidingWidgetState();
@@ -66,7 +68,8 @@ class _SlidingWidgetState extends State<SlidingWidget> with SingleTickerProvider
     return [
       _CollapseableWidget(collapsed: _collapsed, children: [
         HighlightableButton(icon: Icon(Icons.tune), padding: padding, onPressed: widget.showSettings),
-        HighlightableButton(icon: Icon(Icons.headset), padding: padding, onPressed: widget.showExternals),
+        if (widget.hasExternals)
+          HighlightableButton(icon: Icon(Icons.headset), padding: padding, onPressed: widget.showExternals),
         _CollapseableWidget(collapsed: _scrollSpeedcollapsed, children: [
           HighlightableButton(icon: Icon(Icons.add), padding: padding, onPressed: widget.scrollProvider.faster),
           HighlightableButton(icon: Icon(Icons.remove), padding: padding, onPressed: widget.scrollProvider.slower),

@@ -2,7 +2,7 @@ name: zpevnik
 
 publish_to: 'none'
 
-version: 2.2.2+1
+version: 2.3+1
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -35,6 +35,12 @@ dependencies:
 
   firebase_analytics: any
 
+  flutter_staggered_grid_view: any
+
+  uni_links: any
+
+  sqlite_bm25: any
+
   cupertino_icons: any
 
 dev_dependencies:
@@ -48,6 +54,14 @@ flutter:
     - family: CustomIcon
       fonts:
       - asset: assets/fonts/CustomIcon.ttf
+
+    - family: Amiri
+      fonts:
+        - asset: assets/fonts/Amiri-Regular.ttf
+
+    - family: Nunito
+      fonts:
+        - asset: assets/fonts/Nunito-Regular.ttf
 
   assets:
     - assets/data.json

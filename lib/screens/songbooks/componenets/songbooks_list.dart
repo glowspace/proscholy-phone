@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/providers/songbooks_provider.dart';
 import 'package:zpevnik/screens/songbooks/componenets/songbook_widget.dart';
@@ -18,15 +19,12 @@ class SongbookListView extends StatelessWidget {
       onPanDown: (_) => FocusScope.of(context).unfocus(),
       child: Scrollbar(
         child: Consumer<SongbooksProvider>(
-          builder: (context, provider, _) => GridView.count(
-            childAspectRatio: 1 / 1.2, // to fit multiline songbook names on small devices
-            crossAxisCount: count,
-            controller: provider.scrollController,
-            children: List.generate(
-              provider.songbooks.length,
-              (index) => SongbookWidget(songbook: provider.songbooks[index]),
-            ),
-          ),
+          builder: (context, provider, _) => StaggeredGridView.countBuilder(
+              crossAxisCount: count,
+              itemCount: provider.songbooks.length,
+              controller: provider.scrollController,
+              itemBuilder: (context, index) => SongbookWidget(songbook: provider.songbooks[index]),
+              staggeredTileBuilder: (index) => StaggeredTile.fit(1)),
         ),
       ),
     );

@@ -27,6 +27,8 @@ class SongbookScreen extends StatefulWidget {
 class _SongbookScreenState extends State<SongbookScreen> with PlatformStateMixin {
   final SongLyricsProvider _songLyricsProvider;
 
+  final _searchFieldFocusNode = FocusNode();
+
   bool _searching;
 
   _SongbookScreenState(this._songLyricsProvider);
@@ -46,7 +48,9 @@ class _SongbookScreenState extends State<SongbookScreen> with PlatformStateMixin
           leading: _leading(context),
           middle: _middle(context),
           trailing: _trailing(context),
-          padding: _searching ? EdgeInsetsDirectional.only(start: kDefaultPadding / 2, end: kDefaultPadding / 2) : null,
+          padding: _searching
+              ? EdgeInsetsDirectional.only(start: kDefaultPadding / 2, end: kDefaultPadding / 2)
+              : EdgeInsetsDirectional.zero,
           transitionBetweenRoutes: false, // needed because of search widget
         ),
         child: _body(context),
@@ -79,6 +83,7 @@ class _SongbookScreenState extends State<SongbookScreen> with PlatformStateMixin
           placeholder: 'Zadejte slovo nebo číslo',
           search: _songLyricsProvider.search,
           onSubmitted: (_) => _pushSelectedSongLyric(context),
+          focusNode: _searchFieldFocusNode,
           prefix: HighlightableButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () => setState(() {
@@ -91,7 +96,12 @@ class _SongbookScreenState extends State<SongbookScreen> with PlatformStateMixin
             onPressed: () => _songLyricsProvider.tagsProvider.showFilters(context),
           ),
         )
-      : Text(widget.songbook.name, style: AppTheme.of(context).navBarTitleTextStyle.copyWith(color: _textColor));
+      : FittedBox(
+          child: Text(
+            widget.songbook.name,
+            style: AppTheme.of(context).navBarTitleTextStyle.copyWith(color: _textColor),
+          ),
+        );
 
   Widget _trailing(BuildContext context) => _searching
       ? Container(width: 0)
@@ -99,7 +109,10 @@ class _SongbookScreenState extends State<SongbookScreen> with PlatformStateMixin
           icon: Icon(Icons.search),
           color: _textColor,
           highlightColor: AppTheme.of(context).highlightColor,
-          onPressed: () => setState(() => _searching = true),
+          onPressed: () => setState(() {
+            _searching = true;
+            _searchFieldFocusNode.requestFocus();
+          }),
         );
 
   Widget _body(BuildContext context) => SafeArea(

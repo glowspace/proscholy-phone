@@ -94,11 +94,18 @@ class AppThemeData extends InheritedWidget {
       ? cupertinoTheme.textTheme.textStyle.copyWith(color: textColor, fontSize: 15)
       : materialTheme.textTheme.bodyText1.copyWith(color: textColor, fontSize: 16);
 
-  TextStyle get titleTextStyle => isIOS ? bodyTextStyle.copyWith(fontSize: 21) : materialTheme.textTheme.headline5;
+  TextStyle get secondaryTextStyle => isIOS
+      ? cupertinoTheme.textTheme.textStyle
+          .copyWith(color: isLight ? Color(0xff636365) : Color(0xff9c9c9a), fontSize: 14)
+      : materialTheme.textTheme.bodyText1
+          .copyWith(color: isLight ? Color(0xff636365) : Color(0xff9c9c9a), fontSize: 15);
 
-  TextStyle get subTitleTextStyle => isIOS ? bodyTextStyle.copyWith(fontSize: 17) : materialTheme.textTheme.subtitle1;
+  TextStyle get titleTextStyle => bodyTextStyle.copyWith(fontSize: 21, fontWeight: FontWeight.bold);
 
-  TextStyle get navBarTitleTextStyle => bodyTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 17);
+  TextStyle get subTitleTextStyle => bodyTextStyle.copyWith(fontSize: 17);
+
+  TextStyle get navBarTitleTextStyle =>
+      isIOS ? bodyTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 17) : bodyTextStyle;
 
   TextStyle get placeholderTextStyle => bodyTextStyle.copyWith(
         color: isLight ? Color(0xff9aa0a5) : Color(0xff655f5a),
@@ -108,6 +115,8 @@ class AppThemeData extends InheritedWidget {
         color: isLight ? Color(0xff636365) : Color(0xff9c9c9a),
         fontSize: 13,
       );
+
+  TextStyle get commentTextStyle => captionTextStyle.copyWith(fontStyle: FontStyle.italic);
 
   Color get appBarDividerColor => isLight ? Color(0xff888888) : Color(0xff777777);
 
@@ -126,7 +135,7 @@ class AppThemeData extends InheritedWidget {
   Color get disabledColor => isLight ? Color(0xffd7d7d7) : Color(0xff282828);
 
   Color get filtersTextColor => isLight ? Color(0xff222529) : Color(0xffdddad6);
-  Color get filtersSectionSeparatorColor => isLight ? Color(0xffe8e8e8) : Color(0xff171717);
+  Color get filtersSectionSeparatorColor => isLight ? Color(0xffe8e8e8) : Color(0xff272727);
   Color get filterBorderColor => isLight ? Color(0xffd1d1d1) : Color(0xff2e2e2e);
 
   Color get activeColor => isLight ? Color(0xff9a9a9a) : Color(0xff656565);

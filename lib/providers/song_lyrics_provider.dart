@@ -1,11 +1,10 @@
-import 'package:diacritic/diacritic.dart';
 import 'package:flutter/material.dart';
+import 'package:sqlite_bm25/sqlite_bm25.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/providers/data_provider.dart';
 import 'package:zpevnik/providers/tags_provider.dart';
-
-final _numberRE = RegExp('[0-9]');
+import 'package:zpevnik/utils/database.dart';
 
 class SongLyricsProvider extends ChangeNotifier {
   final List<SongLyric> allSongLyrics;
@@ -42,21 +41,6 @@ class SongLyricsProvider extends ChangeNotifier {
     _update();
   }
 
-  List<bool Function(SongLyric, String)> get _predicates => [
-        (songLyric, searchText) => songLyric.numbers.any((number) => number.toLowerCase() == searchText),
-        (songLyric, searchText) => songLyric.numbers
-            .any((number) => _numberRE.hasMatch(searchText) && number.toLowerCase().startsWith(searchText)),
-        (songLyric, searchText) => songLyric.numbers
-            .any((number) => _numberRE.hasMatch(searchText) && number.toLowerCase().contains(searchText)),
-        (songLyric, searchText) => songLyric.name.toLowerCase().startsWith(searchText),
-        (songLyric, searchText) => removeDiacritics(songLyric.name.toLowerCase()).startsWith(searchText),
-        (songLyric, searchText) => songLyric.name.toLowerCase().contains(searchText),
-        (songLyric, searchText) => removeDiacritics(songLyric.name.toLowerCase()).contains(searchText),
-        (songLyric, searchText) => songLyric.numbers.any((number) => number.toLowerCase().startsWith(searchText)),
-        (songLyric, searchText) => songLyric.numbers.any((number) => number.toLowerCase().contains(searchText)),
-        (songLyric, searchText) => removeDiacritics(songLyric.entity.lyrics.toLowerCase()).contains(searchText),
-      ];
-
   List<SongLyric> _filter(List<SongLyric> songLyrics) {
     Map<TagType, List<Tag>> tagGroups = {};
 
@@ -76,30 +60,49 @@ class SongLyricsProvider extends ChangeNotifier {
   }
 
   void _update() {
-    final predicates = _predicates;
-
     List<SongLyric> filtered = tagsProvider.selectedTags.isEmpty ? allSongLyrics : _filter(allSongLyrics);
 
-    List<List<SongLyric>> searchResults = List<List<SongLyric>>.generate(predicates.length, (index) => []);
-
     _matchedById = null;
+    if (_searchText.isEmpty) {
+      _setSongLyricsAndNotify(filtered);
+
+      return;
+    }
+
+    Map<int, SongLyric> songLyricsMap = {};
+
     for (final songLyric in filtered) {
       if (songLyric.numbers.any((number) => number.toLowerCase() == (searchText))) _matchedById = songLyric;
 
-      for (int i = 0; i < predicates.length; i++) {
-        if (predicates[i](songLyric, _searchText.toLowerCase())) {
-          searchResults[i].add(songLyric);
-          break;
-        }
-      }
+      songLyricsMap[songLyric.id] = songLyric;
     }
 
-    _songLyrics = searchResults.reduce((result, list) {
-      result.addAll(list);
-      return result;
-    }).toList();
+    String preparedSearchText = _searchText.trim().replaceAll(' ', '* ');
 
-    scrollController.jumpTo(0.0);
+    if (int.tryParse(preparedSearchText) == null) preparedSearchText += '*';
+
+    Database.shared.searchSongLyrics(preparedSearchText).then((values) {
+      List<SongLyric> songLyrics = [];
+      Map<int, double> ranks = {};
+
+      for (final value in values) {
+        if (songLyricsMap.containsKey(value['id'])) {
+          songLyrics.add(songLyricsMap[value['id']]);
+
+          ranks[value['id']] = bm25(value['info'], weights: [50.0, 40.0, 35.0, 30.0, 1.0, 48.0, 45.0]);
+        }
+      }
+
+      songLyrics.sort((first, second) => ranks[first.id].compareTo(ranks[second.id]));
+
+      _setSongLyricsAndNotify(songLyrics);
+    });
+  }
+
+  void _setSongLyricsAndNotify(List<SongLyric> songLyrics) {
+    if (_songLyrics.isNotEmpty) scrollController.jumpTo(0.0);
+
+    _songLyrics = songLyrics;
 
     notifyListeners();
   }

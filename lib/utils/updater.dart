@@ -21,7 +21,7 @@ const String _versionKey = 'version';
 const String _lastUpdateKey = 'last_update';
 
 const String _lastUpdatePlaceholder = '[LAST_UPDATE]';
-const String _initialLastUpdate = '2021-01-08 11:30:00';
+const String _initialLastUpdate = '2021-03-06 11:30:00';
 
 const Duration _updatePeriod = Duration(hours: 12);
 
@@ -94,6 +94,12 @@ class Updater {
           id
         }
       }
+      song_lyric_ids: song_lyrics {
+        id
+      }
+      external_ids: externals {
+        id
+      }
     }"
   }
   ''';
@@ -101,17 +107,20 @@ class Updater {
   Future<bool> update() async {
     final prefs = await SharedPreferences.getInstance();
     final connectivityResult = await Connectivity().checkConnectivity();
-    final version = prefs.getInt(_versionKey) ?? 0;
+
+    final version = prefs.getInt(_versionKey) ?? -1;
+    String lastUpdate = prefs.getString(_lastUpdateKey) ?? _initialLastUpdate;
 
     await Database.shared.init(version);
 
     if (version != kCurrentVersion) {
-      await _loadLocal();
-      await prefs.remove(_lastUpdateKey);
-      prefs.setInt(_versionKey, kCurrentVersion);
+      await _loadLocal().then((_) {
+        prefs.setInt(_versionKey, kCurrentVersion);
+        lastUpdate = _initialLastUpdate;
+      }).catchError((error) => print(error));
     }
 
-    if (connectivityResult == ConnectivityResult.wifi) _update(prefs.getString(_lastUpdateKey) ?? _initialLastUpdate);
+    if (connectivityResult == ConnectivityResult.wifi) _update(lastUpdate);
 
     await DataProvider.shared.init();
 
@@ -126,7 +135,7 @@ class Updater {
         body: _query.replaceAll('\n', '').replaceFirst(_lastUpdatePlaceholder, '(updated_after: \\"$lastUpdate\\")'),
         headers: <String, String>{'Content-Type': 'application/json; charset=utf-8'});
 
-    await _parse(response.body);
+    await _parse(response.body).catchError((error) => print(error));
 
     SharedPreferences.getInstance().then((prefs) => prefs.setString(_lastUpdateKey, format.format(DateTime.now())));
   }
@@ -147,6 +156,10 @@ class Updater {
     final songs = (data['songs'] as List<dynamic>).map((json) => SongEntity.fromJson(json)).toList();
 
     final songLyrics = (data['song_lyrics'] as List<dynamic>).map((json) => SongLyricEntity.fromJson(json)).toList();
+
+    final songLyricIds = (data['song_lyric_ids'] as List<dynamic>).map((json) => int.parse(json['id'])).toList();
+
+    final externalIds = (data['external_ids'] as List<dynamic>).map((json) => int.parse(json['id'])).toList();
 
     final externalsTmp = songLyrics.map((songLyric) => songLyric.externals).toList();
 
@@ -196,16 +209,23 @@ class Updater {
             return result;
           }).toList();
 
-    await Future.wait([
-      Database.shared.saveAuthors(authors),
-      Database.shared.saveTags(tags),
-      Database.shared.saveSongbooks(songbooks),
-      Database.shared.saveSongs(songs),
-      Database.shared.saveSongLyrics(songLyrics),
-      Database.shared.saveExternals(externals),
-      Database.shared.saveSongbookRecords(songbookRecords),
-      Database.shared.saveSongLyricTags(songLyricTags),
-      Database.shared.saveSongLyricAuthors(songLyricAuthors),
-    ]);
+    await Database.shared.saveAuthors(authors);
+    await Database.shared.saveTags(tags);
+    await Database.shared.saveSongbooks(songbooks);
+    await Database.shared.saveSongs(songs);
+    await Database.shared.saveSongLyrics(songLyrics);
+    await Database.shared.saveExternals(externals);
+    await Database.shared.saveSongbookRecords(songbookRecords);
+    await Database.shared.saveSongLyricTags(songLyricTags);
+    await Database.shared.saveSongLyricAuthors(songLyricAuthors);
+    // update search table
+    await Database.shared.updateSongLyricsSearchTable(songLyrics, songbooks);
+    // outdated removals
+    await Database.shared.removeOutdatedAuthors(authors.map((author) => author.id).toList());
+    await Database.shared.removeOutdatedTags(tags.map((tag) => tag.id).toList());
+    await Database.shared.removeOutdatedSongbooks(songbooks.map((songbook) => songbook.id).toList());
+    await Database.shared.removeOutdatedSongs(songs.map((song) => song.id).toList());
+    await Database.shared.removeOutdatedSongLyrics(songLyricIds);
+    await Database.shared.removeOutdatedExternals(externalIds);
   }
 }

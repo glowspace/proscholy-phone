@@ -7,8 +7,6 @@ import 'package:zpevnik/providers/data_provider.dart';
 import 'package:zpevnik/providers/song_lyrics_provider.dart';
 import 'package:zpevnik/screens/components/highlightable_button.dart';
 import 'package:zpevnik/screens/components/search_widget.dart';
-import 'package:zpevnik/screens/components/reorderable.dart';
-import 'package:zpevnik/screens/components/song_lyric_row.dart';
 import 'package:zpevnik/screens/components/song_lyrics_list.dart';
 import 'package:zpevnik/screens/song_lyric/song_lyric_screen.dart';
 import 'package:zpevnik/theme.dart';
@@ -23,6 +21,8 @@ class FavoriteScreen extends StatefulWidget {
 
 class _FavoriteScreenState extends State<FavoriteScreen> with PlatformStateMixin {
   final SongLyricsProvider _songLyricsProvider;
+
+  final _searchFieldFocusNode = FocusNode();
 
   bool _searching;
 
@@ -41,7 +41,9 @@ class _FavoriteScreenState extends State<FavoriteScreen> with PlatformStateMixin
           leading: _leading(context),
           middle: _middle(context),
           trailing: _trailing(context),
-          padding: _searching ? EdgeInsetsDirectional.only(start: kDefaultPadding / 2, end: kDefaultPadding / 2) : null,
+          padding: _searching
+              ? EdgeInsetsDirectional.only(start: kDefaultPadding / 2, end: kDefaultPadding / 2)
+              : EdgeInsetsDirectional.zero,
         ),
         child: _body(context),
       );
@@ -68,6 +70,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> with PlatformStateMixin
           placeholder: 'Zadejte slovo nebo číslo',
           search: _songLyricsProvider.search,
           onSubmitted: (_) => _pushSelectedSongLyric(context),
+          focusNode: _searchFieldFocusNode,
           prefix: HighlightableButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () => setState(() {
@@ -84,7 +87,13 @@ class _FavoriteScreenState extends State<FavoriteScreen> with PlatformStateMixin
 
   Widget _trailing(BuildContext context) => _searching
       ? Container(width: 0)
-      : HighlightableButton(onPressed: () => setState(() => _searching = true), icon: Icon(Icons.search));
+      : HighlightableButton(
+          onPressed: () => setState(() {
+            _searching = true;
+            _searchFieldFocusNode.requestFocus();
+          }),
+          icon: Icon(Icons.search),
+        );
 
   Widget _body(BuildContext context) => SafeArea(
         child: Container(

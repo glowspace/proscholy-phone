@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/theme.dart';
-import 'package:zpevnik/utils/platform.dart';
 
 class HighlightableButton extends StatefulWidget {
   final Widget icon;
@@ -15,7 +14,7 @@ class HighlightableButton extends StatefulWidget {
     @required this.icon,
     this.color,
     this.highlightColor,
-    this.padding = const EdgeInsets.symmetric(vertical: kDefaultPadding),
+    this.padding = const EdgeInsets.all(kDefaultPadding),
     this.onPressed,
   }) : super(key: key);
 
@@ -23,7 +22,7 @@ class HighlightableButton extends StatefulWidget {
   State<StatefulWidget> createState() => _HighlightableButtonState();
 }
 
-class _HighlightableButtonState extends State<HighlightableButton> with PlatformStateMixin {
+class _HighlightableButtonState extends State<HighlightableButton> {
   bool _isHighlighted;
 
   @override
@@ -34,19 +33,7 @@ class _HighlightableButtonState extends State<HighlightableButton> with Platform
   }
 
   @override
-  Widget androidWidget(BuildContext context) => IconButton(
-        onPressed: () => widget.onPressed(),
-        icon: widget.icon,
-        color: _iconColor,
-        padding: widget.padding == null ? EdgeInsets.zero : widget.padding,
-        constraints: widget.padding == null ? BoxConstraints() : null,
-        visualDensity: VisualDensity.compact,
-        splashColor: widget.highlightColor,
-        highlightColor: widget.highlightColor,
-      );
-
-  @override
-  Widget iOSWidget(BuildContext context) => GestureDetector(
+  Widget build(BuildContext context) => GestureDetector(
         onTapDown: (_) => setState(() => _isHighlighted = true),
         onTapCancel: () => setState(() => _isHighlighted = false),
         onTapUp: (_) => setState(() => _isHighlighted = false),
@@ -55,18 +42,20 @@ class _HighlightableButtonState extends State<HighlightableButton> with Platform
         child: FittedBox(
           fit: BoxFit.scaleDown,
           child: Container(
-              padding: widget.padding,
-              child: IconTheme(
-                data: IconThemeData(
-                  color: widget.onPressed == null ? AppTheme.of(context).disabledColor : _iconColor,
-                ),
-                child: widget.icon,
-              )),
+            padding: widget.padding,
+            child: IconTheme(
+              data: IconThemeData(
+                color: widget.onPressed == null ? AppTheme.of(context).disabledColor : _iconColor,
+              ),
+              child: widget.icon,
+            ),
+          ),
         ),
       );
 
   Color get _color => widget.color == null ? AppTheme.of(context).iconColor : widget.color;
 
-  Color get _iconColor =>
-      _isHighlighted ? (widget.highlightColor == null ? _color.withAlpha(0x80) : widget.highlightColor) : _color;
+  Color get _iconColor => _isHighlighted ? _highlightColor : _color;
+
+  Color get _highlightColor => widget.highlightColor == null ? _color.withAlpha(0x80) : widget.highlightColor;
 }

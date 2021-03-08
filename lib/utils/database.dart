@@ -4,6 +4,7 @@ import 'package:jaguar_query_sqflite/jaguar_query_sqflite.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:zpevnik/models/entities/author.dart';
+import 'package:zpevnik/models/entities/entity.dart';
 import 'package:zpevnik/models/entities/external.dart';
 import 'package:zpevnik/models/entities/playlist.dart';
 import 'package:zpevnik/models/entities/song.dart';
@@ -12,6 +13,8 @@ import 'package:zpevnik/models/entities/songbook.dart';
 import 'package:zpevnik/models/entities/songbook_record.dart';
 import 'package:zpevnik/models/entities/tag.dart';
 import 'package:zpevnik/utils/beans.dart';
+
+final _undesiredPartsRE = RegExp(r'(\d.|\[[^\]]+\])');
 
 class Database {
   SqfliteAdapter _adapter;
@@ -38,6 +41,10 @@ class Database {
       SongLyricTagBean(_adapter).createTable(ifNotExists: true),
       SongLyricPlaylistBean(_adapter).createTable(ifNotExists: true),
       AuthorExternalBean(_adapter).createTable(ifNotExists: true),
+      _adapter.connection
+          .rawQuery(
+              'CREATE VIRTUAL TABLE IF NOT EXISTS song_lyrics_search USING FTS4(id, name, secondary_name1, secondary_name2, lyrics, numbers, numbers2, tokenize=unicode61);')
+          .catchError((error) => print(error)),
     ]).catchError((error) => print(error));
 
     await migrate(oldVersion);
@@ -57,30 +64,30 @@ class Database {
     }
   }
 
-  Future<void> saveAuthors(List<AuthorEntity> authors) async {
-    for (final batch in _splitInBatches(authors))
-      await AuthorBean(_adapter).upsertMany(batch).catchError((error) => print(error));
-  }
+  Future<void> saveAuthors(List<AuthorEntity> authors) => _insertOrUpdateMany(authors, AuthorBean(_adapter));
 
-  Future<void> saveTags(List<TagEntity> tags) => TagBean(_adapter).upsertMany(tags).catchError((error) => print(error));
+  Future<void> saveTags(List<TagEntity> tags) => _insertOrUpdateMany(tags, TagBean(_adapter));
 
-  Future<void> saveSongbooks(List<SongbookEntity> songbooks) =>
-      SongbookBean(_adapter).upsertMany(songbooks).catchError((error) => print(error));
+  Future<void> saveSongbooks(List<SongbookEntity> songbooks) => _insertOrUpdateMany(songbooks, SongbookBean(_adapter),
+      only: ['id', 'name', 'shortcut', 'color', 'color_text', 'is_private'].toSet());
 
-  Future<void> saveSongs(List<SongEntity> songs) async {
-    for (final batch in _splitInBatches(songs))
-      await SongBean(_adapter).upsertMany(batch).catchError((error) => print(error));
-  }
+  Future<void> saveSongs(List<SongEntity> songs) => _insertOrUpdateMany(songs, SongBean(_adapter));
 
-  Future<void> saveSongLyrics(List<SongLyricEntity> songLyrics) async {
-    for (final batch in _splitInBatches(songLyrics))
-      await SongLyricBean(_adapter).upsertMany(batch).catchError((error) => print(error));
-  }
+  Future<void> saveSongLyrics(List<SongLyricEntity> songLyrics) =>
+      _insertOrUpdateMany(songLyrics, SongLyricBean(_adapter),
+          only: [
+            'id',
+            'name',
+            'secondary_name1',
+            'secondary_name2',
+            'lyrics',
+            'language',
+            'type',
+            'lilypond',
+            'song_id'
+          ].toSet());
 
-  Future<void> saveExternals(List<ExternalEntity> externals) async {
-    for (final batch in _splitInBatches(externals))
-      await ExternalBean(_adapter).upsertMany(batch).catchError((error) => print(error));
-  }
+  Future<void> saveExternals(List<ExternalEntity> externals) => _insertOrUpdateMany(externals, ExternalBean(_adapter));
 
   Future<void> saveSongbookRecords(List<SongbookRecord> songbookRecords) =>
       SongbookRecordBean(_adapter).upsertMany(songbookRecords).catchError((error) => print(error));
@@ -91,15 +98,101 @@ class Database {
   Future<void> saveSongLyricAuthors(List<SongLyricAuthor> songLyricAuthors) =>
       SongLyricAuthorBean(_adapter).upsertMany(songLyricAuthors).catchError((error) => print(error));
 
-  void savePlaylist(PlaylistEntity playlist) {
+  Future<void> savePlaylist(PlaylistEntity playlist) {
     PlaylistBean(_adapter).insert(playlist).catchError((error) => print(error));
-    SongLyricPlaylistBean(_adapter)
+
+    return SongLyricPlaylistBean(_adapter)
         .insertMany(playlist.songLyrics
             .map((songLyric) => SongLyricPlaylist()
               ..playlistId = playlist.id
               ..songLyricId = songLyric.id)
             .toList())
         .catchError((error) => print(error));
+  }
+
+  Future<void> removeOutdatedAuthors(List<int> ids) => _removeOutdated(ids, AuthorBean(_adapter));
+
+  Future<void> removeOutdatedTags(List<int> ids) => _removeOutdated(ids, TagBean(_adapter));
+
+  Future<void> removeOutdatedSongbooks(List<int> ids) => _removeOutdated(ids, SongbookBean(_adapter));
+
+  Future<void> removeOutdatedSongs(List<int> ids) => _removeOutdated(ids, SongBean(_adapter));
+
+  Future<void> removeOutdatedSongLyrics(List<int> ids) => _removeOutdated(ids, SongLyricBean(_adapter));
+
+  Future<void> removeOutdatedExternals(List<int> ids) => _removeOutdated(ids, ExternalBean(_adapter));
+
+  Future<void> updateSongLyricsSearchTable(List<SongLyricEntity> songLyrics, List<SongbookEntity> songbooks) async {
+    final existing = {};
+
+    for (final entity in await _adapter.connection.query('song_lyrics_search', columns: ['id']))
+      existing[entity['id']] = true;
+
+    List<SongLyricEntity> inserts = [];
+    List<SongLyricEntity> updates = [];
+
+    for (final entity in songLyrics) {
+      if (existing.containsKey(entity.id))
+        updates.add(entity);
+      else if (entity.lyrics != null) inserts.add(entity);
+    }
+
+    Map<int, SongbookEntity> songbooksMap = {};
+    Map<int, List<String>> records = {};
+    Map<int, List<String>> records2 = {};
+
+    for (final songbook in songbooks) songbooksMap[songbook.id] = songbook;
+
+    for (final record in await SongbookRecordBean(_adapter).getAll()) {
+      if (!records.containsKey(record.songLyricId)) records[record.songLyricId] = [];
+      if (!records2.containsKey(record.songLyricId)) records2[record.songLyricId] = [];
+
+      if (songbooksMap.containsKey(record.songbookId)) {
+        records[record.songLyricId].add('${songbooksMap[record.songbookId].shortcut}${record.number}');
+        records2[record.songLyricId].add(record.number);
+      }
+    }
+
+    for (final batch in _splitInBatches(updates)) {
+      final List<List<SetColumn>> data = [];
+      final List<Expression> where = [];
+
+      for (var i = 0; i < batch.length; ++i) {
+        var model = batch[i];
+
+        List<SetColumn> columns = SongLyricBean(_adapter)
+            .toSetColumns(model, only: ['id', 'name', 'secondary_name1', 'secondary_name2'].toSet())
+            .toList();
+
+        columns.add(StrField('lyrics').set(model.lyrics.replaceAll(_undesiredPartsRE, '')));
+        columns.add(StrField('numbers').set(records[model.id].toString()));
+        columns.add(StrField('numbers2').set(records2[model.id].toString()));
+
+        data.add(columns);
+        where.add(IntField('id').eq(model.id));
+      }
+      final update = Sql.updateMany('song_lyrics_search').addAll(data, where);
+      await _adapter.updateMany(update).catchError((error) => print(error));
+    }
+
+    for (final batch in _splitInBatches(inserts)) {
+      final List<List<SetColumn>> data = [];
+      for (var i = 0; i < batch.length; ++i) {
+        var model = batch[i];
+
+        List<SetColumn> columns = SongLyricBean(_adapter)
+            .toSetColumns(model, only: ['id', 'name', 'secondary_name1', 'secondary_name2'].toSet())
+            .toList();
+
+        columns.add(StrField('lyrics').set(model.lyrics.replaceAll(_undesiredPartsRE, '')));
+        columns.add(StrField('numbers').set(records[model.id].toString()));
+        columns.add(StrField('numbers2').set(records2[model.id].toString()));
+
+        data.add(columns);
+      }
+      final insert = Sql.insertMany('song_lyrics_search').addAll(data);
+      await _adapter.insertMany(insert).catchError((error) => print(error));
+    }
   }
 
   Future<void> updateSongbook(SongbookEntity songbook, Set<String> only) =>
@@ -214,6 +307,40 @@ class Database {
   Future<void> removePlaylist(PlaylistEntity playlist) {
     PlaylistBean(_adapter).remove(playlist.id);
     return SongLyricPlaylistBean(_adapter).removeByPlaylistEntity(playlist.id);
+  }
+
+  Future<List<Map<String, dynamic>>> searchSongLyrics(String searchText) => _adapter.connection.rawQuery(
+      "SELECT id, matchinfo(song_lyrics_search, 'pcnalx') as info FROM song_lyrics_search WHERE song_lyrics_search MATCH ?;",
+      [searchText]).catchError((error) => print(error));
+
+  Future<void> _removeOutdated<T>(List<int> ids, EntityBean<T> bean) async {
+    final existing = [];
+
+    for (final entity in await _adapter.connection.query(bean.tableName, columns: ['id'])) existing.add(entity['id']);
+
+    for (final id in existing) if (!ids.contains(id)) await bean.remove(id, cascade: true);
+  }
+
+  Future<void> _insertOrUpdateMany<T extends Entity>(List<T> entities, EntityBean<T> bean, {Set<String> only}) async {
+    final existing = {};
+
+    for (final entity in await _adapter.connection.query(bean.tableName, columns: ['id']))
+      existing[entity['id']] = true;
+
+    List<T> inserts = [];
+    List<T> updates = [];
+
+    for (final entity in entities) {
+      if (existing.containsKey(entity.id))
+        updates.add(entity);
+      else
+        inserts.add(entity);
+    }
+
+    for (final batch in _splitInBatches(updates))
+      await bean.updateMany(batch, only: only).catchError((error) => print(error));
+
+    for (final batch in _splitInBatches(inserts)) await bean.insertMany(batch).catchError((error) => print(error));
   }
 
   List<List<T>> _splitInBatches<T>(List<T> list) {

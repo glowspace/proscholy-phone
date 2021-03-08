@@ -37,6 +37,8 @@ mixin PlatformStateMixin<T extends StatefulWidget> on State<T> {
 }
 
 void showPlatformBottomSheet({BuildContext context, Widget child, double height}) {
+  FocusScope.of(context).unfocus();
+
   final content = SizedBox(
     height: height,
     child: child,
@@ -46,10 +48,7 @@ void showPlatformBottomSheet({BuildContext context, Widget child, double height}
     showCupertinoModalBottomSheet(
       context: context,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(15))),
-      builder: (context) => Container(
-        child: content,
-        color: AppTheme.of(context).fillColor,
-      ),
+      builder: (context) => Container(child: content, color: AppTheme.of(context).fillColor),
       useRootNavigator: true,
     );
   else

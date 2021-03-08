@@ -10,8 +10,18 @@ import 'package:zpevnik/models/entities/tag.dart';
 
 part 'beans.jorm.dart';
 
+abstract class EntityBean<T> extends Bean<T> {
+  EntityBean(Adapter adapter) : super(adapter);
+
+  Future<void> updateMany(List<T> models, {bool cascade = false, bool onlyNonNull = false, Set<String> only});
+
+  Future<void> insertMany(List<T> models, {bool cascade = false, bool onlyNonNull = false, Set<String> only});
+
+  Future<int> remove(int id, {bool cascade = false});
+}
+
 @GenBean()
-class SongLyricBean extends Bean<SongLyricEntity> with _SongLyricBean {
+class SongLyricBean extends EntityBean<SongLyricEntity> with _SongLyricBean {
   SongBean _songEntityBean;
   AuthorBean _authorEntityBean;
   TagBean _tagEntityBean;
@@ -41,7 +51,7 @@ class SongLyricBean extends Bean<SongLyricEntity> with _SongLyricBean {
 }
 
 @GenBean()
-class SongBean extends Bean<SongEntity> with _SongBean {
+class SongBean extends EntityBean<SongEntity> with _SongBean {
   SongLyricBean _songLyricEntityBean;
 
   SongBean(Adapter adapter) : super(adapter);
@@ -53,7 +63,7 @@ class SongBean extends Bean<SongEntity> with _SongBean {
 }
 
 @GenBean()
-class SongbookBean extends Bean<SongbookEntity> with _SongbookBean {
+class SongbookBean extends EntityBean<SongbookEntity> with _SongbookBean {
   SongbookRecordBean _songbookRecordBean;
 
   SongbookBean(Adapter adapter) : super(adapter);
@@ -65,7 +75,7 @@ class SongbookBean extends Bean<SongbookEntity> with _SongbookBean {
 }
 
 @GenBean()
-class AuthorBean extends Bean<AuthorEntity> with _AuthorBean {
+class AuthorBean extends EntityBean<AuthorEntity> with _AuthorBean {
   SongLyricBean _songLyricEntityBean;
   ExternalBean _externalEntityBean;
 
@@ -85,7 +95,7 @@ class AuthorBean extends Bean<AuthorEntity> with _AuthorBean {
 }
 
 @GenBean()
-class TagBean extends Bean<TagEntity> with _TagBean {
+class TagBean extends EntityBean<TagEntity> with _TagBean {
   SongLyricBean _songLyricEntityBean;
   SongLyricTagBean _songLyricTagBean;
 
@@ -100,7 +110,7 @@ class TagBean extends Bean<TagEntity> with _TagBean {
 }
 
 @GenBean()
-class ExternalBean extends Bean<ExternalEntity> with _ExternalBean {
+class ExternalBean extends EntityBean<ExternalEntity> with _ExternalBean {
   SongLyricBean _songLyricEntityBean;
   AuthorBean _authorEntityBean;
 
@@ -118,7 +128,7 @@ class ExternalBean extends Bean<ExternalEntity> with _ExternalBean {
 }
 
 @GenBean()
-class PlaylistBean extends Bean<PlaylistEntity> with _PlaylistBean {
+class PlaylistBean extends EntityBean<PlaylistEntity> with _PlaylistBean {
   SongLyricBean _songLyricEntityBean;
 
   SongLyricPlaylistBean _songLyricPlaylistBean;

@@ -8,8 +8,9 @@ import 'package:zpevnik/theme.dart';
 class FiltersSection extends StatelessWidget {
   final String title;
   final List<Tag> tags;
+  final bool isLast;
 
-  const FiltersSection({Key key, this.title, this.tags}) : super(key: key);
+  const FiltersSection({Key key, this.title, this.tags, this.isLast = false}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,20 +20,20 @@ class FiltersSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          padding: EdgeInsets.only(bottom: kDefaultPadding / 2),
+          padding: EdgeInsets.all(kDefaultPadding).copyWith(bottom: 1.5 * kDefaultPadding),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(padding: EdgeInsets.only(bottom: kDefaultPadding), child: Text(title, style: textStyle)),
               Wrap(
-                spacing: kDefaultPadding / 2,
+                spacing: kDefaultPadding,
                 runSpacing: kDefaultPadding / 2,
                 children: List.generate(tags.length, (index) => FilterTag(tag: tags[index])),
               ),
             ],
           ),
         ),
-        Divider(thickness: 2, color: AppTheme.of(context).filtersSectionSeparatorColor),
+        if (!isLast) Divider(thickness: 1, color: AppTheme.of(context).filtersSectionSeparatorColor),
       ],
     );
   }

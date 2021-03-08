@@ -57,7 +57,7 @@ class TranslationsScreen extends StatelessWidget with PlatformWidgetMixin {
                 style: AppTheme.of(context).subTitleTextStyle.copyWith(color: songLyricType.color),
               ),
             ),
-            for (final songLyric in songLyrics) SongLyricRow(songLyric: songLyric),
+            for (final songLyric in songLyrics) SongLyricRow(songLyric: songLyric, hasProvider: false),
           ],
         ),
       );

@@ -9,7 +9,9 @@ import 'package:zpevnik/providers/data_provider.dart';
 import 'package:zpevnik/utils/database.dart';
 import 'package:zpevnik/utils/song_lyrics_parser.dart';
 
-final RegExp _chordsRE = RegExp(r'\[[^\]]+\]');
+final _chordsRE = RegExp(r'\[[^\]]+\]');
+final _parenthesesRE = RegExp(r'[\(\)]');
+final _numberRE = RegExp('[0-9]+');
 
 enum SongLyricType {
   original,
@@ -79,21 +81,46 @@ class SongLyric extends ChangeNotifier {
 
   Key get key => Key(_entity.id.toString());
 
-  String number(Songbook songbook) {
-    return '${songbook.shortcut} ${_entity.songbookRecords.firstWhere((record) => record.songbookId == songbook.id).number}';
+  String showingNumber(String searchText) {
+    String bestMatch = id.toString();
+    int bestMatchValue = 0;
+    searchText = searchText.toLowerCase().replaceAll(' ', '');
+
+    final predicates = [
+      (number, searchText) => number.toLowerCase().contains(searchText),
+      (number, searchText) => number.toLowerCase().startsWith(searchText),
+      (number, searchText) => _numberRE.stringMatch(number) == searchText,
+      (number, searchText) => number.toLowerCase() == searchText,
+    ];
+
+    for (final number in numbers) {
+      for (int i = 0; i < predicates.length; i++) {
+        if (bestMatchValue <= i && predicates[i](number, searchText)) {
+          bestMatch = number;
+          bestMatchValue = i + 1;
+        }
+      }
+    }
+
+    return bestMatch;
   }
+
+  String number(Songbook songbook) =>
+      _entity.songbookRecords.firstWhere((record) => record.songbookId == songbook.id).number;
 
   List<String> get numbers => _numbers ??= [id.toString()] +
       _entity.songbookRecords
           .where((record) => DataProvider.shared.songbook(record.songbookId) != null)
-          .map((record) => '${DataProvider.shared.songbook(record.songbookId).shortcut}${record.number}')
+          .map((record) => '${DataProvider.shared.songbook(record.songbookId).shortcut} ${record.number}')
           .toList();
 
-  String get name {
-    String name = _entity.name;
+  String get name => _entity.name;
 
-    if (_entity.secondaryName1 != null) name = '$name\n${_entity.secondaryName1}';
-    if (_entity.secondaryName2 != null) name = '$name\n${_entity.secondaryName2}';
+  String get secondaryName {
+    String name;
+
+    if (_entity.secondaryName1 != null) name = '${_entity.secondaryName1}';
+    if (_entity.secondaryName2 != null) name = '${name == null ? '' : '$name\n'}${_entity.secondaryName2}';
 
     return name;
   }
@@ -106,7 +133,7 @@ class SongLyric extends ChangeNotifier {
         name = '$name (${_entity.secondaryName1}, ${_entity.secondaryName2})';
       else
         name = '$name (${_entity.secondaryName1})';
-    }
+    } else if (_entity.secondaryName2 != null) name = '$name (${_entity.secondaryName2})';
 
     return name;
   }
@@ -221,26 +248,45 @@ class SongLyric extends ChangeNotifier {
 
 class Verse {
   final String number;
-  final List<Line> lines;
+  List<Line> _lines;
+  final bool isComment;
 
-  Verse(this.number, this.lines);
+  Verse(this.number, this._lines, this.isComment);
+
+  List<Line> get lines => _lines;
+
+  set lines(value) => _lines = value;
 
   factory Verse.fromMatch(RegExpMatch match) {
     if (match.group(1) == null && match.group(2).isEmpty) return null;
 
-    if (match.group(1) == null)
-      return Verse(
-        '',
-        SongLyricsParser.shared.lines(match.group(2)),
-      );
+    if (match.group(1) == null) return Verse('', SongLyricsParser.shared.lines(match.group(2), false), false);
+
+    String number = match.group(1).replaceAll(_parenthesesRE, '');
+    bool isInterlude = false;
+    bool isComment = false;
+    if (number == '@mezihra:') {
+      number = 'M:';
+      isInterlude = true;
+    } else if (number == '@dohra:') {
+      number = 'Z:';
+      isInterlude = true;
+    } else if (number == '@předehra:') {
+      number = 'P:';
+      isInterlude = true;
+    } else if (number == '#') {
+      number = '';
+      isComment = true;
+    }
 
     return Verse(
-      match.group(1),
-      SongLyricsParser.shared.lines(match.group(2)),
+      number,
+      SongLyricsParser.shared.lines(match.group(2), isInterlude),
+      isComment,
     );
   }
 
-  factory Verse.withoutNumber(String verse) => Verse('', SongLyricsParser.shared.lines(verse));
+  factory Verse.withoutNumber(String verse) => Verse('', SongLyricsParser.shared.lines(verse, false), false);
 }
 
 class Line {
@@ -260,12 +306,12 @@ class Line {
       tmp.add(block);
 
       if (!block.shouldShowLine) {
-        grouped.add(tmp);
+        if (tmp.isNotEmpty) grouped.add(tmp);
         tmp = [];
       }
     }
 
-    grouped.add(tmp);
+    if (tmp.isNotEmpty) grouped.add(tmp);
 
     _groupedBlocks = grouped;
 
@@ -277,11 +323,12 @@ class Block {
   final String _chord;
   final String lyricsPart;
   final bool _shouldShowLine;
+  final bool isInterlude;
 
   int transposition;
   bool accidentals;
 
-  Block(this._chord, this.lyricsPart, this._shouldShowLine);
+  Block(this._chord, this.lyricsPart, this._shouldShowLine, this.isInterlude);
 
   String get chord =>
       SongLyricsParser.shared.convertAccidentals(SongLyricsParser.shared.transpose(_chord, transposition), accidentals);

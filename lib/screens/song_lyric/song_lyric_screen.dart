@@ -29,15 +29,27 @@ class SongLyricScreen extends StatefulWidget {
 }
 
 class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
+  ScrollProvider _scrollProvider;
+
   ValueNotifier<bool> _showingMenu;
 
   @override
   void initState() {
     super.initState();
 
+    _scrollProvider = ScrollProvider();
+    _scrollProvider.scrollController = ScrollController();
+
     _showingMenu = ValueNotifier(false);
 
     widget.songLyric.addListener(_update);
+  }
+
+  @override
+  void didUpdateWidget(covariant SongLyricScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    _scrollProvider.scrollController = ScrollController();
   }
 
   @override
@@ -64,7 +76,10 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
             appBar: provider.fullScreen
                 ? null
                 : CustomAppBar(
-                    title: Text(widget.songLyric.id.toString(), style: AppTheme.of(context).navBarTitleTextStyle),
+                    title: Text(
+                      widget.songLyric.id.toString(),
+                      style: AppTheme.of(context).navBarTitleTextStyle.copyWith(color: AppTheme.of(context).iconColor),
+                    ),
                     shadowColor: AppTheme.of(context).appBarDividerColor,
                     actions: _actions(context),
                     brightness: AppTheme.of(context).brightness,
@@ -77,8 +92,6 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
   Widget _body(BuildContext context) {
     final settingsProvider = Provider.of<SettingsProvider>(context, listen: false);
     final fullScreenProvider = Provider.of<FullScreenProvider>(context, listen: false);
-    final scrollController = ScrollController();
-    final scrollProvider = ScrollProvider(scrollController);
 
     return DataContainer(
       data: widget.songLyric,
@@ -86,19 +99,30 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
         child: GestureDetector(
           onScaleStart: settingsProvider.fontScaleStarted,
           onScaleUpdate: settingsProvider.fontScaleUpdated,
-          onTap: fullScreenProvider.toggle,
+          onTap: () {
+            _showingMenu.value = false;
+            fullScreenProvider.toggle();
+          },
           child: Stack(
             children: [
               NotificationListener(
                 onNotification: (notif) {
-                  if (notif is ScrollEndNotification) setState(() => scrollProvider.scrollEnded());
+                  if (notif is ScrollEndNotification) setState(() => _scrollProvider.scrollEnded());
+
+                  if (notif is ScrollUpdateNotification) {
+                    // fixme: prevents scroll first time
+                    // fullScreenProvider.fullScreen = true;
+                    _showingMenu.value = false;
+                  }
 
                   return true;
                 },
                 child: Container(
                   height: double.infinity,
                   child: SingleChildScrollView(
-                    controller: scrollController,
+                    restorationId: 'song_lyric_scroll_view_${widget.songLyric.id}',
+                    key: PageStorageKey('song_lyric_scroll_view_${widget.songLyric.id}'),
+                    controller: _scrollProvider.scrollController,
                     child: Container(
                       padding: EdgeInsets.fromLTRB(
                         kDefaultPadding,
@@ -117,11 +141,12 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
                   right: 0,
                   bottom: kDefaultPadding,
                   child: DataContainer(
-                    data: scrollProvider,
+                    data: _scrollProvider,
                     child: SlidingWidget(
                       showSettings: _showSettings,
                       showExternals: widget.songLyric.youtubes.isNotEmpty ? _showExternals : null,
-                      scrollProvider: scrollProvider,
+                      scrollProvider: _scrollProvider,
+                      hasExternals: widget.songLyric.hasExternals,
                     ),
                   ),
                 ),
@@ -149,7 +174,7 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
       ),
       HighlightableButton(
         icon: Icon(Icons.more_vert),
-        padding: padding,
+        padding: padding.copyWith(right: AppTheme.of(context).platform == TargetPlatform.android ? kDefaultPadding : 0),
         onPressed: () => _showingMenu.value = !_showingMenu.value,
       ),
     ];
