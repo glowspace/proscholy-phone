@@ -91,15 +91,11 @@ class PlaylistsProvider extends ChangeNotifier {
     Database.shared.removePlaylist(playlist.entity);
   }
 
-  void showPlaylists(BuildContext context, List<SongLyric> songLyrics) {
-    FocusScope.of(context).unfocus();
-
-    showPlatformBottomSheet(
-      context: context,
-      child: PlaylistSheet(songLyrics: songLyrics),
-      height: 0.67 * MediaQuery.of(context).size.height,
-    );
-  }
+  void showPlaylists(BuildContext context, List<SongLyric> songLyrics) => showPlatformBottomSheet(
+        context: context,
+        child: PlaylistSheet(songLyrics: songLyrics),
+        height: 0.67 * MediaQuery.of(context).size.height,
+      );
 
   void showPlaylistDialog(BuildContext context, {Function() callback}) => showDialog<void>(
         context: context,
@@ -110,6 +106,17 @@ class PlaylistsProvider extends ChangeNotifier {
             _addPlaylist(text, []);
             if (callback != null) callback();
           },
+        ),
+      );
+
+  void addSharedPlaylist(BuildContext context, String playlistName, List<SongLyric> songLyrics) => showDialog<void>(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => PlatformDialog(
+          title: 'Přidat playlist',
+          initialValue: playlistName,
+          submitText: 'Přidat',
+          onSubmit: (text) => _addPlaylist(text, songLyrics),
         ),
       );
 }

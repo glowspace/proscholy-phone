@@ -8,6 +8,7 @@ import 'package:zpevnik/screens/components/highlightable_button.dart';
 import 'package:zpevnik/screens/components/search_widget.dart';
 import 'package:zpevnik/screens/components/song_lyrics_list.dart';
 import 'package:zpevnik/screens/song_lyric/song_lyric_screen.dart';
+import 'package:zpevnik/status_bar_wrapper.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/platform.dart';
 
@@ -22,6 +23,8 @@ class PlaylistScreen extends StatefulWidget {
 
 class _PlaylistScreenState extends State<PlaylistScreen> with PlatformStateMixin {
   final SongLyricsProvider _songLyricsProvider;
+
+  final _searchFieldFocusNode = FocusNode();
 
   bool _searching;
 
@@ -40,23 +43,27 @@ class _PlaylistScreenState extends State<PlaylistScreen> with PlatformStateMixin
           leading: _leading(context),
           middle: _middle(context),
           trailing: _trailing(context),
-          padding: _searching ? EdgeInsetsDirectional.only(start: kDefaultPadding / 2, end: kDefaultPadding / 2) : null,
+          padding: _searching
+              ? EdgeInsetsDirectional.only(start: kDefaultPadding / 2, end: kDefaultPadding / 2)
+              : EdgeInsetsDirectional.zero,
           transitionBetweenRoutes: false, // needed because of search widget
         ),
         child: _body(context),
       );
 
   @override
-  Widget androidWidget(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          leading: _leading(context),
-          title: _middle(context),
-          titleSpacing: kDefaultPadding,
-          actions: [_trailing(context)],
-          leadingWidth: _searching ? 0 : null,
-          shadowColor: AppTheme.of(context).appBarDividerColor,
+  Widget androidWidget(BuildContext context) => StatusBarWrapper(
+        child: Scaffold(
+          appBar: AppBar(
+            leading: _leading(context),
+            title: _middle(context),
+            titleSpacing: kDefaultPadding,
+            actions: [_trailing(context)],
+            leadingWidth: _searching ? 0 : null,
+            shadowColor: AppTheme.of(context).appBarDividerColor,
+          ),
+          body: _body(context),
         ),
-        body: _body(context),
       );
 
   Widget _leading(BuildContext context) => _searching ? Container(width: 0) : null;
@@ -67,6 +74,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> with PlatformStateMixin
           placeholder: 'Zadejte slovo nebo číslo',
           search: _songLyricsProvider.search,
           onSubmitted: (_) => _pushSelectedSongLyric(context),
+          focusNode: _searchFieldFocusNode,
           prefix: HighlightableButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () => setState(() {
@@ -83,7 +91,13 @@ class _PlaylistScreenState extends State<PlaylistScreen> with PlatformStateMixin
 
   Widget _trailing(BuildContext context) => _searching
       ? Container(width: 0)
-      : HighlightableButton(icon: Icon(Icons.search), onPressed: () => setState(() => _searching = true));
+      : HighlightableButton(
+          icon: Icon(Icons.search),
+          onPressed: () => setState(() {
+            _searchFieldFocusNode.requestFocus();
+            _searching = true;
+          }),
+        );
 
   Widget _body(BuildContext context) => SafeArea(
         child: ChangeNotifierProvider.value(

@@ -24,9 +24,10 @@ class _LyricsWidgetState extends State<LyricsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.songLyric.lilypond != null)
-      _preparedLilyPond ??= widget.songLyric.lilypond.replaceAll('currentColor',
-          AppTheme.of(context).textColor.toString().replaceAllMapped(_colorRE, (match) => '#${match.group(1)}'));
+    final appTheme = AppTheme.of(context);
+
+    _preparedLilyPond ??= widget.songLyric.lilypond?.replaceAll(
+        'currentColor', appTheme.textColor.toString().replaceAllMapped(_colorRE, (match) => '#${match.group(1)}'));
 
     return Consumer<SettingsProvider>(
       builder: (context, settingsProvider, _) => GestureDetector(
@@ -35,13 +36,13 @@ class _LyricsWidgetState extends State<LyricsWidget> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             RichText(
-              text: TextSpan(text: widget.songLyric.displayName, style: AppTheme.of(context).titleTextStyle),
+              text: TextSpan(text: widget.songLyric.displayName, style: appTheme.titleTextStyle),
               textScaleFactor: settingsProvider.fontSizeScale,
             ),
-            if (widget.songLyric.lilypond != null)
+            if (_preparedLilyPond != null)
               SvgPicture.string(_preparedLilyPond, width: MediaQuery.of(context).size.width),
             Container(
-              color: AppTheme.of(context).backgroundColor,
+              color: appTheme.backgroundColor,
               padding: EdgeInsets.only(top: kDefaultPadding * settingsProvider.fontSizeScale),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -52,7 +53,10 @@ class _LyricsWidgetState extends State<LyricsWidget> {
               ),
             ),
             RichText(
-              text: TextSpan(text: widget.songLyric.authorsText, style: AppTheme.of(context).bodyTextStyle),
+              text: TextSpan(
+                text: widget.songLyric.authorsText,
+                style: appTheme.captionTextStyle,
+              ),
               textScaleFactor: settingsProvider.fontSizeScale,
             ),
           ],
@@ -62,7 +66,7 @@ class _LyricsWidgetState extends State<LyricsWidget> {
   }
 
   Container _verse(BuildContext context, Verse verse, SettingsProvider settingsProvider) => Container(
-        padding: EdgeInsets.only(bottom: kDefaultPadding),
+        padding: verse.isComment ? null : EdgeInsets.only(bottom: 2 * kDefaultPadding),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -91,7 +95,7 @@ class _LyricsWidgetState extends State<LyricsWidget> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: List.generate(
                     verse.lines.length,
-                    (index) => _line(context, verse.lines[index], settingsProvider),
+                    (index) => _line(context, verse.lines[index], settingsProvider, verse.isComment),
                   ),
                 ),
               ),
@@ -100,57 +104,58 @@ class _LyricsWidgetState extends State<LyricsWidget> {
         ),
       );
 
-  Widget _line(BuildContext context, Line line, SettingsProvider settingsProvider) => RichText(
+  Widget _line(BuildContext context, Line line, SettingsProvider settingsProvider, bool isComment) => RichText(
         text: TextSpan(
           text: '',
           children: List.generate(
             line.groupedBlocks.length,
-            (index) => _blocks(context, line.groupedBlocks[index], settingsProvider),
+            (index) => _blocks(context, line.groupedBlocks[index], settingsProvider, isComment),
           ),
           style: AppTheme.of(context).bodyTextStyle,
         ),
         textScaleFactor: settingsProvider.fontSizeScale,
       );
 
-  InlineSpan _blocks(BuildContext context, List<Block> blocks, SettingsProvider settingsProvider) => blocks.length == 1
-      ? (blocks[0].chord.isEmpty
-          ? WidgetSpan(
-              child: RichText(
-                text: TextSpan(
-                  text: blocks[0].lyricsPart,
-                  style:
-                      AppTheme.of(context).bodyTextStyle.copyWith(height: (widget.songLyric.showChords ? 2.25 : 1.5)),
-                ),
+  InlineSpan _blocks(BuildContext context, List<Block> blocks, SettingsProvider settingsProvider, bool isComment) =>
+      blocks.length == 1
+          ? (blocks[0].chord.isEmpty
+              ? WidgetSpan(
+                  child: RichText(
+                    text: TextSpan(
+                      text: blocks[0].lyricsPart,
+                      style: (isComment ? AppTheme.of(context).commentTextStyle : AppTheme.of(context).bodyTextStyle)
+                          .copyWith(height: (widget.songLyric.showChords ? 2.25 : 1.5)),
+                    ),
+                  ),
+                )
+              : WidgetSpan(child: _block(context, blocks[0], settingsProvider)))
+          : WidgetSpan(
+              child: Wrap(
+              children: List.generate(
+                blocks.length,
+                (index) => _block(context, blocks[index], settingsProvider),
               ),
-            )
-          : WidgetSpan(child: _block(context, blocks[0], settingsProvider)))
-      : WidgetSpan(
-          child: Wrap(
-          children: List.generate(
-            blocks.length,
-            (index) => _block(context, blocks[index], settingsProvider),
-          ),
-        ));
+            ));
 
   Widget _block(BuildContext context, Block block, SettingsProvider settingsProvider) => Stack(
         children: [
           if (widget.songLyric.showChords)
             Transform.translate(
-              offset: Offset(0, -3),
+              offset: Offset(0, block.isInterlude ? 0 : -3),
               child: Container(
                 // todo: disable line between divided word
 
                 // decoration: BoxDecoration(
                 //   border: Border(
                 //     bottom: BorderSide(
-                //         color: block.shouldShowLine ? AppTheme.of(context).textColor : Colors.transparent),
+                //         color: block.shouldShowLine ? appTheme.textColor : Colors.transparent),
                 //   ),
                 // ),
                 child: Transform.translate(
-                  offset: Offset(0, -(AppTheme.of(context).bodyTextStyle.fontSize - 3)),
+                  offset: Offset(0, block.isInterlude ? 0 : -(AppTheme.of(context).bodyTextStyle.fontSize - 3)),
                   child: RichText(
                     text: TextSpan(
-                      text: block.chord,
+                      text: block.chord + (block.chord.length >= block.lyricsPart.trim().length ? ' ' : ''),
                       style: AppTheme.of(context).bodyTextStyle.copyWith(
                             color: AppTheme.of(context).chordColor,
                             height: (widget.songLyric.showChords ? 2.25 : 1.5),

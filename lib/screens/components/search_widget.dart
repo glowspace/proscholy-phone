@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/screens/components/highlightable_button.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/platform.dart';
 
@@ -52,6 +53,7 @@ class _SearchWidgetState extends State<SearchWidget> with PlatformStateMixin {
               onChanged: _searchTextChanged,
               onSubmitted: widget.onSubmitted,
               clearButtonMode: OverlayVisibilityMode.editing,
+              padding: EdgeInsets.zero,
             ),
           ),
         ),
@@ -67,6 +69,17 @@ class _SearchWidgetState extends State<SearchWidget> with PlatformStateMixin {
               border: InputBorder.none,
               hintText: widget.placeholder,
               hintStyle: _placeholderStyle(context, constraints.maxWidth),
+              suffixIcon: _textController.text.isEmpty
+                  ? null
+                  : HighlightableButton(
+                      onPressed: () {
+                        setState(() => _textController.clear());
+                        _searchTextChanged('');
+                      },
+                      icon: Icon(Icons.clear),
+                      padding: null,
+                    ),
+              suffixIconConstraints: BoxConstraints(),
             ),
             focusNode: widget.focusNode,
             controller: _textController,
@@ -77,7 +90,10 @@ class _SearchWidgetState extends State<SearchWidget> with PlatformStateMixin {
       );
 
   Widget _body(BuildContext context, Widget child) => Container(
-        padding: EdgeInsets.symmetric(horizontal: kDefaultPadding),
+        padding: EdgeInsets.only(
+          left: widget.prefix == null ? kDefaultPadding : 0,
+          right: widget.suffix == null ? kDefaultPadding : 0,
+        ),
         margin: AppTheme.of(context).isIOS ? null : EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
         decoration: BoxDecoration(
           color: AppTheme.of(context).backgroundColor,
@@ -94,6 +110,8 @@ class _SearchWidgetState extends State<SearchWidget> with PlatformStateMixin {
   void _searchTextChanged(String searchText) {
     // store current searchText to keep it persistent between tab changes
     PageStorage.of(context)?.writeState(context, searchText);
+
+    setState(() {});
 
     widget.search(searchText);
   }

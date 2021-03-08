@@ -1,7 +1,7 @@
 import 'package:zpevnik/models/song_lyric.dart';
 
-final _verseRE =
-    RegExp(r'\s*(\d+\.|\(?[BCR]\d?[:.]\)?)?\s*((?:=\s*(\d\.)|.|\n)*?)\n*(?=$|[^=]?\d\.|\(?[BCR]\d?[:.]\)?)');
+final _verseRE = RegExp(
+    r'\s*(\d+\.|\(?[BCR]\d?[:.]\)?|@mezihra:|@dohra:|@předehra:|#(?!.*\]))?\s*((?:=\s*(\d\.)|.|\n)*?)\n*(?=$|[^=]?\d\.|\(?[BCR]\d?[:.]\)?|@mezihra:|@dohra:|@předehra:|#(?!.*\]))');
 final _chordsRE = RegExp(r'\[[^\]]+\]');
 final _placeholderRE = RegExp(r'\[%\]');
 final _firstVerseRE = RegExp(r'1\.(?:.|\n)+?(?=\n+\d\.|\n+\(?[BCR][:.]\)?)', multiLine: true);
@@ -12,13 +12,26 @@ final _plainChordsRE = RegExp(r'[CDEFGAH]#?');
 final _toFlat = {'C#': 'Db', 'D#': 'Eb', 'F#': 'Gb', 'G#': 'Ab', 'A#': 'B'};
 final _toFlatRE = RegExp(r'[CDEFGAH]#');
 
-final _fromFlat = {'Db': 'C#', 'Eb': 'D#', 'Gb': 'F#', 'Ab': 'G#', 'B': 'A#'};
-final _fromFlatRE = RegExp(r'([CDEFGAH]b|B)');
+final _fromFlat = {
+  'Db': 'C#',
+  'Eb': 'D#',
+  'Gb': 'F#',
+  'Ab': 'G#',
+  'B': 'A#',
+  'Ds': 'C#',
+  'Es': 'D#',
+  'Gs': 'F#',
+  'As': 'G#',
+  'S': 'A#'
+};
+final _fromFlatRE = RegExp(r'([CDEFGAH][bs]|B)');
 
 final _parenthesesRE = RegExp(r'\(?\)?');
 final _multipleSpacesRE = RegExp(r' +');
 
 final _letterRE = RegExp(r'[a-zA-ZěščřžýáíéĚŠČŘŽÝÁÍÉ]');
+
+final _interludePartRE = RegExp(r'(/:\s?|:/\s?)');
 
 class SongLyricsParser {
   SongLyricsParser._();
@@ -26,7 +39,7 @@ class SongLyricsParser {
   static final SongLyricsParser shared = SongLyricsParser._();
 
   List<Verse> parseLyrics(String lyrics, int transposition, bool accidentals) =>
-      _verses(_substituteChordsPlaceholders(lyrics.replaceAll('\r', '').replaceAll('@', '')))
+      _verses(_substituteChordsPlaceholders(lyrics.replaceAll('\r', '')))
         ..forEach(
           (verse) => verse.lines.forEach(
             (line) => line.blocks.forEach(
@@ -71,12 +84,21 @@ class SongLyricsParser {
       if ((verses[i].lines.isEmpty ||
               verses[i].lines[0].blocks.isEmpty ||
               verses[i].lines[0].blocks[0].lyricsPart.isEmpty) &&
-          substitute != null) verses[i] = Verse(substitute.number, substitute.lines);
+          substitute != null) verses[i] = Verse(substitute.number, substitute.lines, false);
 
       substitutes[verses[i].number] = verses[i];
     }
 
-    return verses;
+    List<Verse> finalizedVerses = [];
+    for (final verse in verses) {
+      if (verse.isComment) {
+        finalizedVerses.add(Verse('', [verse.lines[0]], true));
+        if (verse.lines.length > 1) finalizedVerses.add(Verse('', verse.lines.sublist(1), false));
+      } else
+        finalizedVerses.add(verse);
+    }
+
+    return finalizedVerses;
   }
 
   // extracts chords from given lyrics
@@ -93,12 +115,15 @@ class SongLyricsParser {
   }
 
   // extracts lines of verse
-  List<Line> lines(String verse) => verse.split('\n').map((line) => Line(_blocks(line))).toList();
+  List<Line> lines(String verse, bool isInterlude) =>
+      verse.split('\n').map((line) => Line(_blocks(line, isInterlude))).toList();
 
   // extracts blocks from verse lines, every block is either word or part of word with corresponding chord
   // it is generated like this only for easier displaying of song lyric
-  List<Block> _blocks(String line) {
+  List<Block> _blocks(String line, bool isInterlude) {
     List<Block> blocks = [];
+
+    if (isInterlude) line = line.replaceAll(_interludePartRE, '');
 
     String previous = '';
     int index = 0;
@@ -117,16 +142,13 @@ class SongLyricsParser {
           // temporary solution to handle shorter chord than word
           if (words[i].length <= previous.length && words.length > 1)
             blocks.add(Block(
-              previous,
-              '${words[i++]} ${words[i++]}' + (words.length > 2 || text.endsWith(' ') ? ' ' : ''),
-              words.length == 2 && isNextLetter && !isLastSpace,
-            ));
+                previous,
+                '${words[i++]} ${words[i++]}' + (words.length > 2 || text.endsWith(' ') ? ' ' : ''),
+                words.length == 2 && isNextLetter && !isLastSpace,
+                isInterlude));
           else
-            blocks.add(Block(
-              previous,
-              words[i++] + (words.length > 1 || text.endsWith(' ') ? ' ' : ''),
-              words.length == 1 && isNextLetter && !isLastSpace,
-            ));
+            blocks.add(Block(previous, words[i++] + (words.length > 1 || text.endsWith(' ') ? ' ' : ''),
+                words.length == 1 && isNextLetter && !isLastSpace, isInterlude));
         }
 
         // print('$words, $isNextLetter, $isLastSpace');
@@ -134,14 +156,14 @@ class SongLyricsParser {
           final text = words.sublist(i).join(' ');
 
           if (isNextLetter || isLastSpace)
-            blocks.add(Block('', '$text', isNextLetter && !isLastSpace));
+            blocks.add(Block('', '$text', isNextLetter && !isLastSpace, isInterlude));
           else
-            blocks.add(Block('', '$text ', false));
+            blocks.add(Block('', '$text ', false, isInterlude));
         } else if (words.length > i) {
           final text = words.sublist(i, words.length - 1).join(' ');
-          if (text.isNotEmpty) blocks.add(Block('', '$text ', false));
+          if (text.isNotEmpty) blocks.add(Block('', '$text ', false, isInterlude));
 
-          blocks.add(Block('', '${words[words.length - 1]}', isNextLetter && !isLastSpace));
+          blocks.add(Block('', '${words[words.length - 1]}', isNextLetter && !isLastSpace, isInterlude));
         }
       }
 
@@ -156,15 +178,15 @@ class SongLyricsParser {
     if (previous.isNotEmpty) {
       // temporary solution to handle shorter chord than word
       if (words[i].length < 4 && words.length > 1)
-        blocks.add(Block(previous, '${words[i++]} ${words[i++]}' + (words.length > 2 ? ' ' : ''), false));
+        blocks.add(Block(previous, '${words[i++]} ${words[i++]}' + (words.length > 2 ? ' ' : ''), false, isInterlude));
       else
-        blocks.add(Block(previous, words[i++] + (words.length > 1 ? ' ' : ''), false));
+        blocks.add(Block(previous, words[i++] + (words.length > 1 ? ' ' : ''), false, isInterlude));
     }
 
     if (words.length > i) {
       final text = words.sublist(i).join(' ');
 
-      blocks.add(Block('', '$text', false));
+      blocks.add(Block('', '$text', false, isInterlude));
     }
 
     return blocks;

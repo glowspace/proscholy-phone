@@ -7,9 +7,11 @@ import 'package:zpevnik/utils/platform.dart';
 class PlatformDialog extends StatelessWidget with PlatformWidgetMixin {
   final String title;
   final String initialValue;
+  final String submitText;
   final Function(String) onSubmit;
 
-  const PlatformDialog({Key key, this.title, this.initialValue, this.onSubmit}) : super(key: key);
+  const PlatformDialog({Key key, this.title, this.initialValue, this.onSubmit, this.submitText = 'Vytvořit'})
+      : super(key: key);
 
   @override
   Widget androidWidget(BuildContext context) {
@@ -33,7 +35,7 @@ class PlatformDialog extends StatelessWidget with PlatformWidgetMixin {
           value: textFieldController,
           child: Consumer<TextEditingController>(
             builder: (context, controller, _) => TextButton(
-              child: Text('Vytvořit'),
+              child: Text(submitText),
               onPressed: controller.text.isEmpty
                   ? null
                   : () {
@@ -66,7 +68,7 @@ class PlatformDialog extends StatelessWidget with PlatformWidgetMixin {
             value: textFieldController,
             child: Consumer<TextEditingController>(
               builder: (context, controller, _) => TextButton(
-                child: Text('Vytvořit',
+                child: Text(submitText,
                     style: AppTheme.of(context).bodyTextStyle.copyWith(
                         color: controller.text.isEmpty ? AppTheme.of(context).textColor.withAlpha(0x77) : null)),
                 onPressed: controller.text.isEmpty

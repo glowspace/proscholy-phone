@@ -8,6 +8,7 @@ import 'package:zpevnik/screens/components/highlightable_row.dart';
 import 'package:zpevnik/screens/components/playlist_row.dart';
 import 'package:zpevnik/screens/user/components/user_menu.dart';
 import 'package:zpevnik/screens/user/favorite_screen.dart';
+import 'package:zpevnik/screens/user/settings_screen.dart';
 import 'package:zpevnik/status_bar_wrapper.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/platform.dart';
@@ -163,7 +164,16 @@ class _UserScreenState extends State<UserScreen> with PlatformStateMixin {
             child: Row(children: [
               Text('Ostatní', style: AppTheme.of(context).bodyTextStyle),
               Spacer(),
-              GestureDetector(onTap: () => _showUserMenu(context), child: Icon(Icons.menu)),
+              HighlightableButton(
+                icon: Icon(Icons.settings),
+                onPressed: () => _pushSettings(context),
+                padding: EdgeInsets.all(kDefaultPadding / 2),
+              ),
+              HighlightableButton(
+                icon: Icon(Icons.menu),
+                onPressed: () => _showUserMenu(context),
+                padding: EdgeInsets.all(kDefaultPadding / 2),
+              ),
             ]),
           ),
         ],
@@ -182,15 +192,14 @@ class _UserScreenState extends State<UserScreen> with PlatformStateMixin {
         ),
       );
 
-  void _showUserMenu(BuildContext context) {
-    FocusScope.of(context).unfocus();
+  void _showUserMenu(BuildContext context) => showPlatformBottomSheet(
+        context: context,
+        child: UserMenuWidget(),
+        height: 0.5 * MediaQuery.of(context).size.height,
+      );
 
-    return showPlatformBottomSheet(
-      context: context,
-      child: UserMenuWidget(),
-      height: 0.5 * MediaQuery.of(context).size.height,
-    );
-  }
+  void _pushSettings(BuildContext context) =>
+      Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(builder: (context) => SettingsScreen()));
 
   bool _onReorder(Key from, Key to) {
     int fromIndex = PlaylistsProvider.shared.allPlaylists.indexWhere((playlist) => playlist.key == from);

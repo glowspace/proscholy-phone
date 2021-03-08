@@ -77,22 +77,16 @@ abstract class _SongLyricBean implements Bean<SongLyricEntity> {
     } else if (only != null) {
       if (only.contains(id.name)) ret.add(id.set(model.id));
       if (only.contains(name.name)) ret.add(name.set(model.name));
-      if (only.contains(secondaryName1.name))
-        ret.add(secondaryName1.set(model.secondaryName1));
-      if (only.contains(secondaryName2.name))
-        ret.add(secondaryName2.set(model.secondaryName2));
+      if (only.contains(secondaryName1.name)) ret.add(secondaryName1.set(model.secondaryName1));
+      if (only.contains(secondaryName2.name)) ret.add(secondaryName2.set(model.secondaryName2));
       if (only.contains(lyrics.name)) ret.add(lyrics.set(model.lyrics));
       if (only.contains(language.name)) ret.add(language.set(model.language));
       if (only.contains(type.name)) ret.add(type.set(model.type));
       if (only.contains(lilypond.name)) ret.add(lilypond.set(model.lilypond));
-      if (only.contains(favoriteOrder.name))
-        ret.add(favoriteOrder.set(model.favoriteOrder));
-      if (only.contains(transposition.name))
-        ret.add(transposition.set(model.transposition));
-      if (only.contains(showChords.name))
-        ret.add(showChords.set(model.showChords));
-      if (only.contains(accidentals.name))
-        ret.add(accidentals.set(model.accidentals));
+      if (only.contains(favoriteOrder.name)) ret.add(favoriteOrder.set(model.favoriteOrder));
+      if (only.contains(transposition.name)) ret.add(transposition.set(model.transposition));
+      if (only.contains(showChords.name)) ret.add(showChords.set(model.showChords));
+      if (only.contains(accidentals.name)) ret.add(accidentals.set(model.accidentals));
       if (only.contains(songId.name)) ret.add(songId.set(model.songId));
     } else /* if (onlyNonNull) */ {
       if (model.id != null) {
@@ -154,18 +148,13 @@ abstract class _SongLyricBean implements Bean<SongLyricEntity> {
     st.addBool(showChords.name, isNullable: true);
     st.addBool(accidentals.name, isNullable: true);
     st.addInt(songId.name,
-        foreignTable: songEntityBean.tableName,
-        foreignCol: songEntityBean.id.name,
-        isNullable: true);
+        foreignTable: songEntityBean.tableName, foreignCol: songEntityBean.id.name, isNullable: true);
     return adapter.createTable(st);
   }
 
   Future<dynamic> insert(SongLyricEntity model,
-      {bool cascade = false,
-      bool onlyNonNull = false,
-      Set<String> only}) async {
-    final Insert insert = inserter
-        .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
+      {bool cascade = false, bool onlyNonNull = false, Set<String> only}) async {
+    final Insert insert = inserter.setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
     var retId = await adapter.insert(insert);
     if (cascade) {
       SongLyricEntity newModel;
@@ -178,8 +167,7 @@ abstract class _SongLyricBean implements Bean<SongLyricEntity> {
       }
       if (model.externals != null) {
         newModel ??= await find(model.id);
-        model.externals.forEach(
-            (x) => externalEntityBean.associateSongLyricEntity(x, newModel));
+        model.externals.forEach((x) => externalEntityBean.associateSongLyricEntity(x, newModel));
         for (final child in model.externals) {
           await externalEntityBean.insert(child, cascade: cascade);
         }
@@ -200,8 +188,7 @@ abstract class _SongLyricBean implements Bean<SongLyricEntity> {
       }
       if (model.songbookRecords != null) {
         newModel ??= await find(model.id);
-        model.songbookRecords.forEach(
-            (x) => songbookRecordBean.associateSongLyricEntity(x, newModel));
+        model.songbookRecords.forEach((x) => songbookRecordBean.associateSongLyricEntity(x, newModel));
         for (final child in model.songbookRecords) {
           await songbookRecordBean.insert(child, cascade: cascade);
         }
@@ -211,9 +198,7 @@ abstract class _SongLyricBean implements Bean<SongLyricEntity> {
   }
 
   Future<void> insertMany(List<SongLyricEntity> models,
-      {bool cascade = false,
-      bool onlyNonNull = false,
-      Set<String> only}) async {
+      {bool cascade = false, bool onlyNonNull = false, Set<String> only}) async {
     if (cascade) {
       final List<Future> futures = [];
       for (var model in models) {
@@ -222,10 +207,8 @@ abstract class _SongLyricBean implements Bean<SongLyricEntity> {
       await Future.wait(futures);
       return;
     } else {
-      final List<List<SetColumn>> data = models
-          .map((model) =>
-              toSetColumns(model, only: only, onlyNonNull: onlyNonNull))
-          .toList();
+      final List<List<SetColumn>> data =
+          models.map((model) => toSetColumns(model, only: only, onlyNonNull: onlyNonNull)).toList();
       final InsertMany insert = inserters.addAll(data);
       await adapter.insertMany(insert);
       return;
@@ -233,24 +216,19 @@ abstract class _SongLyricBean implements Bean<SongLyricEntity> {
   }
 
   Future<dynamic> upsert(SongLyricEntity model,
-      {bool cascade = false,
-      Set<String> only,
-      bool onlyNonNull = false,
-      isForeignKeyEnabled = false}) async {
+      {bool cascade = false, Set<String> only, bool onlyNonNull = false, isForeignKeyEnabled = false}) async {
     var retId;
     if (isForeignKeyEnabled) {
-      final Insert insert = Insert(tableName, ignoreIfExist: true)
-          .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
+      final Insert insert =
+          Insert(tableName, ignoreIfExist: true).setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
       retId = await adapter.insert(insert);
       if (retId == null) {
-        final Update update = updater
-            .where(this.id.eq(model.id))
-            .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
+        final Update update =
+            updater.where(this.id.eq(model.id)).setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
         retId = adapter.update(update);
       }
     } else {
-      final Upsert upsert = upserter
-          .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
+      final Upsert upsert = upserter.setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
       retId = await adapter.upsert(upsert);
     }
     if (cascade) {
@@ -264,8 +242,7 @@ abstract class _SongLyricBean implements Bean<SongLyricEntity> {
       }
       if (model.externals != null) {
         newModel ??= await find(model.id);
-        model.externals.forEach(
-            (x) => externalEntityBean.associateSongLyricEntity(x, newModel));
+        model.externals.forEach((x) => externalEntityBean.associateSongLyricEntity(x, newModel));
         for (final child in model.externals) {
           await externalEntityBean.upsert(child, cascade: cascade);
         }
@@ -286,8 +263,7 @@ abstract class _SongLyricBean implements Bean<SongLyricEntity> {
       }
       if (model.songbookRecords != null) {
         newModel ??= await find(model.id);
-        model.songbookRecords.forEach(
-            (x) => songbookRecordBean.associateSongLyricEntity(x, newModel));
+        model.songbookRecords.forEach((x) => songbookRecordBean.associateSongLyricEntity(x, newModel));
         for (final child in model.songbookRecords) {
           await songbookRecordBean.upsert(child, cascade: cascade);
         }
@@ -297,15 +273,11 @@ abstract class _SongLyricBean implements Bean<SongLyricEntity> {
   }
 
   Future<void> upsertMany(List<SongLyricEntity> models,
-      {bool cascade = false,
-      bool onlyNonNull = false,
-      Set<String> only,
-      isForeignKeyEnabled = false}) async {
+      {bool cascade = false, bool onlyNonNull = false, Set<String> only, isForeignKeyEnabled = false}) async {
     if (cascade || isForeignKeyEnabled) {
       final List<Future> futures = [];
       for (var model in models) {
-        futures.add(upsert(model,
-            cascade: cascade, isForeignKeyEnabled: isForeignKeyEnabled));
+        futures.add(upsert(model, cascade: cascade, isForeignKeyEnabled: isForeignKeyEnabled));
       }
       await Future.wait(futures);
       return;
@@ -313,8 +285,7 @@ abstract class _SongLyricBean implements Bean<SongLyricEntity> {
       final List<List<SetColumn>> data = [];
       for (var i = 0; i < models.length; ++i) {
         var model = models[i];
-        data.add(
-            toSetColumns(model, only: only, onlyNonNull: onlyNonNull).toList());
+        data.add(toSetColumns(model, only: only, onlyNonNull: onlyNonNull).toList());
       }
       final UpsertMany upsert = upserters.addAll(data);
       await adapter.upsertMany(upsert);
@@ -323,54 +294,43 @@ abstract class _SongLyricBean implements Bean<SongLyricEntity> {
   }
 
   Future<int> update(SongLyricEntity model,
-      {bool cascade = false,
-      bool associate = false,
-      Set<String> only,
-      bool onlyNonNull = false}) async {
-    final Update update = updater
-        .where(this.id.eq(model.id))
-        .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
+      {bool cascade = false, bool associate = false, Set<String> only, bool onlyNonNull = false}) async {
+    final Update update =
+        updater.where(this.id.eq(model.id)).setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
     final ret = adapter.update(update);
     if (cascade) {
       SongLyricEntity newModel;
       if (model.authors != null) {
         for (final child in model.authors) {
-          await authorEntityBean.update(child,
-              cascade: cascade, associate: associate);
+          await authorEntityBean.update(child, cascade: cascade, associate: associate);
         }
       }
       if (model.externals != null) {
         if (associate) {
           newModel ??= await find(model.id);
-          model.externals.forEach(
-              (x) => externalEntityBean.associateSongLyricEntity(x, newModel));
+          model.externals.forEach((x) => externalEntityBean.associateSongLyricEntity(x, newModel));
         }
         for (final child in model.externals) {
-          await externalEntityBean.update(child,
-              cascade: cascade, associate: associate);
+          await externalEntityBean.update(child, cascade: cascade, associate: associate);
         }
       }
       if (model.tags != null) {
         for (final child in model.tags) {
-          await tagEntityBean.update(child,
-              cascade: cascade, associate: associate);
+          await tagEntityBean.update(child, cascade: cascade, associate: associate);
         }
       }
       if (model.playlists != null) {
         for (final child in model.playlists) {
-          await playlistEntityBean.update(child,
-              cascade: cascade, associate: associate);
+          await playlistEntityBean.update(child, cascade: cascade, associate: associate);
         }
       }
       if (model.songbookRecords != null) {
         if (associate) {
           newModel ??= await find(model.id);
-          model.songbookRecords.forEach(
-              (x) => songbookRecordBean.associateSongLyricEntity(x, newModel));
+          model.songbookRecords.forEach((x) => songbookRecordBean.associateSongLyricEntity(x, newModel));
         }
         for (final child in model.songbookRecords) {
-          await songbookRecordBean.update(child,
-              cascade: cascade, associate: associate);
+          await songbookRecordBean.update(child, cascade: cascade, associate: associate);
         }
       }
     }
@@ -378,9 +338,7 @@ abstract class _SongLyricBean implements Bean<SongLyricEntity> {
   }
 
   Future<void> updateMany(List<SongLyricEntity> models,
-      {bool cascade = false,
-      bool onlyNonNull = false,
-      Set<String> only}) async {
+      {bool cascade = false, bool onlyNonNull = false, Set<String> only}) async {
     if (cascade) {
       final List<Future> futures = [];
       for (var model in models) {
@@ -393,8 +351,7 @@ abstract class _SongLyricBean implements Bean<SongLyricEntity> {
       final List<Expression> where = [];
       for (var i = 0; i < models.length; ++i) {
         var model = models[i];
-        data.add(
-            toSetColumns(model, only: only, onlyNonNull: onlyNonNull).toList());
+        data.add(toSetColumns(model, only: only, onlyNonNull: onlyNonNull).toList());
         where.add(this.id.eq(model.id));
       }
       final UpdateMany update = updaters.addAll(data, where);
@@ -403,8 +360,7 @@ abstract class _SongLyricBean implements Bean<SongLyricEntity> {
     }
   }
 
-  Future<SongLyricEntity> find(int id,
-      {bool preload = false, bool cascade = false}) async {
+  Future<SongLyricEntity> find(int id, {bool preload = false, bool cascade = false}) async {
     final Find find = finder.where(this.id.eq(id));
     final SongLyricEntity model = await findOne(find);
     if (preload && model != null) {
@@ -438,8 +394,7 @@ abstract class _SongLyricBean implements Bean<SongLyricEntity> {
     return adapter.remove(remove);
   }
 
-  Future<List<SongLyricEntity>> findBySongEntity(int songId,
-      {bool preload = false, bool cascade = false}) async {
+  Future<List<SongLyricEntity>> findBySongEntity(int songId, {bool preload = false, bool cascade = false}) async {
     final Find find = finder.where(this.songId.eq(songId));
     final List<SongLyricEntity> models = await findMany(find);
     if (preload) {
@@ -472,20 +427,17 @@ abstract class _SongLyricBean implements Bean<SongLyricEntity> {
     child.songId = parent.id;
   }
 
-  Future<SongLyricEntity> preload(SongLyricEntity model,
-      {bool cascade = false}) async {
+  Future<SongLyricEntity> preload(SongLyricEntity model, {bool cascade = false}) async {
     model.authors = await songLyricAuthorBean.fetchBySongLyricEntity(model);
-    model.externals = await externalEntityBean.findBySongLyricEntity(model.id,
-        preload: cascade, cascade: cascade);
+    model.externals = await externalEntityBean.findBySongLyricEntity(model.id, preload: cascade, cascade: cascade);
     model.tags = await songLyricTagBean.fetchBySongLyricEntity(model);
     model.playlists = await songLyricPlaylistBean.fetchBySongLyricEntity(model);
-    model.songbookRecords = await songbookRecordBean
-        .findBySongLyricEntity(model.id, preload: cascade, cascade: cascade);
+    model.songbookRecords =
+        await songbookRecordBean.findBySongLyricEntity(model.id, preload: cascade, cascade: cascade);
     return model;
   }
 
-  Future<List<SongLyricEntity>> preloadAll(List<SongLyricEntity> models,
-      {bool cascade = false}) async {
+  Future<List<SongLyricEntity>> preloadAll(List<SongLyricEntity> models, {bool cascade = false}) async {
     for (SongLyricEntity model in models) {
       var temp = await songLyricAuthorBean.fetchBySongLyricEntity(model);
       if (model.authors == null)
@@ -501,8 +453,7 @@ abstract class _SongLyricBean implements Bean<SongLyricEntity> {
         (SongLyricEntity model) => [model.id],
         externalEntityBean.findBySongLyricEntityList,
         (ExternalEntity model) => [model.songLyricId],
-        (SongLyricEntity model, ExternalEntity child) =>
-            model.externals = List.from(model.externals)..add(child),
+        (SongLyricEntity model, ExternalEntity child) => model.externals = List.from(model.externals)..add(child),
         cascade: cascade);
     for (SongLyricEntity model in models) {
       var temp = await songLyricTagBean.fetchBySongLyricEntity(model);
@@ -528,8 +479,8 @@ abstract class _SongLyricBean implements Bean<SongLyricEntity> {
         (SongLyricEntity model) => [model.id],
         songbookRecordBean.findBySongLyricEntityList,
         (SongbookRecord model) => [model.songLyricId],
-        (SongLyricEntity model, SongbookRecord child) => model.songbookRecords =
-            List.from(model.songbookRecords)..add(child),
+        (SongLyricEntity model, SongbookRecord child) =>
+            model.songbookRecords = List.from(model.songbookRecords)..add(child),
         cascade: cascade);
     return models;
   }
@@ -565,8 +516,7 @@ abstract class _SongBean implements Bean<SongEntity> {
     return model;
   }
 
-  List<SetColumn> toSetColumns(SongEntity model,
-      {bool update = false, Set<String> only, bool onlyNonNull = false}) {
+  List<SetColumn> toSetColumns(SongEntity model, {bool update = false, Set<String> only, bool onlyNonNull = false}) {
     List<SetColumn> ret = [];
 
     if (only == null && !onlyNonNull) {
@@ -594,19 +544,14 @@ abstract class _SongBean implements Bean<SongEntity> {
     return adapter.createTable(st);
   }
 
-  Future<dynamic> insert(SongEntity model,
-      {bool cascade = false,
-      bool onlyNonNull = false,
-      Set<String> only}) async {
-    final Insert insert = inserter
-        .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
+  Future<dynamic> insert(SongEntity model, {bool cascade = false, bool onlyNonNull = false, Set<String> only}) async {
+    final Insert insert = inserter.setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
     var retId = await adapter.insert(insert);
     if (cascade) {
       SongEntity newModel;
       if (model.songLyrics != null) {
         newModel ??= await find(model.id);
-        model.songLyrics.forEach(
-            (x) => songLyricEntityBean.associateSongEntity(x, newModel));
+        model.songLyrics.forEach((x) => songLyricEntityBean.associateSongEntity(x, newModel));
         for (final child in model.songLyrics) {
           await songLyricEntityBean.insert(child, cascade: cascade);
         }
@@ -616,9 +561,7 @@ abstract class _SongBean implements Bean<SongEntity> {
   }
 
   Future<void> insertMany(List<SongEntity> models,
-      {bool cascade = false,
-      bool onlyNonNull = false,
-      Set<String> only}) async {
+      {bool cascade = false, bool onlyNonNull = false, Set<String> only}) async {
     if (cascade) {
       final List<Future> futures = [];
       for (var model in models) {
@@ -627,10 +570,8 @@ abstract class _SongBean implements Bean<SongEntity> {
       await Future.wait(futures);
       return;
     } else {
-      final List<List<SetColumn>> data = models
-          .map((model) =>
-              toSetColumns(model, only: only, onlyNonNull: onlyNonNull))
-          .toList();
+      final List<List<SetColumn>> data =
+          models.map((model) => toSetColumns(model, only: only, onlyNonNull: onlyNonNull)).toList();
       final InsertMany insert = inserters.addAll(data);
       await adapter.insertMany(insert);
       return;
@@ -638,32 +579,26 @@ abstract class _SongBean implements Bean<SongEntity> {
   }
 
   Future<dynamic> upsert(SongEntity model,
-      {bool cascade = false,
-      Set<String> only,
-      bool onlyNonNull = false,
-      isForeignKeyEnabled = false}) async {
+      {bool cascade = false, Set<String> only, bool onlyNonNull = false, isForeignKeyEnabled = false}) async {
     var retId;
     if (isForeignKeyEnabled) {
-      final Insert insert = Insert(tableName, ignoreIfExist: true)
-          .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
+      final Insert insert =
+          Insert(tableName, ignoreIfExist: true).setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
       retId = await adapter.insert(insert);
       if (retId == null) {
-        final Update update = updater
-            .where(this.id.eq(model.id))
-            .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
+        final Update update =
+            updater.where(this.id.eq(model.id)).setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
         retId = adapter.update(update);
       }
     } else {
-      final Upsert upsert = upserter
-          .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
+      final Upsert upsert = upserter.setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
       retId = await adapter.upsert(upsert);
     }
     if (cascade) {
       SongEntity newModel;
       if (model.songLyrics != null) {
         newModel ??= await find(model.id);
-        model.songLyrics.forEach(
-            (x) => songLyricEntityBean.associateSongEntity(x, newModel));
+        model.songLyrics.forEach((x) => songLyricEntityBean.associateSongEntity(x, newModel));
         for (final child in model.songLyrics) {
           await songLyricEntityBean.upsert(child, cascade: cascade);
         }
@@ -673,15 +608,11 @@ abstract class _SongBean implements Bean<SongEntity> {
   }
 
   Future<void> upsertMany(List<SongEntity> models,
-      {bool cascade = false,
-      bool onlyNonNull = false,
-      Set<String> only,
-      isForeignKeyEnabled = false}) async {
+      {bool cascade = false, bool onlyNonNull = false, Set<String> only, isForeignKeyEnabled = false}) async {
     if (cascade || isForeignKeyEnabled) {
       final List<Future> futures = [];
       for (var model in models) {
-        futures.add(upsert(model,
-            cascade: cascade, isForeignKeyEnabled: isForeignKeyEnabled));
+        futures.add(upsert(model, cascade: cascade, isForeignKeyEnabled: isForeignKeyEnabled));
       }
       await Future.wait(futures);
       return;
@@ -689,8 +620,7 @@ abstract class _SongBean implements Bean<SongEntity> {
       final List<List<SetColumn>> data = [];
       for (var i = 0; i < models.length; ++i) {
         var model = models[i];
-        data.add(
-            toSetColumns(model, only: only, onlyNonNull: onlyNonNull).toList());
+        data.add(toSetColumns(model, only: only, onlyNonNull: onlyNonNull).toList());
       }
       final UpsertMany upsert = upserters.addAll(data);
       await adapter.upsertMany(upsert);
@@ -699,25 +629,19 @@ abstract class _SongBean implements Bean<SongEntity> {
   }
 
   Future<int> update(SongEntity model,
-      {bool cascade = false,
-      bool associate = false,
-      Set<String> only,
-      bool onlyNonNull = false}) async {
-    final Update update = updater
-        .where(this.id.eq(model.id))
-        .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
+      {bool cascade = false, bool associate = false, Set<String> only, bool onlyNonNull = false}) async {
+    final Update update =
+        updater.where(this.id.eq(model.id)).setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
     final ret = adapter.update(update);
     if (cascade) {
       SongEntity newModel;
       if (model.songLyrics != null) {
         if (associate) {
           newModel ??= await find(model.id);
-          model.songLyrics.forEach(
-              (x) => songLyricEntityBean.associateSongEntity(x, newModel));
+          model.songLyrics.forEach((x) => songLyricEntityBean.associateSongEntity(x, newModel));
         }
         for (final child in model.songLyrics) {
-          await songLyricEntityBean.update(child,
-              cascade: cascade, associate: associate);
+          await songLyricEntityBean.update(child, cascade: cascade, associate: associate);
         }
       }
     }
@@ -725,9 +649,7 @@ abstract class _SongBean implements Bean<SongEntity> {
   }
 
   Future<void> updateMany(List<SongEntity> models,
-      {bool cascade = false,
-      bool onlyNonNull = false,
-      Set<String> only}) async {
+      {bool cascade = false, bool onlyNonNull = false, Set<String> only}) async {
     if (cascade) {
       final List<Future> futures = [];
       for (var model in models) {
@@ -740,8 +662,7 @@ abstract class _SongBean implements Bean<SongEntity> {
       final List<Expression> where = [];
       for (var i = 0; i < models.length; ++i) {
         var model = models[i];
-        data.add(
-            toSetColumns(model, only: only, onlyNonNull: onlyNonNull).toList());
+        data.add(toSetColumns(model, only: only, onlyNonNull: onlyNonNull).toList());
         where.add(this.id.eq(model.id));
       }
       final UpdateMany update = updaters.addAll(data, where);
@@ -750,8 +671,7 @@ abstract class _SongBean implements Bean<SongEntity> {
     }
   }
 
-  Future<SongEntity> find(int id,
-      {bool preload = false, bool cascade = false}) async {
+  Future<SongEntity> find(int id, {bool preload = false, bool cascade = false}) async {
     final Find find = finder.where(this.id.eq(id));
     final SongEntity model = await findOne(find);
     if (preload && model != null) {
@@ -782,21 +702,18 @@ abstract class _SongBean implements Bean<SongEntity> {
   }
 
   Future<SongEntity> preload(SongEntity model, {bool cascade = false}) async {
-    model.songLyrics = await songLyricEntityBean.findBySongEntity(model.id,
-        preload: cascade, cascade: cascade);
+    model.songLyrics = await songLyricEntityBean.findBySongEntity(model.id, preload: cascade, cascade: cascade);
     return model;
   }
 
-  Future<List<SongEntity>> preloadAll(List<SongEntity> models,
-      {bool cascade = false}) async {
+  Future<List<SongEntity>> preloadAll(List<SongEntity> models, {bool cascade = false}) async {
     models.forEach((SongEntity model) => model.songLyrics ??= []);
     await OneToXHelper.preloadAll<SongEntity, SongLyricEntity>(
         models,
         (SongEntity model) => [model.id],
         songLyricEntityBean.findBySongEntityList,
         (SongLyricEntity model) => [model.songId],
-        (SongEntity model, SongLyricEntity child) =>
-            model.songLyrics = List.from(model.songLyrics)..add(child),
+        (SongEntity model, SongLyricEntity child) => model.songLyrics = List.from(model.songLyrics)..add(child),
         cascade: cascade);
     return models;
   }
@@ -853,10 +770,8 @@ abstract class _SongbookBean implements Bean<SongbookEntity> {
       if (only.contains(name.name)) ret.add(name.set(model.name));
       if (only.contains(shortcut.name)) ret.add(shortcut.set(model.shortcut));
       if (only.contains(color.name)) ret.add(color.set(model.color));
-      if (only.contains(colorText.name))
-        ret.add(colorText.set(model.colorText));
-      if (only.contains(isPrivate.name))
-        ret.add(isPrivate.set(model.isPrivate));
+      if (only.contains(colorText.name)) ret.add(colorText.set(model.colorText));
+      if (only.contains(isPrivate.name)) ret.add(isPrivate.set(model.isPrivate));
       if (only.contains(isPinned.name)) ret.add(isPinned.set(model.isPinned));
     } else /* if (onlyNonNull) */ {
       if (model.id != null) {
@@ -898,18 +813,14 @@ abstract class _SongbookBean implements Bean<SongbookEntity> {
   }
 
   Future<dynamic> insert(SongbookEntity model,
-      {bool cascade = false,
-      bool onlyNonNull = false,
-      Set<String> only}) async {
-    final Insert insert = inserter
-        .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
+      {bool cascade = false, bool onlyNonNull = false, Set<String> only}) async {
+    final Insert insert = inserter.setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
     var retId = await adapter.insert(insert);
     if (cascade) {
       SongbookEntity newModel;
       if (model.records != null) {
         newModel ??= await find(model.id);
-        model.records.forEach(
-            (x) => songbookRecordBean.associateSongbookEntity(x, newModel));
+        model.records.forEach((x) => songbookRecordBean.associateSongbookEntity(x, newModel));
         for (final child in model.records) {
           await songbookRecordBean.insert(child, cascade: cascade);
         }
@@ -919,9 +830,7 @@ abstract class _SongbookBean implements Bean<SongbookEntity> {
   }
 
   Future<void> insertMany(List<SongbookEntity> models,
-      {bool cascade = false,
-      bool onlyNonNull = false,
-      Set<String> only}) async {
+      {bool cascade = false, bool onlyNonNull = false, Set<String> only}) async {
     if (cascade) {
       final List<Future> futures = [];
       for (var model in models) {
@@ -930,10 +839,8 @@ abstract class _SongbookBean implements Bean<SongbookEntity> {
       await Future.wait(futures);
       return;
     } else {
-      final List<List<SetColumn>> data = models
-          .map((model) =>
-              toSetColumns(model, only: only, onlyNonNull: onlyNonNull))
-          .toList();
+      final List<List<SetColumn>> data =
+          models.map((model) => toSetColumns(model, only: only, onlyNonNull: onlyNonNull)).toList();
       final InsertMany insert = inserters.addAll(data);
       await adapter.insertMany(insert);
       return;
@@ -941,32 +848,26 @@ abstract class _SongbookBean implements Bean<SongbookEntity> {
   }
 
   Future<dynamic> upsert(SongbookEntity model,
-      {bool cascade = false,
-      Set<String> only,
-      bool onlyNonNull = false,
-      isForeignKeyEnabled = false}) async {
+      {bool cascade = false, Set<String> only, bool onlyNonNull = false, isForeignKeyEnabled = false}) async {
     var retId;
     if (isForeignKeyEnabled) {
-      final Insert insert = Insert(tableName, ignoreIfExist: true)
-          .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
+      final Insert insert =
+          Insert(tableName, ignoreIfExist: true).setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
       retId = await adapter.insert(insert);
       if (retId == null) {
-        final Update update = updater
-            .where(this.id.eq(model.id))
-            .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
+        final Update update =
+            updater.where(this.id.eq(model.id)).setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
         retId = adapter.update(update);
       }
     } else {
-      final Upsert upsert = upserter
-          .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
+      final Upsert upsert = upserter.setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
       retId = await adapter.upsert(upsert);
     }
     if (cascade) {
       SongbookEntity newModel;
       if (model.records != null) {
         newModel ??= await find(model.id);
-        model.records.forEach(
-            (x) => songbookRecordBean.associateSongbookEntity(x, newModel));
+        model.records.forEach((x) => songbookRecordBean.associateSongbookEntity(x, newModel));
         for (final child in model.records) {
           await songbookRecordBean.upsert(child, cascade: cascade);
         }
@@ -976,15 +877,11 @@ abstract class _SongbookBean implements Bean<SongbookEntity> {
   }
 
   Future<void> upsertMany(List<SongbookEntity> models,
-      {bool cascade = false,
-      bool onlyNonNull = false,
-      Set<String> only,
-      isForeignKeyEnabled = false}) async {
+      {bool cascade = false, bool onlyNonNull = false, Set<String> only, isForeignKeyEnabled = false}) async {
     if (cascade || isForeignKeyEnabled) {
       final List<Future> futures = [];
       for (var model in models) {
-        futures.add(upsert(model,
-            cascade: cascade, isForeignKeyEnabled: isForeignKeyEnabled));
+        futures.add(upsert(model, cascade: cascade, isForeignKeyEnabled: isForeignKeyEnabled));
       }
       await Future.wait(futures);
       return;
@@ -992,8 +889,7 @@ abstract class _SongbookBean implements Bean<SongbookEntity> {
       final List<List<SetColumn>> data = [];
       for (var i = 0; i < models.length; ++i) {
         var model = models[i];
-        data.add(
-            toSetColumns(model, only: only, onlyNonNull: onlyNonNull).toList());
+        data.add(toSetColumns(model, only: only, onlyNonNull: onlyNonNull).toList());
       }
       final UpsertMany upsert = upserters.addAll(data);
       await adapter.upsertMany(upsert);
@@ -1002,25 +898,19 @@ abstract class _SongbookBean implements Bean<SongbookEntity> {
   }
 
   Future<int> update(SongbookEntity model,
-      {bool cascade = false,
-      bool associate = false,
-      Set<String> only,
-      bool onlyNonNull = false}) async {
-    final Update update = updater
-        .where(this.id.eq(model.id))
-        .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
+      {bool cascade = false, bool associate = false, Set<String> only, bool onlyNonNull = false}) async {
+    final Update update =
+        updater.where(this.id.eq(model.id)).setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
     final ret = adapter.update(update);
     if (cascade) {
       SongbookEntity newModel;
       if (model.records != null) {
         if (associate) {
           newModel ??= await find(model.id);
-          model.records.forEach(
-              (x) => songbookRecordBean.associateSongbookEntity(x, newModel));
+          model.records.forEach((x) => songbookRecordBean.associateSongbookEntity(x, newModel));
         }
         for (final child in model.records) {
-          await songbookRecordBean.update(child,
-              cascade: cascade, associate: associate);
+          await songbookRecordBean.update(child, cascade: cascade, associate: associate);
         }
       }
     }
@@ -1028,9 +918,7 @@ abstract class _SongbookBean implements Bean<SongbookEntity> {
   }
 
   Future<void> updateMany(List<SongbookEntity> models,
-      {bool cascade = false,
-      bool onlyNonNull = false,
-      Set<String> only}) async {
+      {bool cascade = false, bool onlyNonNull = false, Set<String> only}) async {
     if (cascade) {
       final List<Future> futures = [];
       for (var model in models) {
@@ -1043,8 +931,7 @@ abstract class _SongbookBean implements Bean<SongbookEntity> {
       final List<Expression> where = [];
       for (var i = 0; i < models.length; ++i) {
         var model = models[i];
-        data.add(
-            toSetColumns(model, only: only, onlyNonNull: onlyNonNull).toList());
+        data.add(toSetColumns(model, only: only, onlyNonNull: onlyNonNull).toList());
         where.add(this.id.eq(model.id));
       }
       final UpdateMany update = updaters.addAll(data, where);
@@ -1053,8 +940,7 @@ abstract class _SongbookBean implements Bean<SongbookEntity> {
     }
   }
 
-  Future<SongbookEntity> find(int id,
-      {bool preload = false, bool cascade = false}) async {
+  Future<SongbookEntity> find(int id, {bool preload = false, bool cascade = false}) async {
     final Find find = finder.where(this.id.eq(id));
     final SongbookEntity model = await findOne(find);
     if (preload && model != null) {
@@ -1084,23 +970,19 @@ abstract class _SongbookBean implements Bean<SongbookEntity> {
     return adapter.remove(remove);
   }
 
-  Future<SongbookEntity> preload(SongbookEntity model,
-      {bool cascade = false}) async {
-    model.records = await songbookRecordBean.findBySongbookEntity(model.id,
-        preload: cascade, cascade: cascade);
+  Future<SongbookEntity> preload(SongbookEntity model, {bool cascade = false}) async {
+    model.records = await songbookRecordBean.findBySongbookEntity(model.id, preload: cascade, cascade: cascade);
     return model;
   }
 
-  Future<List<SongbookEntity>> preloadAll(List<SongbookEntity> models,
-      {bool cascade = false}) async {
+  Future<List<SongbookEntity>> preloadAll(List<SongbookEntity> models, {bool cascade = false}) async {
     models.forEach((SongbookEntity model) => model.records ??= []);
     await OneToXHelper.preloadAll<SongbookEntity, SongbookRecord>(
         models,
         (SongbookEntity model) => [model.id],
         songbookRecordBean.findBySongbookEntityList,
         (SongbookRecord model) => [model.songbookId],
-        (SongbookEntity model, SongbookRecord child) =>
-            model.records = List.from(model.records)..add(child),
+        (SongbookEntity model, SongbookRecord child) => model.records = List.from(model.records)..add(child),
         cascade: cascade);
     return models;
   }
@@ -1125,8 +1007,7 @@ abstract class _AuthorBean implements Bean<AuthorEntity> {
     return model;
   }
 
-  List<SetColumn> toSetColumns(AuthorEntity model,
-      {bool update = false, Set<String> only, bool onlyNonNull = false}) {
+  List<SetColumn> toSetColumns(AuthorEntity model, {bool update = false, Set<String> only, bool onlyNonNull = false}) {
     List<SetColumn> ret = [];
 
     if (only == null && !onlyNonNull) {
@@ -1154,12 +1035,8 @@ abstract class _AuthorBean implements Bean<AuthorEntity> {
     return adapter.createTable(st);
   }
 
-  Future<dynamic> insert(AuthorEntity model,
-      {bool cascade = false,
-      bool onlyNonNull = false,
-      Set<String> only}) async {
-    final Insert insert = inserter
-        .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
+  Future<dynamic> insert(AuthorEntity model, {bool cascade = false, bool onlyNonNull = false, Set<String> only}) async {
+    final Insert insert = inserter.setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
     var retId = await adapter.insert(insert);
     if (cascade) {
       AuthorEntity newModel;
@@ -1182,9 +1059,7 @@ abstract class _AuthorBean implements Bean<AuthorEntity> {
   }
 
   Future<void> insertMany(List<AuthorEntity> models,
-      {bool cascade = false,
-      bool onlyNonNull = false,
-      Set<String> only}) async {
+      {bool cascade = false, bool onlyNonNull = false, Set<String> only}) async {
     if (cascade) {
       final List<Future> futures = [];
       for (var model in models) {
@@ -1193,10 +1068,8 @@ abstract class _AuthorBean implements Bean<AuthorEntity> {
       await Future.wait(futures);
       return;
     } else {
-      final List<List<SetColumn>> data = models
-          .map((model) =>
-              toSetColumns(model, only: only, onlyNonNull: onlyNonNull))
-          .toList();
+      final List<List<SetColumn>> data =
+          models.map((model) => toSetColumns(model, only: only, onlyNonNull: onlyNonNull)).toList();
       final InsertMany insert = inserters.addAll(data);
       await adapter.insertMany(insert);
       return;
@@ -1204,24 +1077,19 @@ abstract class _AuthorBean implements Bean<AuthorEntity> {
   }
 
   Future<dynamic> upsert(AuthorEntity model,
-      {bool cascade = false,
-      Set<String> only,
-      bool onlyNonNull = false,
-      isForeignKeyEnabled = false}) async {
+      {bool cascade = false, Set<String> only, bool onlyNonNull = false, isForeignKeyEnabled = false}) async {
     var retId;
     if (isForeignKeyEnabled) {
-      final Insert insert = Insert(tableName, ignoreIfExist: true)
-          .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
+      final Insert insert =
+          Insert(tableName, ignoreIfExist: true).setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
       retId = await adapter.insert(insert);
       if (retId == null) {
-        final Update update = updater
-            .where(this.id.eq(model.id))
-            .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
+        final Update update =
+            updater.where(this.id.eq(model.id)).setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
         retId = adapter.update(update);
       }
     } else {
-      final Upsert upsert = upserter
-          .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
+      final Upsert upsert = upserter.setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
       retId = await adapter.upsert(upsert);
     }
     if (cascade) {
@@ -1245,15 +1113,11 @@ abstract class _AuthorBean implements Bean<AuthorEntity> {
   }
 
   Future<void> upsertMany(List<AuthorEntity> models,
-      {bool cascade = false,
-      bool onlyNonNull = false,
-      Set<String> only,
-      isForeignKeyEnabled = false}) async {
+      {bool cascade = false, bool onlyNonNull = false, Set<String> only, isForeignKeyEnabled = false}) async {
     if (cascade || isForeignKeyEnabled) {
       final List<Future> futures = [];
       for (var model in models) {
-        futures.add(upsert(model,
-            cascade: cascade, isForeignKeyEnabled: isForeignKeyEnabled));
+        futures.add(upsert(model, cascade: cascade, isForeignKeyEnabled: isForeignKeyEnabled));
       }
       await Future.wait(futures);
       return;
@@ -1261,8 +1125,7 @@ abstract class _AuthorBean implements Bean<AuthorEntity> {
       final List<List<SetColumn>> data = [];
       for (var i = 0; i < models.length; ++i) {
         var model = models[i];
-        data.add(
-            toSetColumns(model, only: only, onlyNonNull: onlyNonNull).toList());
+        data.add(toSetColumns(model, only: only, onlyNonNull: onlyNonNull).toList());
       }
       final UpsertMany upsert = upserters.addAll(data);
       await adapter.upsertMany(upsert);
@@ -1271,26 +1134,20 @@ abstract class _AuthorBean implements Bean<AuthorEntity> {
   }
 
   Future<int> update(AuthorEntity model,
-      {bool cascade = false,
-      bool associate = false,
-      Set<String> only,
-      bool onlyNonNull = false}) async {
-    final Update update = updater
-        .where(this.id.eq(model.id))
-        .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
+      {bool cascade = false, bool associate = false, Set<String> only, bool onlyNonNull = false}) async {
+    final Update update =
+        updater.where(this.id.eq(model.id)).setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
     final ret = adapter.update(update);
     if (cascade) {
       AuthorEntity newModel;
       if (model.songLyrics != null) {
         for (final child in model.songLyrics) {
-          await songLyricEntityBean.update(child,
-              cascade: cascade, associate: associate);
+          await songLyricEntityBean.update(child, cascade: cascade, associate: associate);
         }
       }
       if (model.externals != null) {
         for (final child in model.externals) {
-          await externalEntityBean.update(child,
-              cascade: cascade, associate: associate);
+          await externalEntityBean.update(child, cascade: cascade, associate: associate);
         }
       }
     }
@@ -1298,9 +1155,7 @@ abstract class _AuthorBean implements Bean<AuthorEntity> {
   }
 
   Future<void> updateMany(List<AuthorEntity> models,
-      {bool cascade = false,
-      bool onlyNonNull = false,
-      Set<String> only}) async {
+      {bool cascade = false, bool onlyNonNull = false, Set<String> only}) async {
     if (cascade) {
       final List<Future> futures = [];
       for (var model in models) {
@@ -1313,8 +1168,7 @@ abstract class _AuthorBean implements Bean<AuthorEntity> {
       final List<Expression> where = [];
       for (var i = 0; i < models.length; ++i) {
         var model = models[i];
-        data.add(
-            toSetColumns(model, only: only, onlyNonNull: onlyNonNull).toList());
+        data.add(toSetColumns(model, only: only, onlyNonNull: onlyNonNull).toList());
         where.add(this.id.eq(model.id));
       }
       final UpdateMany update = updaters.addAll(data, where);
@@ -1323,8 +1177,7 @@ abstract class _AuthorBean implements Bean<AuthorEntity> {
     }
   }
 
-  Future<AuthorEntity> find(int id,
-      {bool preload = false, bool cascade = false}) async {
+  Future<AuthorEntity> find(int id, {bool preload = false, bool cascade = false}) async {
     final Find find = finder.where(this.id.eq(id));
     final AuthorEntity model = await findOne(find);
     if (preload && model != null) {
@@ -1355,15 +1208,13 @@ abstract class _AuthorBean implements Bean<AuthorEntity> {
     return adapter.remove(remove);
   }
 
-  Future<AuthorEntity> preload(AuthorEntity model,
-      {bool cascade = false}) async {
+  Future<AuthorEntity> preload(AuthorEntity model, {bool cascade = false}) async {
     model.songLyrics = await songLyricAuthorBean.fetchByAuthorEntity(model);
     model.externals = await authorExternalBean.fetchByAuthorEntity(model);
     return model;
   }
 
-  Future<List<AuthorEntity>> preloadAll(List<AuthorEntity> models,
-      {bool cascade = false}) async {
+  Future<List<AuthorEntity>> preloadAll(List<AuthorEntity> models, {bool cascade = false}) async {
     for (AuthorEntity model in models) {
       var temp = await songLyricAuthorBean.fetchByAuthorEntity(model);
       if (model.songLyrics == null)
@@ -1413,8 +1264,7 @@ abstract class _TagBean implements Bean<TagEntity> {
     return model;
   }
 
-  List<SetColumn> toSetColumns(TagEntity model,
-      {bool update = false, Set<String> only, bool onlyNonNull = false}) {
+  List<SetColumn> toSetColumns(TagEntity model, {bool update = false, Set<String> only, bool onlyNonNull = false}) {
     List<SetColumn> ret = [];
 
     if (only == null && !onlyNonNull) {
@@ -1448,12 +1298,8 @@ abstract class _TagBean implements Bean<TagEntity> {
     return adapter.createTable(st);
   }
 
-  Future<dynamic> insert(TagEntity model,
-      {bool cascade = false,
-      bool onlyNonNull = false,
-      Set<String> only}) async {
-    final Insert insert = inserter
-        .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
+  Future<dynamic> insert(TagEntity model, {bool cascade = false, bool onlyNonNull = false, Set<String> only}) async {
+    final Insert insert = inserter.setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
     var retId = await adapter.insert(insert);
     if (cascade) {
       TagEntity newModel;
@@ -1469,9 +1315,7 @@ abstract class _TagBean implements Bean<TagEntity> {
   }
 
   Future<void> insertMany(List<TagEntity> models,
-      {bool cascade = false,
-      bool onlyNonNull = false,
-      Set<String> only}) async {
+      {bool cascade = false, bool onlyNonNull = false, Set<String> only}) async {
     if (cascade) {
       final List<Future> futures = [];
       for (var model in models) {
@@ -1480,10 +1324,8 @@ abstract class _TagBean implements Bean<TagEntity> {
       await Future.wait(futures);
       return;
     } else {
-      final List<List<SetColumn>> data = models
-          .map((model) =>
-              toSetColumns(model, only: only, onlyNonNull: onlyNonNull))
-          .toList();
+      final List<List<SetColumn>> data =
+          models.map((model) => toSetColumns(model, only: only, onlyNonNull: onlyNonNull)).toList();
       final InsertMany insert = inserters.addAll(data);
       await adapter.insertMany(insert);
       return;
@@ -1491,24 +1333,19 @@ abstract class _TagBean implements Bean<TagEntity> {
   }
 
   Future<dynamic> upsert(TagEntity model,
-      {bool cascade = false,
-      Set<String> only,
-      bool onlyNonNull = false,
-      isForeignKeyEnabled = false}) async {
+      {bool cascade = false, Set<String> only, bool onlyNonNull = false, isForeignKeyEnabled = false}) async {
     var retId;
     if (isForeignKeyEnabled) {
-      final Insert insert = Insert(tableName, ignoreIfExist: true)
-          .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
+      final Insert insert =
+          Insert(tableName, ignoreIfExist: true).setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
       retId = await adapter.insert(insert);
       if (retId == null) {
-        final Update update = updater
-            .where(this.id.eq(model.id))
-            .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
+        final Update update =
+            updater.where(this.id.eq(model.id)).setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
         retId = adapter.update(update);
       }
     } else {
-      final Upsert upsert = upserter
-          .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
+      final Upsert upsert = upserter.setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
       retId = await adapter.upsert(upsert);
     }
     if (cascade) {
@@ -1525,15 +1362,11 @@ abstract class _TagBean implements Bean<TagEntity> {
   }
 
   Future<void> upsertMany(List<TagEntity> models,
-      {bool cascade = false,
-      bool onlyNonNull = false,
-      Set<String> only,
-      isForeignKeyEnabled = false}) async {
+      {bool cascade = false, bool onlyNonNull = false, Set<String> only, isForeignKeyEnabled = false}) async {
     if (cascade || isForeignKeyEnabled) {
       final List<Future> futures = [];
       for (var model in models) {
-        futures.add(upsert(model,
-            cascade: cascade, isForeignKeyEnabled: isForeignKeyEnabled));
+        futures.add(upsert(model, cascade: cascade, isForeignKeyEnabled: isForeignKeyEnabled));
       }
       await Future.wait(futures);
       return;
@@ -1541,8 +1374,7 @@ abstract class _TagBean implements Bean<TagEntity> {
       final List<List<SetColumn>> data = [];
       for (var i = 0; i < models.length; ++i) {
         var model = models[i];
-        data.add(
-            toSetColumns(model, only: only, onlyNonNull: onlyNonNull).toList());
+        data.add(toSetColumns(model, only: only, onlyNonNull: onlyNonNull).toList());
       }
       final UpsertMany upsert = upserters.addAll(data);
       await adapter.upsertMany(upsert);
@@ -1551,20 +1383,15 @@ abstract class _TagBean implements Bean<TagEntity> {
   }
 
   Future<int> update(TagEntity model,
-      {bool cascade = false,
-      bool associate = false,
-      Set<String> only,
-      bool onlyNonNull = false}) async {
-    final Update update = updater
-        .where(this.id.eq(model.id))
-        .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
+      {bool cascade = false, bool associate = false, Set<String> only, bool onlyNonNull = false}) async {
+    final Update update =
+        updater.where(this.id.eq(model.id)).setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
     final ret = adapter.update(update);
     if (cascade) {
       TagEntity newModel;
       if (model.songLyrics != null) {
         for (final child in model.songLyrics) {
-          await songLyricEntityBean.update(child,
-              cascade: cascade, associate: associate);
+          await songLyricEntityBean.update(child, cascade: cascade, associate: associate);
         }
       }
     }
@@ -1572,9 +1399,7 @@ abstract class _TagBean implements Bean<TagEntity> {
   }
 
   Future<void> updateMany(List<TagEntity> models,
-      {bool cascade = false,
-      bool onlyNonNull = false,
-      Set<String> only}) async {
+      {bool cascade = false, bool onlyNonNull = false, Set<String> only}) async {
     if (cascade) {
       final List<Future> futures = [];
       for (var model in models) {
@@ -1587,8 +1412,7 @@ abstract class _TagBean implements Bean<TagEntity> {
       final List<Expression> where = [];
       for (var i = 0; i < models.length; ++i) {
         var model = models[i];
-        data.add(
-            toSetColumns(model, only: only, onlyNonNull: onlyNonNull).toList());
+        data.add(toSetColumns(model, only: only, onlyNonNull: onlyNonNull).toList());
         where.add(this.id.eq(model.id));
       }
       final UpdateMany update = updaters.addAll(data, where);
@@ -1597,8 +1421,7 @@ abstract class _TagBean implements Bean<TagEntity> {
     }
   }
 
-  Future<TagEntity> find(int id,
-      {bool preload = false, bool cascade = false}) async {
+  Future<TagEntity> find(int id, {bool preload = false, bool cascade = false}) async {
     final Find find = finder.where(this.id.eq(id));
     final TagEntity model = await findOne(find);
     if (preload && model != null) {
@@ -1633,8 +1456,7 @@ abstract class _TagBean implements Bean<TagEntity> {
     return model;
   }
 
-  Future<List<TagEntity>> preloadAll(List<TagEntity> models,
-      {bool cascade = false}) async {
+  Future<List<TagEntity>> preloadAll(List<TagEntity> models, {bool cascade = false}) async {
     for (TagEntity model in models) {
       var temp = await songLyricTagBean.fetchByTagEntity(model);
       if (model.songLyrics == null)
@@ -1692,10 +1514,8 @@ abstract class _ExternalBean implements Bean<ExternalEntity> {
       if (only.contains(id.name)) ret.add(id.set(model.id));
       if (only.contains(name.name)) ret.add(name.set(model.name));
       if (only.contains(mediaId.name)) ret.add(mediaId.set(model.mediaId));
-      if (only.contains(mediaType.name))
-        ret.add(mediaType.set(model.mediaType));
-      if (only.contains(songLyricId.name))
-        ret.add(songLyricId.set(model.songLyricId));
+      if (only.contains(mediaType.name)) ret.add(mediaType.set(model.mediaType));
+      if (only.contains(songLyricId.name)) ret.add(songLyricId.set(model.songLyricId));
     } else /* if (onlyNonNull) */ {
       if (model.id != null) {
         ret.add(id.set(model.id));
@@ -1724,18 +1544,13 @@ abstract class _ExternalBean implements Bean<ExternalEntity> {
     st.addStr(mediaId.name, isNullable: true);
     st.addStr(mediaType.name, isNullable: true);
     st.addInt(songLyricId.name,
-        foreignTable: songLyricEntityBean.tableName,
-        foreignCol: songLyricEntityBean.id.name,
-        isNullable: false);
+        foreignTable: songLyricEntityBean.tableName, foreignCol: songLyricEntityBean.id.name, isNullable: false);
     return adapter.createTable(st);
   }
 
   Future<dynamic> insert(ExternalEntity model,
-      {bool cascade = false,
-      bool onlyNonNull = false,
-      Set<String> only}) async {
-    final Insert insert = inserter
-        .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
+      {bool cascade = false, bool onlyNonNull = false, Set<String> only}) async {
+    final Insert insert = inserter.setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
     var retId = await adapter.insert(insert);
     if (cascade) {
       ExternalEntity newModel;
@@ -1751,9 +1566,7 @@ abstract class _ExternalBean implements Bean<ExternalEntity> {
   }
 
   Future<void> insertMany(List<ExternalEntity> models,
-      {bool cascade = false,
-      bool onlyNonNull = false,
-      Set<String> only}) async {
+      {bool cascade = false, bool onlyNonNull = false, Set<String> only}) async {
     if (cascade) {
       final List<Future> futures = [];
       for (var model in models) {
@@ -1762,10 +1575,8 @@ abstract class _ExternalBean implements Bean<ExternalEntity> {
       await Future.wait(futures);
       return;
     } else {
-      final List<List<SetColumn>> data = models
-          .map((model) =>
-              toSetColumns(model, only: only, onlyNonNull: onlyNonNull))
-          .toList();
+      final List<List<SetColumn>> data =
+          models.map((model) => toSetColumns(model, only: only, onlyNonNull: onlyNonNull)).toList();
       final InsertMany insert = inserters.addAll(data);
       await adapter.insertMany(insert);
       return;
@@ -1773,24 +1584,19 @@ abstract class _ExternalBean implements Bean<ExternalEntity> {
   }
 
   Future<dynamic> upsert(ExternalEntity model,
-      {bool cascade = false,
-      Set<String> only,
-      bool onlyNonNull = false,
-      isForeignKeyEnabled = false}) async {
+      {bool cascade = false, Set<String> only, bool onlyNonNull = false, isForeignKeyEnabled = false}) async {
     var retId;
     if (isForeignKeyEnabled) {
-      final Insert insert = Insert(tableName, ignoreIfExist: true)
-          .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
+      final Insert insert =
+          Insert(tableName, ignoreIfExist: true).setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
       retId = await adapter.insert(insert);
       if (retId == null) {
-        final Update update = updater
-            .where(this.id.eq(model.id))
-            .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
+        final Update update =
+            updater.where(this.id.eq(model.id)).setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
         retId = adapter.update(update);
       }
     } else {
-      final Upsert upsert = upserter
-          .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
+      final Upsert upsert = upserter.setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
       retId = await adapter.upsert(upsert);
     }
     if (cascade) {
@@ -1807,15 +1613,11 @@ abstract class _ExternalBean implements Bean<ExternalEntity> {
   }
 
   Future<void> upsertMany(List<ExternalEntity> models,
-      {bool cascade = false,
-      bool onlyNonNull = false,
-      Set<String> only,
-      isForeignKeyEnabled = false}) async {
+      {bool cascade = false, bool onlyNonNull = false, Set<String> only, isForeignKeyEnabled = false}) async {
     if (cascade || isForeignKeyEnabled) {
       final List<Future> futures = [];
       for (var model in models) {
-        futures.add(upsert(model,
-            cascade: cascade, isForeignKeyEnabled: isForeignKeyEnabled));
+        futures.add(upsert(model, cascade: cascade, isForeignKeyEnabled: isForeignKeyEnabled));
       }
       await Future.wait(futures);
       return;
@@ -1823,8 +1625,7 @@ abstract class _ExternalBean implements Bean<ExternalEntity> {
       final List<List<SetColumn>> data = [];
       for (var i = 0; i < models.length; ++i) {
         var model = models[i];
-        data.add(
-            toSetColumns(model, only: only, onlyNonNull: onlyNonNull).toList());
+        data.add(toSetColumns(model, only: only, onlyNonNull: onlyNonNull).toList());
       }
       final UpsertMany upsert = upserters.addAll(data);
       await adapter.upsertMany(upsert);
@@ -1833,20 +1634,15 @@ abstract class _ExternalBean implements Bean<ExternalEntity> {
   }
 
   Future<int> update(ExternalEntity model,
-      {bool cascade = false,
-      bool associate = false,
-      Set<String> only,
-      bool onlyNonNull = false}) async {
-    final Update update = updater
-        .where(this.id.eq(model.id))
-        .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
+      {bool cascade = false, bool associate = false, Set<String> only, bool onlyNonNull = false}) async {
+    final Update update =
+        updater.where(this.id.eq(model.id)).setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
     final ret = adapter.update(update);
     if (cascade) {
       ExternalEntity newModel;
       if (model.authors != null) {
         for (final child in model.authors) {
-          await authorEntityBean.update(child,
-              cascade: cascade, associate: associate);
+          await authorEntityBean.update(child, cascade: cascade, associate: associate);
         }
       }
     }
@@ -1854,9 +1650,7 @@ abstract class _ExternalBean implements Bean<ExternalEntity> {
   }
 
   Future<void> updateMany(List<ExternalEntity> models,
-      {bool cascade = false,
-      bool onlyNonNull = false,
-      Set<String> only}) async {
+      {bool cascade = false, bool onlyNonNull = false, Set<String> only}) async {
     if (cascade) {
       final List<Future> futures = [];
       for (var model in models) {
@@ -1869,8 +1663,7 @@ abstract class _ExternalBean implements Bean<ExternalEntity> {
       final List<Expression> where = [];
       for (var i = 0; i < models.length; ++i) {
         var model = models[i];
-        data.add(
-            toSetColumns(model, only: only, onlyNonNull: onlyNonNull).toList());
+        data.add(toSetColumns(model, only: only, onlyNonNull: onlyNonNull).toList());
         where.add(this.id.eq(model.id));
       }
       final UpdateMany update = updaters.addAll(data, where);
@@ -1879,8 +1672,7 @@ abstract class _ExternalBean implements Bean<ExternalEntity> {
     }
   }
 
-  Future<ExternalEntity> find(int id,
-      {bool preload = false, bool cascade = false}) async {
+  Future<ExternalEntity> find(int id, {bool preload = false, bool cascade = false}) async {
     final Find find = finder.where(this.id.eq(id));
     final ExternalEntity model = await findOne(find);
     if (preload && model != null) {
@@ -1920,10 +1712,8 @@ abstract class _ExternalBean implements Bean<ExternalEntity> {
     return models;
   }
 
-  Future<List<ExternalEntity>> findBySongLyricEntityList(
-      List<SongLyricEntity> models,
-      {bool preload = false,
-      bool cascade = false}) async {
+  Future<List<ExternalEntity>> findBySongLyricEntityList(List<SongLyricEntity> models,
+      {bool preload = false, bool cascade = false}) async {
 // Return if models is empty. If this is not done, all the records will be returned!
     if (models == null || models.isEmpty) return [];
     final Find find = finder;
@@ -1946,14 +1736,12 @@ abstract class _ExternalBean implements Bean<ExternalEntity> {
     child.songLyricId = parent.id;
   }
 
-  Future<ExternalEntity> preload(ExternalEntity model,
-      {bool cascade = false}) async {
+  Future<ExternalEntity> preload(ExternalEntity model, {bool cascade = false}) async {
     model.authors = await authorExternalBean.fetchByExternalEntity(model);
     return model;
   }
 
-  Future<List<ExternalEntity>> preloadAll(List<ExternalEntity> models,
-      {bool cascade = false}) async {
+  Future<List<ExternalEntity>> preloadAll(List<ExternalEntity> models, {bool cascade = false}) async {
     for (ExternalEntity model in models) {
       var temp = await authorExternalBean.fetchByExternalEntity(model);
       if (model.authors == null)
@@ -2007,10 +1795,8 @@ abstract class _PlaylistBean implements Bean<PlaylistEntity> {
     } else if (only != null) {
       if (only.contains(id.name)) ret.add(id.set(model.id));
       if (only.contains(name.name)) ret.add(name.set(model.name));
-      if (only.contains(isArchived.name))
-        ret.add(isArchived.set(model.isArchived));
-      if (only.contains(orderValue.name))
-        ret.add(orderValue.set(model.orderValue));
+      if (only.contains(isArchived.name)) ret.add(isArchived.set(model.isArchived));
+      if (only.contains(orderValue.name)) ret.add(orderValue.set(model.orderValue));
     } else /* if (onlyNonNull) */ {
       if (model.id != null) {
         ret.add(id.set(model.id));
@@ -2039,11 +1825,8 @@ abstract class _PlaylistBean implements Bean<PlaylistEntity> {
   }
 
   Future<dynamic> insert(PlaylistEntity model,
-      {bool cascade = false,
-      bool onlyNonNull = false,
-      Set<String> only}) async {
-    final Insert insert = inserter
-        .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
+      {bool cascade = false, bool onlyNonNull = false, Set<String> only}) async {
+    final Insert insert = inserter.setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
     var retId = await adapter.insert(insert);
     if (cascade) {
       PlaylistEntity newModel;
@@ -2059,9 +1842,7 @@ abstract class _PlaylistBean implements Bean<PlaylistEntity> {
   }
 
   Future<void> insertMany(List<PlaylistEntity> models,
-      {bool cascade = false,
-      bool onlyNonNull = false,
-      Set<String> only}) async {
+      {bool cascade = false, bool onlyNonNull = false, Set<String> only}) async {
     if (cascade) {
       final List<Future> futures = [];
       for (var model in models) {
@@ -2070,10 +1851,8 @@ abstract class _PlaylistBean implements Bean<PlaylistEntity> {
       await Future.wait(futures);
       return;
     } else {
-      final List<List<SetColumn>> data = models
-          .map((model) =>
-              toSetColumns(model, only: only, onlyNonNull: onlyNonNull))
-          .toList();
+      final List<List<SetColumn>> data =
+          models.map((model) => toSetColumns(model, only: only, onlyNonNull: onlyNonNull)).toList();
       final InsertMany insert = inserters.addAll(data);
       await adapter.insertMany(insert);
       return;
@@ -2081,24 +1860,19 @@ abstract class _PlaylistBean implements Bean<PlaylistEntity> {
   }
 
   Future<dynamic> upsert(PlaylistEntity model,
-      {bool cascade = false,
-      Set<String> only,
-      bool onlyNonNull = false,
-      isForeignKeyEnabled = false}) async {
+      {bool cascade = false, Set<String> only, bool onlyNonNull = false, isForeignKeyEnabled = false}) async {
     var retId;
     if (isForeignKeyEnabled) {
-      final Insert insert = Insert(tableName, ignoreIfExist: true)
-          .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
+      final Insert insert =
+          Insert(tableName, ignoreIfExist: true).setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
       retId = await adapter.insert(insert);
       if (retId == null) {
-        final Update update = updater
-            .where(this.id.eq(model.id))
-            .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
+        final Update update =
+            updater.where(this.id.eq(model.id)).setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
         retId = adapter.update(update);
       }
     } else {
-      final Upsert upsert = upserter
-          .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
+      final Upsert upsert = upserter.setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
       retId = await adapter.upsert(upsert);
     }
     if (cascade) {
@@ -2115,15 +1889,11 @@ abstract class _PlaylistBean implements Bean<PlaylistEntity> {
   }
 
   Future<void> upsertMany(List<PlaylistEntity> models,
-      {bool cascade = false,
-      bool onlyNonNull = false,
-      Set<String> only,
-      isForeignKeyEnabled = false}) async {
+      {bool cascade = false, bool onlyNonNull = false, Set<String> only, isForeignKeyEnabled = false}) async {
     if (cascade || isForeignKeyEnabled) {
       final List<Future> futures = [];
       for (var model in models) {
-        futures.add(upsert(model,
-            cascade: cascade, isForeignKeyEnabled: isForeignKeyEnabled));
+        futures.add(upsert(model, cascade: cascade, isForeignKeyEnabled: isForeignKeyEnabled));
       }
       await Future.wait(futures);
       return;
@@ -2131,8 +1901,7 @@ abstract class _PlaylistBean implements Bean<PlaylistEntity> {
       final List<List<SetColumn>> data = [];
       for (var i = 0; i < models.length; ++i) {
         var model = models[i];
-        data.add(
-            toSetColumns(model, only: only, onlyNonNull: onlyNonNull).toList());
+        data.add(toSetColumns(model, only: only, onlyNonNull: onlyNonNull).toList());
       }
       final UpsertMany upsert = upserters.addAll(data);
       await adapter.upsertMany(upsert);
@@ -2141,20 +1910,15 @@ abstract class _PlaylistBean implements Bean<PlaylistEntity> {
   }
 
   Future<int> update(PlaylistEntity model,
-      {bool cascade = false,
-      bool associate = false,
-      Set<String> only,
-      bool onlyNonNull = false}) async {
-    final Update update = updater
-        .where(this.id.eq(model.id))
-        .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
+      {bool cascade = false, bool associate = false, Set<String> only, bool onlyNonNull = false}) async {
+    final Update update =
+        updater.where(this.id.eq(model.id)).setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
     final ret = adapter.update(update);
     if (cascade) {
       PlaylistEntity newModel;
       if (model.songLyrics != null) {
         for (final child in model.songLyrics) {
-          await songLyricEntityBean.update(child,
-              cascade: cascade, associate: associate);
+          await songLyricEntityBean.update(child, cascade: cascade, associate: associate);
         }
       }
     }
@@ -2162,9 +1926,7 @@ abstract class _PlaylistBean implements Bean<PlaylistEntity> {
   }
 
   Future<void> updateMany(List<PlaylistEntity> models,
-      {bool cascade = false,
-      bool onlyNonNull = false,
-      Set<String> only}) async {
+      {bool cascade = false, bool onlyNonNull = false, Set<String> only}) async {
     if (cascade) {
       final List<Future> futures = [];
       for (var model in models) {
@@ -2177,8 +1939,7 @@ abstract class _PlaylistBean implements Bean<PlaylistEntity> {
       final List<Expression> where = [];
       for (var i = 0; i < models.length; ++i) {
         var model = models[i];
-        data.add(
-            toSetColumns(model, only: only, onlyNonNull: onlyNonNull).toList());
+        data.add(toSetColumns(model, only: only, onlyNonNull: onlyNonNull).toList());
         where.add(this.id.eq(model.id));
       }
       final UpdateMany update = updaters.addAll(data, where);
@@ -2187,8 +1948,7 @@ abstract class _PlaylistBean implements Bean<PlaylistEntity> {
     }
   }
 
-  Future<PlaylistEntity> find(int id,
-      {bool preload = false, bool cascade = false}) async {
+  Future<PlaylistEntity> find(int id, {bool preload = false, bool cascade = false}) async {
     final Find find = finder.where(this.id.eq(id));
     final PlaylistEntity model = await findOne(find);
     if (preload && model != null) {
@@ -2218,14 +1978,12 @@ abstract class _PlaylistBean implements Bean<PlaylistEntity> {
     return adapter.remove(remove);
   }
 
-  Future<PlaylistEntity> preload(PlaylistEntity model,
-      {bool cascade = false}) async {
+  Future<PlaylistEntity> preload(PlaylistEntity model, {bool cascade = false}) async {
     model.songLyrics = await songLyricPlaylistBean.fetchByPlaylistEntity(model);
     return model;
   }
 
-  Future<List<PlaylistEntity>> preloadAll(List<PlaylistEntity> models,
-      {bool cascade = false}) async {
+  Future<List<PlaylistEntity>> preloadAll(List<PlaylistEntity> models, {bool cascade = false}) async {
     for (PlaylistEntity model in models) {
       var temp = await songLyricPlaylistBean.fetchByPlaylistEntity(model);
       if (model.songLyrics == null)
@@ -2278,10 +2036,8 @@ abstract class _SongbookRecordBean implements Bean<SongbookRecord> {
     } else if (only != null) {
       if (only.contains(id.name)) ret.add(id.set(model.id));
       if (only.contains(number.name)) ret.add(number.set(model.number));
-      if (only.contains(songLyricId.name))
-        ret.add(songLyricId.set(model.songLyricId));
-      if (only.contains(songbookId.name))
-        ret.add(songbookId.set(model.songbookId));
+      if (only.contains(songLyricId.name)) ret.add(songLyricId.set(model.songLyricId));
+      if (only.contains(songbookId.name)) ret.add(songbookId.set(model.songbookId));
     } else /* if (onlyNonNull) */ {
       if (model.id != null) {
         ret.add(id.set(model.id));
@@ -2305,55 +2061,38 @@ abstract class _SongbookRecordBean implements Bean<SongbookRecord> {
     st.addInt(id.name, primary: true, isNullable: false);
     st.addStr(number.name, isNullable: false);
     st.addInt(songLyricId.name,
-        foreignTable: songLyricEntityBean.tableName,
-        foreignCol: songLyricEntityBean.id.name,
-        isNullable: false);
+        foreignTable: songLyricEntityBean.tableName, foreignCol: songLyricEntityBean.id.name, isNullable: false);
     st.addInt(songbookId.name,
-        foreignTable: songbookEntityBean.tableName,
-        foreignCol: songbookEntityBean.id.name,
-        isNullable: false);
+        foreignTable: songbookEntityBean.tableName, foreignCol: songbookEntityBean.id.name, isNullable: false);
     return adapter.createTable(st);
   }
 
   Future<dynamic> insert(SongbookRecord model,
-      {bool cascade = false,
-      bool onlyNonNull = false,
-      Set<String> only}) async {
-    final Insert insert = inserter
-        .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
+      {bool cascade = false, bool onlyNonNull = false, Set<String> only}) async {
+    final Insert insert = inserter.setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
     return adapter.insert(insert);
   }
 
-  Future<void> insertMany(List<SongbookRecord> models,
-      {bool onlyNonNull = false, Set<String> only}) async {
-    final List<List<SetColumn>> data = models
-        .map((model) =>
-            toSetColumns(model, only: only, onlyNonNull: onlyNonNull))
-        .toList();
+  Future<void> insertMany(List<SongbookRecord> models, {bool onlyNonNull = false, Set<String> only}) async {
+    final List<List<SetColumn>> data =
+        models.map((model) => toSetColumns(model, only: only, onlyNonNull: onlyNonNull)).toList();
     final InsertMany insert = inserters.addAll(data);
     await adapter.insertMany(insert);
     return;
   }
 
   Future<dynamic> upsert(SongbookRecord model,
-      {bool cascade = false,
-      Set<String> only,
-      bool onlyNonNull = false,
-      isForeignKeyEnabled = false}) async {
-    final Upsert upsert = upserter
-        .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
+      {bool cascade = false, Set<String> only, bool onlyNonNull = false, isForeignKeyEnabled = false}) async {
+    final Upsert upsert = upserter.setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
     return adapter.upsert(upsert);
   }
 
   Future<void> upsertMany(List<SongbookRecord> models,
-      {bool onlyNonNull = false,
-      Set<String> only,
-      isForeignKeyEnabled = false}) async {
+      {bool onlyNonNull = false, Set<String> only, isForeignKeyEnabled = false}) async {
     final List<List<SetColumn>> data = [];
     for (var i = 0; i < models.length; ++i) {
       var model = models[i];
-      data.add(
-          toSetColumns(model, only: only, onlyNonNull: onlyNonNull).toList());
+      data.add(toSetColumns(model, only: only, onlyNonNull: onlyNonNull).toList());
     }
     final UpsertMany upsert = upserters.addAll(data);
     await adapter.upsertMany(upsert);
@@ -2361,24 +2100,18 @@ abstract class _SongbookRecordBean implements Bean<SongbookRecord> {
   }
 
   Future<int> update(SongbookRecord model,
-      {bool cascade = false,
-      bool associate = false,
-      Set<String> only,
-      bool onlyNonNull = false}) async {
-    final Update update = updater
-        .where(this.id.eq(model.id))
-        .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
+      {bool cascade = false, bool associate = false, Set<String> only, bool onlyNonNull = false}) async {
+    final Update update =
+        updater.where(this.id.eq(model.id)).setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
     return adapter.update(update);
   }
 
-  Future<void> updateMany(List<SongbookRecord> models,
-      {bool onlyNonNull = false, Set<String> only}) async {
+  Future<void> updateMany(List<SongbookRecord> models, {bool onlyNonNull = false, Set<String> only}) async {
     final List<List<SetColumn>> data = [];
     final List<Expression> where = [];
     for (var i = 0; i < models.length; ++i) {
       var model = models[i];
-      data.add(
-          toSetColumns(model, only: only, onlyNonNull: onlyNonNull).toList());
+      data.add(toSetColumns(model, only: only, onlyNonNull: onlyNonNull).toList());
       where.add(this.id.eq(model.id));
     }
     final UpdateMany update = updaters.addAll(data, where);
@@ -2386,8 +2119,7 @@ abstract class _SongbookRecordBean implements Bean<SongbookRecord> {
     return;
   }
 
-  Future<SongbookRecord> find(int id,
-      {bool preload = false, bool cascade = false}) async {
+  Future<SongbookRecord> find(int id, {bool preload = false, bool cascade = false}) async {
     final Find find = finder.where(this.id.eq(id));
     return await findOne(find);
   }
@@ -2413,10 +2145,8 @@ abstract class _SongbookRecordBean implements Bean<SongbookRecord> {
     return findMany(find);
   }
 
-  Future<List<SongbookRecord>> findBySongLyricEntityList(
-      List<SongLyricEntity> models,
-      {bool preload = false,
-      bool cascade = false}) async {
+  Future<List<SongbookRecord>> findBySongLyricEntityList(List<SongLyricEntity> models,
+      {bool preload = false, bool cascade = false}) async {
 // Return if models is empty. If this is not done, all the records will be returned!
     if (models == null || models.isEmpty) return [];
     final Find find = finder;
@@ -2441,10 +2171,8 @@ abstract class _SongbookRecordBean implements Bean<SongbookRecord> {
     return findMany(find);
   }
 
-  Future<List<SongbookRecord>> findBySongbookEntityList(
-      List<SongbookEntity> models,
-      {bool preload = false,
-      bool cascade = false}) async {
+  Future<List<SongbookRecord>> findBySongbookEntityList(List<SongbookEntity> models,
+      {bool preload = false, bool cascade = false}) async {
 // Return if models is empty. If this is not done, all the records will be returned!
     if (models == null || models.isEmpty) return [];
     final Find find = finder;
@@ -2491,8 +2219,7 @@ abstract class _SongLyricAuthorBean implements Bean<SongLyricAuthor> {
       ret.add(songLyricId.set(model.songLyricId));
       ret.add(authorId.set(model.authorId));
     } else if (only != null) {
-      if (only.contains(songLyricId.name))
-        ret.add(songLyricId.set(model.songLyricId));
+      if (only.contains(songLyricId.name)) ret.add(songLyricId.set(model.songLyricId));
       if (only.contains(authorId.name)) ret.add(authorId.set(model.authorId));
     } else /* if (onlyNonNull) */ {
       if (model.songLyricId != null) {
@@ -2522,44 +2249,31 @@ abstract class _SongLyricAuthorBean implements Bean<SongLyricAuthor> {
   }
 
   Future<dynamic> insert(SongLyricAuthor model,
-      {bool cascade = false,
-      bool onlyNonNull = false,
-      Set<String> only}) async {
-    final Insert insert = inserter
-        .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
+      {bool cascade = false, bool onlyNonNull = false, Set<String> only}) async {
+    final Insert insert = inserter.setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
     return adapter.insert(insert);
   }
 
-  Future<void> insertMany(List<SongLyricAuthor> models,
-      {bool onlyNonNull = false, Set<String> only}) async {
-    final List<List<SetColumn>> data = models
-        .map((model) =>
-            toSetColumns(model, only: only, onlyNonNull: onlyNonNull))
-        .toList();
+  Future<void> insertMany(List<SongLyricAuthor> models, {bool onlyNonNull = false, Set<String> only}) async {
+    final List<List<SetColumn>> data =
+        models.map((model) => toSetColumns(model, only: only, onlyNonNull: onlyNonNull)).toList();
     final InsertMany insert = inserters.addAll(data);
     await adapter.insertMany(insert);
     return;
   }
 
   Future<dynamic> upsert(SongLyricAuthor model,
-      {bool cascade = false,
-      Set<String> only,
-      bool onlyNonNull = false,
-      isForeignKeyEnabled = false}) async {
-    final Upsert upsert = upserter
-        .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
+      {bool cascade = false, Set<String> only, bool onlyNonNull = false, isForeignKeyEnabled = false}) async {
+    final Upsert upsert = upserter.setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
     return adapter.upsert(upsert);
   }
 
   Future<void> upsertMany(List<SongLyricAuthor> models,
-      {bool onlyNonNull = false,
-      Set<String> only,
-      isForeignKeyEnabled = false}) async {
+      {bool onlyNonNull = false, Set<String> only, isForeignKeyEnabled = false}) async {
     final List<List<SetColumn>> data = [];
     for (var i = 0; i < models.length; ++i) {
       var model = models[i];
-      data.add(
-          toSetColumns(model, only: only, onlyNonNull: onlyNonNull).toList());
+      data.add(toSetColumns(model, only: only, onlyNonNull: onlyNonNull).toList());
     }
     final UpsertMany upsert = upserters.addAll(data);
     await adapter.upsertMany(upsert);
@@ -2567,10 +2281,7 @@ abstract class _SongLyricAuthorBean implements Bean<SongLyricAuthor> {
   }
 
   Future<int> update(SongLyricAuthor model,
-      {bool cascade = false,
-      bool associate = false,
-      Set<String> only,
-      bool onlyNonNull = false}) async {
+      {bool cascade = false, bool associate = false, Set<String> only, bool onlyNonNull = false}) async {
     final Update update = updater
         .where(this.songLyricId.eq(model.songLyricId))
         .where(this.authorId.eq(model.authorId))
@@ -2578,36 +2289,26 @@ abstract class _SongLyricAuthorBean implements Bean<SongLyricAuthor> {
     return adapter.update(update);
   }
 
-  Future<void> updateMany(List<SongLyricAuthor> models,
-      {bool onlyNonNull = false, Set<String> only}) async {
+  Future<void> updateMany(List<SongLyricAuthor> models, {bool onlyNonNull = false, Set<String> only}) async {
     final List<List<SetColumn>> data = [];
     final List<Expression> where = [];
     for (var i = 0; i < models.length; ++i) {
       var model = models[i];
-      data.add(
-          toSetColumns(model, only: only, onlyNonNull: onlyNonNull).toList());
-      where.add(this
-          .songLyricId
-          .eq(model.songLyricId)
-          .and(this.authorId.eq(model.authorId)));
+      data.add(toSetColumns(model, only: only, onlyNonNull: onlyNonNull).toList());
+      where.add(this.songLyricId.eq(model.songLyricId).and(this.authorId.eq(model.authorId)));
     }
     final UpdateMany update = updaters.addAll(data, where);
     await adapter.updateMany(update);
     return;
   }
 
-  Future<SongLyricAuthor> find(int songLyricId, int authorId,
-      {bool preload = false, bool cascade = false}) async {
-    final Find find = finder
-        .where(this.songLyricId.eq(songLyricId))
-        .where(this.authorId.eq(authorId));
+  Future<SongLyricAuthor> find(int songLyricId, int authorId, {bool preload = false, bool cascade = false}) async {
+    final Find find = finder.where(this.songLyricId.eq(songLyricId)).where(this.authorId.eq(authorId));
     return await findOne(find);
   }
 
   Future<int> remove(int songLyricId, int authorId) async {
-    final Remove remove = remover
-        .where(this.songLyricId.eq(songLyricId))
-        .where(this.authorId.eq(authorId));
+    final Remove remove = remover.where(this.songLyricId.eq(songLyricId)).where(this.authorId.eq(authorId));
     return adapter.remove(remove);
   }
 
@@ -2616,8 +2317,7 @@ abstract class _SongLyricAuthorBean implements Bean<SongLyricAuthor> {
     if (models == null || models.isEmpty) return 0;
     final Remove remove = remover;
     for (final model in models) {
-      remove.or(this.songLyricId.eq(model.songLyricId) |
-          this.authorId.eq(model.authorId));
+      remove.or(this.songLyricId.eq(model.songLyricId) | this.authorId.eq(model.authorId));
     }
     return adapter.remove(remove);
   }
@@ -2628,10 +2328,8 @@ abstract class _SongLyricAuthorBean implements Bean<SongLyricAuthor> {
     return findMany(find);
   }
 
-  Future<List<SongLyricAuthor>> findBySongLyricEntityList(
-      List<SongLyricEntity> models,
-      {bool preload = false,
-      bool cascade = false}) async {
+  Future<List<SongLyricAuthor>> findBySongLyricEntityList(List<SongLyricEntity> models,
+      {bool preload = false, bool cascade = false}) async {
 // Return if models is empty. If this is not done, all the records will be returned!
     if (models == null || models.isEmpty) return [];
     final Find find = finder;
@@ -2663,8 +2361,7 @@ abstract class _SongLyricAuthorBean implements Bean<SongLyricAuthor> {
     return 0;
   }
 
-  Future<List<AuthorEntity>> fetchBySongLyricEntity(
-      SongLyricEntity model) async {
+  Future<List<AuthorEntity>> fetchBySongLyricEntity(SongLyricEntity model) async {
     final pivots = await findBySongLyricEntity(model.id);
 // Return if model has no pivots. If this is not done, all records will be removed!
     if (pivots.isEmpty) return [];
@@ -2675,16 +2372,13 @@ abstract class _SongLyricAuthorBean implements Bean<SongLyricAuthor> {
     return await authorEntityBean.findWhere(exp);
   }
 
-  Future<List<SongLyricAuthor>> findByAuthorEntity(int authorId,
-      {bool preload = false, bool cascade = false}) async {
+  Future<List<SongLyricAuthor>> findByAuthorEntity(int authorId, {bool preload = false, bool cascade = false}) async {
     final Find find = finder.where(this.authorId.eq(authorId));
     return findMany(find);
   }
 
-  Future<List<SongLyricAuthor>> findByAuthorEntityList(
-      List<AuthorEntity> models,
-      {bool preload = false,
-      bool cascade = false}) async {
+  Future<List<SongLyricAuthor>> findByAuthorEntityList(List<AuthorEntity> models,
+      {bool preload = false, bool cascade = false}) async {
 // Return if models is empty. If this is not done, all the records will be returned!
     if (models == null || models.isEmpty) return [];
     final Find find = finder;
@@ -2727,8 +2421,7 @@ abstract class _SongLyricAuthorBean implements Bean<SongLyricAuthor> {
     return await songLyricEntityBean.findWhere(exp);
   }
 
-  Future<dynamic> attach(SongLyricEntity one, AuthorEntity two,
-      {bool upsert = false}) async {
+  Future<dynamic> attach(SongLyricEntity one, AuthorEntity two, {bool upsert = false}) async {
     final ret = SongLyricAuthor();
     ret.songLyricId = one.id;
     ret.authorId = two.id;
@@ -2759,16 +2452,14 @@ abstract class _SongLyricTagBean implements Bean<SongLyricTag> {
     return model;
   }
 
-  List<SetColumn> toSetColumns(SongLyricTag model,
-      {bool update = false, Set<String> only, bool onlyNonNull = false}) {
+  List<SetColumn> toSetColumns(SongLyricTag model, {bool update = false, Set<String> only, bool onlyNonNull = false}) {
     List<SetColumn> ret = [];
 
     if (only == null && !onlyNonNull) {
       ret.add(songLyricId.set(model.songLyricId));
       ret.add(tagId.set(model.tagId));
     } else if (only != null) {
-      if (only.contains(songLyricId.name))
-        ret.add(songLyricId.set(model.songLyricId));
+      if (only.contains(songLyricId.name)) ret.add(songLyricId.set(model.songLyricId));
       if (only.contains(tagId.name)) ret.add(tagId.set(model.tagId));
     } else /* if (onlyNonNull) */ {
       if (model.songLyricId != null) {
@@ -2790,52 +2481,35 @@ abstract class _SongLyricTagBean implements Bean<SongLyricTag> {
         foreignCol: songLyricEntityBean.id.name,
         isNullable: false);
     st.addInt(tagId.name,
-        primary: true,
-        foreignTable: tagEntityBean.tableName,
-        foreignCol: tagEntityBean.id.name,
-        isNullable: false);
+        primary: true, foreignTable: tagEntityBean.tableName, foreignCol: tagEntityBean.id.name, isNullable: false);
     return adapter.createTable(st);
   }
 
-  Future<dynamic> insert(SongLyricTag model,
-      {bool cascade = false,
-      bool onlyNonNull = false,
-      Set<String> only}) async {
-    final Insert insert = inserter
-        .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
+  Future<dynamic> insert(SongLyricTag model, {bool cascade = false, bool onlyNonNull = false, Set<String> only}) async {
+    final Insert insert = inserter.setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
     return adapter.insert(insert);
   }
 
-  Future<void> insertMany(List<SongLyricTag> models,
-      {bool onlyNonNull = false, Set<String> only}) async {
-    final List<List<SetColumn>> data = models
-        .map((model) =>
-            toSetColumns(model, only: only, onlyNonNull: onlyNonNull))
-        .toList();
+  Future<void> insertMany(List<SongLyricTag> models, {bool onlyNonNull = false, Set<String> only}) async {
+    final List<List<SetColumn>> data =
+        models.map((model) => toSetColumns(model, only: only, onlyNonNull: onlyNonNull)).toList();
     final InsertMany insert = inserters.addAll(data);
     await adapter.insertMany(insert);
     return;
   }
 
   Future<dynamic> upsert(SongLyricTag model,
-      {bool cascade = false,
-      Set<String> only,
-      bool onlyNonNull = false,
-      isForeignKeyEnabled = false}) async {
-    final Upsert upsert = upserter
-        .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
+      {bool cascade = false, Set<String> only, bool onlyNonNull = false, isForeignKeyEnabled = false}) async {
+    final Upsert upsert = upserter.setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
     return adapter.upsert(upsert);
   }
 
   Future<void> upsertMany(List<SongLyricTag> models,
-      {bool onlyNonNull = false,
-      Set<String> only,
-      isForeignKeyEnabled = false}) async {
+      {bool onlyNonNull = false, Set<String> only, isForeignKeyEnabled = false}) async {
     final List<List<SetColumn>> data = [];
     for (var i = 0; i < models.length; ++i) {
       var model = models[i];
-      data.add(
-          toSetColumns(model, only: only, onlyNonNull: onlyNonNull).toList());
+      data.add(toSetColumns(model, only: only, onlyNonNull: onlyNonNull).toList());
     }
     final UpsertMany upsert = upserters.addAll(data);
     await adapter.upsertMany(upsert);
@@ -2843,10 +2517,7 @@ abstract class _SongLyricTagBean implements Bean<SongLyricTag> {
   }
 
   Future<int> update(SongLyricTag model,
-      {bool cascade = false,
-      bool associate = false,
-      Set<String> only,
-      bool onlyNonNull = false}) async {
+      {bool cascade = false, bool associate = false, Set<String> only, bool onlyNonNull = false}) async {
     final Update update = updater
         .where(this.songLyricId.eq(model.songLyricId))
         .where(this.tagId.eq(model.tagId))
@@ -2854,36 +2525,26 @@ abstract class _SongLyricTagBean implements Bean<SongLyricTag> {
     return adapter.update(update);
   }
 
-  Future<void> updateMany(List<SongLyricTag> models,
-      {bool onlyNonNull = false, Set<String> only}) async {
+  Future<void> updateMany(List<SongLyricTag> models, {bool onlyNonNull = false, Set<String> only}) async {
     final List<List<SetColumn>> data = [];
     final List<Expression> where = [];
     for (var i = 0; i < models.length; ++i) {
       var model = models[i];
-      data.add(
-          toSetColumns(model, only: only, onlyNonNull: onlyNonNull).toList());
-      where.add(this
-          .songLyricId
-          .eq(model.songLyricId)
-          .and(this.tagId.eq(model.tagId)));
+      data.add(toSetColumns(model, only: only, onlyNonNull: onlyNonNull).toList());
+      where.add(this.songLyricId.eq(model.songLyricId).and(this.tagId.eq(model.tagId)));
     }
     final UpdateMany update = updaters.addAll(data, where);
     await adapter.updateMany(update);
     return;
   }
 
-  Future<SongLyricTag> find(int songLyricId, int tagId,
-      {bool preload = false, bool cascade = false}) async {
-    final Find find = finder
-        .where(this.songLyricId.eq(songLyricId))
-        .where(this.tagId.eq(tagId));
+  Future<SongLyricTag> find(int songLyricId, int tagId, {bool preload = false, bool cascade = false}) async {
+    final Find find = finder.where(this.songLyricId.eq(songLyricId)).where(this.tagId.eq(tagId));
     return await findOne(find);
   }
 
   Future<int> remove(int songLyricId, int tagId) async {
-    final Remove remove = remover
-        .where(this.songLyricId.eq(songLyricId))
-        .where(this.tagId.eq(tagId));
+    final Remove remove = remover.where(this.songLyricId.eq(songLyricId)).where(this.tagId.eq(tagId));
     return adapter.remove(remove);
   }
 
@@ -2892,8 +2553,7 @@ abstract class _SongLyricTagBean implements Bean<SongLyricTag> {
     if (models == null || models.isEmpty) return 0;
     final Remove remove = remover;
     for (final model in models) {
-      remove.or(
-          this.songLyricId.eq(model.songLyricId) | this.tagId.eq(model.tagId));
+      remove.or(this.songLyricId.eq(model.songLyricId) | this.tagId.eq(model.tagId));
     }
     return adapter.remove(remove);
   }
@@ -2904,10 +2564,8 @@ abstract class _SongLyricTagBean implements Bean<SongLyricTag> {
     return findMany(find);
   }
 
-  Future<List<SongLyricTag>> findBySongLyricEntityList(
-      List<SongLyricEntity> models,
-      {bool preload = false,
-      bool cascade = false}) async {
+  Future<List<SongLyricTag>> findBySongLyricEntityList(List<SongLyricEntity> models,
+      {bool preload = false, bool cascade = false}) async {
 // Return if models is empty. If this is not done, all the records will be returned!
     if (models == null || models.isEmpty) return [];
     final Find find = finder;
@@ -2950,8 +2608,7 @@ abstract class _SongLyricTagBean implements Bean<SongLyricTag> {
     return await tagEntityBean.findWhere(exp);
   }
 
-  Future<List<SongLyricTag>> findByTagEntity(int tagId,
-      {bool preload = false, bool cascade = false}) async {
+  Future<List<SongLyricTag>> findByTagEntity(int tagId, {bool preload = false, bool cascade = false}) async {
     final Find find = finder.where(this.tagId.eq(tagId));
     return findMany(find);
   }
@@ -3000,8 +2657,7 @@ abstract class _SongLyricTagBean implements Bean<SongLyricTag> {
     return await songLyricEntityBean.findWhere(exp);
   }
 
-  Future<dynamic> attach(TagEntity one, SongLyricEntity two,
-      {bool upsert = false}) async {
+  Future<dynamic> attach(TagEntity one, SongLyricEntity two, {bool upsert = false}) async {
     final ret = SongLyricTag();
     ret.tagId = one.id;
     ret.songLyricId = two.id;
@@ -3040,10 +2696,8 @@ abstract class _SongLyricPlaylistBean implements Bean<SongLyricPlaylist> {
       ret.add(songLyricId.set(model.songLyricId));
       ret.add(playlistId.set(model.playlistId));
     } else if (only != null) {
-      if (only.contains(songLyricId.name))
-        ret.add(songLyricId.set(model.songLyricId));
-      if (only.contains(playlistId.name))
-        ret.add(playlistId.set(model.playlistId));
+      if (only.contains(songLyricId.name)) ret.add(songLyricId.set(model.songLyricId));
+      if (only.contains(playlistId.name)) ret.add(playlistId.set(model.playlistId));
     } else /* if (onlyNonNull) */ {
       if (model.songLyricId != null) {
         ret.add(songLyricId.set(model.songLyricId));
@@ -3072,44 +2726,31 @@ abstract class _SongLyricPlaylistBean implements Bean<SongLyricPlaylist> {
   }
 
   Future<dynamic> insert(SongLyricPlaylist model,
-      {bool cascade = false,
-      bool onlyNonNull = false,
-      Set<String> only}) async {
-    final Insert insert = inserter
-        .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
+      {bool cascade = false, bool onlyNonNull = false, Set<String> only}) async {
+    final Insert insert = inserter.setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
     return adapter.insert(insert);
   }
 
-  Future<void> insertMany(List<SongLyricPlaylist> models,
-      {bool onlyNonNull = false, Set<String> only}) async {
-    final List<List<SetColumn>> data = models
-        .map((model) =>
-            toSetColumns(model, only: only, onlyNonNull: onlyNonNull))
-        .toList();
+  Future<void> insertMany(List<SongLyricPlaylist> models, {bool onlyNonNull = false, Set<String> only}) async {
+    final List<List<SetColumn>> data =
+        models.map((model) => toSetColumns(model, only: only, onlyNonNull: onlyNonNull)).toList();
     final InsertMany insert = inserters.addAll(data);
     await adapter.insertMany(insert);
     return;
   }
 
   Future<dynamic> upsert(SongLyricPlaylist model,
-      {bool cascade = false,
-      Set<String> only,
-      bool onlyNonNull = false,
-      isForeignKeyEnabled = false}) async {
-    final Upsert upsert = upserter
-        .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
+      {bool cascade = false, Set<String> only, bool onlyNonNull = false, isForeignKeyEnabled = false}) async {
+    final Upsert upsert = upserter.setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
     return adapter.upsert(upsert);
   }
 
   Future<void> upsertMany(List<SongLyricPlaylist> models,
-      {bool onlyNonNull = false,
-      Set<String> only,
-      isForeignKeyEnabled = false}) async {
+      {bool onlyNonNull = false, Set<String> only, isForeignKeyEnabled = false}) async {
     final List<List<SetColumn>> data = [];
     for (var i = 0; i < models.length; ++i) {
       var model = models[i];
-      data.add(
-          toSetColumns(model, only: only, onlyNonNull: onlyNonNull).toList());
+      data.add(toSetColumns(model, only: only, onlyNonNull: onlyNonNull).toList());
     }
     final UpsertMany upsert = upserters.addAll(data);
     await adapter.upsertMany(upsert);
@@ -3117,10 +2758,7 @@ abstract class _SongLyricPlaylistBean implements Bean<SongLyricPlaylist> {
   }
 
   Future<int> update(SongLyricPlaylist model,
-      {bool cascade = false,
-      bool associate = false,
-      Set<String> only,
-      bool onlyNonNull = false}) async {
+      {bool cascade = false, bool associate = false, Set<String> only, bool onlyNonNull = false}) async {
     final Update update = updater
         .where(this.songLyricId.eq(model.songLyricId))
         .where(this.playlistId.eq(model.playlistId))
@@ -3128,36 +2766,26 @@ abstract class _SongLyricPlaylistBean implements Bean<SongLyricPlaylist> {
     return adapter.update(update);
   }
 
-  Future<void> updateMany(List<SongLyricPlaylist> models,
-      {bool onlyNonNull = false, Set<String> only}) async {
+  Future<void> updateMany(List<SongLyricPlaylist> models, {bool onlyNonNull = false, Set<String> only}) async {
     final List<List<SetColumn>> data = [];
     final List<Expression> where = [];
     for (var i = 0; i < models.length; ++i) {
       var model = models[i];
-      data.add(
-          toSetColumns(model, only: only, onlyNonNull: onlyNonNull).toList());
-      where.add(this
-          .songLyricId
-          .eq(model.songLyricId)
-          .and(this.playlistId.eq(model.playlistId)));
+      data.add(toSetColumns(model, only: only, onlyNonNull: onlyNonNull).toList());
+      where.add(this.songLyricId.eq(model.songLyricId).and(this.playlistId.eq(model.playlistId)));
     }
     final UpdateMany update = updaters.addAll(data, where);
     await adapter.updateMany(update);
     return;
   }
 
-  Future<SongLyricPlaylist> find(int songLyricId, int playlistId,
-      {bool preload = false, bool cascade = false}) async {
-    final Find find = finder
-        .where(this.songLyricId.eq(songLyricId))
-        .where(this.playlistId.eq(playlistId));
+  Future<SongLyricPlaylist> find(int songLyricId, int playlistId, {bool preload = false, bool cascade = false}) async {
+    final Find find = finder.where(this.songLyricId.eq(songLyricId)).where(this.playlistId.eq(playlistId));
     return await findOne(find);
   }
 
   Future<int> remove(int songLyricId, int playlistId) async {
-    final Remove remove = remover
-        .where(this.songLyricId.eq(songLyricId))
-        .where(this.playlistId.eq(playlistId));
+    final Remove remove = remover.where(this.songLyricId.eq(songLyricId)).where(this.playlistId.eq(playlistId));
     return adapter.remove(remove);
   }
 
@@ -3166,8 +2794,7 @@ abstract class _SongLyricPlaylistBean implements Bean<SongLyricPlaylist> {
     if (models == null || models.isEmpty) return 0;
     final Remove remove = remover;
     for (final model in models) {
-      remove.or(this.songLyricId.eq(model.songLyricId) |
-          this.playlistId.eq(model.playlistId));
+      remove.or(this.songLyricId.eq(model.songLyricId) | this.playlistId.eq(model.playlistId));
     }
     return adapter.remove(remove);
   }
@@ -3178,10 +2805,8 @@ abstract class _SongLyricPlaylistBean implements Bean<SongLyricPlaylist> {
     return findMany(find);
   }
 
-  Future<List<SongLyricPlaylist>> findBySongLyricEntityList(
-      List<SongLyricEntity> models,
-      {bool preload = false,
-      bool cascade = false}) async {
+  Future<List<SongLyricPlaylist>> findBySongLyricEntityList(List<SongLyricEntity> models,
+      {bool preload = false, bool cascade = false}) async {
 // Return if models is empty. If this is not done, all the records will be returned!
     if (models == null || models.isEmpty) return [];
     final Find find = finder;
@@ -3196,8 +2821,7 @@ abstract class _SongLyricPlaylistBean implements Bean<SongLyricPlaylist> {
     return await adapter.remove(rm);
   }
 
-  void associateSongLyricEntity(
-      SongLyricPlaylist child, SongLyricEntity parent) {
+  void associateSongLyricEntity(SongLyricPlaylist child, SongLyricEntity parent) {
     child.songLyricId = parent.id;
   }
 
@@ -3214,8 +2838,7 @@ abstract class _SongLyricPlaylistBean implements Bean<SongLyricPlaylist> {
     return 0;
   }
 
-  Future<List<PlaylistEntity>> fetchBySongLyricEntity(
-      SongLyricEntity model) async {
+  Future<List<PlaylistEntity>> fetchBySongLyricEntity(SongLyricEntity model) async {
     final pivots = await findBySongLyricEntity(model.id);
 // Return if model has no pivots. If this is not done, all records will be removed!
     if (pivots.isEmpty) return [];
@@ -3232,10 +2855,8 @@ abstract class _SongLyricPlaylistBean implements Bean<SongLyricPlaylist> {
     return findMany(find);
   }
 
-  Future<List<SongLyricPlaylist>> findByPlaylistEntityList(
-      List<PlaylistEntity> models,
-      {bool preload = false,
-      bool cascade = false}) async {
+  Future<List<SongLyricPlaylist>> findByPlaylistEntityList(List<PlaylistEntity> models,
+      {bool preload = false, bool cascade = false}) async {
 // Return if models is empty. If this is not done, all the records will be returned!
     if (models == null || models.isEmpty) return [];
     final Find find = finder;
@@ -3267,8 +2888,7 @@ abstract class _SongLyricPlaylistBean implements Bean<SongLyricPlaylist> {
     return 0;
   }
 
-  Future<List<SongLyricEntity>> fetchByPlaylistEntity(
-      PlaylistEntity model) async {
+  Future<List<SongLyricEntity>> fetchByPlaylistEntity(PlaylistEntity model) async {
     final pivots = await findByPlaylistEntity(model.id);
 // Return if model has no pivots. If this is not done, all records will be removed!
     if (pivots.isEmpty) return [];
@@ -3279,8 +2899,7 @@ abstract class _SongLyricPlaylistBean implements Bean<SongLyricPlaylist> {
     return await songLyricEntityBean.findWhere(exp);
   }
 
-  Future<dynamic> attach(SongLyricEntity one, PlaylistEntity two,
-      {bool upsert = false}) async {
+  Future<dynamic> attach(SongLyricEntity one, PlaylistEntity two, {bool upsert = false}) async {
     final ret = SongLyricPlaylist();
     ret.songLyricId = one.id;
     ret.playlistId = two.id;
@@ -3320,8 +2939,7 @@ abstract class _AuthorExternalBean implements Bean<AuthorExternal> {
       ret.add(externalId.set(model.externalId));
     } else if (only != null) {
       if (only.contains(authorId.name)) ret.add(authorId.set(model.authorId));
-      if (only.contains(externalId.name))
-        ret.add(externalId.set(model.externalId));
+      if (only.contains(externalId.name)) ret.add(externalId.set(model.externalId));
     } else /* if (onlyNonNull) */ {
       if (model.authorId != null) {
         ret.add(authorId.set(model.authorId));
@@ -3350,44 +2968,31 @@ abstract class _AuthorExternalBean implements Bean<AuthorExternal> {
   }
 
   Future<dynamic> insert(AuthorExternal model,
-      {bool cascade = false,
-      bool onlyNonNull = false,
-      Set<String> only}) async {
-    final Insert insert = inserter
-        .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
+      {bool cascade = false, bool onlyNonNull = false, Set<String> only}) async {
+    final Insert insert = inserter.setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
     return adapter.insert(insert);
   }
 
-  Future<void> insertMany(List<AuthorExternal> models,
-      {bool onlyNonNull = false, Set<String> only}) async {
-    final List<List<SetColumn>> data = models
-        .map((model) =>
-            toSetColumns(model, only: only, onlyNonNull: onlyNonNull))
-        .toList();
+  Future<void> insertMany(List<AuthorExternal> models, {bool onlyNonNull = false, Set<String> only}) async {
+    final List<List<SetColumn>> data =
+        models.map((model) => toSetColumns(model, only: only, onlyNonNull: onlyNonNull)).toList();
     final InsertMany insert = inserters.addAll(data);
     await adapter.insertMany(insert);
     return;
   }
 
   Future<dynamic> upsert(AuthorExternal model,
-      {bool cascade = false,
-      Set<String> only,
-      bool onlyNonNull = false,
-      isForeignKeyEnabled = false}) async {
-    final Upsert upsert = upserter
-        .setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
+      {bool cascade = false, Set<String> only, bool onlyNonNull = false, isForeignKeyEnabled = false}) async {
+    final Upsert upsert = upserter.setMany(toSetColumns(model, only: only, onlyNonNull: onlyNonNull));
     return adapter.upsert(upsert);
   }
 
   Future<void> upsertMany(List<AuthorExternal> models,
-      {bool onlyNonNull = false,
-      Set<String> only,
-      isForeignKeyEnabled = false}) async {
+      {bool onlyNonNull = false, Set<String> only, isForeignKeyEnabled = false}) async {
     final List<List<SetColumn>> data = [];
     for (var i = 0; i < models.length; ++i) {
       var model = models[i];
-      data.add(
-          toSetColumns(model, only: only, onlyNonNull: onlyNonNull).toList());
+      data.add(toSetColumns(model, only: only, onlyNonNull: onlyNonNull).toList());
     }
     final UpsertMany upsert = upserters.addAll(data);
     await adapter.upsertMany(upsert);
@@ -3395,10 +3000,7 @@ abstract class _AuthorExternalBean implements Bean<AuthorExternal> {
   }
 
   Future<int> update(AuthorExternal model,
-      {bool cascade = false,
-      bool associate = false,
-      Set<String> only,
-      bool onlyNonNull = false}) async {
+      {bool cascade = false, bool associate = false, Set<String> only, bool onlyNonNull = false}) async {
     final Update update = updater
         .where(this.authorId.eq(model.authorId))
         .where(this.externalId.eq(model.externalId))
@@ -3406,36 +3008,26 @@ abstract class _AuthorExternalBean implements Bean<AuthorExternal> {
     return adapter.update(update);
   }
 
-  Future<void> updateMany(List<AuthorExternal> models,
-      {bool onlyNonNull = false, Set<String> only}) async {
+  Future<void> updateMany(List<AuthorExternal> models, {bool onlyNonNull = false, Set<String> only}) async {
     final List<List<SetColumn>> data = [];
     final List<Expression> where = [];
     for (var i = 0; i < models.length; ++i) {
       var model = models[i];
-      data.add(
-          toSetColumns(model, only: only, onlyNonNull: onlyNonNull).toList());
-      where.add(this
-          .authorId
-          .eq(model.authorId)
-          .and(this.externalId.eq(model.externalId)));
+      data.add(toSetColumns(model, only: only, onlyNonNull: onlyNonNull).toList());
+      where.add(this.authorId.eq(model.authorId).and(this.externalId.eq(model.externalId)));
     }
     final UpdateMany update = updaters.addAll(data, where);
     await adapter.updateMany(update);
     return;
   }
 
-  Future<AuthorExternal> find(int authorId, int externalId,
-      {bool preload = false, bool cascade = false}) async {
-    final Find find = finder
-        .where(this.authorId.eq(authorId))
-        .where(this.externalId.eq(externalId));
+  Future<AuthorExternal> find(int authorId, int externalId, {bool preload = false, bool cascade = false}) async {
+    final Find find = finder.where(this.authorId.eq(authorId)).where(this.externalId.eq(externalId));
     return await findOne(find);
   }
 
   Future<int> remove(int authorId, int externalId) async {
-    final Remove remove = remover
-        .where(this.authorId.eq(authorId))
-        .where(this.externalId.eq(externalId));
+    final Remove remove = remover.where(this.authorId.eq(authorId)).where(this.externalId.eq(externalId));
     return adapter.remove(remove);
   }
 
@@ -3444,14 +3036,12 @@ abstract class _AuthorExternalBean implements Bean<AuthorExternal> {
     if (models == null || models.isEmpty) return 0;
     final Remove remove = remover;
     for (final model in models) {
-      remove.or(this.authorId.eq(model.authorId) |
-          this.externalId.eq(model.externalId));
+      remove.or(this.authorId.eq(model.authorId) | this.externalId.eq(model.externalId));
     }
     return adapter.remove(remove);
   }
 
-  Future<List<AuthorExternal>> findByAuthorEntity(int authorId,
-      {bool preload = false, bool cascade = false}) async {
+  Future<List<AuthorExternal>> findByAuthorEntity(int authorId, {bool preload = false, bool cascade = false}) async {
     final Find find = finder.where(this.authorId.eq(authorId));
     return findMany(find);
   }
@@ -3506,10 +3096,8 @@ abstract class _AuthorExternalBean implements Bean<AuthorExternal> {
     return findMany(find);
   }
 
-  Future<List<AuthorExternal>> findByExternalEntityList(
-      List<ExternalEntity> models,
-      {bool preload = false,
-      bool cascade = false}) async {
+  Future<List<AuthorExternal>> findByExternalEntityList(List<ExternalEntity> models,
+      {bool preload = false, bool cascade = false}) async {
 // Return if models is empty. If this is not done, all the records will be returned!
     if (models == null || models.isEmpty) return [];
     final Find find = finder;
@@ -3552,8 +3140,7 @@ abstract class _AuthorExternalBean implements Bean<AuthorExternal> {
     return await authorEntityBean.findWhere(exp);
   }
 
-  Future<dynamic> attach(ExternalEntity one, AuthorEntity two,
-      {bool upsert = false}) async {
+  Future<dynamic> attach(ExternalEntity one, AuthorEntity two, {bool upsert = false}) async {
     final ret = AuthorExternal();
     ret.externalId = one.id;
     ret.authorId = two.id;
