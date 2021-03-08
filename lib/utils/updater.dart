@@ -114,10 +114,10 @@ class Updater {
     await Database.shared.init(version);
 
     if (version != kCurrentVersion) {
-      await _loadLocal().catchError((error) => print(error));
-
-      prefs.setInt(_versionKey, kCurrentVersion);
-      lastUpdate = _initialLastUpdate;
+      await _loadLocal().then((_) {
+        prefs.setInt(_versionKey, kCurrentVersion);
+        lastUpdate = _initialLastUpdate;
+      }).catchError((error) => print(error));
     }
 
     if (connectivityResult == ConnectivityResult.wifi) _update(lastUpdate);
@@ -209,25 +209,23 @@ class Updater {
             return result;
           }).toList();
 
-    await Future.wait([
-      Database.shared.saveAuthors(authors),
-      Database.shared.saveTags(tags),
-      Database.shared.saveSongbooks(songbooks),
-      Database.shared.saveSongs(songs),
-      Database.shared.saveSongLyrics(songLyrics),
-      Database.shared.saveExternals(externals),
-      Database.shared.saveSongbookRecords(songbookRecords),
-      Database.shared.saveSongLyricTags(songLyricTags),
-      Database.shared.saveSongLyricAuthors(songLyricAuthors),
-      // update search table
-      Database.shared.updateSongLyricsSearchTable(songLyrics, songbooks),
-      // outdated removals
-      Database.shared.removeOutdatedAuthors(authors.map((author) => author.id).toList()),
-      Database.shared.removeOutdatedTags(tags.map((tag) => tag.id).toList()),
-      Database.shared.removeOutdatedSongbooks(songbooks.map((songbook) => songbook.id).toList()),
-      Database.shared.removeOutdatedSongs(songs.map((song) => song.id).toList()),
-      Database.shared.removeOutdatedSongLyrics(songLyricIds),
-      Database.shared.removeOutdatedExternals(externalIds),
-    ]);
+    await Database.shared.saveAuthors(authors);
+    await Database.shared.saveTags(tags);
+    await Database.shared.saveSongbooks(songbooks);
+    await Database.shared.saveSongs(songs);
+    await Database.shared.saveSongLyrics(songLyrics);
+    await Database.shared.saveExternals(externals);
+    await Database.shared.saveSongbookRecords(songbookRecords);
+    await Database.shared.saveSongLyricTags(songLyricTags);
+    await Database.shared.saveSongLyricAuthors(songLyricAuthors);
+    // update search table
+    await Database.shared.updateSongLyricsSearchTable(songLyrics, songbooks);
+    // outdated removals
+    await Database.shared.removeOutdatedAuthors(authors.map((author) => author.id).toList());
+    await Database.shared.removeOutdatedTags(tags.map((tag) => tag.id).toList());
+    await Database.shared.removeOutdatedSongbooks(songbooks.map((songbook) => songbook.id).toList());
+    await Database.shared.removeOutdatedSongs(songs.map((song) => song.id).toList());
+    await Database.shared.removeOutdatedSongLyrics(songLyricIds);
+    await Database.shared.removeOutdatedExternals(externalIds);
   }
 }

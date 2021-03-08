@@ -41,6 +41,10 @@ class Database {
       SongLyricTagBean(_adapter).createTable(ifNotExists: true),
       SongLyricPlaylistBean(_adapter).createTable(ifNotExists: true),
       AuthorExternalBean(_adapter).createTable(ifNotExists: true),
+      _adapter.connection
+          .rawQuery(
+              'CREATE VIRTUAL TABLE IF NOT EXISTS song_lyrics_search USING FTS4(id, name, secondary_name1, secondary_name2, lyrics, numbers, numbers2, tokenize=unicode61);')
+          .catchError((error) => print(error)),
     ]).catchError((error) => print(error));
 
     await migrate(oldVersion);
@@ -56,12 +60,6 @@ class Database {
       await _adapter
           .alter(Alter(songLyricBean.tableName)
               .addString(songLyricBean.secondaryName2.name, isNullable: true, length: 100))
-          .catchError((error) => print(error));
-    }
-    if (oldVersion < 3) {
-      await _adapter.connection
-          .rawQuery(
-              'CREATE VIRTUAL TABLE IF NOT EXISTS song_lyrics_search USING FTS4(id, name, secondary_name1, secondary_name2, lyrics, numbers, numbers2, tokenize=unicode61);')
           .catchError((error) => print(error));
     }
   }
@@ -127,7 +125,7 @@ class Database {
   Future<void> updateSongLyricsSearchTable(List<SongLyricEntity> songLyrics, List<SongbookEntity> songbooks) async {
     final existing = {};
 
-    for (final entity in await _adapter.connection.query(SongLyricBean(_adapter).tableName, columns: ['id']))
+    for (final entity in await _adapter.connection.query('song_lyrics_search', columns: ['id']))
       existing[entity['id']] = true;
 
     List<SongLyricEntity> inserts = [];
@@ -136,8 +134,7 @@ class Database {
     for (final entity in songLyrics) {
       if (existing.containsKey(entity.id))
         updates.add(entity);
-      else
-        inserts.add(entity);
+      else if (entity.lyrics != null) inserts.add(entity);
     }
 
     Map<int, SongbookEntity> songbooksMap = {};

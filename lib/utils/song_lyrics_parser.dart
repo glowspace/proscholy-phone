@@ -1,7 +1,7 @@
 import 'package:zpevnik/models/song_lyric.dart';
 
 final _verseRE = RegExp(
-    r'\s*(\d+\.|\(?[BCR]\d?[:.]\)?|@mezihra:|@dohra:|#(?!.?\]))?\s*((?:=\s*(\d\.)|.|\n)*?)\n*(?=$|[^=]?\d\.|\(?[BCR]\d?[:.]\)?|@mezihra:|@dohra:|#(?!.?\]))');
+    r'\s*(\d+\.|\(?[BCR]\d?[:.]\)?|@mezihra:|@dohra:|@předehra:|#(?!.*\]))?\s*((?:=\s*(\d\.)|.|\n)*?)\n*(?=$|[^=]?\d\.|\(?[BCR]\d?[:.]\)?|@mezihra:|@dohra:|@předehra:|#(?!.*\]))');
 final _chordsRE = RegExp(r'\[[^\]]+\]');
 final _placeholderRE = RegExp(r'\[%\]');
 final _firstVerseRE = RegExp(r'1\.(?:.|\n)+?(?=\n+\d\.|\n+\(?[BCR][:.]\)?)', multiLine: true);
@@ -12,8 +12,19 @@ final _plainChordsRE = RegExp(r'[CDEFGAH]#?');
 final _toFlat = {'C#': 'Db', 'D#': 'Eb', 'F#': 'Gb', 'G#': 'Ab', 'A#': 'B'};
 final _toFlatRE = RegExp(r'[CDEFGAH]#');
 
-final _fromFlat = {'Db': 'C#', 'Eb': 'D#', 'Gb': 'F#', 'Ab': 'G#', 'B': 'A#'};
-final _fromFlatRE = RegExp(r'([CDEFGAH]b|B)');
+final _fromFlat = {
+  'Db': 'C#',
+  'Eb': 'D#',
+  'Gb': 'F#',
+  'Ab': 'G#',
+  'B': 'A#',
+  'Ds': 'C#',
+  'Es': 'D#',
+  'Gs': 'F#',
+  'As': 'G#',
+  'S': 'A#'
+};
+final _fromFlatRE = RegExp(r'([CDEFGAH][bs]|B)');
 
 final _parenthesesRE = RegExp(r'\(?\)?');
 final _multipleSpacesRE = RegExp(r' +');

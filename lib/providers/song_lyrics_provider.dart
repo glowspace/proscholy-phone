@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:sqlite_bm25/sqlite_bm25.dart';
 import 'package:zpevnik/models/song_lyric.dart';
@@ -6,8 +5,6 @@ import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/providers/data_provider.dart';
 import 'package:zpevnik/providers/tags_provider.dart';
 import 'package:zpevnik/utils/database.dart';
-
-final _numberRE = RegExp('[0-9]');
 
 class SongLyricsProvider extends ChangeNotifier {
   final List<SongLyric> allSongLyrics;

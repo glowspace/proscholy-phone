@@ -10,6 +10,7 @@ import 'package:zpevnik/utils/database.dart';
 import 'package:zpevnik/utils/song_lyrics_parser.dart';
 
 final _chordsRE = RegExp(r'\[[^\]]+\]');
+final _parenthesesRE = RegExp(r'[\(\)]');
 final _numberRE = RegExp('[0-9]+');
 
 enum SongLyricType {
@@ -261,15 +262,17 @@ class Verse {
 
     if (match.group(1) == null) return Verse('', SongLyricsParser.shared.lines(match.group(2), false), false);
 
-    String number = match.group(1);
+    String number = match.group(1).replaceAll(_parenthesesRE, '');
     bool isInterlude = false;
     bool isComment = false;
-    print(number);
     if (number == '@mezihra:') {
       number = 'M:';
       isInterlude = true;
     } else if (number == '@dohra:') {
       number = 'Z:';
+      isInterlude = true;
+    } else if (number == '@předehra:') {
+      number = 'P:';
       isInterlude = true;
     } else if (number == '#') {
       number = '';

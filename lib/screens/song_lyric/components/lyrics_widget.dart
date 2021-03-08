@@ -155,7 +155,7 @@ class _LyricsWidgetState extends State<LyricsWidget> {
                   offset: Offset(0, block.isInterlude ? 0 : -(AppTheme.of(context).bodyTextStyle.fontSize - 3)),
                   child: RichText(
                     text: TextSpan(
-                      text: block.chord + (block.chord.length > block.lyricsPart.length ? ' ' : ''),
+                      text: block.chord + (block.chord.length >= block.lyricsPart.trim().length ? ' ' : ''),
                       style: AppTheme.of(context).bodyTextStyle.copyWith(
                             color: AppTheme.of(context).chordColor,
                             height: (widget.songLyric.showChords ? 2.25 : 1.5),
