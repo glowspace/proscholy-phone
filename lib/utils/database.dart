@@ -147,7 +147,7 @@ class Database {
       if (!records.containsKey(record.songLyricId)) records[record.songLyricId] = [];
       if (!records2.containsKey(record.songLyricId)) records2[record.songLyricId] = [];
 
-      if (songbooksMap.containsKey(record.songbookId)) {
+      if (songbooksMap.containsKey(record.songbookId) && !songbooksMap[record.songbookId].isPrivate) {
         records[record.songLyricId].add('${songbooksMap[record.songbookId].shortcut}${record.number}');
         records2[record.songLyricId].add(record.number);
       }

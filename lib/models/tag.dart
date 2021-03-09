@@ -5,6 +5,7 @@ import 'package:zpevnik/models/entities/tag.dart';
 enum TagType {
   liturgyPart,
   liturgyPeriod,
+  sacredOccasion,
   saints,
   historyPeriod,
   instrumentation,
@@ -12,7 +13,6 @@ enum TagType {
   musicalForm,
   generic,
   language,
-  sacredOccasion,
   unknown
 }
 
