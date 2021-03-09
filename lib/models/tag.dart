@@ -12,6 +12,7 @@ enum TagType {
   musicalForm,
   generic,
   language,
+  sacredOccasion,
   unknown
 }
 
@@ -32,6 +33,8 @@ extension TagTypeExtension on TagType {
         return TagType.genre;
       case "MUSICAL_FORM":
         return TagType.musicalForm;
+      case "SACRED_OCCASION":
+        return TagType.sacredOccasion;
       case "GENERIC":
         return TagType.generic;
       default:
@@ -48,6 +51,7 @@ extension TagTypeExtension on TagType {
       case TagType.liturgyPeriod:
       case TagType.saints:
       case TagType.language:
+      case TagType.sacredOccasion:
         return true;
       default:
         return false;
@@ -64,6 +68,8 @@ extension TagTypeExtension on TagType {
         return "Liturgický rok";
       case TagType.saints:
         return "Ke svatým";
+      case TagType.sacredOccasion:
+        return "Svátosti a pobožnosti";
       case TagType.language:
         return "Jazyky";
       default:
@@ -79,6 +85,7 @@ extension TagTypeExtension on TagType {
         return red;
       case TagType.saints:
       case TagType.generic:
+      case TagType.sacredOccasion:
         return green;
       case TagType.language:
         return red;
