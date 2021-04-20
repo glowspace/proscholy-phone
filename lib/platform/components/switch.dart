@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:zpevnik/utils/platform.dart';
+import 'package:zpevnik/platform/mixin.dart';
 
 class PlatformSwitch extends StatelessWidget with PlatformWidgetMixin {
   final bool value;

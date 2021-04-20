@@ -5,7 +5,7 @@ import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/screens/components/data_container.dart';
 import 'package:zpevnik/screens/components/song_lyric_row.dart';
 import 'package:zpevnik/theme.dart';
-import 'package:zpevnik/utils/platform.dart';
+import 'package:zpevnik/platform/mixin.dart';
 
 class TranslationsScreen extends StatelessWidget with PlatformWidgetMixin {
   @override

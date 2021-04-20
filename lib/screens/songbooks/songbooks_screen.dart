@@ -7,7 +7,7 @@ import 'package:zpevnik/providers/songbooks_provider.dart';
 import 'package:zpevnik/screens/components/highlightable_button.dart';
 import 'package:zpevnik/screens/songbooks/componenets/songbooks_list.dart';
 import 'package:zpevnik/status_bar_wrapper.dart';
-import 'package:zpevnik/utils/platform.dart';
+import 'package:zpevnik/platform/mixin.dart';
 import 'package:zpevnik/screens/components/search_widget.dart';
 
 class SongbooksScreen extends StatefulWidget {

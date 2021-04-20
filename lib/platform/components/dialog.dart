@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/theme.dart';
-import 'package:zpevnik/utils/platform.dart';
+import 'package:zpevnik/platform/mixin.dart';
 
 class PlatformDialog extends StatelessWidget with PlatformWidgetMixin {
   final String title;

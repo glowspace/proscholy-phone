@@ -13,7 +13,7 @@ import 'package:zpevnik/screens/components/highlightable_row.dart';
 import 'package:zpevnik/screens/song_lyric/song_lyric_screen.dart';
 import 'package:zpevnik/status_bar_wrapper.dart';
 import 'package:zpevnik/theme.dart';
-import 'package:zpevnik/utils/platform.dart';
+import 'package:zpevnik/platform/mixin.dart';
 
 class ConnectionsScreen extends StatefulWidget {
   @override

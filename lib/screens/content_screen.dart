@@ -10,7 +10,7 @@ import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/data_provider.dart';
 import 'package:zpevnik/providers/full_screen_provider.dart';
 import 'package:zpevnik/providers/playlists_provider.dart';
-import 'package:zpevnik/utils/platform.dart';
+import 'package:zpevnik/platform/mixin.dart';
 import 'package:zpevnik/screens/home/home_screen.dart';
 import 'package:zpevnik/screens/songbooks/songbooks_screen.dart';
 import 'package:zpevnik/screens/user/user_screen.dart';

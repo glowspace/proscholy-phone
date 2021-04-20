@@ -10,7 +10,7 @@ import 'package:zpevnik/providers/full_screen_provider.dart';
 import 'package:zpevnik/providers/settings_provider.dart';
 import 'package:zpevnik/providers/sync_provider.dart';
 import 'package:zpevnik/theme.dart';
-import 'package:zpevnik/utils/platform.dart';
+import 'package:zpevnik/platform/mixin.dart';
 import 'package:zpevnik/utils/preloader.dart';
 import 'package:zpevnik/utils/updater.dart';
 import 'package:zpevnik/screens/content_screen.dart';

@@ -5,7 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/links.dart';
 import 'package:zpevnik/theme.dart';
-import 'package:zpevnik/utils/platform.dart';
+import 'package:zpevnik/platform/mixin.dart';
 
 class AboutScreen extends StatelessWidget with PlatformWidgetMixin {
   @override

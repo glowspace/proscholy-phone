@@ -13,7 +13,7 @@ import 'package:zpevnik/screens/components/data_container.dart';
 import 'package:zpevnik/screens/song_lyric/song_lyric_screen.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/hex_color.dart';
-import 'package:zpevnik/utils/platform.dart';
+import 'package:zpevnik/platform/mixin.dart';
 
 class SongbookScreen extends StatefulWidget {
   final Songbook songbook;

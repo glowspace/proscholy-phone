@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/full_screen_provider.dart';
 import 'package:zpevnik/theme.dart';
-import 'package:zpevnik/utils/platform.dart';
+import 'package:zpevnik/platform/mixin.dart';
 
 final _colorRE = RegExp(r'Color\(0xff(.+)\)');
 

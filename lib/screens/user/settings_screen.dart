@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/settings_provider.dart';
-import 'package:zpevnik/screens/components/platform/platform_slider.dart';
-import 'package:zpevnik/screens/components/platform/platform_switch.dart';
+import 'package:zpevnik/platform/components/slider.dart';
+import 'package:zpevnik/platform/components/switch.dart';
 import 'package:zpevnik/screens/song_lyric/components/selector_widget.dart';
 import 'package:zpevnik/theme.dart';
-import 'package:zpevnik/utils/platform.dart';
+import 'package:zpevnik/platform/mixin.dart';
 
 class SettingsScreen extends StatelessWidget with PlatformWidgetMixin {
   @override

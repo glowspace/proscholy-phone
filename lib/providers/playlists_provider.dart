@@ -7,11 +7,11 @@ import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/data_provider.dart';
 import 'package:zpevnik/screens/components/bottom_form_sheet.dart';
 import 'package:zpevnik/screens/components/menu_item.dart';
-import 'package:zpevnik/screens/components/platform/platform_dialog.dart';
+import 'package:zpevnik/platform/components/dialog.dart';
 import 'package:zpevnik/screens/playlists/playlist_sheet.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/database.dart';
-import 'package:zpevnik/utils/platform.dart';
+import 'package:zpevnik/platform/mixin.dart';
 
 class PlaylistsProvider extends ChangeNotifier {
   List<Playlist> _allPlaylists;

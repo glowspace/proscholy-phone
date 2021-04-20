@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/screens/filters/widget.dart';
-import 'package:zpevnik/utils/platform.dart';
+import 'package:zpevnik/platform/mixin.dart';
 
 class TagsProvider extends ChangeNotifier {
   List<TagsSection> _sections;
