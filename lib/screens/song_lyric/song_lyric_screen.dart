@@ -7,6 +7,7 @@ import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/full_screen_provider.dart';
 import 'package:zpevnik/providers/scroll_provider.dart';
 import 'package:zpevnik/providers/settings_provider.dart';
+import 'package:zpevnik/providers/sync_provider.dart';
 import 'package:zpevnik/screens/components/data_container.dart';
 import 'package:zpevnik/screens/components/highlightable_button.dart';
 import 'package:zpevnik/screens/song_lyric/components/lyrics_widget.dart';
@@ -41,6 +42,8 @@ class _SongLyricScreen extends State<SongLyricScreen> with PlatformStateMixin {
     _scrollProvider.scrollController = ScrollController();
 
     _showingMenu = ValueNotifier(false);
+
+    Provider.of<SyncProvider>(context, listen: false).sendMessage(widget.songLyric.id.toString());
 
     widget.songLyric.addListener(_update);
   }

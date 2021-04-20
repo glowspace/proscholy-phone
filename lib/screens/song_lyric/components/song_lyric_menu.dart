@@ -7,6 +7,7 @@ import 'package:zpevnik/providers/playlists_provider.dart';
 import 'package:zpevnik/screens/components/data_container.dart';
 import 'package:zpevnik/screens/components/menu_item.dart';
 import 'package:zpevnik/screens/components/popup_menu.dart';
+import 'package:zpevnik/screens/song_lyric/connections_screen.dart';
 import 'package:zpevnik/theme.dart';
 
 class SongLyricMenu extends StatelessWidget {
@@ -45,6 +46,14 @@ class SongLyricMenu extends StatelessWidget {
 
         //         showing.value = false;
         //       }),
+        MenuItem(
+          title: 'Připojit k zařízením v okolí',
+          icon: Icons.tap_and_play,
+          onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => ConnectionsScreen()));
+            showing.value = false;
+          },
+        ),
         MenuItem(
           title: 'Sdílet',
           icon: Icons.share,
