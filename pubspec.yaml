@@ -11,41 +11,37 @@ dependencies:
   flutter:
     sdk: flutter
 
-  jaguar_orm: any
-  jaguar_query_sqflite: any
-  sqflite: any
-  path: any
+  jaguar_orm: ^2.2.7
+  jaguar_query_sqflite: ^2.2.11
+  sqflite: ^1.1.7+2
+  sqlite_bm25: ^0.2.0
+  path: ^1.8.0
 
-  shared_preferences: any
-
-  connectivity: any
-  diacritic: any
-  wakelock: any
+  shared_preferences: ^2.0.5
+  connectivity: ^3.0.3
+  diacritic: ^0.1.3
+  wakelock: ^0.5.1
     
-  provider: any
+  provider: ^5.0.0
 
-  modal_bottom_sheet: any
+  modal_bottom_sheet: ^2.0.0
 
-  url_launcher: any
-  flutter_share: any
+  url_launcher: ^6.0.3
+  flutter_share: ^2.0.0
 
-  youtube_player_flutter: any
-  flutter_svg: any
-  flutter_reorderable_list: any
+  youtube_player_flutter: ^8.0.0
+  flutter_svg: ^0.21.0+1
+  flutter_reorderable_list: ^1.0.0
+  flutter_staggered_grid_view: ^0.4.0
 
-  firebase_analytics: any
+  firebase_analytics: ^7.1.1
 
-  flutter_staggered_grid_view: any
+  uni_links: ^0.4.0
 
-  uni_links: any
+  flutter_nearby_connections: ^1.0.10
+  device_info: ^2.0.0
 
-  sqlite_bm25: any
-
-  flutter_nearby_connections: any
-
-  device_info: any
-
-  cupertino_icons: any
+  cupertino_icons: ^1.0.2
 
 dev_dependencies:
   jaguar_orm_gen: any
@@ -57,7 +53,7 @@ flutter:
   fonts:
     - family: CustomIcon
       fonts:
-      - asset: assets/fonts/CustomIcon.ttf
+        - asset: assets/fonts/CustomIcon.ttf
 
     - family: Amiri
       fonts:
