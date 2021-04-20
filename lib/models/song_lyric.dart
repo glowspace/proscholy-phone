@@ -178,7 +178,7 @@ class SongLyric extends ChangeNotifier {
       if (entity.authors.length == 0)
         return '${originalText}Autor překladu neznámý';
       else if (entity.authors.length == 1)
-        return '${originalText}Autor předkladu: ${entity.authors[0].name}';
+        return '${originalText}Autor překladu: ${entity.authors[0].name}';
       else
         return '${originalText}Autoři překladu: ${entity.authors.map((author) => author.name).toList().join(", ")}';
     }

@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_reorderable_list/flutter_reorderable_list.dart';
+import 'package:flutter_reorderable_list/flutter_reorderable_list.dart' as reorderable;
 import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/data_provider.dart';
@@ -102,7 +102,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> with PlatformStateMixin
             value: _songLyricsProvider,
             child: Scrollbar(
               child: Consumer<SongLyricsProvider>(
-                builder: (context, provider, child) => ReorderableList(
+                builder: (context, provider, child) => reorderable.ReorderableList(
                   onReorder: (Key from, Key to) {
                     int fromIndex = provider.songLyrics.indexWhere((songLyric) => songLyric.key == from);
                     int toIndex = provider.songLyrics.indexWhere((songLyric) => songLyric.key == to);

@@ -138,6 +138,9 @@ class AppThemeData extends InheritedWidget {
   Color get filtersSectionSeparatorColor => isLight ? Color(0xffe8e8e8) : Color(0xff272727);
   Color get filterBorderColor => isLight ? Color(0xffd1d1d1) : Color(0xff2e2e2e);
 
+  Color get infoBackgroundColor => isLight ? Color(0xffe4f0fa) : Color(0x55555555);
+  Color get successBackgroundColor => isLight ? Color(0xffe4fae4) : Color(0x55555555);
+
   Color get activeColor => isLight ? Color(0xff9a9a9a) : Color(0xff656565);
 
   bool get isLight => brightness == Brightness.light;

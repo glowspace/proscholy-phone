@@ -43,7 +43,7 @@ class _PlatformPopupMenuButtonState<T> extends State<PlatformPopupMenuButton<T>>
       position: position,
       shape: ContinuousRectangleBorder(side: BorderSide(color: AppTheme.of(context).borderColor)),
       color: AppTheme.of(context).backgroundColor,
-      captureInheritedThemes: false,
+      // captureInheritedThemes: false,
       useRootNavigator: true,
     ).then<void>((T newValue) {
       if (!mounted) return null;

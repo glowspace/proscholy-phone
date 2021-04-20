@@ -41,6 +41,10 @@ dependencies:
 
   sqlite_bm25: any
 
+  flutter_nearby_connections: any
+
+  device_info: any
+
   cupertino_icons: any
 
 dev_dependencies:

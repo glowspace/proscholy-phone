@@ -23,7 +23,9 @@ class ScrollProvider {
 
   ValueNotifier<bool> get scrolling => _scrolling;
 
-  bool get canScroll => !(scrollController.position.atEdge && scrollController.position.pixels != 0);
+  bool get canScroll =>
+      !scrollController.position.hasContentDimensions ||
+      !(scrollController.position.atEdge && scrollController.position.pixels != 0);
 
   void scrollEnded() {
     _scrolling.value = false;

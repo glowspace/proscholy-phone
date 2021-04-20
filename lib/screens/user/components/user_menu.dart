@@ -5,6 +5,7 @@ import 'package:zpevnik/screens/components/bottom_form_sheet.dart';
 import 'package:zpevnik/screens/components/menu_item.dart';
 import 'package:zpevnik/screens/user/about_screen.dart';
 import 'package:zpevnik/screens/user/settings_screen.dart';
+import 'package:zpevnik/screens/user/song_sync_screen.dart';
 
 class UserMenuWidget extends StatelessWidget {
   @override

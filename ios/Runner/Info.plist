@@ -58,5 +58,13 @@
 	<false/>
 	<key>io.flutter.embedded_views_preview</key>
 	<true/>
+	<key>NSBonjourServices</key>
+    <array>
+        <string>_proscholy-conn._tcp</string>
+    </array>
+    <key>UIRequiresPersistentWiFi</key>
+    <true/>
+    <key>NSBluetoothAlwaysUsageDescription</key>
+    <string>Bluetooth je potřeba pro sdílené zobrazení.</string>
 </dict>
 </plist>
