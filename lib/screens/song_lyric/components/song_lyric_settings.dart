@@ -6,7 +6,7 @@ import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/settings_provider.dart';
 import 'package:zpevnik/screens/components/bottom_form_sheet.dart';
 import 'package:zpevnik/screens/components/highlightable_button.dart';
-import 'package:zpevnik/screens/components/platform/platform_slider.dart';
+import 'package:zpevnik/platform/components/slider.dart';
 import 'package:zpevnik/screens/song_lyric/components/selector_widget.dart';
 import 'package:zpevnik/theme.dart';
 

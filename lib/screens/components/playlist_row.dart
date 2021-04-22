@@ -10,8 +10,8 @@ import 'package:zpevnik/links.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/providers/playlists_provider.dart';
 import 'package:zpevnik/screens/components/highlightable_row.dart';
-import 'package:zpevnik/screens/components/platform/platform_dialog.dart';
-import 'package:zpevnik/screens/components/platform/platform_popup_menu_button.dart';
+import 'package:zpevnik/platform/components/dialog.dart';
+import 'package:zpevnik/platform/components/popup_menu_button.dart';
 import 'package:zpevnik/screens/playlists/playlist_screen.dart';
 import 'package:zpevnik/theme.dart';
 
