@@ -1,7 +1,7 @@
 import 'package:zpevnik/models/song_lyric.dart';
 
 final _verseRE = RegExp(
-    r'\s*(\d+\.|\(?[BCR]\d?[:.]\)?|@mezihra:|@dohra:|@předehra:|#(?!.*\]))?\s*((?:=\s*(\d\.)|.|\n)*?)\n*(?=$|[^=]?\d\.|\(?[BCR]\d?[:.]\)?|@mezihra:|@dohra:|@předehra:|#(?!.*\]))');
+    r'\s*(\d+\.|\(?[BCR]\d?[:.]\)?|@mezihra:|@dohra:|@předehra:|#(?!.*\]))?\s*((?:=\s*(\d\.)|.|\n)*?)\n*(?=$|[^=]?\d\..|\(?[BCR]\d?[:.]\)?|@mezihra:|@dohra:|@předehra:|#(?!.*\]))');
 final _chordsRE = RegExp(r'\[[^\]]+\]');
 final _placeholderRE = RegExp(r'\[%\]');
 final _firstVerseRE = RegExp(r'1\.(?:.|\n)+?(?=\n+\d\.|\n+\(?[BCR][:.]\)?)', multiLine: true);
