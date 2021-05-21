@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/models/entities/tag.dart';
+import 'package:zpevnik/models/model.dart';
 
 enum TagType {
   liturgyPart,

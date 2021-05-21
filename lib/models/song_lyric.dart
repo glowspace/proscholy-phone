@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/global.dart';
-import 'package:zpevnik/models/entities/external.dart';
-import 'package:zpevnik/models/entities/song_lyric.dart';
+import 'package:zpevnik/models/model.dart';
 import 'package:zpevnik/models/song.dart';
 import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/providers/data_provider.dart';

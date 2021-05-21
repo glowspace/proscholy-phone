@@ -1,5 +1,5 @@
 import 'package:collection/collection.dart';
-import 'package:zpevnik/models/entities/songbook.dart';
+import 'package:zpevnik/models/model.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/data_provider.dart';
 import 'package:zpevnik/utils/database.dart';

@@ -1,4 +1,4 @@
-import 'package:zpevnik/models/entities/song.dart';
+import 'package:zpevnik/models/model.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 
 class Song {

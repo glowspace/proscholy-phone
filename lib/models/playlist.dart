@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:zpevnik/models/entities/playlist.dart';
+import 'package:zpevnik/models/model.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/data_provider.dart';
 import 'package:zpevnik/utils/database.dart';
@@ -14,7 +14,7 @@ class Playlist {
   List<SongLyric> _songLyrics;
 
   Playlist(this._entity) {
-    if (_entity.orderValue >= nextOrder) nextOrder = _entity.orderValue + 1;
+    if (_entity.order >= nextOrder) nextOrder = _entity.order + 1;
     if (_entity.id >= nextId) nextId = _entity.id + 1;
   }
 
@@ -53,8 +53,8 @@ class Playlist {
     Database.shared.updatePlaylist(_entity, ['name'].toSet());
   }
 
-  set orderValue(int value) {
-    _entity.orderValue = value;
+  set order(int value) {
+    _entity.order = value;
 
     Database.shared.updatePlaylist(_entity, ['order_value'].toSet());
   }
