@@ -33,8 +33,6 @@ dependencies:
   flutter_svg: any
   flutter_reorderable_list: any
 
-  firebase_analytics: any
-
   flutter_staggered_grid_view: any
 
   uni_links: any

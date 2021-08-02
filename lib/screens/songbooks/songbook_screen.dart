@@ -43,7 +43,7 @@ class _SongbookScreenState extends State<SongbookScreen> with PlatformStateMixin
   @override
   Widget iOSWidget(BuildContext context) => CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
-          actionsForegroundColor: _textColor,
+          // actionsForegroundColor: _textColor,
           backgroundColor: _navbarColor,
           leading: _leading(context),
           middle: _middle(context),

@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_reorderable_list/flutter_reorderable_list.dart';
+import 'package:flutter_reorderable_list/flutter_reorderable_list.dart' as reorderable;
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/playlists_provider.dart';
 import 'package:zpevnik/screens/components/highlightable_button.dart';
@@ -108,7 +108,7 @@ class _UserScreenState extends State<UserScreen> with PlatformStateMixin {
                               Text('Písně s hvězdičkou', style: AppTheme.of(context).bodyTextStyle),
                             ],
                           )),
-                    ReorderableList(
+                    reorderable.ReorderableList(
                       onReorder: _onReorder,
                       onReorderDone: _onReorderDone,
                       child: ListView.builder(
