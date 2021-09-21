@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/models/model.dart';
+import 'package:zpevnik/models/model.dart' as model;
 
 enum TagType {
   liturgyPart,
@@ -19,23 +17,25 @@ enum TagType {
 extension TagTypeExtension on TagType {
   static TagType fromString(String string) {
     switch (string) {
-      case "LITURGY_PART":
+      case 'LITURGY_PART':
         return TagType.liturgyPart;
-      case "LITURGY_PERIOD":
+      case 'LITURGY_PERIOD':
         return TagType.liturgyPeriod;
-      case "SAINTS":
+      case 'SAINTS':
         return TagType.saints;
-      case "HISTORY_PERIOD":
+      case 'HISTORY_PERIOD':
         return TagType.historyPeriod;
-      case "INSTRUMENTATION":
+      case 'INSTRUMENTATION':
         return TagType.instrumentation;
-      case "GENRE":
+      case 'GENRE':
         return TagType.genre;
-      case "MUSICAL_FORM":
+      case 'MUSICAL_FORM':
         return TagType.musicalForm;
-      case "SACRED_OCCASION":
+      case 'SACRED_OCCASION':
         return TagType.sacredOccasion;
-      case "GENERIC":
+      case 'LANGUAGE':
+        return TagType.language;
+      case 'GENERIC':
         return TagType.generic;
       default:
         return TagType.unknown;
@@ -61,48 +61,43 @@ extension TagTypeExtension on TagType {
   String get description {
     switch (this) {
       case TagType.generic:
-        return "Příležitosti";
+        return 'Příležitosti';
       case TagType.liturgyPart:
-        return "Liturgie - mše svatá";
+        return 'Liturgie - mše svatá';
       case TagType.liturgyPeriod:
-        return "Liturgický rok";
+        return 'Liturgický rok';
       case TagType.saints:
-        return "Ke svatým";
+        return 'Ke svatým';
       case TagType.sacredOccasion:
-        return "Svátosti a pobožnosti";
+        return 'Svátosti a pobožnosti';
       case TagType.language:
-        return "Jazyky";
+        return 'Jazyky';
       default:
-        return "Filtry";
-    }
-  }
-
-  Color get selectedColor {
-    switch (this) {
-      case TagType.liturgyPart:
-        return blue;
-      case TagType.liturgyPeriod:
-        return red;
-      case TagType.saints:
-      case TagType.generic:
-      case TagType.sacredOccasion:
-        return green;
-      case TagType.language:
-        return red;
-      default:
-        return Colors.transparent;
+        return 'Filtry';
     }
   }
 }
 
+// wrapper around Tag db model for easier field access
 class Tag {
-  final TagEntity _entity;
+  final model.Tag entity;
 
-  Tag(this._entity);
+  Tag(this.entity);
 
-  int get id => _entity.id;
+  Tag.clone(Tag tag) : entity = tag.entity;
 
-  String get name => _entity.name;
+  static Future<List<Tag>> get tags async {
+    final tags = await model.Tag().select().orderBy('id').toList();
 
-  TagType get type => TagType.values[_entity.type];
+    return tags.map((entity) => Tag(entity)).toList();
+  }
+
+  int get id => entity.id ?? 0;
+  String get name => entity.name ?? '';
+  TagType get type => TagTypeExtension.fromString(entity.type_enum ?? '');
+
+  bool _isSelected = false;
+  bool get isSelected => _isSelected;
+
+  void toggleIsSelected() => _isSelected = !_isSelected;
 }

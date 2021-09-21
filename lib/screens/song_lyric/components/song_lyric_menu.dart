@@ -1,88 +1,94 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_share/flutter_share.dart';
+import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:zpevnik/links.dart';
-import 'package:zpevnik/models/song_lyric.dart';
-import 'package:zpevnik/providers/playlists_provider.dart';
-import 'package:zpevnik/screens/components/data_container.dart';
-import 'package:zpevnik/screens/components/menu_item.dart';
+import 'package:zpevnik/platform/utils/bottom_sheet.dart';
+import 'package:zpevnik/providers/playlists.dart';
+import 'package:zpevnik/screens/components/collapseable.dart';
+import 'package:zpevnik/screens/components/icon_item.dart';
+import 'package:zpevnik/screens/components/playlists_sheet.dart';
 import 'package:zpevnik/screens/components/popup_menu.dart';
-import 'package:zpevnik/screens/song_lyric/connections_screen.dart';
+import 'package:zpevnik/screens/song_lyric/utils/lyrics_controller.dart';
 import 'package:zpevnik/theme.dart';
 
 class SongLyricMenu extends StatelessWidget {
-  final ValueNotifier<bool> showing;
+  final LyricsController lyricsController;
+  final ValueNotifier<bool> collapsed;
 
-  const SongLyricMenu({Key key, this.showing}) : super(key: key);
+  const SongLyricMenu({Key? key, required this.lyricsController, required this.collapsed}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final songLyric = DataContainer.of<SongLyric>(context).data;
+    return CollapseableWidget(child: _buildMenu(context), collapsed: collapsed);
+  }
+
+  Widget _buildMenu(BuildContext context) {
+    final appTheme = AppTheme.of(context);
+    final songLyric = lyricsController.songLyric;
+
+    final projectionText = lyricsController.isProjectionEnabled ? 'Vypnout' : 'Zapnout';
 
     return PopupMenu(
-      showing: showing,
       border: Border(
-        left: BorderSide(color: AppTheme.of(context).borderColor),
-        bottom: BorderSide(color: AppTheme.of(context).borderColor),
+        left: BorderSide(color: appTheme.borderColor),
+        bottom: BorderSide(color: appTheme.borderColor),
       ),
       children: [
-        MenuItem(
+        IconItem(
           title: 'Přidat do seznamu',
           icon: Icons.playlist_add,
-          onPressed: () {
-            PlaylistsProvider.shared.showPlaylists(context, [songLyric]);
-            showing.value = false;
-          },
+          onPressed: () => _doAndHide(context, () => _showPlaylists(context)),
         ),
-        // MenuItem('Zpěvníky', Icons.import_contacts, null),
-        // if (songLyric.lilypond != null)
-        //   MenuItem(
-        //       title: 'Noty',
-        //       icon: Icons.insert_drive_file,
-        //       onPressed: () {
-        //         Navigator.of(context).push(
-        //           MaterialPageRoute(builder: (context) => MusicNotesScreen(songLyric: songLyric)),
-        //         );
-
-        //         showing.value = false;
-        //       }),
-        MenuItem(
-          title: 'Připojit k zařízením v okolí',
-          icon: Icons.tap_and_play,
-          onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => ConnectionsScreen()));
-            showing.value = false;
-          },
+        // IconItem(
+        //   title: 'Připojit k zařízením v okolí',
+        //   icon: Icons.tap_and_play,
+        //   onPressed: () {
+        //     Navigator.of(context).push(MaterialPageRoute(builder: (context) => ConnectionsScreen()));
+        //     collapsed.value = true;
+        //   },
+        // ),
+        IconItem(
+          title: '$projectionText prezentační mód',
+          icon: Icons.pages,
+          onPressed: () => _doAndHide(context, lyricsController.toggleisProjectionEnabled),
         ),
-        MenuItem(
+        IconItem(
           title: 'Sdílet',
           icon: Icons.share,
-          onPressed: () {
-            FlutterShare.share(
-              title: songLyric.name,
-              linkUrl: '$songUrl/${songLyric.id}/',
-              chooserTitle: songLyric.name,
-            );
-            showing.value = false;
-          },
+          onPressed: () =>
+              _doAndHide(context, () => Share.shareFiles(['$songUrl/${songLyric.id}/'], text: songLyric.name)),
         ),
-        MenuItem(
+        IconItem(
           title: 'Otevřít na webu',
           icon: Icons.language,
-          onPressed: () {
-            launch('$songUrl/${songLyric.id}/');
-            showing.value = false;
-          },
+          onPressed: () => _doAndHide(context, () => launch('$songUrl/${songLyric.id}/')),
         ),
-        MenuItem(
+        IconItem(
           title: 'Nahlásit',
           icon: Icons.warning,
-          onPressed: () {
-            launch('$reportUrl=${songLyric.id}');
-            showing.value = false;
-          },
+          onPressed: () => _doAndHide(context, () => launch('$reportUrl=${songLyric.id}')),
         ),
       ],
+    );
+  }
+
+  void _doAndHide(BuildContext context, Function() func) {
+    func();
+
+    collapsed.value = true;
+  }
+
+  void _showPlaylists(BuildContext context) {
+    final playlistsProvider = context.read<PlaylistsProvider>();
+
+    return showPlatformBottomSheet(
+      context: context,
+      builder: (_) => ChangeNotifierProvider.value(
+        value: playlistsProvider,
+        builder: (context, _) => PlaylistsSheet(selectedSongLyrics: [lyricsController.songLyric]),
+      ),
+      height: 0.67 * MediaQuery.of(context).size.height,
     );
   }
 }

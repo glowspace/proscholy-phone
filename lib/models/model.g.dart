@@ -12,17 +12,16 @@ part of 'model.dart';
 
 //  To use these SqfEntity classes do following:
 //  - import model.dart into where to use
-//  - start typing ex:AuthorEntity.select()... (add a few filters with fluent methods)...(add orderBy/orderBydesc if you want)...
+//  - start typing ex:Author.select()... (add a few filters with fluent methods)...(add orderBy/orderBydesc if you want)...
 //  - and then just put end of filters / or end of only select()  toSingle() / or toList()
 //  - you can select one or return List<yourObject> by your filters and orders
 //  - also you can batch update or batch delete by using delete/update methods instead of tosingle/tolist methods
 //    Enjoy.. Huseyin Tokpunar
 
-// ignore_for_file:
 // BEGIN TABLES
-// AuthorEntity TABLE
-class TableAuthorEntity extends SqfEntityTableBase {
-  TableAuthorEntity() {
+// Author TABLE
+class TableAuthor extends SqfEntityTableBase {
+  TableAuthor() {
     // declare properties of EntityTable
     tableName = 'authors';
     primaryKeyName = 'id';
@@ -32,19 +31,19 @@ class TableAuthorEntity extends SqfEntityTableBase {
 
     // declare fields
     fields = [
-      SqfEntityFieldBase('name', DbType.text, isNotNull: true),
+      SqfEntityFieldBase('name', DbType.text, isUnique: false, isNotNull: true, isIndex: false),
     ];
     super.init();
   }
-  static SqfEntityTableBase _instance;
+  static SqfEntityTableBase? _instance;
   static SqfEntityTableBase get getInstance {
-    return _instance = _instance ?? TableAuthorEntity();
+    return _instance = _instance ?? TableAuthor();
   }
 }
 
-// ExternalEntity TABLE
-class TableExternalEntity extends SqfEntityTableBase {
-  TableExternalEntity() {
+// External TABLE
+class TableExternal extends SqfEntityTableBase {
+  TableExternal() {
     // declare properties of EntityTable
     tableName = 'externals';
     primaryKeyName = 'id';
@@ -54,51 +53,52 @@ class TableExternalEntity extends SqfEntityTableBase {
 
     // declare fields
     fields = [
-      SqfEntityFieldBase('name', DbType.text, isNotNull: true),
-      SqfEntityFieldBase('mediaId', DbType.text, isNotNull: false),
-      SqfEntityFieldBase('mediaType', DbType.text, isNotNull: false),
-      SqfEntityFieldRelationshipBase(
-          TableSongLyricEntity.getInstance, DeleteRule.NO_ACTION,
+      SqfEntityFieldBase('public_name', DbType.text, isUnique: false, isNotNull: true, isIndex: false),
+      SqfEntityFieldBase('media_id', DbType.text, isUnique: false, isNotNull: false, isIndex: false),
+      SqfEntityFieldBase('media_type', DbType.text, isUnique: false, isNotNull: false, isIndex: false),
+      SqfEntityFieldRelationshipBase(TableSongLyric.getInstance, DeleteRule.CASCADE,
           relationType: RelationType.ONE_TO_MANY,
           fieldName: 'song_lyricsId',
-          isNotNull: false),
+          isUnique: false,
+          isNotNull: false,
+          isIndex: false),
     ];
     super.init();
   }
-  static SqfEntityTableBase _instance;
+  static SqfEntityTableBase? _instance;
   static SqfEntityTableBase get getInstance {
-    return _instance = _instance ?? TableExternalEntity();
+    return _instance = _instance ?? TableExternal();
   }
 }
 
-// PlaylistEntity TABLE
-class TablePlaylistEntity extends SqfEntityTableBase {
-  TablePlaylistEntity() {
+// Playlist TABLE
+class TablePlaylist extends SqfEntityTableBase {
+  TablePlaylist() {
     // declare properties of EntityTable
     tableName = 'playlists';
     primaryKeyName = 'id';
-    primaryKeyType = PrimaryKeyType.integer_unique;
+    primaryKeyType = PrimaryKeyType.integer_auto_incremental;
     useSoftDeleting = false;
     // when useSoftDeleting is true, creates a field named 'isDeleted' on the table, and set to '1' this field when item deleted (does not hard delete)
 
     // declare fields
     fields = [
-      SqfEntityFieldBase('name', DbType.text, isNotNull: true),
-      SqfEntityFieldBase('isArchived', DbType.bool,
-          defaultValue: false, isNotNull: true),
-      SqfEntityFieldBase('order', DbType.integer, isNotNull: true),
+      SqfEntityFieldBase('name', DbType.text, isUnique: false, isNotNull: true, isIndex: false),
+      SqfEntityFieldBase('is_archived', DbType.bool,
+          defaultValue: false, isUnique: false, isNotNull: true, isIndex: false),
+      SqfEntityFieldBase('rank', DbType.integer, isUnique: false, isNotNull: true, isIndex: false),
     ];
     super.init();
   }
-  static SqfEntityTableBase _instance;
+  static SqfEntityTableBase? _instance;
   static SqfEntityTableBase get getInstance {
-    return _instance = _instance ?? TablePlaylistEntity();
+    return _instance = _instance ?? TablePlaylist();
   }
 }
 
-// SongEntity TABLE
-class TableSongEntity extends SqfEntityTableBase {
-  TableSongEntity() {
+// Song TABLE
+class TableSong extends SqfEntityTableBase {
+  TableSong() {
     // declare properties of EntityTable
     tableName = 'songs';
     primaryKeyName = 'id';
@@ -108,19 +108,19 @@ class TableSongEntity extends SqfEntityTableBase {
 
     // declare fields
     fields = [
-      SqfEntityFieldBase('name', DbType.text, isNotNull: true),
+      SqfEntityFieldBase('name', DbType.text, isUnique: false, isNotNull: true, isIndex: false),
     ];
     super.init();
   }
-  static SqfEntityTableBase _instance;
+  static SqfEntityTableBase? _instance;
   static SqfEntityTableBase get getInstance {
-    return _instance = _instance ?? TableSongEntity();
+    return _instance = _instance ?? TableSong();
   }
 }
 
-// SongbookEntity TABLE
-class TableSongbookEntity extends SqfEntityTableBase {
-  TableSongbookEntity() {
+// Songbook TABLE
+class TableSongbook extends SqfEntityTableBase {
+  TableSongbook() {
     // declare properties of EntityTable
     tableName = 'songbooks';
     primaryKeyName = 'id';
@@ -130,25 +130,25 @@ class TableSongbookEntity extends SqfEntityTableBase {
 
     // declare fields
     fields = [
-      SqfEntityFieldBase('name', DbType.text, isNotNull: true),
-      SqfEntityFieldBase('shortcut', DbType.text, isNotNull: true),
-      SqfEntityFieldBase('color', DbType.text, isNotNull: false),
-      SqfEntityFieldBase('colorText', DbType.text, isNotNull: false),
-      SqfEntityFieldBase('isPrivate', DbType.bool, isNotNull: true),
-      SqfEntityFieldBase('isPinned', DbType.bool,
-          defaultValue: false, isNotNull: true),
+      SqfEntityFieldBase('name', DbType.text, isUnique: false, isNotNull: true, isIndex: false),
+      SqfEntityFieldBase('shortcut', DbType.text, isUnique: false, isNotNull: false, isIndex: false),
+      SqfEntityFieldBase('color', DbType.text, isUnique: false, isNotNull: false, isIndex: false),
+      SqfEntityFieldBase('color_text', DbType.text, isUnique: false, isNotNull: false, isIndex: false),
+      SqfEntityFieldBase('is_private', DbType.bool, isUnique: false, isNotNull: true, isIndex: false),
+      SqfEntityFieldBase('is_pinned', DbType.bool,
+          defaultValue: false, isUnique: false, isNotNull: true, isIndex: false),
     ];
     super.init();
   }
-  static SqfEntityTableBase _instance;
+  static SqfEntityTableBase? _instance;
   static SqfEntityTableBase get getInstance {
-    return _instance = _instance ?? TableSongbookEntity();
+    return _instance = _instance ?? TableSongbook();
   }
 }
 
-// SongbookRecordEntity TABLE
-class TableSongbookRecordEntity extends SqfEntityTableBase {
-  TableSongbookRecordEntity() {
+// SongbookRecord TABLE
+class TableSongbookRecord extends SqfEntityTableBase {
+  TableSongbookRecord() {
     // declare properties of EntityTable
     tableName = 'songbook_records';
     primaryKeyName = 'id';
@@ -158,29 +158,31 @@ class TableSongbookRecordEntity extends SqfEntityTableBase {
 
     // declare fields
     fields = [
-      SqfEntityFieldBase('number', DbType.text, isNotNull: true),
-      SqfEntityFieldRelationshipBase(
-          TableSongbookEntity.getInstance, DeleteRule.NO_ACTION,
+      SqfEntityFieldBase('number', DbType.text, isUnique: false, isNotNull: true, isIndex: false),
+      SqfEntityFieldRelationshipBase(TableSongbook.getInstance, DeleteRule.CASCADE,
           relationType: RelationType.ONE_TO_MANY,
           fieldName: 'songbooksId',
-          isNotNull: false),
-      SqfEntityFieldRelationshipBase(
-          TableSongLyricEntity.getInstance, DeleteRule.NO_ACTION,
+          isUnique: false,
+          isNotNull: false,
+          isIndex: false),
+      SqfEntityFieldRelationshipBase(TableSongLyric.getInstance, DeleteRule.CASCADE,
           relationType: RelationType.ONE_TO_MANY,
           fieldName: 'song_lyricsId',
-          isNotNull: false),
+          isUnique: false,
+          isNotNull: false,
+          isIndex: false),
     ];
     super.init();
   }
-  static SqfEntityTableBase _instance;
+  static SqfEntityTableBase? _instance;
   static SqfEntityTableBase get getInstance {
-    return _instance = _instance ?? TableSongbookRecordEntity();
+    return _instance = _instance ?? TableSongbookRecord();
   }
 }
 
-// SongLyricEntity TABLE
-class TableSongLyricEntity extends SqfEntityTableBase {
-  TableSongLyricEntity() {
+// SongLyric TABLE
+class TableSongLyric extends SqfEntityTableBase {
+  TableSongLyric() {
     // declare properties of EntityTable
     tableName = 'song_lyrics';
     primaryKeyName = 'id';
@@ -190,34 +192,36 @@ class TableSongLyricEntity extends SqfEntityTableBase {
 
     // declare fields
     fields = [
-      SqfEntityFieldBase('name', DbType.text, isNotNull: true),
-      SqfEntityFieldBase('secondaryName1', DbType.text, isNotNull: false),
-      SqfEntityFieldBase('secondaryName2', DbType.text, isNotNull: false),
-      SqfEntityFieldBase('lyrics', DbType.text, isNotNull: false),
-      SqfEntityFieldBase('language', DbType.text, isNotNull: false),
-      SqfEntityFieldBase('type', DbType.integer, isNotNull: false),
-      SqfEntityFieldBase('lilypond', DbType.text, isNotNull: false),
-      SqfEntityFieldBase('favoriteOrder', DbType.integer, isNotNull: false),
-      SqfEntityFieldBase('transposition', DbType.integer, isNotNull: false),
-      SqfEntityFieldBase('showChords', DbType.bool, isNotNull: false),
-      SqfEntityFieldBase('accidentals', DbType.integer, isNotNull: false),
-      SqfEntityFieldRelationshipBase(
-          TableSongEntity.getInstance, DeleteRule.NO_ACTION,
+      SqfEntityFieldBase('name', DbType.text, isUnique: false, isNotNull: true, isIndex: false),
+      SqfEntityFieldBase('secondary_name_1', DbType.text, isUnique: false, isNotNull: false, isIndex: false),
+      SqfEntityFieldBase('secondary_name_2', DbType.text, isUnique: false, isNotNull: false, isIndex: false),
+      SqfEntityFieldBase('lyrics', DbType.text, isUnique: false, isNotNull: false, isIndex: false),
+      SqfEntityFieldBase('lang_string', DbType.text, isUnique: false, isNotNull: false, isIndex: false),
+      SqfEntityFieldBase('type_enum', DbType.text, isUnique: false, isNotNull: false, isIndex: false),
+      SqfEntityFieldBase('lilypond_svg', DbType.text, isUnique: false, isNotNull: false, isIndex: false),
+      SqfEntityFieldBase('favorite_rank', DbType.integer, isUnique: false, isNotNull: false, isIndex: false),
+      SqfEntityFieldBase('transposition', DbType.integer,
+          defaultValue: 0, isUnique: false, isNotNull: false, isIndex: false),
+      SqfEntityFieldBase('show_chords', DbType.bool, isUnique: false, isNotNull: false, isIndex: false),
+      SqfEntityFieldBase('accidentals', DbType.integer, isUnique: false, isNotNull: false, isIndex: false),
+      SqfEntityFieldRelationshipBase(TableSong.getInstance, DeleteRule.CASCADE,
           relationType: RelationType.ONE_TO_MANY,
           fieldName: 'songsId',
-          isNotNull: false),
+          isUnique: false,
+          isNotNull: false,
+          isIndex: false),
     ];
     super.init();
   }
-  static SqfEntityTableBase _instance;
+  static SqfEntityTableBase? _instance;
   static SqfEntityTableBase get getInstance {
-    return _instance = _instance ?? TableSongLyricEntity();
+    return _instance = _instance ?? TableSongLyric();
   }
 }
 
-// TagEntity TABLE
-class TableTagEntity extends SqfEntityTableBase {
-  TableTagEntity() {
+// Tag TABLE
+class TableTag extends SqfEntityTableBase {
+  TableTag() {
     // declare properties of EntityTable
     tableName = 'tags';
     primaryKeyName = 'id';
@@ -227,14 +231,14 @@ class TableTagEntity extends SqfEntityTableBase {
 
     // declare fields
     fields = [
-      SqfEntityFieldBase('name', DbType.text, isNotNull: true),
-      SqfEntityFieldBase('type', DbType.integer, isNotNull: true),
+      SqfEntityFieldBase('name', DbType.text, isUnique: false, isNotNull: true, isIndex: false),
+      SqfEntityFieldBase('type_enum', DbType.text, isUnique: false, isNotNull: true, isIndex: false),
     ];
     super.init();
   }
-  static SqfEntityTableBase _instance;
+  static SqfEntityTableBase? _instance;
   static SqfEntityTableBase get getInstance {
-    return _instance = _instance ?? TableTagEntity();
+    return _instance = _instance ?? TableTag();
   }
 }
 
@@ -245,28 +249,19 @@ class TableExternalsAuthors extends SqfEntityTableBase {
     tableName = 'externalsAuthors';
     relationType = RelationType.MANY_TO_MANY;
     primaryKeyName = '';
-    primaryKeyType = null;
     useSoftDeleting = false;
     // when useSoftDeleting is true, creates a field named 'isDeleted' on the table, and set to '1' this field when item deleted (does not hard delete)
 
     // declare fields
     fields = [
-      SqfEntityFieldRelationshipBase(
-          TableExternalEntity.getInstance, DeleteRule.NO_ACTION,
-          relationType: RelationType.ONE_TO_MANY,
-          fieldName: 'externalsId',
-          isPrimaryKeyField: true,
-          isNotNull: false),
-      SqfEntityFieldRelationshipBase(
-          TableAuthorEntity.getInstance, DeleteRule.NO_ACTION,
-          relationType: RelationType.ONE_TO_MANY,
-          fieldName: 'authorsId',
-          isPrimaryKeyField: true,
-          isNotNull: false),
+      SqfEntityFieldRelationshipBase(TableExternal.getInstance, DeleteRule.CASCADE,
+          relationType: RelationType.ONE_TO_MANY, fieldName: 'externalsId', isPrimaryKeyField: true),
+      SqfEntityFieldRelationshipBase(TableAuthor.getInstance, DeleteRule.CASCADE,
+          relationType: RelationType.ONE_TO_MANY, fieldName: 'authorsId', isPrimaryKeyField: true),
     ];
     super.init();
   }
-  static SqfEntityTableBase _instance;
+  static SqfEntityTableBase? _instance;
   static SqfEntityTableBase get getInstance {
     return _instance = _instance ?? TableExternalsAuthors();
   }
@@ -279,28 +274,19 @@ class TableSong_lyricsAuthors extends SqfEntityTableBase {
     tableName = 'song_lyricsAuthors';
     relationType = RelationType.MANY_TO_MANY;
     primaryKeyName = '';
-    primaryKeyType = null;
     useSoftDeleting = false;
     // when useSoftDeleting is true, creates a field named 'isDeleted' on the table, and set to '1' this field when item deleted (does not hard delete)
 
     // declare fields
     fields = [
-      SqfEntityFieldRelationshipBase(
-          TableSongLyricEntity.getInstance, DeleteRule.NO_ACTION,
-          relationType: RelationType.ONE_TO_MANY,
-          fieldName: 'song_lyricsId',
-          isPrimaryKeyField: true,
-          isNotNull: false),
-      SqfEntityFieldRelationshipBase(
-          TableAuthorEntity.getInstance, DeleteRule.NO_ACTION,
-          relationType: RelationType.ONE_TO_MANY,
-          fieldName: 'authorsId',
-          isPrimaryKeyField: true,
-          isNotNull: false),
+      SqfEntityFieldRelationshipBase(TableSongLyric.getInstance, DeleteRule.CASCADE,
+          relationType: RelationType.ONE_TO_MANY, fieldName: 'song_lyricsId', isPrimaryKeyField: true),
+      SqfEntityFieldRelationshipBase(TableAuthor.getInstance, DeleteRule.CASCADE,
+          relationType: RelationType.ONE_TO_MANY, fieldName: 'authorsId', isPrimaryKeyField: true),
     ];
     super.init();
   }
-  static SqfEntityTableBase _instance;
+  static SqfEntityTableBase? _instance;
   static SqfEntityTableBase get getInstance {
     return _instance = _instance ?? TableSong_lyricsAuthors();
   }
@@ -313,28 +299,19 @@ class TableSong_lyricsPlaylists extends SqfEntityTableBase {
     tableName = 'song_lyricsPlaylists';
     relationType = RelationType.MANY_TO_MANY;
     primaryKeyName = '';
-    primaryKeyType = null;
     useSoftDeleting = false;
     // when useSoftDeleting is true, creates a field named 'isDeleted' on the table, and set to '1' this field when item deleted (does not hard delete)
 
     // declare fields
     fields = [
-      SqfEntityFieldRelationshipBase(
-          TableSongLyricEntity.getInstance, DeleteRule.NO_ACTION,
-          relationType: RelationType.ONE_TO_MANY,
-          fieldName: 'song_lyricsId',
-          isPrimaryKeyField: true,
-          isNotNull: false),
-      SqfEntityFieldRelationshipBase(
-          TablePlaylistEntity.getInstance, DeleteRule.NO_ACTION,
-          relationType: RelationType.ONE_TO_MANY,
-          fieldName: 'playlistsId',
-          isPrimaryKeyField: true,
-          isNotNull: false),
+      SqfEntityFieldRelationshipBase(TableSongLyric.getInstance, DeleteRule.CASCADE,
+          relationType: RelationType.ONE_TO_MANY, fieldName: 'song_lyricsId', isPrimaryKeyField: true),
+      SqfEntityFieldRelationshipBase(TablePlaylist.getInstance, DeleteRule.CASCADE,
+          relationType: RelationType.ONE_TO_MANY, fieldName: 'playlistsId', isPrimaryKeyField: true),
     ];
     super.init();
   }
-  static SqfEntityTableBase _instance;
+  static SqfEntityTableBase? _instance;
   static SqfEntityTableBase get getInstance {
     return _instance = _instance ?? TableSong_lyricsPlaylists();
   }
@@ -347,28 +324,19 @@ class TableSong_lyricsTags extends SqfEntityTableBase {
     tableName = 'song_lyricsTags';
     relationType = RelationType.MANY_TO_MANY;
     primaryKeyName = '';
-    primaryKeyType = null;
     useSoftDeleting = false;
     // when useSoftDeleting is true, creates a field named 'isDeleted' on the table, and set to '1' this field when item deleted (does not hard delete)
 
     // declare fields
     fields = [
-      SqfEntityFieldRelationshipBase(
-          TableSongLyricEntity.getInstance, DeleteRule.NO_ACTION,
-          relationType: RelationType.ONE_TO_MANY,
-          fieldName: 'song_lyricsId',
-          isPrimaryKeyField: true,
-          isNotNull: false),
-      SqfEntityFieldRelationshipBase(
-          TableTagEntity.getInstance, DeleteRule.NO_ACTION,
-          relationType: RelationType.ONE_TO_MANY,
-          fieldName: 'tagsId',
-          isPrimaryKeyField: true,
-          isNotNull: false),
+      SqfEntityFieldRelationshipBase(TableSongLyric.getInstance, DeleteRule.CASCADE,
+          relationType: RelationType.ONE_TO_MANY, fieldName: 'song_lyricsId', isPrimaryKeyField: true),
+      SqfEntityFieldRelationshipBase(TableTag.getInstance, DeleteRule.CASCADE,
+          relationType: RelationType.ONE_TO_MANY, fieldName: 'tagsId', isPrimaryKeyField: true),
     ];
     super.init();
   }
-  static SqfEntityTableBase _instance;
+  static SqfEntityTableBase? _instance;
   static SqfEntityTableBase get getInstance {
     return _instance = _instance ?? TableSong_lyricsTags();
   }
@@ -385,14 +353,18 @@ class Model extends SqfEntityModelProvider {
     password = model.password;
     dbVersion = model.dbVersion;
     databaseTables = [
-      TableAuthorEntity.getInstance,
-      TableExternalEntity.getInstance,
-      TablePlaylistEntity.getInstance,
-      TableSongEntity.getInstance,
-      TableSongbookEntity.getInstance,
-      TableSongbookRecordEntity.getInstance,
-      TableSongLyricEntity.getInstance,
-      TableTagEntity.getInstance,
+      TableAuthor.getInstance,
+      TableExternal.getInstance,
+      TablePlaylist.getInstance,
+      TableSong.getInstance,
+      TableSongbook.getInstance,
+      TableSongbookRecord.getInstance,
+      TableSongLyric.getInstance,
+      TableTag.getInstance,
+      TableExternalsAuthors.getInstance,
+      TableSong_lyricsAuthors.getInstance,
+      TableSong_lyricsPlaylists.getInstance,
+      TableSong_lyricsTags.getInstance,
     ];
 
     bundledDatabasePath = model
@@ -407,78 +379,72 @@ class Model extends SqfEntityModelProvider {
 // END DATABASE MODEL
 
 // BEGIN ENTITIES
-// region AuthorEntity
-class AuthorEntity {
-  AuthorEntity({this.id, this.name}) {
+// region Author
+class Author {
+  Author({this.id, this.name}) {
     _setDefaultValues();
   }
-  AuthorEntity.withFields(this.id, this.name) {
+  Author.withFields(this.id, this.name) {
     _setDefaultValues();
   }
-  AuthorEntity.withId(this.id, this.name) {
+  Author.withId(this.id, this.name) {
     _setDefaultValues();
   }
-  AuthorEntity.fromMap(Map<String, dynamic> o, {bool setDefaultValues = true}) {
+  // fromMap v2.0
+  Author.fromMap(Map<String, dynamic> o, {bool setDefaultValues = true}) {
     if (setDefaultValues) {
       _setDefaultValues();
     }
     id = int.tryParse(o['id'].toString());
     if (o['name'] != null) {
-      name = o['name'] as String;
+      name = o['name'].toString();
     }
 
     isSaved = true;
   }
-  // FIELDS (AuthorEntity)
-  int id;
-  String name;
-  bool isSaved;
-  BoolResult saveResult;
-  // end FIELDS (AuthorEntity)
+  // FIELDS (Author)
+  int? id;
+  String? name;
+  bool? isSaved;
+  BoolResult? saveResult;
+  // end FIELDS (Author)
 
-// COLLECTIONS & VIRTUALS (AuthorEntity)
+// COLLECTIONS & VIRTUALS (Author)
   ///(RelationType.MANY_TO_MANY) (externalsAuthors) to load children of items to this field, use preload parameter. Ex: toList(preload:true) or toSingle(preload:true) or getById(preload:true)
-  /// You can also specify this object into certain preload fields. Ex: toList(preload:true, preloadFields:['plExternalEntities', 'plField2'..]) or so on..
-  List<ExternalEntity> plExternalEntities;
+  /// You can also specify this object into certain preload fields!. Ex: toList(preload:true, preloadFields:['plExternals', 'plField2'..]) or so on..
+  List<External>? plExternals;
 
-  /// get ExternalEntity(s) filtered by externalsId IN externalsAuthors
-  ExternalEntityFilterBuilder getExternalEntities(
-      {List<String> columnsToSelect, bool getIsDeleted}) {
-    return ExternalEntity()
+  /// get External(s) filtered by externalsId IN externalsAuthors
+  ExternalFilterBuilder? getExternals({List<String>? columnsToSelect, bool? getIsDeleted}) {
+    return External()
         .select(columnsToSelect: columnsToSelect, getIsDeleted: getIsDeleted)
-        .where(
-            'id IN (SELECT externalsId FROM externalsAuthors WHERE authorsId=?)',
-            parameterValue: id)
+        .where('id IN (SELECT externalsId FROM externalsAuthors WHERE authorsId=?)', parameterValue: id)
         .and;
   }
 
   ///(RelationType.MANY_TO_MANY) (song_lyricsAuthors) to load children of items to this field, use preload parameter. Ex: toList(preload:true) or toSingle(preload:true) or getById(preload:true)
-  /// You can also specify this object into certain preload fields. Ex: toList(preload:true, preloadFields:['plSongLyricEntities', 'plField2'..]) or so on..
-  List<SongLyricEntity> plSongLyricEntities;
+  /// You can also specify this object into certain preload fields!. Ex: toList(preload:true, preloadFields:['plSongLyrics', 'plField2'..]) or so on..
+  List<SongLyric>? plSongLyrics;
 
-  /// get SongLyricEntity(s) filtered by song_lyricsId IN song_lyricsAuthors
-  SongLyricEntityFilterBuilder getSongLyricEntities(
-      {List<String> columnsToSelect, bool getIsDeleted}) {
-    return SongLyricEntity()
+  /// get SongLyric(s) filtered by song_lyricsId IN song_lyricsAuthors
+  SongLyricFilterBuilder? getSongLyrics({List<String>? columnsToSelect, bool? getIsDeleted}) {
+    return SongLyric()
         .select(columnsToSelect: columnsToSelect, getIsDeleted: getIsDeleted)
-        .where(
-            'id IN (SELECT song_lyricsId FROM song_lyricsAuthors WHERE authorsId=?)',
-            parameterValue: id)
+        .where('id IN (SELECT song_lyricsId FROM song_lyricsAuthors WHERE authorsId=?)', parameterValue: id)
         .and;
   }
 
-// END COLLECTIONS & VIRTUALS (AuthorEntity)
+// END COLLECTIONS & VIRTUALS (Author)
 
   static const bool _softDeleteActivated = false;
-  AuthorEntityManager __mnAuthorEntity;
+  AuthorManager? __mnAuthor;
 
-  AuthorEntityManager get _mnAuthorEntity {
-    return __mnAuthorEntity = __mnAuthorEntity ?? AuthorEntityManager();
+  AuthorManager get _mnAuthor {
+    return __mnAuthor = __mnAuthor ?? AuthorManager();
   }
 
   // METHODS
-  Map<String, dynamic> toMap(
-      {bool forQuery = false, bool forJson = false, bool forView = false}) {
+  Map<String, dynamic> toMap({bool forQuery = false, bool forJson = false, bool forView = false}) {
     final map = <String, dynamic>{};
     if (id != null) {
       map['id'] = id;
@@ -491,9 +457,7 @@ class AuthorEntity {
   }
 
   Future<Map<String, dynamic>> toMapWithChildren(
-      [bool forQuery = false,
-      bool forJson = false,
-      bool forView = false]) async {
+      [bool forQuery = false, bool forJson = false, bool forView = false]) async {
     final map = <String, dynamic>{};
     if (id != null) {
       map['id'] = id;
@@ -502,24 +466,24 @@ class AuthorEntity {
       map['name'] = name;
     }
 
-// COLLECTIONS (AuthorEntity)
+// COLLECTIONS (Author)
     if (!forQuery) {
-      map['ExternalEntities'] = await getExternalEntities().toMapList();
+      map['Externals'] = await getExternals()!.toMapList();
     }
     if (!forQuery) {
-      map['SongLyricEntities'] = await getSongLyricEntities().toMapList();
+      map['SongLyrics'] = await getSongLyrics()!.toMapList();
     }
-// END COLLECTIONS (AuthorEntity)
+// END COLLECTIONS (Author)
 
     return map;
   }
 
-  /// This method returns Json String [AuthorEntity]
+  /// This method returns Json String [Author]
   String toJson() {
     return json.encode(toMap(forJson: true));
   }
 
-  /// This method returns Json String [AuthorEntity]
+  /// This method returns Json String [Author]
   Future<String> toJsonWithChilds() async {
     return json.encode(await toMapWithChildren(false, true));
   }
@@ -532,72 +496,57 @@ class AuthorEntity {
     return [id, name];
   }
 
-  static Future<List<AuthorEntity>> fromWebUrl(String url,
-      {Map<String, String> headers}) async {
+  static Future<List<Author>?> fromWebUrl(Uri uri, {Map<String, String>? headers}) async {
     try {
-      final response = await http.get(url, headers: headers);
+      final response = await http.get(uri, headers: headers);
       return await fromJson(response.body);
     } catch (e) {
-      print(
-          'SQFENTITY ERROR AuthorEntity.fromWebUrl: ErrorMessage: ${e.toString()}');
+      print('SQFENTITY ERROR Author.fromWebUrl: ErrorMessage: ${e.toString()}');
       return null;
     }
   }
 
-  Future<http.Response> postUrl(String url, {Map<String, String> headers}) {
-    return http.post(url, headers: headers, body: toJson());
+  Future<http.Response> postUrl(Uri uri, {Map<String, String>? headers}) {
+    return http.post(uri, headers: headers, body: toJson());
   }
 
-  static Future<List<AuthorEntity>> fromJson(String jsonBody) async {
+  static Future<List<Author>> fromJson(String jsonBody) async {
     final Iterable list = await json.decode(jsonBody) as Iterable;
-    var objList = <AuthorEntity>[];
+    var objList = <Author>[];
     try {
-      objList = list
-          .map((authorentity) =>
-              AuthorEntity.fromMap(authorentity as Map<String, dynamic>))
-          .toList();
+      objList = list.map((author) => Author.fromMap(author as Map<String, dynamic>)).toList();
     } catch (e) {
-      print(
-          'SQFENTITY ERROR AuthorEntity.fromJson: ErrorMessage: ${e.toString()}');
+      print('SQFENTITY ERROR Author.fromJson: ErrorMessage: ${e.toString()}');
     }
     return objList;
   }
 
-  static Future<List<AuthorEntity>> fromMapList(List<dynamic> data,
+  static Future<List<Author>> fromMapList(List<dynamic> data,
       {bool preload = false,
-      List<String> preloadFields,
+      List<String>? preloadFields,
       bool loadParents = false,
-      List<String> loadedFields,
+      List<String>? loadedFields,
       bool setDefaultValues = true}) async {
-    final List<AuthorEntity> objList = <AuthorEntity>[];
+    final List<Author> objList = <Author>[];
     loadedFields = loadedFields ?? [];
     for (final map in data) {
-      final obj = AuthorEntity.fromMap(map as Map<String, dynamic>,
-          setDefaultValues: setDefaultValues);
+      final obj = Author.fromMap(map as Map<String, dynamic>, setDefaultValues: setDefaultValues);
       // final List<String> _loadedFields = List<String>.from(loadedFields);
 
       // RELATIONSHIPS PRELOAD CHILD
       if (preload) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedFields.contains('authors.plExternalEntities') && */ (preloadFields ==
-                null ||
-            preloadFields.contains('plExternalEntities'))) {
-          /*_loadedFields.add('authors.plExternalEntities'); */
-          obj.plExternalEntities = obj.plExternalEntities ??
-              await obj.getExternalEntities().toList(
-                  preload: preload,
-                  preloadFields: preloadFields,
-                  loadParents: false /*, loadedFields:_loadedFields*/);
+        if (/*!_loadedfields!.contains('authors.plExternals') && */ (preloadFields == null ||
+            preloadFields.contains('plExternals'))) {
+          /*_loadedfields!.add('authors.plExternals'); */ obj.plExternals = obj.plExternals ??
+              await obj.getExternals()!.toList(
+                  preload: preload, preloadFields: preloadFields, loadParents: false /*, loadedFields:_loadedFields*/);
         }
-        if (/*!_loadedFields.contains('authors.plSongLyricEntities') && */ (preloadFields ==
-                null ||
-            preloadFields.contains('plSongLyricEntities'))) {
-          /*_loadedFields.add('authors.plSongLyricEntities'); */
-          obj.plSongLyricEntities = obj.plSongLyricEntities ??
-              await obj.getSongLyricEntities().toList(
-                  preload: preload,
-                  preloadFields: preloadFields,
-                  loadParents: false /*, loadedFields:_loadedFields*/);
+        if (/*!_loadedfields!.contains('authors.plSongLyrics') && */ (preloadFields == null ||
+            preloadFields.contains('plSongLyrics'))) {
+          /*_loadedfields!.add('authors.plSongLyrics'); */ obj.plSongLyrics = obj.plSongLyrics ??
+              await obj.getSongLyrics()!.toList(
+                  preload: preload, preloadFields: preloadFields, loadParents: false /*, loadedFields:_loadedFields*/);
         }
       } // END RELATIONSHIPS PRELOAD CHILD
 
@@ -606,9 +555,9 @@ class AuthorEntity {
     return objList;
   }
 
-  /// returns AuthorEntity by ID if exist, otherwise returns null
+  /// returns Author by ID if exist, otherwise returns null
   ///
-  /// Primary Keys: int id
+  /// Primary Keys: int? id
   ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
   ///
@@ -621,43 +570,32 @@ class AuthorEntity {
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
   ///
-  /// <returns>returns AuthorEntity if exist, otherwise returns null
-  Future<AuthorEntity> getById(int id,
-      {bool preload = false,
-      List<String> preloadFields,
-      bool loadParents = false,
-      List<String> loadedFields}) async {
+  /// <returns>returns Author if exist, otherwise returns null
+  Future<Author?> getById(int? id,
+      {bool preload = false, List<String>? preloadFields, bool loadParents = false, List<String>? loadedFields}) async {
     if (id == null) {
       return null;
     }
-    AuthorEntity obj;
-    final data = await _mnAuthorEntity.getById([id]);
+    Author? obj;
+    final data = await _mnAuthor.getById([id]);
     if (data.length != 0) {
-      obj = AuthorEntity.fromMap(data[0] as Map<String, dynamic>);
+      obj = Author.fromMap(data[0] as Map<String, dynamic>);
       // final List<String> _loadedFields = loadedFields ?? [];
 
       // RELATIONSHIPS PRELOAD CHILD
       if (preload) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedFields.contains('authors.plExternalEntities') && */ (preloadFields ==
-                null ||
-            preloadFields.contains('plExternalEntities'))) {
-          /*_loadedFields.add('authors.plExternalEntities'); */
-          obj.plExternalEntities = obj.plExternalEntities ??
-              await obj.getExternalEntities().toList(
-                  preload: preload,
-                  preloadFields: preloadFields,
-                  loadParents: false /*, loadedFields:_loadedFields*/);
+        if (/*!_loadedfields!.contains('authors.plExternals') && */ (preloadFields == null ||
+            preloadFields.contains('plExternals'))) {
+          /*_loadedfields!.add('authors.plExternals'); */ obj.plExternals = obj.plExternals ??
+              await obj.getExternals()!.toList(
+                  preload: preload, preloadFields: preloadFields, loadParents: false /*, loadedFields:_loadedFields*/);
         }
-        if (/*!_loadedFields.contains('authors.plSongLyricEntities') && */ (preloadFields ==
-                null ||
-            preloadFields.contains('plSongLyricEntities'))) {
-          /*_loadedFields.add('authors.plSongLyricEntities'); */
-          obj.plSongLyricEntities = obj.plSongLyricEntities ??
-              await obj.getSongLyricEntities().toList(
-                  preload: preload,
-                  preloadFields: preloadFields,
-                  loadParents: false /*, loadedFields:_loadedFields*/);
+        if (/*!_loadedfields!.contains('authors.plSongLyrics') && */ (preloadFields == null ||
+            preloadFields.contains('plSongLyrics'))) {
+          /*_loadedfields!.add('authors.plSongLyrics'); */ obj.plSongLyrics = obj.plSongLyrics ??
+              await obj.getSongLyrics()!.toList(
+                  preload: preload, preloadFields: preloadFields, loadParents: false /*, loadedFields:_loadedFields*/);
         }
       } // END RELATIONSHIPS PRELOAD CHILD
 
@@ -667,102 +605,89 @@ class AuthorEntity {
     return obj;
   }
 
-  /// Saves the (AuthorEntity) object. If the id field is null, saves as a new record and returns new id, if id is not null then updates record
+  /// Saves the (Author) object. If the id field is null, saves as a new record and returns new id, if id is not null then updates record
 
   /// <returns>Returns id
-  Future<int> save() async {
-    if (id == null || id == 0 || !isSaved) {
-      await _mnAuthorEntity.insert(this);
-      if (saveResult != null && saveResult.success) {
+  Future<int?> save() async {
+    if (id == null || id == 0 || !isSaved!) {
+      await _mnAuthor.insert(this);
+      if (saveResult!.success) {
         isSaved = true;
       }
     } else {
       // id= await _upsert(); // removed in sqfentity_gen 1.3.0+6
-      await _mnAuthorEntity.update(this);
+      await _mnAuthor.update(this);
     }
 
     return id;
   }
 
-  /// saveAll method saves the sent List<AuthorEntity> as a bulk in one transaction
+  /// saveAll method saves the sent List<Author> as a bulk in one transaction
   ///
   /// Returns a <List<BoolResult>>
-  static Future<List<dynamic>> saveAll(
-      List<AuthorEntity> authorentities) async {
-    // final results = _mnAuthorEntity.saveAll('INSERT OR REPLACE INTO authors (id,name)  VALUES (?,?)',authorentities);
+  static Future<List<dynamic>> saveAll(List<Author> authors) async {
+    // final results = _mnAuthor.saveAll('INSERT OR REPLACE INTO authors (id,name)  VALUES (?,?)',authors);
     // return results; removed in sqfentity_gen 1.3.0+6
     await Model().batchStart();
-    for (final obj in authorentities) {
+    for (final obj in authors) {
       await obj.save();
     }
     //    return Model().batchCommit();
     final result = await Model().batchCommit();
 
-    return result;
+    return result!;
   }
 
   /// Updates if the record exists, otherwise adds a new row
 
   /// <returns>Returns id
-  Future<int> upsert() async {
+
+  Future<int?> upsert() async {
     try {
-      if (await _mnAuthorEntity.rawInsert(
-              'INSERT OR REPLACE INTO authors (id,name)  VALUES (?,?)',
-              [id, name]) ==
-          1) {
-        saveResult = BoolResult(
-            success: true,
-            successMessage: 'AuthorEntity id=$id updated successfully');
+      final result = await _mnAuthor.rawInsert('INSERT OR REPLACE INTO authors (id,name)  VALUES (?,?)', [id, name]);
+      if (result! > 0) {
+        saveResult = BoolResult(success: true, successMessage: 'Author id=$id updated successfully');
       } else {
-        saveResult = BoolResult(
-            success: false, errorMessage: 'AuthorEntity id=$id did not update');
+        saveResult = BoolResult(success: false, errorMessage: 'Author id=$id did not update');
       }
       return id;
     } catch (e) {
-      saveResult = BoolResult(
-          success: false,
-          errorMessage: 'AuthorEntity Save failed. Error: ${e.toString()}');
-      return 0;
+      saveResult = BoolResult(success: false, errorMessage: 'Author Save failed. Error: ${e.toString()}');
+      return null;
     }
   }
 
-  /// inserts or replaces the sent List<<AuthorEntity>> as a bulk in one transaction.
+  /// inserts or replaces the sent List<<Author>> as a bulk in one transaction.
   ///
   /// upsertAll() method is faster then saveAll() method. upsertAll() should be used when you are sure that the primary key is greater than zero
   ///
   /// Returns a BoolCommitResult
-  Future<BoolCommitResult> upsertAll(List<AuthorEntity> authorentities) async {
-    final results = await _mnAuthorEntity.rawInsertAll(
-        'INSERT OR REPLACE INTO authors (id,name)  VALUES (?,?)',
-        authorentities);
+  Future<BoolCommitResult> upsertAll(List<Author> authors) async {
+    final results = await _mnAuthor.rawInsertAll('INSERT OR REPLACE INTO authors (id,name)  VALUES (?,?)', authors);
     return results;
   }
 
-  /// Deletes AuthorEntity
+  /// Deletes Author
 
   /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
+
   Future<BoolResult> delete([bool hardDelete = false]) async {
-    print('SQFENTITIY: delete AuthorEntity invoked (id=$id)');
+    print('SQFENTITIY: delete Author invoked (id=$id)');
     if (!_softDeleteActivated || hardDelete) {
-      return _mnAuthorEntity
-          .delete(QueryParams(whereString: 'id=?', whereArguments: [id]));
+      return _mnAuthor.delete(QueryParams(whereString: 'id=?', whereArguments: [id]));
     } else {
-      return _mnAuthorEntity.updateBatch(
-          QueryParams(whereString: 'id=?', whereArguments: [id]),
-          {'isDeleted': 1});
+      return _mnAuthor.updateBatch(QueryParams(whereString: 'id=?', whereArguments: [id]), {'isDeleted': 1});
     }
   }
 
-  AuthorEntityFilterBuilder select(
-      {List<String> columnsToSelect, bool getIsDeleted}) {
-    return AuthorEntityFilterBuilder(this)
+  AuthorFilterBuilder select({List<String>? columnsToSelect, bool? getIsDeleted}) {
+    return AuthorFilterBuilder(this)
       .._getIsDeleted = getIsDeleted == true
       ..qparams.selectColumns = columnsToSelect;
   }
 
-  AuthorEntityFilterBuilder distinct(
-      {List<String> columnsToSelect, bool getIsDeleted}) {
-    return AuthorEntityFilterBuilder(this)
+  AuthorFilterBuilder distinct({List<String>? columnsToSelect, bool? getIsDeleted}) {
+    return AuthorFilterBuilder(this)
       .._getIsDeleted = getIsDeleted == true
       ..qparams.selectColumns = columnsToSelect
       ..qparams.distinct = true;
@@ -772,9 +697,9 @@ class AuthorEntity {
     isSaved = false;
   }
   // END METHODS
-  // CUSTOM CODES
+  // BEGIN CUSTOM CODE
   /*
-      you must define customCode property of your SqfEntityTable constant for ex:
+      you can define customCode property of your SqfEntityTable constant. For example:
       const tablePerson = SqfEntityTable(
       tableName: 'person',
       primaryKeyName: 'id',
@@ -790,251 +715,178 @@ class AuthorEntity {
        }
       ''');
      */
-  // END CUSTOM CODES
+  // END CUSTOM CODE
 }
-// endregion authorentity
+// endregion author
 
-// region AuthorEntityField
-class AuthorEntityField extends SearchCriteria {
-  AuthorEntityField(this.authorentityFB) {
-    param = DbParameter();
-  }
-  DbParameter param;
+// region AuthorField
+class AuthorField extends SearchCriteria {
+  AuthorField(this.authorFB);
+  // { param = DbParameter(); }
+  DbParameter param = DbParameter();
   String _waitingNot = '';
-  AuthorEntityFilterBuilder authorentityFB;
+  AuthorFilterBuilder authorFB;
 
-  AuthorEntityField get not {
+  AuthorField get not {
     _waitingNot = ' NOT ';
     return this;
   }
 
-  AuthorEntityFilterBuilder equals(dynamic pValue) {
+  AuthorFilterBuilder equals(dynamic pValue) {
     param.expression = '=';
-    authorentityFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, authorentityFB.parameters, param,
-            SqlSyntax.EQuals, authorentityFB._addedBlocks)
-        : setCriteria(pValue, authorentityFB.parameters, param,
-            SqlSyntax.NotEQuals, authorentityFB._addedBlocks);
+    authorFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, authorFB.parameters, param, SqlSyntax.EQuals, authorFB._addedBlocks)
+        : setCriteria(pValue, authorFB.parameters, param, SqlSyntax.NotEQuals, authorFB._addedBlocks);
     _waitingNot = '';
-    authorentityFB._addedBlocks.needEndBlock[authorentityFB._blockIndex] =
-        authorentityFB._addedBlocks.retVal;
-    return authorentityFB;
+    authorFB._addedBlocks.needEndBlock![authorFB._blockIndex] = authorFB._addedBlocks.retVal;
+    return authorFB;
   }
 
-  AuthorEntityFilterBuilder equalsOrNull(dynamic pValue) {
+  AuthorFilterBuilder equalsOrNull(dynamic pValue) {
     param.expression = '=';
-    authorentityFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, authorentityFB.parameters, param,
-            SqlSyntax.EQualsOrNull, authorentityFB._addedBlocks)
-        : setCriteria(pValue, authorentityFB.parameters, param,
-            SqlSyntax.NotEQualsOrNull, authorentityFB._addedBlocks);
+    authorFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, authorFB.parameters, param, SqlSyntax.EQualsOrNull, authorFB._addedBlocks)
+        : setCriteria(pValue, authorFB.parameters, param, SqlSyntax.NotEQualsOrNull, authorFB._addedBlocks);
     _waitingNot = '';
-    authorentityFB._addedBlocks.needEndBlock[authorentityFB._blockIndex] =
-        authorentityFB._addedBlocks.retVal;
-    return authorentityFB;
+    authorFB._addedBlocks.needEndBlock![authorFB._blockIndex] = authorFB._addedBlocks.retVal;
+    return authorFB;
   }
 
-  AuthorEntityFilterBuilder isNull() {
-    authorentityFB._addedBlocks = setCriteria(
-        0,
-        authorentityFB.parameters,
-        param,
-        SqlSyntax.IsNULL.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-        authorentityFB._addedBlocks);
+  AuthorFilterBuilder isNull() {
+    authorFB._addedBlocks = setCriteria(0, authorFB.parameters, param,
+        SqlSyntax.IsNULL.replaceAll(SqlSyntax.notKeyword, _waitingNot), authorFB._addedBlocks);
     _waitingNot = '';
-    authorentityFB._addedBlocks.needEndBlock[authorentityFB._blockIndex] =
-        authorentityFB._addedBlocks.retVal;
-    return authorentityFB;
+    authorFB._addedBlocks.needEndBlock![authorFB._blockIndex] = authorFB._addedBlocks.retVal;
+    return authorFB;
   }
 
-  AuthorEntityFilterBuilder contains(dynamic pValue) {
+  AuthorFilterBuilder contains(dynamic pValue) {
     if (pValue != null) {
-      authorentityFB._addedBlocks = setCriteria(
-          '%${pValue.toString()}%',
-          authorentityFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          authorentityFB._addedBlocks);
+      authorFB._addedBlocks = setCriteria('%${pValue.toString()}%', authorFB.parameters, param,
+          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot), authorFB._addedBlocks);
       _waitingNot = '';
-      authorentityFB._addedBlocks.needEndBlock[authorentityFB._blockIndex] =
-          authorentityFB._addedBlocks.retVal;
+      authorFB._addedBlocks.needEndBlock![authorFB._blockIndex] = authorFB._addedBlocks.retVal;
     }
-    return authorentityFB;
+    return authorFB;
   }
 
-  AuthorEntityFilterBuilder startsWith(dynamic pValue) {
+  AuthorFilterBuilder startsWith(dynamic pValue) {
     if (pValue != null) {
-      authorentityFB._addedBlocks = setCriteria(
-          '${pValue.toString()}%',
-          authorentityFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          authorentityFB._addedBlocks);
+      authorFB._addedBlocks = setCriteria('${pValue.toString()}%', authorFB.parameters, param,
+          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot), authorFB._addedBlocks);
       _waitingNot = '';
-      authorentityFB._addedBlocks.needEndBlock[authorentityFB._blockIndex] =
-          authorentityFB._addedBlocks.retVal;
-      authorentityFB._addedBlocks.needEndBlock[authorentityFB._blockIndex] =
-          authorentityFB._addedBlocks.retVal;
+      authorFB._addedBlocks.needEndBlock![authorFB._blockIndex] = authorFB._addedBlocks.retVal;
+      authorFB._addedBlocks.needEndBlock![authorFB._blockIndex] = authorFB._addedBlocks.retVal;
     }
-    return authorentityFB;
+    return authorFB;
   }
 
-  AuthorEntityFilterBuilder endsWith(dynamic pValue) {
+  AuthorFilterBuilder endsWith(dynamic pValue) {
     if (pValue != null) {
-      authorentityFB._addedBlocks = setCriteria(
-          '%${pValue.toString()}',
-          authorentityFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          authorentityFB._addedBlocks);
+      authorFB._addedBlocks = setCriteria('%${pValue.toString()}', authorFB.parameters, param,
+          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot), authorFB._addedBlocks);
       _waitingNot = '';
-      authorentityFB._addedBlocks.needEndBlock[authorentityFB._blockIndex] =
-          authorentityFB._addedBlocks.retVal;
+      authorFB._addedBlocks.needEndBlock![authorFB._blockIndex] = authorFB._addedBlocks.retVal;
     }
-    return authorentityFB;
+    return authorFB;
   }
 
-  AuthorEntityFilterBuilder between(dynamic pFirst, dynamic pLast) {
+  AuthorFilterBuilder between(dynamic pFirst, dynamic pLast) {
     if (pFirst != null && pLast != null) {
-      authorentityFB._addedBlocks = setCriteria(
-          pFirst,
-          authorentityFB.parameters,
-          param,
-          SqlSyntax.Between.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          authorentityFB._addedBlocks,
-          pLast);
+      authorFB._addedBlocks = setCriteria(pFirst, authorFB.parameters, param,
+          SqlSyntax.Between.replaceAll(SqlSyntax.notKeyword, _waitingNot), authorFB._addedBlocks, pLast);
     } else if (pFirst != null) {
       if (_waitingNot != '') {
-        authorentityFB._addedBlocks = setCriteria(
-            pFirst,
-            authorentityFB.parameters,
-            param,
-            SqlSyntax.LessThan,
-            authorentityFB._addedBlocks);
+        authorFB._addedBlocks =
+            setCriteria(pFirst, authorFB.parameters, param, SqlSyntax.LessThan, authorFB._addedBlocks);
       } else {
-        authorentityFB._addedBlocks = setCriteria(
-            pFirst,
-            authorentityFB.parameters,
-            param,
-            SqlSyntax.GreaterThanOrEquals,
-            authorentityFB._addedBlocks);
+        authorFB._addedBlocks =
+            setCriteria(pFirst, authorFB.parameters, param, SqlSyntax.GreaterThanOrEquals, authorFB._addedBlocks);
       }
     } else if (pLast != null) {
       if (_waitingNot != '') {
-        authorentityFB._addedBlocks = setCriteria(
-            pLast,
-            authorentityFB.parameters,
-            param,
-            SqlSyntax.GreaterThan,
-            authorentityFB._addedBlocks);
+        authorFB._addedBlocks =
+            setCriteria(pLast, authorFB.parameters, param, SqlSyntax.GreaterThan, authorFB._addedBlocks);
       } else {
-        authorentityFB._addedBlocks = setCriteria(
-            pLast,
-            authorentityFB.parameters,
-            param,
-            SqlSyntax.LessThanOrEquals,
-            authorentityFB._addedBlocks);
+        authorFB._addedBlocks =
+            setCriteria(pLast, authorFB.parameters, param, SqlSyntax.LessThanOrEquals, authorFB._addedBlocks);
       }
     }
     _waitingNot = '';
-    authorentityFB._addedBlocks.needEndBlock[authorentityFB._blockIndex] =
-        authorentityFB._addedBlocks.retVal;
-    return authorentityFB;
+    authorFB._addedBlocks.needEndBlock![authorFB._blockIndex] = authorFB._addedBlocks.retVal;
+    return authorFB;
   }
 
-  AuthorEntityFilterBuilder greaterThan(dynamic pValue) {
+  AuthorFilterBuilder greaterThan(dynamic pValue) {
     param.expression = '>';
-    authorentityFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, authorentityFB.parameters, param,
-            SqlSyntax.GreaterThan, authorentityFB._addedBlocks)
-        : setCriteria(pValue, authorentityFB.parameters, param,
-            SqlSyntax.LessThanOrEquals, authorentityFB._addedBlocks);
+    authorFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, authorFB.parameters, param, SqlSyntax.GreaterThan, authorFB._addedBlocks)
+        : setCriteria(pValue, authorFB.parameters, param, SqlSyntax.LessThanOrEquals, authorFB._addedBlocks);
     _waitingNot = '';
-    authorentityFB._addedBlocks.needEndBlock[authorentityFB._blockIndex] =
-        authorentityFB._addedBlocks.retVal;
-    return authorentityFB;
+    authorFB._addedBlocks.needEndBlock![authorFB._blockIndex] = authorFB._addedBlocks.retVal;
+    return authorFB;
   }
 
-  AuthorEntityFilterBuilder lessThan(dynamic pValue) {
+  AuthorFilterBuilder lessThan(dynamic pValue) {
     param.expression = '<';
-    authorentityFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, authorentityFB.parameters, param,
-            SqlSyntax.LessThan, authorentityFB._addedBlocks)
-        : setCriteria(pValue, authorentityFB.parameters, param,
-            SqlSyntax.GreaterThanOrEquals, authorentityFB._addedBlocks);
+    authorFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, authorFB.parameters, param, SqlSyntax.LessThan, authorFB._addedBlocks)
+        : setCriteria(pValue, authorFB.parameters, param, SqlSyntax.GreaterThanOrEquals, authorFB._addedBlocks);
     _waitingNot = '';
-    authorentityFB._addedBlocks.needEndBlock[authorentityFB._blockIndex] =
-        authorentityFB._addedBlocks.retVal;
-    return authorentityFB;
+    authorFB._addedBlocks.needEndBlock![authorFB._blockIndex] = authorFB._addedBlocks.retVal;
+    return authorFB;
   }
 
-  AuthorEntityFilterBuilder greaterThanOrEquals(dynamic pValue) {
+  AuthorFilterBuilder greaterThanOrEquals(dynamic pValue) {
     param.expression = '>=';
-    authorentityFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, authorentityFB.parameters, param,
-            SqlSyntax.GreaterThanOrEquals, authorentityFB._addedBlocks)
-        : setCriteria(pValue, authorentityFB.parameters, param,
-            SqlSyntax.LessThan, authorentityFB._addedBlocks);
+    authorFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, authorFB.parameters, param, SqlSyntax.GreaterThanOrEquals, authorFB._addedBlocks)
+        : setCriteria(pValue, authorFB.parameters, param, SqlSyntax.LessThan, authorFB._addedBlocks);
     _waitingNot = '';
-    authorentityFB._addedBlocks.needEndBlock[authorentityFB._blockIndex] =
-        authorentityFB._addedBlocks.retVal;
-    return authorentityFB;
+    authorFB._addedBlocks.needEndBlock![authorFB._blockIndex] = authorFB._addedBlocks.retVal;
+    return authorFB;
   }
 
-  AuthorEntityFilterBuilder lessThanOrEquals(dynamic pValue) {
+  AuthorFilterBuilder lessThanOrEquals(dynamic pValue) {
     param.expression = '<=';
-    authorentityFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, authorentityFB.parameters, param,
-            SqlSyntax.LessThanOrEquals, authorentityFB._addedBlocks)
-        : setCriteria(pValue, authorentityFB.parameters, param,
-            SqlSyntax.GreaterThan, authorentityFB._addedBlocks);
+    authorFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, authorFB.parameters, param, SqlSyntax.LessThanOrEquals, authorFB._addedBlocks)
+        : setCriteria(pValue, authorFB.parameters, param, SqlSyntax.GreaterThan, authorFB._addedBlocks);
     _waitingNot = '';
-    authorentityFB._addedBlocks.needEndBlock[authorentityFB._blockIndex] =
-        authorentityFB._addedBlocks.retVal;
-    return authorentityFB;
+    authorFB._addedBlocks.needEndBlock![authorFB._blockIndex] = authorFB._addedBlocks.retVal;
+    return authorFB;
   }
 
-  AuthorEntityFilterBuilder inValues(dynamic pValue) {
-    authorentityFB._addedBlocks = setCriteria(
-        pValue,
-        authorentityFB.parameters,
-        param,
-        SqlSyntax.IN.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-        authorentityFB._addedBlocks);
+  AuthorFilterBuilder inValues(dynamic pValue) {
+    authorFB._addedBlocks = setCriteria(pValue, authorFB.parameters, param,
+        SqlSyntax.IN.replaceAll(SqlSyntax.notKeyword, _waitingNot), authorFB._addedBlocks);
     _waitingNot = '';
-    authorentityFB._addedBlocks.needEndBlock[authorentityFB._blockIndex] =
-        authorentityFB._addedBlocks.retVal;
-    return authorentityFB;
+    authorFB._addedBlocks.needEndBlock![authorFB._blockIndex] = authorFB._addedBlocks.retVal;
+    return authorFB;
   }
 }
-// endregion AuthorEntityField
+// endregion AuthorField
 
-// region AuthorEntityFilterBuilder
-class AuthorEntityFilterBuilder extends SearchCriteria {
-  AuthorEntityFilterBuilder(AuthorEntity obj) {
+// region AuthorFilterBuilder
+class AuthorFilterBuilder extends SearchCriteria {
+  AuthorFilterBuilder(Author obj) {
     whereString = '';
-    qparams = QueryParams();
-    parameters = <DbParameter>[];
-    orderByList = <String>[];
     groupByList = <String>[];
-    _addedBlocks = AddedBlocks(<bool>[], <bool>[]);
-    _addedBlocks.needEndBlock.add(false);
-    _addedBlocks.waitingStartBlock.add(false);
-    _pagesize = 0;
-    _page = 0;
+    _addedBlocks.needEndBlock!.add(false);
+    _addedBlocks.waitingStartBlock!.add(false);
     _obj = obj;
   }
-  AddedBlocks _addedBlocks;
+  AddedBlocks _addedBlocks = AddedBlocks(<bool>[], <bool>[]);
   int _blockIndex = 0;
-  List<DbParameter> parameters;
-  List<String> orderByList;
-  AuthorEntity _obj;
-  QueryParams qparams;
-  int _pagesize;
-  int _page;
+  List<DbParameter> parameters = <DbParameter>[];
+  List<String> orderByList = <String>[];
+  Author? _obj;
+  QueryParams qparams = QueryParams();
+  int _pagesize = 0;
+  int _page = 0;
 
   /// put the sql keyword 'AND'
-  AuthorEntityFilterBuilder get and {
+  AuthorFilterBuilder get and {
     if (parameters.isNotEmpty) {
       parameters[parameters.length - 1].wOperator = ' AND ';
     }
@@ -1042,7 +894,7 @@ class AuthorEntityFilterBuilder extends SearchCriteria {
   }
 
   /// put the sql keyword 'OR'
-  AuthorEntityFilterBuilder get or {
+  AuthorFilterBuilder get or {
     if (parameters.isNotEmpty) {
       parameters[parameters.length - 1].wOperator = ' OR ';
     }
@@ -1050,26 +902,23 @@ class AuthorEntityFilterBuilder extends SearchCriteria {
   }
 
   /// open parentheses
-  AuthorEntityFilterBuilder get startBlock {
-    _addedBlocks.waitingStartBlock.add(true);
-    _addedBlocks.needEndBlock.add(false);
+  AuthorFilterBuilder get startBlock {
+    _addedBlocks.waitingStartBlock!.add(true);
+    _addedBlocks.needEndBlock!.add(false);
     _blockIndex++;
     if (_blockIndex > 1) {
-      _addedBlocks.needEndBlock[_blockIndex - 1] = true;
+      _addedBlocks.needEndBlock![_blockIndex - 1] = true;
     }
     return this;
   }
 
   /// String whereCriteria, write raw query without 'where' keyword. Like this: 'field1 like 'test%' and field2 = 3'
-  AuthorEntityFilterBuilder where(String whereCriteria,
-      {dynamic parameterValue}) {
+  AuthorFilterBuilder where(String? whereCriteria, {dynamic parameterValue}) {
     if (whereCriteria != null && whereCriteria != '') {
-      final DbParameter param = DbParameter(
-          columnName: parameterValue == null ? null : '',
-          hasParameter: parameterValue != null);
-      _addedBlocks = setCriteria(parameterValue ?? 0, parameters, param,
-          '($whereCriteria)', _addedBlocks);
-      _addedBlocks.needEndBlock[_blockIndex] = _addedBlocks.retVal;
+      final DbParameter param =
+          DbParameter(columnName: parameterValue == null ? null : '', hasParameter: parameterValue != null);
+      _addedBlocks = setCriteria(parameterValue ?? 0, parameters, param, '($whereCriteria)', _addedBlocks);
+      _addedBlocks.needEndBlock![_blockIndex] = _addedBlocks.retVal;
     }
     return this;
   }
@@ -1077,7 +926,7 @@ class AuthorEntityFilterBuilder extends SearchCriteria {
   /// page = page number,
   ///
   /// pagesize = row(s) per page
-  AuthorEntityFilterBuilder page(int page, int pagesize) {
+  AuthorFilterBuilder page(int page, int pagesize) {
     if (page > 0) {
       _page = page;
     }
@@ -1088,7 +937,7 @@ class AuthorEntityFilterBuilder extends SearchCriteria {
   }
 
   /// int count = LIMIT
-  AuthorEntityFilterBuilder top(int count) {
+  AuthorFilterBuilder top(int count) {
     if (count > 0) {
       _pagesize = count;
     }
@@ -1096,12 +945,12 @@ class AuthorEntityFilterBuilder extends SearchCriteria {
   }
 
   /// close parentheses
-  AuthorEntityFilterBuilder get endBlock {
-    if (_addedBlocks.needEndBlock[_blockIndex]) {
+  AuthorFilterBuilder get endBlock {
+    if (_addedBlocks.needEndBlock![_blockIndex]) {
       parameters[parameters.length - 1].whereString += ' ) ';
     }
-    _addedBlocks.needEndBlock.removeAt(_blockIndex);
-    _addedBlocks.waitingStartBlock.removeAt(_blockIndex);
+    _addedBlocks.needEndBlock!.removeAt(_blockIndex);
+    _addedBlocks.waitingStartBlock!.removeAt(_blockIndex);
     _blockIndex--;
     return this;
   }
@@ -1111,13 +960,13 @@ class AuthorEntityFilterBuilder extends SearchCriteria {
   /// Example 1: argFields='name, date'
   ///
   /// Example 2: argFields = ['name', 'date']
-  AuthorEntityFilterBuilder orderBy(dynamic argFields) {
+  AuthorFilterBuilder orderBy(dynamic argFields) {
     if (argFields != null) {
       if (argFields is String) {
         orderByList.add(argFields);
       } else {
-        for (String s in argFields as List<String>) {
-          if (s != null && s.isNotEmpty) {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
             orderByList.add(' $s ');
           }
         }
@@ -1131,13 +980,13 @@ class AuthorEntityFilterBuilder extends SearchCriteria {
   /// Example 1: argFields='field1, field2'
   ///
   /// Example 2: argFields = ['field1', 'field2']
-  AuthorEntityFilterBuilder orderByDesc(dynamic argFields) {
+  AuthorFilterBuilder orderByDesc(dynamic argFields) {
     if (argFields != null) {
       if (argFields is String) {
         orderByList.add('$argFields desc ');
       } else {
-        for (String s in argFields as List<String>) {
-          if (s != null && s.isNotEmpty) {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
             orderByList.add(' $s desc ');
           }
         }
@@ -1151,13 +1000,13 @@ class AuthorEntityFilterBuilder extends SearchCriteria {
   /// Example 1: argFields='field1, field2'
   ///
   /// Example 2: argFields = ['field1', 'field2']
-  AuthorEntityFilterBuilder groupBy(dynamic argFields) {
+  AuthorFilterBuilder groupBy(dynamic argFields) {
     if (argFields != null) {
       if (argFields is String) {
         groupByList.add(' $argFields ');
       } else {
-        for (String s in argFields as List<String>) {
-          if (s != null && s.isNotEmpty) {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
             groupByList.add(' $s ');
           }
         }
@@ -1171,13 +1020,13 @@ class AuthorEntityFilterBuilder extends SearchCriteria {
   /// Example 1: argFields='name, date'
   ///
   /// Example 2: argFields = ['name', 'date']
-  AuthorEntityFilterBuilder having(dynamic argFields) {
+  AuthorFilterBuilder having(dynamic argFields) {
     if (argFields != null) {
       if (argFields is String) {
         havingList.add(argFields);
       } else {
-        for (String s in argFields as List<String>) {
-          if (s != null && s.isNotEmpty) {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
             havingList.add(' $s ');
           }
         }
@@ -1186,26 +1035,23 @@ class AuthorEntityFilterBuilder extends SearchCriteria {
     return this;
   }
 
-  AuthorEntityField setField(
-      AuthorEntityField field, String colName, DbType dbtype) {
-    return AuthorEntityField(this)
-      ..param = DbParameter(
-          dbType: dbtype,
-          columnName: colName,
-          wStartBlock: _addedBlocks.waitingStartBlock[_blockIndex]);
+  AuthorField setField(AuthorField? field, String colName, DbType dbtype) {
+    return AuthorField(this)
+      ..param =
+          DbParameter(dbType: dbtype, columnName: colName, wStartBlock: _addedBlocks.waitingStartBlock![_blockIndex]);
   }
 
-  AuthorEntityField _id;
-  AuthorEntityField get id {
+  AuthorField? _id;
+  AuthorField get id {
     return _id = setField(_id, 'id', DbType.integer);
   }
 
-  AuthorEntityField _name;
-  AuthorEntityField get name {
+  AuthorField? _name;
+  AuthorField get name {
     return _name = setField(_name, 'name', DbType.text);
   }
 
-  bool _getIsDeleted;
+  bool _getIsDeleted = false;
 
   void _buildParameters() {
     if (_page > 0 && _pagesize > 0) {
@@ -1220,24 +1066,20 @@ class AuthorEntityFilterBuilder extends SearchCriteria {
     for (DbParameter param in parameters) {
       if (param.columnName != null) {
         if (param.value is List && !param.hasParameter) {
-          param.value = param.dbType == DbType.text
+          param.value = param.dbType == DbType.text || param.value[0] is String
               ? '\'${param.value.join('\',\'')}\''
               : param.value.join(',');
-          whereString += param.whereString
-              .replaceAll('{field}', param.columnName)
-              .replaceAll('?', param.value.toString());
+          whereString +=
+              param.whereString.replaceAll('{field}', param.columnName!).replaceAll('?', param.value.toString());
           param.value = null;
         } else {
-          if (param.value is Map<String, dynamic> &&
-              param.value['sql'] != null) {
+          if (param.value is Map<String, dynamic> && param.value['sql'] != null) {
             param
-              ..whereString = param.whereString
-                  .replaceAll('?', param.value['sql'].toString())
+              ..whereString = param.whereString.replaceAll('?', param.value['sql'].toString())
               ..dbType = DbType.integer
               ..value = param.value['args'];
           }
-          whereString +=
-              param.whereString.replaceAll('{field}', param.columnName);
+          whereString += param.whereString.replaceAll('{field}', param.columnName!);
         }
         if (!param.whereString.contains('?')) {
         } else {
@@ -1257,12 +1099,8 @@ class AuthorEntityFilterBuilder extends SearchCriteria {
             case DbType.date:
             case DbType.datetime:
             case DbType.datetimeUtc:
-              param.value = param.value == null
-                  ? null
-                  : (param.value as DateTime).millisecondsSinceEpoch;
-              param.value2 = param.value2 == null
-                  ? null
-                  : (param.value2 as DateTime).millisecondsSinceEpoch;
+              param.value = param.value == null ? null : (param.value as DateTime).millisecondsSinceEpoch;
+              param.value2 = param.value2 == null ? null : (param.value2 as DateTime).millisecondsSinceEpoch;
               break;
             default:
           }
@@ -1283,10 +1121,9 @@ class AuthorEntityFilterBuilder extends SearchCriteria {
         whereString += param.whereString;
       }
     }
-    if (AuthorEntity._softDeleteActivated) {
+    if (Author._softDeleteActivated) {
       if (whereString != '') {
-        whereString =
-            '${!_getIsDeleted ? 'ifnull(isDeleted,0)=0 AND' : ''} ($whereString)';
+        whereString = '${!_getIsDeleted ? 'ifnull(isDeleted,0)=0 AND' : ''} ($whereString)';
       } else if (!_getIsDeleted) {
         whereString = 'ifnull(isDeleted,0)=0';
       }
@@ -1302,17 +1139,17 @@ class AuthorEntityFilterBuilder extends SearchCriteria {
       ..having = havingList.join(',');
   }
 
-  /// Deletes List<AuthorEntity> bulk by query
+  /// Deletes List<Author> bulk by query
   ///
   /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
   Future<BoolResult> delete([bool hardDelete = false]) async {
     _buildParameters();
-    var r = BoolResult();
+    var r = BoolResult(success: false);
 
-    if (AuthorEntity._softDeleteActivated && !hardDelete) {
-      r = await _obj._mnAuthorEntity.updateBatch(qparams, {'isDeleted': 1});
+    if (Author._softDeleteActivated && !hardDelete) {
+      r = await _obj!._mnAuthor.updateBatch(qparams, {'isDeleted': 1});
     } else {
-      r = await _obj._mnAuthorEntity.delete(qparams);
+      r = await _obj!._mnAuthor.delete(qparams);
     }
     return r;
   }
@@ -1324,14 +1161,14 @@ class AuthorEntityFilterBuilder extends SearchCriteria {
   /// fieldName must be String. Value is dynamic, it can be any of the (int, bool, String.. )
   Future<BoolResult> update(Map<String, dynamic> values) {
     _buildParameters();
-    if (qparams.limit > 0 || qparams.offset > 0) {
+    if (qparams.limit! > 0 || qparams.offset! > 0) {
       qparams.whereString =
-          'id IN (SELECT id from authors ${qparams.whereString.isNotEmpty ? 'WHERE ${qparams.whereString}' : ''}${qparams.limit > 0 ? ' LIMIT ${qparams.limit}' : ''}${qparams.offset > 0 ? ' OFFSET ${qparams.offset}' : ''})';
+          'id IN (SELECT id from authors ${qparams.whereString!.isNotEmpty ? 'WHERE ${qparams.whereString}' : ''}${qparams.limit! > 0 ? ' LIMIT ${qparams.limit}' : ''}${qparams.offset! > 0 ? ' OFFSET ${qparams.offset}' : ''})';
     }
-    return _obj._mnAuthorEntity.updateBatch(qparams, values);
+    return _obj!._mnAuthor.updateBatch(qparams, values);
   }
 
-  /// This method always returns AuthorEntity Obj if exist, otherwise returns null
+  /// This method always returns Author Obj if exist, otherwise returns null
   ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
   ///
@@ -1344,43 +1181,32 @@ class AuthorEntityFilterBuilder extends SearchCriteria {
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
   ///
-  /// <returns>List<AuthorEntity>
-  Future<AuthorEntity> toSingle(
-      {bool preload = false,
-      List<String> preloadFields,
-      bool loadParents = false,
-      List<String> loadedFields}) async {
+  /// <returns>List<Author>
+  Future<Author?> toSingle(
+      {bool preload = false, List<String>? preloadFields, bool loadParents = false, List<String>? loadedFields}) async {
     _pagesize = 1;
     _buildParameters();
-    final objFuture = _obj._mnAuthorEntity.toList(qparams);
+    final objFuture = _obj!._mnAuthor.toList(qparams);
     final data = await objFuture;
-    AuthorEntity obj;
+    Author? obj;
     if (data.isNotEmpty) {
-      obj = AuthorEntity.fromMap(data[0] as Map<String, dynamic>);
+      obj = Author.fromMap(data[0] as Map<String, dynamic>);
       // final List<String> _loadedFields = loadedFields ?? [];
 
       // RELATIONSHIPS PRELOAD CHILD
       if (preload) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedFields.contains('authors.plExternalEntities') && */ (preloadFields ==
-                null ||
-            preloadFields.contains('plExternalEntities'))) {
-          /*_loadedFields.add('authors.plExternalEntities'); */
-          obj.plExternalEntities = obj.plExternalEntities ??
-              await obj.getExternalEntities().toList(
-                  preload: preload,
-                  preloadFields: preloadFields,
-                  loadParents: false /*, loadedFields:_loadedFields*/);
+        if (/*!_loadedfields!.contains('authors.plExternals') && */ (preloadFields == null ||
+            preloadFields.contains('plExternals'))) {
+          /*_loadedfields!.add('authors.plExternals'); */ obj.plExternals = obj.plExternals ??
+              await obj.getExternals()!.toList(
+                  preload: preload, preloadFields: preloadFields, loadParents: false /*, loadedFields:_loadedFields*/);
         }
-        if (/*!_loadedFields.contains('authors.plSongLyricEntities') && */ (preloadFields ==
-                null ||
-            preloadFields.contains('plSongLyricEntities'))) {
-          /*_loadedFields.add('authors.plSongLyricEntities'); */
-          obj.plSongLyricEntities = obj.plSongLyricEntities ??
-              await obj.getSongLyricEntities().toList(
-                  preload: preload,
-                  preloadFields: preloadFields,
-                  loadParents: false /*, loadedFields:_loadedFields*/);
+        if (/*!_loadedfields!.contains('authors.plSongLyrics') && */ (preloadFields == null ||
+            preloadFields.contains('plSongLyrics'))) {
+          /*_loadedfields!.add('authors.plSongLyrics'); */ obj.plSongLyrics = obj.plSongLyrics ??
+              await obj.getSongLyrics()!.toList(
+                  preload: preload, preloadFields: preloadFields, loadParents: false /*, loadedFields:_loadedFields*/);
         }
       } // END RELATIONSHIPS PRELOAD CHILD
 
@@ -1390,21 +1216,21 @@ class AuthorEntityFilterBuilder extends SearchCriteria {
     return obj;
   }
 
-  /// This method returns int. [AuthorEntity]
+  /// This method returns int. [Author]
   ///
   /// <returns>int
-  Future<int> toCount([VoidCallback Function(int c) authorentityCount]) async {
+  Future<int> toCount([VoidCallback Function(int c)? authorCount]) async {
     _buildParameters();
     qparams.selectColumns = ['COUNT(1) AS CNT'];
-    final authorentitiesFuture = await _obj._mnAuthorEntity.toList(qparams);
-    final int count = authorentitiesFuture[0]['CNT'] as int;
-    if (authorentityCount != null) {
-      authorentityCount(count);
+    final authorsFuture = await _obj!._mnAuthor.toList(qparams);
+    final int count = authorsFuture[0]['CNT'] as int;
+    if (authorCount != null) {
+      authorCount(count);
     }
     return count;
   }
 
-  /// This method returns List<AuthorEntity> [AuthorEntity]
+  /// This method returns List<Author> [Author]
   ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
   ///
@@ -1417,24 +1243,20 @@ class AuthorEntityFilterBuilder extends SearchCriteria {
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
   ///
-  /// <returns>List<AuthorEntity>
-  Future<List<AuthorEntity>> toList(
-      {bool preload = false,
-      List<String> preloadFields,
-      bool loadParents = false,
-      List<String> loadedFields}) async {
+  /// <returns>List<Author>
+  Future<List<Author>> toList(
+      {bool preload = false, List<String>? preloadFields, bool loadParents = false, List<String>? loadedFields}) async {
     final data = await toMapList();
-    final List<AuthorEntity> authorentitiesData =
-        await AuthorEntity.fromMapList(data,
-            preload: preload,
-            preloadFields: preloadFields,
-            loadParents: loadParents,
-            loadedFields: loadedFields,
-            setDefaultValues: qparams.selectColumns == null);
-    return authorentitiesData;
+    final List<Author> authorsData = await Author.fromMapList(data,
+        preload: preload,
+        preloadFields: preloadFields,
+        loadParents: loadParents,
+        loadedFields: loadedFields,
+        setDefaultValues: qparams.selectColumns == null);
+    return authorsData;
   }
 
-  /// This method returns Json String [AuthorEntity]
+  /// This method returns Json String [Author]
   Future<String> toJson() async {
     final list = <dynamic>[];
     final data = await toList();
@@ -1444,7 +1266,7 @@ class AuthorEntityFilterBuilder extends SearchCriteria {
     return json.encode(list);
   }
 
-  /// This method returns Json String. [AuthorEntity]
+  /// This method returns Json String. [Author]
   Future<String> toJsonWithChilds() async {
     final list = <dynamic>[];
     final data = await toList();
@@ -1454,15 +1276,15 @@ class AuthorEntityFilterBuilder extends SearchCriteria {
     return json.encode(list);
   }
 
-  /// This method returns List<dynamic>. [AuthorEntity]
+  /// This method returns List<dynamic>. [Author]
   ///
   /// <returns>List<dynamic>
   Future<List<dynamic>> toMapList() async {
     _buildParameters();
-    return await _obj._mnAuthorEntity.toList(qparams);
+    return await _obj!._mnAuthor.toList(qparams);
   }
 
-  /// This method returns Primary Key List SQL and Parameters retVal = Map<String,dynamic>. [AuthorEntity]
+  /// This method returns Primary Key List SQL and Parameters retVal = Map<String,dynamic>. [Author]
   ///
   /// retVal['sql'] = SQL statement string, retVal['args'] = whereArguments List<dynamic>;
   ///
@@ -1485,7 +1307,7 @@ class AuthorEntityFilterBuilder extends SearchCriteria {
     }
     final List<int> idData = <int>[];
     qparams.selectColumns = ['id'];
-    final idFuture = await _obj._mnAuthorEntity.toList(qparams);
+    final idFuture = await _obj!._mnAuthor.toList(qparams);
 
     final int count = idFuture.length;
     for (int i = 0; i < count; i++) {
@@ -1494,13 +1316,13 @@ class AuthorEntityFilterBuilder extends SearchCriteria {
     return idData;
   }
 
-  /// Returns List<dynamic> for selected columns. Use this method for 'groupBy' with min,max,avg..  [AuthorEntity]
+  /// Returns List<dynamic> for selected columns. Use this method for 'groupBy' with min,max,avg..  [Author]
   ///
   /// Sample usage: (see EXAMPLE 4.2 at https://github.com/hhtokpinar/sqfEntity#group-by)
   Future<List<dynamic>> toListObject() async {
     _buildParameters();
 
-    final objectFuture = _obj._mnAuthorEntity.toList(qparams);
+    final objectFuture = _obj!._mnAuthor.toList(qparams);
 
     final List<dynamic> objectsData = <dynamic>[];
     final data = await objectFuture;
@@ -1513,18 +1335,17 @@ class AuthorEntityFilterBuilder extends SearchCriteria {
 
   /// Returns List<String> for selected first column
   ///
-  /// Sample usage: await AuthorEntity.select(columnsToSelect: ['columnName']).toListString()
-  Future<List<String>> toListString(
-      [VoidCallback Function(List<String> o) listString]) async {
+  /// Sample usage: await Author.select(columnsToSelect: ['columnName']).toListString()
+  Future<List<String>> toListString([VoidCallback Function(List<String> o)? listString]) async {
     _buildParameters();
 
-    final objectFuture = _obj._mnAuthorEntity.toList(qparams);
+    final objectFuture = _obj!._mnAuthor.toList(qparams);
 
     final List<String> objectsData = <String>[];
     final data = await objectFuture;
     final int count = data.length;
     for (int i = 0; i < count; i++) {
-      objectsData.add(data[i][qparams.selectColumns[0]].toString());
+      objectsData.add(data[i][qparams.selectColumns![0]].toString());
     }
     if (listString != null) {
       listString(objectsData);
@@ -1532,270 +1353,247 @@ class AuthorEntityFilterBuilder extends SearchCriteria {
     return objectsData;
   }
 }
-// endregion AuthorEntityFilterBuilder
+// endregion AuthorFilterBuilder
 
-// region AuthorEntityFields
-class AuthorEntityFields {
-  static TableField _fId;
+// region AuthorFields
+class AuthorFields {
+  static TableField? _fId;
   static TableField get id {
     return _fId = _fId ?? SqlSyntax.setField(_fId, 'id', DbType.integer);
   }
 
-  static TableField _fName;
+  static TableField? _fName;
   static TableField get name {
     return _fName = _fName ?? SqlSyntax.setField(_fName, 'name', DbType.text);
   }
 }
-// endregion AuthorEntityFields
+// endregion AuthorFields
 
-//region AuthorEntityManager
-class AuthorEntityManager extends SqfEntityProvider {
-  AuthorEntityManager()
-      : super(Model(),
-            tableName: _tableName,
-            primaryKeyList: _primaryKeyList,
-            whereStr: _whereStr);
+//region AuthorManager
+class AuthorManager extends SqfEntityProvider {
+  AuthorManager() : super(Model(), tableName: _tableName, primaryKeyList: _primaryKeyList, whereStr: _whereStr);
   static final String _tableName = 'authors';
   static final List<String> _primaryKeyList = ['id'];
   static final String _whereStr = 'id=?';
 }
 
-//endregion AuthorEntityManager
-// region ExternalEntity
-class ExternalEntity {
-  ExternalEntity(
-      {this.id, this.name, this.mediaId, this.mediaType, this.song_lyricsId}) {
+//endregion AuthorManager
+// region External
+class External {
+  External({this.id, this.public_name, this.media_id, this.media_type, this.song_lyricsId}) {
     _setDefaultValues();
   }
-  ExternalEntity.withFields(
-      this.id, this.name, this.mediaId, this.mediaType, this.song_lyricsId) {
+  External.withFields(this.id, this.public_name, this.media_id, this.media_type, this.song_lyricsId) {
     _setDefaultValues();
   }
-  ExternalEntity.withId(
-      this.id, this.name, this.mediaId, this.mediaType, this.song_lyricsId) {
+  External.withId(this.id, this.public_name, this.media_id, this.media_type, this.song_lyricsId) {
     _setDefaultValues();
   }
-  ExternalEntity.fromMap(Map<String, dynamic> o,
-      {bool setDefaultValues = true}) {
+  // fromMap v2.0
+  External.fromMap(Map<String, dynamic> o, {bool setDefaultValues = true}) {
     if (setDefaultValues) {
       _setDefaultValues();
     }
     id = int.tryParse(o['id'].toString());
-    if (o['name'] != null) {
-      name = o['name'] as String;
+    if (o['public_name'] != null) {
+      public_name = o['public_name'].toString();
     }
-    if (o['mediaId'] != null) {
-      mediaId = o['mediaId'] as String;
+    if (o['media_id'] != null) {
+      media_id = o['media_id'].toString();
     }
-    if (o['mediaType'] != null) {
-      mediaType = o['mediaType'] as String;
+    if (o['media_type'] != null) {
+      media_type = o['media_type'].toString();
     }
     song_lyricsId = int.tryParse(o['song_lyricsId'].toString());
 
     // RELATIONSHIPS FromMAP
-    plSongLyricEntity = o['songLyricEntity'] != null
-        ? SongLyricEntity.fromMap(o['songLyricEntity'] as Map<String, dynamic>)
-        : null;
+    plSongLyric = o['songLyric'] != null ? SongLyric.fromMap(o['songLyric'] as Map<String, dynamic>) : null;
     // END RELATIONSHIPS FromMAP
 
     isSaved = true;
   }
-  // FIELDS (ExternalEntity)
-  int id;
-  String name;
-  String mediaId;
-  String mediaType;
-  int song_lyricsId;
-  bool isSaved;
-  BoolResult saveResult;
-  // end FIELDS (ExternalEntity)
+  // FIELDS (External)
+  int? id;
+  String? public_name;
+  String? media_id;
+  String? media_type;
+  int? song_lyricsId;
+  bool? isSaved;
+  BoolResult? saveResult;
+  // end FIELDS (External)
 
-// RELATIONSHIPS (ExternalEntity)
+// RELATIONSHIPS (External)
   /// to load parent of items to this field, use preload parameter ex: toList(preload:true) or toSingle(preload:true) or getById(preload:true)
-  /// You can also specify this object into certain preload fields. Ex: toList(preload:true, preloadFields:['plSongLyricEntity', 'plField2'..]) or so on..
-  SongLyricEntity plSongLyricEntity;
+  /// You can also specify this object into certain preload fields!. Ex: toList(preload:true, preloadFields:['plSongLyric', 'plField2'..]) or so on..
+  SongLyric? plSongLyric;
 
-  /// get SongLyricEntity By Song_lyricsId
-  Future<SongLyricEntity> getSongLyricEntity(
-      {bool loadParents = false, List<String> loadedFields}) async {
-    final _obj = await SongLyricEntity().getById(song_lyricsId,
-        loadParents: loadParents, loadedFields: loadedFields);
+  /// get SongLyric By Song_lyricsId
+  Future<SongLyric?> getSongLyric({bool loadParents = false, List<String>? loadedFields}) async {
+    final _obj = await SongLyric().getById(song_lyricsId, loadParents: loadParents, loadedFields: loadedFields);
     return _obj;
   }
-  // END RELATIONSHIPS (ExternalEntity)
+  // END RELATIONSHIPS (External)
 
-// COLLECTIONS & VIRTUALS (ExternalEntity)
+// COLLECTIONS & VIRTUALS (External)
   ///(RelationType.MANY_TO_MANY) (externalsAuthors) to load children of items to this field, use preload parameter. Ex: toList(preload:true) or toSingle(preload:true) or getById(preload:true)
-  /// You can also specify this object into certain preload fields. Ex: toList(preload:true, preloadFields:['plAuthorEntities', 'plField2'..]) or so on..
-  List<AuthorEntity> plAuthorEntities;
+  /// You can also specify this object into certain preload fields!. Ex: toList(preload:true, preloadFields:['plAuthors', 'plField2'..]) or so on..
+  List<Author>? plAuthors;
 
-  /// get AuthorEntity(s) filtered by authorsId IN externalsAuthors
-  AuthorEntityFilterBuilder getAuthorEntities(
-      {List<String> columnsToSelect, bool getIsDeleted}) {
-    return AuthorEntity()
+  /// get Author(s) filtered by authorsId IN externalsAuthors
+  AuthorFilterBuilder? getAuthors({List<String>? columnsToSelect, bool? getIsDeleted}) {
+    return Author()
         .select(columnsToSelect: columnsToSelect, getIsDeleted: getIsDeleted)
-        .where(
-            'id IN (SELECT authorsId FROM externalsAuthors WHERE externalsId=?)',
-            parameterValue: id)
+        .where('id IN (SELECT authorsId FROM externalsAuthors WHERE externalsId=?)', parameterValue: id)
         .and;
   }
 
-// END COLLECTIONS & VIRTUALS (ExternalEntity)
+// END COLLECTIONS & VIRTUALS (External)
 
   static const bool _softDeleteActivated = false;
-  ExternalEntityManager __mnExternalEntity;
+  ExternalManager? __mnExternal;
 
-  ExternalEntityManager get _mnExternalEntity {
-    return __mnExternalEntity = __mnExternalEntity ?? ExternalEntityManager();
+  ExternalManager get _mnExternal {
+    return __mnExternal = __mnExternal ?? ExternalManager();
   }
 
   // METHODS
-  Map<String, dynamic> toMap(
-      {bool forQuery = false, bool forJson = false, bool forView = false}) {
+  Map<String, dynamic> toMap({bool forQuery = false, bool forJson = false, bool forView = false}) {
     final map = <String, dynamic>{};
     if (id != null) {
       map['id'] = id;
     }
-    if (name != null) {
-      map['name'] = name;
+    if (public_name != null) {
+      map['public_name'] = public_name;
     }
 
-    if (mediaId != null) {
-      map['mediaId'] = mediaId;
+    if (media_id != null) {
+      map['media_id'] = media_id;
     }
 
-    if (mediaType != null) {
-      map['mediaType'] = mediaType;
+    if (media_type != null) {
+      map['media_type'] = media_type;
     }
 
     if (song_lyricsId != null) {
-      map['song_lyricsId'] = forView ? plSongLyricEntity.name : song_lyricsId;
+      map['song_lyricsId'] = forView
+          ? plSongLyric == null
+              ? song_lyricsId
+              : plSongLyric!.name
+          : song_lyricsId;
     }
 
     return map;
   }
 
   Future<Map<String, dynamic>> toMapWithChildren(
-      [bool forQuery = false,
-      bool forJson = false,
-      bool forView = false]) async {
+      [bool forQuery = false, bool forJson = false, bool forView = false]) async {
     final map = <String, dynamic>{};
     if (id != null) {
       map['id'] = id;
     }
-    if (name != null) {
-      map['name'] = name;
+    if (public_name != null) {
+      map['public_name'] = public_name;
     }
 
-    if (mediaId != null) {
-      map['mediaId'] = mediaId;
+    if (media_id != null) {
+      map['media_id'] = media_id;
     }
 
-    if (mediaType != null) {
-      map['mediaType'] = mediaType;
+    if (media_type != null) {
+      map['media_type'] = media_type;
     }
 
     if (song_lyricsId != null) {
-      map['song_lyricsId'] = forView ? plSongLyricEntity.name : song_lyricsId;
+      map['song_lyricsId'] = forView
+          ? plSongLyric == null
+              ? song_lyricsId
+              : plSongLyric!.name
+          : song_lyricsId;
     }
 
-// COLLECTIONS (ExternalEntity)
+// COLLECTIONS (External)
     if (!forQuery) {
-      map['AuthorEntities'] = await getAuthorEntities().toMapList();
+      map['Authors'] = await getAuthors()!.toMapList();
     }
-// END COLLECTIONS (ExternalEntity)
+// END COLLECTIONS (External)
 
     return map;
   }
 
-  /// This method returns Json String [ExternalEntity]
+  /// This method returns Json String [External]
   String toJson() {
     return json.encode(toMap(forJson: true));
   }
 
-  /// This method returns Json String [ExternalEntity]
+  /// This method returns Json String [External]
   Future<String> toJsonWithChilds() async {
     return json.encode(await toMapWithChildren(false, true));
   }
 
   List<dynamic> toArgs() {
-    return [id, name, mediaId, mediaType, song_lyricsId];
+    return [id, public_name, media_id, media_type, song_lyricsId];
   }
 
   List<dynamic> toArgsWithIds() {
-    return [id, name, mediaId, mediaType, song_lyricsId];
+    return [id, public_name, media_id, media_type, song_lyricsId];
   }
 
-  static Future<List<ExternalEntity>> fromWebUrl(String url,
-      {Map<String, String> headers}) async {
+  static Future<List<External>?> fromWebUrl(Uri uri, {Map<String, String>? headers}) async {
     try {
-      final response = await http.get(url, headers: headers);
+      final response = await http.get(uri, headers: headers);
       return await fromJson(response.body);
     } catch (e) {
-      print(
-          'SQFENTITY ERROR ExternalEntity.fromWebUrl: ErrorMessage: ${e.toString()}');
+      print('SQFENTITY ERROR External.fromWebUrl: ErrorMessage: ${e.toString()}');
       return null;
     }
   }
 
-  Future<http.Response> postUrl(String url, {Map<String, String> headers}) {
-    return http.post(url, headers: headers, body: toJson());
+  Future<http.Response> postUrl(Uri uri, {Map<String, String>? headers}) {
+    return http.post(uri, headers: headers, body: toJson());
   }
 
-  static Future<List<ExternalEntity>> fromJson(String jsonBody) async {
+  static Future<List<External>> fromJson(String jsonBody) async {
     final Iterable list = await json.decode(jsonBody) as Iterable;
-    var objList = <ExternalEntity>[];
+    var objList = <External>[];
     try {
-      objList = list
-          .map((externalentity) =>
-              ExternalEntity.fromMap(externalentity as Map<String, dynamic>))
-          .toList();
+      objList = list.map((external) => External.fromMap(external as Map<String, dynamic>)).toList();
     } catch (e) {
-      print(
-          'SQFENTITY ERROR ExternalEntity.fromJson: ErrorMessage: ${e.toString()}');
+      print('SQFENTITY ERROR External.fromJson: ErrorMessage: ${e.toString()}');
     }
     return objList;
   }
 
-  static Future<List<ExternalEntity>> fromMapList(List<dynamic> data,
+  static Future<List<External>> fromMapList(List<dynamic> data,
       {bool preload = false,
-      List<String> preloadFields,
+      List<String>? preloadFields,
       bool loadParents = false,
-      List<String> loadedFields,
+      List<String>? loadedFields,
       bool setDefaultValues = true}) async {
-    final List<ExternalEntity> objList = <ExternalEntity>[];
+    final List<External> objList = <External>[];
     loadedFields = loadedFields ?? [];
     for (final map in data) {
-      final obj = ExternalEntity.fromMap(map as Map<String, dynamic>,
-          setDefaultValues: setDefaultValues);
+      final obj = External.fromMap(map as Map<String, dynamic>, setDefaultValues: setDefaultValues);
       // final List<String> _loadedFields = List<String>.from(loadedFields);
 
       // RELATIONSHIPS PRELOAD CHILD
       if (preload) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedFields.contains('externals.plAuthorEntities') && */ (preloadFields ==
-                null ||
-            preloadFields.contains('plAuthorEntities'))) {
-          /*_loadedFields.add('externals.plAuthorEntities'); */
-          obj.plAuthorEntities = obj.plAuthorEntities ??
-              await obj.getAuthorEntities().toList(
-                  preload: preload,
-                  preloadFields: preloadFields,
-                  loadParents: false /*, loadedFields:_loadedFields*/);
+        if (/*!_loadedfields!.contains('externals.plAuthors') && */ (preloadFields == null ||
+            preloadFields.contains('plAuthors'))) {
+          /*_loadedfields!.add('externals.plAuthors'); */ obj.plAuthors = obj.plAuthors ??
+              await obj.getAuthors()!.toList(
+                  preload: preload, preloadFields: preloadFields, loadParents: false /*, loadedFields:_loadedFields*/);
         }
       } // END RELATIONSHIPS PRELOAD CHILD
 
       // RELATIONSHIPS PRELOAD
       if (preload || loadParents) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedFields.contains('song_lyrics.plSongLyricEntity') && */ (preloadFields ==
-                null ||
+        if (/*!_loadedfields!.contains('song_lyrics.plSongLyric') && */ (preloadFields == null ||
             loadParents ||
-            preloadFields.contains('plSongLyricEntity'))) {
-          /*_loadedFields.add('song_lyrics.plSongLyricEntity');*/
-          obj.plSongLyricEntity = obj.plSongLyricEntity ??
-              await obj.getSongLyricEntity(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+            preloadFields.contains('plSongLyric'))) {
+          /*_loadedfields!.add('song_lyrics.plSongLyric');*/ obj.plSongLyric =
+              obj.plSongLyric ?? await obj.getSongLyric(loadParents: loadParents /*, loadedFields: _loadedFields*/);
         }
       } // END RELATIONSHIPS PRELOAD
 
@@ -1804,9 +1602,9 @@ class ExternalEntity {
     return objList;
   }
 
-  /// returns ExternalEntity by ID if exist, otherwise returns null
+  /// returns External by ID if exist, otherwise returns null
   ///
-  /// Primary Keys: int id
+  /// Primary Keys: int? id
   ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
   ///
@@ -1819,47 +1617,37 @@ class ExternalEntity {
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
   ///
-  /// <returns>returns ExternalEntity if exist, otherwise returns null
-  Future<ExternalEntity> getById(int id,
-      {bool preload = false,
-      List<String> preloadFields,
-      bool loadParents = false,
-      List<String> loadedFields}) async {
+  /// <returns>returns External if exist, otherwise returns null
+  Future<External?> getById(int? id,
+      {bool preload = false, List<String>? preloadFields, bool loadParents = false, List<String>? loadedFields}) async {
     if (id == null) {
       return null;
     }
-    ExternalEntity obj;
-    final data = await _mnExternalEntity.getById([id]);
+    External? obj;
+    final data = await _mnExternal.getById([id]);
     if (data.length != 0) {
-      obj = ExternalEntity.fromMap(data[0] as Map<String, dynamic>);
+      obj = External.fromMap(data[0] as Map<String, dynamic>);
       // final List<String> _loadedFields = loadedFields ?? [];
 
       // RELATIONSHIPS PRELOAD CHILD
       if (preload) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedFields.contains('externals.plAuthorEntities') && */ (preloadFields ==
-                null ||
-            preloadFields.contains('plAuthorEntities'))) {
-          /*_loadedFields.add('externals.plAuthorEntities'); */
-          obj.plAuthorEntities = obj.plAuthorEntities ??
-              await obj.getAuthorEntities().toList(
-                  preload: preload,
-                  preloadFields: preloadFields,
-                  loadParents: false /*, loadedFields:_loadedFields*/);
+        if (/*!_loadedfields!.contains('externals.plAuthors') && */ (preloadFields == null ||
+            preloadFields.contains('plAuthors'))) {
+          /*_loadedfields!.add('externals.plAuthors'); */ obj.plAuthors = obj.plAuthors ??
+              await obj.getAuthors()!.toList(
+                  preload: preload, preloadFields: preloadFields, loadParents: false /*, loadedFields:_loadedFields*/);
         }
       } // END RELATIONSHIPS PRELOAD CHILD
 
       // RELATIONSHIPS PRELOAD
       if (preload || loadParents) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedFields.contains('song_lyrics.plSongLyricEntity') && */ (preloadFields ==
-                null ||
+        if (/*!_loadedfields!.contains('song_lyrics.plSongLyric') && */ (preloadFields == null ||
             loadParents ||
-            preloadFields.contains('plSongLyricEntity'))) {
-          /*_loadedFields.add('song_lyrics.plSongLyricEntity');*/
-          obj.plSongLyricEntity = obj.plSongLyricEntity ??
-              await obj.getSongLyricEntity(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+            preloadFields.contains('plSongLyric'))) {
+          /*_loadedfields!.add('song_lyrics.plSongLyric');*/ obj.plSongLyric =
+              obj.plSongLyric ?? await obj.getSongLyric(loadParents: loadParents /*, loadedFields: _loadedFields*/);
         }
       } // END RELATIONSHIPS PRELOAD
 
@@ -1869,104 +1657,93 @@ class ExternalEntity {
     return obj;
   }
 
-  /// Saves the (ExternalEntity) object. If the id field is null, saves as a new record and returns new id, if id is not null then updates record
+  /// Saves the (External) object. If the id field is null, saves as a new record and returns new id, if id is not null then updates record
 
   /// <returns>Returns id
-  Future<int> save() async {
-    if (id == null || id == 0 || !isSaved) {
-      await _mnExternalEntity.insert(this);
-      if (saveResult != null && saveResult.success) {
+  Future<int?> save() async {
+    if (id == null || id == 0 || !isSaved!) {
+      await _mnExternal.insert(this);
+      if (saveResult!.success) {
         isSaved = true;
       }
     } else {
       // id= await _upsert(); // removed in sqfentity_gen 1.3.0+6
-      await _mnExternalEntity.update(this);
+      await _mnExternal.update(this);
     }
 
     return id;
   }
 
-  /// saveAll method saves the sent List<ExternalEntity> as a bulk in one transaction
+  /// saveAll method saves the sent List<External> as a bulk in one transaction
   ///
   /// Returns a <List<BoolResult>>
-  static Future<List<dynamic>> saveAll(
-      List<ExternalEntity> externalentities) async {
-    // final results = _mnExternalEntity.saveAll('INSERT OR REPLACE INTO externals (id,name, mediaId, mediaType, song_lyricsId)  VALUES (?,?,?,?,?)',externalentities);
+  static Future<List<dynamic>> saveAll(List<External> externals) async {
+    // final results = _mnExternal.saveAll('INSERT OR REPLACE INTO externals (id,public_name, media_id, media_type, song_lyricsId)  VALUES (?,?,?,?,?)',externals);
     // return results; removed in sqfentity_gen 1.3.0+6
     await Model().batchStart();
-    for (final obj in externalentities) {
+    for (final obj in externals) {
       await obj.save();
     }
     //    return Model().batchCommit();
     final result = await Model().batchCommit();
 
-    return result;
+    return result!;
   }
 
   /// Updates if the record exists, otherwise adds a new row
 
   /// <returns>Returns id
-  Future<int> upsert() async {
+
+  Future<int?> upsert() async {
     try {
-      if (await _mnExternalEntity.rawInsert(
-              'INSERT OR REPLACE INTO externals (id,name, mediaId, mediaType, song_lyricsId)  VALUES (?,?,?,?,?)',
-              [id, name, mediaId, mediaType, song_lyricsId]) ==
-          1) {
-        saveResult = BoolResult(
-            success: true,
-            successMessage: 'ExternalEntity id=$id updated successfully');
+      final result = await _mnExternal.rawInsert(
+          'INSERT OR REPLACE INTO externals (id,public_name, media_id, media_type, song_lyricsId)  VALUES (?,?,?,?,?)',
+          [id, public_name, media_id, media_type, song_lyricsId]);
+      if (result! > 0) {
+        saveResult = BoolResult(success: true, successMessage: 'External id=$id updated successfully');
       } else {
-        saveResult = BoolResult(
-            success: false,
-            errorMessage: 'ExternalEntity id=$id did not update');
+        saveResult = BoolResult(success: false, errorMessage: 'External id=$id did not update');
       }
       return id;
     } catch (e) {
-      saveResult = BoolResult(
-          success: false,
-          errorMessage: 'ExternalEntity Save failed. Error: ${e.toString()}');
-      return 0;
+      saveResult = BoolResult(success: false, errorMessage: 'External Save failed. Error: ${e.toString()}');
+      return null;
     }
   }
 
-  /// inserts or replaces the sent List<<ExternalEntity>> as a bulk in one transaction.
+  /// inserts or replaces the sent List<<External>> as a bulk in one transaction.
   ///
   /// upsertAll() method is faster then saveAll() method. upsertAll() should be used when you are sure that the primary key is greater than zero
   ///
   /// Returns a BoolCommitResult
-  Future<BoolCommitResult> upsertAll(
-      List<ExternalEntity> externalentities) async {
-    final results = await _mnExternalEntity.rawInsertAll(
-        'INSERT OR REPLACE INTO externals (id,name, mediaId, mediaType, song_lyricsId)  VALUES (?,?,?,?,?)',
-        externalentities);
+  Future<BoolCommitResult> upsertAll(List<External> externals) async {
+    final results = await _mnExternal.rawInsertAll(
+        'INSERT OR REPLACE INTO externals (id,public_name, media_id, media_type, song_lyricsId)  VALUES (?,?,?,?,?)',
+        externals);
     return results;
   }
 
-  /// Deletes ExternalEntity
+  /// Deletes External
 
   /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
+
   Future<BoolResult> delete([bool hardDelete = false]) async {
-    print('SQFENTITIY: delete ExternalEntity invoked (id=$id)');
+    print('SQFENTITIY: delete External invoked (id=$id)');
     if (!_softDeleteActivated || hardDelete) {
-      return _mnExternalEntity
-          .delete(QueryParams(whereString: 'id=?', whereArguments: [id]));
+      return _mnExternal.delete(QueryParams(whereString: 'id=?', whereArguments: [id]));
     } else {
-      return _mnExternalEntity.updateBatch(
-          QueryParams(whereString: 'id=?', whereArguments: [id]),
-          {'isDeleted': 1});
+      return _mnExternal.updateBatch(QueryParams(whereString: 'id=?', whereArguments: [id]), {'isDeleted': 1});
     }
   }
 
-  ExternalEntityFilterBuilder select(
-      {List<String> columnsToSelect, bool getIsDeleted}) {
-    return ExternalEntityFilterBuilder(this)
+  ExternalFilterBuilder select({List<String>? columnsToSelect, bool? getIsDeleted}) {
+    return ExternalFilterBuilder(this)
       .._getIsDeleted = getIsDeleted == true
       ..qparams.selectColumns = columnsToSelect;
   }
 
-  ExternalEntityFilterBuilder distinct(
-      {List<String> columnsToSelect, bool getIsDeleted}) {
-    return ExternalEntityFilterBuilder(this)
+  ExternalFilterBuilder distinct({List<String>? columnsToSelect, bool? getIsDeleted}) {
+    return ExternalFilterBuilder(this)
       .._getIsDeleted = getIsDeleted == true
       ..qparams.selectColumns = columnsToSelect
       ..qparams.distinct = true;
@@ -1976,9 +1753,9 @@ class ExternalEntity {
     isSaved = false;
   }
   // END METHODS
-  // CUSTOM CODES
+  // BEGIN CUSTOM CODE
   /*
-      you must define customCode property of your SqfEntityTable constant for ex:
+      you can define customCode property of your SqfEntityTable constant. For example:
       const tablePerson = SqfEntityTable(
       tableName: 'person',
       primaryKeyName: 'id',
@@ -1994,251 +1771,178 @@ class ExternalEntity {
        }
       ''');
      */
-  // END CUSTOM CODES
+  // END CUSTOM CODE
 }
-// endregion externalentity
+// endregion external
 
-// region ExternalEntityField
-class ExternalEntityField extends SearchCriteria {
-  ExternalEntityField(this.externalentityFB) {
-    param = DbParameter();
-  }
-  DbParameter param;
+// region ExternalField
+class ExternalField extends SearchCriteria {
+  ExternalField(this.externalFB);
+  // { param = DbParameter(); }
+  DbParameter param = DbParameter();
   String _waitingNot = '';
-  ExternalEntityFilterBuilder externalentityFB;
+  ExternalFilterBuilder externalFB;
 
-  ExternalEntityField get not {
+  ExternalField get not {
     _waitingNot = ' NOT ';
     return this;
   }
 
-  ExternalEntityFilterBuilder equals(dynamic pValue) {
+  ExternalFilterBuilder equals(dynamic pValue) {
     param.expression = '=';
-    externalentityFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, externalentityFB.parameters, param,
-            SqlSyntax.EQuals, externalentityFB._addedBlocks)
-        : setCriteria(pValue, externalentityFB.parameters, param,
-            SqlSyntax.NotEQuals, externalentityFB._addedBlocks);
+    externalFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, externalFB.parameters, param, SqlSyntax.EQuals, externalFB._addedBlocks)
+        : setCriteria(pValue, externalFB.parameters, param, SqlSyntax.NotEQuals, externalFB._addedBlocks);
     _waitingNot = '';
-    externalentityFB._addedBlocks.needEndBlock[externalentityFB._blockIndex] =
-        externalentityFB._addedBlocks.retVal;
-    return externalentityFB;
+    externalFB._addedBlocks.needEndBlock![externalFB._blockIndex] = externalFB._addedBlocks.retVal;
+    return externalFB;
   }
 
-  ExternalEntityFilterBuilder equalsOrNull(dynamic pValue) {
+  ExternalFilterBuilder equalsOrNull(dynamic pValue) {
     param.expression = '=';
-    externalentityFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, externalentityFB.parameters, param,
-            SqlSyntax.EQualsOrNull, externalentityFB._addedBlocks)
-        : setCriteria(pValue, externalentityFB.parameters, param,
-            SqlSyntax.NotEQualsOrNull, externalentityFB._addedBlocks);
+    externalFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, externalFB.parameters, param, SqlSyntax.EQualsOrNull, externalFB._addedBlocks)
+        : setCriteria(pValue, externalFB.parameters, param, SqlSyntax.NotEQualsOrNull, externalFB._addedBlocks);
     _waitingNot = '';
-    externalentityFB._addedBlocks.needEndBlock[externalentityFB._blockIndex] =
-        externalentityFB._addedBlocks.retVal;
-    return externalentityFB;
+    externalFB._addedBlocks.needEndBlock![externalFB._blockIndex] = externalFB._addedBlocks.retVal;
+    return externalFB;
   }
 
-  ExternalEntityFilterBuilder isNull() {
-    externalentityFB._addedBlocks = setCriteria(
-        0,
-        externalentityFB.parameters,
-        param,
-        SqlSyntax.IsNULL.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-        externalentityFB._addedBlocks);
+  ExternalFilterBuilder isNull() {
+    externalFB._addedBlocks = setCriteria(0, externalFB.parameters, param,
+        SqlSyntax.IsNULL.replaceAll(SqlSyntax.notKeyword, _waitingNot), externalFB._addedBlocks);
     _waitingNot = '';
-    externalentityFB._addedBlocks.needEndBlock[externalentityFB._blockIndex] =
-        externalentityFB._addedBlocks.retVal;
-    return externalentityFB;
+    externalFB._addedBlocks.needEndBlock![externalFB._blockIndex] = externalFB._addedBlocks.retVal;
+    return externalFB;
   }
 
-  ExternalEntityFilterBuilder contains(dynamic pValue) {
+  ExternalFilterBuilder contains(dynamic pValue) {
     if (pValue != null) {
-      externalentityFB._addedBlocks = setCriteria(
-          '%${pValue.toString()}%',
-          externalentityFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          externalentityFB._addedBlocks);
+      externalFB._addedBlocks = setCriteria('%${pValue.toString()}%', externalFB.parameters, param,
+          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot), externalFB._addedBlocks);
       _waitingNot = '';
-      externalentityFB._addedBlocks.needEndBlock[externalentityFB._blockIndex] =
-          externalentityFB._addedBlocks.retVal;
+      externalFB._addedBlocks.needEndBlock![externalFB._blockIndex] = externalFB._addedBlocks.retVal;
     }
-    return externalentityFB;
+    return externalFB;
   }
 
-  ExternalEntityFilterBuilder startsWith(dynamic pValue) {
+  ExternalFilterBuilder startsWith(dynamic pValue) {
     if (pValue != null) {
-      externalentityFB._addedBlocks = setCriteria(
-          '${pValue.toString()}%',
-          externalentityFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          externalentityFB._addedBlocks);
+      externalFB._addedBlocks = setCriteria('${pValue.toString()}%', externalFB.parameters, param,
+          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot), externalFB._addedBlocks);
       _waitingNot = '';
-      externalentityFB._addedBlocks.needEndBlock[externalentityFB._blockIndex] =
-          externalentityFB._addedBlocks.retVal;
-      externalentityFB._addedBlocks.needEndBlock[externalentityFB._blockIndex] =
-          externalentityFB._addedBlocks.retVal;
+      externalFB._addedBlocks.needEndBlock![externalFB._blockIndex] = externalFB._addedBlocks.retVal;
+      externalFB._addedBlocks.needEndBlock![externalFB._blockIndex] = externalFB._addedBlocks.retVal;
     }
-    return externalentityFB;
+    return externalFB;
   }
 
-  ExternalEntityFilterBuilder endsWith(dynamic pValue) {
+  ExternalFilterBuilder endsWith(dynamic pValue) {
     if (pValue != null) {
-      externalentityFB._addedBlocks = setCriteria(
-          '%${pValue.toString()}',
-          externalentityFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          externalentityFB._addedBlocks);
+      externalFB._addedBlocks = setCriteria('%${pValue.toString()}', externalFB.parameters, param,
+          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot), externalFB._addedBlocks);
       _waitingNot = '';
-      externalentityFB._addedBlocks.needEndBlock[externalentityFB._blockIndex] =
-          externalentityFB._addedBlocks.retVal;
+      externalFB._addedBlocks.needEndBlock![externalFB._blockIndex] = externalFB._addedBlocks.retVal;
     }
-    return externalentityFB;
+    return externalFB;
   }
 
-  ExternalEntityFilterBuilder between(dynamic pFirst, dynamic pLast) {
+  ExternalFilterBuilder between(dynamic pFirst, dynamic pLast) {
     if (pFirst != null && pLast != null) {
-      externalentityFB._addedBlocks = setCriteria(
-          pFirst,
-          externalentityFB.parameters,
-          param,
-          SqlSyntax.Between.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          externalentityFB._addedBlocks,
-          pLast);
+      externalFB._addedBlocks = setCriteria(pFirst, externalFB.parameters, param,
+          SqlSyntax.Between.replaceAll(SqlSyntax.notKeyword, _waitingNot), externalFB._addedBlocks, pLast);
     } else if (pFirst != null) {
       if (_waitingNot != '') {
-        externalentityFB._addedBlocks = setCriteria(
-            pFirst,
-            externalentityFB.parameters,
-            param,
-            SqlSyntax.LessThan,
-            externalentityFB._addedBlocks);
+        externalFB._addedBlocks =
+            setCriteria(pFirst, externalFB.parameters, param, SqlSyntax.LessThan, externalFB._addedBlocks);
       } else {
-        externalentityFB._addedBlocks = setCriteria(
-            pFirst,
-            externalentityFB.parameters,
-            param,
-            SqlSyntax.GreaterThanOrEquals,
-            externalentityFB._addedBlocks);
+        externalFB._addedBlocks =
+            setCriteria(pFirst, externalFB.parameters, param, SqlSyntax.GreaterThanOrEquals, externalFB._addedBlocks);
       }
     } else if (pLast != null) {
       if (_waitingNot != '') {
-        externalentityFB._addedBlocks = setCriteria(
-            pLast,
-            externalentityFB.parameters,
-            param,
-            SqlSyntax.GreaterThan,
-            externalentityFB._addedBlocks);
+        externalFB._addedBlocks =
+            setCriteria(pLast, externalFB.parameters, param, SqlSyntax.GreaterThan, externalFB._addedBlocks);
       } else {
-        externalentityFB._addedBlocks = setCriteria(
-            pLast,
-            externalentityFB.parameters,
-            param,
-            SqlSyntax.LessThanOrEquals,
-            externalentityFB._addedBlocks);
+        externalFB._addedBlocks =
+            setCriteria(pLast, externalFB.parameters, param, SqlSyntax.LessThanOrEquals, externalFB._addedBlocks);
       }
     }
     _waitingNot = '';
-    externalentityFB._addedBlocks.needEndBlock[externalentityFB._blockIndex] =
-        externalentityFB._addedBlocks.retVal;
-    return externalentityFB;
+    externalFB._addedBlocks.needEndBlock![externalFB._blockIndex] = externalFB._addedBlocks.retVal;
+    return externalFB;
   }
 
-  ExternalEntityFilterBuilder greaterThan(dynamic pValue) {
+  ExternalFilterBuilder greaterThan(dynamic pValue) {
     param.expression = '>';
-    externalentityFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, externalentityFB.parameters, param,
-            SqlSyntax.GreaterThan, externalentityFB._addedBlocks)
-        : setCriteria(pValue, externalentityFB.parameters, param,
-            SqlSyntax.LessThanOrEquals, externalentityFB._addedBlocks);
+    externalFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, externalFB.parameters, param, SqlSyntax.GreaterThan, externalFB._addedBlocks)
+        : setCriteria(pValue, externalFB.parameters, param, SqlSyntax.LessThanOrEquals, externalFB._addedBlocks);
     _waitingNot = '';
-    externalentityFB._addedBlocks.needEndBlock[externalentityFB._blockIndex] =
-        externalentityFB._addedBlocks.retVal;
-    return externalentityFB;
+    externalFB._addedBlocks.needEndBlock![externalFB._blockIndex] = externalFB._addedBlocks.retVal;
+    return externalFB;
   }
 
-  ExternalEntityFilterBuilder lessThan(dynamic pValue) {
+  ExternalFilterBuilder lessThan(dynamic pValue) {
     param.expression = '<';
-    externalentityFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, externalentityFB.parameters, param,
-            SqlSyntax.LessThan, externalentityFB._addedBlocks)
-        : setCriteria(pValue, externalentityFB.parameters, param,
-            SqlSyntax.GreaterThanOrEquals, externalentityFB._addedBlocks);
+    externalFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, externalFB.parameters, param, SqlSyntax.LessThan, externalFB._addedBlocks)
+        : setCriteria(pValue, externalFB.parameters, param, SqlSyntax.GreaterThanOrEquals, externalFB._addedBlocks);
     _waitingNot = '';
-    externalentityFB._addedBlocks.needEndBlock[externalentityFB._blockIndex] =
-        externalentityFB._addedBlocks.retVal;
-    return externalentityFB;
+    externalFB._addedBlocks.needEndBlock![externalFB._blockIndex] = externalFB._addedBlocks.retVal;
+    return externalFB;
   }
 
-  ExternalEntityFilterBuilder greaterThanOrEquals(dynamic pValue) {
+  ExternalFilterBuilder greaterThanOrEquals(dynamic pValue) {
     param.expression = '>=';
-    externalentityFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, externalentityFB.parameters, param,
-            SqlSyntax.GreaterThanOrEquals, externalentityFB._addedBlocks)
-        : setCriteria(pValue, externalentityFB.parameters, param,
-            SqlSyntax.LessThan, externalentityFB._addedBlocks);
+    externalFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, externalFB.parameters, param, SqlSyntax.GreaterThanOrEquals, externalFB._addedBlocks)
+        : setCriteria(pValue, externalFB.parameters, param, SqlSyntax.LessThan, externalFB._addedBlocks);
     _waitingNot = '';
-    externalentityFB._addedBlocks.needEndBlock[externalentityFB._blockIndex] =
-        externalentityFB._addedBlocks.retVal;
-    return externalentityFB;
+    externalFB._addedBlocks.needEndBlock![externalFB._blockIndex] = externalFB._addedBlocks.retVal;
+    return externalFB;
   }
 
-  ExternalEntityFilterBuilder lessThanOrEquals(dynamic pValue) {
+  ExternalFilterBuilder lessThanOrEquals(dynamic pValue) {
     param.expression = '<=';
-    externalentityFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, externalentityFB.parameters, param,
-            SqlSyntax.LessThanOrEquals, externalentityFB._addedBlocks)
-        : setCriteria(pValue, externalentityFB.parameters, param,
-            SqlSyntax.GreaterThan, externalentityFB._addedBlocks);
+    externalFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, externalFB.parameters, param, SqlSyntax.LessThanOrEquals, externalFB._addedBlocks)
+        : setCriteria(pValue, externalFB.parameters, param, SqlSyntax.GreaterThan, externalFB._addedBlocks);
     _waitingNot = '';
-    externalentityFB._addedBlocks.needEndBlock[externalentityFB._blockIndex] =
-        externalentityFB._addedBlocks.retVal;
-    return externalentityFB;
+    externalFB._addedBlocks.needEndBlock![externalFB._blockIndex] = externalFB._addedBlocks.retVal;
+    return externalFB;
   }
 
-  ExternalEntityFilterBuilder inValues(dynamic pValue) {
-    externalentityFB._addedBlocks = setCriteria(
-        pValue,
-        externalentityFB.parameters,
-        param,
-        SqlSyntax.IN.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-        externalentityFB._addedBlocks);
+  ExternalFilterBuilder inValues(dynamic pValue) {
+    externalFB._addedBlocks = setCriteria(pValue, externalFB.parameters, param,
+        SqlSyntax.IN.replaceAll(SqlSyntax.notKeyword, _waitingNot), externalFB._addedBlocks);
     _waitingNot = '';
-    externalentityFB._addedBlocks.needEndBlock[externalentityFB._blockIndex] =
-        externalentityFB._addedBlocks.retVal;
-    return externalentityFB;
+    externalFB._addedBlocks.needEndBlock![externalFB._blockIndex] = externalFB._addedBlocks.retVal;
+    return externalFB;
   }
 }
-// endregion ExternalEntityField
+// endregion ExternalField
 
-// region ExternalEntityFilterBuilder
-class ExternalEntityFilterBuilder extends SearchCriteria {
-  ExternalEntityFilterBuilder(ExternalEntity obj) {
+// region ExternalFilterBuilder
+class ExternalFilterBuilder extends SearchCriteria {
+  ExternalFilterBuilder(External obj) {
     whereString = '';
-    qparams = QueryParams();
-    parameters = <DbParameter>[];
-    orderByList = <String>[];
     groupByList = <String>[];
-    _addedBlocks = AddedBlocks(<bool>[], <bool>[]);
-    _addedBlocks.needEndBlock.add(false);
-    _addedBlocks.waitingStartBlock.add(false);
-    _pagesize = 0;
-    _page = 0;
+    _addedBlocks.needEndBlock!.add(false);
+    _addedBlocks.waitingStartBlock!.add(false);
     _obj = obj;
   }
-  AddedBlocks _addedBlocks;
+  AddedBlocks _addedBlocks = AddedBlocks(<bool>[], <bool>[]);
   int _blockIndex = 0;
-  List<DbParameter> parameters;
-  List<String> orderByList;
-  ExternalEntity _obj;
-  QueryParams qparams;
-  int _pagesize;
-  int _page;
+  List<DbParameter> parameters = <DbParameter>[];
+  List<String> orderByList = <String>[];
+  External? _obj;
+  QueryParams qparams = QueryParams();
+  int _pagesize = 0;
+  int _page = 0;
 
   /// put the sql keyword 'AND'
-  ExternalEntityFilterBuilder get and {
+  ExternalFilterBuilder get and {
     if (parameters.isNotEmpty) {
       parameters[parameters.length - 1].wOperator = ' AND ';
     }
@@ -2246,7 +1950,7 @@ class ExternalEntityFilterBuilder extends SearchCriteria {
   }
 
   /// put the sql keyword 'OR'
-  ExternalEntityFilterBuilder get or {
+  ExternalFilterBuilder get or {
     if (parameters.isNotEmpty) {
       parameters[parameters.length - 1].wOperator = ' OR ';
     }
@@ -2254,26 +1958,23 @@ class ExternalEntityFilterBuilder extends SearchCriteria {
   }
 
   /// open parentheses
-  ExternalEntityFilterBuilder get startBlock {
-    _addedBlocks.waitingStartBlock.add(true);
-    _addedBlocks.needEndBlock.add(false);
+  ExternalFilterBuilder get startBlock {
+    _addedBlocks.waitingStartBlock!.add(true);
+    _addedBlocks.needEndBlock!.add(false);
     _blockIndex++;
     if (_blockIndex > 1) {
-      _addedBlocks.needEndBlock[_blockIndex - 1] = true;
+      _addedBlocks.needEndBlock![_blockIndex - 1] = true;
     }
     return this;
   }
 
   /// String whereCriteria, write raw query without 'where' keyword. Like this: 'field1 like 'test%' and field2 = 3'
-  ExternalEntityFilterBuilder where(String whereCriteria,
-      {dynamic parameterValue}) {
+  ExternalFilterBuilder where(String? whereCriteria, {dynamic parameterValue}) {
     if (whereCriteria != null && whereCriteria != '') {
-      final DbParameter param = DbParameter(
-          columnName: parameterValue == null ? null : '',
-          hasParameter: parameterValue != null);
-      _addedBlocks = setCriteria(parameterValue ?? 0, parameters, param,
-          '($whereCriteria)', _addedBlocks);
-      _addedBlocks.needEndBlock[_blockIndex] = _addedBlocks.retVal;
+      final DbParameter param =
+          DbParameter(columnName: parameterValue == null ? null : '', hasParameter: parameterValue != null);
+      _addedBlocks = setCriteria(parameterValue ?? 0, parameters, param, '($whereCriteria)', _addedBlocks);
+      _addedBlocks.needEndBlock![_blockIndex] = _addedBlocks.retVal;
     }
     return this;
   }
@@ -2281,7 +1982,7 @@ class ExternalEntityFilterBuilder extends SearchCriteria {
   /// page = page number,
   ///
   /// pagesize = row(s) per page
-  ExternalEntityFilterBuilder page(int page, int pagesize) {
+  ExternalFilterBuilder page(int page, int pagesize) {
     if (page > 0) {
       _page = page;
     }
@@ -2292,7 +1993,7 @@ class ExternalEntityFilterBuilder extends SearchCriteria {
   }
 
   /// int count = LIMIT
-  ExternalEntityFilterBuilder top(int count) {
+  ExternalFilterBuilder top(int count) {
     if (count > 0) {
       _pagesize = count;
     }
@@ -2300,12 +2001,12 @@ class ExternalEntityFilterBuilder extends SearchCriteria {
   }
 
   /// close parentheses
-  ExternalEntityFilterBuilder get endBlock {
-    if (_addedBlocks.needEndBlock[_blockIndex]) {
+  ExternalFilterBuilder get endBlock {
+    if (_addedBlocks.needEndBlock![_blockIndex]) {
       parameters[parameters.length - 1].whereString += ' ) ';
     }
-    _addedBlocks.needEndBlock.removeAt(_blockIndex);
-    _addedBlocks.waitingStartBlock.removeAt(_blockIndex);
+    _addedBlocks.needEndBlock!.removeAt(_blockIndex);
+    _addedBlocks.waitingStartBlock!.removeAt(_blockIndex);
     _blockIndex--;
     return this;
   }
@@ -2315,13 +2016,13 @@ class ExternalEntityFilterBuilder extends SearchCriteria {
   /// Example 1: argFields='name, date'
   ///
   /// Example 2: argFields = ['name', 'date']
-  ExternalEntityFilterBuilder orderBy(dynamic argFields) {
+  ExternalFilterBuilder orderBy(dynamic argFields) {
     if (argFields != null) {
       if (argFields is String) {
         orderByList.add(argFields);
       } else {
-        for (String s in argFields as List<String>) {
-          if (s != null && s.isNotEmpty) {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
             orderByList.add(' $s ');
           }
         }
@@ -2335,13 +2036,13 @@ class ExternalEntityFilterBuilder extends SearchCriteria {
   /// Example 1: argFields='field1, field2'
   ///
   /// Example 2: argFields = ['field1', 'field2']
-  ExternalEntityFilterBuilder orderByDesc(dynamic argFields) {
+  ExternalFilterBuilder orderByDesc(dynamic argFields) {
     if (argFields != null) {
       if (argFields is String) {
         orderByList.add('$argFields desc ');
       } else {
-        for (String s in argFields as List<String>) {
-          if (s != null && s.isNotEmpty) {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
             orderByList.add(' $s desc ');
           }
         }
@@ -2355,13 +2056,13 @@ class ExternalEntityFilterBuilder extends SearchCriteria {
   /// Example 1: argFields='field1, field2'
   ///
   /// Example 2: argFields = ['field1', 'field2']
-  ExternalEntityFilterBuilder groupBy(dynamic argFields) {
+  ExternalFilterBuilder groupBy(dynamic argFields) {
     if (argFields != null) {
       if (argFields is String) {
         groupByList.add(' $argFields ');
       } else {
-        for (String s in argFields as List<String>) {
-          if (s != null && s.isNotEmpty) {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
             groupByList.add(' $s ');
           }
         }
@@ -2375,13 +2076,13 @@ class ExternalEntityFilterBuilder extends SearchCriteria {
   /// Example 1: argFields='name, date'
   ///
   /// Example 2: argFields = ['name', 'date']
-  ExternalEntityFilterBuilder having(dynamic argFields) {
+  ExternalFilterBuilder having(dynamic argFields) {
     if (argFields != null) {
       if (argFields is String) {
         havingList.add(argFields);
       } else {
-        for (String s in argFields as List<String>) {
-          if (s != null && s.isNotEmpty) {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
             havingList.add(' $s ');
           }
         }
@@ -2390,42 +2091,38 @@ class ExternalEntityFilterBuilder extends SearchCriteria {
     return this;
   }
 
-  ExternalEntityField setField(
-      ExternalEntityField field, String colName, DbType dbtype) {
-    return ExternalEntityField(this)
-      ..param = DbParameter(
-          dbType: dbtype,
-          columnName: colName,
-          wStartBlock: _addedBlocks.waitingStartBlock[_blockIndex]);
+  ExternalField setField(ExternalField? field, String colName, DbType dbtype) {
+    return ExternalField(this)
+      ..param =
+          DbParameter(dbType: dbtype, columnName: colName, wStartBlock: _addedBlocks.waitingStartBlock![_blockIndex]);
   }
 
-  ExternalEntityField _id;
-  ExternalEntityField get id {
+  ExternalField? _id;
+  ExternalField get id {
     return _id = setField(_id, 'id', DbType.integer);
   }
 
-  ExternalEntityField _name;
-  ExternalEntityField get name {
-    return _name = setField(_name, 'name', DbType.text);
+  ExternalField? _public_name;
+  ExternalField get public_name {
+    return _public_name = setField(_public_name, 'public_name', DbType.text);
   }
 
-  ExternalEntityField _mediaId;
-  ExternalEntityField get mediaId {
-    return _mediaId = setField(_mediaId, 'mediaId', DbType.text);
+  ExternalField? _media_id;
+  ExternalField get media_id {
+    return _media_id = setField(_media_id, 'media_id', DbType.text);
   }
 
-  ExternalEntityField _mediaType;
-  ExternalEntityField get mediaType {
-    return _mediaType = setField(_mediaType, 'mediaType', DbType.text);
+  ExternalField? _media_type;
+  ExternalField get media_type {
+    return _media_type = setField(_media_type, 'media_type', DbType.text);
   }
 
-  ExternalEntityField _song_lyricsId;
-  ExternalEntityField get song_lyricsId {
-    return _song_lyricsId =
-        setField(_song_lyricsId, 'song_lyricsId', DbType.integer);
+  ExternalField? _song_lyricsId;
+  ExternalField get song_lyricsId {
+    return _song_lyricsId = setField(_song_lyricsId, 'song_lyricsId', DbType.integer);
   }
 
-  bool _getIsDeleted;
+  bool _getIsDeleted = false;
 
   void _buildParameters() {
     if (_page > 0 && _pagesize > 0) {
@@ -2440,24 +2137,20 @@ class ExternalEntityFilterBuilder extends SearchCriteria {
     for (DbParameter param in parameters) {
       if (param.columnName != null) {
         if (param.value is List && !param.hasParameter) {
-          param.value = param.dbType == DbType.text
+          param.value = param.dbType == DbType.text || param.value[0] is String
               ? '\'${param.value.join('\',\'')}\''
               : param.value.join(',');
-          whereString += param.whereString
-              .replaceAll('{field}', param.columnName)
-              .replaceAll('?', param.value.toString());
+          whereString +=
+              param.whereString.replaceAll('{field}', param.columnName!).replaceAll('?', param.value.toString());
           param.value = null;
         } else {
-          if (param.value is Map<String, dynamic> &&
-              param.value['sql'] != null) {
+          if (param.value is Map<String, dynamic> && param.value['sql'] != null) {
             param
-              ..whereString = param.whereString
-                  .replaceAll('?', param.value['sql'].toString())
+              ..whereString = param.whereString.replaceAll('?', param.value['sql'].toString())
               ..dbType = DbType.integer
               ..value = param.value['args'];
           }
-          whereString +=
-              param.whereString.replaceAll('{field}', param.columnName);
+          whereString += param.whereString.replaceAll('{field}', param.columnName!);
         }
         if (!param.whereString.contains('?')) {
         } else {
@@ -2477,12 +2170,8 @@ class ExternalEntityFilterBuilder extends SearchCriteria {
             case DbType.date:
             case DbType.datetime:
             case DbType.datetimeUtc:
-              param.value = param.value == null
-                  ? null
-                  : (param.value as DateTime).millisecondsSinceEpoch;
-              param.value2 = param.value2 == null
-                  ? null
-                  : (param.value2 as DateTime).millisecondsSinceEpoch;
+              param.value = param.value == null ? null : (param.value as DateTime).millisecondsSinceEpoch;
+              param.value2 = param.value2 == null ? null : (param.value2 as DateTime).millisecondsSinceEpoch;
               break;
             default:
           }
@@ -2503,10 +2192,9 @@ class ExternalEntityFilterBuilder extends SearchCriteria {
         whereString += param.whereString;
       }
     }
-    if (ExternalEntity._softDeleteActivated) {
+    if (External._softDeleteActivated) {
       if (whereString != '') {
-        whereString =
-            '${!_getIsDeleted ? 'ifnull(isDeleted,0)=0 AND' : ''} ($whereString)';
+        whereString = '${!_getIsDeleted ? 'ifnull(isDeleted,0)=0 AND' : ''} ($whereString)';
       } else if (!_getIsDeleted) {
         whereString = 'ifnull(isDeleted,0)=0';
       }
@@ -2522,17 +2210,17 @@ class ExternalEntityFilterBuilder extends SearchCriteria {
       ..having = havingList.join(',');
   }
 
-  /// Deletes List<ExternalEntity> bulk by query
+  /// Deletes List<External> bulk by query
   ///
   /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
   Future<BoolResult> delete([bool hardDelete = false]) async {
     _buildParameters();
-    var r = BoolResult();
+    var r = BoolResult(success: false);
 
-    if (ExternalEntity._softDeleteActivated && !hardDelete) {
-      r = await _obj._mnExternalEntity.updateBatch(qparams, {'isDeleted': 1});
+    if (External._softDeleteActivated && !hardDelete) {
+      r = await _obj!._mnExternal.updateBatch(qparams, {'isDeleted': 1});
     } else {
-      r = await _obj._mnExternalEntity.delete(qparams);
+      r = await _obj!._mnExternal.delete(qparams);
     }
     return r;
   }
@@ -2544,14 +2232,14 @@ class ExternalEntityFilterBuilder extends SearchCriteria {
   /// fieldName must be String. Value is dynamic, it can be any of the (int, bool, String.. )
   Future<BoolResult> update(Map<String, dynamic> values) {
     _buildParameters();
-    if (qparams.limit > 0 || qparams.offset > 0) {
+    if (qparams.limit! > 0 || qparams.offset! > 0) {
       qparams.whereString =
-          'id IN (SELECT id from externals ${qparams.whereString.isNotEmpty ? 'WHERE ${qparams.whereString}' : ''}${qparams.limit > 0 ? ' LIMIT ${qparams.limit}' : ''}${qparams.offset > 0 ? ' OFFSET ${qparams.offset}' : ''})';
+          'id IN (SELECT id from externals ${qparams.whereString!.isNotEmpty ? 'WHERE ${qparams.whereString}' : ''}${qparams.limit! > 0 ? ' LIMIT ${qparams.limit}' : ''}${qparams.offset! > 0 ? ' OFFSET ${qparams.offset}' : ''})';
     }
-    return _obj._mnExternalEntity.updateBatch(qparams, values);
+    return _obj!._mnExternal.updateBatch(qparams, values);
   }
 
-  /// This method always returns ExternalEntity Obj if exist, otherwise returns null
+  /// This method always returns External Obj if exist, otherwise returns null
   ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
   ///
@@ -2564,47 +2252,37 @@ class ExternalEntityFilterBuilder extends SearchCriteria {
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
   ///
-  /// <returns>List<ExternalEntity>
-  Future<ExternalEntity> toSingle(
-      {bool preload = false,
-      List<String> preloadFields,
-      bool loadParents = false,
-      List<String> loadedFields}) async {
+  /// <returns>List<External>
+  Future<External?> toSingle(
+      {bool preload = false, List<String>? preloadFields, bool loadParents = false, List<String>? loadedFields}) async {
     _pagesize = 1;
     _buildParameters();
-    final objFuture = _obj._mnExternalEntity.toList(qparams);
+    final objFuture = _obj!._mnExternal.toList(qparams);
     final data = await objFuture;
-    ExternalEntity obj;
+    External? obj;
     if (data.isNotEmpty) {
-      obj = ExternalEntity.fromMap(data[0] as Map<String, dynamic>);
+      obj = External.fromMap(data[0] as Map<String, dynamic>);
       // final List<String> _loadedFields = loadedFields ?? [];
 
       // RELATIONSHIPS PRELOAD CHILD
       if (preload) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedFields.contains('externals.plAuthorEntities') && */ (preloadFields ==
-                null ||
-            preloadFields.contains('plAuthorEntities'))) {
-          /*_loadedFields.add('externals.plAuthorEntities'); */
-          obj.plAuthorEntities = obj.plAuthorEntities ??
-              await obj.getAuthorEntities().toList(
-                  preload: preload,
-                  preloadFields: preloadFields,
-                  loadParents: false /*, loadedFields:_loadedFields*/);
+        if (/*!_loadedfields!.contains('externals.plAuthors') && */ (preloadFields == null ||
+            preloadFields.contains('plAuthors'))) {
+          /*_loadedfields!.add('externals.plAuthors'); */ obj.plAuthors = obj.plAuthors ??
+              await obj.getAuthors()!.toList(
+                  preload: preload, preloadFields: preloadFields, loadParents: false /*, loadedFields:_loadedFields*/);
         }
       } // END RELATIONSHIPS PRELOAD CHILD
 
       // RELATIONSHIPS PRELOAD
       if (preload || loadParents) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedFields.contains('song_lyrics.plSongLyricEntity') && */ (preloadFields ==
-                null ||
+        if (/*!_loadedfields!.contains('song_lyrics.plSongLyric') && */ (preloadFields == null ||
             loadParents ||
-            preloadFields.contains('plSongLyricEntity'))) {
-          /*_loadedFields.add('song_lyrics.plSongLyricEntity');*/
-          obj.plSongLyricEntity = obj.plSongLyricEntity ??
-              await obj.getSongLyricEntity(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+            preloadFields.contains('plSongLyric'))) {
+          /*_loadedfields!.add('song_lyrics.plSongLyric');*/ obj.plSongLyric =
+              obj.plSongLyric ?? await obj.getSongLyric(loadParents: loadParents /*, loadedFields: _loadedFields*/);
         }
       } // END RELATIONSHIPS PRELOAD
 
@@ -2614,22 +2292,21 @@ class ExternalEntityFilterBuilder extends SearchCriteria {
     return obj;
   }
 
-  /// This method returns int. [ExternalEntity]
+  /// This method returns int. [External]
   ///
   /// <returns>int
-  Future<int> toCount(
-      [VoidCallback Function(int c) externalentityCount]) async {
+  Future<int> toCount([VoidCallback Function(int c)? externalCount]) async {
     _buildParameters();
     qparams.selectColumns = ['COUNT(1) AS CNT'];
-    final externalentitiesFuture = await _obj._mnExternalEntity.toList(qparams);
-    final int count = externalentitiesFuture[0]['CNT'] as int;
-    if (externalentityCount != null) {
-      externalentityCount(count);
+    final externalsFuture = await _obj!._mnExternal.toList(qparams);
+    final int count = externalsFuture[0]['CNT'] as int;
+    if (externalCount != null) {
+      externalCount(count);
     }
     return count;
   }
 
-  /// This method returns List<ExternalEntity> [ExternalEntity]
+  /// This method returns List<External> [External]
   ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
   ///
@@ -2642,24 +2319,20 @@ class ExternalEntityFilterBuilder extends SearchCriteria {
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
   ///
-  /// <returns>List<ExternalEntity>
-  Future<List<ExternalEntity>> toList(
-      {bool preload = false,
-      List<String> preloadFields,
-      bool loadParents = false,
-      List<String> loadedFields}) async {
+  /// <returns>List<External>
+  Future<List<External>> toList(
+      {bool preload = false, List<String>? preloadFields, bool loadParents = false, List<String>? loadedFields}) async {
     final data = await toMapList();
-    final List<ExternalEntity> externalentitiesData =
-        await ExternalEntity.fromMapList(data,
-            preload: preload,
-            preloadFields: preloadFields,
-            loadParents: loadParents,
-            loadedFields: loadedFields,
-            setDefaultValues: qparams.selectColumns == null);
-    return externalentitiesData;
+    final List<External> externalsData = await External.fromMapList(data,
+        preload: preload,
+        preloadFields: preloadFields,
+        loadParents: loadParents,
+        loadedFields: loadedFields,
+        setDefaultValues: qparams.selectColumns == null);
+    return externalsData;
   }
 
-  /// This method returns Json String [ExternalEntity]
+  /// This method returns Json String [External]
   Future<String> toJson() async {
     final list = <dynamic>[];
     final data = await toList();
@@ -2669,7 +2342,7 @@ class ExternalEntityFilterBuilder extends SearchCriteria {
     return json.encode(list);
   }
 
-  /// This method returns Json String. [ExternalEntity]
+  /// This method returns Json String. [External]
   Future<String> toJsonWithChilds() async {
     final list = <dynamic>[];
     final data = await toList();
@@ -2679,15 +2352,15 @@ class ExternalEntityFilterBuilder extends SearchCriteria {
     return json.encode(list);
   }
 
-  /// This method returns List<dynamic>. [ExternalEntity]
+  /// This method returns List<dynamic>. [External]
   ///
   /// <returns>List<dynamic>
   Future<List<dynamic>> toMapList() async {
     _buildParameters();
-    return await _obj._mnExternalEntity.toList(qparams);
+    return await _obj!._mnExternal.toList(qparams);
   }
 
-  /// This method returns Primary Key List SQL and Parameters retVal = Map<String,dynamic>. [ExternalEntity]
+  /// This method returns Primary Key List SQL and Parameters retVal = Map<String,dynamic>. [External]
   ///
   /// retVal['sql'] = SQL statement string, retVal['args'] = whereArguments List<dynamic>;
   ///
@@ -2710,7 +2383,7 @@ class ExternalEntityFilterBuilder extends SearchCriteria {
     }
     final List<int> idData = <int>[];
     qparams.selectColumns = ['id'];
-    final idFuture = await _obj._mnExternalEntity.toList(qparams);
+    final idFuture = await _obj!._mnExternal.toList(qparams);
 
     final int count = idFuture.length;
     for (int i = 0; i < count; i++) {
@@ -2719,13 +2392,13 @@ class ExternalEntityFilterBuilder extends SearchCriteria {
     return idData;
   }
 
-  /// Returns List<dynamic> for selected columns. Use this method for 'groupBy' with min,max,avg..  [ExternalEntity]
+  /// Returns List<dynamic> for selected columns. Use this method for 'groupBy' with min,max,avg..  [External]
   ///
   /// Sample usage: (see EXAMPLE 4.2 at https://github.com/hhtokpinar/sqfEntity#group-by)
   Future<List<dynamic>> toListObject() async {
     _buildParameters();
 
-    final objectFuture = _obj._mnExternalEntity.toList(qparams);
+    final objectFuture = _obj!._mnExternal.toList(qparams);
 
     final List<dynamic> objectsData = <dynamic>[];
     final data = await objectFuture;
@@ -2738,18 +2411,17 @@ class ExternalEntityFilterBuilder extends SearchCriteria {
 
   /// Returns List<String> for selected first column
   ///
-  /// Sample usage: await ExternalEntity.select(columnsToSelect: ['columnName']).toListString()
-  Future<List<String>> toListString(
-      [VoidCallback Function(List<String> o) listString]) async {
+  /// Sample usage: await External.select(columnsToSelect: ['columnName']).toListString()
+  Future<List<String>> toListString([VoidCallback Function(List<String> o)? listString]) async {
     _buildParameters();
 
-    final objectFuture = _obj._mnExternalEntity.toList(qparams);
+    final objectFuture = _obj!._mnExternal.toList(qparams);
 
     final List<String> objectsData = <String>[];
     final data = await objectFuture;
     final int count = data.length;
     for (int i = 0; i < count; i++) {
-      objectsData.add(data[i][qparams.selectColumns[0]].toString());
+      objectsData.add(data[i][qparams.selectColumns![0]].toString());
     }
     if (listString != null) {
       listString(objectsData);
@@ -2757,119 +2429,106 @@ class ExternalEntityFilterBuilder extends SearchCriteria {
     return objectsData;
   }
 }
-// endregion ExternalEntityFilterBuilder
+// endregion ExternalFilterBuilder
 
-// region ExternalEntityFields
-class ExternalEntityFields {
-  static TableField _fId;
+// region ExternalFields
+class ExternalFields {
+  static TableField? _fId;
   static TableField get id {
     return _fId = _fId ?? SqlSyntax.setField(_fId, 'id', DbType.integer);
   }
 
-  static TableField _fName;
-  static TableField get name {
-    return _fName = _fName ?? SqlSyntax.setField(_fName, 'name', DbType.text);
+  static TableField? _fPublic_name;
+  static TableField get public_name {
+    return _fPublic_name = _fPublic_name ?? SqlSyntax.setField(_fPublic_name, 'public_name', DbType.text);
   }
 
-  static TableField _fMediaId;
-  static TableField get mediaId {
-    return _fMediaId =
-        _fMediaId ?? SqlSyntax.setField(_fMediaId, 'mediaId', DbType.text);
+  static TableField? _fMedia_id;
+  static TableField get media_id {
+    return _fMedia_id = _fMedia_id ?? SqlSyntax.setField(_fMedia_id, 'media_id', DbType.text);
   }
 
-  static TableField _fMediaType;
-  static TableField get mediaType {
-    return _fMediaType = _fMediaType ??
-        SqlSyntax.setField(_fMediaType, 'mediaType', DbType.text);
+  static TableField? _fMedia_type;
+  static TableField get media_type {
+    return _fMedia_type = _fMedia_type ?? SqlSyntax.setField(_fMedia_type, 'media_type', DbType.text);
   }
 
-  static TableField _fSong_lyricsId;
+  static TableField? _fSong_lyricsId;
   static TableField get song_lyricsId {
-    return _fSong_lyricsId = _fSong_lyricsId ??
-        SqlSyntax.setField(_fSong_lyricsId, 'song_lyricsId', DbType.integer);
+    return _fSong_lyricsId = _fSong_lyricsId ?? SqlSyntax.setField(_fSong_lyricsId, 'song_lyricsId', DbType.integer);
   }
 }
-// endregion ExternalEntityFields
+// endregion ExternalFields
 
-//region ExternalEntityManager
-class ExternalEntityManager extends SqfEntityProvider {
-  ExternalEntityManager()
-      : super(Model(),
-            tableName: _tableName,
-            primaryKeyList: _primaryKeyList,
-            whereStr: _whereStr);
+//region ExternalManager
+class ExternalManager extends SqfEntityProvider {
+  ExternalManager() : super(Model(), tableName: _tableName, primaryKeyList: _primaryKeyList, whereStr: _whereStr);
   static final String _tableName = 'externals';
   static final List<String> _primaryKeyList = ['id'];
   static final String _whereStr = 'id=?';
 }
 
-//endregion ExternalEntityManager
-// region PlaylistEntity
-class PlaylistEntity {
-  PlaylistEntity({this.id, this.name, this.isArchived, this.order}) {
+//endregion ExternalManager
+// region Playlist
+class Playlist {
+  Playlist({this.id, this.name, this.is_archived, this.rank}) {
     _setDefaultValues();
   }
-  PlaylistEntity.withFields(this.id, this.name, this.isArchived, this.order) {
+  Playlist.withFields(this.name, this.is_archived, this.rank) {
     _setDefaultValues();
   }
-  PlaylistEntity.withId(this.id, this.name, this.isArchived, this.order) {
+  Playlist.withId(this.id, this.name, this.is_archived, this.rank) {
     _setDefaultValues();
   }
-  PlaylistEntity.fromMap(Map<String, dynamic> o,
-      {bool setDefaultValues = true}) {
+  // fromMap v2.0
+  Playlist.fromMap(Map<String, dynamic> o, {bool setDefaultValues = true}) {
     if (setDefaultValues) {
       _setDefaultValues();
     }
     id = int.tryParse(o['id'].toString());
     if (o['name'] != null) {
-      name = o['name'] as String;
+      name = o['name'].toString();
     }
-    if (o['isArchived'] != null) {
-      isArchived = o['isArchived'] == 1 || o['isArchived'] == true;
+    if (o['is_archived'] != null) {
+      is_archived = o['is_archived'].toString() == '1' || o['is_archived'].toString() == 'true';
     }
-    if (o['order'] != null) {
-      order = int.tryParse(o['order'].toString());
+    if (o['rank'] != null) {
+      rank = int.tryParse(o['rank'].toString());
     }
-
-    isSaved = true;
   }
-  // FIELDS (PlaylistEntity)
-  int id;
-  String name;
-  bool isArchived;
-  int order;
-  bool isSaved;
-  BoolResult saveResult;
-  // end FIELDS (PlaylistEntity)
+  // FIELDS (Playlist)
+  int? id;
+  String? name;
+  bool? is_archived;
+  int? rank;
 
-// COLLECTIONS & VIRTUALS (PlaylistEntity)
+  BoolResult? saveResult;
+  // end FIELDS (Playlist)
+
+// COLLECTIONS & VIRTUALS (Playlist)
   ///(RelationType.MANY_TO_MANY) (song_lyricsPlaylists) to load children of items to this field, use preload parameter. Ex: toList(preload:true) or toSingle(preload:true) or getById(preload:true)
-  /// You can also specify this object into certain preload fields. Ex: toList(preload:true, preloadFields:['plSongLyricEntities', 'plField2'..]) or so on..
-  List<SongLyricEntity> plSongLyricEntities;
+  /// You can also specify this object into certain preload fields!. Ex: toList(preload:true, preloadFields:['plSongLyrics', 'plField2'..]) or so on..
+  List<SongLyric>? plSongLyrics;
 
-  /// get SongLyricEntity(s) filtered by song_lyricsId IN song_lyricsPlaylists
-  SongLyricEntityFilterBuilder getSongLyricEntities(
-      {List<String> columnsToSelect, bool getIsDeleted}) {
-    return SongLyricEntity()
+  /// get SongLyric(s) filtered by song_lyricsId IN song_lyricsPlaylists
+  SongLyricFilterBuilder? getSongLyrics({List<String>? columnsToSelect, bool? getIsDeleted}) {
+    return SongLyric()
         .select(columnsToSelect: columnsToSelect, getIsDeleted: getIsDeleted)
-        .where(
-            'id IN (SELECT song_lyricsId FROM song_lyricsPlaylists WHERE playlistsId=?)',
-            parameterValue: id)
+        .where('id IN (SELECT song_lyricsId FROM song_lyricsPlaylists WHERE playlistsId=?)', parameterValue: id)
         .and;
   }
 
-// END COLLECTIONS & VIRTUALS (PlaylistEntity)
+// END COLLECTIONS & VIRTUALS (Playlist)
 
   static const bool _softDeleteActivated = false;
-  PlaylistEntityManager __mnPlaylistEntity;
+  PlaylistManager? __mnPlaylist;
 
-  PlaylistEntityManager get _mnPlaylistEntity {
-    return __mnPlaylistEntity = __mnPlaylistEntity ?? PlaylistEntityManager();
+  PlaylistManager get _mnPlaylist {
+    return __mnPlaylist = __mnPlaylist ?? PlaylistManager();
   }
 
   // METHODS
-  Map<String, dynamic> toMap(
-      {bool forQuery = false, bool forJson = false, bool forView = false}) {
+  Map<String, dynamic> toMap({bool forQuery = false, bool forJson = false, bool forView = false}) {
     final map = <String, dynamic>{};
     if (id != null) {
       map['id'] = id;
@@ -2878,21 +2537,19 @@ class PlaylistEntity {
       map['name'] = name;
     }
 
-    if (isArchived != null) {
-      map['isArchived'] = forQuery ? (isArchived ? 1 : 0) : isArchived;
+    if (is_archived != null) {
+      map['is_archived'] = forQuery ? (is_archived! ? 1 : 0) : is_archived;
     }
 
-    if (order != null) {
-      map['order'] = order;
+    if (rank != null) {
+      map['rank'] = rank;
     }
 
     return map;
   }
 
   Future<Map<String, dynamic>> toMapWithChildren(
-      [bool forQuery = false,
-      bool forJson = false,
-      bool forView = false]) async {
+      [bool forQuery = false, bool forJson = false, bool forView = false]) async {
     final map = <String, dynamic>{};
     if (id != null) {
       map['id'] = id;
@@ -2901,97 +2558,86 @@ class PlaylistEntity {
       map['name'] = name;
     }
 
-    if (isArchived != null) {
-      map['isArchived'] = forQuery ? (isArchived ? 1 : 0) : isArchived;
+    if (is_archived != null) {
+      map['is_archived'] = forQuery ? (is_archived! ? 1 : 0) : is_archived;
     }
 
-    if (order != null) {
-      map['order'] = order;
+    if (rank != null) {
+      map['rank'] = rank;
     }
 
-// COLLECTIONS (PlaylistEntity)
+// COLLECTIONS (Playlist)
     if (!forQuery) {
-      map['SongLyricEntities'] = await getSongLyricEntities().toMapList();
+      map['SongLyrics'] = await getSongLyrics()!.toMapList();
     }
-// END COLLECTIONS (PlaylistEntity)
+// END COLLECTIONS (Playlist)
 
     return map;
   }
 
-  /// This method returns Json String [PlaylistEntity]
+  /// This method returns Json String [Playlist]
   String toJson() {
     return json.encode(toMap(forJson: true));
   }
 
-  /// This method returns Json String [PlaylistEntity]
+  /// This method returns Json String [Playlist]
   Future<String> toJsonWithChilds() async {
     return json.encode(await toMapWithChildren(false, true));
   }
 
   List<dynamic> toArgs() {
-    return [id, name, isArchived, order];
+    return [name, is_archived, rank];
   }
 
   List<dynamic> toArgsWithIds() {
-    return [id, name, isArchived, order];
+    return [id, name, is_archived, rank];
   }
 
-  static Future<List<PlaylistEntity>> fromWebUrl(String url,
-      {Map<String, String> headers}) async {
+  static Future<List<Playlist>?> fromWebUrl(Uri uri, {Map<String, String>? headers}) async {
     try {
-      final response = await http.get(url, headers: headers);
+      final response = await http.get(uri, headers: headers);
       return await fromJson(response.body);
     } catch (e) {
-      print(
-          'SQFENTITY ERROR PlaylistEntity.fromWebUrl: ErrorMessage: ${e.toString()}');
+      print('SQFENTITY ERROR Playlist.fromWebUrl: ErrorMessage: ${e.toString()}');
       return null;
     }
   }
 
-  Future<http.Response> postUrl(String url, {Map<String, String> headers}) {
-    return http.post(url, headers: headers, body: toJson());
+  Future<http.Response> postUrl(Uri uri, {Map<String, String>? headers}) {
+    return http.post(uri, headers: headers, body: toJson());
   }
 
-  static Future<List<PlaylistEntity>> fromJson(String jsonBody) async {
+  static Future<List<Playlist>> fromJson(String jsonBody) async {
     final Iterable list = await json.decode(jsonBody) as Iterable;
-    var objList = <PlaylistEntity>[];
+    var objList = <Playlist>[];
     try {
-      objList = list
-          .map((playlistentity) =>
-              PlaylistEntity.fromMap(playlistentity as Map<String, dynamic>))
-          .toList();
+      objList = list.map((playlist) => Playlist.fromMap(playlist as Map<String, dynamic>)).toList();
     } catch (e) {
-      print(
-          'SQFENTITY ERROR PlaylistEntity.fromJson: ErrorMessage: ${e.toString()}');
+      print('SQFENTITY ERROR Playlist.fromJson: ErrorMessage: ${e.toString()}');
     }
     return objList;
   }
 
-  static Future<List<PlaylistEntity>> fromMapList(List<dynamic> data,
+  static Future<List<Playlist>> fromMapList(List<dynamic> data,
       {bool preload = false,
-      List<String> preloadFields,
+      List<String>? preloadFields,
       bool loadParents = false,
-      List<String> loadedFields,
+      List<String>? loadedFields,
       bool setDefaultValues = true}) async {
-    final List<PlaylistEntity> objList = <PlaylistEntity>[];
+    final List<Playlist> objList = <Playlist>[];
     loadedFields = loadedFields ?? [];
     for (final map in data) {
-      final obj = PlaylistEntity.fromMap(map as Map<String, dynamic>,
-          setDefaultValues: setDefaultValues);
+      final obj = Playlist.fromMap(map as Map<String, dynamic>, setDefaultValues: setDefaultValues);
       // final List<String> _loadedFields = List<String>.from(loadedFields);
 
       // RELATIONSHIPS PRELOAD CHILD
       if (preload) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedFields.contains('playlists.plSongLyricEntities') && */ (preloadFields ==
-                null ||
-            preloadFields.contains('plSongLyricEntities'))) {
-          /*_loadedFields.add('playlists.plSongLyricEntities'); */
-          obj.plSongLyricEntities = obj.plSongLyricEntities ??
-              await obj.getSongLyricEntities().toList(
-                  preload: preload,
-                  preloadFields: preloadFields,
-                  loadParents: false /*, loadedFields:_loadedFields*/);
+        if (/*!_loadedfields!.contains('playlists.plSongLyrics') && */ (preloadFields == null ||
+            preloadFields.contains('plSongLyrics'))) {
+          /*_loadedfields!.add('playlists.plSongLyrics'); */ obj.plSongLyrics = obj.plSongLyrics ??
+              await obj.getSongLyrics()!.toList(
+                  preload: preload, preloadFields: preloadFields, loadParents: false /*, loadedFields:_loadedFields*/);
         }
       } // END RELATIONSHIPS PRELOAD CHILD
 
@@ -3000,9 +2646,9 @@ class PlaylistEntity {
     return objList;
   }
 
-  /// returns PlaylistEntity by ID if exist, otherwise returns null
+  /// returns Playlist by ID if exist, otherwise returns null
   ///
-  /// Primary Keys: int id
+  /// Primary Keys: int? id
   ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
   ///
@@ -3015,33 +2661,26 @@ class PlaylistEntity {
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
   ///
-  /// <returns>returns PlaylistEntity if exist, otherwise returns null
-  Future<PlaylistEntity> getById(int id,
-      {bool preload = false,
-      List<String> preloadFields,
-      bool loadParents = false,
-      List<String> loadedFields}) async {
+  /// <returns>returns Playlist if exist, otherwise returns null
+  Future<Playlist?> getById(int? id,
+      {bool preload = false, List<String>? preloadFields, bool loadParents = false, List<String>? loadedFields}) async {
     if (id == null) {
       return null;
     }
-    PlaylistEntity obj;
-    final data = await _mnPlaylistEntity.getById([id]);
+    Playlist? obj;
+    final data = await _mnPlaylist.getById([id]);
     if (data.length != 0) {
-      obj = PlaylistEntity.fromMap(data[0] as Map<String, dynamic>);
+      obj = Playlist.fromMap(data[0] as Map<String, dynamic>);
       // final List<String> _loadedFields = loadedFields ?? [];
 
       // RELATIONSHIPS PRELOAD CHILD
       if (preload) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedFields.contains('playlists.plSongLyricEntities') && */ (preloadFields ==
-                null ||
-            preloadFields.contains('plSongLyricEntities'))) {
-          /*_loadedFields.add('playlists.plSongLyricEntities'); */
-          obj.plSongLyricEntities = obj.plSongLyricEntities ??
-              await obj.getSongLyricEntities().toList(
-                  preload: preload,
-                  preloadFields: preloadFields,
-                  loadParents: false /*, loadedFields:_loadedFields*/);
+        if (/*!_loadedfields!.contains('playlists.plSongLyrics') && */ (preloadFields == null ||
+            preloadFields.contains('plSongLyrics'))) {
+          /*_loadedfields!.add('playlists.plSongLyrics'); */ obj.plSongLyrics = obj.plSongLyrics ??
+              await obj.getSongLyrics()!.toList(
+                  preload: preload, preloadFields: preloadFields, loadParents: false /*, loadedFields:_loadedFields*/);
         }
       } // END RELATIONSHIPS PRELOAD CHILD
 
@@ -3051,117 +2690,115 @@ class PlaylistEntity {
     return obj;
   }
 
-  /// Saves the (PlaylistEntity) object. If the id field is null, saves as a new record and returns new id, if id is not null then updates record
+  /// Saves the (Playlist) object. If the id field is null, saves as a new record and returns new id, if id is not null then updates record
 
   /// <returns>Returns id
-  Future<int> save() async {
-    if (id == null || id == 0 || !isSaved) {
-      await _mnPlaylistEntity.insert(this);
-      if (saveResult != null && saveResult.success) {
-        isSaved = true;
-      }
+  Future<int?> save() async {
+    if (id == null || id == 0) {
+      id = await _mnPlaylist.insert(this);
     } else {
       // id= await _upsert(); // removed in sqfentity_gen 1.3.0+6
-      await _mnPlaylistEntity.update(this);
+      await _mnPlaylist.update(this);
     }
 
     return id;
   }
 
-  /// saveAll method saves the sent List<PlaylistEntity> as a bulk in one transaction
+  /// saveAs Playlist. Returns a new Primary Key value of Playlist
+
+  /// <returns>Returns a new Primary Key value of Playlist
+  Future<int?> saveAs() async {
+    id = null;
+
+    return save();
+  }
+
+  /// saveAll method saves the sent List<Playlist> as a bulk in one transaction
   ///
   /// Returns a <List<BoolResult>>
-  static Future<List<dynamic>> saveAll(
-      List<PlaylistEntity> playlistentities) async {
-    // final results = _mnPlaylistEntity.saveAll('INSERT OR REPLACE INTO playlists (id,name, isArchived, order)  VALUES (?,?,?,?)',playlistentities);
+  static Future<List<dynamic>> saveAll(List<Playlist> playlists) async {
+    // final results = _mnPlaylist.saveAll('INSERT OR REPLACE INTO playlists (id,name, is_archived, rank)  VALUES (?,?,?,?)',playlists);
     // return results; removed in sqfentity_gen 1.3.0+6
     await Model().batchStart();
-    for (final obj in playlistentities) {
+    for (final obj in playlists) {
       await obj.save();
     }
     //    return Model().batchCommit();
     final result = await Model().batchCommit();
+    for (int i = 0; i < playlists.length; i++) {
+      if (playlists[i].id == null) {
+        playlists[i].id = result![i] as int;
+      }
+    }
 
-    return result;
+    return result!;
   }
 
   /// Updates if the record exists, otherwise adds a new row
 
   /// <returns>Returns id
-  Future<int> upsert() async {
+
+  Future<int?> upsert() async {
     try {
-      if (await _mnPlaylistEntity.rawInsert(
-              'INSERT OR REPLACE INTO playlists (id,name, isArchived, order)  VALUES (?,?,?,?)',
-              [id, name, isArchived, order]) ==
-          1) {
-        saveResult = BoolResult(
-            success: true,
-            successMessage: 'PlaylistEntity id=$id updated successfully');
+      final result = await _mnPlaylist.rawInsert(
+          'INSERT OR REPLACE INTO playlists (id,name, is_archived, rank)  VALUES (?,?,?,?)',
+          [id, name, is_archived, rank]);
+      if (result! > 0) {
+        saveResult = BoolResult(success: true, successMessage: 'Playlist id=$id updated successfully');
       } else {
-        saveResult = BoolResult(
-            success: false,
-            errorMessage: 'PlaylistEntity id=$id did not update');
+        saveResult = BoolResult(success: false, errorMessage: 'Playlist id=$id did not update');
       }
       return id;
     } catch (e) {
-      saveResult = BoolResult(
-          success: false,
-          errorMessage: 'PlaylistEntity Save failed. Error: ${e.toString()}');
-      return 0;
+      saveResult = BoolResult(success: false, errorMessage: 'Playlist Save failed. Error: ${e.toString()}');
+      return null;
     }
   }
 
-  /// inserts or replaces the sent List<<PlaylistEntity>> as a bulk in one transaction.
+  /// inserts or replaces the sent List<<Playlist>> as a bulk in one transaction.
   ///
   /// upsertAll() method is faster then saveAll() method. upsertAll() should be used when you are sure that the primary key is greater than zero
   ///
   /// Returns a BoolCommitResult
-  Future<BoolCommitResult> upsertAll(
-      List<PlaylistEntity> playlistentities) async {
-    final results = await _mnPlaylistEntity.rawInsertAll(
-        'INSERT OR REPLACE INTO playlists (id,name, isArchived, order)  VALUES (?,?,?,?)',
-        playlistentities);
+  Future<BoolCommitResult> upsertAll(List<Playlist> playlists) async {
+    final results = await _mnPlaylist.rawInsertAll(
+        'INSERT OR REPLACE INTO playlists (id,name, is_archived, rank)  VALUES (?,?,?,?)', playlists);
     return results;
   }
 
-  /// Deletes PlaylistEntity
+  /// Deletes Playlist
 
   /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
+
   Future<BoolResult> delete([bool hardDelete = false]) async {
-    print('SQFENTITIY: delete PlaylistEntity invoked (id=$id)');
+    print('SQFENTITIY: delete Playlist invoked (id=$id)');
     if (!_softDeleteActivated || hardDelete) {
-      return _mnPlaylistEntity
-          .delete(QueryParams(whereString: 'id=?', whereArguments: [id]));
+      return _mnPlaylist.delete(QueryParams(whereString: 'id=?', whereArguments: [id]));
     } else {
-      return _mnPlaylistEntity.updateBatch(
-          QueryParams(whereString: 'id=?', whereArguments: [id]),
-          {'isDeleted': 1});
+      return _mnPlaylist.updateBatch(QueryParams(whereString: 'id=?', whereArguments: [id]), {'isDeleted': 1});
     }
   }
 
-  PlaylistEntityFilterBuilder select(
-      {List<String> columnsToSelect, bool getIsDeleted}) {
-    return PlaylistEntityFilterBuilder(this)
+  PlaylistFilterBuilder select({List<String>? columnsToSelect, bool? getIsDeleted}) {
+    return PlaylistFilterBuilder(this)
       .._getIsDeleted = getIsDeleted == true
       ..qparams.selectColumns = columnsToSelect;
   }
 
-  PlaylistEntityFilterBuilder distinct(
-      {List<String> columnsToSelect, bool getIsDeleted}) {
-    return PlaylistEntityFilterBuilder(this)
+  PlaylistFilterBuilder distinct({List<String>? columnsToSelect, bool? getIsDeleted}) {
+    return PlaylistFilterBuilder(this)
       .._getIsDeleted = getIsDeleted == true
       ..qparams.selectColumns = columnsToSelect
       ..qparams.distinct = true;
   }
 
   void _setDefaultValues() {
-    isSaved = false;
-    isArchived = isArchived ?? false;
+    is_archived = is_archived ?? false;
   }
   // END METHODS
-  // CUSTOM CODES
+  // BEGIN CUSTOM CODE
   /*
-      you must define customCode property of your SqfEntityTable constant for ex:
+      you can define customCode property of your SqfEntityTable constant. For example:
       const tablePerson = SqfEntityTable(
       tableName: 'person',
       primaryKeyName: 'id',
@@ -3177,251 +2814,178 @@ class PlaylistEntity {
        }
       ''');
      */
-  // END CUSTOM CODES
+  // END CUSTOM CODE
 }
-// endregion playlistentity
+// endregion playlist
 
-// region PlaylistEntityField
-class PlaylistEntityField extends SearchCriteria {
-  PlaylistEntityField(this.playlistentityFB) {
-    param = DbParameter();
-  }
-  DbParameter param;
+// region PlaylistField
+class PlaylistField extends SearchCriteria {
+  PlaylistField(this.playlistFB);
+  // { param = DbParameter(); }
+  DbParameter param = DbParameter();
   String _waitingNot = '';
-  PlaylistEntityFilterBuilder playlistentityFB;
+  PlaylistFilterBuilder playlistFB;
 
-  PlaylistEntityField get not {
+  PlaylistField get not {
     _waitingNot = ' NOT ';
     return this;
   }
 
-  PlaylistEntityFilterBuilder equals(dynamic pValue) {
+  PlaylistFilterBuilder equals(dynamic pValue) {
     param.expression = '=';
-    playlistentityFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, playlistentityFB.parameters, param,
-            SqlSyntax.EQuals, playlistentityFB._addedBlocks)
-        : setCriteria(pValue, playlistentityFB.parameters, param,
-            SqlSyntax.NotEQuals, playlistentityFB._addedBlocks);
+    playlistFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, playlistFB.parameters, param, SqlSyntax.EQuals, playlistFB._addedBlocks)
+        : setCriteria(pValue, playlistFB.parameters, param, SqlSyntax.NotEQuals, playlistFB._addedBlocks);
     _waitingNot = '';
-    playlistentityFB._addedBlocks.needEndBlock[playlistentityFB._blockIndex] =
-        playlistentityFB._addedBlocks.retVal;
-    return playlistentityFB;
+    playlistFB._addedBlocks.needEndBlock![playlistFB._blockIndex] = playlistFB._addedBlocks.retVal;
+    return playlistFB;
   }
 
-  PlaylistEntityFilterBuilder equalsOrNull(dynamic pValue) {
+  PlaylistFilterBuilder equalsOrNull(dynamic pValue) {
     param.expression = '=';
-    playlistentityFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, playlistentityFB.parameters, param,
-            SqlSyntax.EQualsOrNull, playlistentityFB._addedBlocks)
-        : setCriteria(pValue, playlistentityFB.parameters, param,
-            SqlSyntax.NotEQualsOrNull, playlistentityFB._addedBlocks);
+    playlistFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, playlistFB.parameters, param, SqlSyntax.EQualsOrNull, playlistFB._addedBlocks)
+        : setCriteria(pValue, playlistFB.parameters, param, SqlSyntax.NotEQualsOrNull, playlistFB._addedBlocks);
     _waitingNot = '';
-    playlistentityFB._addedBlocks.needEndBlock[playlistentityFB._blockIndex] =
-        playlistentityFB._addedBlocks.retVal;
-    return playlistentityFB;
+    playlistFB._addedBlocks.needEndBlock![playlistFB._blockIndex] = playlistFB._addedBlocks.retVal;
+    return playlistFB;
   }
 
-  PlaylistEntityFilterBuilder isNull() {
-    playlistentityFB._addedBlocks = setCriteria(
-        0,
-        playlistentityFB.parameters,
-        param,
-        SqlSyntax.IsNULL.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-        playlistentityFB._addedBlocks);
+  PlaylistFilterBuilder isNull() {
+    playlistFB._addedBlocks = setCriteria(0, playlistFB.parameters, param,
+        SqlSyntax.IsNULL.replaceAll(SqlSyntax.notKeyword, _waitingNot), playlistFB._addedBlocks);
     _waitingNot = '';
-    playlistentityFB._addedBlocks.needEndBlock[playlistentityFB._blockIndex] =
-        playlistentityFB._addedBlocks.retVal;
-    return playlistentityFB;
+    playlistFB._addedBlocks.needEndBlock![playlistFB._blockIndex] = playlistFB._addedBlocks.retVal;
+    return playlistFB;
   }
 
-  PlaylistEntityFilterBuilder contains(dynamic pValue) {
+  PlaylistFilterBuilder contains(dynamic pValue) {
     if (pValue != null) {
-      playlistentityFB._addedBlocks = setCriteria(
-          '%${pValue.toString()}%',
-          playlistentityFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          playlistentityFB._addedBlocks);
+      playlistFB._addedBlocks = setCriteria('%${pValue.toString()}%', playlistFB.parameters, param,
+          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot), playlistFB._addedBlocks);
       _waitingNot = '';
-      playlistentityFB._addedBlocks.needEndBlock[playlistentityFB._blockIndex] =
-          playlistentityFB._addedBlocks.retVal;
+      playlistFB._addedBlocks.needEndBlock![playlistFB._blockIndex] = playlistFB._addedBlocks.retVal;
     }
-    return playlistentityFB;
+    return playlistFB;
   }
 
-  PlaylistEntityFilterBuilder startsWith(dynamic pValue) {
+  PlaylistFilterBuilder startsWith(dynamic pValue) {
     if (pValue != null) {
-      playlistentityFB._addedBlocks = setCriteria(
-          '${pValue.toString()}%',
-          playlistentityFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          playlistentityFB._addedBlocks);
+      playlistFB._addedBlocks = setCriteria('${pValue.toString()}%', playlistFB.parameters, param,
+          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot), playlistFB._addedBlocks);
       _waitingNot = '';
-      playlistentityFB._addedBlocks.needEndBlock[playlistentityFB._blockIndex] =
-          playlistentityFB._addedBlocks.retVal;
-      playlistentityFB._addedBlocks.needEndBlock[playlistentityFB._blockIndex] =
-          playlistentityFB._addedBlocks.retVal;
+      playlistFB._addedBlocks.needEndBlock![playlistFB._blockIndex] = playlistFB._addedBlocks.retVal;
+      playlistFB._addedBlocks.needEndBlock![playlistFB._blockIndex] = playlistFB._addedBlocks.retVal;
     }
-    return playlistentityFB;
+    return playlistFB;
   }
 
-  PlaylistEntityFilterBuilder endsWith(dynamic pValue) {
+  PlaylistFilterBuilder endsWith(dynamic pValue) {
     if (pValue != null) {
-      playlistentityFB._addedBlocks = setCriteria(
-          '%${pValue.toString()}',
-          playlistentityFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          playlistentityFB._addedBlocks);
+      playlistFB._addedBlocks = setCriteria('%${pValue.toString()}', playlistFB.parameters, param,
+          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot), playlistFB._addedBlocks);
       _waitingNot = '';
-      playlistentityFB._addedBlocks.needEndBlock[playlistentityFB._blockIndex] =
-          playlistentityFB._addedBlocks.retVal;
+      playlistFB._addedBlocks.needEndBlock![playlistFB._blockIndex] = playlistFB._addedBlocks.retVal;
     }
-    return playlistentityFB;
+    return playlistFB;
   }
 
-  PlaylistEntityFilterBuilder between(dynamic pFirst, dynamic pLast) {
+  PlaylistFilterBuilder between(dynamic pFirst, dynamic pLast) {
     if (pFirst != null && pLast != null) {
-      playlistentityFB._addedBlocks = setCriteria(
-          pFirst,
-          playlistentityFB.parameters,
-          param,
-          SqlSyntax.Between.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          playlistentityFB._addedBlocks,
-          pLast);
+      playlistFB._addedBlocks = setCriteria(pFirst, playlistFB.parameters, param,
+          SqlSyntax.Between.replaceAll(SqlSyntax.notKeyword, _waitingNot), playlistFB._addedBlocks, pLast);
     } else if (pFirst != null) {
       if (_waitingNot != '') {
-        playlistentityFB._addedBlocks = setCriteria(
-            pFirst,
-            playlistentityFB.parameters,
-            param,
-            SqlSyntax.LessThan,
-            playlistentityFB._addedBlocks);
+        playlistFB._addedBlocks =
+            setCriteria(pFirst, playlistFB.parameters, param, SqlSyntax.LessThan, playlistFB._addedBlocks);
       } else {
-        playlistentityFB._addedBlocks = setCriteria(
-            pFirst,
-            playlistentityFB.parameters,
-            param,
-            SqlSyntax.GreaterThanOrEquals,
-            playlistentityFB._addedBlocks);
+        playlistFB._addedBlocks =
+            setCriteria(pFirst, playlistFB.parameters, param, SqlSyntax.GreaterThanOrEquals, playlistFB._addedBlocks);
       }
     } else if (pLast != null) {
       if (_waitingNot != '') {
-        playlistentityFB._addedBlocks = setCriteria(
-            pLast,
-            playlistentityFB.parameters,
-            param,
-            SqlSyntax.GreaterThan,
-            playlistentityFB._addedBlocks);
+        playlistFB._addedBlocks =
+            setCriteria(pLast, playlistFB.parameters, param, SqlSyntax.GreaterThan, playlistFB._addedBlocks);
       } else {
-        playlistentityFB._addedBlocks = setCriteria(
-            pLast,
-            playlistentityFB.parameters,
-            param,
-            SqlSyntax.LessThanOrEquals,
-            playlistentityFB._addedBlocks);
+        playlistFB._addedBlocks =
+            setCriteria(pLast, playlistFB.parameters, param, SqlSyntax.LessThanOrEquals, playlistFB._addedBlocks);
       }
     }
     _waitingNot = '';
-    playlistentityFB._addedBlocks.needEndBlock[playlistentityFB._blockIndex] =
-        playlistentityFB._addedBlocks.retVal;
-    return playlistentityFB;
+    playlistFB._addedBlocks.needEndBlock![playlistFB._blockIndex] = playlistFB._addedBlocks.retVal;
+    return playlistFB;
   }
 
-  PlaylistEntityFilterBuilder greaterThan(dynamic pValue) {
+  PlaylistFilterBuilder greaterThan(dynamic pValue) {
     param.expression = '>';
-    playlistentityFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, playlistentityFB.parameters, param,
-            SqlSyntax.GreaterThan, playlistentityFB._addedBlocks)
-        : setCriteria(pValue, playlistentityFB.parameters, param,
-            SqlSyntax.LessThanOrEquals, playlistentityFB._addedBlocks);
+    playlistFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, playlistFB.parameters, param, SqlSyntax.GreaterThan, playlistFB._addedBlocks)
+        : setCriteria(pValue, playlistFB.parameters, param, SqlSyntax.LessThanOrEquals, playlistFB._addedBlocks);
     _waitingNot = '';
-    playlistentityFB._addedBlocks.needEndBlock[playlistentityFB._blockIndex] =
-        playlistentityFB._addedBlocks.retVal;
-    return playlistentityFB;
+    playlistFB._addedBlocks.needEndBlock![playlistFB._blockIndex] = playlistFB._addedBlocks.retVal;
+    return playlistFB;
   }
 
-  PlaylistEntityFilterBuilder lessThan(dynamic pValue) {
+  PlaylistFilterBuilder lessThan(dynamic pValue) {
     param.expression = '<';
-    playlistentityFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, playlistentityFB.parameters, param,
-            SqlSyntax.LessThan, playlistentityFB._addedBlocks)
-        : setCriteria(pValue, playlistentityFB.parameters, param,
-            SqlSyntax.GreaterThanOrEquals, playlistentityFB._addedBlocks);
+    playlistFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, playlistFB.parameters, param, SqlSyntax.LessThan, playlistFB._addedBlocks)
+        : setCriteria(pValue, playlistFB.parameters, param, SqlSyntax.GreaterThanOrEquals, playlistFB._addedBlocks);
     _waitingNot = '';
-    playlistentityFB._addedBlocks.needEndBlock[playlistentityFB._blockIndex] =
-        playlistentityFB._addedBlocks.retVal;
-    return playlistentityFB;
+    playlistFB._addedBlocks.needEndBlock![playlistFB._blockIndex] = playlistFB._addedBlocks.retVal;
+    return playlistFB;
   }
 
-  PlaylistEntityFilterBuilder greaterThanOrEquals(dynamic pValue) {
+  PlaylistFilterBuilder greaterThanOrEquals(dynamic pValue) {
     param.expression = '>=';
-    playlistentityFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, playlistentityFB.parameters, param,
-            SqlSyntax.GreaterThanOrEquals, playlistentityFB._addedBlocks)
-        : setCriteria(pValue, playlistentityFB.parameters, param,
-            SqlSyntax.LessThan, playlistentityFB._addedBlocks);
+    playlistFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, playlistFB.parameters, param, SqlSyntax.GreaterThanOrEquals, playlistFB._addedBlocks)
+        : setCriteria(pValue, playlistFB.parameters, param, SqlSyntax.LessThan, playlistFB._addedBlocks);
     _waitingNot = '';
-    playlistentityFB._addedBlocks.needEndBlock[playlistentityFB._blockIndex] =
-        playlistentityFB._addedBlocks.retVal;
-    return playlistentityFB;
+    playlistFB._addedBlocks.needEndBlock![playlistFB._blockIndex] = playlistFB._addedBlocks.retVal;
+    return playlistFB;
   }
 
-  PlaylistEntityFilterBuilder lessThanOrEquals(dynamic pValue) {
+  PlaylistFilterBuilder lessThanOrEquals(dynamic pValue) {
     param.expression = '<=';
-    playlistentityFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, playlistentityFB.parameters, param,
-            SqlSyntax.LessThanOrEquals, playlistentityFB._addedBlocks)
-        : setCriteria(pValue, playlistentityFB.parameters, param,
-            SqlSyntax.GreaterThan, playlistentityFB._addedBlocks);
+    playlistFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, playlistFB.parameters, param, SqlSyntax.LessThanOrEquals, playlistFB._addedBlocks)
+        : setCriteria(pValue, playlistFB.parameters, param, SqlSyntax.GreaterThan, playlistFB._addedBlocks);
     _waitingNot = '';
-    playlistentityFB._addedBlocks.needEndBlock[playlistentityFB._blockIndex] =
-        playlistentityFB._addedBlocks.retVal;
-    return playlistentityFB;
+    playlistFB._addedBlocks.needEndBlock![playlistFB._blockIndex] = playlistFB._addedBlocks.retVal;
+    return playlistFB;
   }
 
-  PlaylistEntityFilterBuilder inValues(dynamic pValue) {
-    playlistentityFB._addedBlocks = setCriteria(
-        pValue,
-        playlistentityFB.parameters,
-        param,
-        SqlSyntax.IN.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-        playlistentityFB._addedBlocks);
+  PlaylistFilterBuilder inValues(dynamic pValue) {
+    playlistFB._addedBlocks = setCriteria(pValue, playlistFB.parameters, param,
+        SqlSyntax.IN.replaceAll(SqlSyntax.notKeyword, _waitingNot), playlistFB._addedBlocks);
     _waitingNot = '';
-    playlistentityFB._addedBlocks.needEndBlock[playlistentityFB._blockIndex] =
-        playlistentityFB._addedBlocks.retVal;
-    return playlistentityFB;
+    playlistFB._addedBlocks.needEndBlock![playlistFB._blockIndex] = playlistFB._addedBlocks.retVal;
+    return playlistFB;
   }
 }
-// endregion PlaylistEntityField
+// endregion PlaylistField
 
-// region PlaylistEntityFilterBuilder
-class PlaylistEntityFilterBuilder extends SearchCriteria {
-  PlaylistEntityFilterBuilder(PlaylistEntity obj) {
+// region PlaylistFilterBuilder
+class PlaylistFilterBuilder extends SearchCriteria {
+  PlaylistFilterBuilder(Playlist obj) {
     whereString = '';
-    qparams = QueryParams();
-    parameters = <DbParameter>[];
-    orderByList = <String>[];
     groupByList = <String>[];
-    _addedBlocks = AddedBlocks(<bool>[], <bool>[]);
-    _addedBlocks.needEndBlock.add(false);
-    _addedBlocks.waitingStartBlock.add(false);
-    _pagesize = 0;
-    _page = 0;
+    _addedBlocks.needEndBlock!.add(false);
+    _addedBlocks.waitingStartBlock!.add(false);
     _obj = obj;
   }
-  AddedBlocks _addedBlocks;
+  AddedBlocks _addedBlocks = AddedBlocks(<bool>[], <bool>[]);
   int _blockIndex = 0;
-  List<DbParameter> parameters;
-  List<String> orderByList;
-  PlaylistEntity _obj;
-  QueryParams qparams;
-  int _pagesize;
-  int _page;
+  List<DbParameter> parameters = <DbParameter>[];
+  List<String> orderByList = <String>[];
+  Playlist? _obj;
+  QueryParams qparams = QueryParams();
+  int _pagesize = 0;
+  int _page = 0;
 
   /// put the sql keyword 'AND'
-  PlaylistEntityFilterBuilder get and {
+  PlaylistFilterBuilder get and {
     if (parameters.isNotEmpty) {
       parameters[parameters.length - 1].wOperator = ' AND ';
     }
@@ -3429,7 +2993,7 @@ class PlaylistEntityFilterBuilder extends SearchCriteria {
   }
 
   /// put the sql keyword 'OR'
-  PlaylistEntityFilterBuilder get or {
+  PlaylistFilterBuilder get or {
     if (parameters.isNotEmpty) {
       parameters[parameters.length - 1].wOperator = ' OR ';
     }
@@ -3437,26 +3001,23 @@ class PlaylistEntityFilterBuilder extends SearchCriteria {
   }
 
   /// open parentheses
-  PlaylistEntityFilterBuilder get startBlock {
-    _addedBlocks.waitingStartBlock.add(true);
-    _addedBlocks.needEndBlock.add(false);
+  PlaylistFilterBuilder get startBlock {
+    _addedBlocks.waitingStartBlock!.add(true);
+    _addedBlocks.needEndBlock!.add(false);
     _blockIndex++;
     if (_blockIndex > 1) {
-      _addedBlocks.needEndBlock[_blockIndex - 1] = true;
+      _addedBlocks.needEndBlock![_blockIndex - 1] = true;
     }
     return this;
   }
 
   /// String whereCriteria, write raw query without 'where' keyword. Like this: 'field1 like 'test%' and field2 = 3'
-  PlaylistEntityFilterBuilder where(String whereCriteria,
-      {dynamic parameterValue}) {
+  PlaylistFilterBuilder where(String? whereCriteria, {dynamic parameterValue}) {
     if (whereCriteria != null && whereCriteria != '') {
-      final DbParameter param = DbParameter(
-          columnName: parameterValue == null ? null : '',
-          hasParameter: parameterValue != null);
-      _addedBlocks = setCriteria(parameterValue ?? 0, parameters, param,
-          '($whereCriteria)', _addedBlocks);
-      _addedBlocks.needEndBlock[_blockIndex] = _addedBlocks.retVal;
+      final DbParameter param =
+          DbParameter(columnName: parameterValue == null ? null : '', hasParameter: parameterValue != null);
+      _addedBlocks = setCriteria(parameterValue ?? 0, parameters, param, '($whereCriteria)', _addedBlocks);
+      _addedBlocks.needEndBlock![_blockIndex] = _addedBlocks.retVal;
     }
     return this;
   }
@@ -3464,7 +3025,7 @@ class PlaylistEntityFilterBuilder extends SearchCriteria {
   /// page = page number,
   ///
   /// pagesize = row(s) per page
-  PlaylistEntityFilterBuilder page(int page, int pagesize) {
+  PlaylistFilterBuilder page(int page, int pagesize) {
     if (page > 0) {
       _page = page;
     }
@@ -3475,7 +3036,7 @@ class PlaylistEntityFilterBuilder extends SearchCriteria {
   }
 
   /// int count = LIMIT
-  PlaylistEntityFilterBuilder top(int count) {
+  PlaylistFilterBuilder top(int count) {
     if (count > 0) {
       _pagesize = count;
     }
@@ -3483,12 +3044,12 @@ class PlaylistEntityFilterBuilder extends SearchCriteria {
   }
 
   /// close parentheses
-  PlaylistEntityFilterBuilder get endBlock {
-    if (_addedBlocks.needEndBlock[_blockIndex]) {
+  PlaylistFilterBuilder get endBlock {
+    if (_addedBlocks.needEndBlock![_blockIndex]) {
       parameters[parameters.length - 1].whereString += ' ) ';
     }
-    _addedBlocks.needEndBlock.removeAt(_blockIndex);
-    _addedBlocks.waitingStartBlock.removeAt(_blockIndex);
+    _addedBlocks.needEndBlock!.removeAt(_blockIndex);
+    _addedBlocks.waitingStartBlock!.removeAt(_blockIndex);
     _blockIndex--;
     return this;
   }
@@ -3498,13 +3059,13 @@ class PlaylistEntityFilterBuilder extends SearchCriteria {
   /// Example 1: argFields='name, date'
   ///
   /// Example 2: argFields = ['name', 'date']
-  PlaylistEntityFilterBuilder orderBy(dynamic argFields) {
+  PlaylistFilterBuilder orderBy(dynamic argFields) {
     if (argFields != null) {
       if (argFields is String) {
         orderByList.add(argFields);
       } else {
-        for (String s in argFields as List<String>) {
-          if (s != null && s.isNotEmpty) {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
             orderByList.add(' $s ');
           }
         }
@@ -3518,13 +3079,13 @@ class PlaylistEntityFilterBuilder extends SearchCriteria {
   /// Example 1: argFields='field1, field2'
   ///
   /// Example 2: argFields = ['field1', 'field2']
-  PlaylistEntityFilterBuilder orderByDesc(dynamic argFields) {
+  PlaylistFilterBuilder orderByDesc(dynamic argFields) {
     if (argFields != null) {
       if (argFields is String) {
         orderByList.add('$argFields desc ');
       } else {
-        for (String s in argFields as List<String>) {
-          if (s != null && s.isNotEmpty) {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
             orderByList.add(' $s desc ');
           }
         }
@@ -3538,13 +3099,13 @@ class PlaylistEntityFilterBuilder extends SearchCriteria {
   /// Example 1: argFields='field1, field2'
   ///
   /// Example 2: argFields = ['field1', 'field2']
-  PlaylistEntityFilterBuilder groupBy(dynamic argFields) {
+  PlaylistFilterBuilder groupBy(dynamic argFields) {
     if (argFields != null) {
       if (argFields is String) {
         groupByList.add(' $argFields ');
       } else {
-        for (String s in argFields as List<String>) {
-          if (s != null && s.isNotEmpty) {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
             groupByList.add(' $s ');
           }
         }
@@ -3558,13 +3119,13 @@ class PlaylistEntityFilterBuilder extends SearchCriteria {
   /// Example 1: argFields='name, date'
   ///
   /// Example 2: argFields = ['name', 'date']
-  PlaylistEntityFilterBuilder having(dynamic argFields) {
+  PlaylistFilterBuilder having(dynamic argFields) {
     if (argFields != null) {
       if (argFields is String) {
         havingList.add(argFields);
       } else {
-        for (String s in argFields as List<String>) {
-          if (s != null && s.isNotEmpty) {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
             havingList.add(' $s ');
           }
         }
@@ -3573,36 +3134,33 @@ class PlaylistEntityFilterBuilder extends SearchCriteria {
     return this;
   }
 
-  PlaylistEntityField setField(
-      PlaylistEntityField field, String colName, DbType dbtype) {
-    return PlaylistEntityField(this)
-      ..param = DbParameter(
-          dbType: dbtype,
-          columnName: colName,
-          wStartBlock: _addedBlocks.waitingStartBlock[_blockIndex]);
+  PlaylistField setField(PlaylistField? field, String colName, DbType dbtype) {
+    return PlaylistField(this)
+      ..param =
+          DbParameter(dbType: dbtype, columnName: colName, wStartBlock: _addedBlocks.waitingStartBlock![_blockIndex]);
   }
 
-  PlaylistEntityField _id;
-  PlaylistEntityField get id {
+  PlaylistField? _id;
+  PlaylistField get id {
     return _id = setField(_id, 'id', DbType.integer);
   }
 
-  PlaylistEntityField _name;
-  PlaylistEntityField get name {
+  PlaylistField? _name;
+  PlaylistField get name {
     return _name = setField(_name, 'name', DbType.text);
   }
 
-  PlaylistEntityField _isArchived;
-  PlaylistEntityField get isArchived {
-    return _isArchived = setField(_isArchived, 'isArchived', DbType.bool);
+  PlaylistField? _is_archived;
+  PlaylistField get is_archived {
+    return _is_archived = setField(_is_archived, 'is_archived', DbType.bool);
   }
 
-  PlaylistEntityField _order;
-  PlaylistEntityField get order {
-    return _order = setField(_order, 'order', DbType.integer);
+  PlaylistField? _rank;
+  PlaylistField get rank {
+    return _rank = setField(_rank, 'rank', DbType.integer);
   }
 
-  bool _getIsDeleted;
+  bool _getIsDeleted = false;
 
   void _buildParameters() {
     if (_page > 0 && _pagesize > 0) {
@@ -3617,24 +3175,20 @@ class PlaylistEntityFilterBuilder extends SearchCriteria {
     for (DbParameter param in parameters) {
       if (param.columnName != null) {
         if (param.value is List && !param.hasParameter) {
-          param.value = param.dbType == DbType.text
+          param.value = param.dbType == DbType.text || param.value[0] is String
               ? '\'${param.value.join('\',\'')}\''
               : param.value.join(',');
-          whereString += param.whereString
-              .replaceAll('{field}', param.columnName)
-              .replaceAll('?', param.value.toString());
+          whereString +=
+              param.whereString.replaceAll('{field}', param.columnName!).replaceAll('?', param.value.toString());
           param.value = null;
         } else {
-          if (param.value is Map<String, dynamic> &&
-              param.value['sql'] != null) {
+          if (param.value is Map<String, dynamic> && param.value['sql'] != null) {
             param
-              ..whereString = param.whereString
-                  .replaceAll('?', param.value['sql'].toString())
+              ..whereString = param.whereString.replaceAll('?', param.value['sql'].toString())
               ..dbType = DbType.integer
               ..value = param.value['args'];
           }
-          whereString +=
-              param.whereString.replaceAll('{field}', param.columnName);
+          whereString += param.whereString.replaceAll('{field}', param.columnName!);
         }
         if (!param.whereString.contains('?')) {
         } else {
@@ -3654,12 +3208,8 @@ class PlaylistEntityFilterBuilder extends SearchCriteria {
             case DbType.date:
             case DbType.datetime:
             case DbType.datetimeUtc:
-              param.value = param.value == null
-                  ? null
-                  : (param.value as DateTime).millisecondsSinceEpoch;
-              param.value2 = param.value2 == null
-                  ? null
-                  : (param.value2 as DateTime).millisecondsSinceEpoch;
+              param.value = param.value == null ? null : (param.value as DateTime).millisecondsSinceEpoch;
+              param.value2 = param.value2 == null ? null : (param.value2 as DateTime).millisecondsSinceEpoch;
               break;
             default:
           }
@@ -3680,10 +3230,9 @@ class PlaylistEntityFilterBuilder extends SearchCriteria {
         whereString += param.whereString;
       }
     }
-    if (PlaylistEntity._softDeleteActivated) {
+    if (Playlist._softDeleteActivated) {
       if (whereString != '') {
-        whereString =
-            '${!_getIsDeleted ? 'ifnull(isDeleted,0)=0 AND' : ''} ($whereString)';
+        whereString = '${!_getIsDeleted ? 'ifnull(isDeleted,0)=0 AND' : ''} ($whereString)';
       } else if (!_getIsDeleted) {
         whereString = 'ifnull(isDeleted,0)=0';
       }
@@ -3699,17 +3248,17 @@ class PlaylistEntityFilterBuilder extends SearchCriteria {
       ..having = havingList.join(',');
   }
 
-  /// Deletes List<PlaylistEntity> bulk by query
+  /// Deletes List<Playlist> bulk by query
   ///
   /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
   Future<BoolResult> delete([bool hardDelete = false]) async {
     _buildParameters();
-    var r = BoolResult();
+    var r = BoolResult(success: false);
 
-    if (PlaylistEntity._softDeleteActivated && !hardDelete) {
-      r = await _obj._mnPlaylistEntity.updateBatch(qparams, {'isDeleted': 1});
+    if (Playlist._softDeleteActivated && !hardDelete) {
+      r = await _obj!._mnPlaylist.updateBatch(qparams, {'isDeleted': 1});
     } else {
-      r = await _obj._mnPlaylistEntity.delete(qparams);
+      r = await _obj!._mnPlaylist.delete(qparams);
     }
     return r;
   }
@@ -3721,14 +3270,14 @@ class PlaylistEntityFilterBuilder extends SearchCriteria {
   /// fieldName must be String. Value is dynamic, it can be any of the (int, bool, String.. )
   Future<BoolResult> update(Map<String, dynamic> values) {
     _buildParameters();
-    if (qparams.limit > 0 || qparams.offset > 0) {
+    if (qparams.limit! > 0 || qparams.offset! > 0) {
       qparams.whereString =
-          'id IN (SELECT id from playlists ${qparams.whereString.isNotEmpty ? 'WHERE ${qparams.whereString}' : ''}${qparams.limit > 0 ? ' LIMIT ${qparams.limit}' : ''}${qparams.offset > 0 ? ' OFFSET ${qparams.offset}' : ''})';
+          'id IN (SELECT id from playlists ${qparams.whereString!.isNotEmpty ? 'WHERE ${qparams.whereString}' : ''}${qparams.limit! > 0 ? ' LIMIT ${qparams.limit}' : ''}${qparams.offset! > 0 ? ' OFFSET ${qparams.offset}' : ''})';
     }
-    return _obj._mnPlaylistEntity.updateBatch(qparams, values);
+    return _obj!._mnPlaylist.updateBatch(qparams, values);
   }
 
-  /// This method always returns PlaylistEntity Obj if exist, otherwise returns null
+  /// This method always returns Playlist Obj if exist, otherwise returns null
   ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
   ///
@@ -3741,33 +3290,26 @@ class PlaylistEntityFilterBuilder extends SearchCriteria {
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
   ///
-  /// <returns>List<PlaylistEntity>
-  Future<PlaylistEntity> toSingle(
-      {bool preload = false,
-      List<String> preloadFields,
-      bool loadParents = false,
-      List<String> loadedFields}) async {
+  /// <returns>List<Playlist>
+  Future<Playlist?> toSingle(
+      {bool preload = false, List<String>? preloadFields, bool loadParents = false, List<String>? loadedFields}) async {
     _pagesize = 1;
     _buildParameters();
-    final objFuture = _obj._mnPlaylistEntity.toList(qparams);
+    final objFuture = _obj!._mnPlaylist.toList(qparams);
     final data = await objFuture;
-    PlaylistEntity obj;
+    Playlist? obj;
     if (data.isNotEmpty) {
-      obj = PlaylistEntity.fromMap(data[0] as Map<String, dynamic>);
+      obj = Playlist.fromMap(data[0] as Map<String, dynamic>);
       // final List<String> _loadedFields = loadedFields ?? [];
 
       // RELATIONSHIPS PRELOAD CHILD
       if (preload) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedFields.contains('playlists.plSongLyricEntities') && */ (preloadFields ==
-                null ||
-            preloadFields.contains('plSongLyricEntities'))) {
-          /*_loadedFields.add('playlists.plSongLyricEntities'); */
-          obj.plSongLyricEntities = obj.plSongLyricEntities ??
-              await obj.getSongLyricEntities().toList(
-                  preload: preload,
-                  preloadFields: preloadFields,
-                  loadParents: false /*, loadedFields:_loadedFields*/);
+        if (/*!_loadedfields!.contains('playlists.plSongLyrics') && */ (preloadFields == null ||
+            preloadFields.contains('plSongLyrics'))) {
+          /*_loadedfields!.add('playlists.plSongLyrics'); */ obj.plSongLyrics = obj.plSongLyrics ??
+              await obj.getSongLyrics()!.toList(
+                  preload: preload, preloadFields: preloadFields, loadParents: false /*, loadedFields:_loadedFields*/);
         }
       } // END RELATIONSHIPS PRELOAD CHILD
 
@@ -3777,22 +3319,21 @@ class PlaylistEntityFilterBuilder extends SearchCriteria {
     return obj;
   }
 
-  /// This method returns int. [PlaylistEntity]
+  /// This method returns int. [Playlist]
   ///
   /// <returns>int
-  Future<int> toCount(
-      [VoidCallback Function(int c) playlistentityCount]) async {
+  Future<int> toCount([VoidCallback Function(int c)? playlistCount]) async {
     _buildParameters();
     qparams.selectColumns = ['COUNT(1) AS CNT'];
-    final playlistentitiesFuture = await _obj._mnPlaylistEntity.toList(qparams);
-    final int count = playlistentitiesFuture[0]['CNT'] as int;
-    if (playlistentityCount != null) {
-      playlistentityCount(count);
+    final playlistsFuture = await _obj!._mnPlaylist.toList(qparams);
+    final int count = playlistsFuture[0]['CNT'] as int;
+    if (playlistCount != null) {
+      playlistCount(count);
     }
     return count;
   }
 
-  /// This method returns List<PlaylistEntity> [PlaylistEntity]
+  /// This method returns List<Playlist> [Playlist]
   ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
   ///
@@ -3805,24 +3346,20 @@ class PlaylistEntityFilterBuilder extends SearchCriteria {
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
   ///
-  /// <returns>List<PlaylistEntity>
-  Future<List<PlaylistEntity>> toList(
-      {bool preload = false,
-      List<String> preloadFields,
-      bool loadParents = false,
-      List<String> loadedFields}) async {
+  /// <returns>List<Playlist>
+  Future<List<Playlist>> toList(
+      {bool preload = false, List<String>? preloadFields, bool loadParents = false, List<String>? loadedFields}) async {
     final data = await toMapList();
-    final List<PlaylistEntity> playlistentitiesData =
-        await PlaylistEntity.fromMapList(data,
-            preload: preload,
-            preloadFields: preloadFields,
-            loadParents: loadParents,
-            loadedFields: loadedFields,
-            setDefaultValues: qparams.selectColumns == null);
-    return playlistentitiesData;
+    final List<Playlist> playlistsData = await Playlist.fromMapList(data,
+        preload: preload,
+        preloadFields: preloadFields,
+        loadParents: loadParents,
+        loadedFields: loadedFields,
+        setDefaultValues: qparams.selectColumns == null);
+    return playlistsData;
   }
 
-  /// This method returns Json String [PlaylistEntity]
+  /// This method returns Json String [Playlist]
   Future<String> toJson() async {
     final list = <dynamic>[];
     final data = await toList();
@@ -3832,7 +3369,7 @@ class PlaylistEntityFilterBuilder extends SearchCriteria {
     return json.encode(list);
   }
 
-  /// This method returns Json String. [PlaylistEntity]
+  /// This method returns Json String. [Playlist]
   Future<String> toJsonWithChilds() async {
     final list = <dynamic>[];
     final data = await toList();
@@ -3842,15 +3379,15 @@ class PlaylistEntityFilterBuilder extends SearchCriteria {
     return json.encode(list);
   }
 
-  /// This method returns List<dynamic>. [PlaylistEntity]
+  /// This method returns List<dynamic>. [Playlist]
   ///
   /// <returns>List<dynamic>
   Future<List<dynamic>> toMapList() async {
     _buildParameters();
-    return await _obj._mnPlaylistEntity.toList(qparams);
+    return await _obj!._mnPlaylist.toList(qparams);
   }
 
-  /// This method returns Primary Key List SQL and Parameters retVal = Map<String,dynamic>. [PlaylistEntity]
+  /// This method returns Primary Key List SQL and Parameters retVal = Map<String,dynamic>. [Playlist]
   ///
   /// retVal['sql'] = SQL statement string, retVal['args'] = whereArguments List<dynamic>;
   ///
@@ -3873,7 +3410,7 @@ class PlaylistEntityFilterBuilder extends SearchCriteria {
     }
     final List<int> idData = <int>[];
     qparams.selectColumns = ['id'];
-    final idFuture = await _obj._mnPlaylistEntity.toList(qparams);
+    final idFuture = await _obj!._mnPlaylist.toList(qparams);
 
     final int count = idFuture.length;
     for (int i = 0; i < count; i++) {
@@ -3882,13 +3419,13 @@ class PlaylistEntityFilterBuilder extends SearchCriteria {
     return idData;
   }
 
-  /// Returns List<dynamic> for selected columns. Use this method for 'groupBy' with min,max,avg..  [PlaylistEntity]
+  /// Returns List<dynamic> for selected columns. Use this method for 'groupBy' with min,max,avg..  [Playlist]
   ///
   /// Sample usage: (see EXAMPLE 4.2 at https://github.com/hhtokpinar/sqfEntity#group-by)
   Future<List<dynamic>> toListObject() async {
     _buildParameters();
 
-    final objectFuture = _obj._mnPlaylistEntity.toList(qparams);
+    final objectFuture = _obj!._mnPlaylist.toList(qparams);
 
     final List<dynamic> objectsData = <dynamic>[];
     final data = await objectFuture;
@@ -3901,18 +3438,17 @@ class PlaylistEntityFilterBuilder extends SearchCriteria {
 
   /// Returns List<String> for selected first column
   ///
-  /// Sample usage: await PlaylistEntity.select(columnsToSelect: ['columnName']).toListString()
-  Future<List<String>> toListString(
-      [VoidCallback Function(List<String> o) listString]) async {
+  /// Sample usage: await Playlist.select(columnsToSelect: ['columnName']).toListString()
+  Future<List<String>> toListString([VoidCallback Function(List<String> o)? listString]) async {
     _buildParameters();
 
-    final objectFuture = _obj._mnPlaylistEntity.toList(qparams);
+    final objectFuture = _obj!._mnPlaylist.toList(qparams);
 
     final List<String> objectsData = <String>[];
     final data = await objectFuture;
     final int count = data.length;
     for (int i = 0; i < count; i++) {
-      objectsData.add(data[i][qparams.selectColumns[0]].toString());
+      objectsData.add(data[i][qparams.selectColumns![0]].toString());
     }
     if (listString != null) {
       listString(objectsData);
@@ -3920,106 +3456,95 @@ class PlaylistEntityFilterBuilder extends SearchCriteria {
     return objectsData;
   }
 }
-// endregion PlaylistEntityFilterBuilder
+// endregion PlaylistFilterBuilder
 
-// region PlaylistEntityFields
-class PlaylistEntityFields {
-  static TableField _fId;
+// region PlaylistFields
+class PlaylistFields {
+  static TableField? _fId;
   static TableField get id {
     return _fId = _fId ?? SqlSyntax.setField(_fId, 'id', DbType.integer);
   }
 
-  static TableField _fName;
+  static TableField? _fName;
   static TableField get name {
     return _fName = _fName ?? SqlSyntax.setField(_fName, 'name', DbType.text);
   }
 
-  static TableField _fIsArchived;
-  static TableField get isArchived {
-    return _fIsArchived = _fIsArchived ??
-        SqlSyntax.setField(_fIsArchived, 'isArchived', DbType.bool);
+  static TableField? _fIs_archived;
+  static TableField get is_archived {
+    return _fIs_archived = _fIs_archived ?? SqlSyntax.setField(_fIs_archived, 'is_archived', DbType.bool);
   }
 
-  static TableField _fOrder;
-  static TableField get order {
-    return _fOrder =
-        _fOrder ?? SqlSyntax.setField(_fOrder, 'order', DbType.integer);
+  static TableField? _fRank;
+  static TableField get rank {
+    return _fRank = _fRank ?? SqlSyntax.setField(_fRank, 'rank', DbType.integer);
   }
 }
-// endregion PlaylistEntityFields
+// endregion PlaylistFields
 
-//region PlaylistEntityManager
-class PlaylistEntityManager extends SqfEntityProvider {
-  PlaylistEntityManager()
-      : super(Model(),
-            tableName: _tableName,
-            primaryKeyList: _primaryKeyList,
-            whereStr: _whereStr);
+//region PlaylistManager
+class PlaylistManager extends SqfEntityProvider {
+  PlaylistManager() : super(Model(), tableName: _tableName, primaryKeyList: _primaryKeyList, whereStr: _whereStr);
   static final String _tableName = 'playlists';
   static final List<String> _primaryKeyList = ['id'];
   static final String _whereStr = 'id=?';
 }
 
-//endregion PlaylistEntityManager
-// region SongEntity
-class SongEntity {
-  SongEntity({this.id, this.name}) {
+//endregion PlaylistManager
+// region Song
+class Song {
+  Song({this.id, this.name}) {
     _setDefaultValues();
   }
-  SongEntity.withFields(this.id, this.name) {
+  Song.withFields(this.id, this.name) {
     _setDefaultValues();
   }
-  SongEntity.withId(this.id, this.name) {
+  Song.withId(this.id, this.name) {
     _setDefaultValues();
   }
-  SongEntity.fromMap(Map<String, dynamic> o, {bool setDefaultValues = true}) {
+  // fromMap v2.0
+  Song.fromMap(Map<String, dynamic> o, {bool setDefaultValues = true}) {
     if (setDefaultValues) {
       _setDefaultValues();
     }
     id = int.tryParse(o['id'].toString());
     if (o['name'] != null) {
-      name = o['name'] as String;
+      name = o['name'].toString();
     }
 
     isSaved = true;
   }
-  // FIELDS (SongEntity)
-  int id;
-  String name;
-  bool isSaved;
-  BoolResult saveResult;
-  // end FIELDS (SongEntity)
+  // FIELDS (Song)
+  int? id;
+  String? name;
+  bool? isSaved;
+  BoolResult? saveResult;
+  // end FIELDS (Song)
 
-// COLLECTIONS & VIRTUALS (SongEntity)
+// COLLECTIONS & VIRTUALS (Song)
   /// to load children of items to this field, use preload parameter. Ex: toList(preload:true) or toSingle(preload:true) or getById(preload:true)
-  /// You can also specify this object into certain preload fields. Ex: toList(preload:true, preloadFields:['plSongLyricEntities', 'plField2'..]) or so on..
-  List<SongLyricEntity> plSongLyricEntities;
+  /// You can also specify this object into certain preload fields!. Ex: toList(preload:true, preloadFields:['plSongLyrics', 'plField2'..]) or so on..
+  List<SongLyric>? plSongLyrics;
 
-  /// get SongLyricEntity(s) filtered by id=songsId
-  SongLyricEntityFilterBuilder getSongLyricEntities(
-      {List<String> columnsToSelect, bool getIsDeleted}) {
+  /// get SongLyric(s) filtered by id=songsId
+  SongLyricFilterBuilder? getSongLyrics({List<String>? columnsToSelect, bool? getIsDeleted}) {
     if (id == null) {
       return null;
     }
-    return SongLyricEntity()
-        .select(columnsToSelect: columnsToSelect, getIsDeleted: getIsDeleted)
-        .songsId
-        .equals(id)
-        .and;
+    return SongLyric().select(columnsToSelect: columnsToSelect, getIsDeleted: getIsDeleted).songsId.equals(id).and;
   }
 
-// END COLLECTIONS & VIRTUALS (SongEntity)
+// END COLLECTIONS & VIRTUALS (Song)
 
   static const bool _softDeleteActivated = false;
-  SongEntityManager __mnSongEntity;
+  SongManager? __mnSong;
 
-  SongEntityManager get _mnSongEntity {
-    return __mnSongEntity = __mnSongEntity ?? SongEntityManager();
+  SongManager get _mnSong {
+    return __mnSong = __mnSong ?? SongManager();
   }
 
   // METHODS
-  Map<String, dynamic> toMap(
-      {bool forQuery = false, bool forJson = false, bool forView = false}) {
+  Map<String, dynamic> toMap({bool forQuery = false, bool forJson = false, bool forView = false}) {
     final map = <String, dynamic>{};
     if (id != null) {
       map['id'] = id;
@@ -4032,9 +3557,7 @@ class SongEntity {
   }
 
   Future<Map<String, dynamic>> toMapWithChildren(
-      [bool forQuery = false,
-      bool forJson = false,
-      bool forView = false]) async {
+      [bool forQuery = false, bool forJson = false, bool forView = false]) async {
     final map = <String, dynamic>{};
     if (id != null) {
       map['id'] = id;
@@ -4043,21 +3566,21 @@ class SongEntity {
       map['name'] = name;
     }
 
-// COLLECTIONS (SongEntity)
+// COLLECTIONS (Song)
     if (!forQuery) {
-      map['SongLyricEntities'] = await getSongLyricEntities().toMapList();
+      map['SongLyrics'] = await getSongLyrics()!.toMapList();
     }
-// END COLLECTIONS (SongEntity)
+// END COLLECTIONS (Song)
 
     return map;
   }
 
-  /// This method returns Json String [SongEntity]
+  /// This method returns Json String [Song]
   String toJson() {
     return json.encode(toMap(forJson: true));
   }
 
-  /// This method returns Json String [SongEntity]
+  /// This method returns Json String [Song]
   Future<String> toJsonWithChilds() async {
     return json.encode(await toMapWithChildren(false, true));
   }
@@ -4070,62 +3593,51 @@ class SongEntity {
     return [id, name];
   }
 
-  static Future<List<SongEntity>> fromWebUrl(String url,
-      {Map<String, String> headers}) async {
+  static Future<List<Song>?> fromWebUrl(Uri uri, {Map<String, String>? headers}) async {
     try {
-      final response = await http.get(url, headers: headers);
+      final response = await http.get(uri, headers: headers);
       return await fromJson(response.body);
     } catch (e) {
-      print(
-          'SQFENTITY ERROR SongEntity.fromWebUrl: ErrorMessage: ${e.toString()}');
+      print('SQFENTITY ERROR Song.fromWebUrl: ErrorMessage: ${e.toString()}');
       return null;
     }
   }
 
-  Future<http.Response> postUrl(String url, {Map<String, String> headers}) {
-    return http.post(url, headers: headers, body: toJson());
+  Future<http.Response> postUrl(Uri uri, {Map<String, String>? headers}) {
+    return http.post(uri, headers: headers, body: toJson());
   }
 
-  static Future<List<SongEntity>> fromJson(String jsonBody) async {
+  static Future<List<Song>> fromJson(String jsonBody) async {
     final Iterable list = await json.decode(jsonBody) as Iterable;
-    var objList = <SongEntity>[];
+    var objList = <Song>[];
     try {
-      objList = list
-          .map((songentity) =>
-              SongEntity.fromMap(songentity as Map<String, dynamic>))
-          .toList();
+      objList = list.map((song) => Song.fromMap(song as Map<String, dynamic>)).toList();
     } catch (e) {
-      print(
-          'SQFENTITY ERROR SongEntity.fromJson: ErrorMessage: ${e.toString()}');
+      print('SQFENTITY ERROR Song.fromJson: ErrorMessage: ${e.toString()}');
     }
     return objList;
   }
 
-  static Future<List<SongEntity>> fromMapList(List<dynamic> data,
+  static Future<List<Song>> fromMapList(List<dynamic> data,
       {bool preload = false,
-      List<String> preloadFields,
+      List<String>? preloadFields,
       bool loadParents = false,
-      List<String> loadedFields,
+      List<String>? loadedFields,
       bool setDefaultValues = true}) async {
-    final List<SongEntity> objList = <SongEntity>[];
+    final List<Song> objList = <Song>[];
     loadedFields = loadedFields ?? [];
     for (final map in data) {
-      final obj = SongEntity.fromMap(map as Map<String, dynamic>,
-          setDefaultValues: setDefaultValues);
+      final obj = Song.fromMap(map as Map<String, dynamic>, setDefaultValues: setDefaultValues);
       // final List<String> _loadedFields = List<String>.from(loadedFields);
 
       // RELATIONSHIPS PRELOAD CHILD
       if (preload) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedFields.contains('songs.plSongLyricEntities') && */ (preloadFields ==
-                null ||
-            preloadFields.contains('plSongLyricEntities'))) {
-          /*_loadedFields.add('songs.plSongLyricEntities'); */
-          obj.plSongLyricEntities = obj.plSongLyricEntities ??
-              await obj.getSongLyricEntities().toList(
-                  preload: preload,
-                  preloadFields: preloadFields,
-                  loadParents: false /*, loadedFields:_loadedFields*/);
+        if (/*!_loadedfields!.contains('songs.plSongLyrics') && */ (preloadFields == null ||
+            preloadFields.contains('plSongLyrics'))) {
+          /*_loadedfields!.add('songs.plSongLyrics'); */ obj.plSongLyrics = obj.plSongLyrics ??
+              await obj.getSongLyrics()!.toList(
+                  preload: preload, preloadFields: preloadFields, loadParents: false /*, loadedFields:_loadedFields*/);
         }
       } // END RELATIONSHIPS PRELOAD CHILD
 
@@ -4134,9 +3646,9 @@ class SongEntity {
     return objList;
   }
 
-  /// returns SongEntity by ID if exist, otherwise returns null
+  /// returns Song by ID if exist, otherwise returns null
   ///
-  /// Primary Keys: int id
+  /// Primary Keys: int? id
   ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
   ///
@@ -4149,33 +3661,26 @@ class SongEntity {
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
   ///
-  /// <returns>returns SongEntity if exist, otherwise returns null
-  Future<SongEntity> getById(int id,
-      {bool preload = false,
-      List<String> preloadFields,
-      bool loadParents = false,
-      List<String> loadedFields}) async {
+  /// <returns>returns Song if exist, otherwise returns null
+  Future<Song?> getById(int? id,
+      {bool preload = false, List<String>? preloadFields, bool loadParents = false, List<String>? loadedFields}) async {
     if (id == null) {
       return null;
     }
-    SongEntity obj;
-    final data = await _mnSongEntity.getById([id]);
+    Song? obj;
+    final data = await _mnSong.getById([id]);
     if (data.length != 0) {
-      obj = SongEntity.fromMap(data[0] as Map<String, dynamic>);
+      obj = Song.fromMap(data[0] as Map<String, dynamic>);
       // final List<String> _loadedFields = loadedFields ?? [];
 
       // RELATIONSHIPS PRELOAD CHILD
       if (preload) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedFields.contains('songs.plSongLyricEntities') && */ (preloadFields ==
-                null ||
-            preloadFields.contains('plSongLyricEntities'))) {
-          /*_loadedFields.add('songs.plSongLyricEntities'); */
-          obj.plSongLyricEntities = obj.plSongLyricEntities ??
-              await obj.getSongLyricEntities().toList(
-                  preload: preload,
-                  preloadFields: preloadFields,
-                  loadParents: false /*, loadedFields:_loadedFields*/);
+        if (/*!_loadedfields!.contains('songs.plSongLyrics') && */ (preloadFields == null ||
+            preloadFields.contains('plSongLyrics'))) {
+          /*_loadedfields!.add('songs.plSongLyrics'); */ obj.plSongLyrics = obj.plSongLyrics ??
+              await obj.getSongLyrics()!.toList(
+                  preload: preload, preloadFields: preloadFields, loadParents: false /*, loadedFields:_loadedFields*/);
         }
       } // END RELATIONSHIPS PRELOAD CHILD
 
@@ -4185,106 +3690,96 @@ class SongEntity {
     return obj;
   }
 
-  /// Saves the (SongEntity) object. If the id field is null, saves as a new record and returns new id, if id is not null then updates record
+  /// Saves the (Song) object. If the id field is null, saves as a new record and returns new id, if id is not null then updates record
 
   /// <returns>Returns id
-  Future<int> save() async {
-    if (id == null || id == 0 || !isSaved) {
-      await _mnSongEntity.insert(this);
-      if (saveResult != null && saveResult.success) {
+  Future<int?> save() async {
+    if (id == null || id == 0 || !isSaved!) {
+      await _mnSong.insert(this);
+      if (saveResult!.success) {
         isSaved = true;
       }
     } else {
       // id= await _upsert(); // removed in sqfentity_gen 1.3.0+6
-      await _mnSongEntity.update(this);
+      await _mnSong.update(this);
     }
 
     return id;
   }
 
-  /// saveAll method saves the sent List<SongEntity> as a bulk in one transaction
+  /// saveAll method saves the sent List<Song> as a bulk in one transaction
   ///
   /// Returns a <List<BoolResult>>
-  static Future<List<dynamic>> saveAll(List<SongEntity> songentities) async {
-    // final results = _mnSongEntity.saveAll('INSERT OR REPLACE INTO songs (id,name)  VALUES (?,?)',songentities);
+  static Future<List<dynamic>> saveAll(List<Song> songs) async {
+    // final results = _mnSong.saveAll('INSERT OR REPLACE INTO songs (id,name)  VALUES (?,?)',songs);
     // return results; removed in sqfentity_gen 1.3.0+6
     await Model().batchStart();
-    for (final obj in songentities) {
+    for (final obj in songs) {
       await obj.save();
     }
     //    return Model().batchCommit();
     final result = await Model().batchCommit();
 
-    return result;
+    return result!;
   }
 
   /// Updates if the record exists, otherwise adds a new row
 
   /// <returns>Returns id
-  Future<int> upsert() async {
+
+  Future<int?> upsert() async {
     try {
-      if (await _mnSongEntity.rawInsert(
-              'INSERT OR REPLACE INTO songs (id,name)  VALUES (?,?)',
-              [id, name]) ==
-          1) {
-        saveResult = BoolResult(
-            success: true,
-            successMessage: 'SongEntity id=$id updated successfully');
+      final result = await _mnSong.rawInsert('INSERT OR REPLACE INTO songs (id,name)  VALUES (?,?)', [id, name]);
+      if (result! > 0) {
+        saveResult = BoolResult(success: true, successMessage: 'Song id=$id updated successfully');
       } else {
-        saveResult = BoolResult(
-            success: false, errorMessage: 'SongEntity id=$id did not update');
+        saveResult = BoolResult(success: false, errorMessage: 'Song id=$id did not update');
       }
       return id;
     } catch (e) {
-      saveResult = BoolResult(
-          success: false,
-          errorMessage: 'SongEntity Save failed. Error: ${e.toString()}');
-      return 0;
+      saveResult = BoolResult(success: false, errorMessage: 'Song Save failed. Error: ${e.toString()}');
+      return null;
     }
   }
 
-  /// inserts or replaces the sent List<<SongEntity>> as a bulk in one transaction.
+  /// inserts or replaces the sent List<<Song>> as a bulk in one transaction.
   ///
   /// upsertAll() method is faster then saveAll() method. upsertAll() should be used when you are sure that the primary key is greater than zero
   ///
   /// Returns a BoolCommitResult
-  Future<BoolCommitResult> upsertAll(List<SongEntity> songentities) async {
-    final results = await _mnSongEntity.rawInsertAll(
-        'INSERT OR REPLACE INTO songs (id,name)  VALUES (?,?)', songentities);
+  Future<BoolCommitResult> upsertAll(List<Song> songs) async {
+    final results = await _mnSong.rawInsertAll('INSERT OR REPLACE INTO songs (id,name)  VALUES (?,?)', songs);
     return results;
   }
 
-  /// Deletes SongEntity
+  /// Deletes Song
 
   /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
+
   Future<BoolResult> delete([bool hardDelete = false]) async {
-    print('SQFENTITIY: delete SongEntity invoked (id=$id)');
-    if (await SongLyricEntity().select().songsId.equals(id).and.toCount() > 0) {
-      return BoolResult(
-          success: false,
-          errorMessage:
-              'SQFENTITY ERROR: The DELETE statement conflicted with the REFERENCE RELATIONSHIP (SongLyricEntity.songsId)');
+    print('SQFENTITIY: delete Song invoked (id=$id)');
+    var result = BoolResult(success: false);
+    {
+      result = await SongLyric().select().songsId.equals(id).and.delete(hardDelete);
+    }
+    if (!result.success) {
+      return result;
     }
     if (!_softDeleteActivated || hardDelete) {
-      return _mnSongEntity
-          .delete(QueryParams(whereString: 'id=?', whereArguments: [id]));
+      return _mnSong.delete(QueryParams(whereString: 'id=?', whereArguments: [id]));
     } else {
-      return _mnSongEntity.updateBatch(
-          QueryParams(whereString: 'id=?', whereArguments: [id]),
-          {'isDeleted': 1});
+      return _mnSong.updateBatch(QueryParams(whereString: 'id=?', whereArguments: [id]), {'isDeleted': 1});
     }
   }
 
-  SongEntityFilterBuilder select(
-      {List<String> columnsToSelect, bool getIsDeleted}) {
-    return SongEntityFilterBuilder(this)
+  SongFilterBuilder select({List<String>? columnsToSelect, bool? getIsDeleted}) {
+    return SongFilterBuilder(this)
       .._getIsDeleted = getIsDeleted == true
       ..qparams.selectColumns = columnsToSelect;
   }
 
-  SongEntityFilterBuilder distinct(
-      {List<String> columnsToSelect, bool getIsDeleted}) {
-    return SongEntityFilterBuilder(this)
+  SongFilterBuilder distinct({List<String>? columnsToSelect, bool? getIsDeleted}) {
+    return SongFilterBuilder(this)
       .._getIsDeleted = getIsDeleted == true
       ..qparams.selectColumns = columnsToSelect
       ..qparams.distinct = true;
@@ -4294,9 +3789,9 @@ class SongEntity {
     isSaved = false;
   }
   // END METHODS
-  // CUSTOM CODES
+  // BEGIN CUSTOM CODE
   /*
-      you must define customCode property of your SqfEntityTable constant for ex:
+      you can define customCode property of your SqfEntityTable constant. For example:
       const tablePerson = SqfEntityTable(
       tableName: 'person',
       primaryKeyName: 'id',
@@ -4312,235 +3807,176 @@ class SongEntity {
        }
       ''');
      */
-  // END CUSTOM CODES
+  // END CUSTOM CODE
 }
-// endregion songentity
+// endregion song
 
-// region SongEntityField
-class SongEntityField extends SearchCriteria {
-  SongEntityField(this.songentityFB) {
-    param = DbParameter();
-  }
-  DbParameter param;
+// region SongField
+class SongField extends SearchCriteria {
+  SongField(this.songFB);
+  // { param = DbParameter(); }
+  DbParameter param = DbParameter();
   String _waitingNot = '';
-  SongEntityFilterBuilder songentityFB;
+  SongFilterBuilder songFB;
 
-  SongEntityField get not {
+  SongField get not {
     _waitingNot = ' NOT ';
     return this;
   }
 
-  SongEntityFilterBuilder equals(dynamic pValue) {
+  SongFilterBuilder equals(dynamic pValue) {
     param.expression = '=';
-    songentityFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, songentityFB.parameters, param, SqlSyntax.EQuals,
-            songentityFB._addedBlocks)
-        : setCriteria(pValue, songentityFB.parameters, param,
-            SqlSyntax.NotEQuals, songentityFB._addedBlocks);
+    songFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, songFB.parameters, param, SqlSyntax.EQuals, songFB._addedBlocks)
+        : setCriteria(pValue, songFB.parameters, param, SqlSyntax.NotEQuals, songFB._addedBlocks);
     _waitingNot = '';
-    songentityFB._addedBlocks.needEndBlock[songentityFB._blockIndex] =
-        songentityFB._addedBlocks.retVal;
-    return songentityFB;
+    songFB._addedBlocks.needEndBlock![songFB._blockIndex] = songFB._addedBlocks.retVal;
+    return songFB;
   }
 
-  SongEntityFilterBuilder equalsOrNull(dynamic pValue) {
+  SongFilterBuilder equalsOrNull(dynamic pValue) {
     param.expression = '=';
-    songentityFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, songentityFB.parameters, param,
-            SqlSyntax.EQualsOrNull, songentityFB._addedBlocks)
-        : setCriteria(pValue, songentityFB.parameters, param,
-            SqlSyntax.NotEQualsOrNull, songentityFB._addedBlocks);
+    songFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, songFB.parameters, param, SqlSyntax.EQualsOrNull, songFB._addedBlocks)
+        : setCriteria(pValue, songFB.parameters, param, SqlSyntax.NotEQualsOrNull, songFB._addedBlocks);
     _waitingNot = '';
-    songentityFB._addedBlocks.needEndBlock[songentityFB._blockIndex] =
-        songentityFB._addedBlocks.retVal;
-    return songentityFB;
+    songFB._addedBlocks.needEndBlock![songFB._blockIndex] = songFB._addedBlocks.retVal;
+    return songFB;
   }
 
-  SongEntityFilterBuilder isNull() {
-    songentityFB._addedBlocks = setCriteria(
-        0,
-        songentityFB.parameters,
-        param,
-        SqlSyntax.IsNULL.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-        songentityFB._addedBlocks);
+  SongFilterBuilder isNull() {
+    songFB._addedBlocks = setCriteria(0, songFB.parameters, param,
+        SqlSyntax.IsNULL.replaceAll(SqlSyntax.notKeyword, _waitingNot), songFB._addedBlocks);
     _waitingNot = '';
-    songentityFB._addedBlocks.needEndBlock[songentityFB._blockIndex] =
-        songentityFB._addedBlocks.retVal;
-    return songentityFB;
+    songFB._addedBlocks.needEndBlock![songFB._blockIndex] = songFB._addedBlocks.retVal;
+    return songFB;
   }
 
-  SongEntityFilterBuilder contains(dynamic pValue) {
+  SongFilterBuilder contains(dynamic pValue) {
     if (pValue != null) {
-      songentityFB._addedBlocks = setCriteria(
-          '%${pValue.toString()}%',
-          songentityFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          songentityFB._addedBlocks);
+      songFB._addedBlocks = setCriteria('%${pValue.toString()}%', songFB.parameters, param,
+          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot), songFB._addedBlocks);
       _waitingNot = '';
-      songentityFB._addedBlocks.needEndBlock[songentityFB._blockIndex] =
-          songentityFB._addedBlocks.retVal;
+      songFB._addedBlocks.needEndBlock![songFB._blockIndex] = songFB._addedBlocks.retVal;
     }
-    return songentityFB;
+    return songFB;
   }
 
-  SongEntityFilterBuilder startsWith(dynamic pValue) {
+  SongFilterBuilder startsWith(dynamic pValue) {
     if (pValue != null) {
-      songentityFB._addedBlocks = setCriteria(
-          '${pValue.toString()}%',
-          songentityFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          songentityFB._addedBlocks);
+      songFB._addedBlocks = setCriteria('${pValue.toString()}%', songFB.parameters, param,
+          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot), songFB._addedBlocks);
       _waitingNot = '';
-      songentityFB._addedBlocks.needEndBlock[songentityFB._blockIndex] =
-          songentityFB._addedBlocks.retVal;
-      songentityFB._addedBlocks.needEndBlock[songentityFB._blockIndex] =
-          songentityFB._addedBlocks.retVal;
+      songFB._addedBlocks.needEndBlock![songFB._blockIndex] = songFB._addedBlocks.retVal;
+      songFB._addedBlocks.needEndBlock![songFB._blockIndex] = songFB._addedBlocks.retVal;
     }
-    return songentityFB;
+    return songFB;
   }
 
-  SongEntityFilterBuilder endsWith(dynamic pValue) {
+  SongFilterBuilder endsWith(dynamic pValue) {
     if (pValue != null) {
-      songentityFB._addedBlocks = setCriteria(
-          '%${pValue.toString()}',
-          songentityFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          songentityFB._addedBlocks);
+      songFB._addedBlocks = setCriteria('%${pValue.toString()}', songFB.parameters, param,
+          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot), songFB._addedBlocks);
       _waitingNot = '';
-      songentityFB._addedBlocks.needEndBlock[songentityFB._blockIndex] =
-          songentityFB._addedBlocks.retVal;
+      songFB._addedBlocks.needEndBlock![songFB._blockIndex] = songFB._addedBlocks.retVal;
     }
-    return songentityFB;
+    return songFB;
   }
 
-  SongEntityFilterBuilder between(dynamic pFirst, dynamic pLast) {
+  SongFilterBuilder between(dynamic pFirst, dynamic pLast) {
     if (pFirst != null && pLast != null) {
-      songentityFB._addedBlocks = setCriteria(
-          pFirst,
-          songentityFB.parameters,
-          param,
-          SqlSyntax.Between.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          songentityFB._addedBlocks,
-          pLast);
+      songFB._addedBlocks = setCriteria(pFirst, songFB.parameters, param,
+          SqlSyntax.Between.replaceAll(SqlSyntax.notKeyword, _waitingNot), songFB._addedBlocks, pLast);
     } else if (pFirst != null) {
       if (_waitingNot != '') {
-        songentityFB._addedBlocks = setCriteria(pFirst, songentityFB.parameters,
-            param, SqlSyntax.LessThan, songentityFB._addedBlocks);
+        songFB._addedBlocks = setCriteria(pFirst, songFB.parameters, param, SqlSyntax.LessThan, songFB._addedBlocks);
       } else {
-        songentityFB._addedBlocks = setCriteria(pFirst, songentityFB.parameters,
-            param, SqlSyntax.GreaterThanOrEquals, songentityFB._addedBlocks);
+        songFB._addedBlocks =
+            setCriteria(pFirst, songFB.parameters, param, SqlSyntax.GreaterThanOrEquals, songFB._addedBlocks);
       }
     } else if (pLast != null) {
       if (_waitingNot != '') {
-        songentityFB._addedBlocks = setCriteria(pLast, songentityFB.parameters,
-            param, SqlSyntax.GreaterThan, songentityFB._addedBlocks);
+        songFB._addedBlocks = setCriteria(pLast, songFB.parameters, param, SqlSyntax.GreaterThan, songFB._addedBlocks);
       } else {
-        songentityFB._addedBlocks = setCriteria(pLast, songentityFB.parameters,
-            param, SqlSyntax.LessThanOrEquals, songentityFB._addedBlocks);
+        songFB._addedBlocks =
+            setCriteria(pLast, songFB.parameters, param, SqlSyntax.LessThanOrEquals, songFB._addedBlocks);
       }
     }
     _waitingNot = '';
-    songentityFB._addedBlocks.needEndBlock[songentityFB._blockIndex] =
-        songentityFB._addedBlocks.retVal;
-    return songentityFB;
+    songFB._addedBlocks.needEndBlock![songFB._blockIndex] = songFB._addedBlocks.retVal;
+    return songFB;
   }
 
-  SongEntityFilterBuilder greaterThan(dynamic pValue) {
+  SongFilterBuilder greaterThan(dynamic pValue) {
     param.expression = '>';
-    songentityFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, songentityFB.parameters, param,
-            SqlSyntax.GreaterThan, songentityFB._addedBlocks)
-        : setCriteria(pValue, songentityFB.parameters, param,
-            SqlSyntax.LessThanOrEquals, songentityFB._addedBlocks);
+    songFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, songFB.parameters, param, SqlSyntax.GreaterThan, songFB._addedBlocks)
+        : setCriteria(pValue, songFB.parameters, param, SqlSyntax.LessThanOrEquals, songFB._addedBlocks);
     _waitingNot = '';
-    songentityFB._addedBlocks.needEndBlock[songentityFB._blockIndex] =
-        songentityFB._addedBlocks.retVal;
-    return songentityFB;
+    songFB._addedBlocks.needEndBlock![songFB._blockIndex] = songFB._addedBlocks.retVal;
+    return songFB;
   }
 
-  SongEntityFilterBuilder lessThan(dynamic pValue) {
+  SongFilterBuilder lessThan(dynamic pValue) {
     param.expression = '<';
-    songentityFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, songentityFB.parameters, param,
-            SqlSyntax.LessThan, songentityFB._addedBlocks)
-        : setCriteria(pValue, songentityFB.parameters, param,
-            SqlSyntax.GreaterThanOrEquals, songentityFB._addedBlocks);
+    songFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, songFB.parameters, param, SqlSyntax.LessThan, songFB._addedBlocks)
+        : setCriteria(pValue, songFB.parameters, param, SqlSyntax.GreaterThanOrEquals, songFB._addedBlocks);
     _waitingNot = '';
-    songentityFB._addedBlocks.needEndBlock[songentityFB._blockIndex] =
-        songentityFB._addedBlocks.retVal;
-    return songentityFB;
+    songFB._addedBlocks.needEndBlock![songFB._blockIndex] = songFB._addedBlocks.retVal;
+    return songFB;
   }
 
-  SongEntityFilterBuilder greaterThanOrEquals(dynamic pValue) {
+  SongFilterBuilder greaterThanOrEquals(dynamic pValue) {
     param.expression = '>=';
-    songentityFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, songentityFB.parameters, param,
-            SqlSyntax.GreaterThanOrEquals, songentityFB._addedBlocks)
-        : setCriteria(pValue, songentityFB.parameters, param,
-            SqlSyntax.LessThan, songentityFB._addedBlocks);
+    songFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, songFB.parameters, param, SqlSyntax.GreaterThanOrEquals, songFB._addedBlocks)
+        : setCriteria(pValue, songFB.parameters, param, SqlSyntax.LessThan, songFB._addedBlocks);
     _waitingNot = '';
-    songentityFB._addedBlocks.needEndBlock[songentityFB._blockIndex] =
-        songentityFB._addedBlocks.retVal;
-    return songentityFB;
+    songFB._addedBlocks.needEndBlock![songFB._blockIndex] = songFB._addedBlocks.retVal;
+    return songFB;
   }
 
-  SongEntityFilterBuilder lessThanOrEquals(dynamic pValue) {
+  SongFilterBuilder lessThanOrEquals(dynamic pValue) {
     param.expression = '<=';
-    songentityFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, songentityFB.parameters, param,
-            SqlSyntax.LessThanOrEquals, songentityFB._addedBlocks)
-        : setCriteria(pValue, songentityFB.parameters, param,
-            SqlSyntax.GreaterThan, songentityFB._addedBlocks);
+    songFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, songFB.parameters, param, SqlSyntax.LessThanOrEquals, songFB._addedBlocks)
+        : setCriteria(pValue, songFB.parameters, param, SqlSyntax.GreaterThan, songFB._addedBlocks);
     _waitingNot = '';
-    songentityFB._addedBlocks.needEndBlock[songentityFB._blockIndex] =
-        songentityFB._addedBlocks.retVal;
-    return songentityFB;
+    songFB._addedBlocks.needEndBlock![songFB._blockIndex] = songFB._addedBlocks.retVal;
+    return songFB;
   }
 
-  SongEntityFilterBuilder inValues(dynamic pValue) {
-    songentityFB._addedBlocks = setCriteria(
-        pValue,
-        songentityFB.parameters,
-        param,
-        SqlSyntax.IN.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-        songentityFB._addedBlocks);
+  SongFilterBuilder inValues(dynamic pValue) {
+    songFB._addedBlocks = setCriteria(pValue, songFB.parameters, param,
+        SqlSyntax.IN.replaceAll(SqlSyntax.notKeyword, _waitingNot), songFB._addedBlocks);
     _waitingNot = '';
-    songentityFB._addedBlocks.needEndBlock[songentityFB._blockIndex] =
-        songentityFB._addedBlocks.retVal;
-    return songentityFB;
+    songFB._addedBlocks.needEndBlock![songFB._blockIndex] = songFB._addedBlocks.retVal;
+    return songFB;
   }
 }
-// endregion SongEntityField
+// endregion SongField
 
-// region SongEntityFilterBuilder
-class SongEntityFilterBuilder extends SearchCriteria {
-  SongEntityFilterBuilder(SongEntity obj) {
+// region SongFilterBuilder
+class SongFilterBuilder extends SearchCriteria {
+  SongFilterBuilder(Song obj) {
     whereString = '';
-    qparams = QueryParams();
-    parameters = <DbParameter>[];
-    orderByList = <String>[];
     groupByList = <String>[];
-    _addedBlocks = AddedBlocks(<bool>[], <bool>[]);
-    _addedBlocks.needEndBlock.add(false);
-    _addedBlocks.waitingStartBlock.add(false);
-    _pagesize = 0;
-    _page = 0;
+    _addedBlocks.needEndBlock!.add(false);
+    _addedBlocks.waitingStartBlock!.add(false);
     _obj = obj;
   }
-  AddedBlocks _addedBlocks;
+  AddedBlocks _addedBlocks = AddedBlocks(<bool>[], <bool>[]);
   int _blockIndex = 0;
-  List<DbParameter> parameters;
-  List<String> orderByList;
-  SongEntity _obj;
-  QueryParams qparams;
-  int _pagesize;
-  int _page;
+  List<DbParameter> parameters = <DbParameter>[];
+  List<String> orderByList = <String>[];
+  Song? _obj;
+  QueryParams qparams = QueryParams();
+  int _pagesize = 0;
+  int _page = 0;
 
   /// put the sql keyword 'AND'
-  SongEntityFilterBuilder get and {
+  SongFilterBuilder get and {
     if (parameters.isNotEmpty) {
       parameters[parameters.length - 1].wOperator = ' AND ';
     }
@@ -4548,7 +3984,7 @@ class SongEntityFilterBuilder extends SearchCriteria {
   }
 
   /// put the sql keyword 'OR'
-  SongEntityFilterBuilder get or {
+  SongFilterBuilder get or {
     if (parameters.isNotEmpty) {
       parameters[parameters.length - 1].wOperator = ' OR ';
     }
@@ -4556,26 +3992,23 @@ class SongEntityFilterBuilder extends SearchCriteria {
   }
 
   /// open parentheses
-  SongEntityFilterBuilder get startBlock {
-    _addedBlocks.waitingStartBlock.add(true);
-    _addedBlocks.needEndBlock.add(false);
+  SongFilterBuilder get startBlock {
+    _addedBlocks.waitingStartBlock!.add(true);
+    _addedBlocks.needEndBlock!.add(false);
     _blockIndex++;
     if (_blockIndex > 1) {
-      _addedBlocks.needEndBlock[_blockIndex - 1] = true;
+      _addedBlocks.needEndBlock![_blockIndex - 1] = true;
     }
     return this;
   }
 
   /// String whereCriteria, write raw query without 'where' keyword. Like this: 'field1 like 'test%' and field2 = 3'
-  SongEntityFilterBuilder where(String whereCriteria,
-      {dynamic parameterValue}) {
+  SongFilterBuilder where(String? whereCriteria, {dynamic parameterValue}) {
     if (whereCriteria != null && whereCriteria != '') {
-      final DbParameter param = DbParameter(
-          columnName: parameterValue == null ? null : '',
-          hasParameter: parameterValue != null);
-      _addedBlocks = setCriteria(parameterValue ?? 0, parameters, param,
-          '($whereCriteria)', _addedBlocks);
-      _addedBlocks.needEndBlock[_blockIndex] = _addedBlocks.retVal;
+      final DbParameter param =
+          DbParameter(columnName: parameterValue == null ? null : '', hasParameter: parameterValue != null);
+      _addedBlocks = setCriteria(parameterValue ?? 0, parameters, param, '($whereCriteria)', _addedBlocks);
+      _addedBlocks.needEndBlock![_blockIndex] = _addedBlocks.retVal;
     }
     return this;
   }
@@ -4583,7 +4016,7 @@ class SongEntityFilterBuilder extends SearchCriteria {
   /// page = page number,
   ///
   /// pagesize = row(s) per page
-  SongEntityFilterBuilder page(int page, int pagesize) {
+  SongFilterBuilder page(int page, int pagesize) {
     if (page > 0) {
       _page = page;
     }
@@ -4594,7 +4027,7 @@ class SongEntityFilterBuilder extends SearchCriteria {
   }
 
   /// int count = LIMIT
-  SongEntityFilterBuilder top(int count) {
+  SongFilterBuilder top(int count) {
     if (count > 0) {
       _pagesize = count;
     }
@@ -4602,12 +4035,12 @@ class SongEntityFilterBuilder extends SearchCriteria {
   }
 
   /// close parentheses
-  SongEntityFilterBuilder get endBlock {
-    if (_addedBlocks.needEndBlock[_blockIndex]) {
+  SongFilterBuilder get endBlock {
+    if (_addedBlocks.needEndBlock![_blockIndex]) {
       parameters[parameters.length - 1].whereString += ' ) ';
     }
-    _addedBlocks.needEndBlock.removeAt(_blockIndex);
-    _addedBlocks.waitingStartBlock.removeAt(_blockIndex);
+    _addedBlocks.needEndBlock!.removeAt(_blockIndex);
+    _addedBlocks.waitingStartBlock!.removeAt(_blockIndex);
     _blockIndex--;
     return this;
   }
@@ -4617,13 +4050,13 @@ class SongEntityFilterBuilder extends SearchCriteria {
   /// Example 1: argFields='name, date'
   ///
   /// Example 2: argFields = ['name', 'date']
-  SongEntityFilterBuilder orderBy(dynamic argFields) {
+  SongFilterBuilder orderBy(dynamic argFields) {
     if (argFields != null) {
       if (argFields is String) {
         orderByList.add(argFields);
       } else {
-        for (String s in argFields as List<String>) {
-          if (s != null && s.isNotEmpty) {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
             orderByList.add(' $s ');
           }
         }
@@ -4637,13 +4070,13 @@ class SongEntityFilterBuilder extends SearchCriteria {
   /// Example 1: argFields='field1, field2'
   ///
   /// Example 2: argFields = ['field1', 'field2']
-  SongEntityFilterBuilder orderByDesc(dynamic argFields) {
+  SongFilterBuilder orderByDesc(dynamic argFields) {
     if (argFields != null) {
       if (argFields is String) {
         orderByList.add('$argFields desc ');
       } else {
-        for (String s in argFields as List<String>) {
-          if (s != null && s.isNotEmpty) {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
             orderByList.add(' $s desc ');
           }
         }
@@ -4657,13 +4090,13 @@ class SongEntityFilterBuilder extends SearchCriteria {
   /// Example 1: argFields='field1, field2'
   ///
   /// Example 2: argFields = ['field1', 'field2']
-  SongEntityFilterBuilder groupBy(dynamic argFields) {
+  SongFilterBuilder groupBy(dynamic argFields) {
     if (argFields != null) {
       if (argFields is String) {
         groupByList.add(' $argFields ');
       } else {
-        for (String s in argFields as List<String>) {
-          if (s != null && s.isNotEmpty) {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
             groupByList.add(' $s ');
           }
         }
@@ -4677,13 +4110,13 @@ class SongEntityFilterBuilder extends SearchCriteria {
   /// Example 1: argFields='name, date'
   ///
   /// Example 2: argFields = ['name', 'date']
-  SongEntityFilterBuilder having(dynamic argFields) {
+  SongFilterBuilder having(dynamic argFields) {
     if (argFields != null) {
       if (argFields is String) {
         havingList.add(argFields);
       } else {
-        for (String s in argFields as List<String>) {
-          if (s != null && s.isNotEmpty) {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
             havingList.add(' $s ');
           }
         }
@@ -4692,26 +4125,23 @@ class SongEntityFilterBuilder extends SearchCriteria {
     return this;
   }
 
-  SongEntityField setField(
-      SongEntityField field, String colName, DbType dbtype) {
-    return SongEntityField(this)
-      ..param = DbParameter(
-          dbType: dbtype,
-          columnName: colName,
-          wStartBlock: _addedBlocks.waitingStartBlock[_blockIndex]);
+  SongField setField(SongField? field, String colName, DbType dbtype) {
+    return SongField(this)
+      ..param =
+          DbParameter(dbType: dbtype, columnName: colName, wStartBlock: _addedBlocks.waitingStartBlock![_blockIndex]);
   }
 
-  SongEntityField _id;
-  SongEntityField get id {
+  SongField? _id;
+  SongField get id {
     return _id = setField(_id, 'id', DbType.integer);
   }
 
-  SongEntityField _name;
-  SongEntityField get name {
+  SongField? _name;
+  SongField get name {
     return _name = setField(_name, 'name', DbType.text);
   }
 
-  bool _getIsDeleted;
+  bool _getIsDeleted = false;
 
   void _buildParameters() {
     if (_page > 0 && _pagesize > 0) {
@@ -4726,24 +4156,20 @@ class SongEntityFilterBuilder extends SearchCriteria {
     for (DbParameter param in parameters) {
       if (param.columnName != null) {
         if (param.value is List && !param.hasParameter) {
-          param.value = param.dbType == DbType.text
+          param.value = param.dbType == DbType.text || param.value[0] is String
               ? '\'${param.value.join('\',\'')}\''
               : param.value.join(',');
-          whereString += param.whereString
-              .replaceAll('{field}', param.columnName)
-              .replaceAll('?', param.value.toString());
+          whereString +=
+              param.whereString.replaceAll('{field}', param.columnName!).replaceAll('?', param.value.toString());
           param.value = null;
         } else {
-          if (param.value is Map<String, dynamic> &&
-              param.value['sql'] != null) {
+          if (param.value is Map<String, dynamic> && param.value['sql'] != null) {
             param
-              ..whereString = param.whereString
-                  .replaceAll('?', param.value['sql'].toString())
+              ..whereString = param.whereString.replaceAll('?', param.value['sql'].toString())
               ..dbType = DbType.integer
               ..value = param.value['args'];
           }
-          whereString +=
-              param.whereString.replaceAll('{field}', param.columnName);
+          whereString += param.whereString.replaceAll('{field}', param.columnName!);
         }
         if (!param.whereString.contains('?')) {
         } else {
@@ -4763,12 +4189,8 @@ class SongEntityFilterBuilder extends SearchCriteria {
             case DbType.date:
             case DbType.datetime:
             case DbType.datetimeUtc:
-              param.value = param.value == null
-                  ? null
-                  : (param.value as DateTime).millisecondsSinceEpoch;
-              param.value2 = param.value2 == null
-                  ? null
-                  : (param.value2 as DateTime).millisecondsSinceEpoch;
+              param.value = param.value == null ? null : (param.value as DateTime).millisecondsSinceEpoch;
+              param.value2 = param.value2 == null ? null : (param.value2 as DateTime).millisecondsSinceEpoch;
               break;
             default:
           }
@@ -4789,10 +4211,9 @@ class SongEntityFilterBuilder extends SearchCriteria {
         whereString += param.whereString;
       }
     }
-    if (SongEntity._softDeleteActivated) {
+    if (Song._softDeleteActivated) {
       if (whereString != '') {
-        whereString =
-            '${!_getIsDeleted ? 'ifnull(isDeleted,0)=0 AND' : ''} ($whereString)';
+        whereString = '${!_getIsDeleted ? 'ifnull(isDeleted,0)=0 AND' : ''} ($whereString)';
       } else if (!_getIsDeleted) {
         whereString = 'ifnull(isDeleted,0)=0';
       }
@@ -4808,31 +4229,26 @@ class SongEntityFilterBuilder extends SearchCriteria {
       ..having = havingList.join(',');
   }
 
-  /// Deletes List<SongEntity> bulk by query
+  /// Deletes List<Song> bulk by query
   ///
   /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
   Future<BoolResult> delete([bool hardDelete = false]) async {
     _buildParameters();
-    var r = BoolResult();
-    // Check sub records where in (SongLyricEntity) according to DeleteRule.NO_ACTION
-
-    final idListSongLyricEntityBYsongsId = toListPrimaryKeySQL(false);
-    final resSongLyricEntityBYsongsId = await SongLyricEntity()
+    var r = BoolResult(success: false);
+    // Delete sub records where in (SongLyric) according to DeleteRule.CASCADE
+    final idListSongLyricBYsongsId = toListPrimaryKeySQL(false);
+    final resSongLyricBYsongsId = await SongLyric()
         .select()
-        .where('songsId IN (${idListSongLyricEntityBYsongsId['sql']})',
-            parameterValue: idListSongLyricEntityBYsongsId['args'])
-        .toCount();
-    if (resSongLyricEntityBYsongsId > 0) {
-      return BoolResult(
-          success: false,
-          errorMessage:
-              'SQFENTITY ERROR: The DELETE statement conflicted with the REFERENCE RELATIONSHIP (SongLyricEntity.songsId)');
+        .where('songsId IN (${idListSongLyricBYsongsId['sql']})', parameterValue: idListSongLyricBYsongsId['args'])
+        .delete(hardDelete);
+    if (!resSongLyricBYsongsId.success) {
+      return resSongLyricBYsongsId;
     }
 
-    if (SongEntity._softDeleteActivated && !hardDelete) {
-      r = await _obj._mnSongEntity.updateBatch(qparams, {'isDeleted': 1});
+    if (Song._softDeleteActivated && !hardDelete) {
+      r = await _obj!._mnSong.updateBatch(qparams, {'isDeleted': 1});
     } else {
-      r = await _obj._mnSongEntity.delete(qparams);
+      r = await _obj!._mnSong.delete(qparams);
     }
     return r;
   }
@@ -4844,14 +4260,14 @@ class SongEntityFilterBuilder extends SearchCriteria {
   /// fieldName must be String. Value is dynamic, it can be any of the (int, bool, String.. )
   Future<BoolResult> update(Map<String, dynamic> values) {
     _buildParameters();
-    if (qparams.limit > 0 || qparams.offset > 0) {
+    if (qparams.limit! > 0 || qparams.offset! > 0) {
       qparams.whereString =
-          'id IN (SELECT id from songs ${qparams.whereString.isNotEmpty ? 'WHERE ${qparams.whereString}' : ''}${qparams.limit > 0 ? ' LIMIT ${qparams.limit}' : ''}${qparams.offset > 0 ? ' OFFSET ${qparams.offset}' : ''})';
+          'id IN (SELECT id from songs ${qparams.whereString!.isNotEmpty ? 'WHERE ${qparams.whereString}' : ''}${qparams.limit! > 0 ? ' LIMIT ${qparams.limit}' : ''}${qparams.offset! > 0 ? ' OFFSET ${qparams.offset}' : ''})';
     }
-    return _obj._mnSongEntity.updateBatch(qparams, values);
+    return _obj!._mnSong.updateBatch(qparams, values);
   }
 
-  /// This method always returns SongEntity Obj if exist, otherwise returns null
+  /// This method always returns Song Obj if exist, otherwise returns null
   ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
   ///
@@ -4864,33 +4280,26 @@ class SongEntityFilterBuilder extends SearchCriteria {
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
   ///
-  /// <returns>List<SongEntity>
-  Future<SongEntity> toSingle(
-      {bool preload = false,
-      List<String> preloadFields,
-      bool loadParents = false,
-      List<String> loadedFields}) async {
+  /// <returns>List<Song>
+  Future<Song?> toSingle(
+      {bool preload = false, List<String>? preloadFields, bool loadParents = false, List<String>? loadedFields}) async {
     _pagesize = 1;
     _buildParameters();
-    final objFuture = _obj._mnSongEntity.toList(qparams);
+    final objFuture = _obj!._mnSong.toList(qparams);
     final data = await objFuture;
-    SongEntity obj;
+    Song? obj;
     if (data.isNotEmpty) {
-      obj = SongEntity.fromMap(data[0] as Map<String, dynamic>);
+      obj = Song.fromMap(data[0] as Map<String, dynamic>);
       // final List<String> _loadedFields = loadedFields ?? [];
 
       // RELATIONSHIPS PRELOAD CHILD
       if (preload) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedFields.contains('songs.plSongLyricEntities') && */ (preloadFields ==
-                null ||
-            preloadFields.contains('plSongLyricEntities'))) {
-          /*_loadedFields.add('songs.plSongLyricEntities'); */
-          obj.plSongLyricEntities = obj.plSongLyricEntities ??
-              await obj.getSongLyricEntities().toList(
-                  preload: preload,
-                  preloadFields: preloadFields,
-                  loadParents: false /*, loadedFields:_loadedFields*/);
+        if (/*!_loadedfields!.contains('songs.plSongLyrics') && */ (preloadFields == null ||
+            preloadFields.contains('plSongLyrics'))) {
+          /*_loadedfields!.add('songs.plSongLyrics'); */ obj.plSongLyrics = obj.plSongLyrics ??
+              await obj.getSongLyrics()!.toList(
+                  preload: preload, preloadFields: preloadFields, loadParents: false /*, loadedFields:_loadedFields*/);
         }
       } // END RELATIONSHIPS PRELOAD CHILD
 
@@ -4900,21 +4309,21 @@ class SongEntityFilterBuilder extends SearchCriteria {
     return obj;
   }
 
-  /// This method returns int. [SongEntity]
+  /// This method returns int. [Song]
   ///
   /// <returns>int
-  Future<int> toCount([VoidCallback Function(int c) songentityCount]) async {
+  Future<int> toCount([VoidCallback Function(int c)? songCount]) async {
     _buildParameters();
     qparams.selectColumns = ['COUNT(1) AS CNT'];
-    final songentitiesFuture = await _obj._mnSongEntity.toList(qparams);
-    final int count = songentitiesFuture[0]['CNT'] as int;
-    if (songentityCount != null) {
-      songentityCount(count);
+    final songsFuture = await _obj!._mnSong.toList(qparams);
+    final int count = songsFuture[0]['CNT'] as int;
+    if (songCount != null) {
+      songCount(count);
     }
     return count;
   }
 
-  /// This method returns List<SongEntity> [SongEntity]
+  /// This method returns List<Song> [Song]
   ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
   ///
@@ -4927,23 +4336,20 @@ class SongEntityFilterBuilder extends SearchCriteria {
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
   ///
-  /// <returns>List<SongEntity>
-  Future<List<SongEntity>> toList(
-      {bool preload = false,
-      List<String> preloadFields,
-      bool loadParents = false,
-      List<String> loadedFields}) async {
+  /// <returns>List<Song>
+  Future<List<Song>> toList(
+      {bool preload = false, List<String>? preloadFields, bool loadParents = false, List<String>? loadedFields}) async {
     final data = await toMapList();
-    final List<SongEntity> songentitiesData = await SongEntity.fromMapList(data,
+    final List<Song> songsData = await Song.fromMapList(data,
         preload: preload,
         preloadFields: preloadFields,
         loadParents: loadParents,
         loadedFields: loadedFields,
         setDefaultValues: qparams.selectColumns == null);
-    return songentitiesData;
+    return songsData;
   }
 
-  /// This method returns Json String [SongEntity]
+  /// This method returns Json String [Song]
   Future<String> toJson() async {
     final list = <dynamic>[];
     final data = await toList();
@@ -4953,7 +4359,7 @@ class SongEntityFilterBuilder extends SearchCriteria {
     return json.encode(list);
   }
 
-  /// This method returns Json String. [SongEntity]
+  /// This method returns Json String. [Song]
   Future<String> toJsonWithChilds() async {
     final list = <dynamic>[];
     final data = await toList();
@@ -4963,15 +4369,15 @@ class SongEntityFilterBuilder extends SearchCriteria {
     return json.encode(list);
   }
 
-  /// This method returns List<dynamic>. [SongEntity]
+  /// This method returns List<dynamic>. [Song]
   ///
   /// <returns>List<dynamic>
   Future<List<dynamic>> toMapList() async {
     _buildParameters();
-    return await _obj._mnSongEntity.toList(qparams);
+    return await _obj!._mnSong.toList(qparams);
   }
 
-  /// This method returns Primary Key List SQL and Parameters retVal = Map<String,dynamic>. [SongEntity]
+  /// This method returns Primary Key List SQL and Parameters retVal = Map<String,dynamic>. [Song]
   ///
   /// retVal['sql'] = SQL statement string, retVal['args'] = whereArguments List<dynamic>;
   ///
@@ -4994,7 +4400,7 @@ class SongEntityFilterBuilder extends SearchCriteria {
     }
     final List<int> idData = <int>[];
     qparams.selectColumns = ['id'];
-    final idFuture = await _obj._mnSongEntity.toList(qparams);
+    final idFuture = await _obj!._mnSong.toList(qparams);
 
     final int count = idFuture.length;
     for (int i = 0; i < count; i++) {
@@ -5003,13 +4409,13 @@ class SongEntityFilterBuilder extends SearchCriteria {
     return idData;
   }
 
-  /// Returns List<dynamic> for selected columns. Use this method for 'groupBy' with min,max,avg..  [SongEntity]
+  /// Returns List<dynamic> for selected columns. Use this method for 'groupBy' with min,max,avg..  [Song]
   ///
   /// Sample usage: (see EXAMPLE 4.2 at https://github.com/hhtokpinar/sqfEntity#group-by)
   Future<List<dynamic>> toListObject() async {
     _buildParameters();
 
-    final objectFuture = _obj._mnSongEntity.toList(qparams);
+    final objectFuture = _obj!._mnSong.toList(qparams);
 
     final List<dynamic> objectsData = <dynamic>[];
     final data = await objectFuture;
@@ -5022,18 +4428,17 @@ class SongEntityFilterBuilder extends SearchCriteria {
 
   /// Returns List<String> for selected first column
   ///
-  /// Sample usage: await SongEntity.select(columnsToSelect: ['columnName']).toListString()
-  Future<List<String>> toListString(
-      [VoidCallback Function(List<String> o) listString]) async {
+  /// Sample usage: await Song.select(columnsToSelect: ['columnName']).toListString()
+  Future<List<String>> toListString([VoidCallback Function(List<String> o)? listString]) async {
     _buildParameters();
 
-    final objectFuture = _obj._mnSongEntity.toList(qparams);
+    final objectFuture = _obj!._mnSong.toList(qparams);
 
     final List<String> objectsData = <String>[];
     final data = await objectFuture;
     final int count = data.length;
     for (int i = 0; i < count; i++) {
-      objectsData.add(data[i][qparams.selectColumns[0]].toString());
+      objectsData.add(data[i][qparams.selectColumns![0]].toString());
     }
     if (listString != null) {
       listString(objectsData);
@@ -5041,124 +4446,109 @@ class SongEntityFilterBuilder extends SearchCriteria {
     return objectsData;
   }
 }
-// endregion SongEntityFilterBuilder
+// endregion SongFilterBuilder
 
-// region SongEntityFields
-class SongEntityFields {
-  static TableField _fId;
+// region SongFields
+class SongFields {
+  static TableField? _fId;
   static TableField get id {
     return _fId = _fId ?? SqlSyntax.setField(_fId, 'id', DbType.integer);
   }
 
-  static TableField _fName;
+  static TableField? _fName;
   static TableField get name {
     return _fName = _fName ?? SqlSyntax.setField(_fName, 'name', DbType.text);
   }
 }
-// endregion SongEntityFields
+// endregion SongFields
 
-//region SongEntityManager
-class SongEntityManager extends SqfEntityProvider {
-  SongEntityManager()
-      : super(Model(),
-            tableName: _tableName,
-            primaryKeyList: _primaryKeyList,
-            whereStr: _whereStr);
+//region SongManager
+class SongManager extends SqfEntityProvider {
+  SongManager() : super(Model(), tableName: _tableName, primaryKeyList: _primaryKeyList, whereStr: _whereStr);
   static final String _tableName = 'songs';
   static final List<String> _primaryKeyList = ['id'];
   static final String _whereStr = 'id=?';
 }
 
-//endregion SongEntityManager
-// region SongbookEntity
-class SongbookEntity {
-  SongbookEntity(
-      {this.id,
-      this.name,
-      this.shortcut,
-      this.color,
-      this.colorText,
-      this.isPrivate,
-      this.isPinned}) {
+//endregion SongManager
+// region Songbook
+class Songbook {
+  Songbook({this.id, this.name, this.shortcut, this.color, this.color_text, this.is_private, this.is_pinned}) {
     _setDefaultValues();
   }
-  SongbookEntity.withFields(this.id, this.name, this.shortcut, this.color,
-      this.colorText, this.isPrivate, this.isPinned) {
+  Songbook.withFields(this.id, this.name, this.shortcut, this.color, this.color_text, this.is_private, this.is_pinned) {
     _setDefaultValues();
   }
-  SongbookEntity.withId(this.id, this.name, this.shortcut, this.color,
-      this.colorText, this.isPrivate, this.isPinned) {
+  Songbook.withId(this.id, this.name, this.shortcut, this.color, this.color_text, this.is_private, this.is_pinned) {
     _setDefaultValues();
   }
-  SongbookEntity.fromMap(Map<String, dynamic> o,
-      {bool setDefaultValues = true}) {
+  // fromMap v2.0
+  Songbook.fromMap(Map<String, dynamic> o, {bool setDefaultValues = true}) {
     if (setDefaultValues) {
       _setDefaultValues();
     }
     id = int.tryParse(o['id'].toString());
     if (o['name'] != null) {
-      name = o['name'] as String;
+      name = o['name'].toString();
     }
     if (o['shortcut'] != null) {
-      shortcut = o['shortcut'] as String;
+      shortcut = o['shortcut'].toString();
     }
     if (o['color'] != null) {
-      color = o['color'] as String;
+      color = o['color'].toString();
     }
-    if (o['colorText'] != null) {
-      colorText = o['colorText'] as String;
+    if (o['color_text'] != null) {
+      color_text = o['color_text'].toString();
     }
-    if (o['isPrivate'] != null) {
-      isPrivate = o['isPrivate'] == 1 || o['isPrivate'] == true;
+    if (o['is_private'] != null) {
+      is_private = o['is_private'].toString() == '1' || o['is_private'].toString() == 'true';
     }
-    if (o['isPinned'] != null) {
-      isPinned = o['isPinned'] == 1 || o['isPinned'] == true;
+    if (o['is_pinned'] != null) {
+      is_pinned = o['is_pinned'].toString() == '1' || o['is_pinned'].toString() == 'true';
     }
 
     isSaved = true;
   }
-  // FIELDS (SongbookEntity)
-  int id;
-  String name;
-  String shortcut;
-  String color;
-  String colorText;
-  bool isPrivate;
-  bool isPinned;
-  bool isSaved;
-  BoolResult saveResult;
-  // end FIELDS (SongbookEntity)
+  // FIELDS (Songbook)
+  int? id;
+  String? name;
+  String? shortcut;
+  String? color;
+  String? color_text;
+  bool? is_private;
+  bool? is_pinned;
+  bool? isSaved;
+  BoolResult? saveResult;
+  // end FIELDS (Songbook)
 
-// COLLECTIONS & VIRTUALS (SongbookEntity)
+// COLLECTIONS & VIRTUALS (Songbook)
   /// to load children of items to this field, use preload parameter. Ex: toList(preload:true) or toSingle(preload:true) or getById(preload:true)
-  /// You can also specify this object into certain preload fields. Ex: toList(preload:true, preloadFields:['plSongbookRecordEntities', 'plField2'..]) or so on..
-  List<SongbookRecordEntity> plSongbookRecordEntities;
+  /// You can also specify this object into certain preload fields!. Ex: toList(preload:true, preloadFields:['plSongbookRecords', 'plField2'..]) or so on..
+  List<SongbookRecord>? plSongbookRecords;
 
-  /// get SongbookRecordEntity(s) filtered by id=songbooksId
-  SongbookRecordEntityFilterBuilder getSongbookRecordEntities(
-      {List<String> columnsToSelect, bool getIsDeleted}) {
+  /// get SongbookRecord(s) filtered by id=songbooksId
+  SongbookRecordFilterBuilder? getSongbookRecords({List<String>? columnsToSelect, bool? getIsDeleted}) {
     if (id == null) {
       return null;
     }
-    return SongbookRecordEntity()
+    return SongbookRecord()
         .select(columnsToSelect: columnsToSelect, getIsDeleted: getIsDeleted)
         .songbooksId
         .equals(id)
         .and;
   }
 
-// END COLLECTIONS & VIRTUALS (SongbookEntity)
+// END COLLECTIONS & VIRTUALS (Songbook)
 
   static const bool _softDeleteActivated = false;
-  SongbookEntityManager __mnSongbookEntity;
+  SongbookManager? __mnSongbook;
 
-  SongbookEntityManager get _mnSongbookEntity {
-    return __mnSongbookEntity = __mnSongbookEntity ?? SongbookEntityManager();
+  SongbookManager get _mnSongbook {
+    return __mnSongbook = __mnSongbook ?? SongbookManager();
   }
 
   // METHODS
-  Map<String, dynamic> toMap(
-      {bool forQuery = false, bool forJson = false, bool forView = false}) {
+  Map<String, dynamic> toMap({bool forQuery = false, bool forJson = false, bool forView = false}) {
     final map = <String, dynamic>{};
     if (id != null) {
       map['id'] = id;
@@ -5175,25 +4565,23 @@ class SongbookEntity {
       map['color'] = color;
     }
 
-    if (colorText != null) {
-      map['colorText'] = colorText;
+    if (color_text != null) {
+      map['color_text'] = color_text;
     }
 
-    if (isPrivate != null) {
-      map['isPrivate'] = forQuery ? (isPrivate ? 1 : 0) : isPrivate;
+    if (is_private != null) {
+      map['is_private'] = forQuery ? (is_private! ? 1 : 0) : is_private;
     }
 
-    if (isPinned != null) {
-      map['isPinned'] = forQuery ? (isPinned ? 1 : 0) : isPinned;
+    if (is_pinned != null) {
+      map['is_pinned'] = forQuery ? (is_pinned! ? 1 : 0) : is_pinned;
     }
 
     return map;
   }
 
   Future<Map<String, dynamic>> toMapWithChildren(
-      [bool forQuery = false,
-      bool forJson = false,
-      bool forView = false]) async {
+      [bool forQuery = false, bool forJson = false, bool forView = false]) async {
     final map = <String, dynamic>{};
     if (id != null) {
       map['id'] = id;
@@ -5210,102 +4598,90 @@ class SongbookEntity {
       map['color'] = color;
     }
 
-    if (colorText != null) {
-      map['colorText'] = colorText;
+    if (color_text != null) {
+      map['color_text'] = color_text;
     }
 
-    if (isPrivate != null) {
-      map['isPrivate'] = forQuery ? (isPrivate ? 1 : 0) : isPrivate;
+    if (is_private != null) {
+      map['is_private'] = forQuery ? (is_private! ? 1 : 0) : is_private;
     }
 
-    if (isPinned != null) {
-      map['isPinned'] = forQuery ? (isPinned ? 1 : 0) : isPinned;
+    if (is_pinned != null) {
+      map['is_pinned'] = forQuery ? (is_pinned! ? 1 : 0) : is_pinned;
     }
 
-// COLLECTIONS (SongbookEntity)
+// COLLECTIONS (Songbook)
     if (!forQuery) {
-      map['SongbookRecordEntities'] =
-          await getSongbookRecordEntities().toMapList();
+      map['SongbookRecords'] = await getSongbookRecords()!.toMapList();
     }
-// END COLLECTIONS (SongbookEntity)
+// END COLLECTIONS (Songbook)
 
     return map;
   }
 
-  /// This method returns Json String [SongbookEntity]
+  /// This method returns Json String [Songbook]
   String toJson() {
     return json.encode(toMap(forJson: true));
   }
 
-  /// This method returns Json String [SongbookEntity]
+  /// This method returns Json String [Songbook]
   Future<String> toJsonWithChilds() async {
     return json.encode(await toMapWithChildren(false, true));
   }
 
   List<dynamic> toArgs() {
-    return [id, name, shortcut, color, colorText, isPrivate, isPinned];
+    return [id, name, shortcut, color, color_text, is_private, is_pinned];
   }
 
   List<dynamic> toArgsWithIds() {
-    return [id, name, shortcut, color, colorText, isPrivate, isPinned];
+    return [id, name, shortcut, color, color_text, is_private, is_pinned];
   }
 
-  static Future<List<SongbookEntity>> fromWebUrl(String url,
-      {Map<String, String> headers}) async {
+  static Future<List<Songbook>?> fromWebUrl(Uri uri, {Map<String, String>? headers}) async {
     try {
-      final response = await http.get(url, headers: headers);
+      final response = await http.get(uri, headers: headers);
       return await fromJson(response.body);
     } catch (e) {
-      print(
-          'SQFENTITY ERROR SongbookEntity.fromWebUrl: ErrorMessage: ${e.toString()}');
+      print('SQFENTITY ERROR Songbook.fromWebUrl: ErrorMessage: ${e.toString()}');
       return null;
     }
   }
 
-  Future<http.Response> postUrl(String url, {Map<String, String> headers}) {
-    return http.post(url, headers: headers, body: toJson());
+  Future<http.Response> postUrl(Uri uri, {Map<String, String>? headers}) {
+    return http.post(uri, headers: headers, body: toJson());
   }
 
-  static Future<List<SongbookEntity>> fromJson(String jsonBody) async {
+  static Future<List<Songbook>> fromJson(String jsonBody) async {
     final Iterable list = await json.decode(jsonBody) as Iterable;
-    var objList = <SongbookEntity>[];
+    var objList = <Songbook>[];
     try {
-      objList = list
-          .map((songbookentity) =>
-              SongbookEntity.fromMap(songbookentity as Map<String, dynamic>))
-          .toList();
+      objList = list.map((songbook) => Songbook.fromMap(songbook as Map<String, dynamic>)).toList();
     } catch (e) {
-      print(
-          'SQFENTITY ERROR SongbookEntity.fromJson: ErrorMessage: ${e.toString()}');
+      print('SQFENTITY ERROR Songbook.fromJson: ErrorMessage: ${e.toString()}');
     }
     return objList;
   }
 
-  static Future<List<SongbookEntity>> fromMapList(List<dynamic> data,
+  static Future<List<Songbook>> fromMapList(List<dynamic> data,
       {bool preload = false,
-      List<String> preloadFields,
+      List<String>? preloadFields,
       bool loadParents = false,
-      List<String> loadedFields,
+      List<String>? loadedFields,
       bool setDefaultValues = true}) async {
-    final List<SongbookEntity> objList = <SongbookEntity>[];
+    final List<Songbook> objList = <Songbook>[];
     loadedFields = loadedFields ?? [];
     for (final map in data) {
-      final obj = SongbookEntity.fromMap(map as Map<String, dynamic>,
-          setDefaultValues: setDefaultValues);
+      final obj = Songbook.fromMap(map as Map<String, dynamic>, setDefaultValues: setDefaultValues);
       // final List<String> _loadedFields = List<String>.from(loadedFields);
 
       // RELATIONSHIPS PRELOAD CHILD
       if (preload) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedFields.contains('songbooks.plSongbookRecordEntities') && */ (preloadFields ==
-                null ||
-            preloadFields.contains('plSongbookRecordEntities'))) {
-          /*_loadedFields.add('songbooks.plSongbookRecordEntities'); */
-          obj.plSongbookRecordEntities = obj.plSongbookRecordEntities ??
-              await obj.getSongbookRecordEntities().toList(
-                  preload: preload,
-                  preloadFields: preloadFields,
-                  loadParents: false /*, loadedFields:_loadedFields*/);
+        if (/*!_loadedfields!.contains('songbooks.plSongbookRecords') && */ (preloadFields == null ||
+            preloadFields.contains('plSongbookRecords'))) {
+          /*_loadedfields!.add('songbooks.plSongbookRecords'); */ obj.plSongbookRecords = obj.plSongbookRecords ??
+              await obj.getSongbookRecords()!.toList(
+                  preload: preload, preloadFields: preloadFields, loadParents: false /*, loadedFields:_loadedFields*/);
         }
       } // END RELATIONSHIPS PRELOAD CHILD
 
@@ -5314,9 +4690,9 @@ class SongbookEntity {
     return objList;
   }
 
-  /// returns SongbookEntity by ID if exist, otherwise returns null
+  /// returns Songbook by ID if exist, otherwise returns null
   ///
-  /// Primary Keys: int id
+  /// Primary Keys: int? id
   ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
   ///
@@ -5329,33 +4705,26 @@ class SongbookEntity {
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
   ///
-  /// <returns>returns SongbookEntity if exist, otherwise returns null
-  Future<SongbookEntity> getById(int id,
-      {bool preload = false,
-      List<String> preloadFields,
-      bool loadParents = false,
-      List<String> loadedFields}) async {
+  /// <returns>returns Songbook if exist, otherwise returns null
+  Future<Songbook?> getById(int? id,
+      {bool preload = false, List<String>? preloadFields, bool loadParents = false, List<String>? loadedFields}) async {
     if (id == null) {
       return null;
     }
-    SongbookEntity obj;
-    final data = await _mnSongbookEntity.getById([id]);
+    Songbook? obj;
+    final data = await _mnSongbook.getById([id]);
     if (data.length != 0) {
-      obj = SongbookEntity.fromMap(data[0] as Map<String, dynamic>);
+      obj = Songbook.fromMap(data[0] as Map<String, dynamic>);
       // final List<String> _loadedFields = loadedFields ?? [];
 
       // RELATIONSHIPS PRELOAD CHILD
       if (preload) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedFields.contains('songbooks.plSongbookRecordEntities') && */ (preloadFields ==
-                null ||
-            preloadFields.contains('plSongbookRecordEntities'))) {
-          /*_loadedFields.add('songbooks.plSongbookRecordEntities'); */
-          obj.plSongbookRecordEntities = obj.plSongbookRecordEntities ??
-              await obj.getSongbookRecordEntities().toList(
-                  preload: preload,
-                  preloadFields: preloadFields,
-                  loadParents: false /*, loadedFields:_loadedFields*/);
+        if (/*!_loadedfields!.contains('songbooks.plSongbookRecords') && */ (preloadFields == null ||
+            preloadFields.contains('plSongbookRecords'))) {
+          /*_loadedfields!.add('songbooks.plSongbookRecords'); */ obj.plSongbookRecords = obj.plSongbookRecords ??
+              await obj.getSongbookRecords()!.toList(
+                  preload: preload, preloadFields: preloadFields, loadParents: false /*, loadedFields:_loadedFields*/);
         }
       } // END RELATIONSHIPS PRELOAD CHILD
 
@@ -5365,116 +4734,100 @@ class SongbookEntity {
     return obj;
   }
 
-  /// Saves the (SongbookEntity) object. If the id field is null, saves as a new record and returns new id, if id is not null then updates record
+  /// Saves the (Songbook) object. If the id field is null, saves as a new record and returns new id, if id is not null then updates record
 
   /// <returns>Returns id
-  Future<int> save() async {
-    if (id == null || id == 0 || !isSaved) {
-      await _mnSongbookEntity.insert(this);
-      if (saveResult != null && saveResult.success) {
+  Future<int?> save() async {
+    if (id == null || id == 0 || !isSaved!) {
+      await _mnSongbook.insert(this);
+      if (saveResult!.success) {
         isSaved = true;
       }
     } else {
       // id= await _upsert(); // removed in sqfentity_gen 1.3.0+6
-      await _mnSongbookEntity.update(this);
+      await _mnSongbook.update(this);
     }
 
     return id;
   }
 
-  /// saveAll method saves the sent List<SongbookEntity> as a bulk in one transaction
+  /// saveAll method saves the sent List<Songbook> as a bulk in one transaction
   ///
   /// Returns a <List<BoolResult>>
-  static Future<List<dynamic>> saveAll(
-      List<SongbookEntity> songbookentities) async {
-    // final results = _mnSongbookEntity.saveAll('INSERT OR REPLACE INTO songbooks (id,name, shortcut, color, colorText, isPrivate, isPinned)  VALUES (?,?,?,?,?,?,?)',songbookentities);
+  static Future<List<dynamic>> saveAll(List<Songbook> songbooks) async {
+    // final results = _mnSongbook.saveAll('INSERT OR REPLACE INTO songbooks (id,name, shortcut, color, color_text, is_private, is_pinned)  VALUES (?,?,?,?,?,?,?)',songbooks);
     // return results; removed in sqfentity_gen 1.3.0+6
     await Model().batchStart();
-    for (final obj in songbookentities) {
+    for (final obj in songbooks) {
       await obj.save();
     }
     //    return Model().batchCommit();
     final result = await Model().batchCommit();
 
-    return result;
+    return result!;
   }
 
   /// Updates if the record exists, otherwise adds a new row
 
   /// <returns>Returns id
-  Future<int> upsert() async {
+
+  Future<int?> upsert() async {
     try {
-      if (await _mnSongbookEntity.rawInsert(
-              'INSERT OR REPLACE INTO songbooks (id,name, shortcut, color, colorText, isPrivate, isPinned)  VALUES (?,?,?,?,?,?,?)',
-              [id, name, shortcut, color, colorText, isPrivate, isPinned]) ==
-          1) {
-        saveResult = BoolResult(
-            success: true,
-            successMessage: 'SongbookEntity id=$id updated successfully');
+      final result = await _mnSongbook.rawInsert(
+          'INSERT OR REPLACE INTO songbooks (id,name, shortcut, color, color_text, is_private, is_pinned)  VALUES (?,?,?,?,?,?,?)',
+          [id, name, shortcut, color, color_text, is_private, is_pinned]);
+      if (result! > 0) {
+        saveResult = BoolResult(success: true, successMessage: 'Songbook id=$id updated successfully');
       } else {
-        saveResult = BoolResult(
-            success: false,
-            errorMessage: 'SongbookEntity id=$id did not update');
+        saveResult = BoolResult(success: false, errorMessage: 'Songbook id=$id did not update');
       }
       return id;
     } catch (e) {
-      saveResult = BoolResult(
-          success: false,
-          errorMessage: 'SongbookEntity Save failed. Error: ${e.toString()}');
-      return 0;
+      saveResult = BoolResult(success: false, errorMessage: 'Songbook Save failed. Error: ${e.toString()}');
+      return null;
     }
   }
 
-  /// inserts or replaces the sent List<<SongbookEntity>> as a bulk in one transaction.
+  /// inserts or replaces the sent List<<Songbook>> as a bulk in one transaction.
   ///
   /// upsertAll() method is faster then saveAll() method. upsertAll() should be used when you are sure that the primary key is greater than zero
   ///
   /// Returns a BoolCommitResult
-  Future<BoolCommitResult> upsertAll(
-      List<SongbookEntity> songbookentities) async {
-    final results = await _mnSongbookEntity.rawInsertAll(
-        'INSERT OR REPLACE INTO songbooks (id,name, shortcut, color, colorText, isPrivate, isPinned)  VALUES (?,?,?,?,?,?,?)',
-        songbookentities);
+  Future<BoolCommitResult> upsertAll(List<Songbook> songbooks) async {
+    final results = await _mnSongbook.rawInsertAll(
+        'INSERT OR REPLACE INTO songbooks (id,name, shortcut, color, color_text, is_private, is_pinned)  VALUES (?,?,?,?,?,?,?)',
+        songbooks);
     return results;
   }
 
-  /// Deletes SongbookEntity
+  /// Deletes Songbook
 
   /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
+
   Future<BoolResult> delete([bool hardDelete = false]) async {
-    print('SQFENTITIY: delete SongbookEntity invoked (id=$id)');
-    if (await SongbookRecordEntity()
-            .select()
-            .songbooksId
-            .equals(id)
-            .and
-            .toCount() >
-        0) {
-      return BoolResult(
-          success: false,
-          errorMessage:
-              'SQFENTITY ERROR: The DELETE statement conflicted with the REFERENCE RELATIONSHIP (SongbookRecordEntity.songbooksId)');
+    print('SQFENTITIY: delete Songbook invoked (id=$id)');
+    var result = BoolResult(success: false);
+    {
+      result = await SongbookRecord().select().songbooksId.equals(id).and.delete(hardDelete);
+    }
+    if (!result.success) {
+      return result;
     }
     if (!_softDeleteActivated || hardDelete) {
-      return _mnSongbookEntity
-          .delete(QueryParams(whereString: 'id=?', whereArguments: [id]));
+      return _mnSongbook.delete(QueryParams(whereString: 'id=?', whereArguments: [id]));
     } else {
-      return _mnSongbookEntity.updateBatch(
-          QueryParams(whereString: 'id=?', whereArguments: [id]),
-          {'isDeleted': 1});
+      return _mnSongbook.updateBatch(QueryParams(whereString: 'id=?', whereArguments: [id]), {'isDeleted': 1});
     }
   }
 
-  SongbookEntityFilterBuilder select(
-      {List<String> columnsToSelect, bool getIsDeleted}) {
-    return SongbookEntityFilterBuilder(this)
+  SongbookFilterBuilder select({List<String>? columnsToSelect, bool? getIsDeleted}) {
+    return SongbookFilterBuilder(this)
       .._getIsDeleted = getIsDeleted == true
       ..qparams.selectColumns = columnsToSelect;
   }
 
-  SongbookEntityFilterBuilder distinct(
-      {List<String> columnsToSelect, bool getIsDeleted}) {
-    return SongbookEntityFilterBuilder(this)
+  SongbookFilterBuilder distinct({List<String>? columnsToSelect, bool? getIsDeleted}) {
+    return SongbookFilterBuilder(this)
       .._getIsDeleted = getIsDeleted == true
       ..qparams.selectColumns = columnsToSelect
       ..qparams.distinct = true;
@@ -5482,12 +4835,12 @@ class SongbookEntity {
 
   void _setDefaultValues() {
     isSaved = false;
-    isPinned = isPinned ?? false;
+    is_pinned = is_pinned ?? false;
   }
   // END METHODS
-  // CUSTOM CODES
+  // BEGIN CUSTOM CODE
   /*
-      you must define customCode property of your SqfEntityTable constant for ex:
+      you can define customCode property of your SqfEntityTable constant. For example:
       const tablePerson = SqfEntityTable(
       tableName: 'person',
       primaryKeyName: 'id',
@@ -5503,251 +4856,178 @@ class SongbookEntity {
        }
       ''');
      */
-  // END CUSTOM CODES
+  // END CUSTOM CODE
 }
-// endregion songbookentity
+// endregion songbook
 
-// region SongbookEntityField
-class SongbookEntityField extends SearchCriteria {
-  SongbookEntityField(this.songbookentityFB) {
-    param = DbParameter();
-  }
-  DbParameter param;
+// region SongbookField
+class SongbookField extends SearchCriteria {
+  SongbookField(this.songbookFB);
+  // { param = DbParameter(); }
+  DbParameter param = DbParameter();
   String _waitingNot = '';
-  SongbookEntityFilterBuilder songbookentityFB;
+  SongbookFilterBuilder songbookFB;
 
-  SongbookEntityField get not {
+  SongbookField get not {
     _waitingNot = ' NOT ';
     return this;
   }
 
-  SongbookEntityFilterBuilder equals(dynamic pValue) {
+  SongbookFilterBuilder equals(dynamic pValue) {
     param.expression = '=';
-    songbookentityFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, songbookentityFB.parameters, param,
-            SqlSyntax.EQuals, songbookentityFB._addedBlocks)
-        : setCriteria(pValue, songbookentityFB.parameters, param,
-            SqlSyntax.NotEQuals, songbookentityFB._addedBlocks);
+    songbookFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, songbookFB.parameters, param, SqlSyntax.EQuals, songbookFB._addedBlocks)
+        : setCriteria(pValue, songbookFB.parameters, param, SqlSyntax.NotEQuals, songbookFB._addedBlocks);
     _waitingNot = '';
-    songbookentityFB._addedBlocks.needEndBlock[songbookentityFB._blockIndex] =
-        songbookentityFB._addedBlocks.retVal;
-    return songbookentityFB;
+    songbookFB._addedBlocks.needEndBlock![songbookFB._blockIndex] = songbookFB._addedBlocks.retVal;
+    return songbookFB;
   }
 
-  SongbookEntityFilterBuilder equalsOrNull(dynamic pValue) {
+  SongbookFilterBuilder equalsOrNull(dynamic pValue) {
     param.expression = '=';
-    songbookentityFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, songbookentityFB.parameters, param,
-            SqlSyntax.EQualsOrNull, songbookentityFB._addedBlocks)
-        : setCriteria(pValue, songbookentityFB.parameters, param,
-            SqlSyntax.NotEQualsOrNull, songbookentityFB._addedBlocks);
+    songbookFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, songbookFB.parameters, param, SqlSyntax.EQualsOrNull, songbookFB._addedBlocks)
+        : setCriteria(pValue, songbookFB.parameters, param, SqlSyntax.NotEQualsOrNull, songbookFB._addedBlocks);
     _waitingNot = '';
-    songbookentityFB._addedBlocks.needEndBlock[songbookentityFB._blockIndex] =
-        songbookentityFB._addedBlocks.retVal;
-    return songbookentityFB;
+    songbookFB._addedBlocks.needEndBlock![songbookFB._blockIndex] = songbookFB._addedBlocks.retVal;
+    return songbookFB;
   }
 
-  SongbookEntityFilterBuilder isNull() {
-    songbookentityFB._addedBlocks = setCriteria(
-        0,
-        songbookentityFB.parameters,
-        param,
-        SqlSyntax.IsNULL.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-        songbookentityFB._addedBlocks);
+  SongbookFilterBuilder isNull() {
+    songbookFB._addedBlocks = setCriteria(0, songbookFB.parameters, param,
+        SqlSyntax.IsNULL.replaceAll(SqlSyntax.notKeyword, _waitingNot), songbookFB._addedBlocks);
     _waitingNot = '';
-    songbookentityFB._addedBlocks.needEndBlock[songbookentityFB._blockIndex] =
-        songbookentityFB._addedBlocks.retVal;
-    return songbookentityFB;
+    songbookFB._addedBlocks.needEndBlock![songbookFB._blockIndex] = songbookFB._addedBlocks.retVal;
+    return songbookFB;
   }
 
-  SongbookEntityFilterBuilder contains(dynamic pValue) {
+  SongbookFilterBuilder contains(dynamic pValue) {
     if (pValue != null) {
-      songbookentityFB._addedBlocks = setCriteria(
-          '%${pValue.toString()}%',
-          songbookentityFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          songbookentityFB._addedBlocks);
+      songbookFB._addedBlocks = setCriteria('%${pValue.toString()}%', songbookFB.parameters, param,
+          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot), songbookFB._addedBlocks);
       _waitingNot = '';
-      songbookentityFB._addedBlocks.needEndBlock[songbookentityFB._blockIndex] =
-          songbookentityFB._addedBlocks.retVal;
+      songbookFB._addedBlocks.needEndBlock![songbookFB._blockIndex] = songbookFB._addedBlocks.retVal;
     }
-    return songbookentityFB;
+    return songbookFB;
   }
 
-  SongbookEntityFilterBuilder startsWith(dynamic pValue) {
+  SongbookFilterBuilder startsWith(dynamic pValue) {
     if (pValue != null) {
-      songbookentityFB._addedBlocks = setCriteria(
-          '${pValue.toString()}%',
-          songbookentityFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          songbookentityFB._addedBlocks);
+      songbookFB._addedBlocks = setCriteria('${pValue.toString()}%', songbookFB.parameters, param,
+          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot), songbookFB._addedBlocks);
       _waitingNot = '';
-      songbookentityFB._addedBlocks.needEndBlock[songbookentityFB._blockIndex] =
-          songbookentityFB._addedBlocks.retVal;
-      songbookentityFB._addedBlocks.needEndBlock[songbookentityFB._blockIndex] =
-          songbookentityFB._addedBlocks.retVal;
+      songbookFB._addedBlocks.needEndBlock![songbookFB._blockIndex] = songbookFB._addedBlocks.retVal;
+      songbookFB._addedBlocks.needEndBlock![songbookFB._blockIndex] = songbookFB._addedBlocks.retVal;
     }
-    return songbookentityFB;
+    return songbookFB;
   }
 
-  SongbookEntityFilterBuilder endsWith(dynamic pValue) {
+  SongbookFilterBuilder endsWith(dynamic pValue) {
     if (pValue != null) {
-      songbookentityFB._addedBlocks = setCriteria(
-          '%${pValue.toString()}',
-          songbookentityFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          songbookentityFB._addedBlocks);
+      songbookFB._addedBlocks = setCriteria('%${pValue.toString()}', songbookFB.parameters, param,
+          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot), songbookFB._addedBlocks);
       _waitingNot = '';
-      songbookentityFB._addedBlocks.needEndBlock[songbookentityFB._blockIndex] =
-          songbookentityFB._addedBlocks.retVal;
+      songbookFB._addedBlocks.needEndBlock![songbookFB._blockIndex] = songbookFB._addedBlocks.retVal;
     }
-    return songbookentityFB;
+    return songbookFB;
   }
 
-  SongbookEntityFilterBuilder between(dynamic pFirst, dynamic pLast) {
+  SongbookFilterBuilder between(dynamic pFirst, dynamic pLast) {
     if (pFirst != null && pLast != null) {
-      songbookentityFB._addedBlocks = setCriteria(
-          pFirst,
-          songbookentityFB.parameters,
-          param,
-          SqlSyntax.Between.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          songbookentityFB._addedBlocks,
-          pLast);
+      songbookFB._addedBlocks = setCriteria(pFirst, songbookFB.parameters, param,
+          SqlSyntax.Between.replaceAll(SqlSyntax.notKeyword, _waitingNot), songbookFB._addedBlocks, pLast);
     } else if (pFirst != null) {
       if (_waitingNot != '') {
-        songbookentityFB._addedBlocks = setCriteria(
-            pFirst,
-            songbookentityFB.parameters,
-            param,
-            SqlSyntax.LessThan,
-            songbookentityFB._addedBlocks);
+        songbookFB._addedBlocks =
+            setCriteria(pFirst, songbookFB.parameters, param, SqlSyntax.LessThan, songbookFB._addedBlocks);
       } else {
-        songbookentityFB._addedBlocks = setCriteria(
-            pFirst,
-            songbookentityFB.parameters,
-            param,
-            SqlSyntax.GreaterThanOrEquals,
-            songbookentityFB._addedBlocks);
+        songbookFB._addedBlocks =
+            setCriteria(pFirst, songbookFB.parameters, param, SqlSyntax.GreaterThanOrEquals, songbookFB._addedBlocks);
       }
     } else if (pLast != null) {
       if (_waitingNot != '') {
-        songbookentityFB._addedBlocks = setCriteria(
-            pLast,
-            songbookentityFB.parameters,
-            param,
-            SqlSyntax.GreaterThan,
-            songbookentityFB._addedBlocks);
+        songbookFB._addedBlocks =
+            setCriteria(pLast, songbookFB.parameters, param, SqlSyntax.GreaterThan, songbookFB._addedBlocks);
       } else {
-        songbookentityFB._addedBlocks = setCriteria(
-            pLast,
-            songbookentityFB.parameters,
-            param,
-            SqlSyntax.LessThanOrEquals,
-            songbookentityFB._addedBlocks);
+        songbookFB._addedBlocks =
+            setCriteria(pLast, songbookFB.parameters, param, SqlSyntax.LessThanOrEquals, songbookFB._addedBlocks);
       }
     }
     _waitingNot = '';
-    songbookentityFB._addedBlocks.needEndBlock[songbookentityFB._blockIndex] =
-        songbookentityFB._addedBlocks.retVal;
-    return songbookentityFB;
+    songbookFB._addedBlocks.needEndBlock![songbookFB._blockIndex] = songbookFB._addedBlocks.retVal;
+    return songbookFB;
   }
 
-  SongbookEntityFilterBuilder greaterThan(dynamic pValue) {
+  SongbookFilterBuilder greaterThan(dynamic pValue) {
     param.expression = '>';
-    songbookentityFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, songbookentityFB.parameters, param,
-            SqlSyntax.GreaterThan, songbookentityFB._addedBlocks)
-        : setCriteria(pValue, songbookentityFB.parameters, param,
-            SqlSyntax.LessThanOrEquals, songbookentityFB._addedBlocks);
+    songbookFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, songbookFB.parameters, param, SqlSyntax.GreaterThan, songbookFB._addedBlocks)
+        : setCriteria(pValue, songbookFB.parameters, param, SqlSyntax.LessThanOrEquals, songbookFB._addedBlocks);
     _waitingNot = '';
-    songbookentityFB._addedBlocks.needEndBlock[songbookentityFB._blockIndex] =
-        songbookentityFB._addedBlocks.retVal;
-    return songbookentityFB;
+    songbookFB._addedBlocks.needEndBlock![songbookFB._blockIndex] = songbookFB._addedBlocks.retVal;
+    return songbookFB;
   }
 
-  SongbookEntityFilterBuilder lessThan(dynamic pValue) {
+  SongbookFilterBuilder lessThan(dynamic pValue) {
     param.expression = '<';
-    songbookentityFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, songbookentityFB.parameters, param,
-            SqlSyntax.LessThan, songbookentityFB._addedBlocks)
-        : setCriteria(pValue, songbookentityFB.parameters, param,
-            SqlSyntax.GreaterThanOrEquals, songbookentityFB._addedBlocks);
+    songbookFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, songbookFB.parameters, param, SqlSyntax.LessThan, songbookFB._addedBlocks)
+        : setCriteria(pValue, songbookFB.parameters, param, SqlSyntax.GreaterThanOrEquals, songbookFB._addedBlocks);
     _waitingNot = '';
-    songbookentityFB._addedBlocks.needEndBlock[songbookentityFB._blockIndex] =
-        songbookentityFB._addedBlocks.retVal;
-    return songbookentityFB;
+    songbookFB._addedBlocks.needEndBlock![songbookFB._blockIndex] = songbookFB._addedBlocks.retVal;
+    return songbookFB;
   }
 
-  SongbookEntityFilterBuilder greaterThanOrEquals(dynamic pValue) {
+  SongbookFilterBuilder greaterThanOrEquals(dynamic pValue) {
     param.expression = '>=';
-    songbookentityFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, songbookentityFB.parameters, param,
-            SqlSyntax.GreaterThanOrEquals, songbookentityFB._addedBlocks)
-        : setCriteria(pValue, songbookentityFB.parameters, param,
-            SqlSyntax.LessThan, songbookentityFB._addedBlocks);
+    songbookFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, songbookFB.parameters, param, SqlSyntax.GreaterThanOrEquals, songbookFB._addedBlocks)
+        : setCriteria(pValue, songbookFB.parameters, param, SqlSyntax.LessThan, songbookFB._addedBlocks);
     _waitingNot = '';
-    songbookentityFB._addedBlocks.needEndBlock[songbookentityFB._blockIndex] =
-        songbookentityFB._addedBlocks.retVal;
-    return songbookentityFB;
+    songbookFB._addedBlocks.needEndBlock![songbookFB._blockIndex] = songbookFB._addedBlocks.retVal;
+    return songbookFB;
   }
 
-  SongbookEntityFilterBuilder lessThanOrEquals(dynamic pValue) {
+  SongbookFilterBuilder lessThanOrEquals(dynamic pValue) {
     param.expression = '<=';
-    songbookentityFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, songbookentityFB.parameters, param,
-            SqlSyntax.LessThanOrEquals, songbookentityFB._addedBlocks)
-        : setCriteria(pValue, songbookentityFB.parameters, param,
-            SqlSyntax.GreaterThan, songbookentityFB._addedBlocks);
+    songbookFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, songbookFB.parameters, param, SqlSyntax.LessThanOrEquals, songbookFB._addedBlocks)
+        : setCriteria(pValue, songbookFB.parameters, param, SqlSyntax.GreaterThan, songbookFB._addedBlocks);
     _waitingNot = '';
-    songbookentityFB._addedBlocks.needEndBlock[songbookentityFB._blockIndex] =
-        songbookentityFB._addedBlocks.retVal;
-    return songbookentityFB;
+    songbookFB._addedBlocks.needEndBlock![songbookFB._blockIndex] = songbookFB._addedBlocks.retVal;
+    return songbookFB;
   }
 
-  SongbookEntityFilterBuilder inValues(dynamic pValue) {
-    songbookentityFB._addedBlocks = setCriteria(
-        pValue,
-        songbookentityFB.parameters,
-        param,
-        SqlSyntax.IN.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-        songbookentityFB._addedBlocks);
+  SongbookFilterBuilder inValues(dynamic pValue) {
+    songbookFB._addedBlocks = setCriteria(pValue, songbookFB.parameters, param,
+        SqlSyntax.IN.replaceAll(SqlSyntax.notKeyword, _waitingNot), songbookFB._addedBlocks);
     _waitingNot = '';
-    songbookentityFB._addedBlocks.needEndBlock[songbookentityFB._blockIndex] =
-        songbookentityFB._addedBlocks.retVal;
-    return songbookentityFB;
+    songbookFB._addedBlocks.needEndBlock![songbookFB._blockIndex] = songbookFB._addedBlocks.retVal;
+    return songbookFB;
   }
 }
-// endregion SongbookEntityField
+// endregion SongbookField
 
-// region SongbookEntityFilterBuilder
-class SongbookEntityFilterBuilder extends SearchCriteria {
-  SongbookEntityFilterBuilder(SongbookEntity obj) {
+// region SongbookFilterBuilder
+class SongbookFilterBuilder extends SearchCriteria {
+  SongbookFilterBuilder(Songbook obj) {
     whereString = '';
-    qparams = QueryParams();
-    parameters = <DbParameter>[];
-    orderByList = <String>[];
     groupByList = <String>[];
-    _addedBlocks = AddedBlocks(<bool>[], <bool>[]);
-    _addedBlocks.needEndBlock.add(false);
-    _addedBlocks.waitingStartBlock.add(false);
-    _pagesize = 0;
-    _page = 0;
+    _addedBlocks.needEndBlock!.add(false);
+    _addedBlocks.waitingStartBlock!.add(false);
     _obj = obj;
   }
-  AddedBlocks _addedBlocks;
+  AddedBlocks _addedBlocks = AddedBlocks(<bool>[], <bool>[]);
   int _blockIndex = 0;
-  List<DbParameter> parameters;
-  List<String> orderByList;
-  SongbookEntity _obj;
-  QueryParams qparams;
-  int _pagesize;
-  int _page;
+  List<DbParameter> parameters = <DbParameter>[];
+  List<String> orderByList = <String>[];
+  Songbook? _obj;
+  QueryParams qparams = QueryParams();
+  int _pagesize = 0;
+  int _page = 0;
 
   /// put the sql keyword 'AND'
-  SongbookEntityFilterBuilder get and {
+  SongbookFilterBuilder get and {
     if (parameters.isNotEmpty) {
       parameters[parameters.length - 1].wOperator = ' AND ';
     }
@@ -5755,7 +5035,7 @@ class SongbookEntityFilterBuilder extends SearchCriteria {
   }
 
   /// put the sql keyword 'OR'
-  SongbookEntityFilterBuilder get or {
+  SongbookFilterBuilder get or {
     if (parameters.isNotEmpty) {
       parameters[parameters.length - 1].wOperator = ' OR ';
     }
@@ -5763,26 +5043,23 @@ class SongbookEntityFilterBuilder extends SearchCriteria {
   }
 
   /// open parentheses
-  SongbookEntityFilterBuilder get startBlock {
-    _addedBlocks.waitingStartBlock.add(true);
-    _addedBlocks.needEndBlock.add(false);
+  SongbookFilterBuilder get startBlock {
+    _addedBlocks.waitingStartBlock!.add(true);
+    _addedBlocks.needEndBlock!.add(false);
     _blockIndex++;
     if (_blockIndex > 1) {
-      _addedBlocks.needEndBlock[_blockIndex - 1] = true;
+      _addedBlocks.needEndBlock![_blockIndex - 1] = true;
     }
     return this;
   }
 
   /// String whereCriteria, write raw query without 'where' keyword. Like this: 'field1 like 'test%' and field2 = 3'
-  SongbookEntityFilterBuilder where(String whereCriteria,
-      {dynamic parameterValue}) {
+  SongbookFilterBuilder where(String? whereCriteria, {dynamic parameterValue}) {
     if (whereCriteria != null && whereCriteria != '') {
-      final DbParameter param = DbParameter(
-          columnName: parameterValue == null ? null : '',
-          hasParameter: parameterValue != null);
-      _addedBlocks = setCriteria(parameterValue ?? 0, parameters, param,
-          '($whereCriteria)', _addedBlocks);
-      _addedBlocks.needEndBlock[_blockIndex] = _addedBlocks.retVal;
+      final DbParameter param =
+          DbParameter(columnName: parameterValue == null ? null : '', hasParameter: parameterValue != null);
+      _addedBlocks = setCriteria(parameterValue ?? 0, parameters, param, '($whereCriteria)', _addedBlocks);
+      _addedBlocks.needEndBlock![_blockIndex] = _addedBlocks.retVal;
     }
     return this;
   }
@@ -5790,7 +5067,7 @@ class SongbookEntityFilterBuilder extends SearchCriteria {
   /// page = page number,
   ///
   /// pagesize = row(s) per page
-  SongbookEntityFilterBuilder page(int page, int pagesize) {
+  SongbookFilterBuilder page(int page, int pagesize) {
     if (page > 0) {
       _page = page;
     }
@@ -5801,7 +5078,7 @@ class SongbookEntityFilterBuilder extends SearchCriteria {
   }
 
   /// int count = LIMIT
-  SongbookEntityFilterBuilder top(int count) {
+  SongbookFilterBuilder top(int count) {
     if (count > 0) {
       _pagesize = count;
     }
@@ -5809,12 +5086,12 @@ class SongbookEntityFilterBuilder extends SearchCriteria {
   }
 
   /// close parentheses
-  SongbookEntityFilterBuilder get endBlock {
-    if (_addedBlocks.needEndBlock[_blockIndex]) {
+  SongbookFilterBuilder get endBlock {
+    if (_addedBlocks.needEndBlock![_blockIndex]) {
       parameters[parameters.length - 1].whereString += ' ) ';
     }
-    _addedBlocks.needEndBlock.removeAt(_blockIndex);
-    _addedBlocks.waitingStartBlock.removeAt(_blockIndex);
+    _addedBlocks.needEndBlock!.removeAt(_blockIndex);
+    _addedBlocks.waitingStartBlock!.removeAt(_blockIndex);
     _blockIndex--;
     return this;
   }
@@ -5824,13 +5101,13 @@ class SongbookEntityFilterBuilder extends SearchCriteria {
   /// Example 1: argFields='name, date'
   ///
   /// Example 2: argFields = ['name', 'date']
-  SongbookEntityFilterBuilder orderBy(dynamic argFields) {
+  SongbookFilterBuilder orderBy(dynamic argFields) {
     if (argFields != null) {
       if (argFields is String) {
         orderByList.add(argFields);
       } else {
-        for (String s in argFields as List<String>) {
-          if (s != null && s.isNotEmpty) {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
             orderByList.add(' $s ');
           }
         }
@@ -5844,13 +5121,13 @@ class SongbookEntityFilterBuilder extends SearchCriteria {
   /// Example 1: argFields='field1, field2'
   ///
   /// Example 2: argFields = ['field1', 'field2']
-  SongbookEntityFilterBuilder orderByDesc(dynamic argFields) {
+  SongbookFilterBuilder orderByDesc(dynamic argFields) {
     if (argFields != null) {
       if (argFields is String) {
         orderByList.add('$argFields desc ');
       } else {
-        for (String s in argFields as List<String>) {
-          if (s != null && s.isNotEmpty) {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
             orderByList.add(' $s desc ');
           }
         }
@@ -5864,13 +5141,13 @@ class SongbookEntityFilterBuilder extends SearchCriteria {
   /// Example 1: argFields='field1, field2'
   ///
   /// Example 2: argFields = ['field1', 'field2']
-  SongbookEntityFilterBuilder groupBy(dynamic argFields) {
+  SongbookFilterBuilder groupBy(dynamic argFields) {
     if (argFields != null) {
       if (argFields is String) {
         groupByList.add(' $argFields ');
       } else {
-        for (String s in argFields as List<String>) {
-          if (s != null && s.isNotEmpty) {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
             groupByList.add(' $s ');
           }
         }
@@ -5884,13 +5161,13 @@ class SongbookEntityFilterBuilder extends SearchCriteria {
   /// Example 1: argFields='name, date'
   ///
   /// Example 2: argFields = ['name', 'date']
-  SongbookEntityFilterBuilder having(dynamic argFields) {
+  SongbookFilterBuilder having(dynamic argFields) {
     if (argFields != null) {
       if (argFields is String) {
         havingList.add(argFields);
       } else {
-        for (String s in argFields as List<String>) {
-          if (s != null && s.isNotEmpty) {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
             havingList.add(' $s ');
           }
         }
@@ -5899,51 +5176,48 @@ class SongbookEntityFilterBuilder extends SearchCriteria {
     return this;
   }
 
-  SongbookEntityField setField(
-      SongbookEntityField field, String colName, DbType dbtype) {
-    return SongbookEntityField(this)
-      ..param = DbParameter(
-          dbType: dbtype,
-          columnName: colName,
-          wStartBlock: _addedBlocks.waitingStartBlock[_blockIndex]);
+  SongbookField setField(SongbookField? field, String colName, DbType dbtype) {
+    return SongbookField(this)
+      ..param =
+          DbParameter(dbType: dbtype, columnName: colName, wStartBlock: _addedBlocks.waitingStartBlock![_blockIndex]);
   }
 
-  SongbookEntityField _id;
-  SongbookEntityField get id {
+  SongbookField? _id;
+  SongbookField get id {
     return _id = setField(_id, 'id', DbType.integer);
   }
 
-  SongbookEntityField _name;
-  SongbookEntityField get name {
+  SongbookField? _name;
+  SongbookField get name {
     return _name = setField(_name, 'name', DbType.text);
   }
 
-  SongbookEntityField _shortcut;
-  SongbookEntityField get shortcut {
+  SongbookField? _shortcut;
+  SongbookField get shortcut {
     return _shortcut = setField(_shortcut, 'shortcut', DbType.text);
   }
 
-  SongbookEntityField _color;
-  SongbookEntityField get color {
+  SongbookField? _color;
+  SongbookField get color {
     return _color = setField(_color, 'color', DbType.text);
   }
 
-  SongbookEntityField _colorText;
-  SongbookEntityField get colorText {
-    return _colorText = setField(_colorText, 'colorText', DbType.text);
+  SongbookField? _color_text;
+  SongbookField get color_text {
+    return _color_text = setField(_color_text, 'color_text', DbType.text);
   }
 
-  SongbookEntityField _isPrivate;
-  SongbookEntityField get isPrivate {
-    return _isPrivate = setField(_isPrivate, 'isPrivate', DbType.bool);
+  SongbookField? _is_private;
+  SongbookField get is_private {
+    return _is_private = setField(_is_private, 'is_private', DbType.bool);
   }
 
-  SongbookEntityField _isPinned;
-  SongbookEntityField get isPinned {
-    return _isPinned = setField(_isPinned, 'isPinned', DbType.bool);
+  SongbookField? _is_pinned;
+  SongbookField get is_pinned {
+    return _is_pinned = setField(_is_pinned, 'is_pinned', DbType.bool);
   }
 
-  bool _getIsDeleted;
+  bool _getIsDeleted = false;
 
   void _buildParameters() {
     if (_page > 0 && _pagesize > 0) {
@@ -5958,24 +5232,20 @@ class SongbookEntityFilterBuilder extends SearchCriteria {
     for (DbParameter param in parameters) {
       if (param.columnName != null) {
         if (param.value is List && !param.hasParameter) {
-          param.value = param.dbType == DbType.text
+          param.value = param.dbType == DbType.text || param.value[0] is String
               ? '\'${param.value.join('\',\'')}\''
               : param.value.join(',');
-          whereString += param.whereString
-              .replaceAll('{field}', param.columnName)
-              .replaceAll('?', param.value.toString());
+          whereString +=
+              param.whereString.replaceAll('{field}', param.columnName!).replaceAll('?', param.value.toString());
           param.value = null;
         } else {
-          if (param.value is Map<String, dynamic> &&
-              param.value['sql'] != null) {
+          if (param.value is Map<String, dynamic> && param.value['sql'] != null) {
             param
-              ..whereString = param.whereString
-                  .replaceAll('?', param.value['sql'].toString())
+              ..whereString = param.whereString.replaceAll('?', param.value['sql'].toString())
               ..dbType = DbType.integer
               ..value = param.value['args'];
           }
-          whereString +=
-              param.whereString.replaceAll('{field}', param.columnName);
+          whereString += param.whereString.replaceAll('{field}', param.columnName!);
         }
         if (!param.whereString.contains('?')) {
         } else {
@@ -5995,12 +5265,8 @@ class SongbookEntityFilterBuilder extends SearchCriteria {
             case DbType.date:
             case DbType.datetime:
             case DbType.datetimeUtc:
-              param.value = param.value == null
-                  ? null
-                  : (param.value as DateTime).millisecondsSinceEpoch;
-              param.value2 = param.value2 == null
-                  ? null
-                  : (param.value2 as DateTime).millisecondsSinceEpoch;
+              param.value = param.value == null ? null : (param.value as DateTime).millisecondsSinceEpoch;
+              param.value2 = param.value2 == null ? null : (param.value2 as DateTime).millisecondsSinceEpoch;
               break;
             default:
           }
@@ -6021,10 +5287,9 @@ class SongbookEntityFilterBuilder extends SearchCriteria {
         whereString += param.whereString;
       }
     }
-    if (SongbookEntity._softDeleteActivated) {
+    if (Songbook._softDeleteActivated) {
       if (whereString != '') {
-        whereString =
-            '${!_getIsDeleted ? 'ifnull(isDeleted,0)=0 AND' : ''} ($whereString)';
+        whereString = '${!_getIsDeleted ? 'ifnull(isDeleted,0)=0 AND' : ''} ($whereString)';
       } else if (!_getIsDeleted) {
         whereString = 'ifnull(isDeleted,0)=0';
       }
@@ -6040,32 +5305,27 @@ class SongbookEntityFilterBuilder extends SearchCriteria {
       ..having = havingList.join(',');
   }
 
-  /// Deletes List<SongbookEntity> bulk by query
+  /// Deletes List<Songbook> bulk by query
   ///
   /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
   Future<BoolResult> delete([bool hardDelete = false]) async {
     _buildParameters();
-    var r = BoolResult();
-    // Check sub records where in (SongbookRecordEntity) according to DeleteRule.NO_ACTION
-
-    final idListSongbookRecordEntityBYsongbooksId = toListPrimaryKeySQL(false);
-    final resSongbookRecordEntityBYsongbooksId = await SongbookRecordEntity()
+    var r = BoolResult(success: false);
+    // Delete sub records where in (SongbookRecord) according to DeleteRule.CASCADE
+    final idListSongbookRecordBYsongbooksId = toListPrimaryKeySQL(false);
+    final resSongbookRecordBYsongbooksId = await SongbookRecord()
         .select()
-        .where(
-            'songbooksId IN (${idListSongbookRecordEntityBYsongbooksId['sql']})',
-            parameterValue: idListSongbookRecordEntityBYsongbooksId['args'])
-        .toCount();
-    if (resSongbookRecordEntityBYsongbooksId > 0) {
-      return BoolResult(
-          success: false,
-          errorMessage:
-              'SQFENTITY ERROR: The DELETE statement conflicted with the REFERENCE RELATIONSHIP (SongbookRecordEntity.songbooksId)');
+        .where('songbooksId IN (${idListSongbookRecordBYsongbooksId['sql']})',
+            parameterValue: idListSongbookRecordBYsongbooksId['args'])
+        .delete(hardDelete);
+    if (!resSongbookRecordBYsongbooksId.success) {
+      return resSongbookRecordBYsongbooksId;
     }
 
-    if (SongbookEntity._softDeleteActivated && !hardDelete) {
-      r = await _obj._mnSongbookEntity.updateBatch(qparams, {'isDeleted': 1});
+    if (Songbook._softDeleteActivated && !hardDelete) {
+      r = await _obj!._mnSongbook.updateBatch(qparams, {'isDeleted': 1});
     } else {
-      r = await _obj._mnSongbookEntity.delete(qparams);
+      r = await _obj!._mnSongbook.delete(qparams);
     }
     return r;
   }
@@ -6077,14 +5337,14 @@ class SongbookEntityFilterBuilder extends SearchCriteria {
   /// fieldName must be String. Value is dynamic, it can be any of the (int, bool, String.. )
   Future<BoolResult> update(Map<String, dynamic> values) {
     _buildParameters();
-    if (qparams.limit > 0 || qparams.offset > 0) {
+    if (qparams.limit! > 0 || qparams.offset! > 0) {
       qparams.whereString =
-          'id IN (SELECT id from songbooks ${qparams.whereString.isNotEmpty ? 'WHERE ${qparams.whereString}' : ''}${qparams.limit > 0 ? ' LIMIT ${qparams.limit}' : ''}${qparams.offset > 0 ? ' OFFSET ${qparams.offset}' : ''})';
+          'id IN (SELECT id from songbooks ${qparams.whereString!.isNotEmpty ? 'WHERE ${qparams.whereString}' : ''}${qparams.limit! > 0 ? ' LIMIT ${qparams.limit}' : ''}${qparams.offset! > 0 ? ' OFFSET ${qparams.offset}' : ''})';
     }
-    return _obj._mnSongbookEntity.updateBatch(qparams, values);
+    return _obj!._mnSongbook.updateBatch(qparams, values);
   }
 
-  /// This method always returns SongbookEntity Obj if exist, otherwise returns null
+  /// This method always returns Songbook Obj if exist, otherwise returns null
   ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
   ///
@@ -6097,33 +5357,26 @@ class SongbookEntityFilterBuilder extends SearchCriteria {
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
   ///
-  /// <returns>List<SongbookEntity>
-  Future<SongbookEntity> toSingle(
-      {bool preload = false,
-      List<String> preloadFields,
-      bool loadParents = false,
-      List<String> loadedFields}) async {
+  /// <returns>List<Songbook>
+  Future<Songbook?> toSingle(
+      {bool preload = false, List<String>? preloadFields, bool loadParents = false, List<String>? loadedFields}) async {
     _pagesize = 1;
     _buildParameters();
-    final objFuture = _obj._mnSongbookEntity.toList(qparams);
+    final objFuture = _obj!._mnSongbook.toList(qparams);
     final data = await objFuture;
-    SongbookEntity obj;
+    Songbook? obj;
     if (data.isNotEmpty) {
-      obj = SongbookEntity.fromMap(data[0] as Map<String, dynamic>);
+      obj = Songbook.fromMap(data[0] as Map<String, dynamic>);
       // final List<String> _loadedFields = loadedFields ?? [];
 
       // RELATIONSHIPS PRELOAD CHILD
       if (preload) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedFields.contains('songbooks.plSongbookRecordEntities') && */ (preloadFields ==
-                null ||
-            preloadFields.contains('plSongbookRecordEntities'))) {
-          /*_loadedFields.add('songbooks.plSongbookRecordEntities'); */
-          obj.plSongbookRecordEntities = obj.plSongbookRecordEntities ??
-              await obj.getSongbookRecordEntities().toList(
-                  preload: preload,
-                  preloadFields: preloadFields,
-                  loadParents: false /*, loadedFields:_loadedFields*/);
+        if (/*!_loadedfields!.contains('songbooks.plSongbookRecords') && */ (preloadFields == null ||
+            preloadFields.contains('plSongbookRecords'))) {
+          /*_loadedfields!.add('songbooks.plSongbookRecords'); */ obj.plSongbookRecords = obj.plSongbookRecords ??
+              await obj.getSongbookRecords()!.toList(
+                  preload: preload, preloadFields: preloadFields, loadParents: false /*, loadedFields:_loadedFields*/);
         }
       } // END RELATIONSHIPS PRELOAD CHILD
 
@@ -6133,22 +5386,21 @@ class SongbookEntityFilterBuilder extends SearchCriteria {
     return obj;
   }
 
-  /// This method returns int. [SongbookEntity]
+  /// This method returns int. [Songbook]
   ///
   /// <returns>int
-  Future<int> toCount(
-      [VoidCallback Function(int c) songbookentityCount]) async {
+  Future<int> toCount([VoidCallback Function(int c)? songbookCount]) async {
     _buildParameters();
     qparams.selectColumns = ['COUNT(1) AS CNT'];
-    final songbookentitiesFuture = await _obj._mnSongbookEntity.toList(qparams);
-    final int count = songbookentitiesFuture[0]['CNT'] as int;
-    if (songbookentityCount != null) {
-      songbookentityCount(count);
+    final songbooksFuture = await _obj!._mnSongbook.toList(qparams);
+    final int count = songbooksFuture[0]['CNT'] as int;
+    if (songbookCount != null) {
+      songbookCount(count);
     }
     return count;
   }
 
-  /// This method returns List<SongbookEntity> [SongbookEntity]
+  /// This method returns List<Songbook> [Songbook]
   ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
   ///
@@ -6161,24 +5413,20 @@ class SongbookEntityFilterBuilder extends SearchCriteria {
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
   ///
-  /// <returns>List<SongbookEntity>
-  Future<List<SongbookEntity>> toList(
-      {bool preload = false,
-      List<String> preloadFields,
-      bool loadParents = false,
-      List<String> loadedFields}) async {
+  /// <returns>List<Songbook>
+  Future<List<Songbook>> toList(
+      {bool preload = false, List<String>? preloadFields, bool loadParents = false, List<String>? loadedFields}) async {
     final data = await toMapList();
-    final List<SongbookEntity> songbookentitiesData =
-        await SongbookEntity.fromMapList(data,
-            preload: preload,
-            preloadFields: preloadFields,
-            loadParents: loadParents,
-            loadedFields: loadedFields,
-            setDefaultValues: qparams.selectColumns == null);
-    return songbookentitiesData;
+    final List<Songbook> songbooksData = await Songbook.fromMapList(data,
+        preload: preload,
+        preloadFields: preloadFields,
+        loadParents: loadParents,
+        loadedFields: loadedFields,
+        setDefaultValues: qparams.selectColumns == null);
+    return songbooksData;
   }
 
-  /// This method returns Json String [SongbookEntity]
+  /// This method returns Json String [Songbook]
   Future<String> toJson() async {
     final list = <dynamic>[];
     final data = await toList();
@@ -6188,7 +5436,7 @@ class SongbookEntityFilterBuilder extends SearchCriteria {
     return json.encode(list);
   }
 
-  /// This method returns Json String. [SongbookEntity]
+  /// This method returns Json String. [Songbook]
   Future<String> toJsonWithChilds() async {
     final list = <dynamic>[];
     final data = await toList();
@@ -6198,15 +5446,15 @@ class SongbookEntityFilterBuilder extends SearchCriteria {
     return json.encode(list);
   }
 
-  /// This method returns List<dynamic>. [SongbookEntity]
+  /// This method returns List<dynamic>. [Songbook]
   ///
   /// <returns>List<dynamic>
   Future<List<dynamic>> toMapList() async {
     _buildParameters();
-    return await _obj._mnSongbookEntity.toList(qparams);
+    return await _obj!._mnSongbook.toList(qparams);
   }
 
-  /// This method returns Primary Key List SQL and Parameters retVal = Map<String,dynamic>. [SongbookEntity]
+  /// This method returns Primary Key List SQL and Parameters retVal = Map<String,dynamic>. [Songbook]
   ///
   /// retVal['sql'] = SQL statement string, retVal['args'] = whereArguments List<dynamic>;
   ///
@@ -6229,7 +5477,7 @@ class SongbookEntityFilterBuilder extends SearchCriteria {
     }
     final List<int> idData = <int>[];
     qparams.selectColumns = ['id'];
-    final idFuture = await _obj._mnSongbookEntity.toList(qparams);
+    final idFuture = await _obj!._mnSongbook.toList(qparams);
 
     final int count = idFuture.length;
     for (int i = 0; i < count; i++) {
@@ -6238,13 +5486,13 @@ class SongbookEntityFilterBuilder extends SearchCriteria {
     return idData;
   }
 
-  /// Returns List<dynamic> for selected columns. Use this method for 'groupBy' with min,max,avg..  [SongbookEntity]
+  /// Returns List<dynamic> for selected columns. Use this method for 'groupBy' with min,max,avg..  [Songbook]
   ///
   /// Sample usage: (see EXAMPLE 4.2 at https://github.com/hhtokpinar/sqfEntity#group-by)
   Future<List<dynamic>> toListObject() async {
     _buildParameters();
 
-    final objectFuture = _obj._mnSongbookEntity.toList(qparams);
+    final objectFuture = _obj!._mnSongbook.toList(qparams);
 
     final List<dynamic> objectsData = <dynamic>[];
     final data = await objectFuture;
@@ -6257,18 +5505,17 @@ class SongbookEntityFilterBuilder extends SearchCriteria {
 
   /// Returns List<String> for selected first column
   ///
-  /// Sample usage: await SongbookEntity.select(columnsToSelect: ['columnName']).toListString()
-  Future<List<String>> toListString(
-      [VoidCallback Function(List<String> o) listString]) async {
+  /// Sample usage: await Songbook.select(columnsToSelect: ['columnName']).toListString()
+  Future<List<String>> toListString([VoidCallback Function(List<String> o)? listString]) async {
     _buildParameters();
 
-    final objectFuture = _obj._mnSongbookEntity.toList(qparams);
+    final objectFuture = _obj!._mnSongbook.toList(qparams);
 
     final List<String> objectsData = <String>[];
     final data = await objectFuture;
     final int count = data.length;
     for (int i = 0; i < count; i++) {
-      objectsData.add(data[i][qparams.selectColumns[0]].toString());
+      objectsData.add(data[i][qparams.selectColumns![0]].toString());
     }
     if (listString != null) {
       listString(objectsData);
@@ -6276,149 +5523,127 @@ class SongbookEntityFilterBuilder extends SearchCriteria {
     return objectsData;
   }
 }
-// endregion SongbookEntityFilterBuilder
+// endregion SongbookFilterBuilder
 
-// region SongbookEntityFields
-class SongbookEntityFields {
-  static TableField _fId;
+// region SongbookFields
+class SongbookFields {
+  static TableField? _fId;
   static TableField get id {
     return _fId = _fId ?? SqlSyntax.setField(_fId, 'id', DbType.integer);
   }
 
-  static TableField _fName;
+  static TableField? _fName;
   static TableField get name {
     return _fName = _fName ?? SqlSyntax.setField(_fName, 'name', DbType.text);
   }
 
-  static TableField _fShortcut;
+  static TableField? _fShortcut;
   static TableField get shortcut {
-    return _fShortcut =
-        _fShortcut ?? SqlSyntax.setField(_fShortcut, 'shortcut', DbType.text);
+    return _fShortcut = _fShortcut ?? SqlSyntax.setField(_fShortcut, 'shortcut', DbType.text);
   }
 
-  static TableField _fColor;
+  static TableField? _fColor;
   static TableField get color {
-    return _fColor =
-        _fColor ?? SqlSyntax.setField(_fColor, 'color', DbType.text);
+    return _fColor = _fColor ?? SqlSyntax.setField(_fColor, 'color', DbType.text);
   }
 
-  static TableField _fColorText;
-  static TableField get colorText {
-    return _fColorText = _fColorText ??
-        SqlSyntax.setField(_fColorText, 'colorText', DbType.text);
+  static TableField? _fColor_text;
+  static TableField get color_text {
+    return _fColor_text = _fColor_text ?? SqlSyntax.setField(_fColor_text, 'color_text', DbType.text);
   }
 
-  static TableField _fIsPrivate;
-  static TableField get isPrivate {
-    return _fIsPrivate = _fIsPrivate ??
-        SqlSyntax.setField(_fIsPrivate, 'isPrivate', DbType.bool);
+  static TableField? _fIs_private;
+  static TableField get is_private {
+    return _fIs_private = _fIs_private ?? SqlSyntax.setField(_fIs_private, 'is_private', DbType.bool);
   }
 
-  static TableField _fIsPinned;
-  static TableField get isPinned {
-    return _fIsPinned =
-        _fIsPinned ?? SqlSyntax.setField(_fIsPinned, 'isPinned', DbType.bool);
+  static TableField? _fIs_pinned;
+  static TableField get is_pinned {
+    return _fIs_pinned = _fIs_pinned ?? SqlSyntax.setField(_fIs_pinned, 'is_pinned', DbType.bool);
   }
 }
-// endregion SongbookEntityFields
+// endregion SongbookFields
 
-//region SongbookEntityManager
-class SongbookEntityManager extends SqfEntityProvider {
-  SongbookEntityManager()
-      : super(Model(),
-            tableName: _tableName,
-            primaryKeyList: _primaryKeyList,
-            whereStr: _whereStr);
+//region SongbookManager
+class SongbookManager extends SqfEntityProvider {
+  SongbookManager() : super(Model(), tableName: _tableName, primaryKeyList: _primaryKeyList, whereStr: _whereStr);
   static final String _tableName = 'songbooks';
   static final List<String> _primaryKeyList = ['id'];
   static final String _whereStr = 'id=?';
 }
 
-//endregion SongbookEntityManager
-// region SongbookRecordEntity
-class SongbookRecordEntity {
-  SongbookRecordEntity(
-      {this.id, this.number, this.songbooksId, this.song_lyricsId}) {
+//endregion SongbookManager
+// region SongbookRecord
+class SongbookRecord {
+  SongbookRecord({this.id, this.number, this.songbooksId, this.song_lyricsId}) {
     _setDefaultValues();
   }
-  SongbookRecordEntity.withFields(
-      this.id, this.number, this.songbooksId, this.song_lyricsId) {
+  SongbookRecord.withFields(this.id, this.number, this.songbooksId, this.song_lyricsId) {
     _setDefaultValues();
   }
-  SongbookRecordEntity.withId(
-      this.id, this.number, this.songbooksId, this.song_lyricsId) {
+  SongbookRecord.withId(this.id, this.number, this.songbooksId, this.song_lyricsId) {
     _setDefaultValues();
   }
-  SongbookRecordEntity.fromMap(Map<String, dynamic> o,
-      {bool setDefaultValues = true}) {
+  // fromMap v2.0
+  SongbookRecord.fromMap(Map<String, dynamic> o, {bool setDefaultValues = true}) {
     if (setDefaultValues) {
       _setDefaultValues();
     }
     id = int.tryParse(o['id'].toString());
     if (o['number'] != null) {
-      number = o['number'] as String;
+      number = o['number'].toString();
     }
     songbooksId = int.tryParse(o['songbooksId'].toString());
 
     song_lyricsId = int.tryParse(o['song_lyricsId'].toString());
 
     // RELATIONSHIPS FromMAP
-    plSongbookEntity = o['songbookEntity'] != null
-        ? SongbookEntity.fromMap(o['songbookEntity'] as Map<String, dynamic>)
-        : null;
-    plSongLyricEntity = o['songLyricEntity'] != null
-        ? SongLyricEntity.fromMap(o['songLyricEntity'] as Map<String, dynamic>)
-        : null;
+    plSongbook = o['songbook'] != null ? Songbook.fromMap(o['songbook'] as Map<String, dynamic>) : null;
+    plSongLyric = o['songLyric'] != null ? SongLyric.fromMap(o['songLyric'] as Map<String, dynamic>) : null;
     // END RELATIONSHIPS FromMAP
 
     isSaved = true;
   }
-  // FIELDS (SongbookRecordEntity)
-  int id;
-  String number;
-  int songbooksId;
-  int song_lyricsId;
-  bool isSaved;
-  BoolResult saveResult;
-  // end FIELDS (SongbookRecordEntity)
+  // FIELDS (SongbookRecord)
+  int? id;
+  String? number;
+  int? songbooksId;
+  int? song_lyricsId;
+  bool? isSaved;
+  BoolResult? saveResult;
+  // end FIELDS (SongbookRecord)
 
-// RELATIONSHIPS (SongbookRecordEntity)
+// RELATIONSHIPS (SongbookRecord)
   /// to load parent of items to this field, use preload parameter ex: toList(preload:true) or toSingle(preload:true) or getById(preload:true)
-  /// You can also specify this object into certain preload fields. Ex: toList(preload:true, preloadFields:['plSongbookEntity', 'plField2'..]) or so on..
-  SongbookEntity plSongbookEntity;
+  /// You can also specify this object into certain preload fields!. Ex: toList(preload:true, preloadFields:['plSongbook', 'plField2'..]) or so on..
+  Songbook? plSongbook;
 
-  /// get SongbookEntity By SongbooksId
-  Future<SongbookEntity> getSongbookEntity(
-      {bool loadParents = false, List<String> loadedFields}) async {
-    final _obj = await SongbookEntity().getById(songbooksId,
-        loadParents: loadParents, loadedFields: loadedFields);
+  /// get Songbook By SongbooksId
+  Future<Songbook?> getSongbook({bool loadParents = false, List<String>? loadedFields}) async {
+    final _obj = await Songbook().getById(songbooksId, loadParents: loadParents, loadedFields: loadedFields);
     return _obj;
   }
 
   /// to load parent of items to this field, use preload parameter ex: toList(preload:true) or toSingle(preload:true) or getById(preload:true)
-  /// You can also specify this object into certain preload fields. Ex: toList(preload:true, preloadFields:['plSongLyricEntity', 'plField2'..]) or so on..
-  SongLyricEntity plSongLyricEntity;
+  /// You can also specify this object into certain preload fields!. Ex: toList(preload:true, preloadFields:['plSongLyric', 'plField2'..]) or so on..
+  SongLyric? plSongLyric;
 
-  /// get SongLyricEntity By Song_lyricsId
-  Future<SongLyricEntity> getSongLyricEntity(
-      {bool loadParents = false, List<String> loadedFields}) async {
-    final _obj = await SongLyricEntity().getById(song_lyricsId,
-        loadParents: loadParents, loadedFields: loadedFields);
+  /// get SongLyric By Song_lyricsId
+  Future<SongLyric?> getSongLyric({bool loadParents = false, List<String>? loadedFields}) async {
+    final _obj = await SongLyric().getById(song_lyricsId, loadParents: loadParents, loadedFields: loadedFields);
     return _obj;
   }
-  // END RELATIONSHIPS (SongbookRecordEntity)
+  // END RELATIONSHIPS (SongbookRecord)
 
   static const bool _softDeleteActivated = false;
-  SongbookRecordEntityManager __mnSongbookRecordEntity;
+  SongbookRecordManager? __mnSongbookRecord;
 
-  SongbookRecordEntityManager get _mnSongbookRecordEntity {
-    return __mnSongbookRecordEntity =
-        __mnSongbookRecordEntity ?? SongbookRecordEntityManager();
+  SongbookRecordManager get _mnSongbookRecord {
+    return __mnSongbookRecord = __mnSongbookRecord ?? SongbookRecordManager();
   }
 
   // METHODS
-  Map<String, dynamic> toMap(
-      {bool forQuery = false, bool forJson = false, bool forView = false}) {
+  Map<String, dynamic> toMap({bool forQuery = false, bool forJson = false, bool forView = false}) {
     final map = <String, dynamic>{};
     if (id != null) {
       map['id'] = id;
@@ -6428,20 +5653,26 @@ class SongbookRecordEntity {
     }
 
     if (songbooksId != null) {
-      map['songbooksId'] = forView ? plSongbookEntity.name : songbooksId;
+      map['songbooksId'] = forView
+          ? plSongbook == null
+              ? songbooksId
+              : plSongbook!.name
+          : songbooksId;
     }
 
     if (song_lyricsId != null) {
-      map['song_lyricsId'] = forView ? plSongLyricEntity.name : song_lyricsId;
+      map['song_lyricsId'] = forView
+          ? plSongLyric == null
+              ? song_lyricsId
+              : plSongLyric!.name
+          : song_lyricsId;
     }
 
     return map;
   }
 
   Future<Map<String, dynamic>> toMapWithChildren(
-      [bool forQuery = false,
-      bool forJson = false,
-      bool forView = false]) async {
+      [bool forQuery = false, bool forJson = false, bool forView = false]) async {
     final map = <String, dynamic>{};
     if (id != null) {
       map['id'] = id;
@@ -6451,22 +5682,30 @@ class SongbookRecordEntity {
     }
 
     if (songbooksId != null) {
-      map['songbooksId'] = forView ? plSongbookEntity.name : songbooksId;
+      map['songbooksId'] = forView
+          ? plSongbook == null
+              ? songbooksId
+              : plSongbook!.name
+          : songbooksId;
     }
 
     if (song_lyricsId != null) {
-      map['song_lyricsId'] = forView ? plSongLyricEntity.name : song_lyricsId;
+      map['song_lyricsId'] = forView
+          ? plSongLyric == null
+              ? song_lyricsId
+              : plSongLyric!.name
+          : song_lyricsId;
     }
 
     return map;
   }
 
-  /// This method returns Json String [SongbookRecordEntity]
+  /// This method returns Json String [SongbookRecord]
   String toJson() {
     return json.encode(toMap(forJson: true));
   }
 
-  /// This method returns Json String [SongbookRecordEntity]
+  /// This method returns Json String [SongbookRecord]
   Future<String> toJsonWithChilds() async {
     return json.encode(await toMapWithChildren(false, true));
   }
@@ -6479,70 +5718,57 @@ class SongbookRecordEntity {
     return [id, number, songbooksId, song_lyricsId];
   }
 
-  static Future<List<SongbookRecordEntity>> fromWebUrl(String url,
-      {Map<String, String> headers}) async {
+  static Future<List<SongbookRecord>?> fromWebUrl(Uri uri, {Map<String, String>? headers}) async {
     try {
-      final response = await http.get(url, headers: headers);
+      final response = await http.get(uri, headers: headers);
       return await fromJson(response.body);
     } catch (e) {
-      print(
-          'SQFENTITY ERROR SongbookRecordEntity.fromWebUrl: ErrorMessage: ${e.toString()}');
+      print('SQFENTITY ERROR SongbookRecord.fromWebUrl: ErrorMessage: ${e.toString()}');
       return null;
     }
   }
 
-  Future<http.Response> postUrl(String url, {Map<String, String> headers}) {
-    return http.post(url, headers: headers, body: toJson());
+  Future<http.Response> postUrl(Uri uri, {Map<String, String>? headers}) {
+    return http.post(uri, headers: headers, body: toJson());
   }
 
-  static Future<List<SongbookRecordEntity>> fromJson(String jsonBody) async {
+  static Future<List<SongbookRecord>> fromJson(String jsonBody) async {
     final Iterable list = await json.decode(jsonBody) as Iterable;
-    var objList = <SongbookRecordEntity>[];
+    var objList = <SongbookRecord>[];
     try {
-      objList = list
-          .map((songbookrecordentity) => SongbookRecordEntity.fromMap(
-              songbookrecordentity as Map<String, dynamic>))
-          .toList();
+      objList = list.map((songbookrecord) => SongbookRecord.fromMap(songbookrecord as Map<String, dynamic>)).toList();
     } catch (e) {
-      print(
-          'SQFENTITY ERROR SongbookRecordEntity.fromJson: ErrorMessage: ${e.toString()}');
+      print('SQFENTITY ERROR SongbookRecord.fromJson: ErrorMessage: ${e.toString()}');
     }
     return objList;
   }
 
-  static Future<List<SongbookRecordEntity>> fromMapList(List<dynamic> data,
+  static Future<List<SongbookRecord>> fromMapList(List<dynamic> data,
       {bool preload = false,
-      List<String> preloadFields,
+      List<String>? preloadFields,
       bool loadParents = false,
-      List<String> loadedFields,
+      List<String>? loadedFields,
       bool setDefaultValues = true}) async {
-    final List<SongbookRecordEntity> objList = <SongbookRecordEntity>[];
+    final List<SongbookRecord> objList = <SongbookRecord>[];
     loadedFields = loadedFields ?? [];
     for (final map in data) {
-      final obj = SongbookRecordEntity.fromMap(map as Map<String, dynamic>,
-          setDefaultValues: setDefaultValues);
+      final obj = SongbookRecord.fromMap(map as Map<String, dynamic>, setDefaultValues: setDefaultValues);
       // final List<String> _loadedFields = List<String>.from(loadedFields);
 
       // RELATIONSHIPS PRELOAD
       if (preload || loadParents) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedFields.contains('songbooks.plSongbookEntity') && */ (preloadFields ==
-                null ||
+        if (/*!_loadedfields!.contains('songbooks.plSongbook') && */ (preloadFields == null ||
             loadParents ||
-            preloadFields.contains('plSongbookEntity'))) {
-          /*_loadedFields.add('songbooks.plSongbookEntity');*/
-          obj.plSongbookEntity = obj.plSongbookEntity ??
-              await obj.getSongbookEntity(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+            preloadFields.contains('plSongbook'))) {
+          /*_loadedfields!.add('songbooks.plSongbook');*/ obj.plSongbook =
+              obj.plSongbook ?? await obj.getSongbook(loadParents: loadParents /*, loadedFields: _loadedFields*/);
         }
-        if (/*!_loadedFields.contains('song_lyrics.plSongLyricEntity') && */ (preloadFields ==
-                null ||
+        if (/*!_loadedfields!.contains('song_lyrics.plSongLyric') && */ (preloadFields == null ||
             loadParents ||
-            preloadFields.contains('plSongLyricEntity'))) {
-          /*_loadedFields.add('song_lyrics.plSongLyricEntity');*/
-          obj.plSongLyricEntity = obj.plSongLyricEntity ??
-              await obj.getSongLyricEntity(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+            preloadFields.contains('plSongLyric'))) {
+          /*_loadedfields!.add('song_lyrics.plSongLyric');*/ obj.plSongLyric =
+              obj.plSongLyric ?? await obj.getSongLyric(loadParents: loadParents /*, loadedFields: _loadedFields*/);
         }
       } // END RELATIONSHIPS PRELOAD
 
@@ -6551,9 +5777,9 @@ class SongbookRecordEntity {
     return objList;
   }
 
-  /// returns SongbookRecordEntity by ID if exist, otherwise returns null
+  /// returns SongbookRecord by ID if exist, otherwise returns null
   ///
-  /// Primary Keys: int id
+  /// Primary Keys: int? id
   ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
   ///
@@ -6566,41 +5792,32 @@ class SongbookRecordEntity {
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
   ///
-  /// <returns>returns SongbookRecordEntity if exist, otherwise returns null
-  Future<SongbookRecordEntity> getById(int id,
-      {bool preload = false,
-      List<String> preloadFields,
-      bool loadParents = false,
-      List<String> loadedFields}) async {
+  /// <returns>returns SongbookRecord if exist, otherwise returns null
+  Future<SongbookRecord?> getById(int? id,
+      {bool preload = false, List<String>? preloadFields, bool loadParents = false, List<String>? loadedFields}) async {
     if (id == null) {
       return null;
     }
-    SongbookRecordEntity obj;
-    final data = await _mnSongbookRecordEntity.getById([id]);
+    SongbookRecord? obj;
+    final data = await _mnSongbookRecord.getById([id]);
     if (data.length != 0) {
-      obj = SongbookRecordEntity.fromMap(data[0] as Map<String, dynamic>);
+      obj = SongbookRecord.fromMap(data[0] as Map<String, dynamic>);
       // final List<String> _loadedFields = loadedFields ?? [];
 
       // RELATIONSHIPS PRELOAD
       if (preload || loadParents) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedFields.contains('songbooks.plSongbookEntity') && */ (preloadFields ==
-                null ||
+        if (/*!_loadedfields!.contains('songbooks.plSongbook') && */ (preloadFields == null ||
             loadParents ||
-            preloadFields.contains('plSongbookEntity'))) {
-          /*_loadedFields.add('songbooks.plSongbookEntity');*/
-          obj.plSongbookEntity = obj.plSongbookEntity ??
-              await obj.getSongbookEntity(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+            preloadFields.contains('plSongbook'))) {
+          /*_loadedfields!.add('songbooks.plSongbook');*/ obj.plSongbook =
+              obj.plSongbook ?? await obj.getSongbook(loadParents: loadParents /*, loadedFields: _loadedFields*/);
         }
-        if (/*!_loadedFields.contains('song_lyrics.plSongLyricEntity') && */ (preloadFields ==
-                null ||
+        if (/*!_loadedfields!.contains('song_lyrics.plSongLyric') && */ (preloadFields == null ||
             loadParents ||
-            preloadFields.contains('plSongLyricEntity'))) {
-          /*_loadedFields.add('song_lyrics.plSongLyricEntity');*/
-          obj.plSongLyricEntity = obj.plSongLyricEntity ??
-              await obj.getSongLyricEntity(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+            preloadFields.contains('plSongLyric'))) {
+          /*_loadedfields!.add('song_lyrics.plSongLyric');*/ obj.plSongLyric =
+              obj.plSongLyric ?? await obj.getSongLyric(loadParents: loadParents /*, loadedFields: _loadedFields*/);
         }
       } // END RELATIONSHIPS PRELOAD
 
@@ -6610,105 +5827,93 @@ class SongbookRecordEntity {
     return obj;
   }
 
-  /// Saves the (SongbookRecordEntity) object. If the id field is null, saves as a new record and returns new id, if id is not null then updates record
+  /// Saves the (SongbookRecord) object. If the id field is null, saves as a new record and returns new id, if id is not null then updates record
 
   /// <returns>Returns id
-  Future<int> save() async {
-    if (id == null || id == 0 || !isSaved) {
-      await _mnSongbookRecordEntity.insert(this);
-      if (saveResult != null && saveResult.success) {
+  Future<int?> save() async {
+    if (id == null || id == 0 || !isSaved!) {
+      await _mnSongbookRecord.insert(this);
+      if (saveResult!.success) {
         isSaved = true;
       }
     } else {
       // id= await _upsert(); // removed in sqfentity_gen 1.3.0+6
-      await _mnSongbookRecordEntity.update(this);
+      await _mnSongbookRecord.update(this);
     }
 
     return id;
   }
 
-  /// saveAll method saves the sent List<SongbookRecordEntity> as a bulk in one transaction
+  /// saveAll method saves the sent List<SongbookRecord> as a bulk in one transaction
   ///
   /// Returns a <List<BoolResult>>
-  static Future<List<dynamic>> saveAll(
-      List<SongbookRecordEntity> songbookrecordentities) async {
-    // final results = _mnSongbookRecordEntity.saveAll('INSERT OR REPLACE INTO songbook_records (id,number, songbooksId, song_lyricsId)  VALUES (?,?,?,?)',songbookrecordentities);
+  static Future<List<dynamic>> saveAll(List<SongbookRecord> songbookrecords) async {
+    // final results = _mnSongbookRecord.saveAll('INSERT OR REPLACE INTO songbook_records (id,number, songbooksId, song_lyricsId)  VALUES (?,?,?,?)',songbookrecords);
     // return results; removed in sqfentity_gen 1.3.0+6
     await Model().batchStart();
-    for (final obj in songbookrecordentities) {
+    for (final obj in songbookrecords) {
       await obj.save();
     }
     //    return Model().batchCommit();
     final result = await Model().batchCommit();
 
-    return result;
+    return result!;
   }
 
   /// Updates if the record exists, otherwise adds a new row
 
   /// <returns>Returns id
-  Future<int> upsert() async {
+
+  Future<int?> upsert() async {
     try {
-      if (await _mnSongbookRecordEntity.rawInsert(
-              'INSERT OR REPLACE INTO songbook_records (id,number, songbooksId, song_lyricsId)  VALUES (?,?,?,?)',
-              [id, number, songbooksId, song_lyricsId]) ==
-          1) {
-        saveResult = BoolResult(
-            success: true,
-            successMessage: 'SongbookRecordEntity id=$id updated successfully');
+      final result = await _mnSongbookRecord.rawInsert(
+          'INSERT OR REPLACE INTO songbook_records (id,number, songbooksId, song_lyricsId)  VALUES (?,?,?,?)',
+          [id, number, songbooksId, song_lyricsId]);
+      if (result! > 0) {
+        saveResult = BoolResult(success: true, successMessage: 'SongbookRecord id=$id updated successfully');
       } else {
-        saveResult = BoolResult(
-            success: false,
-            errorMessage: 'SongbookRecordEntity id=$id did not update');
+        saveResult = BoolResult(success: false, errorMessage: 'SongbookRecord id=$id did not update');
       }
       return id;
     } catch (e) {
-      saveResult = BoolResult(
-          success: false,
-          errorMessage:
-              'SongbookRecordEntity Save failed. Error: ${e.toString()}');
-      return 0;
+      saveResult = BoolResult(success: false, errorMessage: 'SongbookRecord Save failed. Error: ${e.toString()}');
+      return null;
     }
   }
 
-  /// inserts or replaces the sent List<<SongbookRecordEntity>> as a bulk in one transaction.
+  /// inserts or replaces the sent List<<SongbookRecord>> as a bulk in one transaction.
   ///
   /// upsertAll() method is faster then saveAll() method. upsertAll() should be used when you are sure that the primary key is greater than zero
   ///
   /// Returns a BoolCommitResult
-  Future<BoolCommitResult> upsertAll(
-      List<SongbookRecordEntity> songbookrecordentities) async {
-    final results = await _mnSongbookRecordEntity.rawInsertAll(
+  Future<BoolCommitResult> upsertAll(List<SongbookRecord> songbookrecords) async {
+    final results = await _mnSongbookRecord.rawInsertAll(
         'INSERT OR REPLACE INTO songbook_records (id,number, songbooksId, song_lyricsId)  VALUES (?,?,?,?)',
-        songbookrecordentities);
+        songbookrecords);
     return results;
   }
 
-  /// Deletes SongbookRecordEntity
+  /// Deletes SongbookRecord
 
   /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
+
   Future<BoolResult> delete([bool hardDelete = false]) async {
-    print('SQFENTITIY: delete SongbookRecordEntity invoked (id=$id)');
+    print('SQFENTITIY: delete SongbookRecord invoked (id=$id)');
     if (!_softDeleteActivated || hardDelete) {
-      return _mnSongbookRecordEntity
-          .delete(QueryParams(whereString: 'id=?', whereArguments: [id]));
+      return _mnSongbookRecord.delete(QueryParams(whereString: 'id=?', whereArguments: [id]));
     } else {
-      return _mnSongbookRecordEntity.updateBatch(
-          QueryParams(whereString: 'id=?', whereArguments: [id]),
-          {'isDeleted': 1});
+      return _mnSongbookRecord.updateBatch(QueryParams(whereString: 'id=?', whereArguments: [id]), {'isDeleted': 1});
     }
   }
 
-  SongbookRecordEntityFilterBuilder select(
-      {List<String> columnsToSelect, bool getIsDeleted}) {
-    return SongbookRecordEntityFilterBuilder(this)
+  SongbookRecordFilterBuilder select({List<String>? columnsToSelect, bool? getIsDeleted}) {
+    return SongbookRecordFilterBuilder(this)
       .._getIsDeleted = getIsDeleted == true
       ..qparams.selectColumns = columnsToSelect;
   }
 
-  SongbookRecordEntityFilterBuilder distinct(
-      {List<String> columnsToSelect, bool getIsDeleted}) {
-    return SongbookRecordEntityFilterBuilder(this)
+  SongbookRecordFilterBuilder distinct({List<String>? columnsToSelect, bool? getIsDeleted}) {
+    return SongbookRecordFilterBuilder(this)
       .._getIsDeleted = getIsDeleted == true
       ..qparams.selectColumns = columnsToSelect
       ..qparams.distinct = true;
@@ -6718,9 +5923,9 @@ class SongbookRecordEntity {
     isSaved = false;
   }
   // END METHODS
-  // CUSTOM CODES
+  // BEGIN CUSTOM CODE
   /*
-      you must define customCode property of your SqfEntityTable constant for ex:
+      you can define customCode property of your SqfEntityTable constant. For example:
       const tablePerson = SqfEntityTable(
       tableName: 'person',
       primaryKeyName: 'id',
@@ -6736,264 +5941,183 @@ class SongbookRecordEntity {
        }
       ''');
      */
-  // END CUSTOM CODES
+  // END CUSTOM CODE
 }
-// endregion songbookrecordentity
+// endregion songbookrecord
 
-// region SongbookRecordEntityField
-class SongbookRecordEntityField extends SearchCriteria {
-  SongbookRecordEntityField(this.songbookrecordentityFB) {
-    param = DbParameter();
-  }
-  DbParameter param;
+// region SongbookRecordField
+class SongbookRecordField extends SearchCriteria {
+  SongbookRecordField(this.songbookrecordFB);
+  // { param = DbParameter(); }
+  DbParameter param = DbParameter();
   String _waitingNot = '';
-  SongbookRecordEntityFilterBuilder songbookrecordentityFB;
+  SongbookRecordFilterBuilder songbookrecordFB;
 
-  SongbookRecordEntityField get not {
+  SongbookRecordField get not {
     _waitingNot = ' NOT ';
     return this;
   }
 
-  SongbookRecordEntityFilterBuilder equals(dynamic pValue) {
+  SongbookRecordFilterBuilder equals(dynamic pValue) {
     param.expression = '=';
-    songbookrecordentityFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, songbookrecordentityFB.parameters, param,
-            SqlSyntax.EQuals, songbookrecordentityFB._addedBlocks)
-        : setCriteria(pValue, songbookrecordentityFB.parameters, param,
-            SqlSyntax.NotEQuals, songbookrecordentityFB._addedBlocks);
+    songbookrecordFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, songbookrecordFB.parameters, param, SqlSyntax.EQuals, songbookrecordFB._addedBlocks)
+        : setCriteria(pValue, songbookrecordFB.parameters, param, SqlSyntax.NotEQuals, songbookrecordFB._addedBlocks);
     _waitingNot = '';
-    songbookrecordentityFB
-            ._addedBlocks.needEndBlock[songbookrecordentityFB._blockIndex] =
-        songbookrecordentityFB._addedBlocks.retVal;
-    return songbookrecordentityFB;
+    songbookrecordFB._addedBlocks.needEndBlock![songbookrecordFB._blockIndex] = songbookrecordFB._addedBlocks.retVal;
+    return songbookrecordFB;
   }
 
-  SongbookRecordEntityFilterBuilder equalsOrNull(dynamic pValue) {
+  SongbookRecordFilterBuilder equalsOrNull(dynamic pValue) {
     param.expression = '=';
-    songbookrecordentityFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, songbookrecordentityFB.parameters, param,
-            SqlSyntax.EQualsOrNull, songbookrecordentityFB._addedBlocks)
-        : setCriteria(pValue, songbookrecordentityFB.parameters, param,
-            SqlSyntax.NotEQualsOrNull, songbookrecordentityFB._addedBlocks);
+    songbookrecordFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, songbookrecordFB.parameters, param, SqlSyntax.EQualsOrNull, songbookrecordFB._addedBlocks)
+        : setCriteria(
+            pValue, songbookrecordFB.parameters, param, SqlSyntax.NotEQualsOrNull, songbookrecordFB._addedBlocks);
     _waitingNot = '';
-    songbookrecordentityFB
-            ._addedBlocks.needEndBlock[songbookrecordentityFB._blockIndex] =
-        songbookrecordentityFB._addedBlocks.retVal;
-    return songbookrecordentityFB;
+    songbookrecordFB._addedBlocks.needEndBlock![songbookrecordFB._blockIndex] = songbookrecordFB._addedBlocks.retVal;
+    return songbookrecordFB;
   }
 
-  SongbookRecordEntityFilterBuilder isNull() {
-    songbookrecordentityFB._addedBlocks = setCriteria(
-        0,
-        songbookrecordentityFB.parameters,
-        param,
-        SqlSyntax.IsNULL.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-        songbookrecordentityFB._addedBlocks);
+  SongbookRecordFilterBuilder isNull() {
+    songbookrecordFB._addedBlocks = setCriteria(0, songbookrecordFB.parameters, param,
+        SqlSyntax.IsNULL.replaceAll(SqlSyntax.notKeyword, _waitingNot), songbookrecordFB._addedBlocks);
     _waitingNot = '';
-    songbookrecordentityFB
-            ._addedBlocks.needEndBlock[songbookrecordentityFB._blockIndex] =
-        songbookrecordentityFB._addedBlocks.retVal;
-    return songbookrecordentityFB;
+    songbookrecordFB._addedBlocks.needEndBlock![songbookrecordFB._blockIndex] = songbookrecordFB._addedBlocks.retVal;
+    return songbookrecordFB;
   }
 
-  SongbookRecordEntityFilterBuilder contains(dynamic pValue) {
+  SongbookRecordFilterBuilder contains(dynamic pValue) {
     if (pValue != null) {
-      songbookrecordentityFB._addedBlocks = setCriteria(
-          '%${pValue.toString()}%',
-          songbookrecordentityFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          songbookrecordentityFB._addedBlocks);
+      songbookrecordFB._addedBlocks = setCriteria('%${pValue.toString()}%', songbookrecordFB.parameters, param,
+          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot), songbookrecordFB._addedBlocks);
       _waitingNot = '';
-      songbookrecordentityFB
-              ._addedBlocks.needEndBlock[songbookrecordentityFB._blockIndex] =
-          songbookrecordentityFB._addedBlocks.retVal;
+      songbookrecordFB._addedBlocks.needEndBlock![songbookrecordFB._blockIndex] = songbookrecordFB._addedBlocks.retVal;
     }
-    return songbookrecordentityFB;
+    return songbookrecordFB;
   }
 
-  SongbookRecordEntityFilterBuilder startsWith(dynamic pValue) {
+  SongbookRecordFilterBuilder startsWith(dynamic pValue) {
     if (pValue != null) {
-      songbookrecordentityFB._addedBlocks = setCriteria(
-          '${pValue.toString()}%',
-          songbookrecordentityFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          songbookrecordentityFB._addedBlocks);
+      songbookrecordFB._addedBlocks = setCriteria('${pValue.toString()}%', songbookrecordFB.parameters, param,
+          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot), songbookrecordFB._addedBlocks);
       _waitingNot = '';
-      songbookrecordentityFB
-              ._addedBlocks.needEndBlock[songbookrecordentityFB._blockIndex] =
-          songbookrecordentityFB._addedBlocks.retVal;
-      songbookrecordentityFB
-              ._addedBlocks.needEndBlock[songbookrecordentityFB._blockIndex] =
-          songbookrecordentityFB._addedBlocks.retVal;
+      songbookrecordFB._addedBlocks.needEndBlock![songbookrecordFB._blockIndex] = songbookrecordFB._addedBlocks.retVal;
+      songbookrecordFB._addedBlocks.needEndBlock![songbookrecordFB._blockIndex] = songbookrecordFB._addedBlocks.retVal;
     }
-    return songbookrecordentityFB;
+    return songbookrecordFB;
   }
 
-  SongbookRecordEntityFilterBuilder endsWith(dynamic pValue) {
+  SongbookRecordFilterBuilder endsWith(dynamic pValue) {
     if (pValue != null) {
-      songbookrecordentityFB._addedBlocks = setCriteria(
-          '%${pValue.toString()}',
-          songbookrecordentityFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          songbookrecordentityFB._addedBlocks);
+      songbookrecordFB._addedBlocks = setCriteria('%${pValue.toString()}', songbookrecordFB.parameters, param,
+          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot), songbookrecordFB._addedBlocks);
       _waitingNot = '';
-      songbookrecordentityFB
-              ._addedBlocks.needEndBlock[songbookrecordentityFB._blockIndex] =
-          songbookrecordentityFB._addedBlocks.retVal;
+      songbookrecordFB._addedBlocks.needEndBlock![songbookrecordFB._blockIndex] = songbookrecordFB._addedBlocks.retVal;
     }
-    return songbookrecordentityFB;
+    return songbookrecordFB;
   }
 
-  SongbookRecordEntityFilterBuilder between(dynamic pFirst, dynamic pLast) {
+  SongbookRecordFilterBuilder between(dynamic pFirst, dynamic pLast) {
     if (pFirst != null && pLast != null) {
-      songbookrecordentityFB._addedBlocks = setCriteria(
-          pFirst,
-          songbookrecordentityFB.parameters,
-          param,
-          SqlSyntax.Between.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          songbookrecordentityFB._addedBlocks,
-          pLast);
+      songbookrecordFB._addedBlocks = setCriteria(pFirst, songbookrecordFB.parameters, param,
+          SqlSyntax.Between.replaceAll(SqlSyntax.notKeyword, _waitingNot), songbookrecordFB._addedBlocks, pLast);
     } else if (pFirst != null) {
       if (_waitingNot != '') {
-        songbookrecordentityFB._addedBlocks = setCriteria(
-            pFirst,
-            songbookrecordentityFB.parameters,
-            param,
-            SqlSyntax.LessThan,
-            songbookrecordentityFB._addedBlocks);
+        songbookrecordFB._addedBlocks =
+            setCriteria(pFirst, songbookrecordFB.parameters, param, SqlSyntax.LessThan, songbookrecordFB._addedBlocks);
       } else {
-        songbookrecordentityFB._addedBlocks = setCriteria(
-            pFirst,
-            songbookrecordentityFB.parameters,
-            param,
-            SqlSyntax.GreaterThanOrEquals,
-            songbookrecordentityFB._addedBlocks);
+        songbookrecordFB._addedBlocks = setCriteria(
+            pFirst, songbookrecordFB.parameters, param, SqlSyntax.GreaterThanOrEquals, songbookrecordFB._addedBlocks);
       }
     } else if (pLast != null) {
       if (_waitingNot != '') {
-        songbookrecordentityFB._addedBlocks = setCriteria(
-            pLast,
-            songbookrecordentityFB.parameters,
-            param,
-            SqlSyntax.GreaterThan,
-            songbookrecordentityFB._addedBlocks);
+        songbookrecordFB._addedBlocks = setCriteria(
+            pLast, songbookrecordFB.parameters, param, SqlSyntax.GreaterThan, songbookrecordFB._addedBlocks);
       } else {
-        songbookrecordentityFB._addedBlocks = setCriteria(
-            pLast,
-            songbookrecordentityFB.parameters,
-            param,
-            SqlSyntax.LessThanOrEquals,
-            songbookrecordentityFB._addedBlocks);
+        songbookrecordFB._addedBlocks = setCriteria(
+            pLast, songbookrecordFB.parameters, param, SqlSyntax.LessThanOrEquals, songbookrecordFB._addedBlocks);
       }
     }
     _waitingNot = '';
-    songbookrecordentityFB
-            ._addedBlocks.needEndBlock[songbookrecordentityFB._blockIndex] =
-        songbookrecordentityFB._addedBlocks.retVal;
-    return songbookrecordentityFB;
+    songbookrecordFB._addedBlocks.needEndBlock![songbookrecordFB._blockIndex] = songbookrecordFB._addedBlocks.retVal;
+    return songbookrecordFB;
   }
 
-  SongbookRecordEntityFilterBuilder greaterThan(dynamic pValue) {
+  SongbookRecordFilterBuilder greaterThan(dynamic pValue) {
     param.expression = '>';
-    songbookrecordentityFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, songbookrecordentityFB.parameters, param,
-            SqlSyntax.GreaterThan, songbookrecordentityFB._addedBlocks)
-        : setCriteria(pValue, songbookrecordentityFB.parameters, param,
-            SqlSyntax.LessThanOrEquals, songbookrecordentityFB._addedBlocks);
+    songbookrecordFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, songbookrecordFB.parameters, param, SqlSyntax.GreaterThan, songbookrecordFB._addedBlocks)
+        : setCriteria(
+            pValue, songbookrecordFB.parameters, param, SqlSyntax.LessThanOrEquals, songbookrecordFB._addedBlocks);
     _waitingNot = '';
-    songbookrecordentityFB
-            ._addedBlocks.needEndBlock[songbookrecordentityFB._blockIndex] =
-        songbookrecordentityFB._addedBlocks.retVal;
-    return songbookrecordentityFB;
+    songbookrecordFB._addedBlocks.needEndBlock![songbookrecordFB._blockIndex] = songbookrecordFB._addedBlocks.retVal;
+    return songbookrecordFB;
   }
 
-  SongbookRecordEntityFilterBuilder lessThan(dynamic pValue) {
+  SongbookRecordFilterBuilder lessThan(dynamic pValue) {
     param.expression = '<';
-    songbookrecordentityFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, songbookrecordentityFB.parameters, param,
-            SqlSyntax.LessThan, songbookrecordentityFB._addedBlocks)
-        : setCriteria(pValue, songbookrecordentityFB.parameters, param,
-            SqlSyntax.GreaterThanOrEquals, songbookrecordentityFB._addedBlocks);
+    songbookrecordFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, songbookrecordFB.parameters, param, SqlSyntax.LessThan, songbookrecordFB._addedBlocks)
+        : setCriteria(
+            pValue, songbookrecordFB.parameters, param, SqlSyntax.GreaterThanOrEquals, songbookrecordFB._addedBlocks);
     _waitingNot = '';
-    songbookrecordentityFB
-            ._addedBlocks.needEndBlock[songbookrecordentityFB._blockIndex] =
-        songbookrecordentityFB._addedBlocks.retVal;
-    return songbookrecordentityFB;
+    songbookrecordFB._addedBlocks.needEndBlock![songbookrecordFB._blockIndex] = songbookrecordFB._addedBlocks.retVal;
+    return songbookrecordFB;
   }
 
-  SongbookRecordEntityFilterBuilder greaterThanOrEquals(dynamic pValue) {
+  SongbookRecordFilterBuilder greaterThanOrEquals(dynamic pValue) {
     param.expression = '>=';
-    songbookrecordentityFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, songbookrecordentityFB.parameters, param,
-            SqlSyntax.GreaterThanOrEquals, songbookrecordentityFB._addedBlocks)
-        : setCriteria(pValue, songbookrecordentityFB.parameters, param,
-            SqlSyntax.LessThan, songbookrecordentityFB._addedBlocks);
+    songbookrecordFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(
+            pValue, songbookrecordFB.parameters, param, SqlSyntax.GreaterThanOrEquals, songbookrecordFB._addedBlocks)
+        : setCriteria(pValue, songbookrecordFB.parameters, param, SqlSyntax.LessThan, songbookrecordFB._addedBlocks);
     _waitingNot = '';
-    songbookrecordentityFB
-            ._addedBlocks.needEndBlock[songbookrecordentityFB._blockIndex] =
-        songbookrecordentityFB._addedBlocks.retVal;
-    return songbookrecordentityFB;
+    songbookrecordFB._addedBlocks.needEndBlock![songbookrecordFB._blockIndex] = songbookrecordFB._addedBlocks.retVal;
+    return songbookrecordFB;
   }
 
-  SongbookRecordEntityFilterBuilder lessThanOrEquals(dynamic pValue) {
+  SongbookRecordFilterBuilder lessThanOrEquals(dynamic pValue) {
     param.expression = '<=';
-    songbookrecordentityFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, songbookrecordentityFB.parameters, param,
-            SqlSyntax.LessThanOrEquals, songbookrecordentityFB._addedBlocks)
-        : setCriteria(pValue, songbookrecordentityFB.parameters, param,
-            SqlSyntax.GreaterThan, songbookrecordentityFB._addedBlocks);
+    songbookrecordFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(
+            pValue, songbookrecordFB.parameters, param, SqlSyntax.LessThanOrEquals, songbookrecordFB._addedBlocks)
+        : setCriteria(pValue, songbookrecordFB.parameters, param, SqlSyntax.GreaterThan, songbookrecordFB._addedBlocks);
     _waitingNot = '';
-    songbookrecordentityFB
-            ._addedBlocks.needEndBlock[songbookrecordentityFB._blockIndex] =
-        songbookrecordentityFB._addedBlocks.retVal;
-    return songbookrecordentityFB;
+    songbookrecordFB._addedBlocks.needEndBlock![songbookrecordFB._blockIndex] = songbookrecordFB._addedBlocks.retVal;
+    return songbookrecordFB;
   }
 
-  SongbookRecordEntityFilterBuilder inValues(dynamic pValue) {
-    songbookrecordentityFB._addedBlocks = setCriteria(
-        pValue,
-        songbookrecordentityFB.parameters,
-        param,
-        SqlSyntax.IN.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-        songbookrecordentityFB._addedBlocks);
+  SongbookRecordFilterBuilder inValues(dynamic pValue) {
+    songbookrecordFB._addedBlocks = setCriteria(pValue, songbookrecordFB.parameters, param,
+        SqlSyntax.IN.replaceAll(SqlSyntax.notKeyword, _waitingNot), songbookrecordFB._addedBlocks);
     _waitingNot = '';
-    songbookrecordentityFB
-            ._addedBlocks.needEndBlock[songbookrecordentityFB._blockIndex] =
-        songbookrecordentityFB._addedBlocks.retVal;
-    return songbookrecordentityFB;
+    songbookrecordFB._addedBlocks.needEndBlock![songbookrecordFB._blockIndex] = songbookrecordFB._addedBlocks.retVal;
+    return songbookrecordFB;
   }
 }
-// endregion SongbookRecordEntityField
+// endregion SongbookRecordField
 
-// region SongbookRecordEntityFilterBuilder
-class SongbookRecordEntityFilterBuilder extends SearchCriteria {
-  SongbookRecordEntityFilterBuilder(SongbookRecordEntity obj) {
+// region SongbookRecordFilterBuilder
+class SongbookRecordFilterBuilder extends SearchCriteria {
+  SongbookRecordFilterBuilder(SongbookRecord obj) {
     whereString = '';
-    qparams = QueryParams();
-    parameters = <DbParameter>[];
-    orderByList = <String>[];
     groupByList = <String>[];
-    _addedBlocks = AddedBlocks(<bool>[], <bool>[]);
-    _addedBlocks.needEndBlock.add(false);
-    _addedBlocks.waitingStartBlock.add(false);
-    _pagesize = 0;
-    _page = 0;
+    _addedBlocks.needEndBlock!.add(false);
+    _addedBlocks.waitingStartBlock!.add(false);
     _obj = obj;
   }
-  AddedBlocks _addedBlocks;
+  AddedBlocks _addedBlocks = AddedBlocks(<bool>[], <bool>[]);
   int _blockIndex = 0;
-  List<DbParameter> parameters;
-  List<String> orderByList;
-  SongbookRecordEntity _obj;
-  QueryParams qparams;
-  int _pagesize;
-  int _page;
+  List<DbParameter> parameters = <DbParameter>[];
+  List<String> orderByList = <String>[];
+  SongbookRecord? _obj;
+  QueryParams qparams = QueryParams();
+  int _pagesize = 0;
+  int _page = 0;
 
   /// put the sql keyword 'AND'
-  SongbookRecordEntityFilterBuilder get and {
+  SongbookRecordFilterBuilder get and {
     if (parameters.isNotEmpty) {
       parameters[parameters.length - 1].wOperator = ' AND ';
     }
@@ -7001,7 +6125,7 @@ class SongbookRecordEntityFilterBuilder extends SearchCriteria {
   }
 
   /// put the sql keyword 'OR'
-  SongbookRecordEntityFilterBuilder get or {
+  SongbookRecordFilterBuilder get or {
     if (parameters.isNotEmpty) {
       parameters[parameters.length - 1].wOperator = ' OR ';
     }
@@ -7009,26 +6133,23 @@ class SongbookRecordEntityFilterBuilder extends SearchCriteria {
   }
 
   /// open parentheses
-  SongbookRecordEntityFilterBuilder get startBlock {
-    _addedBlocks.waitingStartBlock.add(true);
-    _addedBlocks.needEndBlock.add(false);
+  SongbookRecordFilterBuilder get startBlock {
+    _addedBlocks.waitingStartBlock!.add(true);
+    _addedBlocks.needEndBlock!.add(false);
     _blockIndex++;
     if (_blockIndex > 1) {
-      _addedBlocks.needEndBlock[_blockIndex - 1] = true;
+      _addedBlocks.needEndBlock![_blockIndex - 1] = true;
     }
     return this;
   }
 
   /// String whereCriteria, write raw query without 'where' keyword. Like this: 'field1 like 'test%' and field2 = 3'
-  SongbookRecordEntityFilterBuilder where(String whereCriteria,
-      {dynamic parameterValue}) {
+  SongbookRecordFilterBuilder where(String? whereCriteria, {dynamic parameterValue}) {
     if (whereCriteria != null && whereCriteria != '') {
-      final DbParameter param = DbParameter(
-          columnName: parameterValue == null ? null : '',
-          hasParameter: parameterValue != null);
-      _addedBlocks = setCriteria(parameterValue ?? 0, parameters, param,
-          '($whereCriteria)', _addedBlocks);
-      _addedBlocks.needEndBlock[_blockIndex] = _addedBlocks.retVal;
+      final DbParameter param =
+          DbParameter(columnName: parameterValue == null ? null : '', hasParameter: parameterValue != null);
+      _addedBlocks = setCriteria(parameterValue ?? 0, parameters, param, '($whereCriteria)', _addedBlocks);
+      _addedBlocks.needEndBlock![_blockIndex] = _addedBlocks.retVal;
     }
     return this;
   }
@@ -7036,7 +6157,7 @@ class SongbookRecordEntityFilterBuilder extends SearchCriteria {
   /// page = page number,
   ///
   /// pagesize = row(s) per page
-  SongbookRecordEntityFilterBuilder page(int page, int pagesize) {
+  SongbookRecordFilterBuilder page(int page, int pagesize) {
     if (page > 0) {
       _page = page;
     }
@@ -7047,7 +6168,7 @@ class SongbookRecordEntityFilterBuilder extends SearchCriteria {
   }
 
   /// int count = LIMIT
-  SongbookRecordEntityFilterBuilder top(int count) {
+  SongbookRecordFilterBuilder top(int count) {
     if (count > 0) {
       _pagesize = count;
     }
@@ -7055,12 +6176,12 @@ class SongbookRecordEntityFilterBuilder extends SearchCriteria {
   }
 
   /// close parentheses
-  SongbookRecordEntityFilterBuilder get endBlock {
-    if (_addedBlocks.needEndBlock[_blockIndex]) {
+  SongbookRecordFilterBuilder get endBlock {
+    if (_addedBlocks.needEndBlock![_blockIndex]) {
       parameters[parameters.length - 1].whereString += ' ) ';
     }
-    _addedBlocks.needEndBlock.removeAt(_blockIndex);
-    _addedBlocks.waitingStartBlock.removeAt(_blockIndex);
+    _addedBlocks.needEndBlock!.removeAt(_blockIndex);
+    _addedBlocks.waitingStartBlock!.removeAt(_blockIndex);
     _blockIndex--;
     return this;
   }
@@ -7070,13 +6191,13 @@ class SongbookRecordEntityFilterBuilder extends SearchCriteria {
   /// Example 1: argFields='name, date'
   ///
   /// Example 2: argFields = ['name', 'date']
-  SongbookRecordEntityFilterBuilder orderBy(dynamic argFields) {
+  SongbookRecordFilterBuilder orderBy(dynamic argFields) {
     if (argFields != null) {
       if (argFields is String) {
         orderByList.add(argFields);
       } else {
-        for (String s in argFields as List<String>) {
-          if (s != null && s.isNotEmpty) {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
             orderByList.add(' $s ');
           }
         }
@@ -7090,13 +6211,13 @@ class SongbookRecordEntityFilterBuilder extends SearchCriteria {
   /// Example 1: argFields='field1, field2'
   ///
   /// Example 2: argFields = ['field1', 'field2']
-  SongbookRecordEntityFilterBuilder orderByDesc(dynamic argFields) {
+  SongbookRecordFilterBuilder orderByDesc(dynamic argFields) {
     if (argFields != null) {
       if (argFields is String) {
         orderByList.add('$argFields desc ');
       } else {
-        for (String s in argFields as List<String>) {
-          if (s != null && s.isNotEmpty) {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
             orderByList.add(' $s desc ');
           }
         }
@@ -7110,13 +6231,13 @@ class SongbookRecordEntityFilterBuilder extends SearchCriteria {
   /// Example 1: argFields='field1, field2'
   ///
   /// Example 2: argFields = ['field1', 'field2']
-  SongbookRecordEntityFilterBuilder groupBy(dynamic argFields) {
+  SongbookRecordFilterBuilder groupBy(dynamic argFields) {
     if (argFields != null) {
       if (argFields is String) {
         groupByList.add(' $argFields ');
       } else {
-        for (String s in argFields as List<String>) {
-          if (s != null && s.isNotEmpty) {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
             groupByList.add(' $s ');
           }
         }
@@ -7130,13 +6251,13 @@ class SongbookRecordEntityFilterBuilder extends SearchCriteria {
   /// Example 1: argFields='name, date'
   ///
   /// Example 2: argFields = ['name', 'date']
-  SongbookRecordEntityFilterBuilder having(dynamic argFields) {
+  SongbookRecordFilterBuilder having(dynamic argFields) {
     if (argFields != null) {
       if (argFields is String) {
         havingList.add(argFields);
       } else {
-        for (String s in argFields as List<String>) {
-          if (s != null && s.isNotEmpty) {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
             havingList.add(' $s ');
           }
         }
@@ -7145,37 +6266,33 @@ class SongbookRecordEntityFilterBuilder extends SearchCriteria {
     return this;
   }
 
-  SongbookRecordEntityField setField(
-      SongbookRecordEntityField field, String colName, DbType dbtype) {
-    return SongbookRecordEntityField(this)
-      ..param = DbParameter(
-          dbType: dbtype,
-          columnName: colName,
-          wStartBlock: _addedBlocks.waitingStartBlock[_blockIndex]);
+  SongbookRecordField setField(SongbookRecordField? field, String colName, DbType dbtype) {
+    return SongbookRecordField(this)
+      ..param =
+          DbParameter(dbType: dbtype, columnName: colName, wStartBlock: _addedBlocks.waitingStartBlock![_blockIndex]);
   }
 
-  SongbookRecordEntityField _id;
-  SongbookRecordEntityField get id {
+  SongbookRecordField? _id;
+  SongbookRecordField get id {
     return _id = setField(_id, 'id', DbType.integer);
   }
 
-  SongbookRecordEntityField _number;
-  SongbookRecordEntityField get number {
+  SongbookRecordField? _number;
+  SongbookRecordField get number {
     return _number = setField(_number, 'number', DbType.text);
   }
 
-  SongbookRecordEntityField _songbooksId;
-  SongbookRecordEntityField get songbooksId {
+  SongbookRecordField? _songbooksId;
+  SongbookRecordField get songbooksId {
     return _songbooksId = setField(_songbooksId, 'songbooksId', DbType.integer);
   }
 
-  SongbookRecordEntityField _song_lyricsId;
-  SongbookRecordEntityField get song_lyricsId {
-    return _song_lyricsId =
-        setField(_song_lyricsId, 'song_lyricsId', DbType.integer);
+  SongbookRecordField? _song_lyricsId;
+  SongbookRecordField get song_lyricsId {
+    return _song_lyricsId = setField(_song_lyricsId, 'song_lyricsId', DbType.integer);
   }
 
-  bool _getIsDeleted;
+  bool _getIsDeleted = false;
 
   void _buildParameters() {
     if (_page > 0 && _pagesize > 0) {
@@ -7190,24 +6307,20 @@ class SongbookRecordEntityFilterBuilder extends SearchCriteria {
     for (DbParameter param in parameters) {
       if (param.columnName != null) {
         if (param.value is List && !param.hasParameter) {
-          param.value = param.dbType == DbType.text
+          param.value = param.dbType == DbType.text || param.value[0] is String
               ? '\'${param.value.join('\',\'')}\''
               : param.value.join(',');
-          whereString += param.whereString
-              .replaceAll('{field}', param.columnName)
-              .replaceAll('?', param.value.toString());
+          whereString +=
+              param.whereString.replaceAll('{field}', param.columnName!).replaceAll('?', param.value.toString());
           param.value = null;
         } else {
-          if (param.value is Map<String, dynamic> &&
-              param.value['sql'] != null) {
+          if (param.value is Map<String, dynamic> && param.value['sql'] != null) {
             param
-              ..whereString = param.whereString
-                  .replaceAll('?', param.value['sql'].toString())
+              ..whereString = param.whereString.replaceAll('?', param.value['sql'].toString())
               ..dbType = DbType.integer
               ..value = param.value['args'];
           }
-          whereString +=
-              param.whereString.replaceAll('{field}', param.columnName);
+          whereString += param.whereString.replaceAll('{field}', param.columnName!);
         }
         if (!param.whereString.contains('?')) {
         } else {
@@ -7227,12 +6340,8 @@ class SongbookRecordEntityFilterBuilder extends SearchCriteria {
             case DbType.date:
             case DbType.datetime:
             case DbType.datetimeUtc:
-              param.value = param.value == null
-                  ? null
-                  : (param.value as DateTime).millisecondsSinceEpoch;
-              param.value2 = param.value2 == null
-                  ? null
-                  : (param.value2 as DateTime).millisecondsSinceEpoch;
+              param.value = param.value == null ? null : (param.value as DateTime).millisecondsSinceEpoch;
+              param.value2 = param.value2 == null ? null : (param.value2 as DateTime).millisecondsSinceEpoch;
               break;
             default:
           }
@@ -7253,10 +6362,9 @@ class SongbookRecordEntityFilterBuilder extends SearchCriteria {
         whereString += param.whereString;
       }
     }
-    if (SongbookRecordEntity._softDeleteActivated) {
+    if (SongbookRecord._softDeleteActivated) {
       if (whereString != '') {
-        whereString =
-            '${!_getIsDeleted ? 'ifnull(isDeleted,0)=0 AND' : ''} ($whereString)';
+        whereString = '${!_getIsDeleted ? 'ifnull(isDeleted,0)=0 AND' : ''} ($whereString)';
       } else if (!_getIsDeleted) {
         whereString = 'ifnull(isDeleted,0)=0';
       }
@@ -7272,18 +6380,17 @@ class SongbookRecordEntityFilterBuilder extends SearchCriteria {
       ..having = havingList.join(',');
   }
 
-  /// Deletes List<SongbookRecordEntity> bulk by query
+  /// Deletes List<SongbookRecord> bulk by query
   ///
   /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
   Future<BoolResult> delete([bool hardDelete = false]) async {
     _buildParameters();
-    var r = BoolResult();
+    var r = BoolResult(success: false);
 
-    if (SongbookRecordEntity._softDeleteActivated && !hardDelete) {
-      r = await _obj._mnSongbookRecordEntity
-          .updateBatch(qparams, {'isDeleted': 1});
+    if (SongbookRecord._softDeleteActivated && !hardDelete) {
+      r = await _obj!._mnSongbookRecord.updateBatch(qparams, {'isDeleted': 1});
     } else {
-      r = await _obj._mnSongbookRecordEntity.delete(qparams);
+      r = await _obj!._mnSongbookRecord.delete(qparams);
     }
     return r;
   }
@@ -7295,14 +6402,14 @@ class SongbookRecordEntityFilterBuilder extends SearchCriteria {
   /// fieldName must be String. Value is dynamic, it can be any of the (int, bool, String.. )
   Future<BoolResult> update(Map<String, dynamic> values) {
     _buildParameters();
-    if (qparams.limit > 0 || qparams.offset > 0) {
+    if (qparams.limit! > 0 || qparams.offset! > 0) {
       qparams.whereString =
-          'id IN (SELECT id from songbook_records ${qparams.whereString.isNotEmpty ? 'WHERE ${qparams.whereString}' : ''}${qparams.limit > 0 ? ' LIMIT ${qparams.limit}' : ''}${qparams.offset > 0 ? ' OFFSET ${qparams.offset}' : ''})';
+          'id IN (SELECT id from songbook_records ${qparams.whereString!.isNotEmpty ? 'WHERE ${qparams.whereString}' : ''}${qparams.limit! > 0 ? ' LIMIT ${qparams.limit}' : ''}${qparams.offset! > 0 ? ' OFFSET ${qparams.offset}' : ''})';
     }
-    return _obj._mnSongbookRecordEntity.updateBatch(qparams, values);
+    return _obj!._mnSongbookRecord.updateBatch(qparams, values);
   }
 
-  /// This method always returns SongbookRecordEntity Obj if exist, otherwise returns null
+  /// This method always returns SongbookRecord Obj if exist, otherwise returns null
   ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
   ///
@@ -7315,41 +6422,32 @@ class SongbookRecordEntityFilterBuilder extends SearchCriteria {
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
   ///
-  /// <returns>List<SongbookRecordEntity>
-  Future<SongbookRecordEntity> toSingle(
-      {bool preload = false,
-      List<String> preloadFields,
-      bool loadParents = false,
-      List<String> loadedFields}) async {
+  /// <returns>List<SongbookRecord>
+  Future<SongbookRecord?> toSingle(
+      {bool preload = false, List<String>? preloadFields, bool loadParents = false, List<String>? loadedFields}) async {
     _pagesize = 1;
     _buildParameters();
-    final objFuture = _obj._mnSongbookRecordEntity.toList(qparams);
+    final objFuture = _obj!._mnSongbookRecord.toList(qparams);
     final data = await objFuture;
-    SongbookRecordEntity obj;
+    SongbookRecord? obj;
     if (data.isNotEmpty) {
-      obj = SongbookRecordEntity.fromMap(data[0] as Map<String, dynamic>);
+      obj = SongbookRecord.fromMap(data[0] as Map<String, dynamic>);
       // final List<String> _loadedFields = loadedFields ?? [];
 
       // RELATIONSHIPS PRELOAD
       if (preload || loadParents) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedFields.contains('songbooks.plSongbookEntity') && */ (preloadFields ==
-                null ||
+        if (/*!_loadedfields!.contains('songbooks.plSongbook') && */ (preloadFields == null ||
             loadParents ||
-            preloadFields.contains('plSongbookEntity'))) {
-          /*_loadedFields.add('songbooks.plSongbookEntity');*/
-          obj.plSongbookEntity = obj.plSongbookEntity ??
-              await obj.getSongbookEntity(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+            preloadFields.contains('plSongbook'))) {
+          /*_loadedfields!.add('songbooks.plSongbook');*/ obj.plSongbook =
+              obj.plSongbook ?? await obj.getSongbook(loadParents: loadParents /*, loadedFields: _loadedFields*/);
         }
-        if (/*!_loadedFields.contains('song_lyrics.plSongLyricEntity') && */ (preloadFields ==
-                null ||
+        if (/*!_loadedfields!.contains('song_lyrics.plSongLyric') && */ (preloadFields == null ||
             loadParents ||
-            preloadFields.contains('plSongLyricEntity'))) {
-          /*_loadedFields.add('song_lyrics.plSongLyricEntity');*/
-          obj.plSongLyricEntity = obj.plSongLyricEntity ??
-              await obj.getSongLyricEntity(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+            preloadFields.contains('plSongLyric'))) {
+          /*_loadedfields!.add('song_lyrics.plSongLyric');*/ obj.plSongLyric =
+              obj.plSongLyric ?? await obj.getSongLyric(loadParents: loadParents /*, loadedFields: _loadedFields*/);
         }
       } // END RELATIONSHIPS PRELOAD
 
@@ -7359,23 +6457,21 @@ class SongbookRecordEntityFilterBuilder extends SearchCriteria {
     return obj;
   }
 
-  /// This method returns int. [SongbookRecordEntity]
+  /// This method returns int. [SongbookRecord]
   ///
   /// <returns>int
-  Future<int> toCount(
-      [VoidCallback Function(int c) songbookrecordentityCount]) async {
+  Future<int> toCount([VoidCallback Function(int c)? songbookrecordCount]) async {
     _buildParameters();
     qparams.selectColumns = ['COUNT(1) AS CNT'];
-    final songbookrecordentitiesFuture =
-        await _obj._mnSongbookRecordEntity.toList(qparams);
-    final int count = songbookrecordentitiesFuture[0]['CNT'] as int;
-    if (songbookrecordentityCount != null) {
-      songbookrecordentityCount(count);
+    final songbookrecordsFuture = await _obj!._mnSongbookRecord.toList(qparams);
+    final int count = songbookrecordsFuture[0]['CNT'] as int;
+    if (songbookrecordCount != null) {
+      songbookrecordCount(count);
     }
     return count;
   }
 
-  /// This method returns List<SongbookRecordEntity> [SongbookRecordEntity]
+  /// This method returns List<SongbookRecord> [SongbookRecord]
   ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
   ///
@@ -7388,24 +6484,20 @@ class SongbookRecordEntityFilterBuilder extends SearchCriteria {
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
   ///
-  /// <returns>List<SongbookRecordEntity>
-  Future<List<SongbookRecordEntity>> toList(
-      {bool preload = false,
-      List<String> preloadFields,
-      bool loadParents = false,
-      List<String> loadedFields}) async {
+  /// <returns>List<SongbookRecord>
+  Future<List<SongbookRecord>> toList(
+      {bool preload = false, List<String>? preloadFields, bool loadParents = false, List<String>? loadedFields}) async {
     final data = await toMapList();
-    final List<SongbookRecordEntity> songbookrecordentitiesData =
-        await SongbookRecordEntity.fromMapList(data,
-            preload: preload,
-            preloadFields: preloadFields,
-            loadParents: loadParents,
-            loadedFields: loadedFields,
-            setDefaultValues: qparams.selectColumns == null);
-    return songbookrecordentitiesData;
+    final List<SongbookRecord> songbookrecordsData = await SongbookRecord.fromMapList(data,
+        preload: preload,
+        preloadFields: preloadFields,
+        loadParents: loadParents,
+        loadedFields: loadedFields,
+        setDefaultValues: qparams.selectColumns == null);
+    return songbookrecordsData;
   }
 
-  /// This method returns Json String [SongbookRecordEntity]
+  /// This method returns Json String [SongbookRecord]
   Future<String> toJson() async {
     final list = <dynamic>[];
     final data = await toList();
@@ -7415,7 +6507,7 @@ class SongbookRecordEntityFilterBuilder extends SearchCriteria {
     return json.encode(list);
   }
 
-  /// This method returns Json String. [SongbookRecordEntity]
+  /// This method returns Json String. [SongbookRecord]
   Future<String> toJsonWithChilds() async {
     final list = <dynamic>[];
     final data = await toList();
@@ -7425,15 +6517,15 @@ class SongbookRecordEntityFilterBuilder extends SearchCriteria {
     return json.encode(list);
   }
 
-  /// This method returns List<dynamic>. [SongbookRecordEntity]
+  /// This method returns List<dynamic>. [SongbookRecord]
   ///
   /// <returns>List<dynamic>
   Future<List<dynamic>> toMapList() async {
     _buildParameters();
-    return await _obj._mnSongbookRecordEntity.toList(qparams);
+    return await _obj!._mnSongbookRecord.toList(qparams);
   }
 
-  /// This method returns Primary Key List SQL and Parameters retVal = Map<String,dynamic>. [SongbookRecordEntity]
+  /// This method returns Primary Key List SQL and Parameters retVal = Map<String,dynamic>. [SongbookRecord]
   ///
   /// retVal['sql'] = SQL statement string, retVal['args'] = whereArguments List<dynamic>;
   ///
@@ -7443,8 +6535,7 @@ class SongbookRecordEntityFilterBuilder extends SearchCriteria {
     if (buildParameters) {
       _buildParameters();
     }
-    _retVal['sql'] =
-        'SELECT `id` FROM songbook_records WHERE ${qparams.whereString}';
+    _retVal['sql'] = 'SELECT `id` FROM songbook_records WHERE ${qparams.whereString}';
     _retVal['args'] = qparams.whereArguments;
     return _retVal;
   }
@@ -7457,7 +6548,7 @@ class SongbookRecordEntityFilterBuilder extends SearchCriteria {
     }
     final List<int> idData = <int>[];
     qparams.selectColumns = ['id'];
-    final idFuture = await _obj._mnSongbookRecordEntity.toList(qparams);
+    final idFuture = await _obj!._mnSongbookRecord.toList(qparams);
 
     final int count = idFuture.length;
     for (int i = 0; i < count; i++) {
@@ -7466,13 +6557,13 @@ class SongbookRecordEntityFilterBuilder extends SearchCriteria {
     return idData;
   }
 
-  /// Returns List<dynamic> for selected columns. Use this method for 'groupBy' with min,max,avg..  [SongbookRecordEntity]
+  /// Returns List<dynamic> for selected columns. Use this method for 'groupBy' with min,max,avg..  [SongbookRecord]
   ///
   /// Sample usage: (see EXAMPLE 4.2 at https://github.com/hhtokpinar/sqfEntity#group-by)
   Future<List<dynamic>> toListObject() async {
     _buildParameters();
 
-    final objectFuture = _obj._mnSongbookRecordEntity.toList(qparams);
+    final objectFuture = _obj!._mnSongbookRecord.toList(qparams);
 
     final List<dynamic> objectsData = <dynamic>[];
     final data = await objectFuture;
@@ -7485,18 +6576,17 @@ class SongbookRecordEntityFilterBuilder extends SearchCriteria {
 
   /// Returns List<String> for selected first column
   ///
-  /// Sample usage: await SongbookRecordEntity.select(columnsToSelect: ['columnName']).toListString()
-  Future<List<String>> toListString(
-      [VoidCallback Function(List<String> o) listString]) async {
+  /// Sample usage: await SongbookRecord.select(columnsToSelect: ['columnName']).toListString()
+  Future<List<String>> toListString([VoidCallback Function(List<String> o)? listString]) async {
     _buildParameters();
 
-    final objectFuture = _obj._mnSongbookRecordEntity.toList(qparams);
+    final objectFuture = _obj!._mnSongbookRecord.toList(qparams);
 
     final List<String> objectsData = <String>[];
     final data = await objectFuture;
     final int count = data.length;
     for (int i = 0; i < count; i++) {
-      objectsData.add(data[i][qparams.selectColumns[0]].toString());
+      objectsData.add(data[i][qparams.selectColumns![0]].toString());
     }
     if (listString != null) {
       listString(objectsData);
@@ -7504,133 +6594,126 @@ class SongbookRecordEntityFilterBuilder extends SearchCriteria {
     return objectsData;
   }
 }
-// endregion SongbookRecordEntityFilterBuilder
+// endregion SongbookRecordFilterBuilder
 
-// region SongbookRecordEntityFields
-class SongbookRecordEntityFields {
-  static TableField _fId;
+// region SongbookRecordFields
+class SongbookRecordFields {
+  static TableField? _fId;
   static TableField get id {
     return _fId = _fId ?? SqlSyntax.setField(_fId, 'id', DbType.integer);
   }
 
-  static TableField _fNumber;
+  static TableField? _fNumber;
   static TableField get number {
-    return _fNumber =
-        _fNumber ?? SqlSyntax.setField(_fNumber, 'number', DbType.text);
+    return _fNumber = _fNumber ?? SqlSyntax.setField(_fNumber, 'number', DbType.text);
   }
 
-  static TableField _fSongbooksId;
+  static TableField? _fSongbooksId;
   static TableField get songbooksId {
-    return _fSongbooksId = _fSongbooksId ??
-        SqlSyntax.setField(_fSongbooksId, 'songbooksId', DbType.integer);
+    return _fSongbooksId = _fSongbooksId ?? SqlSyntax.setField(_fSongbooksId, 'songbooksId', DbType.integer);
   }
 
-  static TableField _fSong_lyricsId;
+  static TableField? _fSong_lyricsId;
   static TableField get song_lyricsId {
-    return _fSong_lyricsId = _fSong_lyricsId ??
-        SqlSyntax.setField(_fSong_lyricsId, 'song_lyricsId', DbType.integer);
+    return _fSong_lyricsId = _fSong_lyricsId ?? SqlSyntax.setField(_fSong_lyricsId, 'song_lyricsId', DbType.integer);
   }
 }
-// endregion SongbookRecordEntityFields
+// endregion SongbookRecordFields
 
-//region SongbookRecordEntityManager
-class SongbookRecordEntityManager extends SqfEntityProvider {
-  SongbookRecordEntityManager()
-      : super(Model(),
-            tableName: _tableName,
-            primaryKeyList: _primaryKeyList,
-            whereStr: _whereStr);
+//region SongbookRecordManager
+class SongbookRecordManager extends SqfEntityProvider {
+  SongbookRecordManager() : super(Model(), tableName: _tableName, primaryKeyList: _primaryKeyList, whereStr: _whereStr);
   static final String _tableName = 'songbook_records';
   static final List<String> _primaryKeyList = ['id'];
   static final String _whereStr = 'id=?';
 }
 
-//endregion SongbookRecordEntityManager
-// region SongLyricEntity
-class SongLyricEntity {
-  SongLyricEntity(
+//endregion SongbookRecordManager
+// region SongLyric
+class SongLyric {
+  SongLyric(
       {this.id,
       this.name,
-      this.secondaryName1,
-      this.secondaryName2,
+      this.secondary_name_1,
+      this.secondary_name_2,
       this.lyrics,
-      this.language,
-      this.type,
-      this.lilypond,
-      this.favoriteOrder,
+      this.lang_string,
+      this.type_enum,
+      this.lilypond_svg,
+      this.favorite_rank,
       this.transposition,
-      this.showChords,
+      this.show_chords,
       this.accidentals,
       this.songsId}) {
     _setDefaultValues();
   }
-  SongLyricEntity.withFields(
+  SongLyric.withFields(
       this.id,
       this.name,
-      this.secondaryName1,
-      this.secondaryName2,
+      this.secondary_name_1,
+      this.secondary_name_2,
       this.lyrics,
-      this.language,
-      this.type,
-      this.lilypond,
-      this.favoriteOrder,
+      this.lang_string,
+      this.type_enum,
+      this.lilypond_svg,
+      this.favorite_rank,
       this.transposition,
-      this.showChords,
+      this.show_chords,
       this.accidentals,
       this.songsId) {
     _setDefaultValues();
   }
-  SongLyricEntity.withId(
+  SongLyric.withId(
       this.id,
       this.name,
-      this.secondaryName1,
-      this.secondaryName2,
+      this.secondary_name_1,
+      this.secondary_name_2,
       this.lyrics,
-      this.language,
-      this.type,
-      this.lilypond,
-      this.favoriteOrder,
+      this.lang_string,
+      this.type_enum,
+      this.lilypond_svg,
+      this.favorite_rank,
       this.transposition,
-      this.showChords,
+      this.show_chords,
       this.accidentals,
       this.songsId) {
     _setDefaultValues();
   }
-  SongLyricEntity.fromMap(Map<String, dynamic> o,
-      {bool setDefaultValues = true}) {
+  // fromMap v2.0
+  SongLyric.fromMap(Map<String, dynamic> o, {bool setDefaultValues = true}) {
     if (setDefaultValues) {
       _setDefaultValues();
     }
     id = int.tryParse(o['id'].toString());
     if (o['name'] != null) {
-      name = o['name'] as String;
+      name = o['name'].toString();
     }
-    if (o['secondaryName1'] != null) {
-      secondaryName1 = o['secondaryName1'] as String;
+    if (o['secondary_name_1'] != null) {
+      secondary_name_1 = o['secondary_name_1'].toString();
     }
-    if (o['secondaryName2'] != null) {
-      secondaryName2 = o['secondaryName2'] as String;
+    if (o['secondary_name_2'] != null) {
+      secondary_name_2 = o['secondary_name_2'].toString();
     }
     if (o['lyrics'] != null) {
-      lyrics = o['lyrics'] as String;
+      lyrics = o['lyrics'].toString();
     }
-    if (o['language'] != null) {
-      language = o['language'] as String;
+    if (o['lang_string'] != null) {
+      lang_string = o['lang_string'].toString();
     }
-    if (o['type'] != null) {
-      type = int.tryParse(o['type'].toString());
+    if (o['type_enum'] != null) {
+      type_enum = o['type_enum'].toString();
     }
-    if (o['lilypond'] != null) {
-      lilypond = o['lilypond'] as String;
+    if (o['lilypond_svg'] != null) {
+      lilypond_svg = o['lilypond_svg'].toString();
     }
-    if (o['favoriteOrder'] != null) {
-      favoriteOrder = int.tryParse(o['favoriteOrder'].toString());
+    if (o['favorite_rank'] != null) {
+      favorite_rank = int.tryParse(o['favorite_rank'].toString());
     }
     if (o['transposition'] != null) {
       transposition = int.tryParse(o['transposition'].toString());
     }
-    if (o['showChords'] != null) {
-      showChords = o['showChords'] == 1 || o['showChords'] == true;
+    if (o['show_chords'] != null) {
+      show_chords = o['show_chords'].toString() == '1' || o['show_chords'].toString() == 'true';
     }
     if (o['accidentals'] != null) {
       accidentals = int.tryParse(o['accidentals'].toString());
@@ -7638,104 +6721,88 @@ class SongLyricEntity {
     songsId = int.tryParse(o['songsId'].toString());
 
     // RELATIONSHIPS FromMAP
-    plSongEntity = o['songEntity'] != null
-        ? SongEntity.fromMap(o['songEntity'] as Map<String, dynamic>)
-        : null;
+    plSong = o['song'] != null ? Song.fromMap(o['song'] as Map<String, dynamic>) : null;
     // END RELATIONSHIPS FromMAP
 
     isSaved = true;
   }
-  // FIELDS (SongLyricEntity)
-  int id;
-  String name;
-  String secondaryName1;
-  String secondaryName2;
-  String lyrics;
-  String language;
-  int type;
-  String lilypond;
-  int favoriteOrder;
-  int transposition;
-  bool showChords;
-  int accidentals;
-  int songsId;
-  bool isSaved;
-  BoolResult saveResult;
-  // end FIELDS (SongLyricEntity)
+  // FIELDS (SongLyric)
+  int? id;
+  String? name;
+  String? secondary_name_1;
+  String? secondary_name_2;
+  String? lyrics;
+  String? lang_string;
+  String? type_enum;
+  String? lilypond_svg;
+  int? favorite_rank;
+  int? transposition;
+  bool? show_chords;
+  int? accidentals;
+  int? songsId;
+  bool? isSaved;
+  BoolResult? saveResult;
+  // end FIELDS (SongLyric)
 
-// RELATIONSHIPS (SongLyricEntity)
+// RELATIONSHIPS (SongLyric)
   /// to load parent of items to this field, use preload parameter ex: toList(preload:true) or toSingle(preload:true) or getById(preload:true)
-  /// You can also specify this object into certain preload fields. Ex: toList(preload:true, preloadFields:['plSongEntity', 'plField2'..]) or so on..
-  SongEntity plSongEntity;
+  /// You can also specify this object into certain preload fields!. Ex: toList(preload:true, preloadFields:['plSong', 'plField2'..]) or so on..
+  Song? plSong;
 
-  /// get SongEntity By SongsId
-  Future<SongEntity> getSongEntity(
-      {bool loadParents = false, List<String> loadedFields}) async {
-    final _obj = await SongEntity()
-        .getById(songsId, loadParents: loadParents, loadedFields: loadedFields);
+  /// get Song By SongsId
+  Future<Song?> getSong({bool loadParents = false, List<String>? loadedFields}) async {
+    final _obj = await Song().getById(songsId, loadParents: loadParents, loadedFields: loadedFields);
     return _obj;
   }
-  // END RELATIONSHIPS (SongLyricEntity)
+  // END RELATIONSHIPS (SongLyric)
 
-// COLLECTIONS & VIRTUALS (SongLyricEntity)
+// COLLECTIONS & VIRTUALS (SongLyric)
   ///(RelationType.MANY_TO_MANY) (song_lyricsAuthors) to load children of items to this field, use preload parameter. Ex: toList(preload:true) or toSingle(preload:true) or getById(preload:true)
-  /// You can also specify this object into certain preload fields. Ex: toList(preload:true, preloadFields:['plAuthorEntities', 'plField2'..]) or so on..
-  List<AuthorEntity> plAuthorEntities;
+  /// You can also specify this object into certain preload fields!. Ex: toList(preload:true, preloadFields:['plAuthors', 'plField2'..]) or so on..
+  List<Author>? plAuthors;
 
-  /// get AuthorEntity(s) filtered by authorsId IN song_lyricsAuthors
-  AuthorEntityFilterBuilder getAuthorEntities(
-      {List<String> columnsToSelect, bool getIsDeleted}) {
-    return AuthorEntity()
+  /// get Author(s) filtered by authorsId IN song_lyricsAuthors
+  AuthorFilterBuilder? getAuthors({List<String>? columnsToSelect, bool? getIsDeleted}) {
+    return Author()
         .select(columnsToSelect: columnsToSelect, getIsDeleted: getIsDeleted)
-        .where(
-            'id IN (SELECT authorsId FROM song_lyricsAuthors WHERE song_lyricsId=?)',
-            parameterValue: id)
+        .where('id IN (SELECT authorsId FROM song_lyricsAuthors WHERE song_lyricsId=?)', parameterValue: id)
         .and;
   }
 
   /// to load children of items to this field, use preload parameter. Ex: toList(preload:true) or toSingle(preload:true) or getById(preload:true)
-  /// You can also specify this object into certain preload fields. Ex: toList(preload:true, preloadFields:['plExternalEntities', 'plField2'..]) or so on..
-  List<ExternalEntity> plExternalEntities;
+  /// You can also specify this object into certain preload fields!. Ex: toList(preload:true, preloadFields:['plExternals', 'plField2'..]) or so on..
+  List<External>? plExternals;
 
-  /// get ExternalEntity(s) filtered by id=song_lyricsId
-  ExternalEntityFilterBuilder getExternalEntities(
-      {List<String> columnsToSelect, bool getIsDeleted}) {
+  /// get External(s) filtered by id=song_lyricsId
+  ExternalFilterBuilder? getExternals({List<String>? columnsToSelect, bool? getIsDeleted}) {
     if (id == null) {
       return null;
     }
-    return ExternalEntity()
-        .select(columnsToSelect: columnsToSelect, getIsDeleted: getIsDeleted)
-        .song_lyricsId
-        .equals(id)
-        .and;
+    return External().select(columnsToSelect: columnsToSelect, getIsDeleted: getIsDeleted).song_lyricsId.equals(id).and;
   }
 
   ///(RelationType.MANY_TO_MANY) (song_lyricsPlaylists) to load children of items to this field, use preload parameter. Ex: toList(preload:true) or toSingle(preload:true) or getById(preload:true)
-  /// You can also specify this object into certain preload fields. Ex: toList(preload:true, preloadFields:['plPlaylistEntities', 'plField2'..]) or so on..
-  List<PlaylistEntity> plPlaylistEntities;
+  /// You can also specify this object into certain preload fields!. Ex: toList(preload:true, preloadFields:['plPlaylists', 'plField2'..]) or so on..
+  List<Playlist>? plPlaylists;
 
-  /// get PlaylistEntity(s) filtered by playlistsId IN song_lyricsPlaylists
-  PlaylistEntityFilterBuilder getPlaylistEntities(
-      {List<String> columnsToSelect, bool getIsDeleted}) {
-    return PlaylistEntity()
+  /// get Playlist(s) filtered by playlistsId IN song_lyricsPlaylists
+  PlaylistFilterBuilder? getPlaylists({List<String>? columnsToSelect, bool? getIsDeleted}) {
+    return Playlist()
         .select(columnsToSelect: columnsToSelect, getIsDeleted: getIsDeleted)
-        .where(
-            'id IN (SELECT playlistsId FROM song_lyricsPlaylists WHERE song_lyricsId=?)',
-            parameterValue: id)
+        .where('id IN (SELECT playlistsId FROM song_lyricsPlaylists WHERE song_lyricsId=?)', parameterValue: id)
         .and;
   }
 
   /// to load children of items to this field, use preload parameter. Ex: toList(preload:true) or toSingle(preload:true) or getById(preload:true)
-  /// You can also specify this object into certain preload fields. Ex: toList(preload:true, preloadFields:['plSongbookRecordEntities', 'plField2'..]) or so on..
-  List<SongbookRecordEntity> plSongbookRecordEntities;
+  /// You can also specify this object into certain preload fields!. Ex: toList(preload:true, preloadFields:['plSongbookRecords', 'plField2'..]) or so on..
+  List<SongbookRecord>? plSongbookRecords;
 
-  /// get SongbookRecordEntity(s) filtered by id=song_lyricsId
-  SongbookRecordEntityFilterBuilder getSongbookRecordEntities(
-      {List<String> columnsToSelect, bool getIsDeleted}) {
+  /// get SongbookRecord(s) filtered by id=song_lyricsId
+  SongbookRecordFilterBuilder? getSongbookRecords({List<String>? columnsToSelect, bool? getIsDeleted}) {
     if (id == null) {
       return null;
     }
-    return SongbookRecordEntity()
+    return SongbookRecord()
         .select(columnsToSelect: columnsToSelect, getIsDeleted: getIsDeleted)
         .song_lyricsId
         .equals(id)
@@ -7743,33 +6810,28 @@ class SongLyricEntity {
   }
 
   ///(RelationType.MANY_TO_MANY) (song_lyricsTags) to load children of items to this field, use preload parameter. Ex: toList(preload:true) or toSingle(preload:true) or getById(preload:true)
-  /// You can also specify this object into certain preload fields. Ex: toList(preload:true, preloadFields:['plTagEntities', 'plField2'..]) or so on..
-  List<TagEntity> plTagEntities;
+  /// You can also specify this object into certain preload fields!. Ex: toList(preload:true, preloadFields:['plTags', 'plField2'..]) or so on..
+  List<Tag>? plTags;
 
-  /// get TagEntity(s) filtered by tagsId IN song_lyricsTags
-  TagEntityFilterBuilder getTagEntities(
-      {List<String> columnsToSelect, bool getIsDeleted}) {
-    return TagEntity()
+  /// get Tag(s) filtered by tagsId IN song_lyricsTags
+  TagFilterBuilder? getTags({List<String>? columnsToSelect, bool? getIsDeleted}) {
+    return Tag()
         .select(columnsToSelect: columnsToSelect, getIsDeleted: getIsDeleted)
-        .where(
-            'id IN (SELECT tagsId FROM song_lyricsTags WHERE song_lyricsId=?)',
-            parameterValue: id)
+        .where('id IN (SELECT tagsId FROM song_lyricsTags WHERE song_lyricsId=?)', parameterValue: id)
         .and;
   }
 
-// END COLLECTIONS & VIRTUALS (SongLyricEntity)
+// END COLLECTIONS & VIRTUALS (SongLyric)
 
   static const bool _softDeleteActivated = false;
-  SongLyricEntityManager __mnSongLyricEntity;
+  SongLyricManager? __mnSongLyric;
 
-  SongLyricEntityManager get _mnSongLyricEntity {
-    return __mnSongLyricEntity =
-        __mnSongLyricEntity ?? SongLyricEntityManager();
+  SongLyricManager get _mnSongLyric {
+    return __mnSongLyric = __mnSongLyric ?? SongLyricManager();
   }
 
   // METHODS
-  Map<String, dynamic> toMap(
-      {bool forQuery = false, bool forJson = false, bool forView = false}) {
+  Map<String, dynamic> toMap({bool forQuery = false, bool forJson = false, bool forView = false}) {
     final map = <String, dynamic>{};
     if (id != null) {
       map['id'] = id;
@@ -7778,40 +6840,40 @@ class SongLyricEntity {
       map['name'] = name;
     }
 
-    if (secondaryName1 != null) {
-      map['secondaryName1'] = secondaryName1;
+    if (secondary_name_1 != null) {
+      map['secondary_name_1'] = secondary_name_1;
     }
 
-    if (secondaryName2 != null) {
-      map['secondaryName2'] = secondaryName2;
+    if (secondary_name_2 != null) {
+      map['secondary_name_2'] = secondary_name_2;
     }
 
     if (lyrics != null) {
       map['lyrics'] = lyrics;
     }
 
-    if (language != null) {
-      map['language'] = language;
+    if (lang_string != null) {
+      map['lang_string'] = lang_string;
     }
 
-    if (type != null) {
-      map['type'] = type;
+    if (type_enum != null) {
+      map['type_enum'] = type_enum;
     }
 
-    if (lilypond != null) {
-      map['lilypond'] = lilypond;
+    if (lilypond_svg != null) {
+      map['lilypond_svg'] = lilypond_svg;
     }
 
-    if (favoriteOrder != null) {
-      map['favoriteOrder'] = favoriteOrder;
+    if (favorite_rank != null) {
+      map['favorite_rank'] = favorite_rank;
     }
 
     if (transposition != null) {
       map['transposition'] = transposition;
     }
 
-    if (showChords != null) {
-      map['showChords'] = forQuery ? (showChords ? 1 : 0) : showChords;
+    if (show_chords != null) {
+      map['show_chords'] = forQuery ? (show_chords! ? 1 : 0) : show_chords;
     }
 
     if (accidentals != null) {
@@ -7819,16 +6881,18 @@ class SongLyricEntity {
     }
 
     if (songsId != null) {
-      map['songsId'] = forView ? plSongEntity.name : songsId;
+      map['songsId'] = forView
+          ? plSong == null
+              ? songsId
+              : plSong!.name
+          : songsId;
     }
 
     return map;
   }
 
   Future<Map<String, dynamic>> toMapWithChildren(
-      [bool forQuery = false,
-      bool forJson = false,
-      bool forView = false]) async {
+      [bool forQuery = false, bool forJson = false, bool forView = false]) async {
     final map = <String, dynamic>{};
     if (id != null) {
       map['id'] = id;
@@ -7837,40 +6901,40 @@ class SongLyricEntity {
       map['name'] = name;
     }
 
-    if (secondaryName1 != null) {
-      map['secondaryName1'] = secondaryName1;
+    if (secondary_name_1 != null) {
+      map['secondary_name_1'] = secondary_name_1;
     }
 
-    if (secondaryName2 != null) {
-      map['secondaryName2'] = secondaryName2;
+    if (secondary_name_2 != null) {
+      map['secondary_name_2'] = secondary_name_2;
     }
 
     if (lyrics != null) {
       map['lyrics'] = lyrics;
     }
 
-    if (language != null) {
-      map['language'] = language;
+    if (lang_string != null) {
+      map['lang_string'] = lang_string;
     }
 
-    if (type != null) {
-      map['type'] = type;
+    if (type_enum != null) {
+      map['type_enum'] = type_enum;
     }
 
-    if (lilypond != null) {
-      map['lilypond'] = lilypond;
+    if (lilypond_svg != null) {
+      map['lilypond_svg'] = lilypond_svg;
     }
 
-    if (favoriteOrder != null) {
-      map['favoriteOrder'] = favoriteOrder;
+    if (favorite_rank != null) {
+      map['favorite_rank'] = favorite_rank;
     }
 
     if (transposition != null) {
       map['transposition'] = transposition;
     }
 
-    if (showChords != null) {
-      map['showChords'] = forQuery ? (showChords ? 1 : 0) : showChords;
+    if (show_chords != null) {
+      map['show_chords'] = forQuery ? (show_chords! ? 1 : 0) : show_chords;
     }
 
     if (accidentals != null) {
@@ -7878,37 +6942,40 @@ class SongLyricEntity {
     }
 
     if (songsId != null) {
-      map['songsId'] = forView ? plSongEntity.name : songsId;
+      map['songsId'] = forView
+          ? plSong == null
+              ? songsId
+              : plSong!.name
+          : songsId;
     }
 
-// COLLECTIONS (SongLyricEntity)
+// COLLECTIONS (SongLyric)
     if (!forQuery) {
-      map['AuthorEntities'] = await getAuthorEntities().toMapList();
+      map['Authors'] = await getAuthors()!.toMapList();
     }
     if (!forQuery) {
-      map['ExternalEntities'] = await getExternalEntities().toMapList();
+      map['Externals'] = await getExternals()!.toMapList();
     }
     if (!forQuery) {
-      map['PlaylistEntities'] = await getPlaylistEntities().toMapList();
+      map['Playlists'] = await getPlaylists()!.toMapList();
     }
     if (!forQuery) {
-      map['SongbookRecordEntities'] =
-          await getSongbookRecordEntities().toMapList();
+      map['SongbookRecords'] = await getSongbookRecords()!.toMapList();
     }
     if (!forQuery) {
-      map['TagEntities'] = await getTagEntities().toMapList();
+      map['Tags'] = await getTags()!.toMapList();
     }
-// END COLLECTIONS (SongLyricEntity)
+// END COLLECTIONS (SongLyric)
 
     return map;
   }
 
-  /// This method returns Json String [SongLyricEntity]
+  /// This method returns Json String [SongLyric]
   String toJson() {
     return json.encode(toMap(forJson: true));
   }
 
-  /// This method returns Json String [SongLyricEntity]
+  /// This method returns Json String [SongLyric]
   Future<String> toJsonWithChilds() async {
     return json.encode(await toMapWithChildren(false, true));
   }
@@ -7917,15 +6984,15 @@ class SongLyricEntity {
     return [
       id,
       name,
-      secondaryName1,
-      secondaryName2,
+      secondary_name_1,
+      secondary_name_2,
       lyrics,
-      language,
-      type,
-      lilypond,
-      favoriteOrder,
+      lang_string,
+      type_enum,
+      lilypond_svg,
+      favorite_rank,
       transposition,
-      showChords,
+      show_chords,
       accidentals,
       songsId
     ];
@@ -7935,130 +7002,100 @@ class SongLyricEntity {
     return [
       id,
       name,
-      secondaryName1,
-      secondaryName2,
+      secondary_name_1,
+      secondary_name_2,
       lyrics,
-      language,
-      type,
-      lilypond,
-      favoriteOrder,
+      lang_string,
+      type_enum,
+      lilypond_svg,
+      favorite_rank,
       transposition,
-      showChords,
+      show_chords,
       accidentals,
       songsId
     ];
   }
 
-  static Future<List<SongLyricEntity>> fromWebUrl(String url,
-      {Map<String, String> headers}) async {
+  static Future<List<SongLyric>?> fromWebUrl(Uri uri, {Map<String, String>? headers}) async {
     try {
-      final response = await http.get(url, headers: headers);
+      final response = await http.get(uri, headers: headers);
       return await fromJson(response.body);
     } catch (e) {
-      print(
-          'SQFENTITY ERROR SongLyricEntity.fromWebUrl: ErrorMessage: ${e.toString()}');
+      print('SQFENTITY ERROR SongLyric.fromWebUrl: ErrorMessage: ${e.toString()}');
       return null;
     }
   }
 
-  Future<http.Response> postUrl(String url, {Map<String, String> headers}) {
-    return http.post(url, headers: headers, body: toJson());
+  Future<http.Response> postUrl(Uri uri, {Map<String, String>? headers}) {
+    return http.post(uri, headers: headers, body: toJson());
   }
 
-  static Future<List<SongLyricEntity>> fromJson(String jsonBody) async {
+  static Future<List<SongLyric>> fromJson(String jsonBody) async {
     final Iterable list = await json.decode(jsonBody) as Iterable;
-    var objList = <SongLyricEntity>[];
+    var objList = <SongLyric>[];
     try {
-      objList = list
-          .map((songlyricentity) =>
-              SongLyricEntity.fromMap(songlyricentity as Map<String, dynamic>))
-          .toList();
+      objList = list.map((songlyric) => SongLyric.fromMap(songlyric as Map<String, dynamic>)).toList();
     } catch (e) {
-      print(
-          'SQFENTITY ERROR SongLyricEntity.fromJson: ErrorMessage: ${e.toString()}');
+      print('SQFENTITY ERROR SongLyric.fromJson: ErrorMessage: ${e.toString()}');
     }
     return objList;
   }
 
-  static Future<List<SongLyricEntity>> fromMapList(List<dynamic> data,
+  static Future<List<SongLyric>> fromMapList(List<dynamic> data,
       {bool preload = false,
-      List<String> preloadFields,
+      List<String>? preloadFields,
       bool loadParents = false,
-      List<String> loadedFields,
+      List<String>? loadedFields,
       bool setDefaultValues = true}) async {
-    final List<SongLyricEntity> objList = <SongLyricEntity>[];
+    final List<SongLyric> objList = <SongLyric>[];
     loadedFields = loadedFields ?? [];
     for (final map in data) {
-      final obj = SongLyricEntity.fromMap(map as Map<String, dynamic>,
-          setDefaultValues: setDefaultValues);
+      final obj = SongLyric.fromMap(map as Map<String, dynamic>, setDefaultValues: setDefaultValues);
       // final List<String> _loadedFields = List<String>.from(loadedFields);
 
       // RELATIONSHIPS PRELOAD CHILD
       if (preload) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedFields.contains('song_lyrics.plAuthorEntities') && */ (preloadFields ==
-                null ||
-            preloadFields.contains('plAuthorEntities'))) {
-          /*_loadedFields.add('song_lyrics.plAuthorEntities'); */
-          obj.plAuthorEntities = obj.plAuthorEntities ??
-              await obj.getAuthorEntities().toList(
-                  preload: preload,
-                  preloadFields: preloadFields,
-                  loadParents: false /*, loadedFields:_loadedFields*/);
+        if (/*!_loadedfields!.contains('song_lyrics.plAuthors') && */ (preloadFields == null ||
+            preloadFields.contains('plAuthors'))) {
+          /*_loadedfields!.add('song_lyrics.plAuthors'); */ obj.plAuthors = obj.plAuthors ??
+              await obj.getAuthors()!.toList(
+                  preload: preload, preloadFields: preloadFields, loadParents: false /*, loadedFields:_loadedFields*/);
         }
-        if (/*!_loadedFields.contains('song_lyrics.plExternalEntities') && */ (preloadFields ==
-                null ||
-            preloadFields.contains('plExternalEntities'))) {
-          /*_loadedFields.add('song_lyrics.plExternalEntities'); */
-          obj.plExternalEntities = obj.plExternalEntities ??
-              await obj.getExternalEntities().toList(
-                  preload: preload,
-                  preloadFields: preloadFields,
-                  loadParents: false /*, loadedFields:_loadedFields*/);
+        if (/*!_loadedfields!.contains('song_lyrics.plExternals') && */ (preloadFields == null ||
+            preloadFields.contains('plExternals'))) {
+          /*_loadedfields!.add('song_lyrics.plExternals'); */ obj.plExternals = obj.plExternals ??
+              await obj.getExternals()!.toList(
+                  preload: preload, preloadFields: preloadFields, loadParents: false /*, loadedFields:_loadedFields*/);
         }
-        if (/*!_loadedFields.contains('song_lyrics.plPlaylistEntities') && */ (preloadFields ==
-                null ||
-            preloadFields.contains('plPlaylistEntities'))) {
-          /*_loadedFields.add('song_lyrics.plPlaylistEntities'); */
-          obj.plPlaylistEntities = obj.plPlaylistEntities ??
-              await obj.getPlaylistEntities().toList(
-                  preload: preload,
-                  preloadFields: preloadFields,
-                  loadParents: false /*, loadedFields:_loadedFields*/);
+        if (/*!_loadedfields!.contains('song_lyrics.plPlaylists') && */ (preloadFields == null ||
+            preloadFields.contains('plPlaylists'))) {
+          /*_loadedfields!.add('song_lyrics.plPlaylists'); */ obj.plPlaylists = obj.plPlaylists ??
+              await obj.getPlaylists()!.toList(
+                  preload: preload, preloadFields: preloadFields, loadParents: false /*, loadedFields:_loadedFields*/);
         }
-        if (/*!_loadedFields.contains('song_lyrics.plSongbookRecordEntities') && */ (preloadFields ==
-                null ||
-            preloadFields.contains('plSongbookRecordEntities'))) {
-          /*_loadedFields.add('song_lyrics.plSongbookRecordEntities'); */
-          obj.plSongbookRecordEntities = obj.plSongbookRecordEntities ??
-              await obj.getSongbookRecordEntities().toList(
-                  preload: preload,
-                  preloadFields: preloadFields,
-                  loadParents: false /*, loadedFields:_loadedFields*/);
+        if (/*!_loadedfields!.contains('song_lyrics.plSongbookRecords') && */ (preloadFields == null ||
+            preloadFields.contains('plSongbookRecords'))) {
+          /*_loadedfields!.add('song_lyrics.plSongbookRecords'); */ obj.plSongbookRecords = obj.plSongbookRecords ??
+              await obj.getSongbookRecords()!.toList(
+                  preload: preload, preloadFields: preloadFields, loadParents: false /*, loadedFields:_loadedFields*/);
         }
-        if (/*!_loadedFields.contains('song_lyrics.plTagEntities') && */ (preloadFields ==
-                null ||
-            preloadFields.contains('plTagEntities'))) {
-          /*_loadedFields.add('song_lyrics.plTagEntities'); */
-          obj.plTagEntities = obj.plTagEntities ??
-              await obj.getTagEntities().toList(
-                  preload: preload,
-                  preloadFields: preloadFields,
-                  loadParents: false /*, loadedFields:_loadedFields*/);
+        if (/*!_loadedfields!.contains('song_lyrics.plTags') && */ (preloadFields == null ||
+            preloadFields.contains('plTags'))) {
+          /*_loadedfields!.add('song_lyrics.plTags'); */ obj.plTags = obj.plTags ??
+              await obj.getTags()!.toList(
+                  preload: preload, preloadFields: preloadFields, loadParents: false /*, loadedFields:_loadedFields*/);
         }
       } // END RELATIONSHIPS PRELOAD CHILD
 
       // RELATIONSHIPS PRELOAD
       if (preload || loadParents) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedFields.contains('songs.plSongEntity') && */ (preloadFields ==
-                null ||
+        if (/*!_loadedfields!.contains('songs.plSong') && */ (preloadFields == null ||
             loadParents ||
-            preloadFields.contains('plSongEntity'))) {
-          /*_loadedFields.add('songs.plSongEntity');*/
-          obj.plSongEntity = obj.plSongEntity ??
-              await obj.getSongEntity(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+            preloadFields.contains('plSong'))) {
+          /*_loadedfields!.add('songs.plSong');*/ obj.plSong =
+              obj.plSong ?? await obj.getSong(loadParents: loadParents /*, loadedFields: _loadedFields*/);
         }
       } // END RELATIONSHIPS PRELOAD
 
@@ -8067,9 +7104,9 @@ class SongLyricEntity {
     return objList;
   }
 
-  /// returns SongLyricEntity by ID if exist, otherwise returns null
+  /// returns SongLyric by ID if exist, otherwise returns null
   ///
-  /// Primary Keys: int id
+  /// Primary Keys: int? id
   ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
   ///
@@ -8082,87 +7119,61 @@ class SongLyricEntity {
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
   ///
-  /// <returns>returns SongLyricEntity if exist, otherwise returns null
-  Future<SongLyricEntity> getById(int id,
-      {bool preload = false,
-      List<String> preloadFields,
-      bool loadParents = false,
-      List<String> loadedFields}) async {
+  /// <returns>returns SongLyric if exist, otherwise returns null
+  Future<SongLyric?> getById(int? id,
+      {bool preload = false, List<String>? preloadFields, bool loadParents = false, List<String>? loadedFields}) async {
     if (id == null) {
       return null;
     }
-    SongLyricEntity obj;
-    final data = await _mnSongLyricEntity.getById([id]);
+    SongLyric? obj;
+    final data = await _mnSongLyric.getById([id]);
     if (data.length != 0) {
-      obj = SongLyricEntity.fromMap(data[0] as Map<String, dynamic>);
+      obj = SongLyric.fromMap(data[0] as Map<String, dynamic>);
       // final List<String> _loadedFields = loadedFields ?? [];
 
       // RELATIONSHIPS PRELOAD CHILD
       if (preload) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedFields.contains('song_lyrics.plAuthorEntities') && */ (preloadFields ==
-                null ||
-            preloadFields.contains('plAuthorEntities'))) {
-          /*_loadedFields.add('song_lyrics.plAuthorEntities'); */
-          obj.plAuthorEntities = obj.plAuthorEntities ??
-              await obj.getAuthorEntities().toList(
-                  preload: preload,
-                  preloadFields: preloadFields,
-                  loadParents: false /*, loadedFields:_loadedFields*/);
+        if (/*!_loadedfields!.contains('song_lyrics.plAuthors') && */ (preloadFields == null ||
+            preloadFields.contains('plAuthors'))) {
+          /*_loadedfields!.add('song_lyrics.plAuthors'); */ obj.plAuthors = obj.plAuthors ??
+              await obj.getAuthors()!.toList(
+                  preload: preload, preloadFields: preloadFields, loadParents: false /*, loadedFields:_loadedFields*/);
         }
-        if (/*!_loadedFields.contains('song_lyrics.plExternalEntities') && */ (preloadFields ==
-                null ||
-            preloadFields.contains('plExternalEntities'))) {
-          /*_loadedFields.add('song_lyrics.plExternalEntities'); */
-          obj.plExternalEntities = obj.plExternalEntities ??
-              await obj.getExternalEntities().toList(
-                  preload: preload,
-                  preloadFields: preloadFields,
-                  loadParents: false /*, loadedFields:_loadedFields*/);
+        if (/*!_loadedfields!.contains('song_lyrics.plExternals') && */ (preloadFields == null ||
+            preloadFields.contains('plExternals'))) {
+          /*_loadedfields!.add('song_lyrics.plExternals'); */ obj.plExternals = obj.plExternals ??
+              await obj.getExternals()!.toList(
+                  preload: preload, preloadFields: preloadFields, loadParents: false /*, loadedFields:_loadedFields*/);
         }
-        if (/*!_loadedFields.contains('song_lyrics.plPlaylistEntities') && */ (preloadFields ==
-                null ||
-            preloadFields.contains('plPlaylistEntities'))) {
-          /*_loadedFields.add('song_lyrics.plPlaylistEntities'); */
-          obj.plPlaylistEntities = obj.plPlaylistEntities ??
-              await obj.getPlaylistEntities().toList(
-                  preload: preload,
-                  preloadFields: preloadFields,
-                  loadParents: false /*, loadedFields:_loadedFields*/);
+        if (/*!_loadedfields!.contains('song_lyrics.plPlaylists') && */ (preloadFields == null ||
+            preloadFields.contains('plPlaylists'))) {
+          /*_loadedfields!.add('song_lyrics.plPlaylists'); */ obj.plPlaylists = obj.plPlaylists ??
+              await obj.getPlaylists()!.toList(
+                  preload: preload, preloadFields: preloadFields, loadParents: false /*, loadedFields:_loadedFields*/);
         }
-        if (/*!_loadedFields.contains('song_lyrics.plSongbookRecordEntities') && */ (preloadFields ==
-                null ||
-            preloadFields.contains('plSongbookRecordEntities'))) {
-          /*_loadedFields.add('song_lyrics.plSongbookRecordEntities'); */
-          obj.plSongbookRecordEntities = obj.plSongbookRecordEntities ??
-              await obj.getSongbookRecordEntities().toList(
-                  preload: preload,
-                  preloadFields: preloadFields,
-                  loadParents: false /*, loadedFields:_loadedFields*/);
+        if (/*!_loadedfields!.contains('song_lyrics.plSongbookRecords') && */ (preloadFields == null ||
+            preloadFields.contains('plSongbookRecords'))) {
+          /*_loadedfields!.add('song_lyrics.plSongbookRecords'); */ obj.plSongbookRecords = obj.plSongbookRecords ??
+              await obj.getSongbookRecords()!.toList(
+                  preload: preload, preloadFields: preloadFields, loadParents: false /*, loadedFields:_loadedFields*/);
         }
-        if (/*!_loadedFields.contains('song_lyrics.plTagEntities') && */ (preloadFields ==
-                null ||
-            preloadFields.contains('plTagEntities'))) {
-          /*_loadedFields.add('song_lyrics.plTagEntities'); */
-          obj.plTagEntities = obj.plTagEntities ??
-              await obj.getTagEntities().toList(
-                  preload: preload,
-                  preloadFields: preloadFields,
-                  loadParents: false /*, loadedFields:_loadedFields*/);
+        if (/*!_loadedfields!.contains('song_lyrics.plTags') && */ (preloadFields == null ||
+            preloadFields.contains('plTags'))) {
+          /*_loadedfields!.add('song_lyrics.plTags'); */ obj.plTags = obj.plTags ??
+              await obj.getTags()!.toList(
+                  preload: preload, preloadFields: preloadFields, loadParents: false /*, loadedFields:_loadedFields*/);
         }
       } // END RELATIONSHIPS PRELOAD CHILD
 
       // RELATIONSHIPS PRELOAD
       if (preload || loadParents) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedFields.contains('songs.plSongEntity') && */ (preloadFields ==
-                null ||
+        if (/*!_loadedfields!.contains('songs.plSong') && */ (preloadFields == null ||
             loadParents ||
-            preloadFields.contains('plSongEntity'))) {
-          /*_loadedFields.add('songs.plSongEntity');*/
-          obj.plSongEntity = obj.plSongEntity ??
-              await obj.getSongEntity(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+            preloadFields.contains('plSong'))) {
+          /*_loadedfields!.add('songs.plSong');*/ obj.plSong =
+              obj.plSong ?? await obj.getSong(loadParents: loadParents /*, loadedFields: _loadedFields*/);
         }
       } // END RELATIONSHIPS PRELOAD
 
@@ -8172,137 +7183,120 @@ class SongLyricEntity {
     return obj;
   }
 
-  /// Saves the (SongLyricEntity) object. If the id field is null, saves as a new record and returns new id, if id is not null then updates record
+  /// Saves the (SongLyric) object. If the id field is null, saves as a new record and returns new id, if id is not null then updates record
 
   /// <returns>Returns id
-  Future<int> save() async {
-    if (id == null || id == 0 || !isSaved) {
-      await _mnSongLyricEntity.insert(this);
-      if (saveResult != null && saveResult.success) {
+  Future<int?> save() async {
+    if (id == null || id == 0 || !isSaved!) {
+      await _mnSongLyric.insert(this);
+      if (saveResult!.success) {
         isSaved = true;
       }
     } else {
       // id= await _upsert(); // removed in sqfentity_gen 1.3.0+6
-      await _mnSongLyricEntity.update(this);
+      await _mnSongLyric.update(this);
     }
 
     return id;
   }
 
-  /// saveAll method saves the sent List<SongLyricEntity> as a bulk in one transaction
+  /// saveAll method saves the sent List<SongLyric> as a bulk in one transaction
   ///
   /// Returns a <List<BoolResult>>
-  static Future<List<dynamic>> saveAll(
-      List<SongLyricEntity> songlyricentities) async {
-    // final results = _mnSongLyricEntity.saveAll('INSERT OR REPLACE INTO song_lyrics (id,name, secondaryName1, secondaryName2, lyrics, language, type, lilypond, favoriteOrder, transposition, showChords, accidentals, songsId)  VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)',songlyricentities);
+  static Future<List<dynamic>> saveAll(List<SongLyric> songlyrics) async {
+    // final results = _mnSongLyric.saveAll('INSERT OR REPLACE INTO song_lyrics (id,name, secondary_name_1, secondary_name_2, lyrics, lang_string, type_enum, lilypond_svg, favorite_rank, transposition, show_chords, accidentals, songsId)  VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)',songlyrics);
     // return results; removed in sqfentity_gen 1.3.0+6
     await Model().batchStart();
-    for (final obj in songlyricentities) {
+    for (final obj in songlyrics) {
       await obj.save();
     }
     //    return Model().batchCommit();
     final result = await Model().batchCommit();
 
-    return result;
+    return result!;
   }
 
   /// Updates if the record exists, otherwise adds a new row
 
   /// <returns>Returns id
-  Future<int> upsert() async {
+
+  Future<int?> upsert() async {
     try {
-      if (await _mnSongLyricEntity.rawInsert(
-              'INSERT OR REPLACE INTO song_lyrics (id,name, secondaryName1, secondaryName2, lyrics, language, type, lilypond, favoriteOrder, transposition, showChords, accidentals, songsId)  VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)',
-              [
-                id,
-                name,
-                secondaryName1,
-                secondaryName2,
-                lyrics,
-                language,
-                type,
-                lilypond,
-                favoriteOrder,
-                transposition,
-                showChords,
-                accidentals,
-                songsId
-              ]) ==
-          1) {
-        saveResult = BoolResult(
-            success: true,
-            successMessage: 'SongLyricEntity id=$id updated successfully');
+      final result = await _mnSongLyric.rawInsert(
+          'INSERT OR REPLACE INTO song_lyrics (id,name, secondary_name_1, secondary_name_2, lyrics, lang_string, type_enum, lilypond_svg, favorite_rank, transposition, show_chords, accidentals, songsId)  VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)',
+          [
+            id,
+            name,
+            secondary_name_1,
+            secondary_name_2,
+            lyrics,
+            lang_string,
+            type_enum,
+            lilypond_svg,
+            favorite_rank,
+            transposition,
+            show_chords,
+            accidentals,
+            songsId
+          ]);
+      if (result! > 0) {
+        saveResult = BoolResult(success: true, successMessage: 'SongLyric id=$id updated successfully');
       } else {
-        saveResult = BoolResult(
-            success: false,
-            errorMessage: 'SongLyricEntity id=$id did not update');
+        saveResult = BoolResult(success: false, errorMessage: 'SongLyric id=$id did not update');
       }
       return id;
     } catch (e) {
-      saveResult = BoolResult(
-          success: false,
-          errorMessage: 'SongLyricEntity Save failed. Error: ${e.toString()}');
-      return 0;
+      saveResult = BoolResult(success: false, errorMessage: 'SongLyric Save failed. Error: ${e.toString()}');
+      return null;
     }
   }
 
-  /// inserts or replaces the sent List<<SongLyricEntity>> as a bulk in one transaction.
+  /// inserts or replaces the sent List<<SongLyric>> as a bulk in one transaction.
   ///
   /// upsertAll() method is faster then saveAll() method. upsertAll() should be used when you are sure that the primary key is greater than zero
   ///
   /// Returns a BoolCommitResult
-  Future<BoolCommitResult> upsertAll(
-      List<SongLyricEntity> songlyricentities) async {
-    final results = await _mnSongLyricEntity.rawInsertAll(
-        'INSERT OR REPLACE INTO song_lyrics (id,name, secondaryName1, secondaryName2, lyrics, language, type, lilypond, favoriteOrder, transposition, showChords, accidentals, songsId)  VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)',
-        songlyricentities);
+  Future<BoolCommitResult> upsertAll(List<SongLyric> songlyrics) async {
+    final results = await _mnSongLyric.rawInsertAll(
+        'INSERT OR REPLACE INTO song_lyrics (id,name, secondary_name_1, secondary_name_2, lyrics, lang_string, type_enum, lilypond_svg, favorite_rank, transposition, show_chords, accidentals, songsId)  VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)',
+        songlyrics);
     return results;
   }
 
-  /// Deletes SongLyricEntity
+  /// Deletes SongLyric
 
   /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
+
   Future<BoolResult> delete([bool hardDelete = false]) async {
-    print('SQFENTITIY: delete SongLyricEntity invoked (id=$id)');
-    if (await ExternalEntity().select().song_lyricsId.equals(id).and.toCount() >
-        0) {
-      return BoolResult(
-          success: false,
-          errorMessage:
-              'SQFENTITY ERROR: The DELETE statement conflicted with the REFERENCE RELATIONSHIP (ExternalEntity.song_lyricsId)');
+    print('SQFENTITIY: delete SongLyric invoked (id=$id)');
+    var result = BoolResult(success: false);
+    {
+      result = await External().select().song_lyricsId.equals(id).and.delete(hardDelete);
     }
-    if (await SongbookRecordEntity()
-            .select()
-            .song_lyricsId
-            .equals(id)
-            .and
-            .toCount() >
-        0) {
-      return BoolResult(
-          success: false,
-          errorMessage:
-              'SQFENTITY ERROR: The DELETE statement conflicted with the REFERENCE RELATIONSHIP (SongbookRecordEntity.song_lyricsId)');
+    if (!result.success) {
+      return result;
+    }
+    {
+      result = await SongbookRecord().select().song_lyricsId.equals(id).and.delete(hardDelete);
+    }
+    if (!result.success) {
+      return result;
     }
     if (!_softDeleteActivated || hardDelete) {
-      return _mnSongLyricEntity
-          .delete(QueryParams(whereString: 'id=?', whereArguments: [id]));
+      return _mnSongLyric.delete(QueryParams(whereString: 'id=?', whereArguments: [id]));
     } else {
-      return _mnSongLyricEntity.updateBatch(
-          QueryParams(whereString: 'id=?', whereArguments: [id]),
-          {'isDeleted': 1});
+      return _mnSongLyric.updateBatch(QueryParams(whereString: 'id=?', whereArguments: [id]), {'isDeleted': 1});
     }
   }
 
-  SongLyricEntityFilterBuilder select(
-      {List<String> columnsToSelect, bool getIsDeleted}) {
-    return SongLyricEntityFilterBuilder(this)
+  SongLyricFilterBuilder select({List<String>? columnsToSelect, bool? getIsDeleted}) {
+    return SongLyricFilterBuilder(this)
       .._getIsDeleted = getIsDeleted == true
       ..qparams.selectColumns = columnsToSelect;
   }
 
-  SongLyricEntityFilterBuilder distinct(
-      {List<String> columnsToSelect, bool getIsDeleted}) {
-    return SongLyricEntityFilterBuilder(this)
+  SongLyricFilterBuilder distinct({List<String>? columnsToSelect, bool? getIsDeleted}) {
+    return SongLyricFilterBuilder(this)
       .._getIsDeleted = getIsDeleted == true
       ..qparams.selectColumns = columnsToSelect
       ..qparams.distinct = true;
@@ -8310,11 +7304,12 @@ class SongLyricEntity {
 
   void _setDefaultValues() {
     isSaved = false;
+    transposition = transposition ?? 0;
   }
   // END METHODS
-  // CUSTOM CODES
+  // BEGIN CUSTOM CODE
   /*
-      you must define customCode property of your SqfEntityTable constant for ex:
+      you can define customCode property of your SqfEntityTable constant. For example:
       const tablePerson = SqfEntityTable(
       tableName: 'person',
       primaryKeyName: 'id',
@@ -8330,255 +7325,178 @@ class SongLyricEntity {
        }
       ''');
      */
-  // END CUSTOM CODES
+  // END CUSTOM CODE
 }
-// endregion songlyricentity
+// endregion songlyric
 
-// region SongLyricEntityField
-class SongLyricEntityField extends SearchCriteria {
-  SongLyricEntityField(this.songlyricentityFB) {
-    param = DbParameter();
-  }
-  DbParameter param;
+// region SongLyricField
+class SongLyricField extends SearchCriteria {
+  SongLyricField(this.songlyricFB);
+  // { param = DbParameter(); }
+  DbParameter param = DbParameter();
   String _waitingNot = '';
-  SongLyricEntityFilterBuilder songlyricentityFB;
+  SongLyricFilterBuilder songlyricFB;
 
-  SongLyricEntityField get not {
+  SongLyricField get not {
     _waitingNot = ' NOT ';
     return this;
   }
 
-  SongLyricEntityFilterBuilder equals(dynamic pValue) {
+  SongLyricFilterBuilder equals(dynamic pValue) {
     param.expression = '=';
-    songlyricentityFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, songlyricentityFB.parameters, param,
-            SqlSyntax.EQuals, songlyricentityFB._addedBlocks)
-        : setCriteria(pValue, songlyricentityFB.parameters, param,
-            SqlSyntax.NotEQuals, songlyricentityFB._addedBlocks);
+    songlyricFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, songlyricFB.parameters, param, SqlSyntax.EQuals, songlyricFB._addedBlocks)
+        : setCriteria(pValue, songlyricFB.parameters, param, SqlSyntax.NotEQuals, songlyricFB._addedBlocks);
     _waitingNot = '';
-    songlyricentityFB._addedBlocks.needEndBlock[songlyricentityFB._blockIndex] =
-        songlyricentityFB._addedBlocks.retVal;
-    return songlyricentityFB;
+    songlyricFB._addedBlocks.needEndBlock![songlyricFB._blockIndex] = songlyricFB._addedBlocks.retVal;
+    return songlyricFB;
   }
 
-  SongLyricEntityFilterBuilder equalsOrNull(dynamic pValue) {
+  SongLyricFilterBuilder equalsOrNull(dynamic pValue) {
     param.expression = '=';
-    songlyricentityFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, songlyricentityFB.parameters, param,
-            SqlSyntax.EQualsOrNull, songlyricentityFB._addedBlocks)
-        : setCriteria(pValue, songlyricentityFB.parameters, param,
-            SqlSyntax.NotEQualsOrNull, songlyricentityFB._addedBlocks);
+    songlyricFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, songlyricFB.parameters, param, SqlSyntax.EQualsOrNull, songlyricFB._addedBlocks)
+        : setCriteria(pValue, songlyricFB.parameters, param, SqlSyntax.NotEQualsOrNull, songlyricFB._addedBlocks);
     _waitingNot = '';
-    songlyricentityFB._addedBlocks.needEndBlock[songlyricentityFB._blockIndex] =
-        songlyricentityFB._addedBlocks.retVal;
-    return songlyricentityFB;
+    songlyricFB._addedBlocks.needEndBlock![songlyricFB._blockIndex] = songlyricFB._addedBlocks.retVal;
+    return songlyricFB;
   }
 
-  SongLyricEntityFilterBuilder isNull() {
-    songlyricentityFB._addedBlocks = setCriteria(
-        0,
-        songlyricentityFB.parameters,
-        param,
-        SqlSyntax.IsNULL.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-        songlyricentityFB._addedBlocks);
+  SongLyricFilterBuilder isNull() {
+    songlyricFB._addedBlocks = setCriteria(0, songlyricFB.parameters, param,
+        SqlSyntax.IsNULL.replaceAll(SqlSyntax.notKeyword, _waitingNot), songlyricFB._addedBlocks);
     _waitingNot = '';
-    songlyricentityFB._addedBlocks.needEndBlock[songlyricentityFB._blockIndex] =
-        songlyricentityFB._addedBlocks.retVal;
-    return songlyricentityFB;
+    songlyricFB._addedBlocks.needEndBlock![songlyricFB._blockIndex] = songlyricFB._addedBlocks.retVal;
+    return songlyricFB;
   }
 
-  SongLyricEntityFilterBuilder contains(dynamic pValue) {
+  SongLyricFilterBuilder contains(dynamic pValue) {
     if (pValue != null) {
-      songlyricentityFB._addedBlocks = setCriteria(
-          '%${pValue.toString()}%',
-          songlyricentityFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          songlyricentityFB._addedBlocks);
+      songlyricFB._addedBlocks = setCriteria('%${pValue.toString()}%', songlyricFB.parameters, param,
+          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot), songlyricFB._addedBlocks);
       _waitingNot = '';
-      songlyricentityFB
-              ._addedBlocks.needEndBlock[songlyricentityFB._blockIndex] =
-          songlyricentityFB._addedBlocks.retVal;
+      songlyricFB._addedBlocks.needEndBlock![songlyricFB._blockIndex] = songlyricFB._addedBlocks.retVal;
     }
-    return songlyricentityFB;
+    return songlyricFB;
   }
 
-  SongLyricEntityFilterBuilder startsWith(dynamic pValue) {
+  SongLyricFilterBuilder startsWith(dynamic pValue) {
     if (pValue != null) {
-      songlyricentityFB._addedBlocks = setCriteria(
-          '${pValue.toString()}%',
-          songlyricentityFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          songlyricentityFB._addedBlocks);
+      songlyricFB._addedBlocks = setCriteria('${pValue.toString()}%', songlyricFB.parameters, param,
+          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot), songlyricFB._addedBlocks);
       _waitingNot = '';
-      songlyricentityFB
-              ._addedBlocks.needEndBlock[songlyricentityFB._blockIndex] =
-          songlyricentityFB._addedBlocks.retVal;
-      songlyricentityFB
-              ._addedBlocks.needEndBlock[songlyricentityFB._blockIndex] =
-          songlyricentityFB._addedBlocks.retVal;
+      songlyricFB._addedBlocks.needEndBlock![songlyricFB._blockIndex] = songlyricFB._addedBlocks.retVal;
+      songlyricFB._addedBlocks.needEndBlock![songlyricFB._blockIndex] = songlyricFB._addedBlocks.retVal;
     }
-    return songlyricentityFB;
+    return songlyricFB;
   }
 
-  SongLyricEntityFilterBuilder endsWith(dynamic pValue) {
+  SongLyricFilterBuilder endsWith(dynamic pValue) {
     if (pValue != null) {
-      songlyricentityFB._addedBlocks = setCriteria(
-          '%${pValue.toString()}',
-          songlyricentityFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          songlyricentityFB._addedBlocks);
+      songlyricFB._addedBlocks = setCriteria('%${pValue.toString()}', songlyricFB.parameters, param,
+          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot), songlyricFB._addedBlocks);
       _waitingNot = '';
-      songlyricentityFB
-              ._addedBlocks.needEndBlock[songlyricentityFB._blockIndex] =
-          songlyricentityFB._addedBlocks.retVal;
+      songlyricFB._addedBlocks.needEndBlock![songlyricFB._blockIndex] = songlyricFB._addedBlocks.retVal;
     }
-    return songlyricentityFB;
+    return songlyricFB;
   }
 
-  SongLyricEntityFilterBuilder between(dynamic pFirst, dynamic pLast) {
+  SongLyricFilterBuilder between(dynamic pFirst, dynamic pLast) {
     if (pFirst != null && pLast != null) {
-      songlyricentityFB._addedBlocks = setCriteria(
-          pFirst,
-          songlyricentityFB.parameters,
-          param,
-          SqlSyntax.Between.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          songlyricentityFB._addedBlocks,
-          pLast);
+      songlyricFB._addedBlocks = setCriteria(pFirst, songlyricFB.parameters, param,
+          SqlSyntax.Between.replaceAll(SqlSyntax.notKeyword, _waitingNot), songlyricFB._addedBlocks, pLast);
     } else if (pFirst != null) {
       if (_waitingNot != '') {
-        songlyricentityFB._addedBlocks = setCriteria(
-            pFirst,
-            songlyricentityFB.parameters,
-            param,
-            SqlSyntax.LessThan,
-            songlyricentityFB._addedBlocks);
+        songlyricFB._addedBlocks =
+            setCriteria(pFirst, songlyricFB.parameters, param, SqlSyntax.LessThan, songlyricFB._addedBlocks);
       } else {
-        songlyricentityFB._addedBlocks = setCriteria(
-            pFirst,
-            songlyricentityFB.parameters,
-            param,
-            SqlSyntax.GreaterThanOrEquals,
-            songlyricentityFB._addedBlocks);
+        songlyricFB._addedBlocks =
+            setCriteria(pFirst, songlyricFB.parameters, param, SqlSyntax.GreaterThanOrEquals, songlyricFB._addedBlocks);
       }
     } else if (pLast != null) {
       if (_waitingNot != '') {
-        songlyricentityFB._addedBlocks = setCriteria(
-            pLast,
-            songlyricentityFB.parameters,
-            param,
-            SqlSyntax.GreaterThan,
-            songlyricentityFB._addedBlocks);
+        songlyricFB._addedBlocks =
+            setCriteria(pLast, songlyricFB.parameters, param, SqlSyntax.GreaterThan, songlyricFB._addedBlocks);
       } else {
-        songlyricentityFB._addedBlocks = setCriteria(
-            pLast,
-            songlyricentityFB.parameters,
-            param,
-            SqlSyntax.LessThanOrEquals,
-            songlyricentityFB._addedBlocks);
+        songlyricFB._addedBlocks =
+            setCriteria(pLast, songlyricFB.parameters, param, SqlSyntax.LessThanOrEquals, songlyricFB._addedBlocks);
       }
     }
     _waitingNot = '';
-    songlyricentityFB._addedBlocks.needEndBlock[songlyricentityFB._blockIndex] =
-        songlyricentityFB._addedBlocks.retVal;
-    return songlyricentityFB;
+    songlyricFB._addedBlocks.needEndBlock![songlyricFB._blockIndex] = songlyricFB._addedBlocks.retVal;
+    return songlyricFB;
   }
 
-  SongLyricEntityFilterBuilder greaterThan(dynamic pValue) {
+  SongLyricFilterBuilder greaterThan(dynamic pValue) {
     param.expression = '>';
-    songlyricentityFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, songlyricentityFB.parameters, param,
-            SqlSyntax.GreaterThan, songlyricentityFB._addedBlocks)
-        : setCriteria(pValue, songlyricentityFB.parameters, param,
-            SqlSyntax.LessThanOrEquals, songlyricentityFB._addedBlocks);
+    songlyricFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, songlyricFB.parameters, param, SqlSyntax.GreaterThan, songlyricFB._addedBlocks)
+        : setCriteria(pValue, songlyricFB.parameters, param, SqlSyntax.LessThanOrEquals, songlyricFB._addedBlocks);
     _waitingNot = '';
-    songlyricentityFB._addedBlocks.needEndBlock[songlyricentityFB._blockIndex] =
-        songlyricentityFB._addedBlocks.retVal;
-    return songlyricentityFB;
+    songlyricFB._addedBlocks.needEndBlock![songlyricFB._blockIndex] = songlyricFB._addedBlocks.retVal;
+    return songlyricFB;
   }
 
-  SongLyricEntityFilterBuilder lessThan(dynamic pValue) {
+  SongLyricFilterBuilder lessThan(dynamic pValue) {
     param.expression = '<';
-    songlyricentityFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, songlyricentityFB.parameters, param,
-            SqlSyntax.LessThan, songlyricentityFB._addedBlocks)
-        : setCriteria(pValue, songlyricentityFB.parameters, param,
-            SqlSyntax.GreaterThanOrEquals, songlyricentityFB._addedBlocks);
+    songlyricFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, songlyricFB.parameters, param, SqlSyntax.LessThan, songlyricFB._addedBlocks)
+        : setCriteria(pValue, songlyricFB.parameters, param, SqlSyntax.GreaterThanOrEquals, songlyricFB._addedBlocks);
     _waitingNot = '';
-    songlyricentityFB._addedBlocks.needEndBlock[songlyricentityFB._blockIndex] =
-        songlyricentityFB._addedBlocks.retVal;
-    return songlyricentityFB;
+    songlyricFB._addedBlocks.needEndBlock![songlyricFB._blockIndex] = songlyricFB._addedBlocks.retVal;
+    return songlyricFB;
   }
 
-  SongLyricEntityFilterBuilder greaterThanOrEquals(dynamic pValue) {
+  SongLyricFilterBuilder greaterThanOrEquals(dynamic pValue) {
     param.expression = '>=';
-    songlyricentityFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, songlyricentityFB.parameters, param,
-            SqlSyntax.GreaterThanOrEquals, songlyricentityFB._addedBlocks)
-        : setCriteria(pValue, songlyricentityFB.parameters, param,
-            SqlSyntax.LessThan, songlyricentityFB._addedBlocks);
+    songlyricFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, songlyricFB.parameters, param, SqlSyntax.GreaterThanOrEquals, songlyricFB._addedBlocks)
+        : setCriteria(pValue, songlyricFB.parameters, param, SqlSyntax.LessThan, songlyricFB._addedBlocks);
     _waitingNot = '';
-    songlyricentityFB._addedBlocks.needEndBlock[songlyricentityFB._blockIndex] =
-        songlyricentityFB._addedBlocks.retVal;
-    return songlyricentityFB;
+    songlyricFB._addedBlocks.needEndBlock![songlyricFB._blockIndex] = songlyricFB._addedBlocks.retVal;
+    return songlyricFB;
   }
 
-  SongLyricEntityFilterBuilder lessThanOrEquals(dynamic pValue) {
+  SongLyricFilterBuilder lessThanOrEquals(dynamic pValue) {
     param.expression = '<=';
-    songlyricentityFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, songlyricentityFB.parameters, param,
-            SqlSyntax.LessThanOrEquals, songlyricentityFB._addedBlocks)
-        : setCriteria(pValue, songlyricentityFB.parameters, param,
-            SqlSyntax.GreaterThan, songlyricentityFB._addedBlocks);
+    songlyricFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, songlyricFB.parameters, param, SqlSyntax.LessThanOrEquals, songlyricFB._addedBlocks)
+        : setCriteria(pValue, songlyricFB.parameters, param, SqlSyntax.GreaterThan, songlyricFB._addedBlocks);
     _waitingNot = '';
-    songlyricentityFB._addedBlocks.needEndBlock[songlyricentityFB._blockIndex] =
-        songlyricentityFB._addedBlocks.retVal;
-    return songlyricentityFB;
+    songlyricFB._addedBlocks.needEndBlock![songlyricFB._blockIndex] = songlyricFB._addedBlocks.retVal;
+    return songlyricFB;
   }
 
-  SongLyricEntityFilterBuilder inValues(dynamic pValue) {
-    songlyricentityFB._addedBlocks = setCriteria(
-        pValue,
-        songlyricentityFB.parameters,
-        param,
-        SqlSyntax.IN.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-        songlyricentityFB._addedBlocks);
+  SongLyricFilterBuilder inValues(dynamic pValue) {
+    songlyricFB._addedBlocks = setCriteria(pValue, songlyricFB.parameters, param,
+        SqlSyntax.IN.replaceAll(SqlSyntax.notKeyword, _waitingNot), songlyricFB._addedBlocks);
     _waitingNot = '';
-    songlyricentityFB._addedBlocks.needEndBlock[songlyricentityFB._blockIndex] =
-        songlyricentityFB._addedBlocks.retVal;
-    return songlyricentityFB;
+    songlyricFB._addedBlocks.needEndBlock![songlyricFB._blockIndex] = songlyricFB._addedBlocks.retVal;
+    return songlyricFB;
   }
 }
-// endregion SongLyricEntityField
+// endregion SongLyricField
 
-// region SongLyricEntityFilterBuilder
-class SongLyricEntityFilterBuilder extends SearchCriteria {
-  SongLyricEntityFilterBuilder(SongLyricEntity obj) {
+// region SongLyricFilterBuilder
+class SongLyricFilterBuilder extends SearchCriteria {
+  SongLyricFilterBuilder(SongLyric obj) {
     whereString = '';
-    qparams = QueryParams();
-    parameters = <DbParameter>[];
-    orderByList = <String>[];
     groupByList = <String>[];
-    _addedBlocks = AddedBlocks(<bool>[], <bool>[]);
-    _addedBlocks.needEndBlock.add(false);
-    _addedBlocks.waitingStartBlock.add(false);
-    _pagesize = 0;
-    _page = 0;
+    _addedBlocks.needEndBlock!.add(false);
+    _addedBlocks.waitingStartBlock!.add(false);
     _obj = obj;
   }
-  AddedBlocks _addedBlocks;
+  AddedBlocks _addedBlocks = AddedBlocks(<bool>[], <bool>[]);
   int _blockIndex = 0;
-  List<DbParameter> parameters;
-  List<String> orderByList;
-  SongLyricEntity _obj;
-  QueryParams qparams;
-  int _pagesize;
-  int _page;
+  List<DbParameter> parameters = <DbParameter>[];
+  List<String> orderByList = <String>[];
+  SongLyric? _obj;
+  QueryParams qparams = QueryParams();
+  int _pagesize = 0;
+  int _page = 0;
 
   /// put the sql keyword 'AND'
-  SongLyricEntityFilterBuilder get and {
+  SongLyricFilterBuilder get and {
     if (parameters.isNotEmpty) {
       parameters[parameters.length - 1].wOperator = ' AND ';
     }
@@ -8586,7 +7504,7 @@ class SongLyricEntityFilterBuilder extends SearchCriteria {
   }
 
   /// put the sql keyword 'OR'
-  SongLyricEntityFilterBuilder get or {
+  SongLyricFilterBuilder get or {
     if (parameters.isNotEmpty) {
       parameters[parameters.length - 1].wOperator = ' OR ';
     }
@@ -8594,26 +7512,23 @@ class SongLyricEntityFilterBuilder extends SearchCriteria {
   }
 
   /// open parentheses
-  SongLyricEntityFilterBuilder get startBlock {
-    _addedBlocks.waitingStartBlock.add(true);
-    _addedBlocks.needEndBlock.add(false);
+  SongLyricFilterBuilder get startBlock {
+    _addedBlocks.waitingStartBlock!.add(true);
+    _addedBlocks.needEndBlock!.add(false);
     _blockIndex++;
     if (_blockIndex > 1) {
-      _addedBlocks.needEndBlock[_blockIndex - 1] = true;
+      _addedBlocks.needEndBlock![_blockIndex - 1] = true;
     }
     return this;
   }
 
   /// String whereCriteria, write raw query without 'where' keyword. Like this: 'field1 like 'test%' and field2 = 3'
-  SongLyricEntityFilterBuilder where(String whereCriteria,
-      {dynamic parameterValue}) {
+  SongLyricFilterBuilder where(String? whereCriteria, {dynamic parameterValue}) {
     if (whereCriteria != null && whereCriteria != '') {
-      final DbParameter param = DbParameter(
-          columnName: parameterValue == null ? null : '',
-          hasParameter: parameterValue != null);
-      _addedBlocks = setCriteria(parameterValue ?? 0, parameters, param,
-          '($whereCriteria)', _addedBlocks);
-      _addedBlocks.needEndBlock[_blockIndex] = _addedBlocks.retVal;
+      final DbParameter param =
+          DbParameter(columnName: parameterValue == null ? null : '', hasParameter: parameterValue != null);
+      _addedBlocks = setCriteria(parameterValue ?? 0, parameters, param, '($whereCriteria)', _addedBlocks);
+      _addedBlocks.needEndBlock![_blockIndex] = _addedBlocks.retVal;
     }
     return this;
   }
@@ -8621,7 +7536,7 @@ class SongLyricEntityFilterBuilder extends SearchCriteria {
   /// page = page number,
   ///
   /// pagesize = row(s) per page
-  SongLyricEntityFilterBuilder page(int page, int pagesize) {
+  SongLyricFilterBuilder page(int page, int pagesize) {
     if (page > 0) {
       _page = page;
     }
@@ -8632,7 +7547,7 @@ class SongLyricEntityFilterBuilder extends SearchCriteria {
   }
 
   /// int count = LIMIT
-  SongLyricEntityFilterBuilder top(int count) {
+  SongLyricFilterBuilder top(int count) {
     if (count > 0) {
       _pagesize = count;
     }
@@ -8640,12 +7555,12 @@ class SongLyricEntityFilterBuilder extends SearchCriteria {
   }
 
   /// close parentheses
-  SongLyricEntityFilterBuilder get endBlock {
-    if (_addedBlocks.needEndBlock[_blockIndex]) {
+  SongLyricFilterBuilder get endBlock {
+    if (_addedBlocks.needEndBlock![_blockIndex]) {
       parameters[parameters.length - 1].whereString += ' ) ';
     }
-    _addedBlocks.needEndBlock.removeAt(_blockIndex);
-    _addedBlocks.waitingStartBlock.removeAt(_blockIndex);
+    _addedBlocks.needEndBlock!.removeAt(_blockIndex);
+    _addedBlocks.waitingStartBlock!.removeAt(_blockIndex);
     _blockIndex--;
     return this;
   }
@@ -8655,13 +7570,13 @@ class SongLyricEntityFilterBuilder extends SearchCriteria {
   /// Example 1: argFields='name, date'
   ///
   /// Example 2: argFields = ['name', 'date']
-  SongLyricEntityFilterBuilder orderBy(dynamic argFields) {
+  SongLyricFilterBuilder orderBy(dynamic argFields) {
     if (argFields != null) {
       if (argFields is String) {
         orderByList.add(argFields);
       } else {
-        for (String s in argFields as List<String>) {
-          if (s != null && s.isNotEmpty) {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
             orderByList.add(' $s ');
           }
         }
@@ -8675,13 +7590,13 @@ class SongLyricEntityFilterBuilder extends SearchCriteria {
   /// Example 1: argFields='field1, field2'
   ///
   /// Example 2: argFields = ['field1', 'field2']
-  SongLyricEntityFilterBuilder orderByDesc(dynamic argFields) {
+  SongLyricFilterBuilder orderByDesc(dynamic argFields) {
     if (argFields != null) {
       if (argFields is String) {
         orderByList.add('$argFields desc ');
       } else {
-        for (String s in argFields as List<String>) {
-          if (s != null && s.isNotEmpty) {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
             orderByList.add(' $s desc ');
           }
         }
@@ -8695,13 +7610,13 @@ class SongLyricEntityFilterBuilder extends SearchCriteria {
   /// Example 1: argFields='field1, field2'
   ///
   /// Example 2: argFields = ['field1', 'field2']
-  SongLyricEntityFilterBuilder groupBy(dynamic argFields) {
+  SongLyricFilterBuilder groupBy(dynamic argFields) {
     if (argFields != null) {
       if (argFields is String) {
         groupByList.add(' $argFields ');
       } else {
-        for (String s in argFields as List<String>) {
-          if (s != null && s.isNotEmpty) {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
             groupByList.add(' $s ');
           }
         }
@@ -8715,13 +7630,13 @@ class SongLyricEntityFilterBuilder extends SearchCriteria {
   /// Example 1: argFields='name, date'
   ///
   /// Example 2: argFields = ['name', 'date']
-  SongLyricEntityFilterBuilder having(dynamic argFields) {
+  SongLyricFilterBuilder having(dynamic argFields) {
     if (argFields != null) {
       if (argFields is String) {
         havingList.add(argFields);
       } else {
-        for (String s in argFields as List<String>) {
-          if (s != null && s.isNotEmpty) {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
             havingList.add(' $s ');
           }
         }
@@ -8730,85 +7645,78 @@ class SongLyricEntityFilterBuilder extends SearchCriteria {
     return this;
   }
 
-  SongLyricEntityField setField(
-      SongLyricEntityField field, String colName, DbType dbtype) {
-    return SongLyricEntityField(this)
-      ..param = DbParameter(
-          dbType: dbtype,
-          columnName: colName,
-          wStartBlock: _addedBlocks.waitingStartBlock[_blockIndex]);
+  SongLyricField setField(SongLyricField? field, String colName, DbType dbtype) {
+    return SongLyricField(this)
+      ..param =
+          DbParameter(dbType: dbtype, columnName: colName, wStartBlock: _addedBlocks.waitingStartBlock![_blockIndex]);
   }
 
-  SongLyricEntityField _id;
-  SongLyricEntityField get id {
+  SongLyricField? _id;
+  SongLyricField get id {
     return _id = setField(_id, 'id', DbType.integer);
   }
 
-  SongLyricEntityField _name;
-  SongLyricEntityField get name {
+  SongLyricField? _name;
+  SongLyricField get name {
     return _name = setField(_name, 'name', DbType.text);
   }
 
-  SongLyricEntityField _secondaryName1;
-  SongLyricEntityField get secondaryName1 {
-    return _secondaryName1 =
-        setField(_secondaryName1, 'secondaryName1', DbType.text);
+  SongLyricField? _secondary_name_1;
+  SongLyricField get secondary_name_1 {
+    return _secondary_name_1 = setField(_secondary_name_1, 'secondary_name_1', DbType.text);
   }
 
-  SongLyricEntityField _secondaryName2;
-  SongLyricEntityField get secondaryName2 {
-    return _secondaryName2 =
-        setField(_secondaryName2, 'secondaryName2', DbType.text);
+  SongLyricField? _secondary_name_2;
+  SongLyricField get secondary_name_2 {
+    return _secondary_name_2 = setField(_secondary_name_2, 'secondary_name_2', DbType.text);
   }
 
-  SongLyricEntityField _lyrics;
-  SongLyricEntityField get lyrics {
+  SongLyricField? _lyrics;
+  SongLyricField get lyrics {
     return _lyrics = setField(_lyrics, 'lyrics', DbType.text);
   }
 
-  SongLyricEntityField _language;
-  SongLyricEntityField get language {
-    return _language = setField(_language, 'language', DbType.text);
+  SongLyricField? _lang_string;
+  SongLyricField get lang_string {
+    return _lang_string = setField(_lang_string, 'lang_string', DbType.text);
   }
 
-  SongLyricEntityField _type;
-  SongLyricEntityField get type {
-    return _type = setField(_type, 'type', DbType.integer);
+  SongLyricField? _type_enum;
+  SongLyricField get type_enum {
+    return _type_enum = setField(_type_enum, 'type_enum', DbType.text);
   }
 
-  SongLyricEntityField _lilypond;
-  SongLyricEntityField get lilypond {
-    return _lilypond = setField(_lilypond, 'lilypond', DbType.text);
+  SongLyricField? _lilypond_svg;
+  SongLyricField get lilypond_svg {
+    return _lilypond_svg = setField(_lilypond_svg, 'lilypond_svg', DbType.text);
   }
 
-  SongLyricEntityField _favoriteOrder;
-  SongLyricEntityField get favoriteOrder {
-    return _favoriteOrder =
-        setField(_favoriteOrder, 'favoriteOrder', DbType.integer);
+  SongLyricField? _favorite_rank;
+  SongLyricField get favorite_rank {
+    return _favorite_rank = setField(_favorite_rank, 'favorite_rank', DbType.integer);
   }
 
-  SongLyricEntityField _transposition;
-  SongLyricEntityField get transposition {
-    return _transposition =
-        setField(_transposition, 'transposition', DbType.integer);
+  SongLyricField? _transposition;
+  SongLyricField get transposition {
+    return _transposition = setField(_transposition, 'transposition', DbType.integer);
   }
 
-  SongLyricEntityField _showChords;
-  SongLyricEntityField get showChords {
-    return _showChords = setField(_showChords, 'showChords', DbType.bool);
+  SongLyricField? _show_chords;
+  SongLyricField get show_chords {
+    return _show_chords = setField(_show_chords, 'show_chords', DbType.bool);
   }
 
-  SongLyricEntityField _accidentals;
-  SongLyricEntityField get accidentals {
+  SongLyricField? _accidentals;
+  SongLyricField get accidentals {
     return _accidentals = setField(_accidentals, 'accidentals', DbType.integer);
   }
 
-  SongLyricEntityField _songsId;
-  SongLyricEntityField get songsId {
+  SongLyricField? _songsId;
+  SongLyricField get songsId {
     return _songsId = setField(_songsId, 'songsId', DbType.integer);
   }
 
-  bool _getIsDeleted;
+  bool _getIsDeleted = false;
 
   void _buildParameters() {
     if (_page > 0 && _pagesize > 0) {
@@ -8823,24 +7731,20 @@ class SongLyricEntityFilterBuilder extends SearchCriteria {
     for (DbParameter param in parameters) {
       if (param.columnName != null) {
         if (param.value is List && !param.hasParameter) {
-          param.value = param.dbType == DbType.text
+          param.value = param.dbType == DbType.text || param.value[0] is String
               ? '\'${param.value.join('\',\'')}\''
               : param.value.join(',');
-          whereString += param.whereString
-              .replaceAll('{field}', param.columnName)
-              .replaceAll('?', param.value.toString());
+          whereString +=
+              param.whereString.replaceAll('{field}', param.columnName!).replaceAll('?', param.value.toString());
           param.value = null;
         } else {
-          if (param.value is Map<String, dynamic> &&
-              param.value['sql'] != null) {
+          if (param.value is Map<String, dynamic> && param.value['sql'] != null) {
             param
-              ..whereString = param.whereString
-                  .replaceAll('?', param.value['sql'].toString())
+              ..whereString = param.whereString.replaceAll('?', param.value['sql'].toString())
               ..dbType = DbType.integer
               ..value = param.value['args'];
           }
-          whereString +=
-              param.whereString.replaceAll('{field}', param.columnName);
+          whereString += param.whereString.replaceAll('{field}', param.columnName!);
         }
         if (!param.whereString.contains('?')) {
         } else {
@@ -8860,12 +7764,8 @@ class SongLyricEntityFilterBuilder extends SearchCriteria {
             case DbType.date:
             case DbType.datetime:
             case DbType.datetimeUtc:
-              param.value = param.value == null
-                  ? null
-                  : (param.value as DateTime).millisecondsSinceEpoch;
-              param.value2 = param.value2 == null
-                  ? null
-                  : (param.value2 as DateTime).millisecondsSinceEpoch;
+              param.value = param.value == null ? null : (param.value as DateTime).millisecondsSinceEpoch;
+              param.value2 = param.value2 == null ? null : (param.value2 as DateTime).millisecondsSinceEpoch;
               break;
             default:
           }
@@ -8886,10 +7786,9 @@ class SongLyricEntityFilterBuilder extends SearchCriteria {
         whereString += param.whereString;
       }
     }
-    if (SongLyricEntity._softDeleteActivated) {
+    if (SongLyric._softDeleteActivated) {
       if (whereString != '') {
-        whereString =
-            '${!_getIsDeleted ? 'ifnull(isDeleted,0)=0 AND' : ''} ($whereString)';
+        whereString = '${!_getIsDeleted ? 'ifnull(isDeleted,0)=0 AND' : ''} ($whereString)';
       } else if (!_getIsDeleted) {
         whereString = 'ifnull(isDeleted,0)=0';
       }
@@ -8905,48 +7804,37 @@ class SongLyricEntityFilterBuilder extends SearchCriteria {
       ..having = havingList.join(',');
   }
 
-  /// Deletes List<SongLyricEntity> bulk by query
+  /// Deletes List<SongLyric> bulk by query
   ///
   /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
   Future<BoolResult> delete([bool hardDelete = false]) async {
     _buildParameters();
-    var r = BoolResult();
-    // Check sub records where in (ExternalEntity) according to DeleteRule.NO_ACTION
-
-    final idListExternalEntityBYsong_lyricsId = toListPrimaryKeySQL(false);
-    final resExternalEntityBYsong_lyricsId = await ExternalEntity()
+    var r = BoolResult(success: false);
+    // Delete sub records where in (External) according to DeleteRule.CASCADE
+    final idListExternalBYsong_lyricsId = toListPrimaryKeySQL(false);
+    final resExternalBYsong_lyricsId = await External()
         .select()
-        .where(
-            'song_lyricsId IN (${idListExternalEntityBYsong_lyricsId['sql']})',
-            parameterValue: idListExternalEntityBYsong_lyricsId['args'])
-        .toCount();
-    if (resExternalEntityBYsong_lyricsId > 0) {
-      return BoolResult(
-          success: false,
-          errorMessage:
-              'SQFENTITY ERROR: The DELETE statement conflicted with the REFERENCE RELATIONSHIP (ExternalEntity.song_lyricsId)');
+        .where('song_lyricsId IN (${idListExternalBYsong_lyricsId['sql']})',
+            parameterValue: idListExternalBYsong_lyricsId['args'])
+        .delete(hardDelete);
+    if (!resExternalBYsong_lyricsId.success) {
+      return resExternalBYsong_lyricsId;
     }
-// Check sub records where in (SongbookRecordEntity) according to DeleteRule.NO_ACTION
-
-    final idListSongbookRecordEntityBYsong_lyricsId =
-        toListPrimaryKeySQL(false);
-    final resSongbookRecordEntityBYsong_lyricsId = await SongbookRecordEntity()
+// Delete sub records where in (SongbookRecord) according to DeleteRule.CASCADE
+    final idListSongbookRecordBYsong_lyricsId = toListPrimaryKeySQL(false);
+    final resSongbookRecordBYsong_lyricsId = await SongbookRecord()
         .select()
-        .where(
-            'song_lyricsId IN (${idListSongbookRecordEntityBYsong_lyricsId['sql']})',
-            parameterValue: idListSongbookRecordEntityBYsong_lyricsId['args'])
-        .toCount();
-    if (resSongbookRecordEntityBYsong_lyricsId > 0) {
-      return BoolResult(
-          success: false,
-          errorMessage:
-              'SQFENTITY ERROR: The DELETE statement conflicted with the REFERENCE RELATIONSHIP (SongbookRecordEntity.song_lyricsId)');
+        .where('song_lyricsId IN (${idListSongbookRecordBYsong_lyricsId['sql']})',
+            parameterValue: idListSongbookRecordBYsong_lyricsId['args'])
+        .delete(hardDelete);
+    if (!resSongbookRecordBYsong_lyricsId.success) {
+      return resSongbookRecordBYsong_lyricsId;
     }
 
-    if (SongLyricEntity._softDeleteActivated && !hardDelete) {
-      r = await _obj._mnSongLyricEntity.updateBatch(qparams, {'isDeleted': 1});
+    if (SongLyric._softDeleteActivated && !hardDelete) {
+      r = await _obj!._mnSongLyric.updateBatch(qparams, {'isDeleted': 1});
     } else {
-      r = await _obj._mnSongLyricEntity.delete(qparams);
+      r = await _obj!._mnSongLyric.delete(qparams);
     }
     return r;
   }
@@ -8958,14 +7846,14 @@ class SongLyricEntityFilterBuilder extends SearchCriteria {
   /// fieldName must be String. Value is dynamic, it can be any of the (int, bool, String.. )
   Future<BoolResult> update(Map<String, dynamic> values) {
     _buildParameters();
-    if (qparams.limit > 0 || qparams.offset > 0) {
+    if (qparams.limit! > 0 || qparams.offset! > 0) {
       qparams.whereString =
-          'id IN (SELECT id from song_lyrics ${qparams.whereString.isNotEmpty ? 'WHERE ${qparams.whereString}' : ''}${qparams.limit > 0 ? ' LIMIT ${qparams.limit}' : ''}${qparams.offset > 0 ? ' OFFSET ${qparams.offset}' : ''})';
+          'id IN (SELECT id from song_lyrics ${qparams.whereString!.isNotEmpty ? 'WHERE ${qparams.whereString}' : ''}${qparams.limit! > 0 ? ' LIMIT ${qparams.limit}' : ''}${qparams.offset! > 0 ? ' OFFSET ${qparams.offset}' : ''})';
     }
-    return _obj._mnSongLyricEntity.updateBatch(qparams, values);
+    return _obj!._mnSongLyric.updateBatch(qparams, values);
   }
 
-  /// This method always returns SongLyricEntity Obj if exist, otherwise returns null
+  /// This method always returns SongLyric Obj if exist, otherwise returns null
   ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
   ///
@@ -8978,87 +7866,61 @@ class SongLyricEntityFilterBuilder extends SearchCriteria {
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
   ///
-  /// <returns>List<SongLyricEntity>
-  Future<SongLyricEntity> toSingle(
-      {bool preload = false,
-      List<String> preloadFields,
-      bool loadParents = false,
-      List<String> loadedFields}) async {
+  /// <returns>List<SongLyric>
+  Future<SongLyric?> toSingle(
+      {bool preload = false, List<String>? preloadFields, bool loadParents = false, List<String>? loadedFields}) async {
     _pagesize = 1;
     _buildParameters();
-    final objFuture = _obj._mnSongLyricEntity.toList(qparams);
+    final objFuture = _obj!._mnSongLyric.toList(qparams);
     final data = await objFuture;
-    SongLyricEntity obj;
+    SongLyric? obj;
     if (data.isNotEmpty) {
-      obj = SongLyricEntity.fromMap(data[0] as Map<String, dynamic>);
+      obj = SongLyric.fromMap(data[0] as Map<String, dynamic>);
       // final List<String> _loadedFields = loadedFields ?? [];
 
       // RELATIONSHIPS PRELOAD CHILD
       if (preload) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedFields.contains('song_lyrics.plAuthorEntities') && */ (preloadFields ==
-                null ||
-            preloadFields.contains('plAuthorEntities'))) {
-          /*_loadedFields.add('song_lyrics.plAuthorEntities'); */
-          obj.plAuthorEntities = obj.plAuthorEntities ??
-              await obj.getAuthorEntities().toList(
-                  preload: preload,
-                  preloadFields: preloadFields,
-                  loadParents: false /*, loadedFields:_loadedFields*/);
+        if (/*!_loadedfields!.contains('song_lyrics.plAuthors') && */ (preloadFields == null ||
+            preloadFields.contains('plAuthors'))) {
+          /*_loadedfields!.add('song_lyrics.plAuthors'); */ obj.plAuthors = obj.plAuthors ??
+              await obj.getAuthors()!.toList(
+                  preload: preload, preloadFields: preloadFields, loadParents: false /*, loadedFields:_loadedFields*/);
         }
-        if (/*!_loadedFields.contains('song_lyrics.plExternalEntities') && */ (preloadFields ==
-                null ||
-            preloadFields.contains('plExternalEntities'))) {
-          /*_loadedFields.add('song_lyrics.plExternalEntities'); */
-          obj.plExternalEntities = obj.plExternalEntities ??
-              await obj.getExternalEntities().toList(
-                  preload: preload,
-                  preloadFields: preloadFields,
-                  loadParents: false /*, loadedFields:_loadedFields*/);
+        if (/*!_loadedfields!.contains('song_lyrics.plExternals') && */ (preloadFields == null ||
+            preloadFields.contains('plExternals'))) {
+          /*_loadedfields!.add('song_lyrics.plExternals'); */ obj.plExternals = obj.plExternals ??
+              await obj.getExternals()!.toList(
+                  preload: preload, preloadFields: preloadFields, loadParents: false /*, loadedFields:_loadedFields*/);
         }
-        if (/*!_loadedFields.contains('song_lyrics.plPlaylistEntities') && */ (preloadFields ==
-                null ||
-            preloadFields.contains('plPlaylistEntities'))) {
-          /*_loadedFields.add('song_lyrics.plPlaylistEntities'); */
-          obj.plPlaylistEntities = obj.plPlaylistEntities ??
-              await obj.getPlaylistEntities().toList(
-                  preload: preload,
-                  preloadFields: preloadFields,
-                  loadParents: false /*, loadedFields:_loadedFields*/);
+        if (/*!_loadedfields!.contains('song_lyrics.plPlaylists') && */ (preloadFields == null ||
+            preloadFields.contains('plPlaylists'))) {
+          /*_loadedfields!.add('song_lyrics.plPlaylists'); */ obj.plPlaylists = obj.plPlaylists ??
+              await obj.getPlaylists()!.toList(
+                  preload: preload, preloadFields: preloadFields, loadParents: false /*, loadedFields:_loadedFields*/);
         }
-        if (/*!_loadedFields.contains('song_lyrics.plSongbookRecordEntities') && */ (preloadFields ==
-                null ||
-            preloadFields.contains('plSongbookRecordEntities'))) {
-          /*_loadedFields.add('song_lyrics.plSongbookRecordEntities'); */
-          obj.plSongbookRecordEntities = obj.plSongbookRecordEntities ??
-              await obj.getSongbookRecordEntities().toList(
-                  preload: preload,
-                  preloadFields: preloadFields,
-                  loadParents: false /*, loadedFields:_loadedFields*/);
+        if (/*!_loadedfields!.contains('song_lyrics.plSongbookRecords') && */ (preloadFields == null ||
+            preloadFields.contains('plSongbookRecords'))) {
+          /*_loadedfields!.add('song_lyrics.plSongbookRecords'); */ obj.plSongbookRecords = obj.plSongbookRecords ??
+              await obj.getSongbookRecords()!.toList(
+                  preload: preload, preloadFields: preloadFields, loadParents: false /*, loadedFields:_loadedFields*/);
         }
-        if (/*!_loadedFields.contains('song_lyrics.plTagEntities') && */ (preloadFields ==
-                null ||
-            preloadFields.contains('plTagEntities'))) {
-          /*_loadedFields.add('song_lyrics.plTagEntities'); */
-          obj.plTagEntities = obj.plTagEntities ??
-              await obj.getTagEntities().toList(
-                  preload: preload,
-                  preloadFields: preloadFields,
-                  loadParents: false /*, loadedFields:_loadedFields*/);
+        if (/*!_loadedfields!.contains('song_lyrics.plTags') && */ (preloadFields == null ||
+            preloadFields.contains('plTags'))) {
+          /*_loadedfields!.add('song_lyrics.plTags'); */ obj.plTags = obj.plTags ??
+              await obj.getTags()!.toList(
+                  preload: preload, preloadFields: preloadFields, loadParents: false /*, loadedFields:_loadedFields*/);
         }
       } // END RELATIONSHIPS PRELOAD CHILD
 
       // RELATIONSHIPS PRELOAD
       if (preload || loadParents) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedFields.contains('songs.plSongEntity') && */ (preloadFields ==
-                null ||
+        if (/*!_loadedfields!.contains('songs.plSong') && */ (preloadFields == null ||
             loadParents ||
-            preloadFields.contains('plSongEntity'))) {
-          /*_loadedFields.add('songs.plSongEntity');*/
-          obj.plSongEntity = obj.plSongEntity ??
-              await obj.getSongEntity(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+            preloadFields.contains('plSong'))) {
+          /*_loadedfields!.add('songs.plSong');*/ obj.plSong =
+              obj.plSong ?? await obj.getSong(loadParents: loadParents /*, loadedFields: _loadedFields*/);
         }
       } // END RELATIONSHIPS PRELOAD
 
@@ -9068,23 +7930,21 @@ class SongLyricEntityFilterBuilder extends SearchCriteria {
     return obj;
   }
 
-  /// This method returns int. [SongLyricEntity]
+  /// This method returns int. [SongLyric]
   ///
   /// <returns>int
-  Future<int> toCount(
-      [VoidCallback Function(int c) songlyricentityCount]) async {
+  Future<int> toCount([VoidCallback Function(int c)? songlyricCount]) async {
     _buildParameters();
     qparams.selectColumns = ['COUNT(1) AS CNT'];
-    final songlyricentitiesFuture =
-        await _obj._mnSongLyricEntity.toList(qparams);
-    final int count = songlyricentitiesFuture[0]['CNT'] as int;
-    if (songlyricentityCount != null) {
-      songlyricentityCount(count);
+    final songlyricsFuture = await _obj!._mnSongLyric.toList(qparams);
+    final int count = songlyricsFuture[0]['CNT'] as int;
+    if (songlyricCount != null) {
+      songlyricCount(count);
     }
     return count;
   }
 
-  /// This method returns List<SongLyricEntity> [SongLyricEntity]
+  /// This method returns List<SongLyric> [SongLyric]
   ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
   ///
@@ -9097,24 +7957,20 @@ class SongLyricEntityFilterBuilder extends SearchCriteria {
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
   ///
-  /// <returns>List<SongLyricEntity>
-  Future<List<SongLyricEntity>> toList(
-      {bool preload = false,
-      List<String> preloadFields,
-      bool loadParents = false,
-      List<String> loadedFields}) async {
+  /// <returns>List<SongLyric>
+  Future<List<SongLyric>> toList(
+      {bool preload = false, List<String>? preloadFields, bool loadParents = false, List<String>? loadedFields}) async {
     final data = await toMapList();
-    final List<SongLyricEntity> songlyricentitiesData =
-        await SongLyricEntity.fromMapList(data,
-            preload: preload,
-            preloadFields: preloadFields,
-            loadParents: loadParents,
-            loadedFields: loadedFields,
-            setDefaultValues: qparams.selectColumns == null);
-    return songlyricentitiesData;
+    final List<SongLyric> songlyricsData = await SongLyric.fromMapList(data,
+        preload: preload,
+        preloadFields: preloadFields,
+        loadParents: loadParents,
+        loadedFields: loadedFields,
+        setDefaultValues: qparams.selectColumns == null);
+    return songlyricsData;
   }
 
-  /// This method returns Json String [SongLyricEntity]
+  /// This method returns Json String [SongLyric]
   Future<String> toJson() async {
     final list = <dynamic>[];
     final data = await toList();
@@ -9124,7 +7980,7 @@ class SongLyricEntityFilterBuilder extends SearchCriteria {
     return json.encode(list);
   }
 
-  /// This method returns Json String. [SongLyricEntity]
+  /// This method returns Json String. [SongLyric]
   Future<String> toJsonWithChilds() async {
     final list = <dynamic>[];
     final data = await toList();
@@ -9134,15 +7990,15 @@ class SongLyricEntityFilterBuilder extends SearchCriteria {
     return json.encode(list);
   }
 
-  /// This method returns List<dynamic>. [SongLyricEntity]
+  /// This method returns List<dynamic>. [SongLyric]
   ///
   /// <returns>List<dynamic>
   Future<List<dynamic>> toMapList() async {
     _buildParameters();
-    return await _obj._mnSongLyricEntity.toList(qparams);
+    return await _obj!._mnSongLyric.toList(qparams);
   }
 
-  /// This method returns Primary Key List SQL and Parameters retVal = Map<String,dynamic>. [SongLyricEntity]
+  /// This method returns Primary Key List SQL and Parameters retVal = Map<String,dynamic>. [SongLyric]
   ///
   /// retVal['sql'] = SQL statement string, retVal['args'] = whereArguments List<dynamic>;
   ///
@@ -9152,8 +8008,7 @@ class SongLyricEntityFilterBuilder extends SearchCriteria {
     if (buildParameters) {
       _buildParameters();
     }
-    _retVal['sql'] =
-        'SELECT `id` FROM song_lyrics WHERE ${qparams.whereString}';
+    _retVal['sql'] = 'SELECT `id` FROM song_lyrics WHERE ${qparams.whereString}';
     _retVal['args'] = qparams.whereArguments;
     return _retVal;
   }
@@ -9166,7 +8021,7 @@ class SongLyricEntityFilterBuilder extends SearchCriteria {
     }
     final List<int> idData = <int>[];
     qparams.selectColumns = ['id'];
-    final idFuture = await _obj._mnSongLyricEntity.toList(qparams);
+    final idFuture = await _obj!._mnSongLyric.toList(qparams);
 
     final int count = idFuture.length;
     for (int i = 0; i < count; i++) {
@@ -9175,13 +8030,13 @@ class SongLyricEntityFilterBuilder extends SearchCriteria {
     return idData;
   }
 
-  /// Returns List<dynamic> for selected columns. Use this method for 'groupBy' with min,max,avg..  [SongLyricEntity]
+  /// Returns List<dynamic> for selected columns. Use this method for 'groupBy' with min,max,avg..  [SongLyric]
   ///
   /// Sample usage: (see EXAMPLE 4.2 at https://github.com/hhtokpinar/sqfEntity#group-by)
   Future<List<dynamic>> toListObject() async {
     _buildParameters();
 
-    final objectFuture = _obj._mnSongLyricEntity.toList(qparams);
+    final objectFuture = _obj!._mnSongLyric.toList(qparams);
 
     final List<dynamic> objectsData = <dynamic>[];
     final data = await objectFuture;
@@ -9194,18 +8049,17 @@ class SongLyricEntityFilterBuilder extends SearchCriteria {
 
   /// Returns List<String> for selected first column
   ///
-  /// Sample usage: await SongLyricEntity.select(columnsToSelect: ['columnName']).toListString()
-  Future<List<String>> toListString(
-      [VoidCallback Function(List<String> o) listString]) async {
+  /// Sample usage: await SongLyric.select(columnsToSelect: ['columnName']).toListString()
+  Future<List<String>> toListString([VoidCallback Function(List<String> o)? listString]) async {
     _buildParameters();
 
-    final objectFuture = _obj._mnSongLyricEntity.toList(qparams);
+    final objectFuture = _obj!._mnSongLyric.toList(qparams);
 
     final List<String> objectsData = <String>[];
     final data = await objectFuture;
     final int count = data.length;
     for (int i = 0; i < count; i++) {
-      objectsData.add(data[i][qparams.selectColumns[0]].toString());
+      objectsData.add(data[i][qparams.selectColumns![0]].toString());
     }
     if (listString != null) {
       listString(objectsData);
@@ -9213,162 +8067,146 @@ class SongLyricEntityFilterBuilder extends SearchCriteria {
     return objectsData;
   }
 }
-// endregion SongLyricEntityFilterBuilder
+// endregion SongLyricFilterBuilder
 
-// region SongLyricEntityFields
-class SongLyricEntityFields {
-  static TableField _fId;
+// region SongLyricFields
+class SongLyricFields {
+  static TableField? _fId;
   static TableField get id {
     return _fId = _fId ?? SqlSyntax.setField(_fId, 'id', DbType.integer);
   }
 
-  static TableField _fName;
+  static TableField? _fName;
   static TableField get name {
     return _fName = _fName ?? SqlSyntax.setField(_fName, 'name', DbType.text);
   }
 
-  static TableField _fSecondaryName1;
-  static TableField get secondaryName1 {
-    return _fSecondaryName1 = _fSecondaryName1 ??
-        SqlSyntax.setField(_fSecondaryName1, 'secondaryName1', DbType.text);
+  static TableField? _fSecondary_name_1;
+  static TableField get secondary_name_1 {
+    return _fSecondary_name_1 =
+        _fSecondary_name_1 ?? SqlSyntax.setField(_fSecondary_name_1, 'secondary_name_1', DbType.text);
   }
 
-  static TableField _fSecondaryName2;
-  static TableField get secondaryName2 {
-    return _fSecondaryName2 = _fSecondaryName2 ??
-        SqlSyntax.setField(_fSecondaryName2, 'secondaryName2', DbType.text);
+  static TableField? _fSecondary_name_2;
+  static TableField get secondary_name_2 {
+    return _fSecondary_name_2 =
+        _fSecondary_name_2 ?? SqlSyntax.setField(_fSecondary_name_2, 'secondary_name_2', DbType.text);
   }
 
-  static TableField _fLyrics;
+  static TableField? _fLyrics;
   static TableField get lyrics {
-    return _fLyrics =
-        _fLyrics ?? SqlSyntax.setField(_fLyrics, 'lyrics', DbType.text);
+    return _fLyrics = _fLyrics ?? SqlSyntax.setField(_fLyrics, 'lyrics', DbType.text);
   }
 
-  static TableField _fLanguage;
-  static TableField get language {
-    return _fLanguage =
-        _fLanguage ?? SqlSyntax.setField(_fLanguage, 'language', DbType.text);
+  static TableField? _fLang_string;
+  static TableField get lang_string {
+    return _fLang_string = _fLang_string ?? SqlSyntax.setField(_fLang_string, 'lang_string', DbType.text);
   }
 
-  static TableField _fType;
-  static TableField get type {
-    return _fType =
-        _fType ?? SqlSyntax.setField(_fType, 'type', DbType.integer);
+  static TableField? _fType_enum;
+  static TableField get type_enum {
+    return _fType_enum = _fType_enum ?? SqlSyntax.setField(_fType_enum, 'type_enum', DbType.text);
   }
 
-  static TableField _fLilypond;
-  static TableField get lilypond {
-    return _fLilypond =
-        _fLilypond ?? SqlSyntax.setField(_fLilypond, 'lilypond', DbType.text);
+  static TableField? _fLilypond_svg;
+  static TableField get lilypond_svg {
+    return _fLilypond_svg = _fLilypond_svg ?? SqlSyntax.setField(_fLilypond_svg, 'lilypond_svg', DbType.text);
   }
 
-  static TableField _fFavoriteOrder;
-  static TableField get favoriteOrder {
-    return _fFavoriteOrder = _fFavoriteOrder ??
-        SqlSyntax.setField(_fFavoriteOrder, 'favoriteOrder', DbType.integer);
+  static TableField? _fFavorite_rank;
+  static TableField get favorite_rank {
+    return _fFavorite_rank = _fFavorite_rank ?? SqlSyntax.setField(_fFavorite_rank, 'favorite_rank', DbType.integer);
   }
 
-  static TableField _fTransposition;
+  static TableField? _fTransposition;
   static TableField get transposition {
-    return _fTransposition = _fTransposition ??
-        SqlSyntax.setField(_fTransposition, 'transposition', DbType.integer);
+    return _fTransposition = _fTransposition ?? SqlSyntax.setField(_fTransposition, 'transposition', DbType.integer);
   }
 
-  static TableField _fShowChords;
-  static TableField get showChords {
-    return _fShowChords = _fShowChords ??
-        SqlSyntax.setField(_fShowChords, 'showChords', DbType.bool);
+  static TableField? _fShow_chords;
+  static TableField get show_chords {
+    return _fShow_chords = _fShow_chords ?? SqlSyntax.setField(_fShow_chords, 'show_chords', DbType.bool);
   }
 
-  static TableField _fAccidentals;
+  static TableField? _fAccidentals;
   static TableField get accidentals {
-    return _fAccidentals = _fAccidentals ??
-        SqlSyntax.setField(_fAccidentals, 'accidentals', DbType.integer);
+    return _fAccidentals = _fAccidentals ?? SqlSyntax.setField(_fAccidentals, 'accidentals', DbType.integer);
   }
 
-  static TableField _fSongsId;
+  static TableField? _fSongsId;
   static TableField get songsId {
-    return _fSongsId =
-        _fSongsId ?? SqlSyntax.setField(_fSongsId, 'songsId', DbType.integer);
+    return _fSongsId = _fSongsId ?? SqlSyntax.setField(_fSongsId, 'songsId', DbType.integer);
   }
 }
-// endregion SongLyricEntityFields
+// endregion SongLyricFields
 
-//region SongLyricEntityManager
-class SongLyricEntityManager extends SqfEntityProvider {
-  SongLyricEntityManager()
-      : super(Model(),
-            tableName: _tableName,
-            primaryKeyList: _primaryKeyList,
-            whereStr: _whereStr);
+//region SongLyricManager
+class SongLyricManager extends SqfEntityProvider {
+  SongLyricManager() : super(Model(), tableName: _tableName, primaryKeyList: _primaryKeyList, whereStr: _whereStr);
   static final String _tableName = 'song_lyrics';
   static final List<String> _primaryKeyList = ['id'];
   static final String _whereStr = 'id=?';
 }
 
-//endregion SongLyricEntityManager
-// region TagEntity
-class TagEntity {
-  TagEntity({this.id, this.name, this.type}) {
+//endregion SongLyricManager
+// region Tag
+class Tag {
+  Tag({this.id, this.name, this.type_enum}) {
     _setDefaultValues();
   }
-  TagEntity.withFields(this.id, this.name, this.type) {
+  Tag.withFields(this.id, this.name, this.type_enum) {
     _setDefaultValues();
   }
-  TagEntity.withId(this.id, this.name, this.type) {
+  Tag.withId(this.id, this.name, this.type_enum) {
     _setDefaultValues();
   }
-  TagEntity.fromMap(Map<String, dynamic> o, {bool setDefaultValues = true}) {
+  // fromMap v2.0
+  Tag.fromMap(Map<String, dynamic> o, {bool setDefaultValues = true}) {
     if (setDefaultValues) {
       _setDefaultValues();
     }
     id = int.tryParse(o['id'].toString());
     if (o['name'] != null) {
-      name = o['name'] as String;
+      name = o['name'].toString();
     }
-    if (o['type'] != null) {
-      type = int.tryParse(o['type'].toString());
+    if (o['type_enum'] != null) {
+      type_enum = o['type_enum'].toString();
     }
 
     isSaved = true;
   }
-  // FIELDS (TagEntity)
-  int id;
-  String name;
-  int type;
-  bool isSaved;
-  BoolResult saveResult;
-  // end FIELDS (TagEntity)
+  // FIELDS (Tag)
+  int? id;
+  String? name;
+  String? type_enum;
+  bool? isSaved;
+  BoolResult? saveResult;
+  // end FIELDS (Tag)
 
-// COLLECTIONS & VIRTUALS (TagEntity)
+// COLLECTIONS & VIRTUALS (Tag)
   ///(RelationType.MANY_TO_MANY) (song_lyricsTags) to load children of items to this field, use preload parameter. Ex: toList(preload:true) or toSingle(preload:true) or getById(preload:true)
-  /// You can also specify this object into certain preload fields. Ex: toList(preload:true, preloadFields:['plSongLyricEntities', 'plField2'..]) or so on..
-  List<SongLyricEntity> plSongLyricEntities;
+  /// You can also specify this object into certain preload fields!. Ex: toList(preload:true, preloadFields:['plSongLyrics', 'plField2'..]) or so on..
+  List<SongLyric>? plSongLyrics;
 
-  /// get SongLyricEntity(s) filtered by song_lyricsId IN song_lyricsTags
-  SongLyricEntityFilterBuilder getSongLyricEntities(
-      {List<String> columnsToSelect, bool getIsDeleted}) {
-    return SongLyricEntity()
+  /// get SongLyric(s) filtered by song_lyricsId IN song_lyricsTags
+  SongLyricFilterBuilder? getSongLyrics({List<String>? columnsToSelect, bool? getIsDeleted}) {
+    return SongLyric()
         .select(columnsToSelect: columnsToSelect, getIsDeleted: getIsDeleted)
-        .where(
-            'id IN (SELECT song_lyricsId FROM song_lyricsTags WHERE tagsId=?)',
-            parameterValue: id)
+        .where('id IN (SELECT song_lyricsId FROM song_lyricsTags WHERE tagsId=?)', parameterValue: id)
         .and;
   }
 
-// END COLLECTIONS & VIRTUALS (TagEntity)
+// END COLLECTIONS & VIRTUALS (Tag)
 
   static const bool _softDeleteActivated = false;
-  TagEntityManager __mnTagEntity;
+  TagManager? __mnTag;
 
-  TagEntityManager get _mnTagEntity {
-    return __mnTagEntity = __mnTagEntity ?? TagEntityManager();
+  TagManager get _mnTag {
+    return __mnTag = __mnTag ?? TagManager();
   }
 
   // METHODS
-  Map<String, dynamic> toMap(
-      {bool forQuery = false, bool forJson = false, bool forView = false}) {
+  Map<String, dynamic> toMap({bool forQuery = false, bool forJson = false, bool forView = false}) {
     final map = <String, dynamic>{};
     if (id != null) {
       map['id'] = id;
@@ -9377,17 +8215,15 @@ class TagEntity {
       map['name'] = name;
     }
 
-    if (type != null) {
-      map['type'] = type;
+    if (type_enum != null) {
+      map['type_enum'] = type_enum;
     }
 
     return map;
   }
 
   Future<Map<String, dynamic>> toMapWithChildren(
-      [bool forQuery = false,
-      bool forJson = false,
-      bool forView = false]) async {
+      [bool forQuery = false, bool forJson = false, bool forView = false]) async {
     final map = <String, dynamic>{};
     if (id != null) {
       map['id'] = id;
@@ -9396,93 +8232,82 @@ class TagEntity {
       map['name'] = name;
     }
 
-    if (type != null) {
-      map['type'] = type;
+    if (type_enum != null) {
+      map['type_enum'] = type_enum;
     }
 
-// COLLECTIONS (TagEntity)
+// COLLECTIONS (Tag)
     if (!forQuery) {
-      map['SongLyricEntities'] = await getSongLyricEntities().toMapList();
+      map['SongLyrics'] = await getSongLyrics()!.toMapList();
     }
-// END COLLECTIONS (TagEntity)
+// END COLLECTIONS (Tag)
 
     return map;
   }
 
-  /// This method returns Json String [TagEntity]
+  /// This method returns Json String [Tag]
   String toJson() {
     return json.encode(toMap(forJson: true));
   }
 
-  /// This method returns Json String [TagEntity]
+  /// This method returns Json String [Tag]
   Future<String> toJsonWithChilds() async {
     return json.encode(await toMapWithChildren(false, true));
   }
 
   List<dynamic> toArgs() {
-    return [id, name, type];
+    return [id, name, type_enum];
   }
 
   List<dynamic> toArgsWithIds() {
-    return [id, name, type];
+    return [id, name, type_enum];
   }
 
-  static Future<List<TagEntity>> fromWebUrl(String url,
-      {Map<String, String> headers}) async {
+  static Future<List<Tag>?> fromWebUrl(Uri uri, {Map<String, String>? headers}) async {
     try {
-      final response = await http.get(url, headers: headers);
+      final response = await http.get(uri, headers: headers);
       return await fromJson(response.body);
     } catch (e) {
-      print(
-          'SQFENTITY ERROR TagEntity.fromWebUrl: ErrorMessage: ${e.toString()}');
+      print('SQFENTITY ERROR Tag.fromWebUrl: ErrorMessage: ${e.toString()}');
       return null;
     }
   }
 
-  Future<http.Response> postUrl(String url, {Map<String, String> headers}) {
-    return http.post(url, headers: headers, body: toJson());
+  Future<http.Response> postUrl(Uri uri, {Map<String, String>? headers}) {
+    return http.post(uri, headers: headers, body: toJson());
   }
 
-  static Future<List<TagEntity>> fromJson(String jsonBody) async {
+  static Future<List<Tag>> fromJson(String jsonBody) async {
     final Iterable list = await json.decode(jsonBody) as Iterable;
-    var objList = <TagEntity>[];
+    var objList = <Tag>[];
     try {
-      objList = list
-          .map((tagentity) =>
-              TagEntity.fromMap(tagentity as Map<String, dynamic>))
-          .toList();
+      objList = list.map((tag) => Tag.fromMap(tag as Map<String, dynamic>)).toList();
     } catch (e) {
-      print(
-          'SQFENTITY ERROR TagEntity.fromJson: ErrorMessage: ${e.toString()}');
+      print('SQFENTITY ERROR Tag.fromJson: ErrorMessage: ${e.toString()}');
     }
     return objList;
   }
 
-  static Future<List<TagEntity>> fromMapList(List<dynamic> data,
+  static Future<List<Tag>> fromMapList(List<dynamic> data,
       {bool preload = false,
-      List<String> preloadFields,
+      List<String>? preloadFields,
       bool loadParents = false,
-      List<String> loadedFields,
+      List<String>? loadedFields,
       bool setDefaultValues = true}) async {
-    final List<TagEntity> objList = <TagEntity>[];
+    final List<Tag> objList = <Tag>[];
     loadedFields = loadedFields ?? [];
     for (final map in data) {
-      final obj = TagEntity.fromMap(map as Map<String, dynamic>,
-          setDefaultValues: setDefaultValues);
+      final obj = Tag.fromMap(map as Map<String, dynamic>, setDefaultValues: setDefaultValues);
       // final List<String> _loadedFields = List<String>.from(loadedFields);
 
       // RELATIONSHIPS PRELOAD CHILD
       if (preload) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedFields.contains('tags.plSongLyricEntities') && */ (preloadFields ==
-                null ||
-            preloadFields.contains('plSongLyricEntities'))) {
-          /*_loadedFields.add('tags.plSongLyricEntities'); */
-          obj.plSongLyricEntities = obj.plSongLyricEntities ??
-              await obj.getSongLyricEntities().toList(
-                  preload: preload,
-                  preloadFields: preloadFields,
-                  loadParents: false /*, loadedFields:_loadedFields*/);
+        if (/*!_loadedfields!.contains('tags.plSongLyrics') && */ (preloadFields == null ||
+            preloadFields.contains('plSongLyrics'))) {
+          /*_loadedfields!.add('tags.plSongLyrics'); */ obj.plSongLyrics = obj.plSongLyrics ??
+              await obj.getSongLyrics()!.toList(
+                  preload: preload, preloadFields: preloadFields, loadParents: false /*, loadedFields:_loadedFields*/);
         }
       } // END RELATIONSHIPS PRELOAD CHILD
 
@@ -9491,9 +8316,9 @@ class TagEntity {
     return objList;
   }
 
-  /// returns TagEntity by ID if exist, otherwise returns null
+  /// returns Tag by ID if exist, otherwise returns null
   ///
-  /// Primary Keys: int id
+  /// Primary Keys: int? id
   ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
   ///
@@ -9506,33 +8331,26 @@ class TagEntity {
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
   ///
-  /// <returns>returns TagEntity if exist, otherwise returns null
-  Future<TagEntity> getById(int id,
-      {bool preload = false,
-      List<String> preloadFields,
-      bool loadParents = false,
-      List<String> loadedFields}) async {
+  /// <returns>returns Tag if exist, otherwise returns null
+  Future<Tag?> getById(int? id,
+      {bool preload = false, List<String>? preloadFields, bool loadParents = false, List<String>? loadedFields}) async {
     if (id == null) {
       return null;
     }
-    TagEntity obj;
-    final data = await _mnTagEntity.getById([id]);
+    Tag? obj;
+    final data = await _mnTag.getById([id]);
     if (data.length != 0) {
-      obj = TagEntity.fromMap(data[0] as Map<String, dynamic>);
+      obj = Tag.fromMap(data[0] as Map<String, dynamic>);
       // final List<String> _loadedFields = loadedFields ?? [];
 
       // RELATIONSHIPS PRELOAD CHILD
       if (preload) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedFields.contains('tags.plSongLyricEntities') && */ (preloadFields ==
-                null ||
-            preloadFields.contains('plSongLyricEntities'))) {
-          /*_loadedFields.add('tags.plSongLyricEntities'); */
-          obj.plSongLyricEntities = obj.plSongLyricEntities ??
-              await obj.getSongLyricEntities().toList(
-                  preload: preload,
-                  preloadFields: preloadFields,
-                  loadParents: false /*, loadedFields:_loadedFields*/);
+        if (/*!_loadedfields!.contains('tags.plSongLyrics') && */ (preloadFields == null ||
+            preloadFields.contains('plSongLyrics'))) {
+          /*_loadedfields!.add('tags.plSongLyrics'); */ obj.plSongLyrics = obj.plSongLyrics ??
+              await obj.getSongLyrics()!.toList(
+                  preload: preload, preloadFields: preloadFields, loadParents: false /*, loadedFields:_loadedFields*/);
         }
       } // END RELATIONSHIPS PRELOAD CHILD
 
@@ -9542,101 +8360,90 @@ class TagEntity {
     return obj;
   }
 
-  /// Saves the (TagEntity) object. If the id field is null, saves as a new record and returns new id, if id is not null then updates record
+  /// Saves the (Tag) object. If the id field is null, saves as a new record and returns new id, if id is not null then updates record
 
   /// <returns>Returns id
-  Future<int> save() async {
-    if (id == null || id == 0 || !isSaved) {
-      await _mnTagEntity.insert(this);
-      if (saveResult != null && saveResult.success) {
+  Future<int?> save() async {
+    if (id == null || id == 0 || !isSaved!) {
+      await _mnTag.insert(this);
+      if (saveResult!.success) {
         isSaved = true;
       }
     } else {
       // id= await _upsert(); // removed in sqfentity_gen 1.3.0+6
-      await _mnTagEntity.update(this);
+      await _mnTag.update(this);
     }
 
     return id;
   }
 
-  /// saveAll method saves the sent List<TagEntity> as a bulk in one transaction
+  /// saveAll method saves the sent List<Tag> as a bulk in one transaction
   ///
   /// Returns a <List<BoolResult>>
-  static Future<List<dynamic>> saveAll(List<TagEntity> tagentities) async {
-    // final results = _mnTagEntity.saveAll('INSERT OR REPLACE INTO tags (id,name, type)  VALUES (?,?,?)',tagentities);
+  static Future<List<dynamic>> saveAll(List<Tag> tags) async {
+    // final results = _mnTag.saveAll('INSERT OR REPLACE INTO tags (id,name, type_enum)  VALUES (?,?,?)',tags);
     // return results; removed in sqfentity_gen 1.3.0+6
     await Model().batchStart();
-    for (final obj in tagentities) {
+    for (final obj in tags) {
       await obj.save();
     }
     //    return Model().batchCommit();
     final result = await Model().batchCommit();
 
-    return result;
+    return result!;
   }
 
   /// Updates if the record exists, otherwise adds a new row
 
   /// <returns>Returns id
-  Future<int> upsert() async {
+
+  Future<int?> upsert() async {
     try {
-      if (await _mnTagEntity.rawInsert(
-              'INSERT OR REPLACE INTO tags (id,name, type)  VALUES (?,?,?)',
-              [id, name, type]) ==
-          1) {
-        saveResult = BoolResult(
-            success: true,
-            successMessage: 'TagEntity id=$id updated successfully');
+      final result = await _mnTag
+          .rawInsert('INSERT OR REPLACE INTO tags (id,name, type_enum)  VALUES (?,?,?)', [id, name, type_enum]);
+      if (result! > 0) {
+        saveResult = BoolResult(success: true, successMessage: 'Tag id=$id updated successfully');
       } else {
-        saveResult = BoolResult(
-            success: false, errorMessage: 'TagEntity id=$id did not update');
+        saveResult = BoolResult(success: false, errorMessage: 'Tag id=$id did not update');
       }
       return id;
     } catch (e) {
-      saveResult = BoolResult(
-          success: false,
-          errorMessage: 'TagEntity Save failed. Error: ${e.toString()}');
-      return 0;
+      saveResult = BoolResult(success: false, errorMessage: 'Tag Save failed. Error: ${e.toString()}');
+      return null;
     }
   }
 
-  /// inserts or replaces the sent List<<TagEntity>> as a bulk in one transaction.
+  /// inserts or replaces the sent List<<Tag>> as a bulk in one transaction.
   ///
   /// upsertAll() method is faster then saveAll() method. upsertAll() should be used when you are sure that the primary key is greater than zero
   ///
   /// Returns a BoolCommitResult
-  Future<BoolCommitResult> upsertAll(List<TagEntity> tagentities) async {
-    final results = await _mnTagEntity.rawInsertAll(
-        'INSERT OR REPLACE INTO tags (id,name, type)  VALUES (?,?,?)',
-        tagentities);
+  Future<BoolCommitResult> upsertAll(List<Tag> tags) async {
+    final results = await _mnTag.rawInsertAll('INSERT OR REPLACE INTO tags (id,name, type_enum)  VALUES (?,?,?)', tags);
     return results;
   }
 
-  /// Deletes TagEntity
+  /// Deletes Tag
 
   /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
+
   Future<BoolResult> delete([bool hardDelete = false]) async {
-    print('SQFENTITIY: delete TagEntity invoked (id=$id)');
+    print('SQFENTITIY: delete Tag invoked (id=$id)');
     if (!_softDeleteActivated || hardDelete) {
-      return _mnTagEntity
-          .delete(QueryParams(whereString: 'id=?', whereArguments: [id]));
+      return _mnTag.delete(QueryParams(whereString: 'id=?', whereArguments: [id]));
     } else {
-      return _mnTagEntity.updateBatch(
-          QueryParams(whereString: 'id=?', whereArguments: [id]),
-          {'isDeleted': 1});
+      return _mnTag.updateBatch(QueryParams(whereString: 'id=?', whereArguments: [id]), {'isDeleted': 1});
     }
   }
 
-  TagEntityFilterBuilder select(
-      {List<String> columnsToSelect, bool getIsDeleted}) {
-    return TagEntityFilterBuilder(this)
+  TagFilterBuilder select({List<String>? columnsToSelect, bool? getIsDeleted}) {
+    return TagFilterBuilder(this)
       .._getIsDeleted = getIsDeleted == true
       ..qparams.selectColumns = columnsToSelect;
   }
 
-  TagEntityFilterBuilder distinct(
-      {List<String> columnsToSelect, bool getIsDeleted}) {
-    return TagEntityFilterBuilder(this)
+  TagFilterBuilder distinct({List<String>? columnsToSelect, bool? getIsDeleted}) {
+    return TagFilterBuilder(this)
       .._getIsDeleted = getIsDeleted == true
       ..qparams.selectColumns = columnsToSelect
       ..qparams.distinct = true;
@@ -9646,9 +8453,9 @@ class TagEntity {
     isSaved = false;
   }
   // END METHODS
-  // CUSTOM CODES
+  // BEGIN CUSTOM CODE
   /*
-      you must define customCode property of your SqfEntityTable constant for ex:
+      you can define customCode property of your SqfEntityTable constant. For example:
       const tablePerson = SqfEntityTable(
       tableName: 'person',
       primaryKeyName: 'id',
@@ -9664,235 +8471,176 @@ class TagEntity {
        }
       ''');
      */
-  // END CUSTOM CODES
+  // END CUSTOM CODE
 }
-// endregion tagentity
+// endregion tag
 
-// region TagEntityField
-class TagEntityField extends SearchCriteria {
-  TagEntityField(this.tagentityFB) {
-    param = DbParameter();
-  }
-  DbParameter param;
+// region TagField
+class TagField extends SearchCriteria {
+  TagField(this.tagFB);
+  // { param = DbParameter(); }
+  DbParameter param = DbParameter();
   String _waitingNot = '';
-  TagEntityFilterBuilder tagentityFB;
+  TagFilterBuilder tagFB;
 
-  TagEntityField get not {
+  TagField get not {
     _waitingNot = ' NOT ';
     return this;
   }
 
-  TagEntityFilterBuilder equals(dynamic pValue) {
+  TagFilterBuilder equals(dynamic pValue) {
     param.expression = '=';
-    tagentityFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, tagentityFB.parameters, param, SqlSyntax.EQuals,
-            tagentityFB._addedBlocks)
-        : setCriteria(pValue, tagentityFB.parameters, param,
-            SqlSyntax.NotEQuals, tagentityFB._addedBlocks);
+    tagFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, tagFB.parameters, param, SqlSyntax.EQuals, tagFB._addedBlocks)
+        : setCriteria(pValue, tagFB.parameters, param, SqlSyntax.NotEQuals, tagFB._addedBlocks);
     _waitingNot = '';
-    tagentityFB._addedBlocks.needEndBlock[tagentityFB._blockIndex] =
-        tagentityFB._addedBlocks.retVal;
-    return tagentityFB;
+    tagFB._addedBlocks.needEndBlock![tagFB._blockIndex] = tagFB._addedBlocks.retVal;
+    return tagFB;
   }
 
-  TagEntityFilterBuilder equalsOrNull(dynamic pValue) {
+  TagFilterBuilder equalsOrNull(dynamic pValue) {
     param.expression = '=';
-    tagentityFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, tagentityFB.parameters, param,
-            SqlSyntax.EQualsOrNull, tagentityFB._addedBlocks)
-        : setCriteria(pValue, tagentityFB.parameters, param,
-            SqlSyntax.NotEQualsOrNull, tagentityFB._addedBlocks);
+    tagFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, tagFB.parameters, param, SqlSyntax.EQualsOrNull, tagFB._addedBlocks)
+        : setCriteria(pValue, tagFB.parameters, param, SqlSyntax.NotEQualsOrNull, tagFB._addedBlocks);
     _waitingNot = '';
-    tagentityFB._addedBlocks.needEndBlock[tagentityFB._blockIndex] =
-        tagentityFB._addedBlocks.retVal;
-    return tagentityFB;
+    tagFB._addedBlocks.needEndBlock![tagFB._blockIndex] = tagFB._addedBlocks.retVal;
+    return tagFB;
   }
 
-  TagEntityFilterBuilder isNull() {
-    tagentityFB._addedBlocks = setCriteria(
-        0,
-        tagentityFB.parameters,
-        param,
-        SqlSyntax.IsNULL.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-        tagentityFB._addedBlocks);
+  TagFilterBuilder isNull() {
+    tagFB._addedBlocks = setCriteria(
+        0, tagFB.parameters, param, SqlSyntax.IsNULL.replaceAll(SqlSyntax.notKeyword, _waitingNot), tagFB._addedBlocks);
     _waitingNot = '';
-    tagentityFB._addedBlocks.needEndBlock[tagentityFB._blockIndex] =
-        tagentityFB._addedBlocks.retVal;
-    return tagentityFB;
+    tagFB._addedBlocks.needEndBlock![tagFB._blockIndex] = tagFB._addedBlocks.retVal;
+    return tagFB;
   }
 
-  TagEntityFilterBuilder contains(dynamic pValue) {
+  TagFilterBuilder contains(dynamic pValue) {
     if (pValue != null) {
-      tagentityFB._addedBlocks = setCriteria(
-          '%${pValue.toString()}%',
-          tagentityFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          tagentityFB._addedBlocks);
+      tagFB._addedBlocks = setCriteria('%${pValue.toString()}%', tagFB.parameters, param,
+          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot), tagFB._addedBlocks);
       _waitingNot = '';
-      tagentityFB._addedBlocks.needEndBlock[tagentityFB._blockIndex] =
-          tagentityFB._addedBlocks.retVal;
+      tagFB._addedBlocks.needEndBlock![tagFB._blockIndex] = tagFB._addedBlocks.retVal;
     }
-    return tagentityFB;
+    return tagFB;
   }
 
-  TagEntityFilterBuilder startsWith(dynamic pValue) {
+  TagFilterBuilder startsWith(dynamic pValue) {
     if (pValue != null) {
-      tagentityFB._addedBlocks = setCriteria(
-          '${pValue.toString()}%',
-          tagentityFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          tagentityFB._addedBlocks);
+      tagFB._addedBlocks = setCriteria('${pValue.toString()}%', tagFB.parameters, param,
+          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot), tagFB._addedBlocks);
       _waitingNot = '';
-      tagentityFB._addedBlocks.needEndBlock[tagentityFB._blockIndex] =
-          tagentityFB._addedBlocks.retVal;
-      tagentityFB._addedBlocks.needEndBlock[tagentityFB._blockIndex] =
-          tagentityFB._addedBlocks.retVal;
+      tagFB._addedBlocks.needEndBlock![tagFB._blockIndex] = tagFB._addedBlocks.retVal;
+      tagFB._addedBlocks.needEndBlock![tagFB._blockIndex] = tagFB._addedBlocks.retVal;
     }
-    return tagentityFB;
+    return tagFB;
   }
 
-  TagEntityFilterBuilder endsWith(dynamic pValue) {
+  TagFilterBuilder endsWith(dynamic pValue) {
     if (pValue != null) {
-      tagentityFB._addedBlocks = setCriteria(
-          '%${pValue.toString()}',
-          tagentityFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          tagentityFB._addedBlocks);
+      tagFB._addedBlocks = setCriteria('%${pValue.toString()}', tagFB.parameters, param,
+          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot), tagFB._addedBlocks);
       _waitingNot = '';
-      tagentityFB._addedBlocks.needEndBlock[tagentityFB._blockIndex] =
-          tagentityFB._addedBlocks.retVal;
+      tagFB._addedBlocks.needEndBlock![tagFB._blockIndex] = tagFB._addedBlocks.retVal;
     }
-    return tagentityFB;
+    return tagFB;
   }
 
-  TagEntityFilterBuilder between(dynamic pFirst, dynamic pLast) {
+  TagFilterBuilder between(dynamic pFirst, dynamic pLast) {
     if (pFirst != null && pLast != null) {
-      tagentityFB._addedBlocks = setCriteria(
-          pFirst,
-          tagentityFB.parameters,
-          param,
-          SqlSyntax.Between.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          tagentityFB._addedBlocks,
-          pLast);
+      tagFB._addedBlocks = setCriteria(pFirst, tagFB.parameters, param,
+          SqlSyntax.Between.replaceAll(SqlSyntax.notKeyword, _waitingNot), tagFB._addedBlocks, pLast);
     } else if (pFirst != null) {
       if (_waitingNot != '') {
-        tagentityFB._addedBlocks = setCriteria(pFirst, tagentityFB.parameters,
-            param, SqlSyntax.LessThan, tagentityFB._addedBlocks);
+        tagFB._addedBlocks = setCriteria(pFirst, tagFB.parameters, param, SqlSyntax.LessThan, tagFB._addedBlocks);
       } else {
-        tagentityFB._addedBlocks = setCriteria(pFirst, tagentityFB.parameters,
-            param, SqlSyntax.GreaterThanOrEquals, tagentityFB._addedBlocks);
+        tagFB._addedBlocks =
+            setCriteria(pFirst, tagFB.parameters, param, SqlSyntax.GreaterThanOrEquals, tagFB._addedBlocks);
       }
     } else if (pLast != null) {
       if (_waitingNot != '') {
-        tagentityFB._addedBlocks = setCriteria(pLast, tagentityFB.parameters,
-            param, SqlSyntax.GreaterThan, tagentityFB._addedBlocks);
+        tagFB._addedBlocks = setCriteria(pLast, tagFB.parameters, param, SqlSyntax.GreaterThan, tagFB._addedBlocks);
       } else {
-        tagentityFB._addedBlocks = setCriteria(pLast, tagentityFB.parameters,
-            param, SqlSyntax.LessThanOrEquals, tagentityFB._addedBlocks);
+        tagFB._addedBlocks =
+            setCriteria(pLast, tagFB.parameters, param, SqlSyntax.LessThanOrEquals, tagFB._addedBlocks);
       }
     }
     _waitingNot = '';
-    tagentityFB._addedBlocks.needEndBlock[tagentityFB._blockIndex] =
-        tagentityFB._addedBlocks.retVal;
-    return tagentityFB;
+    tagFB._addedBlocks.needEndBlock![tagFB._blockIndex] = tagFB._addedBlocks.retVal;
+    return tagFB;
   }
 
-  TagEntityFilterBuilder greaterThan(dynamic pValue) {
+  TagFilterBuilder greaterThan(dynamic pValue) {
     param.expression = '>';
-    tagentityFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, tagentityFB.parameters, param,
-            SqlSyntax.GreaterThan, tagentityFB._addedBlocks)
-        : setCriteria(pValue, tagentityFB.parameters, param,
-            SqlSyntax.LessThanOrEquals, tagentityFB._addedBlocks);
+    tagFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, tagFB.parameters, param, SqlSyntax.GreaterThan, tagFB._addedBlocks)
+        : setCriteria(pValue, tagFB.parameters, param, SqlSyntax.LessThanOrEquals, tagFB._addedBlocks);
     _waitingNot = '';
-    tagentityFB._addedBlocks.needEndBlock[tagentityFB._blockIndex] =
-        tagentityFB._addedBlocks.retVal;
-    return tagentityFB;
+    tagFB._addedBlocks.needEndBlock![tagFB._blockIndex] = tagFB._addedBlocks.retVal;
+    return tagFB;
   }
 
-  TagEntityFilterBuilder lessThan(dynamic pValue) {
+  TagFilterBuilder lessThan(dynamic pValue) {
     param.expression = '<';
-    tagentityFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, tagentityFB.parameters, param, SqlSyntax.LessThan,
-            tagentityFB._addedBlocks)
-        : setCriteria(pValue, tagentityFB.parameters, param,
-            SqlSyntax.GreaterThanOrEquals, tagentityFB._addedBlocks);
+    tagFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, tagFB.parameters, param, SqlSyntax.LessThan, tagFB._addedBlocks)
+        : setCriteria(pValue, tagFB.parameters, param, SqlSyntax.GreaterThanOrEquals, tagFB._addedBlocks);
     _waitingNot = '';
-    tagentityFB._addedBlocks.needEndBlock[tagentityFB._blockIndex] =
-        tagentityFB._addedBlocks.retVal;
-    return tagentityFB;
+    tagFB._addedBlocks.needEndBlock![tagFB._blockIndex] = tagFB._addedBlocks.retVal;
+    return tagFB;
   }
 
-  TagEntityFilterBuilder greaterThanOrEquals(dynamic pValue) {
+  TagFilterBuilder greaterThanOrEquals(dynamic pValue) {
     param.expression = '>=';
-    tagentityFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, tagentityFB.parameters, param,
-            SqlSyntax.GreaterThanOrEquals, tagentityFB._addedBlocks)
-        : setCriteria(pValue, tagentityFB.parameters, param, SqlSyntax.LessThan,
-            tagentityFB._addedBlocks);
+    tagFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, tagFB.parameters, param, SqlSyntax.GreaterThanOrEquals, tagFB._addedBlocks)
+        : setCriteria(pValue, tagFB.parameters, param, SqlSyntax.LessThan, tagFB._addedBlocks);
     _waitingNot = '';
-    tagentityFB._addedBlocks.needEndBlock[tagentityFB._blockIndex] =
-        tagentityFB._addedBlocks.retVal;
-    return tagentityFB;
+    tagFB._addedBlocks.needEndBlock![tagFB._blockIndex] = tagFB._addedBlocks.retVal;
+    return tagFB;
   }
 
-  TagEntityFilterBuilder lessThanOrEquals(dynamic pValue) {
+  TagFilterBuilder lessThanOrEquals(dynamic pValue) {
     param.expression = '<=';
-    tagentityFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, tagentityFB.parameters, param,
-            SqlSyntax.LessThanOrEquals, tagentityFB._addedBlocks)
-        : setCriteria(pValue, tagentityFB.parameters, param,
-            SqlSyntax.GreaterThan, tagentityFB._addedBlocks);
+    tagFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, tagFB.parameters, param, SqlSyntax.LessThanOrEquals, tagFB._addedBlocks)
+        : setCriteria(pValue, tagFB.parameters, param, SqlSyntax.GreaterThan, tagFB._addedBlocks);
     _waitingNot = '';
-    tagentityFB._addedBlocks.needEndBlock[tagentityFB._blockIndex] =
-        tagentityFB._addedBlocks.retVal;
-    return tagentityFB;
+    tagFB._addedBlocks.needEndBlock![tagFB._blockIndex] = tagFB._addedBlocks.retVal;
+    return tagFB;
   }
 
-  TagEntityFilterBuilder inValues(dynamic pValue) {
-    tagentityFB._addedBlocks = setCriteria(
-        pValue,
-        tagentityFB.parameters,
-        param,
-        SqlSyntax.IN.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-        tagentityFB._addedBlocks);
+  TagFilterBuilder inValues(dynamic pValue) {
+    tagFB._addedBlocks = setCriteria(pValue, tagFB.parameters, param,
+        SqlSyntax.IN.replaceAll(SqlSyntax.notKeyword, _waitingNot), tagFB._addedBlocks);
     _waitingNot = '';
-    tagentityFB._addedBlocks.needEndBlock[tagentityFB._blockIndex] =
-        tagentityFB._addedBlocks.retVal;
-    return tagentityFB;
+    tagFB._addedBlocks.needEndBlock![tagFB._blockIndex] = tagFB._addedBlocks.retVal;
+    return tagFB;
   }
 }
-// endregion TagEntityField
+// endregion TagField
 
-// region TagEntityFilterBuilder
-class TagEntityFilterBuilder extends SearchCriteria {
-  TagEntityFilterBuilder(TagEntity obj) {
+// region TagFilterBuilder
+class TagFilterBuilder extends SearchCriteria {
+  TagFilterBuilder(Tag obj) {
     whereString = '';
-    qparams = QueryParams();
-    parameters = <DbParameter>[];
-    orderByList = <String>[];
     groupByList = <String>[];
-    _addedBlocks = AddedBlocks(<bool>[], <bool>[]);
-    _addedBlocks.needEndBlock.add(false);
-    _addedBlocks.waitingStartBlock.add(false);
-    _pagesize = 0;
-    _page = 0;
+    _addedBlocks.needEndBlock!.add(false);
+    _addedBlocks.waitingStartBlock!.add(false);
     _obj = obj;
   }
-  AddedBlocks _addedBlocks;
+  AddedBlocks _addedBlocks = AddedBlocks(<bool>[], <bool>[]);
   int _blockIndex = 0;
-  List<DbParameter> parameters;
-  List<String> orderByList;
-  TagEntity _obj;
-  QueryParams qparams;
-  int _pagesize;
-  int _page;
+  List<DbParameter> parameters = <DbParameter>[];
+  List<String> orderByList = <String>[];
+  Tag? _obj;
+  QueryParams qparams = QueryParams();
+  int _pagesize = 0;
+  int _page = 0;
 
   /// put the sql keyword 'AND'
-  TagEntityFilterBuilder get and {
+  TagFilterBuilder get and {
     if (parameters.isNotEmpty) {
       parameters[parameters.length - 1].wOperator = ' AND ';
     }
@@ -9900,7 +8648,7 @@ class TagEntityFilterBuilder extends SearchCriteria {
   }
 
   /// put the sql keyword 'OR'
-  TagEntityFilterBuilder get or {
+  TagFilterBuilder get or {
     if (parameters.isNotEmpty) {
       parameters[parameters.length - 1].wOperator = ' OR ';
     }
@@ -9908,25 +8656,23 @@ class TagEntityFilterBuilder extends SearchCriteria {
   }
 
   /// open parentheses
-  TagEntityFilterBuilder get startBlock {
-    _addedBlocks.waitingStartBlock.add(true);
-    _addedBlocks.needEndBlock.add(false);
+  TagFilterBuilder get startBlock {
+    _addedBlocks.waitingStartBlock!.add(true);
+    _addedBlocks.needEndBlock!.add(false);
     _blockIndex++;
     if (_blockIndex > 1) {
-      _addedBlocks.needEndBlock[_blockIndex - 1] = true;
+      _addedBlocks.needEndBlock![_blockIndex - 1] = true;
     }
     return this;
   }
 
   /// String whereCriteria, write raw query without 'where' keyword. Like this: 'field1 like 'test%' and field2 = 3'
-  TagEntityFilterBuilder where(String whereCriteria, {dynamic parameterValue}) {
+  TagFilterBuilder where(String? whereCriteria, {dynamic parameterValue}) {
     if (whereCriteria != null && whereCriteria != '') {
-      final DbParameter param = DbParameter(
-          columnName: parameterValue == null ? null : '',
-          hasParameter: parameterValue != null);
-      _addedBlocks = setCriteria(parameterValue ?? 0, parameters, param,
-          '($whereCriteria)', _addedBlocks);
-      _addedBlocks.needEndBlock[_blockIndex] = _addedBlocks.retVal;
+      final DbParameter param =
+          DbParameter(columnName: parameterValue == null ? null : '', hasParameter: parameterValue != null);
+      _addedBlocks = setCriteria(parameterValue ?? 0, parameters, param, '($whereCriteria)', _addedBlocks);
+      _addedBlocks.needEndBlock![_blockIndex] = _addedBlocks.retVal;
     }
     return this;
   }
@@ -9934,7 +8680,7 @@ class TagEntityFilterBuilder extends SearchCriteria {
   /// page = page number,
   ///
   /// pagesize = row(s) per page
-  TagEntityFilterBuilder page(int page, int pagesize) {
+  TagFilterBuilder page(int page, int pagesize) {
     if (page > 0) {
       _page = page;
     }
@@ -9945,7 +8691,7 @@ class TagEntityFilterBuilder extends SearchCriteria {
   }
 
   /// int count = LIMIT
-  TagEntityFilterBuilder top(int count) {
+  TagFilterBuilder top(int count) {
     if (count > 0) {
       _pagesize = count;
     }
@@ -9953,12 +8699,12 @@ class TagEntityFilterBuilder extends SearchCriteria {
   }
 
   /// close parentheses
-  TagEntityFilterBuilder get endBlock {
-    if (_addedBlocks.needEndBlock[_blockIndex]) {
+  TagFilterBuilder get endBlock {
+    if (_addedBlocks.needEndBlock![_blockIndex]) {
       parameters[parameters.length - 1].whereString += ' ) ';
     }
-    _addedBlocks.needEndBlock.removeAt(_blockIndex);
-    _addedBlocks.waitingStartBlock.removeAt(_blockIndex);
+    _addedBlocks.needEndBlock!.removeAt(_blockIndex);
+    _addedBlocks.waitingStartBlock!.removeAt(_blockIndex);
     _blockIndex--;
     return this;
   }
@@ -9968,13 +8714,13 @@ class TagEntityFilterBuilder extends SearchCriteria {
   /// Example 1: argFields='name, date'
   ///
   /// Example 2: argFields = ['name', 'date']
-  TagEntityFilterBuilder orderBy(dynamic argFields) {
+  TagFilterBuilder orderBy(dynamic argFields) {
     if (argFields != null) {
       if (argFields is String) {
         orderByList.add(argFields);
       } else {
-        for (String s in argFields as List<String>) {
-          if (s != null && s.isNotEmpty) {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
             orderByList.add(' $s ');
           }
         }
@@ -9988,13 +8734,13 @@ class TagEntityFilterBuilder extends SearchCriteria {
   /// Example 1: argFields='field1, field2'
   ///
   /// Example 2: argFields = ['field1', 'field2']
-  TagEntityFilterBuilder orderByDesc(dynamic argFields) {
+  TagFilterBuilder orderByDesc(dynamic argFields) {
     if (argFields != null) {
       if (argFields is String) {
         orderByList.add('$argFields desc ');
       } else {
-        for (String s in argFields as List<String>) {
-          if (s != null && s.isNotEmpty) {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
             orderByList.add(' $s desc ');
           }
         }
@@ -10008,13 +8754,13 @@ class TagEntityFilterBuilder extends SearchCriteria {
   /// Example 1: argFields='field1, field2'
   ///
   /// Example 2: argFields = ['field1', 'field2']
-  TagEntityFilterBuilder groupBy(dynamic argFields) {
+  TagFilterBuilder groupBy(dynamic argFields) {
     if (argFields != null) {
       if (argFields is String) {
         groupByList.add(' $argFields ');
       } else {
-        for (String s in argFields as List<String>) {
-          if (s != null && s.isNotEmpty) {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
             groupByList.add(' $s ');
           }
         }
@@ -10028,13 +8774,13 @@ class TagEntityFilterBuilder extends SearchCriteria {
   /// Example 1: argFields='name, date'
   ///
   /// Example 2: argFields = ['name', 'date']
-  TagEntityFilterBuilder having(dynamic argFields) {
+  TagFilterBuilder having(dynamic argFields) {
     if (argFields != null) {
       if (argFields is String) {
         havingList.add(argFields);
       } else {
-        for (String s in argFields as List<String>) {
-          if (s != null && s.isNotEmpty) {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
             havingList.add(' $s ');
           }
         }
@@ -10043,30 +8789,28 @@ class TagEntityFilterBuilder extends SearchCriteria {
     return this;
   }
 
-  TagEntityField setField(TagEntityField field, String colName, DbType dbtype) {
-    return TagEntityField(this)
-      ..param = DbParameter(
-          dbType: dbtype,
-          columnName: colName,
-          wStartBlock: _addedBlocks.waitingStartBlock[_blockIndex]);
+  TagField setField(TagField? field, String colName, DbType dbtype) {
+    return TagField(this)
+      ..param =
+          DbParameter(dbType: dbtype, columnName: colName, wStartBlock: _addedBlocks.waitingStartBlock![_blockIndex]);
   }
 
-  TagEntityField _id;
-  TagEntityField get id {
+  TagField? _id;
+  TagField get id {
     return _id = setField(_id, 'id', DbType.integer);
   }
 
-  TagEntityField _name;
-  TagEntityField get name {
+  TagField? _name;
+  TagField get name {
     return _name = setField(_name, 'name', DbType.text);
   }
 
-  TagEntityField _type;
-  TagEntityField get type {
-    return _type = setField(_type, 'type', DbType.integer);
+  TagField? _type_enum;
+  TagField get type_enum {
+    return _type_enum = setField(_type_enum, 'type_enum', DbType.text);
   }
 
-  bool _getIsDeleted;
+  bool _getIsDeleted = false;
 
   void _buildParameters() {
     if (_page > 0 && _pagesize > 0) {
@@ -10081,24 +8825,20 @@ class TagEntityFilterBuilder extends SearchCriteria {
     for (DbParameter param in parameters) {
       if (param.columnName != null) {
         if (param.value is List && !param.hasParameter) {
-          param.value = param.dbType == DbType.text
+          param.value = param.dbType == DbType.text || param.value[0] is String
               ? '\'${param.value.join('\',\'')}\''
               : param.value.join(',');
-          whereString += param.whereString
-              .replaceAll('{field}', param.columnName)
-              .replaceAll('?', param.value.toString());
+          whereString +=
+              param.whereString.replaceAll('{field}', param.columnName!).replaceAll('?', param.value.toString());
           param.value = null;
         } else {
-          if (param.value is Map<String, dynamic> &&
-              param.value['sql'] != null) {
+          if (param.value is Map<String, dynamic> && param.value['sql'] != null) {
             param
-              ..whereString = param.whereString
-                  .replaceAll('?', param.value['sql'].toString())
+              ..whereString = param.whereString.replaceAll('?', param.value['sql'].toString())
               ..dbType = DbType.integer
               ..value = param.value['args'];
           }
-          whereString +=
-              param.whereString.replaceAll('{field}', param.columnName);
+          whereString += param.whereString.replaceAll('{field}', param.columnName!);
         }
         if (!param.whereString.contains('?')) {
         } else {
@@ -10118,12 +8858,8 @@ class TagEntityFilterBuilder extends SearchCriteria {
             case DbType.date:
             case DbType.datetime:
             case DbType.datetimeUtc:
-              param.value = param.value == null
-                  ? null
-                  : (param.value as DateTime).millisecondsSinceEpoch;
-              param.value2 = param.value2 == null
-                  ? null
-                  : (param.value2 as DateTime).millisecondsSinceEpoch;
+              param.value = param.value == null ? null : (param.value as DateTime).millisecondsSinceEpoch;
+              param.value2 = param.value2 == null ? null : (param.value2 as DateTime).millisecondsSinceEpoch;
               break;
             default:
           }
@@ -10144,10 +8880,9 @@ class TagEntityFilterBuilder extends SearchCriteria {
         whereString += param.whereString;
       }
     }
-    if (TagEntity._softDeleteActivated) {
+    if (Tag._softDeleteActivated) {
       if (whereString != '') {
-        whereString =
-            '${!_getIsDeleted ? 'ifnull(isDeleted,0)=0 AND' : ''} ($whereString)';
+        whereString = '${!_getIsDeleted ? 'ifnull(isDeleted,0)=0 AND' : ''} ($whereString)';
       } else if (!_getIsDeleted) {
         whereString = 'ifnull(isDeleted,0)=0';
       }
@@ -10163,17 +8898,17 @@ class TagEntityFilterBuilder extends SearchCriteria {
       ..having = havingList.join(',');
   }
 
-  /// Deletes List<TagEntity> bulk by query
+  /// Deletes List<Tag> bulk by query
   ///
   /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
   Future<BoolResult> delete([bool hardDelete = false]) async {
     _buildParameters();
-    var r = BoolResult();
+    var r = BoolResult(success: false);
 
-    if (TagEntity._softDeleteActivated && !hardDelete) {
-      r = await _obj._mnTagEntity.updateBatch(qparams, {'isDeleted': 1});
+    if (Tag._softDeleteActivated && !hardDelete) {
+      r = await _obj!._mnTag.updateBatch(qparams, {'isDeleted': 1});
     } else {
-      r = await _obj._mnTagEntity.delete(qparams);
+      r = await _obj!._mnTag.delete(qparams);
     }
     return r;
   }
@@ -10185,14 +8920,14 @@ class TagEntityFilterBuilder extends SearchCriteria {
   /// fieldName must be String. Value is dynamic, it can be any of the (int, bool, String.. )
   Future<BoolResult> update(Map<String, dynamic> values) {
     _buildParameters();
-    if (qparams.limit > 0 || qparams.offset > 0) {
+    if (qparams.limit! > 0 || qparams.offset! > 0) {
       qparams.whereString =
-          'id IN (SELECT id from tags ${qparams.whereString.isNotEmpty ? 'WHERE ${qparams.whereString}' : ''}${qparams.limit > 0 ? ' LIMIT ${qparams.limit}' : ''}${qparams.offset > 0 ? ' OFFSET ${qparams.offset}' : ''})';
+          'id IN (SELECT id from tags ${qparams.whereString!.isNotEmpty ? 'WHERE ${qparams.whereString}' : ''}${qparams.limit! > 0 ? ' LIMIT ${qparams.limit}' : ''}${qparams.offset! > 0 ? ' OFFSET ${qparams.offset}' : ''})';
     }
-    return _obj._mnTagEntity.updateBatch(qparams, values);
+    return _obj!._mnTag.updateBatch(qparams, values);
   }
 
-  /// This method always returns TagEntity Obj if exist, otherwise returns null
+  /// This method always returns Tag Obj if exist, otherwise returns null
   ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
   ///
@@ -10205,33 +8940,26 @@ class TagEntityFilterBuilder extends SearchCriteria {
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
   ///
-  /// <returns>List<TagEntity>
-  Future<TagEntity> toSingle(
-      {bool preload = false,
-      List<String> preloadFields,
-      bool loadParents = false,
-      List<String> loadedFields}) async {
+  /// <returns>List<Tag>
+  Future<Tag?> toSingle(
+      {bool preload = false, List<String>? preloadFields, bool loadParents = false, List<String>? loadedFields}) async {
     _pagesize = 1;
     _buildParameters();
-    final objFuture = _obj._mnTagEntity.toList(qparams);
+    final objFuture = _obj!._mnTag.toList(qparams);
     final data = await objFuture;
-    TagEntity obj;
+    Tag? obj;
     if (data.isNotEmpty) {
-      obj = TagEntity.fromMap(data[0] as Map<String, dynamic>);
+      obj = Tag.fromMap(data[0] as Map<String, dynamic>);
       // final List<String> _loadedFields = loadedFields ?? [];
 
       // RELATIONSHIPS PRELOAD CHILD
       if (preload) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedFields.contains('tags.plSongLyricEntities') && */ (preloadFields ==
-                null ||
-            preloadFields.contains('plSongLyricEntities'))) {
-          /*_loadedFields.add('tags.plSongLyricEntities'); */
-          obj.plSongLyricEntities = obj.plSongLyricEntities ??
-              await obj.getSongLyricEntities().toList(
-                  preload: preload,
-                  preloadFields: preloadFields,
-                  loadParents: false /*, loadedFields:_loadedFields*/);
+        if (/*!_loadedfields!.contains('tags.plSongLyrics') && */ (preloadFields == null ||
+            preloadFields.contains('plSongLyrics'))) {
+          /*_loadedfields!.add('tags.plSongLyrics'); */ obj.plSongLyrics = obj.plSongLyrics ??
+              await obj.getSongLyrics()!.toList(
+                  preload: preload, preloadFields: preloadFields, loadParents: false /*, loadedFields:_loadedFields*/);
         }
       } // END RELATIONSHIPS PRELOAD CHILD
 
@@ -10241,21 +8969,21 @@ class TagEntityFilterBuilder extends SearchCriteria {
     return obj;
   }
 
-  /// This method returns int. [TagEntity]
+  /// This method returns int. [Tag]
   ///
   /// <returns>int
-  Future<int> toCount([VoidCallback Function(int c) tagentityCount]) async {
+  Future<int> toCount([VoidCallback Function(int c)? tagCount]) async {
     _buildParameters();
     qparams.selectColumns = ['COUNT(1) AS CNT'];
-    final tagentitiesFuture = await _obj._mnTagEntity.toList(qparams);
-    final int count = tagentitiesFuture[0]['CNT'] as int;
-    if (tagentityCount != null) {
-      tagentityCount(count);
+    final tagsFuture = await _obj!._mnTag.toList(qparams);
+    final int count = tagsFuture[0]['CNT'] as int;
+    if (tagCount != null) {
+      tagCount(count);
     }
     return count;
   }
 
-  /// This method returns List<TagEntity> [TagEntity]
+  /// This method returns List<Tag> [Tag]
   ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
   ///
@@ -10268,23 +8996,20 @@ class TagEntityFilterBuilder extends SearchCriteria {
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
   ///
-  /// <returns>List<TagEntity>
-  Future<List<TagEntity>> toList(
-      {bool preload = false,
-      List<String> preloadFields,
-      bool loadParents = false,
-      List<String> loadedFields}) async {
+  /// <returns>List<Tag>
+  Future<List<Tag>> toList(
+      {bool preload = false, List<String>? preloadFields, bool loadParents = false, List<String>? loadedFields}) async {
     final data = await toMapList();
-    final List<TagEntity> tagentitiesData = await TagEntity.fromMapList(data,
+    final List<Tag> tagsData = await Tag.fromMapList(data,
         preload: preload,
         preloadFields: preloadFields,
         loadParents: loadParents,
         loadedFields: loadedFields,
         setDefaultValues: qparams.selectColumns == null);
-    return tagentitiesData;
+    return tagsData;
   }
 
-  /// This method returns Json String [TagEntity]
+  /// This method returns Json String [Tag]
   Future<String> toJson() async {
     final list = <dynamic>[];
     final data = await toList();
@@ -10294,7 +9019,7 @@ class TagEntityFilterBuilder extends SearchCriteria {
     return json.encode(list);
   }
 
-  /// This method returns Json String. [TagEntity]
+  /// This method returns Json String. [Tag]
   Future<String> toJsonWithChilds() async {
     final list = <dynamic>[];
     final data = await toList();
@@ -10304,15 +9029,15 @@ class TagEntityFilterBuilder extends SearchCriteria {
     return json.encode(list);
   }
 
-  /// This method returns List<dynamic>. [TagEntity]
+  /// This method returns List<dynamic>. [Tag]
   ///
   /// <returns>List<dynamic>
   Future<List<dynamic>> toMapList() async {
     _buildParameters();
-    return await _obj._mnTagEntity.toList(qparams);
+    return await _obj!._mnTag.toList(qparams);
   }
 
-  /// This method returns Primary Key List SQL and Parameters retVal = Map<String,dynamic>. [TagEntity]
+  /// This method returns Primary Key List SQL and Parameters retVal = Map<String,dynamic>. [Tag]
   ///
   /// retVal['sql'] = SQL statement string, retVal['args'] = whereArguments List<dynamic>;
   ///
@@ -10335,7 +9060,7 @@ class TagEntityFilterBuilder extends SearchCriteria {
     }
     final List<int> idData = <int>[];
     qparams.selectColumns = ['id'];
-    final idFuture = await _obj._mnTagEntity.toList(qparams);
+    final idFuture = await _obj!._mnTag.toList(qparams);
 
     final int count = idFuture.length;
     for (int i = 0; i < count; i++) {
@@ -10344,13 +9069,13 @@ class TagEntityFilterBuilder extends SearchCriteria {
     return idData;
   }
 
-  /// Returns List<dynamic> for selected columns. Use this method for 'groupBy' with min,max,avg..  [TagEntity]
+  /// Returns List<dynamic> for selected columns. Use this method for 'groupBy' with min,max,avg..  [Tag]
   ///
   /// Sample usage: (see EXAMPLE 4.2 at https://github.com/hhtokpinar/sqfEntity#group-by)
   Future<List<dynamic>> toListObject() async {
     _buildParameters();
 
-    final objectFuture = _obj._mnTagEntity.toList(qparams);
+    final objectFuture = _obj!._mnTag.toList(qparams);
 
     final List<dynamic> objectsData = <dynamic>[];
     final data = await objectFuture;
@@ -10363,18 +9088,17 @@ class TagEntityFilterBuilder extends SearchCriteria {
 
   /// Returns List<String> for selected first column
   ///
-  /// Sample usage: await TagEntity.select(columnsToSelect: ['columnName']).toListString()
-  Future<List<String>> toListString(
-      [VoidCallback Function(List<String> o) listString]) async {
+  /// Sample usage: await Tag.select(columnsToSelect: ['columnName']).toListString()
+  Future<List<String>> toListString([VoidCallback Function(List<String> o)? listString]) async {
     _buildParameters();
 
-    final objectFuture = _obj._mnTagEntity.toList(qparams);
+    final objectFuture = _obj!._mnTag.toList(qparams);
 
     final List<String> objectsData = <String>[];
     final data = await objectFuture;
     final int count = data.length;
     for (int i = 0; i < count; i++) {
-      objectsData.add(data[i][qparams.selectColumns[0]].toString());
+      objectsData.add(data[i][qparams.selectColumns![0]].toString());
     }
     if (listString != null) {
       listString(objectsData);
@@ -10382,41 +9106,36 @@ class TagEntityFilterBuilder extends SearchCriteria {
     return objectsData;
   }
 }
-// endregion TagEntityFilterBuilder
+// endregion TagFilterBuilder
 
-// region TagEntityFields
-class TagEntityFields {
-  static TableField _fId;
+// region TagFields
+class TagFields {
+  static TableField? _fId;
   static TableField get id {
     return _fId = _fId ?? SqlSyntax.setField(_fId, 'id', DbType.integer);
   }
 
-  static TableField _fName;
+  static TableField? _fName;
   static TableField get name {
     return _fName = _fName ?? SqlSyntax.setField(_fName, 'name', DbType.text);
   }
 
-  static TableField _fType;
-  static TableField get type {
-    return _fType =
-        _fType ?? SqlSyntax.setField(_fType, 'type', DbType.integer);
+  static TableField? _fType_enum;
+  static TableField get type_enum {
+    return _fType_enum = _fType_enum ?? SqlSyntax.setField(_fType_enum, 'type_enum', DbType.text);
   }
 }
-// endregion TagEntityFields
+// endregion TagFields
 
-//region TagEntityManager
-class TagEntityManager extends SqfEntityProvider {
-  TagEntityManager()
-      : super(Model(),
-            tableName: _tableName,
-            primaryKeyList: _primaryKeyList,
-            whereStr: _whereStr);
+//region TagManager
+class TagManager extends SqfEntityProvider {
+  TagManager() : super(Model(), tableName: _tableName, primaryKeyList: _primaryKeyList, whereStr: _whereStr);
   static final String _tableName = 'tags';
   static final List<String> _primaryKeyList = ['id'];
   static final String _whereStr = 'id=?';
 }
 
-//endregion TagEntityManager
+//endregion TagManager
 // region ExternalsAuthors
 class ExternalsAuthors {
   ExternalsAuthors({this.externalsId, this.authorsId}) {
@@ -10428,8 +9147,8 @@ class ExternalsAuthors {
   ExternalsAuthors.withId(this.externalsId, this.authorsId) {
     _setDefaultValues();
   }
-  ExternalsAuthors.fromMap(Map<String, dynamic> o,
-      {bool setDefaultValues = true}) {
+  // fromMap v2.0
+  ExternalsAuthors.fromMap(Map<String, dynamic> o, {bool setDefaultValues = true}) {
     if (setDefaultValues) {
       _setDefaultValues();
     }
@@ -10438,83 +9157,87 @@ class ExternalsAuthors {
     authorsId = int.tryParse(o['authorsId'].toString());
 
     // RELATIONSHIPS FromMAP
-    plExternalEntity = o['externalEntity'] != null
-        ? ExternalEntity.fromMap(o['externalEntity'] as Map<String, dynamic>)
-        : null;
-    plAuthorEntity = o['authorEntity'] != null
-        ? AuthorEntity.fromMap(o['authorEntity'] as Map<String, dynamic>)
-        : null;
+    plExternal = o['external'] != null ? External.fromMap(o['external'] as Map<String, dynamic>) : null;
+    plAuthor = o['author'] != null ? Author.fromMap(o['author'] as Map<String, dynamic>) : null;
     // END RELATIONSHIPS FromMAP
 
     isSaved = true;
   }
   // FIELDS (ExternalsAuthors)
-  int externalsId;
-  int authorsId;
-  bool isSaved;
-  BoolResult saveResult;
+  int? externalsId;
+  int? authorsId;
+  bool? isSaved;
+  BoolResult? saveResult;
   // end FIELDS (ExternalsAuthors)
 
 // RELATIONSHIPS (ExternalsAuthors)
   /// to load parent of items to this field, use preload parameter ex: toList(preload:true) or toSingle(preload:true) or getById(preload:true)
-  /// You can also specify this object into certain preload fields. Ex: toList(preload:true, preloadFields:['plExternalEntity', 'plField2'..]) or so on..
-  ExternalEntity plExternalEntity;
+  /// You can also specify this object into certain preload fields!. Ex: toList(preload:true, preloadFields:['plExternal', 'plField2'..]) or so on..
+  External? plExternal;
 
-  /// get ExternalEntity By ExternalsId
-  Future<ExternalEntity> getExternalEntity(
-      {bool loadParents = false, List<String> loadedFields}) async {
-    final _obj = await ExternalEntity().getById(externalsId,
-        loadParents: loadParents, loadedFields: loadedFields);
+  /// get External By ExternalsId
+  Future<External?> getExternal({bool loadParents = false, List<String>? loadedFields}) async {
+    final _obj = await External().getById(externalsId, loadParents: loadParents, loadedFields: loadedFields);
     return _obj;
   }
 
   /// to load parent of items to this field, use preload parameter ex: toList(preload:true) or toSingle(preload:true) or getById(preload:true)
-  /// You can also specify this object into certain preload fields. Ex: toList(preload:true, preloadFields:['plAuthorEntity', 'plField2'..]) or so on..
-  AuthorEntity plAuthorEntity;
+  /// You can also specify this object into certain preload fields!. Ex: toList(preload:true, preloadFields:['plAuthor', 'plField2'..]) or so on..
+  Author? plAuthor;
 
-  /// get AuthorEntity By AuthorsId
-  Future<AuthorEntity> getAuthorEntity(
-      {bool loadParents = false, List<String> loadedFields}) async {
-    final _obj = await AuthorEntity().getById(authorsId,
-        loadParents: loadParents, loadedFields: loadedFields);
+  /// get Author By AuthorsId
+  Future<Author?> getAuthor({bool loadParents = false, List<String>? loadedFields}) async {
+    final _obj = await Author().getById(authorsId, loadParents: loadParents, loadedFields: loadedFields);
     return _obj;
   }
   // END RELATIONSHIPS (ExternalsAuthors)
 
   static const bool _softDeleteActivated = false;
-  ExternalsAuthorsManager __mnExternalsAuthors;
+  ExternalsAuthorsManager? __mnExternalsAuthors;
 
   ExternalsAuthorsManager get _mnExternalsAuthors {
-    return __mnExternalsAuthors =
-        __mnExternalsAuthors ?? ExternalsAuthorsManager();
+    return __mnExternalsAuthors = __mnExternalsAuthors ?? ExternalsAuthorsManager();
   }
 
   // METHODS
-  Map<String, dynamic> toMap(
-      {bool forQuery = false, bool forJson = false, bool forView = false}) {
+  Map<String, dynamic> toMap({bool forQuery = false, bool forJson = false, bool forView = false}) {
     final map = <String, dynamic>{};
     if (externalsId != null) {
-      map['externalsId'] = forView ? plExternalEntity.name : externalsId;
+      map['externalsId'] = forView
+          ? plExternal == null
+              ? externalsId
+              : plExternal!.public_name
+          : externalsId;
     }
 
     if (authorsId != null) {
-      map['authorsId'] = forView ? plAuthorEntity.name : authorsId;
+      map['authorsId'] = forView
+          ? plAuthor == null
+              ? authorsId
+              : plAuthor!.name
+          : authorsId;
     }
 
     return map;
   }
 
   Future<Map<String, dynamic>> toMapWithChildren(
-      [bool forQuery = false,
-      bool forJson = false,
-      bool forView = false]) async {
+      [bool forQuery = false, bool forJson = false, bool forView = false]) async {
     final map = <String, dynamic>{};
     if (externalsId != null) {
-      map['externalsId'] = forView ? plExternalEntity.name : externalsId;
+      map['externalsId'] = forView
+          ? plExternal == null
+              ? externalsId
+              : plExternal!.public_name
+          : externalsId;
     }
 
     if (authorsId != null) {
-      map['authorsId'] = forView ? plAuthorEntity.name : authorsId;
+      map['authorsId'] = forView
+          ? plAuthor == null
+              ? authorsId
+              : plAuthor!.name
+          : authorsId;
     }
 
     return map;
@@ -10538,70 +9261,58 @@ class ExternalsAuthors {
     return [externalsId, authorsId];
   }
 
-  static Future<List<ExternalsAuthors>> fromWebUrl(String url,
-      {Map<String, String> headers}) async {
+  static Future<List<ExternalsAuthors>?> fromWebUrl(Uri uri, {Map<String, String>? headers}) async {
     try {
-      final response = await http.get(url, headers: headers);
+      final response = await http.get(uri, headers: headers);
       return await fromJson(response.body);
     } catch (e) {
-      print(
-          'SQFENTITY ERROR ExternalsAuthors.fromWebUrl: ErrorMessage: ${e.toString()}');
+      print('SQFENTITY ERROR ExternalsAuthors.fromWebUrl: ErrorMessage: ${e.toString()}');
       return null;
     }
   }
 
-  Future<http.Response> postUrl(String url, {Map<String, String> headers}) {
-    return http.post(url, headers: headers, body: toJson());
+  Future<http.Response> postUrl(Uri uri, {Map<String, String>? headers}) {
+    return http.post(uri, headers: headers, body: toJson());
   }
 
   static Future<List<ExternalsAuthors>> fromJson(String jsonBody) async {
     final Iterable list = await json.decode(jsonBody) as Iterable;
     var objList = <ExternalsAuthors>[];
     try {
-      objList = list
-          .map((externalsauthors) => ExternalsAuthors.fromMap(
-              externalsauthors as Map<String, dynamic>))
-          .toList();
+      objList =
+          list.map((externalsauthors) => ExternalsAuthors.fromMap(externalsauthors as Map<String, dynamic>)).toList();
     } catch (e) {
-      print(
-          'SQFENTITY ERROR ExternalsAuthors.fromJson: ErrorMessage: ${e.toString()}');
+      print('SQFENTITY ERROR ExternalsAuthors.fromJson: ErrorMessage: ${e.toString()}');
     }
     return objList;
   }
 
   static Future<List<ExternalsAuthors>> fromMapList(List<dynamic> data,
       {bool preload = false,
-      List<String> preloadFields,
+      List<String>? preloadFields,
       bool loadParents = false,
-      List<String> loadedFields,
+      List<String>? loadedFields,
       bool setDefaultValues = true}) async {
     final List<ExternalsAuthors> objList = <ExternalsAuthors>[];
     loadedFields = loadedFields ?? [];
     for (final map in data) {
-      final obj = ExternalsAuthors.fromMap(map as Map<String, dynamic>,
-          setDefaultValues: setDefaultValues);
+      final obj = ExternalsAuthors.fromMap(map as Map<String, dynamic>, setDefaultValues: setDefaultValues);
       // final List<String> _loadedFields = List<String>.from(loadedFields);
 
       // RELATIONSHIPS PRELOAD
       if (preload || loadParents) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedFields.contains('externals.plExternalEntity') && */ (preloadFields ==
-                null ||
+        if (/*!_loadedfields!.contains('externals.plExternal') && */ (preloadFields == null ||
             loadParents ||
-            preloadFields.contains('plExternalEntity'))) {
-          /*_loadedFields.add('externals.plExternalEntity');*/
-          obj.plExternalEntity = obj.plExternalEntity ??
-              await obj.getExternalEntity(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+            preloadFields.contains('plExternal'))) {
+          /*_loadedfields!.add('externals.plExternal');*/ obj.plExternal =
+              obj.plExternal ?? await obj.getExternal(loadParents: loadParents /*, loadedFields: _loadedFields*/);
         }
-        if (/*!_loadedFields.contains('authors.plAuthorEntity') && */ (preloadFields ==
-                null ||
+        if (/*!_loadedfields!.contains('authors.plAuthor') && */ (preloadFields == null ||
             loadParents ||
-            preloadFields.contains('plAuthorEntity'))) {
-          /*_loadedFields.add('authors.plAuthorEntity');*/
-          obj.plAuthorEntity = obj.plAuthorEntity ??
-              await obj.getAuthorEntity(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+            preloadFields.contains('plAuthor'))) {
+          /*_loadedfields!.add('authors.plAuthor');*/ obj.plAuthor =
+              obj.plAuthor ?? await obj.getAuthor(loadParents: loadParents /*, loadedFields: _loadedFields*/);
         }
       } // END RELATIONSHIPS PRELOAD
 
@@ -10612,7 +9323,7 @@ class ExternalsAuthors {
 
   /// returns ExternalsAuthors by ID if exist, otherwise returns null
   ///
-  /// Primary Keys: int externalsId, int authorsId
+  /// Primary Keys: int? externalsId, int? authorsId
   ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
   ///
@@ -10626,15 +9337,12 @@ class ExternalsAuthors {
 
   ///
   /// <returns>returns ExternalsAuthors if exist, otherwise returns null
-  Future<ExternalsAuthors> getById(int externalsId, int authorsId,
-      {bool preload = false,
-      List<String> preloadFields,
-      bool loadParents = false,
-      List<String> loadedFields}) async {
+  Future<ExternalsAuthors?> getById(int? externalsId, int? authorsId,
+      {bool preload = false, List<String>? preloadFields, bool loadParents = false, List<String>? loadedFields}) async {
     if (externalsId == null) {
       return null;
     }
-    ExternalsAuthors obj;
+    ExternalsAuthors? obj;
     final data = await _mnExternalsAuthors.getById([externalsId, authorsId]);
     if (data.length != 0) {
       obj = ExternalsAuthors.fromMap(data[0] as Map<String, dynamic>);
@@ -10643,23 +9351,17 @@ class ExternalsAuthors {
       // RELATIONSHIPS PRELOAD
       if (preload || loadParents) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedFields.contains('externals.plExternalEntity') && */ (preloadFields ==
-                null ||
+        if (/*!_loadedfields!.contains('externals.plExternal') && */ (preloadFields == null ||
             loadParents ||
-            preloadFields.contains('plExternalEntity'))) {
-          /*_loadedFields.add('externals.plExternalEntity');*/
-          obj.plExternalEntity = obj.plExternalEntity ??
-              await obj.getExternalEntity(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+            preloadFields.contains('plExternal'))) {
+          /*_loadedfields!.add('externals.plExternal');*/ obj.plExternal =
+              obj.plExternal ?? await obj.getExternal(loadParents: loadParents /*, loadedFields: _loadedFields*/);
         }
-        if (/*!_loadedFields.contains('authors.plAuthorEntity') && */ (preloadFields ==
-                null ||
+        if (/*!_loadedfields!.contains('authors.plAuthor') && */ (preloadFields == null ||
             loadParents ||
-            preloadFields.contains('plAuthorEntity'))) {
-          /*_loadedFields.add('authors.plAuthorEntity');*/
-          obj.plAuthorEntity = obj.plAuthorEntity ??
-              await obj.getAuthorEntity(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+            preloadFields.contains('plAuthor'))) {
+          /*_loadedfields!.add('authors.plAuthor');*/ obj.plAuthor =
+              obj.plAuthor ?? await obj.getAuthor(loadParents: loadParents /*, loadedFields: _loadedFields*/);
         }
       } // END RELATIONSHIPS PRELOAD
 
@@ -10680,7 +9382,7 @@ class ExternalsAuthors {
     final result = BoolResult(success: false);
     try {
       await _mnExternalsAuthors.rawInsert(
-          'INSERT ${isSaved ? 'OR REPLACE' : ''} INTO externalsAuthors (externalsId, authorsId)  VALUES (?,?)',
+          'INSERT ${isSaved! ? 'OR REPLACE' : ''} INTO externalsAuthors (externalsId, authorsId)  VALUES (?,?)',
           toArgsWithIds());
       result.success = true;
       isSaved = true;
@@ -10695,8 +9397,7 @@ class ExternalsAuthors {
   /// saveAll method saves the sent List<ExternalsAuthors> as a bulk in one transaction
   ///
   /// Returns a <List<BoolResult>>
-  static Future<List<dynamic>> saveAll(
-      List<ExternalsAuthors> externalsauthorses) async {
+  static Future<List<dynamic>> saveAll(List<ExternalsAuthors> externalsauthorses) async {
     // final results = _mnExternalsAuthors.saveAll('INSERT OR REPLACE INTO externalsAuthors (externalsId, authorsId)  VALUES (?,?)',externalsauthorses);
     // return results; removed in sqfentity_gen 1.3.0+6
     await Model().batchStart();
@@ -10706,34 +9407,28 @@ class ExternalsAuthors {
     //    return Model().batchCommit();
     final result = await Model().batchCommit();
 
-    return result;
+    return result!;
   }
 
   /// Updates if the record exists, otherwise adds a new row
 
   /// <returns>Returns 1
-  Future<int> upsert() async {
+
+  Future<int?> upsert() async {
     try {
-      if (await _mnExternalsAuthors.rawInsert(
-              'INSERT OR REPLACE INTO externalsAuthors (externalsId, authorsId)  VALUES (?,?)',
-              [externalsId, authorsId]) ==
-          1) {
-        saveResult = BoolResult(
-            success: true,
-            successMessage:
-                'ExternalsAuthors externalsId=$externalsId updated successfully');
+      final result = await _mnExternalsAuthors.rawInsert(
+          'INSERT OR REPLACE INTO externalsAuthors (externalsId, authorsId)  VALUES (?,?)', [externalsId, authorsId]);
+      if (result! > 0) {
+        saveResult =
+            BoolResult(success: true, successMessage: 'ExternalsAuthors externalsId=$externalsId updated successfully');
       } else {
-        saveResult = BoolResult(
-            success: false,
-            errorMessage:
-                'ExternalsAuthors externalsId=$externalsId did not update');
+        saveResult =
+            BoolResult(success: false, errorMessage: 'ExternalsAuthors externalsId=$externalsId did not update');
       }
-      return 1;
+      return externalsId;
     } catch (e) {
-      saveResult = BoolResult(
-          success: false,
-          errorMessage: 'ExternalsAuthors Save failed. Error: ${e.toString()}');
-      return 0;
+      saveResult = BoolResult(success: false, errorMessage: 'ExternalsAuthors Save failed. Error: ${e.toString()}');
+      return null;
     }
   }
 
@@ -10742,42 +9437,35 @@ class ExternalsAuthors {
   /// upsertAll() method is faster then saveAll() method. upsertAll() should be used when you are sure that the primary key is greater than zero
   ///
   /// Returns a BoolCommitResult
-  Future<BoolCommitResult> upsertAll(
-      List<ExternalsAuthors> externalsauthorses) async {
+  Future<BoolCommitResult> upsertAll(List<ExternalsAuthors> externalsauthorses) async {
     final results = await _mnExternalsAuthors.rawInsertAll(
-        'INSERT OR REPLACE INTO externalsAuthors (externalsId, authorsId)  VALUES (?,?)',
-        externalsauthorses);
+        'INSERT OR REPLACE INTO externalsAuthors (externalsId, authorsId)  VALUES (?,?)', externalsauthorses);
     return results;
   }
 
   /// Deletes ExternalsAuthors
 
   /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
+
   Future<BoolResult> delete([bool hardDelete = false]) async {
-    print(
-        'SQFENTITIY: delete ExternalsAuthors invoked (externalsId=$externalsId)');
+    print('SQFENTITIY: delete ExternalsAuthors invoked (externalsId=$externalsId)');
     if (!_softDeleteActivated || hardDelete) {
-      return _mnExternalsAuthors.delete(QueryParams(
-          whereString: 'externalsId=? AND authorsId=?',
-          whereArguments: [externalsId, authorsId]));
+      return _mnExternalsAuthors
+          .delete(QueryParams(whereString: 'externalsId=? AND authorsId=?', whereArguments: [externalsId, authorsId]));
     } else {
       return _mnExternalsAuthors.updateBatch(
-          QueryParams(
-              whereString: 'externalsId=? AND authorsId=?',
-              whereArguments: [externalsId, authorsId]),
+          QueryParams(whereString: 'externalsId=? AND authorsId=?', whereArguments: [externalsId, authorsId]),
           {'isDeleted': 1});
     }
   }
 
-  ExternalsAuthorsFilterBuilder select(
-      {List<String> columnsToSelect, bool getIsDeleted}) {
+  ExternalsAuthorsFilterBuilder select({List<String>? columnsToSelect, bool? getIsDeleted}) {
     return ExternalsAuthorsFilterBuilder(this)
       .._getIsDeleted = getIsDeleted == true
       ..qparams.selectColumns = columnsToSelect;
   }
 
-  ExternalsAuthorsFilterBuilder distinct(
-      {List<String> columnsToSelect, bool getIsDeleted}) {
+  ExternalsAuthorsFilterBuilder distinct({List<String>? columnsToSelect, bool? getIsDeleted}) {
     return ExternalsAuthorsFilterBuilder(this)
       .._getIsDeleted = getIsDeleted == true
       ..qparams.selectColumns = columnsToSelect
@@ -10788,9 +9476,9 @@ class ExternalsAuthors {
     isSaved = false;
   }
   // END METHODS
-  // CUSTOM CODES
+  // BEGIN CUSTOM CODE
   /*
-      you must define customCode property of your SqfEntityTable constant for ex:
+      you can define customCode property of your SqfEntityTable constant. For example:
       const tablePerson = SqfEntityTable(
       tableName: 'person',
       primaryKeyName: 'id',
@@ -10806,16 +9494,15 @@ class ExternalsAuthors {
        }
       ''');
      */
-  // END CUSTOM CODES
+  // END CUSTOM CODE
 }
 // endregion externalsauthors
 
 // region ExternalsAuthorsField
 class ExternalsAuthorsField extends SearchCriteria {
-  ExternalsAuthorsField(this.externalsauthorsFB) {
-    param = DbParameter();
-  }
-  DbParameter param;
+  ExternalsAuthorsField(this.externalsauthorsFB);
+  // { param = DbParameter(); }
+  DbParameter param = DbParameter();
   String _waitingNot = '';
   ExternalsAuthorsFilterBuilder externalsauthorsFB;
 
@@ -10827,13 +9514,11 @@ class ExternalsAuthorsField extends SearchCriteria {
   ExternalsAuthorsFilterBuilder equals(dynamic pValue) {
     param.expression = '=';
     externalsauthorsFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, externalsauthorsFB.parameters, param,
-            SqlSyntax.EQuals, externalsauthorsFB._addedBlocks)
-        : setCriteria(pValue, externalsauthorsFB.parameters, param,
-            SqlSyntax.NotEQuals, externalsauthorsFB._addedBlocks);
+        ? setCriteria(pValue, externalsauthorsFB.parameters, param, SqlSyntax.EQuals, externalsauthorsFB._addedBlocks)
+        : setCriteria(
+            pValue, externalsauthorsFB.parameters, param, SqlSyntax.NotEQuals, externalsauthorsFB._addedBlocks);
     _waitingNot = '';
-    externalsauthorsFB
-            ._addedBlocks.needEndBlock[externalsauthorsFB._blockIndex] =
+    externalsauthorsFB._addedBlocks.needEndBlock![externalsauthorsFB._blockIndex] =
         externalsauthorsFB._addedBlocks.retVal;
     return externalsauthorsFB;
   }
@@ -10841,42 +9526,31 @@ class ExternalsAuthorsField extends SearchCriteria {
   ExternalsAuthorsFilterBuilder equalsOrNull(dynamic pValue) {
     param.expression = '=';
     externalsauthorsFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, externalsauthorsFB.parameters, param,
-            SqlSyntax.EQualsOrNull, externalsauthorsFB._addedBlocks)
-        : setCriteria(pValue, externalsauthorsFB.parameters, param,
-            SqlSyntax.NotEQualsOrNull, externalsauthorsFB._addedBlocks);
+        ? setCriteria(
+            pValue, externalsauthorsFB.parameters, param, SqlSyntax.EQualsOrNull, externalsauthorsFB._addedBlocks)
+        : setCriteria(
+            pValue, externalsauthorsFB.parameters, param, SqlSyntax.NotEQualsOrNull, externalsauthorsFB._addedBlocks);
     _waitingNot = '';
-    externalsauthorsFB
-            ._addedBlocks.needEndBlock[externalsauthorsFB._blockIndex] =
+    externalsauthorsFB._addedBlocks.needEndBlock![externalsauthorsFB._blockIndex] =
         externalsauthorsFB._addedBlocks.retVal;
     return externalsauthorsFB;
   }
 
   ExternalsAuthorsFilterBuilder isNull() {
-    externalsauthorsFB._addedBlocks = setCriteria(
-        0,
-        externalsauthorsFB.parameters,
-        param,
-        SqlSyntax.IsNULL.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-        externalsauthorsFB._addedBlocks);
+    externalsauthorsFB._addedBlocks = setCriteria(0, externalsauthorsFB.parameters, param,
+        SqlSyntax.IsNULL.replaceAll(SqlSyntax.notKeyword, _waitingNot), externalsauthorsFB._addedBlocks);
     _waitingNot = '';
-    externalsauthorsFB
-            ._addedBlocks.needEndBlock[externalsauthorsFB._blockIndex] =
+    externalsauthorsFB._addedBlocks.needEndBlock![externalsauthorsFB._blockIndex] =
         externalsauthorsFB._addedBlocks.retVal;
     return externalsauthorsFB;
   }
 
   ExternalsAuthorsFilterBuilder contains(dynamic pValue) {
     if (pValue != null) {
-      externalsauthorsFB._addedBlocks = setCriteria(
-          '%${pValue.toString()}%',
-          externalsauthorsFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          externalsauthorsFB._addedBlocks);
+      externalsauthorsFB._addedBlocks = setCriteria('%${pValue.toString()}%', externalsauthorsFB.parameters, param,
+          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot), externalsauthorsFB._addedBlocks);
       _waitingNot = '';
-      externalsauthorsFB
-              ._addedBlocks.needEndBlock[externalsauthorsFB._blockIndex] =
+      externalsauthorsFB._addedBlocks.needEndBlock![externalsauthorsFB._blockIndex] =
           externalsauthorsFB._addedBlocks.retVal;
     }
     return externalsauthorsFB;
@@ -10884,18 +9558,12 @@ class ExternalsAuthorsField extends SearchCriteria {
 
   ExternalsAuthorsFilterBuilder startsWith(dynamic pValue) {
     if (pValue != null) {
-      externalsauthorsFB._addedBlocks = setCriteria(
-          '${pValue.toString()}%',
-          externalsauthorsFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          externalsauthorsFB._addedBlocks);
+      externalsauthorsFB._addedBlocks = setCriteria('${pValue.toString()}%', externalsauthorsFB.parameters, param,
+          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot), externalsauthorsFB._addedBlocks);
       _waitingNot = '';
-      externalsauthorsFB
-              ._addedBlocks.needEndBlock[externalsauthorsFB._blockIndex] =
+      externalsauthorsFB._addedBlocks.needEndBlock![externalsauthorsFB._blockIndex] =
           externalsauthorsFB._addedBlocks.retVal;
-      externalsauthorsFB
-              ._addedBlocks.needEndBlock[externalsauthorsFB._blockIndex] =
+      externalsauthorsFB._addedBlocks.needEndBlock![externalsauthorsFB._blockIndex] =
           externalsauthorsFB._addedBlocks.retVal;
     }
     return externalsauthorsFB;
@@ -10903,15 +9571,10 @@ class ExternalsAuthorsField extends SearchCriteria {
 
   ExternalsAuthorsFilterBuilder endsWith(dynamic pValue) {
     if (pValue != null) {
-      externalsauthorsFB._addedBlocks = setCriteria(
-          '%${pValue.toString()}',
-          externalsauthorsFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          externalsauthorsFB._addedBlocks);
+      externalsauthorsFB._addedBlocks = setCriteria('%${pValue.toString()}', externalsauthorsFB.parameters, param,
+          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot), externalsauthorsFB._addedBlocks);
       _waitingNot = '';
-      externalsauthorsFB
-              ._addedBlocks.needEndBlock[externalsauthorsFB._blockIndex] =
+      externalsauthorsFB._addedBlocks.needEndBlock![externalsauthorsFB._blockIndex] =
           externalsauthorsFB._addedBlocks.retVal;
     }
     return externalsauthorsFB;
@@ -10919,49 +9582,27 @@ class ExternalsAuthorsField extends SearchCriteria {
 
   ExternalsAuthorsFilterBuilder between(dynamic pFirst, dynamic pLast) {
     if (pFirst != null && pLast != null) {
-      externalsauthorsFB._addedBlocks = setCriteria(
-          pFirst,
-          externalsauthorsFB.parameters,
-          param,
-          SqlSyntax.Between.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          externalsauthorsFB._addedBlocks,
-          pLast);
+      externalsauthorsFB._addedBlocks = setCriteria(pFirst, externalsauthorsFB.parameters, param,
+          SqlSyntax.Between.replaceAll(SqlSyntax.notKeyword, _waitingNot), externalsauthorsFB._addedBlocks, pLast);
     } else if (pFirst != null) {
       if (_waitingNot != '') {
         externalsauthorsFB._addedBlocks = setCriteria(
-            pFirst,
-            externalsauthorsFB.parameters,
-            param,
-            SqlSyntax.LessThan,
-            externalsauthorsFB._addedBlocks);
+            pFirst, externalsauthorsFB.parameters, param, SqlSyntax.LessThan, externalsauthorsFB._addedBlocks);
       } else {
-        externalsauthorsFB._addedBlocks = setCriteria(
-            pFirst,
-            externalsauthorsFB.parameters,
-            param,
-            SqlSyntax.GreaterThanOrEquals,
-            externalsauthorsFB._addedBlocks);
+        externalsauthorsFB._addedBlocks = setCriteria(pFirst, externalsauthorsFB.parameters, param,
+            SqlSyntax.GreaterThanOrEquals, externalsauthorsFB._addedBlocks);
       }
     } else if (pLast != null) {
       if (_waitingNot != '') {
         externalsauthorsFB._addedBlocks = setCriteria(
-            pLast,
-            externalsauthorsFB.parameters,
-            param,
-            SqlSyntax.GreaterThan,
-            externalsauthorsFB._addedBlocks);
+            pLast, externalsauthorsFB.parameters, param, SqlSyntax.GreaterThan, externalsauthorsFB._addedBlocks);
       } else {
         externalsauthorsFB._addedBlocks = setCriteria(
-            pLast,
-            externalsauthorsFB.parameters,
-            param,
-            SqlSyntax.LessThanOrEquals,
-            externalsauthorsFB._addedBlocks);
+            pLast, externalsauthorsFB.parameters, param, SqlSyntax.LessThanOrEquals, externalsauthorsFB._addedBlocks);
       }
     }
     _waitingNot = '';
-    externalsauthorsFB
-            ._addedBlocks.needEndBlock[externalsauthorsFB._blockIndex] =
+    externalsauthorsFB._addedBlocks.needEndBlock![externalsauthorsFB._blockIndex] =
         externalsauthorsFB._addedBlocks.retVal;
     return externalsauthorsFB;
   }
@@ -10969,13 +9610,12 @@ class ExternalsAuthorsField extends SearchCriteria {
   ExternalsAuthorsFilterBuilder greaterThan(dynamic pValue) {
     param.expression = '>';
     externalsauthorsFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, externalsauthorsFB.parameters, param,
-            SqlSyntax.GreaterThan, externalsauthorsFB._addedBlocks)
-        : setCriteria(pValue, externalsauthorsFB.parameters, param,
-            SqlSyntax.LessThanOrEquals, externalsauthorsFB._addedBlocks);
+        ? setCriteria(
+            pValue, externalsauthorsFB.parameters, param, SqlSyntax.GreaterThan, externalsauthorsFB._addedBlocks)
+        : setCriteria(
+            pValue, externalsauthorsFB.parameters, param, SqlSyntax.LessThanOrEquals, externalsauthorsFB._addedBlocks);
     _waitingNot = '';
-    externalsauthorsFB
-            ._addedBlocks.needEndBlock[externalsauthorsFB._blockIndex] =
+    externalsauthorsFB._addedBlocks.needEndBlock![externalsauthorsFB._blockIndex] =
         externalsauthorsFB._addedBlocks.retVal;
     return externalsauthorsFB;
   }
@@ -10983,13 +9623,11 @@ class ExternalsAuthorsField extends SearchCriteria {
   ExternalsAuthorsFilterBuilder lessThan(dynamic pValue) {
     param.expression = '<';
     externalsauthorsFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, externalsauthorsFB.parameters, param,
-            SqlSyntax.LessThan, externalsauthorsFB._addedBlocks)
-        : setCriteria(pValue, externalsauthorsFB.parameters, param,
-            SqlSyntax.GreaterThanOrEquals, externalsauthorsFB._addedBlocks);
+        ? setCriteria(pValue, externalsauthorsFB.parameters, param, SqlSyntax.LessThan, externalsauthorsFB._addedBlocks)
+        : setCriteria(pValue, externalsauthorsFB.parameters, param, SqlSyntax.GreaterThanOrEquals,
+            externalsauthorsFB._addedBlocks);
     _waitingNot = '';
-    externalsauthorsFB
-            ._addedBlocks.needEndBlock[externalsauthorsFB._blockIndex] =
+    externalsauthorsFB._addedBlocks.needEndBlock![externalsauthorsFB._blockIndex] =
         externalsauthorsFB._addedBlocks.retVal;
     return externalsauthorsFB;
   }
@@ -10997,13 +9635,12 @@ class ExternalsAuthorsField extends SearchCriteria {
   ExternalsAuthorsFilterBuilder greaterThanOrEquals(dynamic pValue) {
     param.expression = '>=';
     externalsauthorsFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, externalsauthorsFB.parameters, param,
-            SqlSyntax.GreaterThanOrEquals, externalsauthorsFB._addedBlocks)
-        : setCriteria(pValue, externalsauthorsFB.parameters, param,
-            SqlSyntax.LessThan, externalsauthorsFB._addedBlocks);
+        ? setCriteria(pValue, externalsauthorsFB.parameters, param, SqlSyntax.GreaterThanOrEquals,
+            externalsauthorsFB._addedBlocks)
+        : setCriteria(
+            pValue, externalsauthorsFB.parameters, param, SqlSyntax.LessThan, externalsauthorsFB._addedBlocks);
     _waitingNot = '';
-    externalsauthorsFB
-            ._addedBlocks.needEndBlock[externalsauthorsFB._blockIndex] =
+    externalsauthorsFB._addedBlocks.needEndBlock![externalsauthorsFB._blockIndex] =
         externalsauthorsFB._addedBlocks.retVal;
     return externalsauthorsFB;
   }
@@ -11011,27 +9648,21 @@ class ExternalsAuthorsField extends SearchCriteria {
   ExternalsAuthorsFilterBuilder lessThanOrEquals(dynamic pValue) {
     param.expression = '<=';
     externalsauthorsFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, externalsauthorsFB.parameters, param,
-            SqlSyntax.LessThanOrEquals, externalsauthorsFB._addedBlocks)
-        : setCriteria(pValue, externalsauthorsFB.parameters, param,
-            SqlSyntax.GreaterThan, externalsauthorsFB._addedBlocks);
+        ? setCriteria(
+            pValue, externalsauthorsFB.parameters, param, SqlSyntax.LessThanOrEquals, externalsauthorsFB._addedBlocks)
+        : setCriteria(
+            pValue, externalsauthorsFB.parameters, param, SqlSyntax.GreaterThan, externalsauthorsFB._addedBlocks);
     _waitingNot = '';
-    externalsauthorsFB
-            ._addedBlocks.needEndBlock[externalsauthorsFB._blockIndex] =
+    externalsauthorsFB._addedBlocks.needEndBlock![externalsauthorsFB._blockIndex] =
         externalsauthorsFB._addedBlocks.retVal;
     return externalsauthorsFB;
   }
 
   ExternalsAuthorsFilterBuilder inValues(dynamic pValue) {
-    externalsauthorsFB._addedBlocks = setCriteria(
-        pValue,
-        externalsauthorsFB.parameters,
-        param,
-        SqlSyntax.IN.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-        externalsauthorsFB._addedBlocks);
+    externalsauthorsFB._addedBlocks = setCriteria(pValue, externalsauthorsFB.parameters, param,
+        SqlSyntax.IN.replaceAll(SqlSyntax.notKeyword, _waitingNot), externalsauthorsFB._addedBlocks);
     _waitingNot = '';
-    externalsauthorsFB
-            ._addedBlocks.needEndBlock[externalsauthorsFB._blockIndex] =
+    externalsauthorsFB._addedBlocks.needEndBlock![externalsauthorsFB._blockIndex] =
         externalsauthorsFB._addedBlocks.retVal;
     return externalsauthorsFB;
   }
@@ -11042,25 +9673,19 @@ class ExternalsAuthorsField extends SearchCriteria {
 class ExternalsAuthorsFilterBuilder extends SearchCriteria {
   ExternalsAuthorsFilterBuilder(ExternalsAuthors obj) {
     whereString = '';
-    qparams = QueryParams();
-    parameters = <DbParameter>[];
-    orderByList = <String>[];
     groupByList = <String>[];
-    _addedBlocks = AddedBlocks(<bool>[], <bool>[]);
-    _addedBlocks.needEndBlock.add(false);
-    _addedBlocks.waitingStartBlock.add(false);
-    _pagesize = 0;
-    _page = 0;
+    _addedBlocks.needEndBlock!.add(false);
+    _addedBlocks.waitingStartBlock!.add(false);
     _obj = obj;
   }
-  AddedBlocks _addedBlocks;
+  AddedBlocks _addedBlocks = AddedBlocks(<bool>[], <bool>[]);
   int _blockIndex = 0;
-  List<DbParameter> parameters;
-  List<String> orderByList;
-  ExternalsAuthors _obj;
-  QueryParams qparams;
-  int _pagesize;
-  int _page;
+  List<DbParameter> parameters = <DbParameter>[];
+  List<String> orderByList = <String>[];
+  ExternalsAuthors? _obj;
+  QueryParams qparams = QueryParams();
+  int _pagesize = 0;
+  int _page = 0;
 
   /// put the sql keyword 'AND'
   ExternalsAuthorsFilterBuilder get and {
@@ -11080,25 +9705,22 @@ class ExternalsAuthorsFilterBuilder extends SearchCriteria {
 
   /// open parentheses
   ExternalsAuthorsFilterBuilder get startBlock {
-    _addedBlocks.waitingStartBlock.add(true);
-    _addedBlocks.needEndBlock.add(false);
+    _addedBlocks.waitingStartBlock!.add(true);
+    _addedBlocks.needEndBlock!.add(false);
     _blockIndex++;
     if (_blockIndex > 1) {
-      _addedBlocks.needEndBlock[_blockIndex - 1] = true;
+      _addedBlocks.needEndBlock![_blockIndex - 1] = true;
     }
     return this;
   }
 
   /// String whereCriteria, write raw query without 'where' keyword. Like this: 'field1 like 'test%' and field2 = 3'
-  ExternalsAuthorsFilterBuilder where(String whereCriteria,
-      {dynamic parameterValue}) {
+  ExternalsAuthorsFilterBuilder where(String? whereCriteria, {dynamic parameterValue}) {
     if (whereCriteria != null && whereCriteria != '') {
-      final DbParameter param = DbParameter(
-          columnName: parameterValue == null ? null : '',
-          hasParameter: parameterValue != null);
-      _addedBlocks = setCriteria(parameterValue ?? 0, parameters, param,
-          '($whereCriteria)', _addedBlocks);
-      _addedBlocks.needEndBlock[_blockIndex] = _addedBlocks.retVal;
+      final DbParameter param =
+          DbParameter(columnName: parameterValue == null ? null : '', hasParameter: parameterValue != null);
+      _addedBlocks = setCriteria(parameterValue ?? 0, parameters, param, '($whereCriteria)', _addedBlocks);
+      _addedBlocks.needEndBlock![_blockIndex] = _addedBlocks.retVal;
     }
     return this;
   }
@@ -11126,11 +9748,11 @@ class ExternalsAuthorsFilterBuilder extends SearchCriteria {
 
   /// close parentheses
   ExternalsAuthorsFilterBuilder get endBlock {
-    if (_addedBlocks.needEndBlock[_blockIndex]) {
+    if (_addedBlocks.needEndBlock![_blockIndex]) {
       parameters[parameters.length - 1].whereString += ' ) ';
     }
-    _addedBlocks.needEndBlock.removeAt(_blockIndex);
-    _addedBlocks.waitingStartBlock.removeAt(_blockIndex);
+    _addedBlocks.needEndBlock!.removeAt(_blockIndex);
+    _addedBlocks.waitingStartBlock!.removeAt(_blockIndex);
     _blockIndex--;
     return this;
   }
@@ -11145,8 +9767,8 @@ class ExternalsAuthorsFilterBuilder extends SearchCriteria {
       if (argFields is String) {
         orderByList.add(argFields);
       } else {
-        for (String s in argFields as List<String>) {
-          if (s != null && s.isNotEmpty) {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
             orderByList.add(' $s ');
           }
         }
@@ -11165,8 +9787,8 @@ class ExternalsAuthorsFilterBuilder extends SearchCriteria {
       if (argFields is String) {
         orderByList.add('$argFields desc ');
       } else {
-        for (String s in argFields as List<String>) {
-          if (s != null && s.isNotEmpty) {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
             orderByList.add(' $s desc ');
           }
         }
@@ -11185,8 +9807,8 @@ class ExternalsAuthorsFilterBuilder extends SearchCriteria {
       if (argFields is String) {
         groupByList.add(' $argFields ');
       } else {
-        for (String s in argFields as List<String>) {
-          if (s != null && s.isNotEmpty) {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
             groupByList.add(' $s ');
           }
         }
@@ -11205,8 +9827,8 @@ class ExternalsAuthorsFilterBuilder extends SearchCriteria {
       if (argFields is String) {
         havingList.add(argFields);
       } else {
-        for (String s in argFields as List<String>) {
-          if (s != null && s.isNotEmpty) {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
             havingList.add(' $s ');
           }
         }
@@ -11215,26 +9837,23 @@ class ExternalsAuthorsFilterBuilder extends SearchCriteria {
     return this;
   }
 
-  ExternalsAuthorsField setField(
-      ExternalsAuthorsField field, String colName, DbType dbtype) {
+  ExternalsAuthorsField setField(ExternalsAuthorsField? field, String colName, DbType dbtype) {
     return ExternalsAuthorsField(this)
-      ..param = DbParameter(
-          dbType: dbtype,
-          columnName: colName,
-          wStartBlock: _addedBlocks.waitingStartBlock[_blockIndex]);
+      ..param =
+          DbParameter(dbType: dbtype, columnName: colName, wStartBlock: _addedBlocks.waitingStartBlock![_blockIndex]);
   }
 
-  ExternalsAuthorsField _externalsId;
+  ExternalsAuthorsField? _externalsId;
   ExternalsAuthorsField get externalsId {
     return _externalsId = setField(_externalsId, 'externalsId', DbType.integer);
   }
 
-  ExternalsAuthorsField _authorsId;
+  ExternalsAuthorsField? _authorsId;
   ExternalsAuthorsField get authorsId {
     return _authorsId = setField(_authorsId, 'authorsId', DbType.integer);
   }
 
-  bool _getIsDeleted;
+  bool _getIsDeleted = false;
 
   void _buildParameters() {
     if (_page > 0 && _pagesize > 0) {
@@ -11249,24 +9868,20 @@ class ExternalsAuthorsFilterBuilder extends SearchCriteria {
     for (DbParameter param in parameters) {
       if (param.columnName != null) {
         if (param.value is List && !param.hasParameter) {
-          param.value = param.dbType == DbType.text
+          param.value = param.dbType == DbType.text || param.value[0] is String
               ? '\'${param.value.join('\',\'')}\''
               : param.value.join(',');
-          whereString += param.whereString
-              .replaceAll('{field}', param.columnName)
-              .replaceAll('?', param.value.toString());
+          whereString +=
+              param.whereString.replaceAll('{field}', param.columnName!).replaceAll('?', param.value.toString());
           param.value = null;
         } else {
-          if (param.value is Map<String, dynamic> &&
-              param.value['sql'] != null) {
+          if (param.value is Map<String, dynamic> && param.value['sql'] != null) {
             param
-              ..whereString = param.whereString
-                  .replaceAll('?', param.value['sql'].toString())
+              ..whereString = param.whereString.replaceAll('?', param.value['sql'].toString())
               ..dbType = DbType.integer
               ..value = param.value['args'];
           }
-          whereString +=
-              param.whereString.replaceAll('{field}', param.columnName);
+          whereString += param.whereString.replaceAll('{field}', param.columnName!);
         }
         if (!param.whereString.contains('?')) {
         } else {
@@ -11286,12 +9901,8 @@ class ExternalsAuthorsFilterBuilder extends SearchCriteria {
             case DbType.date:
             case DbType.datetime:
             case DbType.datetimeUtc:
-              param.value = param.value == null
-                  ? null
-                  : (param.value as DateTime).millisecondsSinceEpoch;
-              param.value2 = param.value2 == null
-                  ? null
-                  : (param.value2 as DateTime).millisecondsSinceEpoch;
+              param.value = param.value == null ? null : (param.value as DateTime).millisecondsSinceEpoch;
+              param.value2 = param.value2 == null ? null : (param.value2 as DateTime).millisecondsSinceEpoch;
               break;
             default:
           }
@@ -11314,8 +9925,7 @@ class ExternalsAuthorsFilterBuilder extends SearchCriteria {
     }
     if (ExternalsAuthors._softDeleteActivated) {
       if (whereString != '') {
-        whereString =
-            '${!_getIsDeleted ? 'ifnull(isDeleted,0)=0 AND' : ''} ($whereString)';
+        whereString = '${!_getIsDeleted ? 'ifnull(isDeleted,0)=0 AND' : ''} ($whereString)';
       } else if (!_getIsDeleted) {
         whereString = 'ifnull(isDeleted,0)=0';
       }
@@ -11336,12 +9946,12 @@ class ExternalsAuthorsFilterBuilder extends SearchCriteria {
   /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
   Future<BoolResult> delete([bool hardDelete = false]) async {
     _buildParameters();
-    var r = BoolResult();
+    var r = BoolResult(success: false);
 
     if (ExternalsAuthors._softDeleteActivated && !hardDelete) {
-      r = await _obj._mnExternalsAuthors.updateBatch(qparams, {'isDeleted': 1});
+      r = await _obj!._mnExternalsAuthors.updateBatch(qparams, {'isDeleted': 1});
     } else {
-      r = await _obj._mnExternalsAuthors.delete(qparams);
+      r = await _obj!._mnExternalsAuthors.delete(qparams);
     }
     return r;
   }
@@ -11353,11 +9963,11 @@ class ExternalsAuthorsFilterBuilder extends SearchCriteria {
   /// fieldName must be String. Value is dynamic, it can be any of the (int, bool, String.. )
   Future<BoolResult> update(Map<String, dynamic> values) {
     _buildParameters();
-    if (qparams.limit > 0 || qparams.offset > 0) {
+    if (qparams.limit! > 0 || qparams.offset! > 0) {
       qparams.whereString =
-          'externalsId IN (SELECT externalsId from externalsAuthors ${qparams.whereString.isNotEmpty ? 'WHERE ${qparams.whereString}' : ''}${qparams.limit > 0 ? ' LIMIT ${qparams.limit}' : ''}${qparams.offset > 0 ? ' OFFSET ${qparams.offset}' : ''})';
+          'externalsId IN (SELECT externalsId from externalsAuthors ${qparams.whereString!.isNotEmpty ? 'WHERE ${qparams.whereString}' : ''}${qparams.limit! > 0 ? ' LIMIT ${qparams.limit}' : ''}${qparams.offset! > 0 ? ' OFFSET ${qparams.offset}' : ''})';
     }
-    return _obj._mnExternalsAuthors.updateBatch(qparams, values);
+    return _obj!._mnExternalsAuthors.updateBatch(qparams, values);
   }
 
   /// This method always returns ExternalsAuthors Obj if exist, otherwise returns null
@@ -11374,16 +9984,13 @@ class ExternalsAuthorsFilterBuilder extends SearchCriteria {
 
   ///
   /// <returns>List<ExternalsAuthors>
-  Future<ExternalsAuthors> toSingle(
-      {bool preload = false,
-      List<String> preloadFields,
-      bool loadParents = false,
-      List<String> loadedFields}) async {
+  Future<ExternalsAuthors?> toSingle(
+      {bool preload = false, List<String>? preloadFields, bool loadParents = false, List<String>? loadedFields}) async {
     _pagesize = 1;
     _buildParameters();
-    final objFuture = _obj._mnExternalsAuthors.toList(qparams);
+    final objFuture = _obj!._mnExternalsAuthors.toList(qparams);
     final data = await objFuture;
-    ExternalsAuthors obj;
+    ExternalsAuthors? obj;
     if (data.isNotEmpty) {
       obj = ExternalsAuthors.fromMap(data[0] as Map<String, dynamic>);
       // final List<String> _loadedFields = loadedFields ?? [];
@@ -11391,23 +9998,17 @@ class ExternalsAuthorsFilterBuilder extends SearchCriteria {
       // RELATIONSHIPS PRELOAD
       if (preload || loadParents) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedFields.contains('externals.plExternalEntity') && */ (preloadFields ==
-                null ||
+        if (/*!_loadedfields!.contains('externals.plExternal') && */ (preloadFields == null ||
             loadParents ||
-            preloadFields.contains('plExternalEntity'))) {
-          /*_loadedFields.add('externals.plExternalEntity');*/
-          obj.plExternalEntity = obj.plExternalEntity ??
-              await obj.getExternalEntity(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+            preloadFields.contains('plExternal'))) {
+          /*_loadedfields!.add('externals.plExternal');*/ obj.plExternal =
+              obj.plExternal ?? await obj.getExternal(loadParents: loadParents /*, loadedFields: _loadedFields*/);
         }
-        if (/*!_loadedFields.contains('authors.plAuthorEntity') && */ (preloadFields ==
-                null ||
+        if (/*!_loadedfields!.contains('authors.plAuthor') && */ (preloadFields == null ||
             loadParents ||
-            preloadFields.contains('plAuthorEntity'))) {
-          /*_loadedFields.add('authors.plAuthorEntity');*/
-          obj.plAuthorEntity = obj.plAuthorEntity ??
-              await obj.getAuthorEntity(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+            preloadFields.contains('plAuthor'))) {
+          /*_loadedfields!.add('authors.plAuthor');*/ obj.plAuthor =
+              obj.plAuthor ?? await obj.getAuthor(loadParents: loadParents /*, loadedFields: _loadedFields*/);
         }
       } // END RELATIONSHIPS PRELOAD
 
@@ -11420,12 +10021,10 @@ class ExternalsAuthorsFilterBuilder extends SearchCriteria {
   /// This method returns int. [ExternalsAuthors]
   ///
   /// <returns>int
-  Future<int> toCount(
-      [VoidCallback Function(int c) externalsauthorsCount]) async {
+  Future<int> toCount([VoidCallback Function(int c)? externalsauthorsCount]) async {
     _buildParameters();
     qparams.selectColumns = ['COUNT(1) AS CNT'];
-    final externalsauthorsesFuture =
-        await _obj._mnExternalsAuthors.toList(qparams);
+    final externalsauthorsesFuture = await _obj!._mnExternalsAuthors.toList(qparams);
     final int count = externalsauthorsesFuture[0]['CNT'] as int;
     if (externalsauthorsCount != null) {
       externalsauthorsCount(count);
@@ -11448,18 +10047,14 @@ class ExternalsAuthorsFilterBuilder extends SearchCriteria {
   ///
   /// <returns>List<ExternalsAuthors>
   Future<List<ExternalsAuthors>> toList(
-      {bool preload = false,
-      List<String> preloadFields,
-      bool loadParents = false,
-      List<String> loadedFields}) async {
+      {bool preload = false, List<String>? preloadFields, bool loadParents = false, List<String>? loadedFields}) async {
     final data = await toMapList();
-    final List<ExternalsAuthors> externalsauthorsesData =
-        await ExternalsAuthors.fromMapList(data,
-            preload: preload,
-            preloadFields: preloadFields,
-            loadParents: loadParents,
-            loadedFields: loadedFields,
-            setDefaultValues: qparams.selectColumns == null);
+    final List<ExternalsAuthors> externalsauthorsesData = await ExternalsAuthors.fromMapList(data,
+        preload: preload,
+        preloadFields: preloadFields,
+        loadParents: loadParents,
+        loadedFields: loadedFields,
+        setDefaultValues: qparams.selectColumns == null);
     return externalsauthorsesData;
   }
 
@@ -11488,7 +10083,7 @@ class ExternalsAuthorsFilterBuilder extends SearchCriteria {
   /// <returns>List<dynamic>
   Future<List<dynamic>> toMapList() async {
     _buildParameters();
-    return await _obj._mnExternalsAuthors.toList(qparams);
+    return await _obj!._mnExternalsAuthors.toList(qparams);
   }
 
   /// This method returns Primary Key List SQL and Parameters retVal = Map<String,dynamic>. [ExternalsAuthors]
@@ -11501,22 +10096,19 @@ class ExternalsAuthorsFilterBuilder extends SearchCriteria {
     if (buildParameters) {
       _buildParameters();
     }
-    _retVal['sql'] =
-        'SELECT `externalsId`authorsId` FROM externalsAuthors WHERE ${qparams.whereString}';
+    _retVal['sql'] = 'SELECT `externalsId`authorsId` FROM externalsAuthors WHERE ${qparams.whereString}';
     _retVal['args'] = qparams.whereArguments;
     return _retVal;
   }
 
   /// This method returns Primary Key List<externalsId,authorsId> [ExternalsAuthors]
   /// <returns>List<externalsId,authorsId>
-  Future<List<ExternalsAuthors>> toListPrimaryKey(
-      [bool buildParameters = true]) async {
+  Future<List<ExternalsAuthors>> toListPrimaryKey([bool buildParameters = true]) async {
     if (buildParameters) {
       _buildParameters();
     }
     qparams.selectColumns = ['externalsId', 'authorsId'];
-    final externalsauthorsFuture =
-        await _obj._mnExternalsAuthors.toList(qparams);
+    final externalsauthorsFuture = await _obj!._mnExternalsAuthors.toList(qparams);
     return await ExternalsAuthors.fromMapList(externalsauthorsFuture);
   }
 
@@ -11526,7 +10118,7 @@ class ExternalsAuthorsFilterBuilder extends SearchCriteria {
   Future<List<dynamic>> toListObject() async {
     _buildParameters();
 
-    final objectFuture = _obj._mnExternalsAuthors.toList(qparams);
+    final objectFuture = _obj!._mnExternalsAuthors.toList(qparams);
 
     final List<dynamic> objectsData = <dynamic>[];
     final data = await objectFuture;
@@ -11540,17 +10132,16 @@ class ExternalsAuthorsFilterBuilder extends SearchCriteria {
   /// Returns List<String> for selected first column
   ///
   /// Sample usage: await ExternalsAuthors.select(columnsToSelect: ['columnName']).toListString()
-  Future<List<String>> toListString(
-      [VoidCallback Function(List<String> o) listString]) async {
+  Future<List<String>> toListString([VoidCallback Function(List<String> o)? listString]) async {
     _buildParameters();
 
-    final objectFuture = _obj._mnExternalsAuthors.toList(qparams);
+    final objectFuture = _obj!._mnExternalsAuthors.toList(qparams);
 
     final List<String> objectsData = <String>[];
     final data = await objectFuture;
     final int count = data.length;
     for (int i = 0; i < count; i++) {
-      objectsData.add(data[i][qparams.selectColumns[0]].toString());
+      objectsData.add(data[i][qparams.selectColumns![0]].toString());
     }
     if (listString != null) {
       listString(objectsData);
@@ -11562,16 +10153,14 @@ class ExternalsAuthorsFilterBuilder extends SearchCriteria {
 
 // region ExternalsAuthorsFields
 class ExternalsAuthorsFields {
-  static TableField _fExternalsId;
+  static TableField? _fExternalsId;
   static TableField get externalsId {
-    return _fExternalsId = _fExternalsId ??
-        SqlSyntax.setField(_fExternalsId, 'externalsId', DbType.integer);
+    return _fExternalsId = _fExternalsId ?? SqlSyntax.setField(_fExternalsId, 'externalsId', DbType.integer);
   }
 
-  static TableField _fAuthorsId;
+  static TableField? _fAuthorsId;
   static TableField get authorsId {
-    return _fAuthorsId = _fAuthorsId ??
-        SqlSyntax.setField(_fAuthorsId, 'authorsId', DbType.integer);
+    return _fAuthorsId = _fAuthorsId ?? SqlSyntax.setField(_fAuthorsId, 'authorsId', DbType.integer);
   }
 }
 // endregion ExternalsAuthorsFields
@@ -11579,10 +10168,7 @@ class ExternalsAuthorsFields {
 //region ExternalsAuthorsManager
 class ExternalsAuthorsManager extends SqfEntityProvider {
   ExternalsAuthorsManager()
-      : super(Model(),
-            tableName: _tableName,
-            primaryKeyList: _primaryKeyList,
-            whereStr: _whereStr);
+      : super(Model(), tableName: _tableName, primaryKeyList: _primaryKeyList, whereStr: _whereStr);
   static final String _tableName = 'externalsAuthors';
   static final List<String> _primaryKeyList = ['externalsId', 'authorsId'];
   static final String _whereStr = 'externalsId=? AND authorsId=?';
@@ -11600,8 +10186,8 @@ class Song_lyricsAuthors {
   Song_lyricsAuthors.withId(this.song_lyricsId, this.authorsId) {
     _setDefaultValues();
   }
-  Song_lyricsAuthors.fromMap(Map<String, dynamic> o,
-      {bool setDefaultValues = true}) {
+  // fromMap v2.0
+  Song_lyricsAuthors.fromMap(Map<String, dynamic> o, {bool setDefaultValues = true}) {
     if (setDefaultValues) {
       _setDefaultValues();
     }
@@ -11610,83 +10196,87 @@ class Song_lyricsAuthors {
     authorsId = int.tryParse(o['authorsId'].toString());
 
     // RELATIONSHIPS FromMAP
-    plSongLyricEntity = o['songLyricEntity'] != null
-        ? SongLyricEntity.fromMap(o['songLyricEntity'] as Map<String, dynamic>)
-        : null;
-    plAuthorEntity = o['authorEntity'] != null
-        ? AuthorEntity.fromMap(o['authorEntity'] as Map<String, dynamic>)
-        : null;
+    plSongLyric = o['songLyric'] != null ? SongLyric.fromMap(o['songLyric'] as Map<String, dynamic>) : null;
+    plAuthor = o['author'] != null ? Author.fromMap(o['author'] as Map<String, dynamic>) : null;
     // END RELATIONSHIPS FromMAP
 
     isSaved = true;
   }
   // FIELDS (Song_lyricsAuthors)
-  int song_lyricsId;
-  int authorsId;
-  bool isSaved;
-  BoolResult saveResult;
+  int? song_lyricsId;
+  int? authorsId;
+  bool? isSaved;
+  BoolResult? saveResult;
   // end FIELDS (Song_lyricsAuthors)
 
 // RELATIONSHIPS (Song_lyricsAuthors)
   /// to load parent of items to this field, use preload parameter ex: toList(preload:true) or toSingle(preload:true) or getById(preload:true)
-  /// You can also specify this object into certain preload fields. Ex: toList(preload:true, preloadFields:['plSongLyricEntity', 'plField2'..]) or so on..
-  SongLyricEntity plSongLyricEntity;
+  /// You can also specify this object into certain preload fields!. Ex: toList(preload:true, preloadFields:['plSongLyric', 'plField2'..]) or so on..
+  SongLyric? plSongLyric;
 
-  /// get SongLyricEntity By Song_lyricsId
-  Future<SongLyricEntity> getSongLyricEntity(
-      {bool loadParents = false, List<String> loadedFields}) async {
-    final _obj = await SongLyricEntity().getById(song_lyricsId,
-        loadParents: loadParents, loadedFields: loadedFields);
+  /// get SongLyric By Song_lyricsId
+  Future<SongLyric?> getSongLyric({bool loadParents = false, List<String>? loadedFields}) async {
+    final _obj = await SongLyric().getById(song_lyricsId, loadParents: loadParents, loadedFields: loadedFields);
     return _obj;
   }
 
   /// to load parent of items to this field, use preload parameter ex: toList(preload:true) or toSingle(preload:true) or getById(preload:true)
-  /// You can also specify this object into certain preload fields. Ex: toList(preload:true, preloadFields:['plAuthorEntity', 'plField2'..]) or so on..
-  AuthorEntity plAuthorEntity;
+  /// You can also specify this object into certain preload fields!. Ex: toList(preload:true, preloadFields:['plAuthor', 'plField2'..]) or so on..
+  Author? plAuthor;
 
-  /// get AuthorEntity By AuthorsId
-  Future<AuthorEntity> getAuthorEntity(
-      {bool loadParents = false, List<String> loadedFields}) async {
-    final _obj = await AuthorEntity().getById(authorsId,
-        loadParents: loadParents, loadedFields: loadedFields);
+  /// get Author By AuthorsId
+  Future<Author?> getAuthor({bool loadParents = false, List<String>? loadedFields}) async {
+    final _obj = await Author().getById(authorsId, loadParents: loadParents, loadedFields: loadedFields);
     return _obj;
   }
   // END RELATIONSHIPS (Song_lyricsAuthors)
 
   static const bool _softDeleteActivated = false;
-  Song_lyricsAuthorsManager __mnSong_lyricsAuthors;
+  Song_lyricsAuthorsManager? __mnSong_lyricsAuthors;
 
   Song_lyricsAuthorsManager get _mnSong_lyricsAuthors {
-    return __mnSong_lyricsAuthors =
-        __mnSong_lyricsAuthors ?? Song_lyricsAuthorsManager();
+    return __mnSong_lyricsAuthors = __mnSong_lyricsAuthors ?? Song_lyricsAuthorsManager();
   }
 
   // METHODS
-  Map<String, dynamic> toMap(
-      {bool forQuery = false, bool forJson = false, bool forView = false}) {
+  Map<String, dynamic> toMap({bool forQuery = false, bool forJson = false, bool forView = false}) {
     final map = <String, dynamic>{};
     if (song_lyricsId != null) {
-      map['song_lyricsId'] = forView ? plSongLyricEntity.name : song_lyricsId;
+      map['song_lyricsId'] = forView
+          ? plSongLyric == null
+              ? song_lyricsId
+              : plSongLyric!.name
+          : song_lyricsId;
     }
 
     if (authorsId != null) {
-      map['authorsId'] = forView ? plAuthorEntity.name : authorsId;
+      map['authorsId'] = forView
+          ? plAuthor == null
+              ? authorsId
+              : plAuthor!.name
+          : authorsId;
     }
 
     return map;
   }
 
   Future<Map<String, dynamic>> toMapWithChildren(
-      [bool forQuery = false,
-      bool forJson = false,
-      bool forView = false]) async {
+      [bool forQuery = false, bool forJson = false, bool forView = false]) async {
     final map = <String, dynamic>{};
     if (song_lyricsId != null) {
-      map['song_lyricsId'] = forView ? plSongLyricEntity.name : song_lyricsId;
+      map['song_lyricsId'] = forView
+          ? plSongLyric == null
+              ? song_lyricsId
+              : plSongLyric!.name
+          : song_lyricsId;
     }
 
     if (authorsId != null) {
-      map['authorsId'] = forView ? plAuthorEntity.name : authorsId;
+      map['authorsId'] = forView
+          ? plAuthor == null
+              ? authorsId
+              : plAuthor!.name
+          : authorsId;
     }
 
     return map;
@@ -11710,20 +10300,18 @@ class Song_lyricsAuthors {
     return [song_lyricsId, authorsId];
   }
 
-  static Future<List<Song_lyricsAuthors>> fromWebUrl(String url,
-      {Map<String, String> headers}) async {
+  static Future<List<Song_lyricsAuthors>?> fromWebUrl(Uri uri, {Map<String, String>? headers}) async {
     try {
-      final response = await http.get(url, headers: headers);
+      final response = await http.get(uri, headers: headers);
       return await fromJson(response.body);
     } catch (e) {
-      print(
-          'SQFENTITY ERROR Song_lyricsAuthors.fromWebUrl: ErrorMessage: ${e.toString()}');
+      print('SQFENTITY ERROR Song_lyricsAuthors.fromWebUrl: ErrorMessage: ${e.toString()}');
       return null;
     }
   }
 
-  Future<http.Response> postUrl(String url, {Map<String, String> headers}) {
-    return http.post(url, headers: headers, body: toJson());
+  Future<http.Response> postUrl(Uri uri, {Map<String, String>? headers}) {
+    return http.post(uri, headers: headers, body: toJson());
   }
 
   static Future<List<Song_lyricsAuthors>> fromJson(String jsonBody) async {
@@ -11731,49 +10319,40 @@ class Song_lyricsAuthors {
     var objList = <Song_lyricsAuthors>[];
     try {
       objList = list
-          .map((song_lyricsauthors) => Song_lyricsAuthors.fromMap(
-              song_lyricsauthors as Map<String, dynamic>))
+          .map((song_lyricsauthors) => Song_lyricsAuthors.fromMap(song_lyricsauthors as Map<String, dynamic>))
           .toList();
     } catch (e) {
-      print(
-          'SQFENTITY ERROR Song_lyricsAuthors.fromJson: ErrorMessage: ${e.toString()}');
+      print('SQFENTITY ERROR Song_lyricsAuthors.fromJson: ErrorMessage: ${e.toString()}');
     }
     return objList;
   }
 
   static Future<List<Song_lyricsAuthors>> fromMapList(List<dynamic> data,
       {bool preload = false,
-      List<String> preloadFields,
+      List<String>? preloadFields,
       bool loadParents = false,
-      List<String> loadedFields,
+      List<String>? loadedFields,
       bool setDefaultValues = true}) async {
     final List<Song_lyricsAuthors> objList = <Song_lyricsAuthors>[];
     loadedFields = loadedFields ?? [];
     for (final map in data) {
-      final obj = Song_lyricsAuthors.fromMap(map as Map<String, dynamic>,
-          setDefaultValues: setDefaultValues);
+      final obj = Song_lyricsAuthors.fromMap(map as Map<String, dynamic>, setDefaultValues: setDefaultValues);
       // final List<String> _loadedFields = List<String>.from(loadedFields);
 
       // RELATIONSHIPS PRELOAD
       if (preload || loadParents) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedFields.contains('song_lyrics.plSongLyricEntity') && */ (preloadFields ==
-                null ||
+        if (/*!_loadedfields!.contains('song_lyrics.plSongLyric') && */ (preloadFields == null ||
             loadParents ||
-            preloadFields.contains('plSongLyricEntity'))) {
-          /*_loadedFields.add('song_lyrics.plSongLyricEntity');*/
-          obj.plSongLyricEntity = obj.plSongLyricEntity ??
-              await obj.getSongLyricEntity(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+            preloadFields.contains('plSongLyric'))) {
+          /*_loadedfields!.add('song_lyrics.plSongLyric');*/ obj.plSongLyric =
+              obj.plSongLyric ?? await obj.getSongLyric(loadParents: loadParents /*, loadedFields: _loadedFields*/);
         }
-        if (/*!_loadedFields.contains('authors.plAuthorEntity') && */ (preloadFields ==
-                null ||
+        if (/*!_loadedfields!.contains('authors.plAuthor') && */ (preloadFields == null ||
             loadParents ||
-            preloadFields.contains('plAuthorEntity'))) {
-          /*_loadedFields.add('authors.plAuthorEntity');*/
-          obj.plAuthorEntity = obj.plAuthorEntity ??
-              await obj.getAuthorEntity(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+            preloadFields.contains('plAuthor'))) {
+          /*_loadedfields!.add('authors.plAuthor');*/ obj.plAuthor =
+              obj.plAuthor ?? await obj.getAuthor(loadParents: loadParents /*, loadedFields: _loadedFields*/);
         }
       } // END RELATIONSHIPS PRELOAD
 
@@ -11784,7 +10363,7 @@ class Song_lyricsAuthors {
 
   /// returns Song_lyricsAuthors by ID if exist, otherwise returns null
   ///
-  /// Primary Keys: int song_lyricsId, int authorsId
+  /// Primary Keys: int? song_lyricsId, int? authorsId
   ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
   ///
@@ -11798,17 +10377,13 @@ class Song_lyricsAuthors {
 
   ///
   /// <returns>returns Song_lyricsAuthors if exist, otherwise returns null
-  Future<Song_lyricsAuthors> getById(int song_lyricsId, int authorsId,
-      {bool preload = false,
-      List<String> preloadFields,
-      bool loadParents = false,
-      List<String> loadedFields}) async {
+  Future<Song_lyricsAuthors?> getById(int? song_lyricsId, int? authorsId,
+      {bool preload = false, List<String>? preloadFields, bool loadParents = false, List<String>? loadedFields}) async {
     if (song_lyricsId == null) {
       return null;
     }
-    Song_lyricsAuthors obj;
-    final data =
-        await _mnSong_lyricsAuthors.getById([song_lyricsId, authorsId]);
+    Song_lyricsAuthors? obj;
+    final data = await _mnSong_lyricsAuthors.getById([song_lyricsId, authorsId]);
     if (data.length != 0) {
       obj = Song_lyricsAuthors.fromMap(data[0] as Map<String, dynamic>);
       // final List<String> _loadedFields = loadedFields ?? [];
@@ -11816,23 +10391,17 @@ class Song_lyricsAuthors {
       // RELATIONSHIPS PRELOAD
       if (preload || loadParents) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedFields.contains('song_lyrics.plSongLyricEntity') && */ (preloadFields ==
-                null ||
+        if (/*!_loadedfields!.contains('song_lyrics.plSongLyric') && */ (preloadFields == null ||
             loadParents ||
-            preloadFields.contains('plSongLyricEntity'))) {
-          /*_loadedFields.add('song_lyrics.plSongLyricEntity');*/
-          obj.plSongLyricEntity = obj.plSongLyricEntity ??
-              await obj.getSongLyricEntity(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+            preloadFields.contains('plSongLyric'))) {
+          /*_loadedfields!.add('song_lyrics.plSongLyric');*/ obj.plSongLyric =
+              obj.plSongLyric ?? await obj.getSongLyric(loadParents: loadParents /*, loadedFields: _loadedFields*/);
         }
-        if (/*!_loadedFields.contains('authors.plAuthorEntity') && */ (preloadFields ==
-                null ||
+        if (/*!_loadedfields!.contains('authors.plAuthor') && */ (preloadFields == null ||
             loadParents ||
-            preloadFields.contains('plAuthorEntity'))) {
-          /*_loadedFields.add('authors.plAuthorEntity');*/
-          obj.plAuthorEntity = obj.plAuthorEntity ??
-              await obj.getAuthorEntity(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+            preloadFields.contains('plAuthor'))) {
+          /*_loadedfields!.add('authors.plAuthor');*/ obj.plAuthor =
+              obj.plAuthor ?? await obj.getAuthor(loadParents: loadParents /*, loadedFields: _loadedFields*/);
         }
       } // END RELATIONSHIPS PRELOAD
 
@@ -11853,7 +10422,7 @@ class Song_lyricsAuthors {
     final result = BoolResult(success: false);
     try {
       await _mnSong_lyricsAuthors.rawInsert(
-          'INSERT ${isSaved ? 'OR REPLACE' : ''} INTO song_lyricsAuthors (song_lyricsId, authorsId)  VALUES (?,?)',
+          'INSERT ${isSaved! ? 'OR REPLACE' : ''} INTO song_lyricsAuthors (song_lyricsId, authorsId)  VALUES (?,?)',
           toArgsWithIds());
       result.success = true;
       isSaved = true;
@@ -11868,8 +10437,7 @@ class Song_lyricsAuthors {
   /// saveAll method saves the sent List<Song_lyricsAuthors> as a bulk in one transaction
   ///
   /// Returns a <List<BoolResult>>
-  static Future<List<dynamic>> saveAll(
-      List<Song_lyricsAuthors> song_lyricsauthorses) async {
+  static Future<List<dynamic>> saveAll(List<Song_lyricsAuthors> song_lyricsauthorses) async {
     // final results = _mnSong_lyricsAuthors.saveAll('INSERT OR REPLACE INTO song_lyricsAuthors (song_lyricsId, authorsId)  VALUES (?,?)',song_lyricsauthorses);
     // return results; removed in sqfentity_gen 1.3.0+6
     await Model().batchStart();
@@ -11879,35 +10447,29 @@ class Song_lyricsAuthors {
     //    return Model().batchCommit();
     final result = await Model().batchCommit();
 
-    return result;
+    return result!;
   }
 
   /// Updates if the record exists, otherwise adds a new row
 
   /// <returns>Returns 1
-  Future<int> upsert() async {
+
+  Future<int?> upsert() async {
     try {
-      if (await _mnSong_lyricsAuthors.rawInsert(
-              'INSERT OR REPLACE INTO song_lyricsAuthors (song_lyricsId, authorsId)  VALUES (?,?)',
-              [song_lyricsId, authorsId]) ==
-          1) {
+      final result = await _mnSong_lyricsAuthors.rawInsert(
+          'INSERT OR REPLACE INTO song_lyricsAuthors (song_lyricsId, authorsId)  VALUES (?,?)',
+          [song_lyricsId, authorsId]);
+      if (result! > 0) {
         saveResult = BoolResult(
-            success: true,
-            successMessage:
-                'Song_lyricsAuthors song_lyricsId=$song_lyricsId updated successfully');
+            success: true, successMessage: 'Song_lyricsAuthors song_lyricsId=$song_lyricsId updated successfully');
       } else {
-        saveResult = BoolResult(
-            success: false,
-            errorMessage:
-                'Song_lyricsAuthors song_lyricsId=$song_lyricsId did not update');
+        saveResult =
+            BoolResult(success: false, errorMessage: 'Song_lyricsAuthors song_lyricsId=$song_lyricsId did not update');
       }
-      return 1;
+      return song_lyricsId;
     } catch (e) {
-      saveResult = BoolResult(
-          success: false,
-          errorMessage:
-              'Song_lyricsAuthors Save failed. Error: ${e.toString()}');
-      return 0;
+      saveResult = BoolResult(success: false, errorMessage: 'Song_lyricsAuthors Save failed. Error: ${e.toString()}');
+      return null;
     }
   }
 
@@ -11916,42 +10478,35 @@ class Song_lyricsAuthors {
   /// upsertAll() method is faster then saveAll() method. upsertAll() should be used when you are sure that the primary key is greater than zero
   ///
   /// Returns a BoolCommitResult
-  Future<BoolCommitResult> upsertAll(
-      List<Song_lyricsAuthors> song_lyricsauthorses) async {
+  Future<BoolCommitResult> upsertAll(List<Song_lyricsAuthors> song_lyricsauthorses) async {
     final results = await _mnSong_lyricsAuthors.rawInsertAll(
-        'INSERT OR REPLACE INTO song_lyricsAuthors (song_lyricsId, authorsId)  VALUES (?,?)',
-        song_lyricsauthorses);
+        'INSERT OR REPLACE INTO song_lyricsAuthors (song_lyricsId, authorsId)  VALUES (?,?)', song_lyricsauthorses);
     return results;
   }
 
   /// Deletes Song_lyricsAuthors
 
   /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
+
   Future<BoolResult> delete([bool hardDelete = false]) async {
-    print(
-        'SQFENTITIY: delete Song_lyricsAuthors invoked (song_lyricsId=$song_lyricsId)');
+    print('SQFENTITIY: delete Song_lyricsAuthors invoked (song_lyricsId=$song_lyricsId)');
     if (!_softDeleteActivated || hardDelete) {
-      return _mnSong_lyricsAuthors.delete(QueryParams(
-          whereString: 'song_lyricsId=? AND authorsId=?',
-          whereArguments: [song_lyricsId, authorsId]));
+      return _mnSong_lyricsAuthors.delete(
+          QueryParams(whereString: 'song_lyricsId=? AND authorsId=?', whereArguments: [song_lyricsId, authorsId]));
     } else {
       return _mnSong_lyricsAuthors.updateBatch(
-          QueryParams(
-              whereString: 'song_lyricsId=? AND authorsId=?',
-              whereArguments: [song_lyricsId, authorsId]),
+          QueryParams(whereString: 'song_lyricsId=? AND authorsId=?', whereArguments: [song_lyricsId, authorsId]),
           {'isDeleted': 1});
     }
   }
 
-  Song_lyricsAuthorsFilterBuilder select(
-      {List<String> columnsToSelect, bool getIsDeleted}) {
+  Song_lyricsAuthorsFilterBuilder select({List<String>? columnsToSelect, bool? getIsDeleted}) {
     return Song_lyricsAuthorsFilterBuilder(this)
       .._getIsDeleted = getIsDeleted == true
       ..qparams.selectColumns = columnsToSelect;
   }
 
-  Song_lyricsAuthorsFilterBuilder distinct(
-      {List<String> columnsToSelect, bool getIsDeleted}) {
+  Song_lyricsAuthorsFilterBuilder distinct({List<String>? columnsToSelect, bool? getIsDeleted}) {
     return Song_lyricsAuthorsFilterBuilder(this)
       .._getIsDeleted = getIsDeleted == true
       ..qparams.selectColumns = columnsToSelect
@@ -11962,9 +10517,9 @@ class Song_lyricsAuthors {
     isSaved = false;
   }
   // END METHODS
-  // CUSTOM CODES
+  // BEGIN CUSTOM CODE
   /*
-      you must define customCode property of your SqfEntityTable constant for ex:
+      you can define customCode property of your SqfEntityTable constant. For example:
       const tablePerson = SqfEntityTable(
       tableName: 'person',
       primaryKeyName: 'id',
@@ -11980,16 +10535,15 @@ class Song_lyricsAuthors {
        }
       ''');
      */
-  // END CUSTOM CODES
+  // END CUSTOM CODE
 }
 // endregion song_lyricsauthors
 
 // region Song_lyricsAuthorsField
 class Song_lyricsAuthorsField extends SearchCriteria {
-  Song_lyricsAuthorsField(this.song_lyricsauthorsFB) {
-    param = DbParameter();
-  }
-  DbParameter param;
+  Song_lyricsAuthorsField(this.song_lyricsauthorsFB);
+  // { param = DbParameter(); }
+  DbParameter param = DbParameter();
   String _waitingNot = '';
   Song_lyricsAuthorsFilterBuilder song_lyricsauthorsFB;
 
@@ -12001,13 +10555,12 @@ class Song_lyricsAuthorsField extends SearchCriteria {
   Song_lyricsAuthorsFilterBuilder equals(dynamic pValue) {
     param.expression = '=';
     song_lyricsauthorsFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, song_lyricsauthorsFB.parameters, param,
-            SqlSyntax.EQuals, song_lyricsauthorsFB._addedBlocks)
-        : setCriteria(pValue, song_lyricsauthorsFB.parameters, param,
-            SqlSyntax.NotEQuals, song_lyricsauthorsFB._addedBlocks);
+        ? setCriteria(
+            pValue, song_lyricsauthorsFB.parameters, param, SqlSyntax.EQuals, song_lyricsauthorsFB._addedBlocks)
+        : setCriteria(
+            pValue, song_lyricsauthorsFB.parameters, param, SqlSyntax.NotEQuals, song_lyricsauthorsFB._addedBlocks);
     _waitingNot = '';
-    song_lyricsauthorsFB
-            ._addedBlocks.needEndBlock[song_lyricsauthorsFB._blockIndex] =
+    song_lyricsauthorsFB._addedBlocks.needEndBlock![song_lyricsauthorsFB._blockIndex] =
         song_lyricsauthorsFB._addedBlocks.retVal;
     return song_lyricsauthorsFB;
   }
@@ -12015,42 +10568,31 @@ class Song_lyricsAuthorsField extends SearchCriteria {
   Song_lyricsAuthorsFilterBuilder equalsOrNull(dynamic pValue) {
     param.expression = '=';
     song_lyricsauthorsFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, song_lyricsauthorsFB.parameters, param,
-            SqlSyntax.EQualsOrNull, song_lyricsauthorsFB._addedBlocks)
-        : setCriteria(pValue, song_lyricsauthorsFB.parameters, param,
-            SqlSyntax.NotEQualsOrNull, song_lyricsauthorsFB._addedBlocks);
+        ? setCriteria(
+            pValue, song_lyricsauthorsFB.parameters, param, SqlSyntax.EQualsOrNull, song_lyricsauthorsFB._addedBlocks)
+        : setCriteria(pValue, song_lyricsauthorsFB.parameters, param, SqlSyntax.NotEQualsOrNull,
+            song_lyricsauthorsFB._addedBlocks);
     _waitingNot = '';
-    song_lyricsauthorsFB
-            ._addedBlocks.needEndBlock[song_lyricsauthorsFB._blockIndex] =
+    song_lyricsauthorsFB._addedBlocks.needEndBlock![song_lyricsauthorsFB._blockIndex] =
         song_lyricsauthorsFB._addedBlocks.retVal;
     return song_lyricsauthorsFB;
   }
 
   Song_lyricsAuthorsFilterBuilder isNull() {
-    song_lyricsauthorsFB._addedBlocks = setCriteria(
-        0,
-        song_lyricsauthorsFB.parameters,
-        param,
-        SqlSyntax.IsNULL.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-        song_lyricsauthorsFB._addedBlocks);
+    song_lyricsauthorsFB._addedBlocks = setCriteria(0, song_lyricsauthorsFB.parameters, param,
+        SqlSyntax.IsNULL.replaceAll(SqlSyntax.notKeyword, _waitingNot), song_lyricsauthorsFB._addedBlocks);
     _waitingNot = '';
-    song_lyricsauthorsFB
-            ._addedBlocks.needEndBlock[song_lyricsauthorsFB._blockIndex] =
+    song_lyricsauthorsFB._addedBlocks.needEndBlock![song_lyricsauthorsFB._blockIndex] =
         song_lyricsauthorsFB._addedBlocks.retVal;
     return song_lyricsauthorsFB;
   }
 
   Song_lyricsAuthorsFilterBuilder contains(dynamic pValue) {
     if (pValue != null) {
-      song_lyricsauthorsFB._addedBlocks = setCriteria(
-          '%${pValue.toString()}%',
-          song_lyricsauthorsFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          song_lyricsauthorsFB._addedBlocks);
+      song_lyricsauthorsFB._addedBlocks = setCriteria('%${pValue.toString()}%', song_lyricsauthorsFB.parameters, param,
+          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot), song_lyricsauthorsFB._addedBlocks);
       _waitingNot = '';
-      song_lyricsauthorsFB
-              ._addedBlocks.needEndBlock[song_lyricsauthorsFB._blockIndex] =
+      song_lyricsauthorsFB._addedBlocks.needEndBlock![song_lyricsauthorsFB._blockIndex] =
           song_lyricsauthorsFB._addedBlocks.retVal;
     }
     return song_lyricsauthorsFB;
@@ -12058,18 +10600,12 @@ class Song_lyricsAuthorsField extends SearchCriteria {
 
   Song_lyricsAuthorsFilterBuilder startsWith(dynamic pValue) {
     if (pValue != null) {
-      song_lyricsauthorsFB._addedBlocks = setCriteria(
-          '${pValue.toString()}%',
-          song_lyricsauthorsFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          song_lyricsauthorsFB._addedBlocks);
+      song_lyricsauthorsFB._addedBlocks = setCriteria('${pValue.toString()}%', song_lyricsauthorsFB.parameters, param,
+          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot), song_lyricsauthorsFB._addedBlocks);
       _waitingNot = '';
-      song_lyricsauthorsFB
-              ._addedBlocks.needEndBlock[song_lyricsauthorsFB._blockIndex] =
+      song_lyricsauthorsFB._addedBlocks.needEndBlock![song_lyricsauthorsFB._blockIndex] =
           song_lyricsauthorsFB._addedBlocks.retVal;
-      song_lyricsauthorsFB
-              ._addedBlocks.needEndBlock[song_lyricsauthorsFB._blockIndex] =
+      song_lyricsauthorsFB._addedBlocks.needEndBlock![song_lyricsauthorsFB._blockIndex] =
           song_lyricsauthorsFB._addedBlocks.retVal;
     }
     return song_lyricsauthorsFB;
@@ -12077,15 +10613,10 @@ class Song_lyricsAuthorsField extends SearchCriteria {
 
   Song_lyricsAuthorsFilterBuilder endsWith(dynamic pValue) {
     if (pValue != null) {
-      song_lyricsauthorsFB._addedBlocks = setCriteria(
-          '%${pValue.toString()}',
-          song_lyricsauthorsFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          song_lyricsauthorsFB._addedBlocks);
+      song_lyricsauthorsFB._addedBlocks = setCriteria('%${pValue.toString()}', song_lyricsauthorsFB.parameters, param,
+          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot), song_lyricsauthorsFB._addedBlocks);
       _waitingNot = '';
-      song_lyricsauthorsFB
-              ._addedBlocks.needEndBlock[song_lyricsauthorsFB._blockIndex] =
+      song_lyricsauthorsFB._addedBlocks.needEndBlock![song_lyricsauthorsFB._blockIndex] =
           song_lyricsauthorsFB._addedBlocks.retVal;
     }
     return song_lyricsauthorsFB;
@@ -12093,49 +10624,27 @@ class Song_lyricsAuthorsField extends SearchCriteria {
 
   Song_lyricsAuthorsFilterBuilder between(dynamic pFirst, dynamic pLast) {
     if (pFirst != null && pLast != null) {
-      song_lyricsauthorsFB._addedBlocks = setCriteria(
-          pFirst,
-          song_lyricsauthorsFB.parameters,
-          param,
-          SqlSyntax.Between.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          song_lyricsauthorsFB._addedBlocks,
-          pLast);
+      song_lyricsauthorsFB._addedBlocks = setCriteria(pFirst, song_lyricsauthorsFB.parameters, param,
+          SqlSyntax.Between.replaceAll(SqlSyntax.notKeyword, _waitingNot), song_lyricsauthorsFB._addedBlocks, pLast);
     } else if (pFirst != null) {
       if (_waitingNot != '') {
         song_lyricsauthorsFB._addedBlocks = setCriteria(
-            pFirst,
-            song_lyricsauthorsFB.parameters,
-            param,
-            SqlSyntax.LessThan,
-            song_lyricsauthorsFB._addedBlocks);
+            pFirst, song_lyricsauthorsFB.parameters, param, SqlSyntax.LessThan, song_lyricsauthorsFB._addedBlocks);
       } else {
-        song_lyricsauthorsFB._addedBlocks = setCriteria(
-            pFirst,
-            song_lyricsauthorsFB.parameters,
-            param,
-            SqlSyntax.GreaterThanOrEquals,
-            song_lyricsauthorsFB._addedBlocks);
+        song_lyricsauthorsFB._addedBlocks = setCriteria(pFirst, song_lyricsauthorsFB.parameters, param,
+            SqlSyntax.GreaterThanOrEquals, song_lyricsauthorsFB._addedBlocks);
       }
     } else if (pLast != null) {
       if (_waitingNot != '') {
         song_lyricsauthorsFB._addedBlocks = setCriteria(
-            pLast,
-            song_lyricsauthorsFB.parameters,
-            param,
-            SqlSyntax.GreaterThan,
-            song_lyricsauthorsFB._addedBlocks);
+            pLast, song_lyricsauthorsFB.parameters, param, SqlSyntax.GreaterThan, song_lyricsauthorsFB._addedBlocks);
       } else {
-        song_lyricsauthorsFB._addedBlocks = setCriteria(
-            pLast,
-            song_lyricsauthorsFB.parameters,
-            param,
-            SqlSyntax.LessThanOrEquals,
-            song_lyricsauthorsFB._addedBlocks);
+        song_lyricsauthorsFB._addedBlocks = setCriteria(pLast, song_lyricsauthorsFB.parameters, param,
+            SqlSyntax.LessThanOrEquals, song_lyricsauthorsFB._addedBlocks);
       }
     }
     _waitingNot = '';
-    song_lyricsauthorsFB
-            ._addedBlocks.needEndBlock[song_lyricsauthorsFB._blockIndex] =
+    song_lyricsauthorsFB._addedBlocks.needEndBlock![song_lyricsauthorsFB._blockIndex] =
         song_lyricsauthorsFB._addedBlocks.retVal;
     return song_lyricsauthorsFB;
   }
@@ -12143,13 +10652,12 @@ class Song_lyricsAuthorsField extends SearchCriteria {
   Song_lyricsAuthorsFilterBuilder greaterThan(dynamic pValue) {
     param.expression = '>';
     song_lyricsauthorsFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, song_lyricsauthorsFB.parameters, param,
-            SqlSyntax.GreaterThan, song_lyricsauthorsFB._addedBlocks)
-        : setCriteria(pValue, song_lyricsauthorsFB.parameters, param,
-            SqlSyntax.LessThanOrEquals, song_lyricsauthorsFB._addedBlocks);
+        ? setCriteria(
+            pValue, song_lyricsauthorsFB.parameters, param, SqlSyntax.GreaterThan, song_lyricsauthorsFB._addedBlocks)
+        : setCriteria(pValue, song_lyricsauthorsFB.parameters, param, SqlSyntax.LessThanOrEquals,
+            song_lyricsauthorsFB._addedBlocks);
     _waitingNot = '';
-    song_lyricsauthorsFB
-            ._addedBlocks.needEndBlock[song_lyricsauthorsFB._blockIndex] =
+    song_lyricsauthorsFB._addedBlocks.needEndBlock![song_lyricsauthorsFB._blockIndex] =
         song_lyricsauthorsFB._addedBlocks.retVal;
     return song_lyricsauthorsFB;
   }
@@ -12157,13 +10665,12 @@ class Song_lyricsAuthorsField extends SearchCriteria {
   Song_lyricsAuthorsFilterBuilder lessThan(dynamic pValue) {
     param.expression = '<';
     song_lyricsauthorsFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, song_lyricsauthorsFB.parameters, param,
-            SqlSyntax.LessThan, song_lyricsauthorsFB._addedBlocks)
-        : setCriteria(pValue, song_lyricsauthorsFB.parameters, param,
-            SqlSyntax.GreaterThanOrEquals, song_lyricsauthorsFB._addedBlocks);
+        ? setCriteria(
+            pValue, song_lyricsauthorsFB.parameters, param, SqlSyntax.LessThan, song_lyricsauthorsFB._addedBlocks)
+        : setCriteria(pValue, song_lyricsauthorsFB.parameters, param, SqlSyntax.GreaterThanOrEquals,
+            song_lyricsauthorsFB._addedBlocks);
     _waitingNot = '';
-    song_lyricsauthorsFB
-            ._addedBlocks.needEndBlock[song_lyricsauthorsFB._blockIndex] =
+    song_lyricsauthorsFB._addedBlocks.needEndBlock![song_lyricsauthorsFB._blockIndex] =
         song_lyricsauthorsFB._addedBlocks.retVal;
     return song_lyricsauthorsFB;
   }
@@ -12171,13 +10678,12 @@ class Song_lyricsAuthorsField extends SearchCriteria {
   Song_lyricsAuthorsFilterBuilder greaterThanOrEquals(dynamic pValue) {
     param.expression = '>=';
     song_lyricsauthorsFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, song_lyricsauthorsFB.parameters, param,
-            SqlSyntax.GreaterThanOrEquals, song_lyricsauthorsFB._addedBlocks)
-        : setCriteria(pValue, song_lyricsauthorsFB.parameters, param,
-            SqlSyntax.LessThan, song_lyricsauthorsFB._addedBlocks);
+        ? setCriteria(pValue, song_lyricsauthorsFB.parameters, param, SqlSyntax.GreaterThanOrEquals,
+            song_lyricsauthorsFB._addedBlocks)
+        : setCriteria(
+            pValue, song_lyricsauthorsFB.parameters, param, SqlSyntax.LessThan, song_lyricsauthorsFB._addedBlocks);
     _waitingNot = '';
-    song_lyricsauthorsFB
-            ._addedBlocks.needEndBlock[song_lyricsauthorsFB._blockIndex] =
+    song_lyricsauthorsFB._addedBlocks.needEndBlock![song_lyricsauthorsFB._blockIndex] =
         song_lyricsauthorsFB._addedBlocks.retVal;
     return song_lyricsauthorsFB;
   }
@@ -12185,27 +10691,21 @@ class Song_lyricsAuthorsField extends SearchCriteria {
   Song_lyricsAuthorsFilterBuilder lessThanOrEquals(dynamic pValue) {
     param.expression = '<=';
     song_lyricsauthorsFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, song_lyricsauthorsFB.parameters, param,
-            SqlSyntax.LessThanOrEquals, song_lyricsauthorsFB._addedBlocks)
-        : setCriteria(pValue, song_lyricsauthorsFB.parameters, param,
-            SqlSyntax.GreaterThan, song_lyricsauthorsFB._addedBlocks);
+        ? setCriteria(pValue, song_lyricsauthorsFB.parameters, param, SqlSyntax.LessThanOrEquals,
+            song_lyricsauthorsFB._addedBlocks)
+        : setCriteria(
+            pValue, song_lyricsauthorsFB.parameters, param, SqlSyntax.GreaterThan, song_lyricsauthorsFB._addedBlocks);
     _waitingNot = '';
-    song_lyricsauthorsFB
-            ._addedBlocks.needEndBlock[song_lyricsauthorsFB._blockIndex] =
+    song_lyricsauthorsFB._addedBlocks.needEndBlock![song_lyricsauthorsFB._blockIndex] =
         song_lyricsauthorsFB._addedBlocks.retVal;
     return song_lyricsauthorsFB;
   }
 
   Song_lyricsAuthorsFilterBuilder inValues(dynamic pValue) {
-    song_lyricsauthorsFB._addedBlocks = setCriteria(
-        pValue,
-        song_lyricsauthorsFB.parameters,
-        param,
-        SqlSyntax.IN.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-        song_lyricsauthorsFB._addedBlocks);
+    song_lyricsauthorsFB._addedBlocks = setCriteria(pValue, song_lyricsauthorsFB.parameters, param,
+        SqlSyntax.IN.replaceAll(SqlSyntax.notKeyword, _waitingNot), song_lyricsauthorsFB._addedBlocks);
     _waitingNot = '';
-    song_lyricsauthorsFB
-            ._addedBlocks.needEndBlock[song_lyricsauthorsFB._blockIndex] =
+    song_lyricsauthorsFB._addedBlocks.needEndBlock![song_lyricsauthorsFB._blockIndex] =
         song_lyricsauthorsFB._addedBlocks.retVal;
     return song_lyricsauthorsFB;
   }
@@ -12216,25 +10716,19 @@ class Song_lyricsAuthorsField extends SearchCriteria {
 class Song_lyricsAuthorsFilterBuilder extends SearchCriteria {
   Song_lyricsAuthorsFilterBuilder(Song_lyricsAuthors obj) {
     whereString = '';
-    qparams = QueryParams();
-    parameters = <DbParameter>[];
-    orderByList = <String>[];
     groupByList = <String>[];
-    _addedBlocks = AddedBlocks(<bool>[], <bool>[]);
-    _addedBlocks.needEndBlock.add(false);
-    _addedBlocks.waitingStartBlock.add(false);
-    _pagesize = 0;
-    _page = 0;
+    _addedBlocks.needEndBlock!.add(false);
+    _addedBlocks.waitingStartBlock!.add(false);
     _obj = obj;
   }
-  AddedBlocks _addedBlocks;
+  AddedBlocks _addedBlocks = AddedBlocks(<bool>[], <bool>[]);
   int _blockIndex = 0;
-  List<DbParameter> parameters;
-  List<String> orderByList;
-  Song_lyricsAuthors _obj;
-  QueryParams qparams;
-  int _pagesize;
-  int _page;
+  List<DbParameter> parameters = <DbParameter>[];
+  List<String> orderByList = <String>[];
+  Song_lyricsAuthors? _obj;
+  QueryParams qparams = QueryParams();
+  int _pagesize = 0;
+  int _page = 0;
 
   /// put the sql keyword 'AND'
   Song_lyricsAuthorsFilterBuilder get and {
@@ -12254,25 +10748,22 @@ class Song_lyricsAuthorsFilterBuilder extends SearchCriteria {
 
   /// open parentheses
   Song_lyricsAuthorsFilterBuilder get startBlock {
-    _addedBlocks.waitingStartBlock.add(true);
-    _addedBlocks.needEndBlock.add(false);
+    _addedBlocks.waitingStartBlock!.add(true);
+    _addedBlocks.needEndBlock!.add(false);
     _blockIndex++;
     if (_blockIndex > 1) {
-      _addedBlocks.needEndBlock[_blockIndex - 1] = true;
+      _addedBlocks.needEndBlock![_blockIndex - 1] = true;
     }
     return this;
   }
 
   /// String whereCriteria, write raw query without 'where' keyword. Like this: 'field1 like 'test%' and field2 = 3'
-  Song_lyricsAuthorsFilterBuilder where(String whereCriteria,
-      {dynamic parameterValue}) {
+  Song_lyricsAuthorsFilterBuilder where(String? whereCriteria, {dynamic parameterValue}) {
     if (whereCriteria != null && whereCriteria != '') {
-      final DbParameter param = DbParameter(
-          columnName: parameterValue == null ? null : '',
-          hasParameter: parameterValue != null);
-      _addedBlocks = setCriteria(parameterValue ?? 0, parameters, param,
-          '($whereCriteria)', _addedBlocks);
-      _addedBlocks.needEndBlock[_blockIndex] = _addedBlocks.retVal;
+      final DbParameter param =
+          DbParameter(columnName: parameterValue == null ? null : '', hasParameter: parameterValue != null);
+      _addedBlocks = setCriteria(parameterValue ?? 0, parameters, param, '($whereCriteria)', _addedBlocks);
+      _addedBlocks.needEndBlock![_blockIndex] = _addedBlocks.retVal;
     }
     return this;
   }
@@ -12300,11 +10791,11 @@ class Song_lyricsAuthorsFilterBuilder extends SearchCriteria {
 
   /// close parentheses
   Song_lyricsAuthorsFilterBuilder get endBlock {
-    if (_addedBlocks.needEndBlock[_blockIndex]) {
+    if (_addedBlocks.needEndBlock![_blockIndex]) {
       parameters[parameters.length - 1].whereString += ' ) ';
     }
-    _addedBlocks.needEndBlock.removeAt(_blockIndex);
-    _addedBlocks.waitingStartBlock.removeAt(_blockIndex);
+    _addedBlocks.needEndBlock!.removeAt(_blockIndex);
+    _addedBlocks.waitingStartBlock!.removeAt(_blockIndex);
     _blockIndex--;
     return this;
   }
@@ -12319,8 +10810,8 @@ class Song_lyricsAuthorsFilterBuilder extends SearchCriteria {
       if (argFields is String) {
         orderByList.add(argFields);
       } else {
-        for (String s in argFields as List<String>) {
-          if (s != null && s.isNotEmpty) {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
             orderByList.add(' $s ');
           }
         }
@@ -12339,8 +10830,8 @@ class Song_lyricsAuthorsFilterBuilder extends SearchCriteria {
       if (argFields is String) {
         orderByList.add('$argFields desc ');
       } else {
-        for (String s in argFields as List<String>) {
-          if (s != null && s.isNotEmpty) {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
             orderByList.add(' $s desc ');
           }
         }
@@ -12359,8 +10850,8 @@ class Song_lyricsAuthorsFilterBuilder extends SearchCriteria {
       if (argFields is String) {
         groupByList.add(' $argFields ');
       } else {
-        for (String s in argFields as List<String>) {
-          if (s != null && s.isNotEmpty) {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
             groupByList.add(' $s ');
           }
         }
@@ -12379,8 +10870,8 @@ class Song_lyricsAuthorsFilterBuilder extends SearchCriteria {
       if (argFields is String) {
         havingList.add(argFields);
       } else {
-        for (String s in argFields as List<String>) {
-          if (s != null && s.isNotEmpty) {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
             havingList.add(' $s ');
           }
         }
@@ -12389,27 +10880,23 @@ class Song_lyricsAuthorsFilterBuilder extends SearchCriteria {
     return this;
   }
 
-  Song_lyricsAuthorsField setField(
-      Song_lyricsAuthorsField field, String colName, DbType dbtype) {
+  Song_lyricsAuthorsField setField(Song_lyricsAuthorsField? field, String colName, DbType dbtype) {
     return Song_lyricsAuthorsField(this)
-      ..param = DbParameter(
-          dbType: dbtype,
-          columnName: colName,
-          wStartBlock: _addedBlocks.waitingStartBlock[_blockIndex]);
+      ..param =
+          DbParameter(dbType: dbtype, columnName: colName, wStartBlock: _addedBlocks.waitingStartBlock![_blockIndex]);
   }
 
-  Song_lyricsAuthorsField _song_lyricsId;
+  Song_lyricsAuthorsField? _song_lyricsId;
   Song_lyricsAuthorsField get song_lyricsId {
-    return _song_lyricsId =
-        setField(_song_lyricsId, 'song_lyricsId', DbType.integer);
+    return _song_lyricsId = setField(_song_lyricsId, 'song_lyricsId', DbType.integer);
   }
 
-  Song_lyricsAuthorsField _authorsId;
+  Song_lyricsAuthorsField? _authorsId;
   Song_lyricsAuthorsField get authorsId {
     return _authorsId = setField(_authorsId, 'authorsId', DbType.integer);
   }
 
-  bool _getIsDeleted;
+  bool _getIsDeleted = false;
 
   void _buildParameters() {
     if (_page > 0 && _pagesize > 0) {
@@ -12424,24 +10911,20 @@ class Song_lyricsAuthorsFilterBuilder extends SearchCriteria {
     for (DbParameter param in parameters) {
       if (param.columnName != null) {
         if (param.value is List && !param.hasParameter) {
-          param.value = param.dbType == DbType.text
+          param.value = param.dbType == DbType.text || param.value[0] is String
               ? '\'${param.value.join('\',\'')}\''
               : param.value.join(',');
-          whereString += param.whereString
-              .replaceAll('{field}', param.columnName)
-              .replaceAll('?', param.value.toString());
+          whereString +=
+              param.whereString.replaceAll('{field}', param.columnName!).replaceAll('?', param.value.toString());
           param.value = null;
         } else {
-          if (param.value is Map<String, dynamic> &&
-              param.value['sql'] != null) {
+          if (param.value is Map<String, dynamic> && param.value['sql'] != null) {
             param
-              ..whereString = param.whereString
-                  .replaceAll('?', param.value['sql'].toString())
+              ..whereString = param.whereString.replaceAll('?', param.value['sql'].toString())
               ..dbType = DbType.integer
               ..value = param.value['args'];
           }
-          whereString +=
-              param.whereString.replaceAll('{field}', param.columnName);
+          whereString += param.whereString.replaceAll('{field}', param.columnName!);
         }
         if (!param.whereString.contains('?')) {
         } else {
@@ -12461,12 +10944,8 @@ class Song_lyricsAuthorsFilterBuilder extends SearchCriteria {
             case DbType.date:
             case DbType.datetime:
             case DbType.datetimeUtc:
-              param.value = param.value == null
-                  ? null
-                  : (param.value as DateTime).millisecondsSinceEpoch;
-              param.value2 = param.value2 == null
-                  ? null
-                  : (param.value2 as DateTime).millisecondsSinceEpoch;
+              param.value = param.value == null ? null : (param.value as DateTime).millisecondsSinceEpoch;
+              param.value2 = param.value2 == null ? null : (param.value2 as DateTime).millisecondsSinceEpoch;
               break;
             default:
           }
@@ -12489,8 +10968,7 @@ class Song_lyricsAuthorsFilterBuilder extends SearchCriteria {
     }
     if (Song_lyricsAuthors._softDeleteActivated) {
       if (whereString != '') {
-        whereString =
-            '${!_getIsDeleted ? 'ifnull(isDeleted,0)=0 AND' : ''} ($whereString)';
+        whereString = '${!_getIsDeleted ? 'ifnull(isDeleted,0)=0 AND' : ''} ($whereString)';
       } else if (!_getIsDeleted) {
         whereString = 'ifnull(isDeleted,0)=0';
       }
@@ -12511,13 +10989,12 @@ class Song_lyricsAuthorsFilterBuilder extends SearchCriteria {
   /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
   Future<BoolResult> delete([bool hardDelete = false]) async {
     _buildParameters();
-    var r = BoolResult();
+    var r = BoolResult(success: false);
 
     if (Song_lyricsAuthors._softDeleteActivated && !hardDelete) {
-      r = await _obj._mnSong_lyricsAuthors
-          .updateBatch(qparams, {'isDeleted': 1});
+      r = await _obj!._mnSong_lyricsAuthors.updateBatch(qparams, {'isDeleted': 1});
     } else {
-      r = await _obj._mnSong_lyricsAuthors.delete(qparams);
+      r = await _obj!._mnSong_lyricsAuthors.delete(qparams);
     }
     return r;
   }
@@ -12529,11 +11006,11 @@ class Song_lyricsAuthorsFilterBuilder extends SearchCriteria {
   /// fieldName must be String. Value is dynamic, it can be any of the (int, bool, String.. )
   Future<BoolResult> update(Map<String, dynamic> values) {
     _buildParameters();
-    if (qparams.limit > 0 || qparams.offset > 0) {
+    if (qparams.limit! > 0 || qparams.offset! > 0) {
       qparams.whereString =
-          'song_lyricsId IN (SELECT song_lyricsId from song_lyricsAuthors ${qparams.whereString.isNotEmpty ? 'WHERE ${qparams.whereString}' : ''}${qparams.limit > 0 ? ' LIMIT ${qparams.limit}' : ''}${qparams.offset > 0 ? ' OFFSET ${qparams.offset}' : ''})';
+          'song_lyricsId IN (SELECT song_lyricsId from song_lyricsAuthors ${qparams.whereString!.isNotEmpty ? 'WHERE ${qparams.whereString}' : ''}${qparams.limit! > 0 ? ' LIMIT ${qparams.limit}' : ''}${qparams.offset! > 0 ? ' OFFSET ${qparams.offset}' : ''})';
     }
-    return _obj._mnSong_lyricsAuthors.updateBatch(qparams, values);
+    return _obj!._mnSong_lyricsAuthors.updateBatch(qparams, values);
   }
 
   /// This method always returns Song_lyricsAuthors Obj if exist, otherwise returns null
@@ -12550,16 +11027,13 @@ class Song_lyricsAuthorsFilterBuilder extends SearchCriteria {
 
   ///
   /// <returns>List<Song_lyricsAuthors>
-  Future<Song_lyricsAuthors> toSingle(
-      {bool preload = false,
-      List<String> preloadFields,
-      bool loadParents = false,
-      List<String> loadedFields}) async {
+  Future<Song_lyricsAuthors?> toSingle(
+      {bool preload = false, List<String>? preloadFields, bool loadParents = false, List<String>? loadedFields}) async {
     _pagesize = 1;
     _buildParameters();
-    final objFuture = _obj._mnSong_lyricsAuthors.toList(qparams);
+    final objFuture = _obj!._mnSong_lyricsAuthors.toList(qparams);
     final data = await objFuture;
-    Song_lyricsAuthors obj;
+    Song_lyricsAuthors? obj;
     if (data.isNotEmpty) {
       obj = Song_lyricsAuthors.fromMap(data[0] as Map<String, dynamic>);
       // final List<String> _loadedFields = loadedFields ?? [];
@@ -12567,23 +11041,17 @@ class Song_lyricsAuthorsFilterBuilder extends SearchCriteria {
       // RELATIONSHIPS PRELOAD
       if (preload || loadParents) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedFields.contains('song_lyrics.plSongLyricEntity') && */ (preloadFields ==
-                null ||
+        if (/*!_loadedfields!.contains('song_lyrics.plSongLyric') && */ (preloadFields == null ||
             loadParents ||
-            preloadFields.contains('plSongLyricEntity'))) {
-          /*_loadedFields.add('song_lyrics.plSongLyricEntity');*/
-          obj.plSongLyricEntity = obj.plSongLyricEntity ??
-              await obj.getSongLyricEntity(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+            preloadFields.contains('plSongLyric'))) {
+          /*_loadedfields!.add('song_lyrics.plSongLyric');*/ obj.plSongLyric =
+              obj.plSongLyric ?? await obj.getSongLyric(loadParents: loadParents /*, loadedFields: _loadedFields*/);
         }
-        if (/*!_loadedFields.contains('authors.plAuthorEntity') && */ (preloadFields ==
-                null ||
+        if (/*!_loadedfields!.contains('authors.plAuthor') && */ (preloadFields == null ||
             loadParents ||
-            preloadFields.contains('plAuthorEntity'))) {
-          /*_loadedFields.add('authors.plAuthorEntity');*/
-          obj.plAuthorEntity = obj.plAuthorEntity ??
-              await obj.getAuthorEntity(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+            preloadFields.contains('plAuthor'))) {
+          /*_loadedfields!.add('authors.plAuthor');*/ obj.plAuthor =
+              obj.plAuthor ?? await obj.getAuthor(loadParents: loadParents /*, loadedFields: _loadedFields*/);
         }
       } // END RELATIONSHIPS PRELOAD
 
@@ -12596,12 +11064,10 @@ class Song_lyricsAuthorsFilterBuilder extends SearchCriteria {
   /// This method returns int. [Song_lyricsAuthors]
   ///
   /// <returns>int
-  Future<int> toCount(
-      [VoidCallback Function(int c) song_lyricsauthorsCount]) async {
+  Future<int> toCount([VoidCallback Function(int c)? song_lyricsauthorsCount]) async {
     _buildParameters();
     qparams.selectColumns = ['COUNT(1) AS CNT'];
-    final song_lyricsauthorsesFuture =
-        await _obj._mnSong_lyricsAuthors.toList(qparams);
+    final song_lyricsauthorsesFuture = await _obj!._mnSong_lyricsAuthors.toList(qparams);
     final int count = song_lyricsauthorsesFuture[0]['CNT'] as int;
     if (song_lyricsauthorsCount != null) {
       song_lyricsauthorsCount(count);
@@ -12624,18 +11090,14 @@ class Song_lyricsAuthorsFilterBuilder extends SearchCriteria {
   ///
   /// <returns>List<Song_lyricsAuthors>
   Future<List<Song_lyricsAuthors>> toList(
-      {bool preload = false,
-      List<String> preloadFields,
-      bool loadParents = false,
-      List<String> loadedFields}) async {
+      {bool preload = false, List<String>? preloadFields, bool loadParents = false, List<String>? loadedFields}) async {
     final data = await toMapList();
-    final List<Song_lyricsAuthors> song_lyricsauthorsesData =
-        await Song_lyricsAuthors.fromMapList(data,
-            preload: preload,
-            preloadFields: preloadFields,
-            loadParents: loadParents,
-            loadedFields: loadedFields,
-            setDefaultValues: qparams.selectColumns == null);
+    final List<Song_lyricsAuthors> song_lyricsauthorsesData = await Song_lyricsAuthors.fromMapList(data,
+        preload: preload,
+        preloadFields: preloadFields,
+        loadParents: loadParents,
+        loadedFields: loadedFields,
+        setDefaultValues: qparams.selectColumns == null);
     return song_lyricsauthorsesData;
   }
 
@@ -12664,7 +11126,7 @@ class Song_lyricsAuthorsFilterBuilder extends SearchCriteria {
   /// <returns>List<dynamic>
   Future<List<dynamic>> toMapList() async {
     _buildParameters();
-    return await _obj._mnSong_lyricsAuthors.toList(qparams);
+    return await _obj!._mnSong_lyricsAuthors.toList(qparams);
   }
 
   /// This method returns Primary Key List SQL and Parameters retVal = Map<String,dynamic>. [Song_lyricsAuthors]
@@ -12677,22 +11139,19 @@ class Song_lyricsAuthorsFilterBuilder extends SearchCriteria {
     if (buildParameters) {
       _buildParameters();
     }
-    _retVal['sql'] =
-        'SELECT `song_lyricsId`authorsId` FROM song_lyricsAuthors WHERE ${qparams.whereString}';
+    _retVal['sql'] = 'SELECT `song_lyricsId`authorsId` FROM song_lyricsAuthors WHERE ${qparams.whereString}';
     _retVal['args'] = qparams.whereArguments;
     return _retVal;
   }
 
   /// This method returns Primary Key List<song_lyricsId,authorsId> [Song_lyricsAuthors]
   /// <returns>List<song_lyricsId,authorsId>
-  Future<List<Song_lyricsAuthors>> toListPrimaryKey(
-      [bool buildParameters = true]) async {
+  Future<List<Song_lyricsAuthors>> toListPrimaryKey([bool buildParameters = true]) async {
     if (buildParameters) {
       _buildParameters();
     }
     qparams.selectColumns = ['song_lyricsId', 'authorsId'];
-    final song_lyricsauthorsFuture =
-        await _obj._mnSong_lyricsAuthors.toList(qparams);
+    final song_lyricsauthorsFuture = await _obj!._mnSong_lyricsAuthors.toList(qparams);
     return await Song_lyricsAuthors.fromMapList(song_lyricsauthorsFuture);
   }
 
@@ -12702,7 +11161,7 @@ class Song_lyricsAuthorsFilterBuilder extends SearchCriteria {
   Future<List<dynamic>> toListObject() async {
     _buildParameters();
 
-    final objectFuture = _obj._mnSong_lyricsAuthors.toList(qparams);
+    final objectFuture = _obj!._mnSong_lyricsAuthors.toList(qparams);
 
     final List<dynamic> objectsData = <dynamic>[];
     final data = await objectFuture;
@@ -12716,17 +11175,16 @@ class Song_lyricsAuthorsFilterBuilder extends SearchCriteria {
   /// Returns List<String> for selected first column
   ///
   /// Sample usage: await Song_lyricsAuthors.select(columnsToSelect: ['columnName']).toListString()
-  Future<List<String>> toListString(
-      [VoidCallback Function(List<String> o) listString]) async {
+  Future<List<String>> toListString([VoidCallback Function(List<String> o)? listString]) async {
     _buildParameters();
 
-    final objectFuture = _obj._mnSong_lyricsAuthors.toList(qparams);
+    final objectFuture = _obj!._mnSong_lyricsAuthors.toList(qparams);
 
     final List<String> objectsData = <String>[];
     final data = await objectFuture;
     final int count = data.length;
     for (int i = 0; i < count; i++) {
-      objectsData.add(data[i][qparams.selectColumns[0]].toString());
+      objectsData.add(data[i][qparams.selectColumns![0]].toString());
     }
     if (listString != null) {
       listString(objectsData);
@@ -12738,16 +11196,14 @@ class Song_lyricsAuthorsFilterBuilder extends SearchCriteria {
 
 // region Song_lyricsAuthorsFields
 class Song_lyricsAuthorsFields {
-  static TableField _fSong_lyricsId;
+  static TableField? _fSong_lyricsId;
   static TableField get song_lyricsId {
-    return _fSong_lyricsId = _fSong_lyricsId ??
-        SqlSyntax.setField(_fSong_lyricsId, 'song_lyricsId', DbType.integer);
+    return _fSong_lyricsId = _fSong_lyricsId ?? SqlSyntax.setField(_fSong_lyricsId, 'song_lyricsId', DbType.integer);
   }
 
-  static TableField _fAuthorsId;
+  static TableField? _fAuthorsId;
   static TableField get authorsId {
-    return _fAuthorsId = _fAuthorsId ??
-        SqlSyntax.setField(_fAuthorsId, 'authorsId', DbType.integer);
+    return _fAuthorsId = _fAuthorsId ?? SqlSyntax.setField(_fAuthorsId, 'authorsId', DbType.integer);
   }
 }
 // endregion Song_lyricsAuthorsFields
@@ -12755,10 +11211,7 @@ class Song_lyricsAuthorsFields {
 //region Song_lyricsAuthorsManager
 class Song_lyricsAuthorsManager extends SqfEntityProvider {
   Song_lyricsAuthorsManager()
-      : super(Model(),
-            tableName: _tableName,
-            primaryKeyList: _primaryKeyList,
-            whereStr: _whereStr);
+      : super(Model(), tableName: _tableName, primaryKeyList: _primaryKeyList, whereStr: _whereStr);
   static final String _tableName = 'song_lyricsAuthors';
   static final List<String> _primaryKeyList = ['song_lyricsId', 'authorsId'];
   static final String _whereStr = 'song_lyricsId=? AND authorsId=?';
@@ -12776,8 +11229,8 @@ class Song_lyricsPlaylists {
   Song_lyricsPlaylists.withId(this.song_lyricsId, this.playlistsId) {
     _setDefaultValues();
   }
-  Song_lyricsPlaylists.fromMap(Map<String, dynamic> o,
-      {bool setDefaultValues = true}) {
+  // fromMap v2.0
+  Song_lyricsPlaylists.fromMap(Map<String, dynamic> o, {bool setDefaultValues = true}) {
     if (setDefaultValues) {
       _setDefaultValues();
     }
@@ -12786,83 +11239,87 @@ class Song_lyricsPlaylists {
     playlistsId = int.tryParse(o['playlistsId'].toString());
 
     // RELATIONSHIPS FromMAP
-    plSongLyricEntity = o['songLyricEntity'] != null
-        ? SongLyricEntity.fromMap(o['songLyricEntity'] as Map<String, dynamic>)
-        : null;
-    plPlaylistEntity = o['playlistEntity'] != null
-        ? PlaylistEntity.fromMap(o['playlistEntity'] as Map<String, dynamic>)
-        : null;
+    plSongLyric = o['songLyric'] != null ? SongLyric.fromMap(o['songLyric'] as Map<String, dynamic>) : null;
+    plPlaylist = o['playlist'] != null ? Playlist.fromMap(o['playlist'] as Map<String, dynamic>) : null;
     // END RELATIONSHIPS FromMAP
 
     isSaved = true;
   }
   // FIELDS (Song_lyricsPlaylists)
-  int song_lyricsId;
-  int playlistsId;
-  bool isSaved;
-  BoolResult saveResult;
+  int? song_lyricsId;
+  int? playlistsId;
+  bool? isSaved;
+  BoolResult? saveResult;
   // end FIELDS (Song_lyricsPlaylists)
 
 // RELATIONSHIPS (Song_lyricsPlaylists)
   /// to load parent of items to this field, use preload parameter ex: toList(preload:true) or toSingle(preload:true) or getById(preload:true)
-  /// You can also specify this object into certain preload fields. Ex: toList(preload:true, preloadFields:['plSongLyricEntity', 'plField2'..]) or so on..
-  SongLyricEntity plSongLyricEntity;
+  /// You can also specify this object into certain preload fields!. Ex: toList(preload:true, preloadFields:['plSongLyric', 'plField2'..]) or so on..
+  SongLyric? plSongLyric;
 
-  /// get SongLyricEntity By Song_lyricsId
-  Future<SongLyricEntity> getSongLyricEntity(
-      {bool loadParents = false, List<String> loadedFields}) async {
-    final _obj = await SongLyricEntity().getById(song_lyricsId,
-        loadParents: loadParents, loadedFields: loadedFields);
+  /// get SongLyric By Song_lyricsId
+  Future<SongLyric?> getSongLyric({bool loadParents = false, List<String>? loadedFields}) async {
+    final _obj = await SongLyric().getById(song_lyricsId, loadParents: loadParents, loadedFields: loadedFields);
     return _obj;
   }
 
   /// to load parent of items to this field, use preload parameter ex: toList(preload:true) or toSingle(preload:true) or getById(preload:true)
-  /// You can also specify this object into certain preload fields. Ex: toList(preload:true, preloadFields:['plPlaylistEntity', 'plField2'..]) or so on..
-  PlaylistEntity plPlaylistEntity;
+  /// You can also specify this object into certain preload fields!. Ex: toList(preload:true, preloadFields:['plPlaylist', 'plField2'..]) or so on..
+  Playlist? plPlaylist;
 
-  /// get PlaylistEntity By PlaylistsId
-  Future<PlaylistEntity> getPlaylistEntity(
-      {bool loadParents = false, List<String> loadedFields}) async {
-    final _obj = await PlaylistEntity().getById(playlistsId,
-        loadParents: loadParents, loadedFields: loadedFields);
+  /// get Playlist By PlaylistsId
+  Future<Playlist?> getPlaylist({bool loadParents = false, List<String>? loadedFields}) async {
+    final _obj = await Playlist().getById(playlistsId, loadParents: loadParents, loadedFields: loadedFields);
     return _obj;
   }
   // END RELATIONSHIPS (Song_lyricsPlaylists)
 
   static const bool _softDeleteActivated = false;
-  Song_lyricsPlaylistsManager __mnSong_lyricsPlaylists;
+  Song_lyricsPlaylistsManager? __mnSong_lyricsPlaylists;
 
   Song_lyricsPlaylistsManager get _mnSong_lyricsPlaylists {
-    return __mnSong_lyricsPlaylists =
-        __mnSong_lyricsPlaylists ?? Song_lyricsPlaylistsManager();
+    return __mnSong_lyricsPlaylists = __mnSong_lyricsPlaylists ?? Song_lyricsPlaylistsManager();
   }
 
   // METHODS
-  Map<String, dynamic> toMap(
-      {bool forQuery = false, bool forJson = false, bool forView = false}) {
+  Map<String, dynamic> toMap({bool forQuery = false, bool forJson = false, bool forView = false}) {
     final map = <String, dynamic>{};
     if (song_lyricsId != null) {
-      map['song_lyricsId'] = forView ? plSongLyricEntity.name : song_lyricsId;
+      map['song_lyricsId'] = forView
+          ? plSongLyric == null
+              ? song_lyricsId
+              : plSongLyric!.name
+          : song_lyricsId;
     }
 
     if (playlistsId != null) {
-      map['playlistsId'] = forView ? plPlaylistEntity.name : playlistsId;
+      map['playlistsId'] = forView
+          ? plPlaylist == null
+              ? playlistsId
+              : plPlaylist!.name
+          : playlistsId;
     }
 
     return map;
   }
 
   Future<Map<String, dynamic>> toMapWithChildren(
-      [bool forQuery = false,
-      bool forJson = false,
-      bool forView = false]) async {
+      [bool forQuery = false, bool forJson = false, bool forView = false]) async {
     final map = <String, dynamic>{};
     if (song_lyricsId != null) {
-      map['song_lyricsId'] = forView ? plSongLyricEntity.name : song_lyricsId;
+      map['song_lyricsId'] = forView
+          ? plSongLyric == null
+              ? song_lyricsId
+              : plSongLyric!.name
+          : song_lyricsId;
     }
 
     if (playlistsId != null) {
-      map['playlistsId'] = forView ? plPlaylistEntity.name : playlistsId;
+      map['playlistsId'] = forView
+          ? plPlaylist == null
+              ? playlistsId
+              : plPlaylist!.name
+          : playlistsId;
     }
 
     return map;
@@ -12886,20 +11343,18 @@ class Song_lyricsPlaylists {
     return [song_lyricsId, playlistsId];
   }
 
-  static Future<List<Song_lyricsPlaylists>> fromWebUrl(String url,
-      {Map<String, String> headers}) async {
+  static Future<List<Song_lyricsPlaylists>?> fromWebUrl(Uri uri, {Map<String, String>? headers}) async {
     try {
-      final response = await http.get(url, headers: headers);
+      final response = await http.get(uri, headers: headers);
       return await fromJson(response.body);
     } catch (e) {
-      print(
-          'SQFENTITY ERROR Song_lyricsPlaylists.fromWebUrl: ErrorMessage: ${e.toString()}');
+      print('SQFENTITY ERROR Song_lyricsPlaylists.fromWebUrl: ErrorMessage: ${e.toString()}');
       return null;
     }
   }
 
-  Future<http.Response> postUrl(String url, {Map<String, String> headers}) {
-    return http.post(url, headers: headers, body: toJson());
+  Future<http.Response> postUrl(Uri uri, {Map<String, String>? headers}) {
+    return http.post(uri, headers: headers, body: toJson());
   }
 
   static Future<List<Song_lyricsPlaylists>> fromJson(String jsonBody) async {
@@ -12907,49 +11362,40 @@ class Song_lyricsPlaylists {
     var objList = <Song_lyricsPlaylists>[];
     try {
       objList = list
-          .map((song_lyricsplaylists) => Song_lyricsPlaylists.fromMap(
-              song_lyricsplaylists as Map<String, dynamic>))
+          .map((song_lyricsplaylists) => Song_lyricsPlaylists.fromMap(song_lyricsplaylists as Map<String, dynamic>))
           .toList();
     } catch (e) {
-      print(
-          'SQFENTITY ERROR Song_lyricsPlaylists.fromJson: ErrorMessage: ${e.toString()}');
+      print('SQFENTITY ERROR Song_lyricsPlaylists.fromJson: ErrorMessage: ${e.toString()}');
     }
     return objList;
   }
 
   static Future<List<Song_lyricsPlaylists>> fromMapList(List<dynamic> data,
       {bool preload = false,
-      List<String> preloadFields,
+      List<String>? preloadFields,
       bool loadParents = false,
-      List<String> loadedFields,
+      List<String>? loadedFields,
       bool setDefaultValues = true}) async {
     final List<Song_lyricsPlaylists> objList = <Song_lyricsPlaylists>[];
     loadedFields = loadedFields ?? [];
     for (final map in data) {
-      final obj = Song_lyricsPlaylists.fromMap(map as Map<String, dynamic>,
-          setDefaultValues: setDefaultValues);
+      final obj = Song_lyricsPlaylists.fromMap(map as Map<String, dynamic>, setDefaultValues: setDefaultValues);
       // final List<String> _loadedFields = List<String>.from(loadedFields);
 
       // RELATIONSHIPS PRELOAD
       if (preload || loadParents) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedFields.contains('song_lyrics.plSongLyricEntity') && */ (preloadFields ==
-                null ||
+        if (/*!_loadedfields!.contains('song_lyrics.plSongLyric') && */ (preloadFields == null ||
             loadParents ||
-            preloadFields.contains('plSongLyricEntity'))) {
-          /*_loadedFields.add('song_lyrics.plSongLyricEntity');*/
-          obj.plSongLyricEntity = obj.plSongLyricEntity ??
-              await obj.getSongLyricEntity(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+            preloadFields.contains('plSongLyric'))) {
+          /*_loadedfields!.add('song_lyrics.plSongLyric');*/ obj.plSongLyric =
+              obj.plSongLyric ?? await obj.getSongLyric(loadParents: loadParents /*, loadedFields: _loadedFields*/);
         }
-        if (/*!_loadedFields.contains('playlists.plPlaylistEntity') && */ (preloadFields ==
-                null ||
+        if (/*!_loadedfields!.contains('playlists.plPlaylist') && */ (preloadFields == null ||
             loadParents ||
-            preloadFields.contains('plPlaylistEntity'))) {
-          /*_loadedFields.add('playlists.plPlaylistEntity');*/
-          obj.plPlaylistEntity = obj.plPlaylistEntity ??
-              await obj.getPlaylistEntity(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+            preloadFields.contains('plPlaylist'))) {
+          /*_loadedfields!.add('playlists.plPlaylist');*/ obj.plPlaylist =
+              obj.plPlaylist ?? await obj.getPlaylist(loadParents: loadParents /*, loadedFields: _loadedFields*/);
         }
       } // END RELATIONSHIPS PRELOAD
 
@@ -12960,7 +11406,7 @@ class Song_lyricsPlaylists {
 
   /// returns Song_lyricsPlaylists by ID if exist, otherwise returns null
   ///
-  /// Primary Keys: int song_lyricsId, int playlistsId
+  /// Primary Keys: int? song_lyricsId, int? playlistsId
   ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
   ///
@@ -12974,17 +11420,13 @@ class Song_lyricsPlaylists {
 
   ///
   /// <returns>returns Song_lyricsPlaylists if exist, otherwise returns null
-  Future<Song_lyricsPlaylists> getById(int song_lyricsId, int playlistsId,
-      {bool preload = false,
-      List<String> preloadFields,
-      bool loadParents = false,
-      List<String> loadedFields}) async {
+  Future<Song_lyricsPlaylists?> getById(int? song_lyricsId, int? playlistsId,
+      {bool preload = false, List<String>? preloadFields, bool loadParents = false, List<String>? loadedFields}) async {
     if (song_lyricsId == null) {
       return null;
     }
-    Song_lyricsPlaylists obj;
-    final data =
-        await _mnSong_lyricsPlaylists.getById([song_lyricsId, playlistsId]);
+    Song_lyricsPlaylists? obj;
+    final data = await _mnSong_lyricsPlaylists.getById([song_lyricsId, playlistsId]);
     if (data.length != 0) {
       obj = Song_lyricsPlaylists.fromMap(data[0] as Map<String, dynamic>);
       // final List<String> _loadedFields = loadedFields ?? [];
@@ -12992,23 +11434,17 @@ class Song_lyricsPlaylists {
       // RELATIONSHIPS PRELOAD
       if (preload || loadParents) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedFields.contains('song_lyrics.plSongLyricEntity') && */ (preloadFields ==
-                null ||
+        if (/*!_loadedfields!.contains('song_lyrics.plSongLyric') && */ (preloadFields == null ||
             loadParents ||
-            preloadFields.contains('plSongLyricEntity'))) {
-          /*_loadedFields.add('song_lyrics.plSongLyricEntity');*/
-          obj.plSongLyricEntity = obj.plSongLyricEntity ??
-              await obj.getSongLyricEntity(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+            preloadFields.contains('plSongLyric'))) {
+          /*_loadedfields!.add('song_lyrics.plSongLyric');*/ obj.plSongLyric =
+              obj.plSongLyric ?? await obj.getSongLyric(loadParents: loadParents /*, loadedFields: _loadedFields*/);
         }
-        if (/*!_loadedFields.contains('playlists.plPlaylistEntity') && */ (preloadFields ==
-                null ||
+        if (/*!_loadedfields!.contains('playlists.plPlaylist') && */ (preloadFields == null ||
             loadParents ||
-            preloadFields.contains('plPlaylistEntity'))) {
-          /*_loadedFields.add('playlists.plPlaylistEntity');*/
-          obj.plPlaylistEntity = obj.plPlaylistEntity ??
-              await obj.getPlaylistEntity(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+            preloadFields.contains('plPlaylist'))) {
+          /*_loadedfields!.add('playlists.plPlaylist');*/ obj.plPlaylist =
+              obj.plPlaylist ?? await obj.getPlaylist(loadParents: loadParents /*, loadedFields: _loadedFields*/);
         }
       } // END RELATIONSHIPS PRELOAD
 
@@ -13029,7 +11465,7 @@ class Song_lyricsPlaylists {
     final result = BoolResult(success: false);
     try {
       await _mnSong_lyricsPlaylists.rawInsert(
-          'INSERT ${isSaved ? 'OR REPLACE' : ''} INTO song_lyricsPlaylists (song_lyricsId, playlistsId)  VALUES (?,?)',
+          'INSERT ${isSaved! ? 'OR REPLACE' : ''} INTO song_lyricsPlaylists (song_lyricsId, playlistsId)  VALUES (?,?)',
           toArgsWithIds());
       result.success = true;
       isSaved = true;
@@ -13044,8 +11480,7 @@ class Song_lyricsPlaylists {
   /// saveAll method saves the sent List<Song_lyricsPlaylists> as a bulk in one transaction
   ///
   /// Returns a <List<BoolResult>>
-  static Future<List<dynamic>> saveAll(
-      List<Song_lyricsPlaylists> song_lyricsplaylistses) async {
+  static Future<List<dynamic>> saveAll(List<Song_lyricsPlaylists> song_lyricsplaylistses) async {
     // final results = _mnSong_lyricsPlaylists.saveAll('INSERT OR REPLACE INTO song_lyricsPlaylists (song_lyricsId, playlistsId)  VALUES (?,?)',song_lyricsplaylistses);
     // return results; removed in sqfentity_gen 1.3.0+6
     await Model().batchStart();
@@ -13055,35 +11490,29 @@ class Song_lyricsPlaylists {
     //    return Model().batchCommit();
     final result = await Model().batchCommit();
 
-    return result;
+    return result!;
   }
 
   /// Updates if the record exists, otherwise adds a new row
 
   /// <returns>Returns 1
-  Future<int> upsert() async {
+
+  Future<int?> upsert() async {
     try {
-      if (await _mnSong_lyricsPlaylists.rawInsert(
-              'INSERT OR REPLACE INTO song_lyricsPlaylists (song_lyricsId, playlistsId)  VALUES (?,?)',
-              [song_lyricsId, playlistsId]) ==
-          1) {
+      final result = await _mnSong_lyricsPlaylists.rawInsert(
+          'INSERT OR REPLACE INTO song_lyricsPlaylists (song_lyricsId, playlistsId)  VALUES (?,?)',
+          [song_lyricsId, playlistsId]);
+      if (result! > 0) {
         saveResult = BoolResult(
-            success: true,
-            successMessage:
-                'Song_lyricsPlaylists song_lyricsId=$song_lyricsId updated successfully');
+            success: true, successMessage: 'Song_lyricsPlaylists song_lyricsId=$song_lyricsId updated successfully');
       } else {
         saveResult = BoolResult(
-            success: false,
-            errorMessage:
-                'Song_lyricsPlaylists song_lyricsId=$song_lyricsId did not update');
+            success: false, errorMessage: 'Song_lyricsPlaylists song_lyricsId=$song_lyricsId did not update');
       }
-      return 1;
+      return song_lyricsId;
     } catch (e) {
-      saveResult = BoolResult(
-          success: false,
-          errorMessage:
-              'Song_lyricsPlaylists Save failed. Error: ${e.toString()}');
-      return 0;
+      saveResult = BoolResult(success: false, errorMessage: 'Song_lyricsPlaylists Save failed. Error: ${e.toString()}');
+      return null;
     }
   }
 
@@ -13092,8 +11521,7 @@ class Song_lyricsPlaylists {
   /// upsertAll() method is faster then saveAll() method. upsertAll() should be used when you are sure that the primary key is greater than zero
   ///
   /// Returns a BoolCommitResult
-  Future<BoolCommitResult> upsertAll(
-      List<Song_lyricsPlaylists> song_lyricsplaylistses) async {
+  Future<BoolCommitResult> upsertAll(List<Song_lyricsPlaylists> song_lyricsplaylistses) async {
     final results = await _mnSong_lyricsPlaylists.rawInsertAll(
         'INSERT OR REPLACE INTO song_lyricsPlaylists (song_lyricsId, playlistsId)  VALUES (?,?)',
         song_lyricsplaylistses);
@@ -13103,31 +11531,26 @@ class Song_lyricsPlaylists {
   /// Deletes Song_lyricsPlaylists
 
   /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
+
   Future<BoolResult> delete([bool hardDelete = false]) async {
-    print(
-        'SQFENTITIY: delete Song_lyricsPlaylists invoked (song_lyricsId=$song_lyricsId)');
+    print('SQFENTITIY: delete Song_lyricsPlaylists invoked (song_lyricsId=$song_lyricsId)');
     if (!_softDeleteActivated || hardDelete) {
-      return _mnSong_lyricsPlaylists.delete(QueryParams(
-          whereString: 'song_lyricsId=? AND playlistsId=?',
-          whereArguments: [song_lyricsId, playlistsId]));
+      return _mnSong_lyricsPlaylists.delete(
+          QueryParams(whereString: 'song_lyricsId=? AND playlistsId=?', whereArguments: [song_lyricsId, playlistsId]));
     } else {
       return _mnSong_lyricsPlaylists.updateBatch(
-          QueryParams(
-              whereString: 'song_lyricsId=? AND playlistsId=?',
-              whereArguments: [song_lyricsId, playlistsId]),
+          QueryParams(whereString: 'song_lyricsId=? AND playlistsId=?', whereArguments: [song_lyricsId, playlistsId]),
           {'isDeleted': 1});
     }
   }
 
-  Song_lyricsPlaylistsFilterBuilder select(
-      {List<String> columnsToSelect, bool getIsDeleted}) {
+  Song_lyricsPlaylistsFilterBuilder select({List<String>? columnsToSelect, bool? getIsDeleted}) {
     return Song_lyricsPlaylistsFilterBuilder(this)
       .._getIsDeleted = getIsDeleted == true
       ..qparams.selectColumns = columnsToSelect;
   }
 
-  Song_lyricsPlaylistsFilterBuilder distinct(
-      {List<String> columnsToSelect, bool getIsDeleted}) {
+  Song_lyricsPlaylistsFilterBuilder distinct({List<String>? columnsToSelect, bool? getIsDeleted}) {
     return Song_lyricsPlaylistsFilterBuilder(this)
       .._getIsDeleted = getIsDeleted == true
       ..qparams.selectColumns = columnsToSelect
@@ -13138,9 +11561,9 @@ class Song_lyricsPlaylists {
     isSaved = false;
   }
   // END METHODS
-  // CUSTOM CODES
+  // BEGIN CUSTOM CODE
   /*
-      you must define customCode property of your SqfEntityTable constant for ex:
+      you can define customCode property of your SqfEntityTable constant. For example:
       const tablePerson = SqfEntityTable(
       tableName: 'person',
       primaryKeyName: 'id',
@@ -13156,16 +11579,15 @@ class Song_lyricsPlaylists {
        }
       ''');
      */
-  // END CUSTOM CODES
+  // END CUSTOM CODE
 }
 // endregion song_lyricsplaylists
 
 // region Song_lyricsPlaylistsField
 class Song_lyricsPlaylistsField extends SearchCriteria {
-  Song_lyricsPlaylistsField(this.song_lyricsplaylistsFB) {
-    param = DbParameter();
-  }
-  DbParameter param;
+  Song_lyricsPlaylistsField(this.song_lyricsplaylistsFB);
+  // { param = DbParameter(); }
+  DbParameter param = DbParameter();
   String _waitingNot = '';
   Song_lyricsPlaylistsFilterBuilder song_lyricsplaylistsFB;
 
@@ -13177,13 +11599,12 @@ class Song_lyricsPlaylistsField extends SearchCriteria {
   Song_lyricsPlaylistsFilterBuilder equals(dynamic pValue) {
     param.expression = '=';
     song_lyricsplaylistsFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, song_lyricsplaylistsFB.parameters, param,
-            SqlSyntax.EQuals, song_lyricsplaylistsFB._addedBlocks)
-        : setCriteria(pValue, song_lyricsplaylistsFB.parameters, param,
-            SqlSyntax.NotEQuals, song_lyricsplaylistsFB._addedBlocks);
+        ? setCriteria(
+            pValue, song_lyricsplaylistsFB.parameters, param, SqlSyntax.EQuals, song_lyricsplaylistsFB._addedBlocks)
+        : setCriteria(
+            pValue, song_lyricsplaylistsFB.parameters, param, SqlSyntax.NotEQuals, song_lyricsplaylistsFB._addedBlocks);
     _waitingNot = '';
-    song_lyricsplaylistsFB
-            ._addedBlocks.needEndBlock[song_lyricsplaylistsFB._blockIndex] =
+    song_lyricsplaylistsFB._addedBlocks.needEndBlock![song_lyricsplaylistsFB._blockIndex] =
         song_lyricsplaylistsFB._addedBlocks.retVal;
     return song_lyricsplaylistsFB;
   }
@@ -13191,42 +11612,31 @@ class Song_lyricsPlaylistsField extends SearchCriteria {
   Song_lyricsPlaylistsFilterBuilder equalsOrNull(dynamic pValue) {
     param.expression = '=';
     song_lyricsplaylistsFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, song_lyricsplaylistsFB.parameters, param,
-            SqlSyntax.EQualsOrNull, song_lyricsplaylistsFB._addedBlocks)
-        : setCriteria(pValue, song_lyricsplaylistsFB.parameters, param,
-            SqlSyntax.NotEQualsOrNull, song_lyricsplaylistsFB._addedBlocks);
+        ? setCriteria(pValue, song_lyricsplaylistsFB.parameters, param, SqlSyntax.EQualsOrNull,
+            song_lyricsplaylistsFB._addedBlocks)
+        : setCriteria(pValue, song_lyricsplaylistsFB.parameters, param, SqlSyntax.NotEQualsOrNull,
+            song_lyricsplaylistsFB._addedBlocks);
     _waitingNot = '';
-    song_lyricsplaylistsFB
-            ._addedBlocks.needEndBlock[song_lyricsplaylistsFB._blockIndex] =
+    song_lyricsplaylistsFB._addedBlocks.needEndBlock![song_lyricsplaylistsFB._blockIndex] =
         song_lyricsplaylistsFB._addedBlocks.retVal;
     return song_lyricsplaylistsFB;
   }
 
   Song_lyricsPlaylistsFilterBuilder isNull() {
-    song_lyricsplaylistsFB._addedBlocks = setCriteria(
-        0,
-        song_lyricsplaylistsFB.parameters,
-        param,
-        SqlSyntax.IsNULL.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-        song_lyricsplaylistsFB._addedBlocks);
+    song_lyricsplaylistsFB._addedBlocks = setCriteria(0, song_lyricsplaylistsFB.parameters, param,
+        SqlSyntax.IsNULL.replaceAll(SqlSyntax.notKeyword, _waitingNot), song_lyricsplaylistsFB._addedBlocks);
     _waitingNot = '';
-    song_lyricsplaylistsFB
-            ._addedBlocks.needEndBlock[song_lyricsplaylistsFB._blockIndex] =
+    song_lyricsplaylistsFB._addedBlocks.needEndBlock![song_lyricsplaylistsFB._blockIndex] =
         song_lyricsplaylistsFB._addedBlocks.retVal;
     return song_lyricsplaylistsFB;
   }
 
   Song_lyricsPlaylistsFilterBuilder contains(dynamic pValue) {
     if (pValue != null) {
-      song_lyricsplaylistsFB._addedBlocks = setCriteria(
-          '%${pValue.toString()}%',
-          song_lyricsplaylistsFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          song_lyricsplaylistsFB._addedBlocks);
+      song_lyricsplaylistsFB._addedBlocks = setCriteria('%${pValue.toString()}%', song_lyricsplaylistsFB.parameters,
+          param, SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot), song_lyricsplaylistsFB._addedBlocks);
       _waitingNot = '';
-      song_lyricsplaylistsFB
-              ._addedBlocks.needEndBlock[song_lyricsplaylistsFB._blockIndex] =
+      song_lyricsplaylistsFB._addedBlocks.needEndBlock![song_lyricsplaylistsFB._blockIndex] =
           song_lyricsplaylistsFB._addedBlocks.retVal;
     }
     return song_lyricsplaylistsFB;
@@ -13234,18 +11644,12 @@ class Song_lyricsPlaylistsField extends SearchCriteria {
 
   Song_lyricsPlaylistsFilterBuilder startsWith(dynamic pValue) {
     if (pValue != null) {
-      song_lyricsplaylistsFB._addedBlocks = setCriteria(
-          '${pValue.toString()}%',
-          song_lyricsplaylistsFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          song_lyricsplaylistsFB._addedBlocks);
+      song_lyricsplaylistsFB._addedBlocks = setCriteria('${pValue.toString()}%', song_lyricsplaylistsFB.parameters,
+          param, SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot), song_lyricsplaylistsFB._addedBlocks);
       _waitingNot = '';
-      song_lyricsplaylistsFB
-              ._addedBlocks.needEndBlock[song_lyricsplaylistsFB._blockIndex] =
+      song_lyricsplaylistsFB._addedBlocks.needEndBlock![song_lyricsplaylistsFB._blockIndex] =
           song_lyricsplaylistsFB._addedBlocks.retVal;
-      song_lyricsplaylistsFB
-              ._addedBlocks.needEndBlock[song_lyricsplaylistsFB._blockIndex] =
+      song_lyricsplaylistsFB._addedBlocks.needEndBlock![song_lyricsplaylistsFB._blockIndex] =
           song_lyricsplaylistsFB._addedBlocks.retVal;
     }
     return song_lyricsplaylistsFB;
@@ -13253,15 +11657,10 @@ class Song_lyricsPlaylistsField extends SearchCriteria {
 
   Song_lyricsPlaylistsFilterBuilder endsWith(dynamic pValue) {
     if (pValue != null) {
-      song_lyricsplaylistsFB._addedBlocks = setCriteria(
-          '%${pValue.toString()}',
-          song_lyricsplaylistsFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          song_lyricsplaylistsFB._addedBlocks);
+      song_lyricsplaylistsFB._addedBlocks = setCriteria('%${pValue.toString()}', song_lyricsplaylistsFB.parameters,
+          param, SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot), song_lyricsplaylistsFB._addedBlocks);
       _waitingNot = '';
-      song_lyricsplaylistsFB
-              ._addedBlocks.needEndBlock[song_lyricsplaylistsFB._blockIndex] =
+      song_lyricsplaylistsFB._addedBlocks.needEndBlock![song_lyricsplaylistsFB._blockIndex] =
           song_lyricsplaylistsFB._addedBlocks.retVal;
     }
     return song_lyricsplaylistsFB;
@@ -13269,49 +11668,27 @@ class Song_lyricsPlaylistsField extends SearchCriteria {
 
   Song_lyricsPlaylistsFilterBuilder between(dynamic pFirst, dynamic pLast) {
     if (pFirst != null && pLast != null) {
-      song_lyricsplaylistsFB._addedBlocks = setCriteria(
-          pFirst,
-          song_lyricsplaylistsFB.parameters,
-          param,
-          SqlSyntax.Between.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          song_lyricsplaylistsFB._addedBlocks,
-          pLast);
+      song_lyricsplaylistsFB._addedBlocks = setCriteria(pFirst, song_lyricsplaylistsFB.parameters, param,
+          SqlSyntax.Between.replaceAll(SqlSyntax.notKeyword, _waitingNot), song_lyricsplaylistsFB._addedBlocks, pLast);
     } else if (pFirst != null) {
       if (_waitingNot != '') {
         song_lyricsplaylistsFB._addedBlocks = setCriteria(
-            pFirst,
-            song_lyricsplaylistsFB.parameters,
-            param,
-            SqlSyntax.LessThan,
-            song_lyricsplaylistsFB._addedBlocks);
+            pFirst, song_lyricsplaylistsFB.parameters, param, SqlSyntax.LessThan, song_lyricsplaylistsFB._addedBlocks);
       } else {
-        song_lyricsplaylistsFB._addedBlocks = setCriteria(
-            pFirst,
-            song_lyricsplaylistsFB.parameters,
-            param,
-            SqlSyntax.GreaterThanOrEquals,
-            song_lyricsplaylistsFB._addedBlocks);
+        song_lyricsplaylistsFB._addedBlocks = setCriteria(pFirst, song_lyricsplaylistsFB.parameters, param,
+            SqlSyntax.GreaterThanOrEquals, song_lyricsplaylistsFB._addedBlocks);
       }
     } else if (pLast != null) {
       if (_waitingNot != '') {
-        song_lyricsplaylistsFB._addedBlocks = setCriteria(
-            pLast,
-            song_lyricsplaylistsFB.parameters,
-            param,
-            SqlSyntax.GreaterThan,
-            song_lyricsplaylistsFB._addedBlocks);
+        song_lyricsplaylistsFB._addedBlocks = setCriteria(pLast, song_lyricsplaylistsFB.parameters, param,
+            SqlSyntax.GreaterThan, song_lyricsplaylistsFB._addedBlocks);
       } else {
-        song_lyricsplaylistsFB._addedBlocks = setCriteria(
-            pLast,
-            song_lyricsplaylistsFB.parameters,
-            param,
-            SqlSyntax.LessThanOrEquals,
-            song_lyricsplaylistsFB._addedBlocks);
+        song_lyricsplaylistsFB._addedBlocks = setCriteria(pLast, song_lyricsplaylistsFB.parameters, param,
+            SqlSyntax.LessThanOrEquals, song_lyricsplaylistsFB._addedBlocks);
       }
     }
     _waitingNot = '';
-    song_lyricsplaylistsFB
-            ._addedBlocks.needEndBlock[song_lyricsplaylistsFB._blockIndex] =
+    song_lyricsplaylistsFB._addedBlocks.needEndBlock![song_lyricsplaylistsFB._blockIndex] =
         song_lyricsplaylistsFB._addedBlocks.retVal;
     return song_lyricsplaylistsFB;
   }
@@ -13319,13 +11696,12 @@ class Song_lyricsPlaylistsField extends SearchCriteria {
   Song_lyricsPlaylistsFilterBuilder greaterThan(dynamic pValue) {
     param.expression = '>';
     song_lyricsplaylistsFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, song_lyricsplaylistsFB.parameters, param,
-            SqlSyntax.GreaterThan, song_lyricsplaylistsFB._addedBlocks)
-        : setCriteria(pValue, song_lyricsplaylistsFB.parameters, param,
-            SqlSyntax.LessThanOrEquals, song_lyricsplaylistsFB._addedBlocks);
+        ? setCriteria(pValue, song_lyricsplaylistsFB.parameters, param, SqlSyntax.GreaterThan,
+            song_lyricsplaylistsFB._addedBlocks)
+        : setCriteria(pValue, song_lyricsplaylistsFB.parameters, param, SqlSyntax.LessThanOrEquals,
+            song_lyricsplaylistsFB._addedBlocks);
     _waitingNot = '';
-    song_lyricsplaylistsFB
-            ._addedBlocks.needEndBlock[song_lyricsplaylistsFB._blockIndex] =
+    song_lyricsplaylistsFB._addedBlocks.needEndBlock![song_lyricsplaylistsFB._blockIndex] =
         song_lyricsplaylistsFB._addedBlocks.retVal;
     return song_lyricsplaylistsFB;
   }
@@ -13333,13 +11709,12 @@ class Song_lyricsPlaylistsField extends SearchCriteria {
   Song_lyricsPlaylistsFilterBuilder lessThan(dynamic pValue) {
     param.expression = '<';
     song_lyricsplaylistsFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, song_lyricsplaylistsFB.parameters, param,
-            SqlSyntax.LessThan, song_lyricsplaylistsFB._addedBlocks)
-        : setCriteria(pValue, song_lyricsplaylistsFB.parameters, param,
-            SqlSyntax.GreaterThanOrEquals, song_lyricsplaylistsFB._addedBlocks);
+        ? setCriteria(
+            pValue, song_lyricsplaylistsFB.parameters, param, SqlSyntax.LessThan, song_lyricsplaylistsFB._addedBlocks)
+        : setCriteria(pValue, song_lyricsplaylistsFB.parameters, param, SqlSyntax.GreaterThanOrEquals,
+            song_lyricsplaylistsFB._addedBlocks);
     _waitingNot = '';
-    song_lyricsplaylistsFB
-            ._addedBlocks.needEndBlock[song_lyricsplaylistsFB._blockIndex] =
+    song_lyricsplaylistsFB._addedBlocks.needEndBlock![song_lyricsplaylistsFB._blockIndex] =
         song_lyricsplaylistsFB._addedBlocks.retVal;
     return song_lyricsplaylistsFB;
   }
@@ -13347,13 +11722,12 @@ class Song_lyricsPlaylistsField extends SearchCriteria {
   Song_lyricsPlaylistsFilterBuilder greaterThanOrEquals(dynamic pValue) {
     param.expression = '>=';
     song_lyricsplaylistsFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, song_lyricsplaylistsFB.parameters, param,
-            SqlSyntax.GreaterThanOrEquals, song_lyricsplaylistsFB._addedBlocks)
-        : setCriteria(pValue, song_lyricsplaylistsFB.parameters, param,
-            SqlSyntax.LessThan, song_lyricsplaylistsFB._addedBlocks);
+        ? setCriteria(pValue, song_lyricsplaylistsFB.parameters, param, SqlSyntax.GreaterThanOrEquals,
+            song_lyricsplaylistsFB._addedBlocks)
+        : setCriteria(
+            pValue, song_lyricsplaylistsFB.parameters, param, SqlSyntax.LessThan, song_lyricsplaylistsFB._addedBlocks);
     _waitingNot = '';
-    song_lyricsplaylistsFB
-            ._addedBlocks.needEndBlock[song_lyricsplaylistsFB._blockIndex] =
+    song_lyricsplaylistsFB._addedBlocks.needEndBlock![song_lyricsplaylistsFB._blockIndex] =
         song_lyricsplaylistsFB._addedBlocks.retVal;
     return song_lyricsplaylistsFB;
   }
@@ -13361,27 +11735,21 @@ class Song_lyricsPlaylistsField extends SearchCriteria {
   Song_lyricsPlaylistsFilterBuilder lessThanOrEquals(dynamic pValue) {
     param.expression = '<=';
     song_lyricsplaylistsFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, song_lyricsplaylistsFB.parameters, param,
-            SqlSyntax.LessThanOrEquals, song_lyricsplaylistsFB._addedBlocks)
-        : setCriteria(pValue, song_lyricsplaylistsFB.parameters, param,
-            SqlSyntax.GreaterThan, song_lyricsplaylistsFB._addedBlocks);
+        ? setCriteria(pValue, song_lyricsplaylistsFB.parameters, param, SqlSyntax.LessThanOrEquals,
+            song_lyricsplaylistsFB._addedBlocks)
+        : setCriteria(pValue, song_lyricsplaylistsFB.parameters, param, SqlSyntax.GreaterThan,
+            song_lyricsplaylistsFB._addedBlocks);
     _waitingNot = '';
-    song_lyricsplaylistsFB
-            ._addedBlocks.needEndBlock[song_lyricsplaylistsFB._blockIndex] =
+    song_lyricsplaylistsFB._addedBlocks.needEndBlock![song_lyricsplaylistsFB._blockIndex] =
         song_lyricsplaylistsFB._addedBlocks.retVal;
     return song_lyricsplaylistsFB;
   }
 
   Song_lyricsPlaylistsFilterBuilder inValues(dynamic pValue) {
-    song_lyricsplaylistsFB._addedBlocks = setCriteria(
-        pValue,
-        song_lyricsplaylistsFB.parameters,
-        param,
-        SqlSyntax.IN.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-        song_lyricsplaylistsFB._addedBlocks);
+    song_lyricsplaylistsFB._addedBlocks = setCriteria(pValue, song_lyricsplaylistsFB.parameters, param,
+        SqlSyntax.IN.replaceAll(SqlSyntax.notKeyword, _waitingNot), song_lyricsplaylistsFB._addedBlocks);
     _waitingNot = '';
-    song_lyricsplaylistsFB
-            ._addedBlocks.needEndBlock[song_lyricsplaylistsFB._blockIndex] =
+    song_lyricsplaylistsFB._addedBlocks.needEndBlock![song_lyricsplaylistsFB._blockIndex] =
         song_lyricsplaylistsFB._addedBlocks.retVal;
     return song_lyricsplaylistsFB;
   }
@@ -13392,25 +11760,19 @@ class Song_lyricsPlaylistsField extends SearchCriteria {
 class Song_lyricsPlaylistsFilterBuilder extends SearchCriteria {
   Song_lyricsPlaylistsFilterBuilder(Song_lyricsPlaylists obj) {
     whereString = '';
-    qparams = QueryParams();
-    parameters = <DbParameter>[];
-    orderByList = <String>[];
     groupByList = <String>[];
-    _addedBlocks = AddedBlocks(<bool>[], <bool>[]);
-    _addedBlocks.needEndBlock.add(false);
-    _addedBlocks.waitingStartBlock.add(false);
-    _pagesize = 0;
-    _page = 0;
+    _addedBlocks.needEndBlock!.add(false);
+    _addedBlocks.waitingStartBlock!.add(false);
     _obj = obj;
   }
-  AddedBlocks _addedBlocks;
+  AddedBlocks _addedBlocks = AddedBlocks(<bool>[], <bool>[]);
   int _blockIndex = 0;
-  List<DbParameter> parameters;
-  List<String> orderByList;
-  Song_lyricsPlaylists _obj;
-  QueryParams qparams;
-  int _pagesize;
-  int _page;
+  List<DbParameter> parameters = <DbParameter>[];
+  List<String> orderByList = <String>[];
+  Song_lyricsPlaylists? _obj;
+  QueryParams qparams = QueryParams();
+  int _pagesize = 0;
+  int _page = 0;
 
   /// put the sql keyword 'AND'
   Song_lyricsPlaylistsFilterBuilder get and {
@@ -13430,25 +11792,22 @@ class Song_lyricsPlaylistsFilterBuilder extends SearchCriteria {
 
   /// open parentheses
   Song_lyricsPlaylistsFilterBuilder get startBlock {
-    _addedBlocks.waitingStartBlock.add(true);
-    _addedBlocks.needEndBlock.add(false);
+    _addedBlocks.waitingStartBlock!.add(true);
+    _addedBlocks.needEndBlock!.add(false);
     _blockIndex++;
     if (_blockIndex > 1) {
-      _addedBlocks.needEndBlock[_blockIndex - 1] = true;
+      _addedBlocks.needEndBlock![_blockIndex - 1] = true;
     }
     return this;
   }
 
   /// String whereCriteria, write raw query without 'where' keyword. Like this: 'field1 like 'test%' and field2 = 3'
-  Song_lyricsPlaylistsFilterBuilder where(String whereCriteria,
-      {dynamic parameterValue}) {
+  Song_lyricsPlaylistsFilterBuilder where(String? whereCriteria, {dynamic parameterValue}) {
     if (whereCriteria != null && whereCriteria != '') {
-      final DbParameter param = DbParameter(
-          columnName: parameterValue == null ? null : '',
-          hasParameter: parameterValue != null);
-      _addedBlocks = setCriteria(parameterValue ?? 0, parameters, param,
-          '($whereCriteria)', _addedBlocks);
-      _addedBlocks.needEndBlock[_blockIndex] = _addedBlocks.retVal;
+      final DbParameter param =
+          DbParameter(columnName: parameterValue == null ? null : '', hasParameter: parameterValue != null);
+      _addedBlocks = setCriteria(parameterValue ?? 0, parameters, param, '($whereCriteria)', _addedBlocks);
+      _addedBlocks.needEndBlock![_blockIndex] = _addedBlocks.retVal;
     }
     return this;
   }
@@ -13476,11 +11835,11 @@ class Song_lyricsPlaylistsFilterBuilder extends SearchCriteria {
 
   /// close parentheses
   Song_lyricsPlaylistsFilterBuilder get endBlock {
-    if (_addedBlocks.needEndBlock[_blockIndex]) {
+    if (_addedBlocks.needEndBlock![_blockIndex]) {
       parameters[parameters.length - 1].whereString += ' ) ';
     }
-    _addedBlocks.needEndBlock.removeAt(_blockIndex);
-    _addedBlocks.waitingStartBlock.removeAt(_blockIndex);
+    _addedBlocks.needEndBlock!.removeAt(_blockIndex);
+    _addedBlocks.waitingStartBlock!.removeAt(_blockIndex);
     _blockIndex--;
     return this;
   }
@@ -13495,8 +11854,8 @@ class Song_lyricsPlaylistsFilterBuilder extends SearchCriteria {
       if (argFields is String) {
         orderByList.add(argFields);
       } else {
-        for (String s in argFields as List<String>) {
-          if (s != null && s.isNotEmpty) {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
             orderByList.add(' $s ');
           }
         }
@@ -13515,8 +11874,8 @@ class Song_lyricsPlaylistsFilterBuilder extends SearchCriteria {
       if (argFields is String) {
         orderByList.add('$argFields desc ');
       } else {
-        for (String s in argFields as List<String>) {
-          if (s != null && s.isNotEmpty) {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
             orderByList.add(' $s desc ');
           }
         }
@@ -13535,8 +11894,8 @@ class Song_lyricsPlaylistsFilterBuilder extends SearchCriteria {
       if (argFields is String) {
         groupByList.add(' $argFields ');
       } else {
-        for (String s in argFields as List<String>) {
-          if (s != null && s.isNotEmpty) {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
             groupByList.add(' $s ');
           }
         }
@@ -13555,8 +11914,8 @@ class Song_lyricsPlaylistsFilterBuilder extends SearchCriteria {
       if (argFields is String) {
         havingList.add(argFields);
       } else {
-        for (String s in argFields as List<String>) {
-          if (s != null && s.isNotEmpty) {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
             havingList.add(' $s ');
           }
         }
@@ -13565,27 +11924,23 @@ class Song_lyricsPlaylistsFilterBuilder extends SearchCriteria {
     return this;
   }
 
-  Song_lyricsPlaylistsField setField(
-      Song_lyricsPlaylistsField field, String colName, DbType dbtype) {
+  Song_lyricsPlaylistsField setField(Song_lyricsPlaylistsField? field, String colName, DbType dbtype) {
     return Song_lyricsPlaylistsField(this)
-      ..param = DbParameter(
-          dbType: dbtype,
-          columnName: colName,
-          wStartBlock: _addedBlocks.waitingStartBlock[_blockIndex]);
+      ..param =
+          DbParameter(dbType: dbtype, columnName: colName, wStartBlock: _addedBlocks.waitingStartBlock![_blockIndex]);
   }
 
-  Song_lyricsPlaylistsField _song_lyricsId;
+  Song_lyricsPlaylistsField? _song_lyricsId;
   Song_lyricsPlaylistsField get song_lyricsId {
-    return _song_lyricsId =
-        setField(_song_lyricsId, 'song_lyricsId', DbType.integer);
+    return _song_lyricsId = setField(_song_lyricsId, 'song_lyricsId', DbType.integer);
   }
 
-  Song_lyricsPlaylistsField _playlistsId;
+  Song_lyricsPlaylistsField? _playlistsId;
   Song_lyricsPlaylistsField get playlistsId {
     return _playlistsId = setField(_playlistsId, 'playlistsId', DbType.integer);
   }
 
-  bool _getIsDeleted;
+  bool _getIsDeleted = false;
 
   void _buildParameters() {
     if (_page > 0 && _pagesize > 0) {
@@ -13600,24 +11955,20 @@ class Song_lyricsPlaylistsFilterBuilder extends SearchCriteria {
     for (DbParameter param in parameters) {
       if (param.columnName != null) {
         if (param.value is List && !param.hasParameter) {
-          param.value = param.dbType == DbType.text
+          param.value = param.dbType == DbType.text || param.value[0] is String
               ? '\'${param.value.join('\',\'')}\''
               : param.value.join(',');
-          whereString += param.whereString
-              .replaceAll('{field}', param.columnName)
-              .replaceAll('?', param.value.toString());
+          whereString +=
+              param.whereString.replaceAll('{field}', param.columnName!).replaceAll('?', param.value.toString());
           param.value = null;
         } else {
-          if (param.value is Map<String, dynamic> &&
-              param.value['sql'] != null) {
+          if (param.value is Map<String, dynamic> && param.value['sql'] != null) {
             param
-              ..whereString = param.whereString
-                  .replaceAll('?', param.value['sql'].toString())
+              ..whereString = param.whereString.replaceAll('?', param.value['sql'].toString())
               ..dbType = DbType.integer
               ..value = param.value['args'];
           }
-          whereString +=
-              param.whereString.replaceAll('{field}', param.columnName);
+          whereString += param.whereString.replaceAll('{field}', param.columnName!);
         }
         if (!param.whereString.contains('?')) {
         } else {
@@ -13637,12 +11988,8 @@ class Song_lyricsPlaylistsFilterBuilder extends SearchCriteria {
             case DbType.date:
             case DbType.datetime:
             case DbType.datetimeUtc:
-              param.value = param.value == null
-                  ? null
-                  : (param.value as DateTime).millisecondsSinceEpoch;
-              param.value2 = param.value2 == null
-                  ? null
-                  : (param.value2 as DateTime).millisecondsSinceEpoch;
+              param.value = param.value == null ? null : (param.value as DateTime).millisecondsSinceEpoch;
+              param.value2 = param.value2 == null ? null : (param.value2 as DateTime).millisecondsSinceEpoch;
               break;
             default:
           }
@@ -13665,8 +12012,7 @@ class Song_lyricsPlaylistsFilterBuilder extends SearchCriteria {
     }
     if (Song_lyricsPlaylists._softDeleteActivated) {
       if (whereString != '') {
-        whereString =
-            '${!_getIsDeleted ? 'ifnull(isDeleted,0)=0 AND' : ''} ($whereString)';
+        whereString = '${!_getIsDeleted ? 'ifnull(isDeleted,0)=0 AND' : ''} ($whereString)';
       } else if (!_getIsDeleted) {
         whereString = 'ifnull(isDeleted,0)=0';
       }
@@ -13687,13 +12033,12 @@ class Song_lyricsPlaylistsFilterBuilder extends SearchCriteria {
   /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
   Future<BoolResult> delete([bool hardDelete = false]) async {
     _buildParameters();
-    var r = BoolResult();
+    var r = BoolResult(success: false);
 
     if (Song_lyricsPlaylists._softDeleteActivated && !hardDelete) {
-      r = await _obj._mnSong_lyricsPlaylists
-          .updateBatch(qparams, {'isDeleted': 1});
+      r = await _obj!._mnSong_lyricsPlaylists.updateBatch(qparams, {'isDeleted': 1});
     } else {
-      r = await _obj._mnSong_lyricsPlaylists.delete(qparams);
+      r = await _obj!._mnSong_lyricsPlaylists.delete(qparams);
     }
     return r;
   }
@@ -13705,11 +12050,11 @@ class Song_lyricsPlaylistsFilterBuilder extends SearchCriteria {
   /// fieldName must be String. Value is dynamic, it can be any of the (int, bool, String.. )
   Future<BoolResult> update(Map<String, dynamic> values) {
     _buildParameters();
-    if (qparams.limit > 0 || qparams.offset > 0) {
+    if (qparams.limit! > 0 || qparams.offset! > 0) {
       qparams.whereString =
-          'song_lyricsId IN (SELECT song_lyricsId from song_lyricsPlaylists ${qparams.whereString.isNotEmpty ? 'WHERE ${qparams.whereString}' : ''}${qparams.limit > 0 ? ' LIMIT ${qparams.limit}' : ''}${qparams.offset > 0 ? ' OFFSET ${qparams.offset}' : ''})';
+          'song_lyricsId IN (SELECT song_lyricsId from song_lyricsPlaylists ${qparams.whereString!.isNotEmpty ? 'WHERE ${qparams.whereString}' : ''}${qparams.limit! > 0 ? ' LIMIT ${qparams.limit}' : ''}${qparams.offset! > 0 ? ' OFFSET ${qparams.offset}' : ''})';
     }
-    return _obj._mnSong_lyricsPlaylists.updateBatch(qparams, values);
+    return _obj!._mnSong_lyricsPlaylists.updateBatch(qparams, values);
   }
 
   /// This method always returns Song_lyricsPlaylists Obj if exist, otherwise returns null
@@ -13726,16 +12071,13 @@ class Song_lyricsPlaylistsFilterBuilder extends SearchCriteria {
 
   ///
   /// <returns>List<Song_lyricsPlaylists>
-  Future<Song_lyricsPlaylists> toSingle(
-      {bool preload = false,
-      List<String> preloadFields,
-      bool loadParents = false,
-      List<String> loadedFields}) async {
+  Future<Song_lyricsPlaylists?> toSingle(
+      {bool preload = false, List<String>? preloadFields, bool loadParents = false, List<String>? loadedFields}) async {
     _pagesize = 1;
     _buildParameters();
-    final objFuture = _obj._mnSong_lyricsPlaylists.toList(qparams);
+    final objFuture = _obj!._mnSong_lyricsPlaylists.toList(qparams);
     final data = await objFuture;
-    Song_lyricsPlaylists obj;
+    Song_lyricsPlaylists? obj;
     if (data.isNotEmpty) {
       obj = Song_lyricsPlaylists.fromMap(data[0] as Map<String, dynamic>);
       // final List<String> _loadedFields = loadedFields ?? [];
@@ -13743,23 +12085,17 @@ class Song_lyricsPlaylistsFilterBuilder extends SearchCriteria {
       // RELATIONSHIPS PRELOAD
       if (preload || loadParents) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedFields.contains('song_lyrics.plSongLyricEntity') && */ (preloadFields ==
-                null ||
+        if (/*!_loadedfields!.contains('song_lyrics.plSongLyric') && */ (preloadFields == null ||
             loadParents ||
-            preloadFields.contains('plSongLyricEntity'))) {
-          /*_loadedFields.add('song_lyrics.plSongLyricEntity');*/
-          obj.plSongLyricEntity = obj.plSongLyricEntity ??
-              await obj.getSongLyricEntity(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+            preloadFields.contains('plSongLyric'))) {
+          /*_loadedfields!.add('song_lyrics.plSongLyric');*/ obj.plSongLyric =
+              obj.plSongLyric ?? await obj.getSongLyric(loadParents: loadParents /*, loadedFields: _loadedFields*/);
         }
-        if (/*!_loadedFields.contains('playlists.plPlaylistEntity') && */ (preloadFields ==
-                null ||
+        if (/*!_loadedfields!.contains('playlists.plPlaylist') && */ (preloadFields == null ||
             loadParents ||
-            preloadFields.contains('plPlaylistEntity'))) {
-          /*_loadedFields.add('playlists.plPlaylistEntity');*/
-          obj.plPlaylistEntity = obj.plPlaylistEntity ??
-              await obj.getPlaylistEntity(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+            preloadFields.contains('plPlaylist'))) {
+          /*_loadedfields!.add('playlists.plPlaylist');*/ obj.plPlaylist =
+              obj.plPlaylist ?? await obj.getPlaylist(loadParents: loadParents /*, loadedFields: _loadedFields*/);
         }
       } // END RELATIONSHIPS PRELOAD
 
@@ -13772,12 +12108,10 @@ class Song_lyricsPlaylistsFilterBuilder extends SearchCriteria {
   /// This method returns int. [Song_lyricsPlaylists]
   ///
   /// <returns>int
-  Future<int> toCount(
-      [VoidCallback Function(int c) song_lyricsplaylistsCount]) async {
+  Future<int> toCount([VoidCallback Function(int c)? song_lyricsplaylistsCount]) async {
     _buildParameters();
     qparams.selectColumns = ['COUNT(1) AS CNT'];
-    final song_lyricsplaylistsesFuture =
-        await _obj._mnSong_lyricsPlaylists.toList(qparams);
+    final song_lyricsplaylistsesFuture = await _obj!._mnSong_lyricsPlaylists.toList(qparams);
     final int count = song_lyricsplaylistsesFuture[0]['CNT'] as int;
     if (song_lyricsplaylistsCount != null) {
       song_lyricsplaylistsCount(count);
@@ -13800,18 +12134,14 @@ class Song_lyricsPlaylistsFilterBuilder extends SearchCriteria {
   ///
   /// <returns>List<Song_lyricsPlaylists>
   Future<List<Song_lyricsPlaylists>> toList(
-      {bool preload = false,
-      List<String> preloadFields,
-      bool loadParents = false,
-      List<String> loadedFields}) async {
+      {bool preload = false, List<String>? preloadFields, bool loadParents = false, List<String>? loadedFields}) async {
     final data = await toMapList();
-    final List<Song_lyricsPlaylists> song_lyricsplaylistsesData =
-        await Song_lyricsPlaylists.fromMapList(data,
-            preload: preload,
-            preloadFields: preloadFields,
-            loadParents: loadParents,
-            loadedFields: loadedFields,
-            setDefaultValues: qparams.selectColumns == null);
+    final List<Song_lyricsPlaylists> song_lyricsplaylistsesData = await Song_lyricsPlaylists.fromMapList(data,
+        preload: preload,
+        preloadFields: preloadFields,
+        loadParents: loadParents,
+        loadedFields: loadedFields,
+        setDefaultValues: qparams.selectColumns == null);
     return song_lyricsplaylistsesData;
   }
 
@@ -13840,7 +12170,7 @@ class Song_lyricsPlaylistsFilterBuilder extends SearchCriteria {
   /// <returns>List<dynamic>
   Future<List<dynamic>> toMapList() async {
     _buildParameters();
-    return await _obj._mnSong_lyricsPlaylists.toList(qparams);
+    return await _obj!._mnSong_lyricsPlaylists.toList(qparams);
   }
 
   /// This method returns Primary Key List SQL and Parameters retVal = Map<String,dynamic>. [Song_lyricsPlaylists]
@@ -13853,22 +12183,19 @@ class Song_lyricsPlaylistsFilterBuilder extends SearchCriteria {
     if (buildParameters) {
       _buildParameters();
     }
-    _retVal['sql'] =
-        'SELECT `song_lyricsId`playlistsId` FROM song_lyricsPlaylists WHERE ${qparams.whereString}';
+    _retVal['sql'] = 'SELECT `song_lyricsId`playlistsId` FROM song_lyricsPlaylists WHERE ${qparams.whereString}';
     _retVal['args'] = qparams.whereArguments;
     return _retVal;
   }
 
   /// This method returns Primary Key List<song_lyricsId,playlistsId> [Song_lyricsPlaylists]
   /// <returns>List<song_lyricsId,playlistsId>
-  Future<List<Song_lyricsPlaylists>> toListPrimaryKey(
-      [bool buildParameters = true]) async {
+  Future<List<Song_lyricsPlaylists>> toListPrimaryKey([bool buildParameters = true]) async {
     if (buildParameters) {
       _buildParameters();
     }
     qparams.selectColumns = ['song_lyricsId', 'playlistsId'];
-    final song_lyricsplaylistsFuture =
-        await _obj._mnSong_lyricsPlaylists.toList(qparams);
+    final song_lyricsplaylistsFuture = await _obj!._mnSong_lyricsPlaylists.toList(qparams);
     return await Song_lyricsPlaylists.fromMapList(song_lyricsplaylistsFuture);
   }
 
@@ -13878,7 +12205,7 @@ class Song_lyricsPlaylistsFilterBuilder extends SearchCriteria {
   Future<List<dynamic>> toListObject() async {
     _buildParameters();
 
-    final objectFuture = _obj._mnSong_lyricsPlaylists.toList(qparams);
+    final objectFuture = _obj!._mnSong_lyricsPlaylists.toList(qparams);
 
     final List<dynamic> objectsData = <dynamic>[];
     final data = await objectFuture;
@@ -13892,17 +12219,16 @@ class Song_lyricsPlaylistsFilterBuilder extends SearchCriteria {
   /// Returns List<String> for selected first column
   ///
   /// Sample usage: await Song_lyricsPlaylists.select(columnsToSelect: ['columnName']).toListString()
-  Future<List<String>> toListString(
-      [VoidCallback Function(List<String> o) listString]) async {
+  Future<List<String>> toListString([VoidCallback Function(List<String> o)? listString]) async {
     _buildParameters();
 
-    final objectFuture = _obj._mnSong_lyricsPlaylists.toList(qparams);
+    final objectFuture = _obj!._mnSong_lyricsPlaylists.toList(qparams);
 
     final List<String> objectsData = <String>[];
     final data = await objectFuture;
     final int count = data.length;
     for (int i = 0; i < count; i++) {
-      objectsData.add(data[i][qparams.selectColumns[0]].toString());
+      objectsData.add(data[i][qparams.selectColumns![0]].toString());
     }
     if (listString != null) {
       listString(objectsData);
@@ -13914,16 +12240,14 @@ class Song_lyricsPlaylistsFilterBuilder extends SearchCriteria {
 
 // region Song_lyricsPlaylistsFields
 class Song_lyricsPlaylistsFields {
-  static TableField _fSong_lyricsId;
+  static TableField? _fSong_lyricsId;
   static TableField get song_lyricsId {
-    return _fSong_lyricsId = _fSong_lyricsId ??
-        SqlSyntax.setField(_fSong_lyricsId, 'song_lyricsId', DbType.integer);
+    return _fSong_lyricsId = _fSong_lyricsId ?? SqlSyntax.setField(_fSong_lyricsId, 'song_lyricsId', DbType.integer);
   }
 
-  static TableField _fPlaylistsId;
+  static TableField? _fPlaylistsId;
   static TableField get playlistsId {
-    return _fPlaylistsId = _fPlaylistsId ??
-        SqlSyntax.setField(_fPlaylistsId, 'playlistsId', DbType.integer);
+    return _fPlaylistsId = _fPlaylistsId ?? SqlSyntax.setField(_fPlaylistsId, 'playlistsId', DbType.integer);
   }
 }
 // endregion Song_lyricsPlaylistsFields
@@ -13931,10 +12255,7 @@ class Song_lyricsPlaylistsFields {
 //region Song_lyricsPlaylistsManager
 class Song_lyricsPlaylistsManager extends SqfEntityProvider {
   Song_lyricsPlaylistsManager()
-      : super(Model(),
-            tableName: _tableName,
-            primaryKeyList: _primaryKeyList,
-            whereStr: _whereStr);
+      : super(Model(), tableName: _tableName, primaryKeyList: _primaryKeyList, whereStr: _whereStr);
   static final String _tableName = 'song_lyricsPlaylists';
   static final List<String> _primaryKeyList = ['song_lyricsId', 'playlistsId'];
   static final String _whereStr = 'song_lyricsId=? AND playlistsId=?';
@@ -13952,8 +12273,8 @@ class Song_lyricsTags {
   Song_lyricsTags.withId(this.song_lyricsId, this.tagsId) {
     _setDefaultValues();
   }
-  Song_lyricsTags.fromMap(Map<String, dynamic> o,
-      {bool setDefaultValues = true}) {
+  // fromMap v2.0
+  Song_lyricsTags.fromMap(Map<String, dynamic> o, {bool setDefaultValues = true}) {
     if (setDefaultValues) {
       _setDefaultValues();
     }
@@ -13962,83 +12283,87 @@ class Song_lyricsTags {
     tagsId = int.tryParse(o['tagsId'].toString());
 
     // RELATIONSHIPS FromMAP
-    plSongLyricEntity = o['songLyricEntity'] != null
-        ? SongLyricEntity.fromMap(o['songLyricEntity'] as Map<String, dynamic>)
-        : null;
-    plTagEntity = o['tagEntity'] != null
-        ? TagEntity.fromMap(o['tagEntity'] as Map<String, dynamic>)
-        : null;
+    plSongLyric = o['songLyric'] != null ? SongLyric.fromMap(o['songLyric'] as Map<String, dynamic>) : null;
+    plTag = o['tag'] != null ? Tag.fromMap(o['tag'] as Map<String, dynamic>) : null;
     // END RELATIONSHIPS FromMAP
 
     isSaved = true;
   }
   // FIELDS (Song_lyricsTags)
-  int song_lyricsId;
-  int tagsId;
-  bool isSaved;
-  BoolResult saveResult;
+  int? song_lyricsId;
+  int? tagsId;
+  bool? isSaved;
+  BoolResult? saveResult;
   // end FIELDS (Song_lyricsTags)
 
 // RELATIONSHIPS (Song_lyricsTags)
   /// to load parent of items to this field, use preload parameter ex: toList(preload:true) or toSingle(preload:true) or getById(preload:true)
-  /// You can also specify this object into certain preload fields. Ex: toList(preload:true, preloadFields:['plSongLyricEntity', 'plField2'..]) or so on..
-  SongLyricEntity plSongLyricEntity;
+  /// You can also specify this object into certain preload fields!. Ex: toList(preload:true, preloadFields:['plSongLyric', 'plField2'..]) or so on..
+  SongLyric? plSongLyric;
 
-  /// get SongLyricEntity By Song_lyricsId
-  Future<SongLyricEntity> getSongLyricEntity(
-      {bool loadParents = false, List<String> loadedFields}) async {
-    final _obj = await SongLyricEntity().getById(song_lyricsId,
-        loadParents: loadParents, loadedFields: loadedFields);
+  /// get SongLyric By Song_lyricsId
+  Future<SongLyric?> getSongLyric({bool loadParents = false, List<String>? loadedFields}) async {
+    final _obj = await SongLyric().getById(song_lyricsId, loadParents: loadParents, loadedFields: loadedFields);
     return _obj;
   }
 
   /// to load parent of items to this field, use preload parameter ex: toList(preload:true) or toSingle(preload:true) or getById(preload:true)
-  /// You can also specify this object into certain preload fields. Ex: toList(preload:true, preloadFields:['plTagEntity', 'plField2'..]) or so on..
-  TagEntity plTagEntity;
+  /// You can also specify this object into certain preload fields!. Ex: toList(preload:true, preloadFields:['plTag', 'plField2'..]) or so on..
+  Tag? plTag;
 
-  /// get TagEntity By TagsId
-  Future<TagEntity> getTagEntity(
-      {bool loadParents = false, List<String> loadedFields}) async {
-    final _obj = await TagEntity()
-        .getById(tagsId, loadParents: loadParents, loadedFields: loadedFields);
+  /// get Tag By TagsId
+  Future<Tag?> getTag({bool loadParents = false, List<String>? loadedFields}) async {
+    final _obj = await Tag().getById(tagsId, loadParents: loadParents, loadedFields: loadedFields);
     return _obj;
   }
   // END RELATIONSHIPS (Song_lyricsTags)
 
   static const bool _softDeleteActivated = false;
-  Song_lyricsTagsManager __mnSong_lyricsTags;
+  Song_lyricsTagsManager? __mnSong_lyricsTags;
 
   Song_lyricsTagsManager get _mnSong_lyricsTags {
-    return __mnSong_lyricsTags =
-        __mnSong_lyricsTags ?? Song_lyricsTagsManager();
+    return __mnSong_lyricsTags = __mnSong_lyricsTags ?? Song_lyricsTagsManager();
   }
 
   // METHODS
-  Map<String, dynamic> toMap(
-      {bool forQuery = false, bool forJson = false, bool forView = false}) {
+  Map<String, dynamic> toMap({bool forQuery = false, bool forJson = false, bool forView = false}) {
     final map = <String, dynamic>{};
     if (song_lyricsId != null) {
-      map['song_lyricsId'] = forView ? plSongLyricEntity.name : song_lyricsId;
+      map['song_lyricsId'] = forView
+          ? plSongLyric == null
+              ? song_lyricsId
+              : plSongLyric!.name
+          : song_lyricsId;
     }
 
     if (tagsId != null) {
-      map['tagsId'] = forView ? plTagEntity.name : tagsId;
+      map['tagsId'] = forView
+          ? plTag == null
+              ? tagsId
+              : plTag!.name
+          : tagsId;
     }
 
     return map;
   }
 
   Future<Map<String, dynamic>> toMapWithChildren(
-      [bool forQuery = false,
-      bool forJson = false,
-      bool forView = false]) async {
+      [bool forQuery = false, bool forJson = false, bool forView = false]) async {
     final map = <String, dynamic>{};
     if (song_lyricsId != null) {
-      map['song_lyricsId'] = forView ? plSongLyricEntity.name : song_lyricsId;
+      map['song_lyricsId'] = forView
+          ? plSongLyric == null
+              ? song_lyricsId
+              : plSongLyric!.name
+          : song_lyricsId;
     }
 
     if (tagsId != null) {
-      map['tagsId'] = forView ? plTagEntity.name : tagsId;
+      map['tagsId'] = forView
+          ? plTag == null
+              ? tagsId
+              : plTag!.name
+          : tagsId;
     }
 
     return map;
@@ -14062,70 +12387,58 @@ class Song_lyricsTags {
     return [song_lyricsId, tagsId];
   }
 
-  static Future<List<Song_lyricsTags>> fromWebUrl(String url,
-      {Map<String, String> headers}) async {
+  static Future<List<Song_lyricsTags>?> fromWebUrl(Uri uri, {Map<String, String>? headers}) async {
     try {
-      final response = await http.get(url, headers: headers);
+      final response = await http.get(uri, headers: headers);
       return await fromJson(response.body);
     } catch (e) {
-      print(
-          'SQFENTITY ERROR Song_lyricsTags.fromWebUrl: ErrorMessage: ${e.toString()}');
+      print('SQFENTITY ERROR Song_lyricsTags.fromWebUrl: ErrorMessage: ${e.toString()}');
       return null;
     }
   }
 
-  Future<http.Response> postUrl(String url, {Map<String, String> headers}) {
-    return http.post(url, headers: headers, body: toJson());
+  Future<http.Response> postUrl(Uri uri, {Map<String, String>? headers}) {
+    return http.post(uri, headers: headers, body: toJson());
   }
 
   static Future<List<Song_lyricsTags>> fromJson(String jsonBody) async {
     final Iterable list = await json.decode(jsonBody) as Iterable;
     var objList = <Song_lyricsTags>[];
     try {
-      objList = list
-          .map((song_lyricstags) =>
-              Song_lyricsTags.fromMap(song_lyricstags as Map<String, dynamic>))
-          .toList();
+      objList =
+          list.map((song_lyricstags) => Song_lyricsTags.fromMap(song_lyricstags as Map<String, dynamic>)).toList();
     } catch (e) {
-      print(
-          'SQFENTITY ERROR Song_lyricsTags.fromJson: ErrorMessage: ${e.toString()}');
+      print('SQFENTITY ERROR Song_lyricsTags.fromJson: ErrorMessage: ${e.toString()}');
     }
     return objList;
   }
 
   static Future<List<Song_lyricsTags>> fromMapList(List<dynamic> data,
       {bool preload = false,
-      List<String> preloadFields,
+      List<String>? preloadFields,
       bool loadParents = false,
-      List<String> loadedFields,
+      List<String>? loadedFields,
       bool setDefaultValues = true}) async {
     final List<Song_lyricsTags> objList = <Song_lyricsTags>[];
     loadedFields = loadedFields ?? [];
     for (final map in data) {
-      final obj = Song_lyricsTags.fromMap(map as Map<String, dynamic>,
-          setDefaultValues: setDefaultValues);
+      final obj = Song_lyricsTags.fromMap(map as Map<String, dynamic>, setDefaultValues: setDefaultValues);
       // final List<String> _loadedFields = List<String>.from(loadedFields);
 
       // RELATIONSHIPS PRELOAD
       if (preload || loadParents) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedFields.contains('song_lyrics.plSongLyricEntity') && */ (preloadFields ==
-                null ||
+        if (/*!_loadedfields!.contains('song_lyrics.plSongLyric') && */ (preloadFields == null ||
             loadParents ||
-            preloadFields.contains('plSongLyricEntity'))) {
-          /*_loadedFields.add('song_lyrics.plSongLyricEntity');*/
-          obj.plSongLyricEntity = obj.plSongLyricEntity ??
-              await obj.getSongLyricEntity(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+            preloadFields.contains('plSongLyric'))) {
+          /*_loadedfields!.add('song_lyrics.plSongLyric');*/ obj.plSongLyric =
+              obj.plSongLyric ?? await obj.getSongLyric(loadParents: loadParents /*, loadedFields: _loadedFields*/);
         }
-        if (/*!_loadedFields.contains('tags.plTagEntity') && */ (preloadFields ==
-                null ||
+        if (/*!_loadedfields!.contains('tags.plTag') && */ (preloadFields == null ||
             loadParents ||
-            preloadFields.contains('plTagEntity'))) {
-          /*_loadedFields.add('tags.plTagEntity');*/
-          obj.plTagEntity = obj.plTagEntity ??
-              await obj.getTagEntity(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+            preloadFields.contains('plTag'))) {
+          /*_loadedfields!.add('tags.plTag');*/ obj.plTag =
+              obj.plTag ?? await obj.getTag(loadParents: loadParents /*, loadedFields: _loadedFields*/);
         }
       } // END RELATIONSHIPS PRELOAD
 
@@ -14136,7 +12449,7 @@ class Song_lyricsTags {
 
   /// returns Song_lyricsTags by ID if exist, otherwise returns null
   ///
-  /// Primary Keys: int song_lyricsId, int tagsId
+  /// Primary Keys: int? song_lyricsId, int? tagsId
   ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
   ///
@@ -14150,15 +12463,12 @@ class Song_lyricsTags {
 
   ///
   /// <returns>returns Song_lyricsTags if exist, otherwise returns null
-  Future<Song_lyricsTags> getById(int song_lyricsId, int tagsId,
-      {bool preload = false,
-      List<String> preloadFields,
-      bool loadParents = false,
-      List<String> loadedFields}) async {
+  Future<Song_lyricsTags?> getById(int? song_lyricsId, int? tagsId,
+      {bool preload = false, List<String>? preloadFields, bool loadParents = false, List<String>? loadedFields}) async {
     if (song_lyricsId == null) {
       return null;
     }
-    Song_lyricsTags obj;
+    Song_lyricsTags? obj;
     final data = await _mnSong_lyricsTags.getById([song_lyricsId, tagsId]);
     if (data.length != 0) {
       obj = Song_lyricsTags.fromMap(data[0] as Map<String, dynamic>);
@@ -14167,23 +12477,17 @@ class Song_lyricsTags {
       // RELATIONSHIPS PRELOAD
       if (preload || loadParents) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedFields.contains('song_lyrics.plSongLyricEntity') && */ (preloadFields ==
-                null ||
+        if (/*!_loadedfields!.contains('song_lyrics.plSongLyric') && */ (preloadFields == null ||
             loadParents ||
-            preloadFields.contains('plSongLyricEntity'))) {
-          /*_loadedFields.add('song_lyrics.plSongLyricEntity');*/
-          obj.plSongLyricEntity = obj.plSongLyricEntity ??
-              await obj.getSongLyricEntity(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+            preloadFields.contains('plSongLyric'))) {
+          /*_loadedfields!.add('song_lyrics.plSongLyric');*/ obj.plSongLyric =
+              obj.plSongLyric ?? await obj.getSongLyric(loadParents: loadParents /*, loadedFields: _loadedFields*/);
         }
-        if (/*!_loadedFields.contains('tags.plTagEntity') && */ (preloadFields ==
-                null ||
+        if (/*!_loadedfields!.contains('tags.plTag') && */ (preloadFields == null ||
             loadParents ||
-            preloadFields.contains('plTagEntity'))) {
-          /*_loadedFields.add('tags.plTagEntity');*/
-          obj.plTagEntity = obj.plTagEntity ??
-              await obj.getTagEntity(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+            preloadFields.contains('plTag'))) {
+          /*_loadedfields!.add('tags.plTag');*/ obj.plTag =
+              obj.plTag ?? await obj.getTag(loadParents: loadParents /*, loadedFields: _loadedFields*/);
         }
       } // END RELATIONSHIPS PRELOAD
 
@@ -14204,7 +12508,7 @@ class Song_lyricsTags {
     final result = BoolResult(success: false);
     try {
       await _mnSong_lyricsTags.rawInsert(
-          'INSERT ${isSaved ? 'OR REPLACE' : ''} INTO song_lyricsTags (song_lyricsId, tagsId)  VALUES (?,?)',
+          'INSERT ${isSaved! ? 'OR REPLACE' : ''} INTO song_lyricsTags (song_lyricsId, tagsId)  VALUES (?,?)',
           toArgsWithIds());
       result.success = true;
       isSaved = true;
@@ -14219,8 +12523,7 @@ class Song_lyricsTags {
   /// saveAll method saves the sent List<Song_lyricsTags> as a bulk in one transaction
   ///
   /// Returns a <List<BoolResult>>
-  static Future<List<dynamic>> saveAll(
-      List<Song_lyricsTags> song_lyricstagses) async {
+  static Future<List<dynamic>> saveAll(List<Song_lyricsTags> song_lyricstagses) async {
     // final results = _mnSong_lyricsTags.saveAll('INSERT OR REPLACE INTO song_lyricsTags (song_lyricsId, tagsId)  VALUES (?,?)',song_lyricstagses);
     // return results; removed in sqfentity_gen 1.3.0+6
     await Model().batchStart();
@@ -14230,34 +12533,28 @@ class Song_lyricsTags {
     //    return Model().batchCommit();
     final result = await Model().batchCommit();
 
-    return result;
+    return result!;
   }
 
   /// Updates if the record exists, otherwise adds a new row
 
   /// <returns>Returns 1
-  Future<int> upsert() async {
+
+  Future<int?> upsert() async {
     try {
-      if (await _mnSong_lyricsTags.rawInsert(
-              'INSERT OR REPLACE INTO song_lyricsTags (song_lyricsId, tagsId)  VALUES (?,?)',
-              [song_lyricsId, tagsId]) ==
-          1) {
+      final result = await _mnSong_lyricsTags.rawInsert(
+          'INSERT OR REPLACE INTO song_lyricsTags (song_lyricsId, tagsId)  VALUES (?,?)', [song_lyricsId, tagsId]);
+      if (result! > 0) {
         saveResult = BoolResult(
-            success: true,
-            successMessage:
-                'Song_lyricsTags song_lyricsId=$song_lyricsId updated successfully');
+            success: true, successMessage: 'Song_lyricsTags song_lyricsId=$song_lyricsId updated successfully');
       } else {
-        saveResult = BoolResult(
-            success: false,
-            errorMessage:
-                'Song_lyricsTags song_lyricsId=$song_lyricsId did not update');
+        saveResult =
+            BoolResult(success: false, errorMessage: 'Song_lyricsTags song_lyricsId=$song_lyricsId did not update');
       }
-      return 1;
+      return song_lyricsId;
     } catch (e) {
-      saveResult = BoolResult(
-          success: false,
-          errorMessage: 'Song_lyricsTags Save failed. Error: ${e.toString()}');
-      return 0;
+      saveResult = BoolResult(success: false, errorMessage: 'Song_lyricsTags Save failed. Error: ${e.toString()}');
+      return null;
     }
   }
 
@@ -14266,42 +12563,35 @@ class Song_lyricsTags {
   /// upsertAll() method is faster then saveAll() method. upsertAll() should be used when you are sure that the primary key is greater than zero
   ///
   /// Returns a BoolCommitResult
-  Future<BoolCommitResult> upsertAll(
-      List<Song_lyricsTags> song_lyricstagses) async {
+  Future<BoolCommitResult> upsertAll(List<Song_lyricsTags> song_lyricstagses) async {
     final results = await _mnSong_lyricsTags.rawInsertAll(
-        'INSERT OR REPLACE INTO song_lyricsTags (song_lyricsId, tagsId)  VALUES (?,?)',
-        song_lyricstagses);
+        'INSERT OR REPLACE INTO song_lyricsTags (song_lyricsId, tagsId)  VALUES (?,?)', song_lyricstagses);
     return results;
   }
 
   /// Deletes Song_lyricsTags
 
   /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
+
   Future<BoolResult> delete([bool hardDelete = false]) async {
-    print(
-        'SQFENTITIY: delete Song_lyricsTags invoked (song_lyricsId=$song_lyricsId)');
+    print('SQFENTITIY: delete Song_lyricsTags invoked (song_lyricsId=$song_lyricsId)');
     if (!_softDeleteActivated || hardDelete) {
-      return _mnSong_lyricsTags.delete(QueryParams(
-          whereString: 'song_lyricsId=? AND tagsId=?',
-          whereArguments: [song_lyricsId, tagsId]));
+      return _mnSong_lyricsTags
+          .delete(QueryParams(whereString: 'song_lyricsId=? AND tagsId=?', whereArguments: [song_lyricsId, tagsId]));
     } else {
       return _mnSong_lyricsTags.updateBatch(
-          QueryParams(
-              whereString: 'song_lyricsId=? AND tagsId=?',
-              whereArguments: [song_lyricsId, tagsId]),
+          QueryParams(whereString: 'song_lyricsId=? AND tagsId=?', whereArguments: [song_lyricsId, tagsId]),
           {'isDeleted': 1});
     }
   }
 
-  Song_lyricsTagsFilterBuilder select(
-      {List<String> columnsToSelect, bool getIsDeleted}) {
+  Song_lyricsTagsFilterBuilder select({List<String>? columnsToSelect, bool? getIsDeleted}) {
     return Song_lyricsTagsFilterBuilder(this)
       .._getIsDeleted = getIsDeleted == true
       ..qparams.selectColumns = columnsToSelect;
   }
 
-  Song_lyricsTagsFilterBuilder distinct(
-      {List<String> columnsToSelect, bool getIsDeleted}) {
+  Song_lyricsTagsFilterBuilder distinct({List<String>? columnsToSelect, bool? getIsDeleted}) {
     return Song_lyricsTagsFilterBuilder(this)
       .._getIsDeleted = getIsDeleted == true
       ..qparams.selectColumns = columnsToSelect
@@ -14312,9 +12602,9 @@ class Song_lyricsTags {
     isSaved = false;
   }
   // END METHODS
-  // CUSTOM CODES
+  // BEGIN CUSTOM CODE
   /*
-      you must define customCode property of your SqfEntityTable constant for ex:
+      you can define customCode property of your SqfEntityTable constant. For example:
       const tablePerson = SqfEntityTable(
       tableName: 'person',
       primaryKeyName: 'id',
@@ -14330,16 +12620,15 @@ class Song_lyricsTags {
        }
       ''');
      */
-  // END CUSTOM CODES
+  // END CUSTOM CODE
 }
 // endregion song_lyricstags
 
 // region Song_lyricsTagsField
 class Song_lyricsTagsField extends SearchCriteria {
-  Song_lyricsTagsField(this.song_lyricstagsFB) {
-    param = DbParameter();
-  }
-  DbParameter param;
+  Song_lyricsTagsField(this.song_lyricstagsFB);
+  // { param = DbParameter(); }
+  DbParameter param = DbParameter();
   String _waitingNot = '';
   Song_lyricsTagsFilterBuilder song_lyricstagsFB;
 
@@ -14351,53 +12640,39 @@ class Song_lyricsTagsField extends SearchCriteria {
   Song_lyricsTagsFilterBuilder equals(dynamic pValue) {
     param.expression = '=';
     song_lyricstagsFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, song_lyricstagsFB.parameters, param,
-            SqlSyntax.EQuals, song_lyricstagsFB._addedBlocks)
-        : setCriteria(pValue, song_lyricstagsFB.parameters, param,
-            SqlSyntax.NotEQuals, song_lyricstagsFB._addedBlocks);
+        ? setCriteria(pValue, song_lyricstagsFB.parameters, param, SqlSyntax.EQuals, song_lyricstagsFB._addedBlocks)
+        : setCriteria(pValue, song_lyricstagsFB.parameters, param, SqlSyntax.NotEQuals, song_lyricstagsFB._addedBlocks);
     _waitingNot = '';
-    song_lyricstagsFB._addedBlocks.needEndBlock[song_lyricstagsFB._blockIndex] =
-        song_lyricstagsFB._addedBlocks.retVal;
+    song_lyricstagsFB._addedBlocks.needEndBlock![song_lyricstagsFB._blockIndex] = song_lyricstagsFB._addedBlocks.retVal;
     return song_lyricstagsFB;
   }
 
   Song_lyricsTagsFilterBuilder equalsOrNull(dynamic pValue) {
     param.expression = '=';
     song_lyricstagsFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, song_lyricstagsFB.parameters, param,
-            SqlSyntax.EQualsOrNull, song_lyricstagsFB._addedBlocks)
-        : setCriteria(pValue, song_lyricstagsFB.parameters, param,
-            SqlSyntax.NotEQualsOrNull, song_lyricstagsFB._addedBlocks);
+        ? setCriteria(
+            pValue, song_lyricstagsFB.parameters, param, SqlSyntax.EQualsOrNull, song_lyricstagsFB._addedBlocks)
+        : setCriteria(
+            pValue, song_lyricstagsFB.parameters, param, SqlSyntax.NotEQualsOrNull, song_lyricstagsFB._addedBlocks);
     _waitingNot = '';
-    song_lyricstagsFB._addedBlocks.needEndBlock[song_lyricstagsFB._blockIndex] =
-        song_lyricstagsFB._addedBlocks.retVal;
+    song_lyricstagsFB._addedBlocks.needEndBlock![song_lyricstagsFB._blockIndex] = song_lyricstagsFB._addedBlocks.retVal;
     return song_lyricstagsFB;
   }
 
   Song_lyricsTagsFilterBuilder isNull() {
-    song_lyricstagsFB._addedBlocks = setCriteria(
-        0,
-        song_lyricstagsFB.parameters,
-        param,
-        SqlSyntax.IsNULL.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-        song_lyricstagsFB._addedBlocks);
+    song_lyricstagsFB._addedBlocks = setCriteria(0, song_lyricstagsFB.parameters, param,
+        SqlSyntax.IsNULL.replaceAll(SqlSyntax.notKeyword, _waitingNot), song_lyricstagsFB._addedBlocks);
     _waitingNot = '';
-    song_lyricstagsFB._addedBlocks.needEndBlock[song_lyricstagsFB._blockIndex] =
-        song_lyricstagsFB._addedBlocks.retVal;
+    song_lyricstagsFB._addedBlocks.needEndBlock![song_lyricstagsFB._blockIndex] = song_lyricstagsFB._addedBlocks.retVal;
     return song_lyricstagsFB;
   }
 
   Song_lyricsTagsFilterBuilder contains(dynamic pValue) {
     if (pValue != null) {
-      song_lyricstagsFB._addedBlocks = setCriteria(
-          '%${pValue.toString()}%',
-          song_lyricstagsFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          song_lyricstagsFB._addedBlocks);
+      song_lyricstagsFB._addedBlocks = setCriteria('%${pValue.toString()}%', song_lyricstagsFB.parameters, param,
+          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot), song_lyricstagsFB._addedBlocks);
       _waitingNot = '';
-      song_lyricstagsFB
-              ._addedBlocks.needEndBlock[song_lyricstagsFB._blockIndex] =
+      song_lyricstagsFB._addedBlocks.needEndBlock![song_lyricstagsFB._blockIndex] =
           song_lyricstagsFB._addedBlocks.retVal;
     }
     return song_lyricstagsFB;
@@ -14405,18 +12680,12 @@ class Song_lyricsTagsField extends SearchCriteria {
 
   Song_lyricsTagsFilterBuilder startsWith(dynamic pValue) {
     if (pValue != null) {
-      song_lyricstagsFB._addedBlocks = setCriteria(
-          '${pValue.toString()}%',
-          song_lyricstagsFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          song_lyricstagsFB._addedBlocks);
+      song_lyricstagsFB._addedBlocks = setCriteria('${pValue.toString()}%', song_lyricstagsFB.parameters, param,
+          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot), song_lyricstagsFB._addedBlocks);
       _waitingNot = '';
-      song_lyricstagsFB
-              ._addedBlocks.needEndBlock[song_lyricstagsFB._blockIndex] =
+      song_lyricstagsFB._addedBlocks.needEndBlock![song_lyricstagsFB._blockIndex] =
           song_lyricstagsFB._addedBlocks.retVal;
-      song_lyricstagsFB
-              ._addedBlocks.needEndBlock[song_lyricstagsFB._blockIndex] =
+      song_lyricstagsFB._addedBlocks.needEndBlock![song_lyricstagsFB._blockIndex] =
           song_lyricstagsFB._addedBlocks.retVal;
     }
     return song_lyricstagsFB;
@@ -14424,15 +12693,10 @@ class Song_lyricsTagsField extends SearchCriteria {
 
   Song_lyricsTagsFilterBuilder endsWith(dynamic pValue) {
     if (pValue != null) {
-      song_lyricstagsFB._addedBlocks = setCriteria(
-          '%${pValue.toString()}',
-          song_lyricstagsFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          song_lyricstagsFB._addedBlocks);
+      song_lyricstagsFB._addedBlocks = setCriteria('%${pValue.toString()}', song_lyricstagsFB.parameters, param,
+          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot), song_lyricstagsFB._addedBlocks);
       _waitingNot = '';
-      song_lyricstagsFB
-              ._addedBlocks.needEndBlock[song_lyricstagsFB._blockIndex] =
+      song_lyricstagsFB._addedBlocks.needEndBlock![song_lyricstagsFB._blockIndex] =
           song_lyricstagsFB._addedBlocks.retVal;
     }
     return song_lyricstagsFB;
@@ -14440,114 +12704,81 @@ class Song_lyricsTagsField extends SearchCriteria {
 
   Song_lyricsTagsFilterBuilder between(dynamic pFirst, dynamic pLast) {
     if (pFirst != null && pLast != null) {
-      song_lyricstagsFB._addedBlocks = setCriteria(
-          pFirst,
-          song_lyricstagsFB.parameters,
-          param,
-          SqlSyntax.Between.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          song_lyricstagsFB._addedBlocks,
-          pLast);
+      song_lyricstagsFB._addedBlocks = setCriteria(pFirst, song_lyricstagsFB.parameters, param,
+          SqlSyntax.Between.replaceAll(SqlSyntax.notKeyword, _waitingNot), song_lyricstagsFB._addedBlocks, pLast);
     } else if (pFirst != null) {
       if (_waitingNot != '') {
         song_lyricstagsFB._addedBlocks = setCriteria(
-            pFirst,
-            song_lyricstagsFB.parameters,
-            param,
-            SqlSyntax.LessThan,
-            song_lyricstagsFB._addedBlocks);
+            pFirst, song_lyricstagsFB.parameters, param, SqlSyntax.LessThan, song_lyricstagsFB._addedBlocks);
       } else {
         song_lyricstagsFB._addedBlocks = setCriteria(
-            pFirst,
-            song_lyricstagsFB.parameters,
-            param,
-            SqlSyntax.GreaterThanOrEquals,
-            song_lyricstagsFB._addedBlocks);
+            pFirst, song_lyricstagsFB.parameters, param, SqlSyntax.GreaterThanOrEquals, song_lyricstagsFB._addedBlocks);
       }
     } else if (pLast != null) {
       if (_waitingNot != '') {
         song_lyricstagsFB._addedBlocks = setCriteria(
-            pLast,
-            song_lyricstagsFB.parameters,
-            param,
-            SqlSyntax.GreaterThan,
-            song_lyricstagsFB._addedBlocks);
+            pLast, song_lyricstagsFB.parameters, param, SqlSyntax.GreaterThan, song_lyricstagsFB._addedBlocks);
       } else {
         song_lyricstagsFB._addedBlocks = setCriteria(
-            pLast,
-            song_lyricstagsFB.parameters,
-            param,
-            SqlSyntax.LessThanOrEquals,
-            song_lyricstagsFB._addedBlocks);
+            pLast, song_lyricstagsFB.parameters, param, SqlSyntax.LessThanOrEquals, song_lyricstagsFB._addedBlocks);
       }
     }
     _waitingNot = '';
-    song_lyricstagsFB._addedBlocks.needEndBlock[song_lyricstagsFB._blockIndex] =
-        song_lyricstagsFB._addedBlocks.retVal;
+    song_lyricstagsFB._addedBlocks.needEndBlock![song_lyricstagsFB._blockIndex] = song_lyricstagsFB._addedBlocks.retVal;
     return song_lyricstagsFB;
   }
 
   Song_lyricsTagsFilterBuilder greaterThan(dynamic pValue) {
     param.expression = '>';
     song_lyricstagsFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, song_lyricstagsFB.parameters, param,
-            SqlSyntax.GreaterThan, song_lyricstagsFB._addedBlocks)
-        : setCriteria(pValue, song_lyricstagsFB.parameters, param,
-            SqlSyntax.LessThanOrEquals, song_lyricstagsFB._addedBlocks);
+        ? setCriteria(
+            pValue, song_lyricstagsFB.parameters, param, SqlSyntax.GreaterThan, song_lyricstagsFB._addedBlocks)
+        : setCriteria(
+            pValue, song_lyricstagsFB.parameters, param, SqlSyntax.LessThanOrEquals, song_lyricstagsFB._addedBlocks);
     _waitingNot = '';
-    song_lyricstagsFB._addedBlocks.needEndBlock[song_lyricstagsFB._blockIndex] =
-        song_lyricstagsFB._addedBlocks.retVal;
+    song_lyricstagsFB._addedBlocks.needEndBlock![song_lyricstagsFB._blockIndex] = song_lyricstagsFB._addedBlocks.retVal;
     return song_lyricstagsFB;
   }
 
   Song_lyricsTagsFilterBuilder lessThan(dynamic pValue) {
     param.expression = '<';
     song_lyricstagsFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, song_lyricstagsFB.parameters, param,
-            SqlSyntax.LessThan, song_lyricstagsFB._addedBlocks)
-        : setCriteria(pValue, song_lyricstagsFB.parameters, param,
-            SqlSyntax.GreaterThanOrEquals, song_lyricstagsFB._addedBlocks);
+        ? setCriteria(pValue, song_lyricstagsFB.parameters, param, SqlSyntax.LessThan, song_lyricstagsFB._addedBlocks)
+        : setCriteria(
+            pValue, song_lyricstagsFB.parameters, param, SqlSyntax.GreaterThanOrEquals, song_lyricstagsFB._addedBlocks);
     _waitingNot = '';
-    song_lyricstagsFB._addedBlocks.needEndBlock[song_lyricstagsFB._blockIndex] =
-        song_lyricstagsFB._addedBlocks.retVal;
+    song_lyricstagsFB._addedBlocks.needEndBlock![song_lyricstagsFB._blockIndex] = song_lyricstagsFB._addedBlocks.retVal;
     return song_lyricstagsFB;
   }
 
   Song_lyricsTagsFilterBuilder greaterThanOrEquals(dynamic pValue) {
     param.expression = '>=';
     song_lyricstagsFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, song_lyricstagsFB.parameters, param,
-            SqlSyntax.GreaterThanOrEquals, song_lyricstagsFB._addedBlocks)
-        : setCriteria(pValue, song_lyricstagsFB.parameters, param,
-            SqlSyntax.LessThan, song_lyricstagsFB._addedBlocks);
+        ? setCriteria(
+            pValue, song_lyricstagsFB.parameters, param, SqlSyntax.GreaterThanOrEquals, song_lyricstagsFB._addedBlocks)
+        : setCriteria(pValue, song_lyricstagsFB.parameters, param, SqlSyntax.LessThan, song_lyricstagsFB._addedBlocks);
     _waitingNot = '';
-    song_lyricstagsFB._addedBlocks.needEndBlock[song_lyricstagsFB._blockIndex] =
-        song_lyricstagsFB._addedBlocks.retVal;
+    song_lyricstagsFB._addedBlocks.needEndBlock![song_lyricstagsFB._blockIndex] = song_lyricstagsFB._addedBlocks.retVal;
     return song_lyricstagsFB;
   }
 
   Song_lyricsTagsFilterBuilder lessThanOrEquals(dynamic pValue) {
     param.expression = '<=';
     song_lyricstagsFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, song_lyricstagsFB.parameters, param,
-            SqlSyntax.LessThanOrEquals, song_lyricstagsFB._addedBlocks)
-        : setCriteria(pValue, song_lyricstagsFB.parameters, param,
-            SqlSyntax.GreaterThan, song_lyricstagsFB._addedBlocks);
+        ? setCriteria(
+            pValue, song_lyricstagsFB.parameters, param, SqlSyntax.LessThanOrEquals, song_lyricstagsFB._addedBlocks)
+        : setCriteria(
+            pValue, song_lyricstagsFB.parameters, param, SqlSyntax.GreaterThan, song_lyricstagsFB._addedBlocks);
     _waitingNot = '';
-    song_lyricstagsFB._addedBlocks.needEndBlock[song_lyricstagsFB._blockIndex] =
-        song_lyricstagsFB._addedBlocks.retVal;
+    song_lyricstagsFB._addedBlocks.needEndBlock![song_lyricstagsFB._blockIndex] = song_lyricstagsFB._addedBlocks.retVal;
     return song_lyricstagsFB;
   }
 
   Song_lyricsTagsFilterBuilder inValues(dynamic pValue) {
-    song_lyricstagsFB._addedBlocks = setCriteria(
-        pValue,
-        song_lyricstagsFB.parameters,
-        param,
-        SqlSyntax.IN.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-        song_lyricstagsFB._addedBlocks);
+    song_lyricstagsFB._addedBlocks = setCriteria(pValue, song_lyricstagsFB.parameters, param,
+        SqlSyntax.IN.replaceAll(SqlSyntax.notKeyword, _waitingNot), song_lyricstagsFB._addedBlocks);
     _waitingNot = '';
-    song_lyricstagsFB._addedBlocks.needEndBlock[song_lyricstagsFB._blockIndex] =
-        song_lyricstagsFB._addedBlocks.retVal;
+    song_lyricstagsFB._addedBlocks.needEndBlock![song_lyricstagsFB._blockIndex] = song_lyricstagsFB._addedBlocks.retVal;
     return song_lyricstagsFB;
   }
 }
@@ -14557,25 +12788,19 @@ class Song_lyricsTagsField extends SearchCriteria {
 class Song_lyricsTagsFilterBuilder extends SearchCriteria {
   Song_lyricsTagsFilterBuilder(Song_lyricsTags obj) {
     whereString = '';
-    qparams = QueryParams();
-    parameters = <DbParameter>[];
-    orderByList = <String>[];
     groupByList = <String>[];
-    _addedBlocks = AddedBlocks(<bool>[], <bool>[]);
-    _addedBlocks.needEndBlock.add(false);
-    _addedBlocks.waitingStartBlock.add(false);
-    _pagesize = 0;
-    _page = 0;
+    _addedBlocks.needEndBlock!.add(false);
+    _addedBlocks.waitingStartBlock!.add(false);
     _obj = obj;
   }
-  AddedBlocks _addedBlocks;
+  AddedBlocks _addedBlocks = AddedBlocks(<bool>[], <bool>[]);
   int _blockIndex = 0;
-  List<DbParameter> parameters;
-  List<String> orderByList;
-  Song_lyricsTags _obj;
-  QueryParams qparams;
-  int _pagesize;
-  int _page;
+  List<DbParameter> parameters = <DbParameter>[];
+  List<String> orderByList = <String>[];
+  Song_lyricsTags? _obj;
+  QueryParams qparams = QueryParams();
+  int _pagesize = 0;
+  int _page = 0;
 
   /// put the sql keyword 'AND'
   Song_lyricsTagsFilterBuilder get and {
@@ -14595,25 +12820,22 @@ class Song_lyricsTagsFilterBuilder extends SearchCriteria {
 
   /// open parentheses
   Song_lyricsTagsFilterBuilder get startBlock {
-    _addedBlocks.waitingStartBlock.add(true);
-    _addedBlocks.needEndBlock.add(false);
+    _addedBlocks.waitingStartBlock!.add(true);
+    _addedBlocks.needEndBlock!.add(false);
     _blockIndex++;
     if (_blockIndex > 1) {
-      _addedBlocks.needEndBlock[_blockIndex - 1] = true;
+      _addedBlocks.needEndBlock![_blockIndex - 1] = true;
     }
     return this;
   }
 
   /// String whereCriteria, write raw query without 'where' keyword. Like this: 'field1 like 'test%' and field2 = 3'
-  Song_lyricsTagsFilterBuilder where(String whereCriteria,
-      {dynamic parameterValue}) {
+  Song_lyricsTagsFilterBuilder where(String? whereCriteria, {dynamic parameterValue}) {
     if (whereCriteria != null && whereCriteria != '') {
-      final DbParameter param = DbParameter(
-          columnName: parameterValue == null ? null : '',
-          hasParameter: parameterValue != null);
-      _addedBlocks = setCriteria(parameterValue ?? 0, parameters, param,
-          '($whereCriteria)', _addedBlocks);
-      _addedBlocks.needEndBlock[_blockIndex] = _addedBlocks.retVal;
+      final DbParameter param =
+          DbParameter(columnName: parameterValue == null ? null : '', hasParameter: parameterValue != null);
+      _addedBlocks = setCriteria(parameterValue ?? 0, parameters, param, '($whereCriteria)', _addedBlocks);
+      _addedBlocks.needEndBlock![_blockIndex] = _addedBlocks.retVal;
     }
     return this;
   }
@@ -14641,11 +12863,11 @@ class Song_lyricsTagsFilterBuilder extends SearchCriteria {
 
   /// close parentheses
   Song_lyricsTagsFilterBuilder get endBlock {
-    if (_addedBlocks.needEndBlock[_blockIndex]) {
+    if (_addedBlocks.needEndBlock![_blockIndex]) {
       parameters[parameters.length - 1].whereString += ' ) ';
     }
-    _addedBlocks.needEndBlock.removeAt(_blockIndex);
-    _addedBlocks.waitingStartBlock.removeAt(_blockIndex);
+    _addedBlocks.needEndBlock!.removeAt(_blockIndex);
+    _addedBlocks.waitingStartBlock!.removeAt(_blockIndex);
     _blockIndex--;
     return this;
   }
@@ -14660,8 +12882,8 @@ class Song_lyricsTagsFilterBuilder extends SearchCriteria {
       if (argFields is String) {
         orderByList.add(argFields);
       } else {
-        for (String s in argFields as List<String>) {
-          if (s != null && s.isNotEmpty) {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
             orderByList.add(' $s ');
           }
         }
@@ -14680,8 +12902,8 @@ class Song_lyricsTagsFilterBuilder extends SearchCriteria {
       if (argFields is String) {
         orderByList.add('$argFields desc ');
       } else {
-        for (String s in argFields as List<String>) {
-          if (s != null && s.isNotEmpty) {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
             orderByList.add(' $s desc ');
           }
         }
@@ -14700,8 +12922,8 @@ class Song_lyricsTagsFilterBuilder extends SearchCriteria {
       if (argFields is String) {
         groupByList.add(' $argFields ');
       } else {
-        for (String s in argFields as List<String>) {
-          if (s != null && s.isNotEmpty) {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
             groupByList.add(' $s ');
           }
         }
@@ -14720,8 +12942,8 @@ class Song_lyricsTagsFilterBuilder extends SearchCriteria {
       if (argFields is String) {
         havingList.add(argFields);
       } else {
-        for (String s in argFields as List<String>) {
-          if (s != null && s.isNotEmpty) {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
             havingList.add(' $s ');
           }
         }
@@ -14730,27 +12952,23 @@ class Song_lyricsTagsFilterBuilder extends SearchCriteria {
     return this;
   }
 
-  Song_lyricsTagsField setField(
-      Song_lyricsTagsField field, String colName, DbType dbtype) {
+  Song_lyricsTagsField setField(Song_lyricsTagsField? field, String colName, DbType dbtype) {
     return Song_lyricsTagsField(this)
-      ..param = DbParameter(
-          dbType: dbtype,
-          columnName: colName,
-          wStartBlock: _addedBlocks.waitingStartBlock[_blockIndex]);
+      ..param =
+          DbParameter(dbType: dbtype, columnName: colName, wStartBlock: _addedBlocks.waitingStartBlock![_blockIndex]);
   }
 
-  Song_lyricsTagsField _song_lyricsId;
+  Song_lyricsTagsField? _song_lyricsId;
   Song_lyricsTagsField get song_lyricsId {
-    return _song_lyricsId =
-        setField(_song_lyricsId, 'song_lyricsId', DbType.integer);
+    return _song_lyricsId = setField(_song_lyricsId, 'song_lyricsId', DbType.integer);
   }
 
-  Song_lyricsTagsField _tagsId;
+  Song_lyricsTagsField? _tagsId;
   Song_lyricsTagsField get tagsId {
     return _tagsId = setField(_tagsId, 'tagsId', DbType.integer);
   }
 
-  bool _getIsDeleted;
+  bool _getIsDeleted = false;
 
   void _buildParameters() {
     if (_page > 0 && _pagesize > 0) {
@@ -14765,24 +12983,20 @@ class Song_lyricsTagsFilterBuilder extends SearchCriteria {
     for (DbParameter param in parameters) {
       if (param.columnName != null) {
         if (param.value is List && !param.hasParameter) {
-          param.value = param.dbType == DbType.text
+          param.value = param.dbType == DbType.text || param.value[0] is String
               ? '\'${param.value.join('\',\'')}\''
               : param.value.join(',');
-          whereString += param.whereString
-              .replaceAll('{field}', param.columnName)
-              .replaceAll('?', param.value.toString());
+          whereString +=
+              param.whereString.replaceAll('{field}', param.columnName!).replaceAll('?', param.value.toString());
           param.value = null;
         } else {
-          if (param.value is Map<String, dynamic> &&
-              param.value['sql'] != null) {
+          if (param.value is Map<String, dynamic> && param.value['sql'] != null) {
             param
-              ..whereString = param.whereString
-                  .replaceAll('?', param.value['sql'].toString())
+              ..whereString = param.whereString.replaceAll('?', param.value['sql'].toString())
               ..dbType = DbType.integer
               ..value = param.value['args'];
           }
-          whereString +=
-              param.whereString.replaceAll('{field}', param.columnName);
+          whereString += param.whereString.replaceAll('{field}', param.columnName!);
         }
         if (!param.whereString.contains('?')) {
         } else {
@@ -14802,12 +13016,8 @@ class Song_lyricsTagsFilterBuilder extends SearchCriteria {
             case DbType.date:
             case DbType.datetime:
             case DbType.datetimeUtc:
-              param.value = param.value == null
-                  ? null
-                  : (param.value as DateTime).millisecondsSinceEpoch;
-              param.value2 = param.value2 == null
-                  ? null
-                  : (param.value2 as DateTime).millisecondsSinceEpoch;
+              param.value = param.value == null ? null : (param.value as DateTime).millisecondsSinceEpoch;
+              param.value2 = param.value2 == null ? null : (param.value2 as DateTime).millisecondsSinceEpoch;
               break;
             default:
           }
@@ -14830,8 +13040,7 @@ class Song_lyricsTagsFilterBuilder extends SearchCriteria {
     }
     if (Song_lyricsTags._softDeleteActivated) {
       if (whereString != '') {
-        whereString =
-            '${!_getIsDeleted ? 'ifnull(isDeleted,0)=0 AND' : ''} ($whereString)';
+        whereString = '${!_getIsDeleted ? 'ifnull(isDeleted,0)=0 AND' : ''} ($whereString)';
       } else if (!_getIsDeleted) {
         whereString = 'ifnull(isDeleted,0)=0';
       }
@@ -14852,12 +13061,12 @@ class Song_lyricsTagsFilterBuilder extends SearchCriteria {
   /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
   Future<BoolResult> delete([bool hardDelete = false]) async {
     _buildParameters();
-    var r = BoolResult();
+    var r = BoolResult(success: false);
 
     if (Song_lyricsTags._softDeleteActivated && !hardDelete) {
-      r = await _obj._mnSong_lyricsTags.updateBatch(qparams, {'isDeleted': 1});
+      r = await _obj!._mnSong_lyricsTags.updateBatch(qparams, {'isDeleted': 1});
     } else {
-      r = await _obj._mnSong_lyricsTags.delete(qparams);
+      r = await _obj!._mnSong_lyricsTags.delete(qparams);
     }
     return r;
   }
@@ -14869,11 +13078,11 @@ class Song_lyricsTagsFilterBuilder extends SearchCriteria {
   /// fieldName must be String. Value is dynamic, it can be any of the (int, bool, String.. )
   Future<BoolResult> update(Map<String, dynamic> values) {
     _buildParameters();
-    if (qparams.limit > 0 || qparams.offset > 0) {
+    if (qparams.limit! > 0 || qparams.offset! > 0) {
       qparams.whereString =
-          'song_lyricsId IN (SELECT song_lyricsId from song_lyricsTags ${qparams.whereString.isNotEmpty ? 'WHERE ${qparams.whereString}' : ''}${qparams.limit > 0 ? ' LIMIT ${qparams.limit}' : ''}${qparams.offset > 0 ? ' OFFSET ${qparams.offset}' : ''})';
+          'song_lyricsId IN (SELECT song_lyricsId from song_lyricsTags ${qparams.whereString!.isNotEmpty ? 'WHERE ${qparams.whereString}' : ''}${qparams.limit! > 0 ? ' LIMIT ${qparams.limit}' : ''}${qparams.offset! > 0 ? ' OFFSET ${qparams.offset}' : ''})';
     }
-    return _obj._mnSong_lyricsTags.updateBatch(qparams, values);
+    return _obj!._mnSong_lyricsTags.updateBatch(qparams, values);
   }
 
   /// This method always returns Song_lyricsTags Obj if exist, otherwise returns null
@@ -14890,16 +13099,13 @@ class Song_lyricsTagsFilterBuilder extends SearchCriteria {
 
   ///
   /// <returns>List<Song_lyricsTags>
-  Future<Song_lyricsTags> toSingle(
-      {bool preload = false,
-      List<String> preloadFields,
-      bool loadParents = false,
-      List<String> loadedFields}) async {
+  Future<Song_lyricsTags?> toSingle(
+      {bool preload = false, List<String>? preloadFields, bool loadParents = false, List<String>? loadedFields}) async {
     _pagesize = 1;
     _buildParameters();
-    final objFuture = _obj._mnSong_lyricsTags.toList(qparams);
+    final objFuture = _obj!._mnSong_lyricsTags.toList(qparams);
     final data = await objFuture;
-    Song_lyricsTags obj;
+    Song_lyricsTags? obj;
     if (data.isNotEmpty) {
       obj = Song_lyricsTags.fromMap(data[0] as Map<String, dynamic>);
       // final List<String> _loadedFields = loadedFields ?? [];
@@ -14907,23 +13113,17 @@ class Song_lyricsTagsFilterBuilder extends SearchCriteria {
       // RELATIONSHIPS PRELOAD
       if (preload || loadParents) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedFields.contains('song_lyrics.plSongLyricEntity') && */ (preloadFields ==
-                null ||
+        if (/*!_loadedfields!.contains('song_lyrics.plSongLyric') && */ (preloadFields == null ||
             loadParents ||
-            preloadFields.contains('plSongLyricEntity'))) {
-          /*_loadedFields.add('song_lyrics.plSongLyricEntity');*/
-          obj.plSongLyricEntity = obj.plSongLyricEntity ??
-              await obj.getSongLyricEntity(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+            preloadFields.contains('plSongLyric'))) {
+          /*_loadedfields!.add('song_lyrics.plSongLyric');*/ obj.plSongLyric =
+              obj.plSongLyric ?? await obj.getSongLyric(loadParents: loadParents /*, loadedFields: _loadedFields*/);
         }
-        if (/*!_loadedFields.contains('tags.plTagEntity') && */ (preloadFields ==
-                null ||
+        if (/*!_loadedfields!.contains('tags.plTag') && */ (preloadFields == null ||
             loadParents ||
-            preloadFields.contains('plTagEntity'))) {
-          /*_loadedFields.add('tags.plTagEntity');*/
-          obj.plTagEntity = obj.plTagEntity ??
-              await obj.getTagEntity(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+            preloadFields.contains('plTag'))) {
+          /*_loadedfields!.add('tags.plTag');*/ obj.plTag =
+              obj.plTag ?? await obj.getTag(loadParents: loadParents /*, loadedFields: _loadedFields*/);
         }
       } // END RELATIONSHIPS PRELOAD
 
@@ -14936,12 +13136,10 @@ class Song_lyricsTagsFilterBuilder extends SearchCriteria {
   /// This method returns int. [Song_lyricsTags]
   ///
   /// <returns>int
-  Future<int> toCount(
-      [VoidCallback Function(int c) song_lyricstagsCount]) async {
+  Future<int> toCount([VoidCallback Function(int c)? song_lyricstagsCount]) async {
     _buildParameters();
     qparams.selectColumns = ['COUNT(1) AS CNT'];
-    final song_lyricstagsesFuture =
-        await _obj._mnSong_lyricsTags.toList(qparams);
+    final song_lyricstagsesFuture = await _obj!._mnSong_lyricsTags.toList(qparams);
     final int count = song_lyricstagsesFuture[0]['CNT'] as int;
     if (song_lyricstagsCount != null) {
       song_lyricstagsCount(count);
@@ -14964,18 +13162,14 @@ class Song_lyricsTagsFilterBuilder extends SearchCriteria {
   ///
   /// <returns>List<Song_lyricsTags>
   Future<List<Song_lyricsTags>> toList(
-      {bool preload = false,
-      List<String> preloadFields,
-      bool loadParents = false,
-      List<String> loadedFields}) async {
+      {bool preload = false, List<String>? preloadFields, bool loadParents = false, List<String>? loadedFields}) async {
     final data = await toMapList();
-    final List<Song_lyricsTags> song_lyricstagsesData =
-        await Song_lyricsTags.fromMapList(data,
-            preload: preload,
-            preloadFields: preloadFields,
-            loadParents: loadParents,
-            loadedFields: loadedFields,
-            setDefaultValues: qparams.selectColumns == null);
+    final List<Song_lyricsTags> song_lyricstagsesData = await Song_lyricsTags.fromMapList(data,
+        preload: preload,
+        preloadFields: preloadFields,
+        loadParents: loadParents,
+        loadedFields: loadedFields,
+        setDefaultValues: qparams.selectColumns == null);
     return song_lyricstagsesData;
   }
 
@@ -15004,7 +13198,7 @@ class Song_lyricsTagsFilterBuilder extends SearchCriteria {
   /// <returns>List<dynamic>
   Future<List<dynamic>> toMapList() async {
     _buildParameters();
-    return await _obj._mnSong_lyricsTags.toList(qparams);
+    return await _obj!._mnSong_lyricsTags.toList(qparams);
   }
 
   /// This method returns Primary Key List SQL and Parameters retVal = Map<String,dynamic>. [Song_lyricsTags]
@@ -15017,21 +13211,19 @@ class Song_lyricsTagsFilterBuilder extends SearchCriteria {
     if (buildParameters) {
       _buildParameters();
     }
-    _retVal['sql'] =
-        'SELECT `song_lyricsId`tagsId` FROM song_lyricsTags WHERE ${qparams.whereString}';
+    _retVal['sql'] = 'SELECT `song_lyricsId`tagsId` FROM song_lyricsTags WHERE ${qparams.whereString}';
     _retVal['args'] = qparams.whereArguments;
     return _retVal;
   }
 
   /// This method returns Primary Key List<song_lyricsId,tagsId> [Song_lyricsTags]
   /// <returns>List<song_lyricsId,tagsId>
-  Future<List<Song_lyricsTags>> toListPrimaryKey(
-      [bool buildParameters = true]) async {
+  Future<List<Song_lyricsTags>> toListPrimaryKey([bool buildParameters = true]) async {
     if (buildParameters) {
       _buildParameters();
     }
     qparams.selectColumns = ['song_lyricsId', 'tagsId'];
-    final song_lyricstagsFuture = await _obj._mnSong_lyricsTags.toList(qparams);
+    final song_lyricstagsFuture = await _obj!._mnSong_lyricsTags.toList(qparams);
     return await Song_lyricsTags.fromMapList(song_lyricstagsFuture);
   }
 
@@ -15041,7 +13233,7 @@ class Song_lyricsTagsFilterBuilder extends SearchCriteria {
   Future<List<dynamic>> toListObject() async {
     _buildParameters();
 
-    final objectFuture = _obj._mnSong_lyricsTags.toList(qparams);
+    final objectFuture = _obj!._mnSong_lyricsTags.toList(qparams);
 
     final List<dynamic> objectsData = <dynamic>[];
     final data = await objectFuture;
@@ -15055,17 +13247,16 @@ class Song_lyricsTagsFilterBuilder extends SearchCriteria {
   /// Returns List<String> for selected first column
   ///
   /// Sample usage: await Song_lyricsTags.select(columnsToSelect: ['columnName']).toListString()
-  Future<List<String>> toListString(
-      [VoidCallback Function(List<String> o) listString]) async {
+  Future<List<String>> toListString([VoidCallback Function(List<String> o)? listString]) async {
     _buildParameters();
 
-    final objectFuture = _obj._mnSong_lyricsTags.toList(qparams);
+    final objectFuture = _obj!._mnSong_lyricsTags.toList(qparams);
 
     final List<String> objectsData = <String>[];
     final data = await objectFuture;
     final int count = data.length;
     for (int i = 0; i < count; i++) {
-      objectsData.add(data[i][qparams.selectColumns[0]].toString());
+      objectsData.add(data[i][qparams.selectColumns![0]].toString());
     }
     if (listString != null) {
       listString(objectsData);
@@ -15077,16 +13268,14 @@ class Song_lyricsTagsFilterBuilder extends SearchCriteria {
 
 // region Song_lyricsTagsFields
 class Song_lyricsTagsFields {
-  static TableField _fSong_lyricsId;
+  static TableField? _fSong_lyricsId;
   static TableField get song_lyricsId {
-    return _fSong_lyricsId = _fSong_lyricsId ??
-        SqlSyntax.setField(_fSong_lyricsId, 'song_lyricsId', DbType.integer);
+    return _fSong_lyricsId = _fSong_lyricsId ?? SqlSyntax.setField(_fSong_lyricsId, 'song_lyricsId', DbType.integer);
   }
 
-  static TableField _fTagsId;
+  static TableField? _fTagsId;
   static TableField get tagsId {
-    return _fTagsId =
-        _fTagsId ?? SqlSyntax.setField(_fTagsId, 'tagsId', DbType.integer);
+    return _fTagsId = _fTagsId ?? SqlSyntax.setField(_fTagsId, 'tagsId', DbType.integer);
   }
 }
 // endregion Song_lyricsTagsFields
@@ -15094,10 +13283,7 @@ class Song_lyricsTagsFields {
 //region Song_lyricsTagsManager
 class Song_lyricsTagsManager extends SqfEntityProvider {
   Song_lyricsTagsManager()
-      : super(Model(),
-            tableName: _tableName,
-            primaryKeyList: _primaryKeyList,
-            whereStr: _whereStr);
+      : super(Model(), tableName: _tableName, primaryKeyList: _primaryKeyList, whereStr: _whereStr);
   static final String _tableName = 'song_lyricsTags';
   static final List<String> _primaryKeyList = ['song_lyricsId', 'tagsId'];
   static final String _whereStr = 'song_lyricsId=? AND tagsId=?';

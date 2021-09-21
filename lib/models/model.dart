@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:sqfentity/sqfentity.dart';
 import 'package:sqfentity_gen/sqfentity_gen.dart';
@@ -11,7 +12,7 @@ const authorsTable = SqfEntityTable(
   primaryKeyName: 'id',
   primaryKeyType: PrimaryKeyType.integer_unique,
   useSoftDeleting: false,
-  modelName: 'AuthorEntity',
+  modelName: 'Author',
   fields: [
     SqfEntityField('name', DbType.text, isNotNull: true),
   ],
@@ -22,19 +23,19 @@ const externalsTable = SqfEntityTable(
   primaryKeyName: 'id',
   primaryKeyType: PrimaryKeyType.integer_unique,
   useSoftDeleting: false,
-  modelName: 'ExternalEntity',
+  modelName: 'External',
   fields: [
-    SqfEntityField('name', DbType.text, isNotNull: true),
-    SqfEntityField('mediaId', DbType.text),
-    SqfEntityField('mediaType', DbType.text),
+    SqfEntityField('public_name', DbType.text, isNotNull: true),
+    SqfEntityField('media_id', DbType.text),
+    SqfEntityField('media_type', DbType.text),
     SqfEntityFieldRelationship(
       parentTable: authorsTable,
-      deleteRule: DeleteRule.NO_ACTION,
+      deleteRule: DeleteRule.CASCADE,
       relationType: RelationType.MANY_TO_MANY,
     ),
     SqfEntityFieldRelationship(
       parentTable: songLyricsTable,
-      deleteRule: DeleteRule.NO_ACTION,
+      deleteRule: DeleteRule.CASCADE,
       relationType: RelationType.ONE_TO_MANY,
     ),
   ],
@@ -43,13 +44,13 @@ const externalsTable = SqfEntityTable(
 const playlistsTable = SqfEntityTable(
   tableName: 'playlists',
   primaryKeyName: 'id',
-  primaryKeyType: PrimaryKeyType.integer_unique,
+  primaryKeyType: PrimaryKeyType.integer_auto_incremental,
   useSoftDeleting: false,
-  modelName: 'PlaylistEntity',
+  modelName: 'Playlist',
   fields: [
     SqfEntityField('name', DbType.text, isNotNull: true),
-    SqfEntityField('isArchived', DbType.bool, isNotNull: true, defaultValue: false),
-    SqfEntityField('order', DbType.integer, isNotNull: true),
+    SqfEntityField('is_archived', DbType.bool, isNotNull: true, defaultValue: false),
+    SqfEntityField('rank', DbType.integer, isNotNull: true),
   ],
 );
 
@@ -58,7 +59,7 @@ const songsTable = SqfEntityTable(
   primaryKeyName: 'id',
   primaryKeyType: PrimaryKeyType.integer_unique,
   useSoftDeleting: false,
-  modelName: 'SongEntity',
+  modelName: 'Song',
   fields: [
     SqfEntityField('name', DbType.text, isNotNull: true),
   ],
@@ -69,14 +70,14 @@ const songbooksTable = SqfEntityTable(
   primaryKeyName: 'id',
   primaryKeyType: PrimaryKeyType.integer_unique,
   useSoftDeleting: false,
-  modelName: 'SongbookEntity',
+  modelName: 'Songbook',
   fields: [
     SqfEntityField('name', DbType.text, isNotNull: true),
-    SqfEntityField('shortcut', DbType.text, isNotNull: true),
+    SqfEntityField('shortcut', DbType.text),
     SqfEntityField('color', DbType.text),
-    SqfEntityField('colorText', DbType.text),
-    SqfEntityField('isPrivate', DbType.bool, isNotNull: true),
-    SqfEntityField('isPinned', DbType.bool, isNotNull: true, defaultValue: false),
+    SqfEntityField('color_text', DbType.text),
+    SqfEntityField('is_private', DbType.bool, isNotNull: true),
+    SqfEntityField('is_pinned', DbType.bool, isNotNull: true, defaultValue: false),
   ],
 );
 
@@ -85,17 +86,17 @@ const songbookRecordsTable = SqfEntityTable(
   primaryKeyName: 'id',
   primaryKeyType: PrimaryKeyType.integer_unique,
   useSoftDeleting: false,
-  modelName: 'SongbookRecordEntity',
+  modelName: 'SongbookRecord',
   fields: [
     SqfEntityField('number', DbType.text, isNotNull: true),
     SqfEntityFieldRelationship(
       parentTable: songbooksTable,
-      deleteRule: DeleteRule.NO_ACTION,
+      deleteRule: DeleteRule.CASCADE,
       relationType: RelationType.ONE_TO_MANY,
     ),
     SqfEntityFieldRelationship(
       parentTable: songLyricsTable,
-      deleteRule: DeleteRule.NO_ACTION,
+      deleteRule: DeleteRule.CASCADE,
       relationType: RelationType.ONE_TO_MANY,
     ),
   ],
@@ -106,38 +107,38 @@ const songLyricsTable = SqfEntityTable(
   primaryKeyName: 'id',
   primaryKeyType: PrimaryKeyType.integer_unique,
   useSoftDeleting: false,
-  modelName: 'SongLyricEntity',
+  modelName: 'SongLyric',
   fields: [
     SqfEntityField('name', DbType.text, isNotNull: true),
-    SqfEntityField('secondaryName1', DbType.text),
-    SqfEntityField('secondaryName2', DbType.text),
+    SqfEntityField('secondary_name_1', DbType.text),
+    SqfEntityField('secondary_name_2', DbType.text),
     SqfEntityField('lyrics', DbType.text),
-    SqfEntityField('language', DbType.text),
-    SqfEntityField('type', DbType.integer),
-    // fixme: store it as raw data instead of string
-    SqfEntityField('lilypond', DbType.text),
-    SqfEntityField('favoriteOrder', DbType.integer),
-    SqfEntityField('transposition', DbType.integer),
-    SqfEntityField('showChords', DbType.bool),
+    SqfEntityField('lang_string', DbType.text),
+    SqfEntityField('type_enum', DbType.text),
+    // FIXME: store it as raw data instead of string
+    SqfEntityField('lilypond_svg', DbType.text),
+    SqfEntityField('favorite_rank', DbType.integer),
+    SqfEntityField('transposition', DbType.integer, defaultValue: 0),
+    SqfEntityField('show_chords', DbType.bool),
     SqfEntityField('accidentals', DbType.integer),
     SqfEntityFieldRelationship(
       parentTable: authorsTable,
-      deleteRule: DeleteRule.NO_ACTION,
+      deleteRule: DeleteRule.CASCADE,
       relationType: RelationType.MANY_TO_MANY,
     ),
     SqfEntityFieldRelationship(
       parentTable: playlistsTable,
-      deleteRule: DeleteRule.NO_ACTION,
+      deleteRule: DeleteRule.CASCADE,
       relationType: RelationType.MANY_TO_MANY,
     ),
     SqfEntityFieldRelationship(
       parentTable: songsTable,
-      deleteRule: DeleteRule.NO_ACTION,
+      deleteRule: DeleteRule.CASCADE,
       relationType: RelationType.ONE_TO_MANY,
     ),
     SqfEntityFieldRelationship(
       parentTable: tagsTable,
-      deleteRule: DeleteRule.NO_ACTION,
+      deleteRule: DeleteRule.CASCADE,
       relationType: RelationType.MANY_TO_MANY,
     ),
   ],
@@ -148,10 +149,10 @@ const tagsTable = SqfEntityTable(
   primaryKeyName: 'id',
   primaryKeyType: PrimaryKeyType.integer_unique,
   useSoftDeleting: false,
-  modelName: 'TagEntity',
+  modelName: 'Tag',
   fields: [
     SqfEntityField('name', DbType.text, isNotNull: true),
-    SqfEntityField('type', DbType.integer, isNotNull: true),
+    SqfEntityField('type_enum', DbType.text, isNotNull: true),
   ],
 );
 

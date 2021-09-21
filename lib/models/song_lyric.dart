@@ -1,16 +1,12 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/global.dart';
-import 'package:zpevnik/models/model.dart';
-import 'package:zpevnik/models/song.dart';
+import 'package:zpevnik/models/external.dart';
+import 'package:zpevnik/models/model.dart' as model;
 import 'package:zpevnik/models/songbook.dart';
-import 'package:zpevnik/providers/data_provider.dart';
-import 'package:zpevnik/utils/database.dart';
-import 'package:zpevnik/utils/song_lyrics_parser.dart';
-
-final _chordsRE = RegExp(r'\[[^\]]+\]');
-final _parenthesesRE = RegExp(r'[\(\)]');
-final _numberRE = RegExp('[0-9]+');
+import 'package:zpevnik/models/songbook_record.dart';
+import 'package:zpevnik/providers/data.dart';
 
 enum SongLyricType {
   original,
@@ -55,282 +51,170 @@ extension SongLyricTypeExtension on SongLyricType {
   }
 }
 
-class SongLyric extends ChangeNotifier {
-  final SongLyricEntity _entity;
-  final Song _song;
+// wrapper around SongLyric db model for easier field access
+class SongLyric {
+  final model.SongLyric entity;
 
-  static int _nextFavoriteOrder = 1;
+  static int _nextFavoriteOrder = 0;
 
-  List<Verse> _verses;
+  SongLyric(this.entity) {
+    _nextFavoriteOrder = max(_nextFavoriteOrder, favoriteRank + 1);
 
-  List<Verse> _versesNoChords;
-
-  List<String> _numbers;
-
-  bool _hasChords;
-
-  SongLyric(this._entity, this._song) {
-    if (_entity.favoriteOrder != null && _entity.favoriteOrder >= _nextFavoriteOrder)
-      _nextFavoriteOrder = _entity.favoriteOrder + 1;
+    _isFavoriteNotifier = ValueNotifier(isFavorite);
   }
 
-  SongLyricEntity get entity => _entity;
+  // nofier for favorites list screen so it knows when to update showing list
+  late ValueNotifier<bool> _isFavoriteNotifier;
 
-  int get id => _entity.id;
+  static Future<List<SongLyric>> get songLyrics async {
+    final entities = await model.SongLyric()
+        .select()
+        .lyrics
+        .not
+        .isNull()
+        .orderBy('name')
+        .toList(preload: true, preloadFields: ['plExternals']);
 
-  Key get key => Key(_entity.id.toString());
+    final songLyrics = List<SongLyric>.empty(growable: true);
 
-  String showingNumber(String searchText) {
-    String bestMatch = id.toString();
-    int bestMatchValue = 0;
-    searchText = searchText.toLowerCase().replaceAll(' ', '');
+    for (final entity in entities) {
+      final songLyric = SongLyric(entity);
 
-    final predicates = [
-      (number, searchText) => number.toLowerCase().contains(searchText),
-      (number, searchText) => number.toLowerCase().startsWith(searchText),
-      (number, searchText) => _numberRE.stringMatch(number) == searchText,
-      (number, searchText) => number.toLowerCase() == searchText,
-    ];
+      await songLyric._preload();
 
-    for (final number in numbers) {
-      for (int i = 0; i < predicates.length; i++) {
-        if (bestMatchValue <= i && predicates[i](number, searchText)) {
-          bestMatch = number;
-          bestMatchValue = i + 1;
-        }
-      }
+      songLyrics.add(songLyric);
     }
 
-    return bestMatch;
+    return songLyrics;
   }
 
-  String number(Songbook songbook) =>
-      _entity.songbookRecords.firstWhere((record) => record.songbookId == songbook.id).number;
+  Future<void> _preload() async {
+    final songbookRecords = ((await entity.getSongbookRecords()?.toList())?.map((record) => SongbookRecord(record)));
 
-  List<String> get numbers => _numbers ??= [id.toString()] +
-      _entity.songbookRecords
-          .where((record) => DataProvider.shared.songbook(record.songbookId) != null)
-          .map((record) => '${DataProvider.shared.songbook(record.songbookId).shortcut} ${record.number}')
-          .toList();
+    _tagIds = await entity.getTags(columnsToSelect: ['id'])?.toListPrimaryKey();
 
-  String get name => _entity.name;
+    _authors = await entity.getAuthors(columnsToSelect: ['name'])?.toList() ?? [];
+    _externals = entity.plExternals?.map((entity) => External(entity)).toList() ?? [];
 
-  String get secondaryName {
-    String name;
+    if (songbookRecords != null)
+      _songbookRecords =
+          Map<int, SongbookRecord>.fromIterable(songbookRecords, key: (songbookRecord) => songbookRecord.songbookId);
+  }
 
-    if (_entity.secondaryName1 != null) name = '${_entity.secondaryName1}';
-    if (_entity.secondaryName2 != null) name = '${name == null ? '' : '$name\n'}${_entity.secondaryName2}';
+  int get id => entity.id ?? 0;
+  String get name => entity.name ?? '';
+  String get lyrics => entity.lyrics ?? '';
+  String? get lilypond => entity.lilypond_svg;
+  String get language => entity.lang_string ?? '';
+  SongLyricType get type => SongLyricTypeExtension.fromString(entity.type_enum ?? '');
+  int? get songId => entity.songsId;
+  int get favoriteRank => entity.favorite_rank ?? -1;
+
+  bool? get showChords => entity.show_chords;
+  int get transposition => entity.transposition ?? 0;
+  int? get accidentals => entity.accidentals;
+
+  Key get key => Key(id.toString());
+
+  set favoriteRank(int value) {
+    entity.favorite_rank = value;
+    entity.upsert();
+  }
+
+  set showChords(bool? newValue) {
+    entity.show_chords = newValue;
+    entity.upsert();
+  }
+
+  set transposition(int newValue) {
+    if (newValue == 12 || newValue == -12) newValue = 0;
+
+    entity.transposition = newValue;
+    entity.save();
+  }
+
+  set accidentals(int? newValue) {
+    entity.accidentals = newValue;
+    entity.upsert();
+  }
+
+  bool get isFavorite => entity.favorite_rank != null;
+  ValueNotifier<bool> get isFavoriteNotifier => _isFavoriteNotifier;
+
+  String? get secondaryName {
+    String? name;
+
+    if (entity.secondary_name_1 != null) name = '${entity.secondary_name_1}';
+    if (entity.secondary_name_2 != null) name = '${name == null ? '' : '$name\n'}${entity.secondary_name_2}';
 
     return name;
   }
 
-  String get displayName {
-    String name = _entity.name;
+  Map<int, SongbookRecord>? _songbookRecords;
 
-    if (_entity.secondaryName1 != null) {
-      if (_entity.secondaryName2 != null)
-        name = '$name (${_entity.secondaryName1}, ${_entity.secondaryName2})';
-      else
-        name = '$name (${_entity.secondaryName1})';
-    } else if (_entity.secondaryName2 != null) name = '$name (${_entity.secondaryName2})';
+  String number(Songbook? songbook) {
+    if (songbook != null) return _songbookRecords?[songbook.id]?.number ?? '';
 
-    return name;
+    return entity.id.toString();
   }
 
-  List<Verse> get verses => showChords
-      ? _verses ??= SongLyricsParser.shared.parseLyrics(_entity.lyrics, transposition, accidentals)
-      : _versesNoChords ??= SongLyricsParser.shared.parseLyrics(_entity.lyrics.replaceAll(_chordsRE, ''), 0, false);
+  List<int>? _tagIds;
+  List<int> get tagIds => _tagIds ?? [];
 
-  String get lilypond => _entity.lilypond;
+  late List<model.Author> _authors;
+  List<model.Author> get authors => _authors;
 
-  SongLyricType get type => SongLyricType.values[_entity.type];
+  String? _authorsText;
+  String authorsText(DataProvider provider) {
+    if (_authorsText != null) return _authorsText!;
 
-  bool get isFavorite => _entity.favoriteOrder != null;
+    String text;
 
-  int get transposition => _entity.transposition ??= 0;
-
-  bool get hasChords => _hasChords ??= _entity.lyrics.contains(_chordsRE);
-
-  bool get showChords => _entity.showChords ?? hasChords && (Global.shared.prefs.getBool('show_chords') ?? true);
-
-  bool get accidentals => _entity.accidentals ?? (Global.shared.prefs.getBool('accidentals') ?? false);
-
-  bool get hasTranslations => _song.songLyrics.length > 1;
-
-  bool get hasExternals => _entity.externals.isNotEmpty;
-
-  String get authorsText {
     if (type == SongLyricType.original) {
-      if (entity.authors.length == 0)
-        return 'Autor neznámý';
-      else if (entity.authors.length == 1)
-        return 'Autor: ${entity.authors[0].name}';
+      if (authors.length == 0)
+        text = 'Autor neznámý';
+      else if (authors.length == 1)
+        text = 'Autor: ${authors[0].name}';
       else
-        return 'Autoři: ${entity.authors.map((author) => author.name).toList().join(", ")}';
+        text = 'Autoři: ${authors.map((author) => author.name).toList().join(", ")}';
     } else {
       String originalText = '';
 
-      if (original.isNotEmpty) originalText = 'Originál: ${original[0].name}\n';
+      try {
+        final songLyrics = provider.songsSongLyrics(songId ?? -1);
+        final original = songLyrics?.firstWhere((songLyric) => songLyric.type == SongLyricType.original);
 
-      if (original.isNotEmpty) originalText += '${original[0].authorsText}\n';
+        if (original != null) {
+          originalText = 'Originál: ${original.name}\n';
 
-      if (entity.authors.length == 0)
-        return '${originalText}Autor překladu neznámý';
-      else if (entity.authors.length == 1)
-        return '${originalText}Autor překladu: ${entity.authors[0].name}';
+          originalText += '${original.authorsText(provider)}\n';
+        }
+      } on StateError {}
+
+      if (authors.length == 0)
+        text = '${originalText}Autor překladu neznámý';
+      else if (authors.length == 1)
+        text = '${originalText}Autor překladu: ${authors[0].name}';
       else
-        return '${originalText}Autoři překladu: ${entity.authors.map((author) => author.name).toList().join(", ")}';
+        text = '${originalText}Autoři překladu: ${authors.map((author) => author.name).toList().join(", ")}';
     }
+
+    return _authorsText ??= text;
   }
 
-  List<SongLyric> get original =>
-      _song.songLyrics.where((songLyric) => songLyric.type == SongLyricType.original).toList();
+  bool get hasExternals => entity.plExternals?.isNotEmpty ?? false;
 
-  List<SongLyric> get authorizedTranslations =>
-      _song.songLyrics.where((songLyric) => songLyric.type == SongLyricType.authorizedTranslation).toList();
-
-  List<SongLyric> get translations =>
-      _song.songLyrics.where((songLyric) => songLyric.type == SongLyricType.translation).toList();
-
-  List<ExternalEntity> get youtubes => _entity.externals.where((ext) => ext.mediaType == 'youtube').toList();
+  late List<External> _externals;
+  List<External> get youtubes => _externals.where((external) => external.isYoutube).toList();
 
   void toggleFavorite() {
     if (isFavorite)
-      _entity.favoriteOrder = null;
+      entity.favorite_rank = null;
     else
-      _entity.favoriteOrder = _nextFavoriteOrder++;
+      entity.favorite_rank = _nextFavoriteOrder++;
 
-    Database.shared.updateSongLyric(_entity, ['favorite_order'].toSet());
+    _isFavoriteNotifier.value = isFavorite;
 
-    // fixme: it will also redraw lyrics because of this
-    // it makes slower animation of filled star change
-    notifyListeners();
+    entity.upsert();
   }
-
-  set favoriteOrder(int value) {
-    _entity.favoriteOrder = value;
-
-    Database.shared.updateSongLyric(_entity, ['favorite_order'].toSet());
-  }
-
-  void changeTransposition(int byValue) {
-    _entity.transposition += byValue;
-    if (_entity.transposition == 12 || _entity.transposition == -12) _entity.transposition = 0;
-
-    Database.shared.updateSongLyric(_entity, ['transposition'].toSet());
-
-    verses.forEach((verse) =>
-        verse.lines.forEach((line) => line.blocks.forEach((block) => block.transposition = _entity.transposition)));
-
-    notifyListeners();
-  }
-
-  set accidentals(bool accidentals) {
-    _entity.accidentals = accidentals;
-
-    Database.shared.updateSongLyric(_entity, ['accidentals'].toSet());
-
-    verses.forEach(
-        (verse) => verse.lines.forEach((line) => line.blocks.forEach((block) => block.accidentals = accidentals)));
-
-    notifyListeners();
-  }
-
-  set showChords(bool showChords) {
-    _entity.showChords = showChords;
-
-    Database.shared.updateSongLyric(_entity, ['show_chords'].toSet());
-
-    notifyListeners();
-  }
-}
-
-class Verse {
-  final String number;
-  List<Line> _lines;
-  final bool isComment;
-
-  Verse(this.number, this._lines, this.isComment);
-
-  List<Line> get lines => _lines;
-
-  set lines(value) => _lines = value;
-
-  factory Verse.fromMatch(RegExpMatch match) {
-    if (match.group(1) == null && match.group(2).isEmpty) return null;
-
-    if (match.group(1) == null) return Verse('', SongLyricsParser.shared.lines(match.group(2), false), false);
-
-    String number = match.group(1).replaceAll(_parenthesesRE, '');
-    bool isInterlude = false;
-    bool isComment = false;
-    if (number == '@mezihra:') {
-      number = 'M:';
-      isInterlude = true;
-    } else if (number == '@dohra:') {
-      number = 'Z:';
-      isInterlude = true;
-    } else if (number == '@předehra:') {
-      number = 'P:';
-      isInterlude = true;
-    } else if (number == '#') {
-      number = '';
-      isComment = true;
-    }
-
-    return Verse(
-      number,
-      SongLyricsParser.shared.lines(match.group(2), isInterlude),
-      isComment,
-    );
-  }
-
-  factory Verse.withoutNumber(String verse) => Verse('', SongLyricsParser.shared.lines(verse, false), false);
-}
-
-class Line {
-  final List<Block> blocks;
-
-  List<List<Block>> _groupedBlocks;
-
-  Line(this.blocks);
-
-  List<List<Block>> get groupedBlocks {
-    if (_groupedBlocks != null) return _groupedBlocks;
-
-    List<List<Block>> grouped = [];
-
-    List<Block> tmp = [];
-    for (final block in blocks) {
-      tmp.add(block);
-
-      if (!block.shouldShowLine) {
-        if (tmp.isNotEmpty) grouped.add(tmp);
-        tmp = [];
-      }
-    }
-
-    if (tmp.isNotEmpty) grouped.add(tmp);
-
-    _groupedBlocks = grouped;
-
-    return grouped;
-  }
-}
-
-class Block {
-  final String _chord;
-  final String lyricsPart;
-  final bool _shouldShowLine;
-  final bool isInterlude;
-
-  int transposition;
-  bool accidentals;
-
-  Block(this._chord, this.lyricsPart, this._shouldShowLine, this.isInterlude);
-
-  String get chord =>
-      SongLyricsParser.shared.convertAccidentals(SongLyricsParser.shared.transpose(_chord, transposition), accidentals);
-
-  bool get shouldShowLine => _shouldShowLine && lyricsPart.contains(new RegExp(r'[A-Za-z]'));
 }
