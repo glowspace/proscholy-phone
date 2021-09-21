@@ -1,67 +1,87 @@
 import 'package:flutter/material.dart';
-import 'package:zpevnik/models/entities/playlist.dart';
+import 'package:zpevnik/models/model.dart' as model;
 import 'package:zpevnik/models/song_lyric.dart';
-import 'package:zpevnik/providers/data_provider.dart';
-import 'package:zpevnik/utils/database.dart';
 
+// wrapper around Playlist db model for easier field access
 class Playlist {
-  final PlaylistEntity _entity;
+  final model.Playlist entity;
 
-  static int nextOrder = 1;
-  // fixme: should be used as auto incorement, but doesn't work
-  static int nextId = 1;
+  Playlist(this.entity);
 
-  List<SongLyric> _songLyrics;
+  static Future<Playlist> create(String name, int rank, {List<int> songLyrics = const []}) async {
+    final entity = model.Playlist(name: name, rank: rank, is_archived: false);
 
-  Playlist(this._entity) {
-    if (_entity.orderValue >= nextOrder) nextOrder = _entity.orderValue + 1;
-    if (_entity.id >= nextId) nextId = _entity.id + 1;
+    entity.id = await entity.save();
+
+    return Playlist(entity)..addSongLyrics(songLyrics);
   }
 
-  PlaylistEntity get entity => _entity;
+  static Future<List<Playlist>> get playlists async {
+    final entities = await model.Playlist().select().orderBy('rank').toList();
 
-  Key get key => Key('$id');
+    final playlists = List<Playlist>.empty(growable: true);
 
-  int get id => _entity.id;
+    for (final entity in entities) {
+      final playlist = Playlist(entity);
 
-  String get name => _entity.name;
+      await playlist._preloadSongLyrics();
 
-  bool get isArchived => _entity.isArchived;
+      playlists.add(playlist);
+    }
 
-  // todo: probably can be optmized using db, but it's good enough for now
-  List<SongLyric> get songLyrics => _songLyrics ??= DataProvider.shared.songLyrics
-      .where((songLyric) => songLyric.entity.playlists.any((playlist) => playlist.id == _entity.id))
-      .toList()
-        ..sort((first, second) => first.name.compareTo(second.name));
-
-  void addSongLyrics(List<SongLyric> songLyrics) {
-    // fixme: temporary fix, _songLyrics might be null at this time, so make sure it's not
-    _songLyrics ??= DataProvider.shared.songLyrics
-        .where((songLyric) => songLyric.entity.playlists.any((playlist) => playlist.id == _entity.id))
-        .toList()
-          ..sort((first, second) => first.name.compareTo(second.name));
-
-    final songLyricsSet = _songLyrics.toSet()..addAll(songLyrics);
-    _songLyrics = songLyricsSet.toList()..sort((first, second) => first.name.compareTo(second.name));
-
-    Database.shared.addPlaylistSongLyrics(_entity, songLyrics.map((songLyric) => songLyric.entity).toList());
+    return playlists;
   }
 
-  set name(String value) {
-    _entity.name = value;
-
-    Database.shared.updatePlaylist(_entity, ['name'].toSet());
+  Future<void> _preloadSongLyrics() async {
+    _songLyrics =
+        (await entity.getSongLyrics(columnsToSelect: ['id'])?.toList())?.map((songLyric) => songLyric.id!).toList();
   }
 
-  set orderValue(int value) {
-    _entity.orderValue = value;
+  int get id => entity.id ?? 0;
+  String get name => entity.name ?? '';
+  int get rank => entity.rank ?? 0;
+  bool get isArchived => entity.is_archived ?? false;
 
-    Database.shared.updatePlaylist(_entity, ['order_value'].toSet());
+  Key get key => Key(id.toString());
+
+  List<int>? _songLyrics;
+  List<int> get songLyrics => _songLyrics ?? [];
+
+  set name(String? value) {
+    if (value != null) {
+      entity.name = value;
+      entity.save();
+    }
+  }
+
+  set rank(int value) {
+    entity.rank = value;
+    entity.save();
   }
 
   set isArchived(bool value) {
-    _entity.isArchived = value;
+    entity.is_archived = value;
+    entity.save();
+  }
 
-    Database.shared.updatePlaylist(_entity, ['is_archived'].toSet());
+  void addSongLyrics(List<dynamic> songLyrics) {
+    if (_songLyrics == null) _songLyrics = [];
+
+    final songLyricPlaylists = List<model.Song_lyricsPlaylists>.empty(growable: true);
+
+    for (final songLyric in songLyrics) {
+      final int songLyricId;
+
+      if (songLyric is SongLyric)
+        songLyricId = songLyric.id;
+      else
+        songLyricId = songLyric;
+
+      _songLyrics?.add(songLyricId);
+
+      songLyricPlaylists.add(model.Song_lyricsPlaylists(song_lyricsId: songLyricId, playlistsId: id));
+    }
+
+    model.Song_lyricsPlaylists().upsertAll(songLyricPlaylists);
   }
 }

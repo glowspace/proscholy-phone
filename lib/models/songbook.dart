@@ -1,47 +1,60 @@
 import 'package:collection/collection.dart';
-import 'package:zpevnik/models/entities/songbook.dart';
-import 'package:zpevnik/models/song_lyric.dart';
-import 'package:zpevnik/providers/data_provider.dart';
-import 'package:zpevnik/utils/database.dart';
+import 'package:zpevnik/models/model.dart' as model;
+import 'package:zpevnik/models/songbook_record.dart';
 
 // prioritized songbook shortcuts in sorting
 const prioritized = {'K': 0, 'Kan': 1, 'H1': 2, 'H2': 3};
 
+// wrapper around Songbook db model for easier field access
 class Songbook extends Comparable {
-  final SongbookEntity _entity;
+  final model.Songbook entity;
 
-  List<SongLyric> _songLyrics;
+  Songbook(this.entity);
 
-  Songbook(this._entity);
+  static Future<List<Songbook>> get songbooks async {
+    final entities = await model.Songbook().select().is_private.not.equals(true).orderBy('name').toList();
 
-  int get id => _entity.id;
+    final songbooks = List<Songbook>.empty(growable: true);
 
-  String get name => _entity.name;
+    for (final entity in entities) {
+      final songbook = Songbook(entity);
 
-  String get shortcut => _entity.shortcut;
+      await songbook._preloadRecords();
 
-  bool get isPinned => _entity.isPinned;
+      songbooks.add(songbook);
+    }
 
-  String get color => _entity.color;
-
-  String get colorText => _entity.colorText;
-
-  set pinned(value) {
-    _entity.isPinned = value;
-    Database.shared.updateSongbook(_entity, ['is_pinned'].toSet());
+    return songbooks;
   }
 
-  // todo: probably can be optmized using db, but it's good enough for now
-  List<SongLyric> get songLyrics => _songLyrics ??= DataProvider.shared.songLyrics
-      .where((songLyric) => songLyric.entity.songbookRecords.any((record) => record.songbookId == _entity.id))
-      .toList()
-        ..sort((first, second) => compareNatural(
-            first.entity.songbookRecords.firstWhere((record) => record.songbookId == _entity.id).number,
-            (second.entity.songbookRecords.firstWhere((record) => record.songbookId == _entity.id).number)));
+  Future<void> _preloadRecords() async {
+    _records = (await entity.getSongbookRecords()?.toList())?.map((record) => SongbookRecord(record)).toList();
+
+    _records?.sort((first, second) => compareNatural(first.number, second.number));
+  }
+
+  int get id => entity.id ?? 0;
+  String get name => entity.name ?? '';
+  String get shortcut => entity.shortcut ?? '';
+  bool get isPinned => entity.is_pinned ?? false;
+  String? get color => entity.color;
+
+  List<SongbookRecord>? _records;
+
+  List<SongbookRecord> get records => _records ?? [];
+
+  void toggleIsPinned() {
+    entity.is_pinned = !isPinned;
+
+    entity.save();
+  }
 
   @override
   int compareTo(_other) {
     Songbook other = _other;
+
+    if (isPinned && !other.isPinned) return -1;
+    if (!isPinned && other.isPinned) return 1;
 
     final priority = prioritized[shortcut];
     final otherPriority = prioritized[other.shortcut];
@@ -50,9 +63,6 @@ class Songbook extends Comparable {
 
     if (priority != null) return -1;
     if (otherPriority != null) return 1;
-
-    if (isPinned && !other.isPinned) return -1;
-    if (!isPinned && other.isPinned) return 1;
 
     return name.compareTo(other.name);
   }

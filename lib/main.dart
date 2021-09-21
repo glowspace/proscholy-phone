@@ -2,84 +2,58 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:zpevnik/custom/custom_scroll_behavior.dart';
-import 'package:zpevnik/global.dart';
-import 'package:zpevnik/providers/full_screen_provider.dart';
-import 'package:zpevnik/providers/settings_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:zpevnik/platform/mixin.dart';
+import 'package:zpevnik/providers/settings.dart';
+import 'package:zpevnik/screens/content.dart';
+import 'package:zpevnik/screens/utils/status_bar_wrapper.dart';
 import 'package:zpevnik/theme.dart';
-import 'package:zpevnik/utils/platform.dart';
-import 'package:zpevnik/utils/preloader.dart';
-import 'package:zpevnik/utils/updater.dart';
-import 'package:zpevnik/screens/content_screen.dart';
-import 'package:zpevnik/screens/loading_screen.dart';
 
-Future<void> main() async {
+const _title = 'Zpěvník';
+
+late SharedPreferences _prefs;
+
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Preloader.preloadImages();
-  await Global.shared.init();
+  _prefs = await SharedPreferences.getInstance();
 
-  runApp(kDebugMode ? DebugWidget() : const MainWidget());
+  runApp(MainWidget());
 }
 
-class MainWidget extends StatefulWidget {
-  const MainWidget();
+class MainWidget extends StatelessWidget with PlatformMixin {
+  const MainWidget({Key? key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _MainWidgetstate();
-}
-
-class _MainWidgetstate extends State<MainWidget> with PlatformStateMixin {
-  final String _title = 'Zpěvník';
-
-  @override
-  Widget iOSWidget(BuildContext context) => _wrap(
-        context,
-        (context, home) => CupertinoApp(
-          // needed by youtube player
-          localizationsDelegates: [DefaultMaterialLocalizations.delegate],
-          debugShowCheckedModeBanner: false,
-          title: _title,
-          theme: AppTheme.of(context).cupertinoTheme,
-          home: home,
-        ),
-      );
+  Widget buildAndroid(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: _title,
+      theme: AppTheme.of(context).materialTheme,
+      home: ContentScreen(),
+    );
+  }
 
   @override
-  Widget androidWidget(BuildContext context) => _wrap(
-        context,
-        (context, home) => MaterialApp(
-          debugShowCheckedModeBanner: false,
-          builder: (context, child) => ScrollConfiguration(behavior: CustomScrollBehavior(), child: child),
-          title: _title,
-          theme: AppTheme.of(context).materialTheme,
-          home: home,
-        ),
-      );
+  Widget buildIos(BuildContext context) {
+    return CupertinoApp(
+      debugShowCheckedModeBanner: false,
+      title: _title,
+      theme: AppTheme.of(context).cupertinoTheme,
+      home: ContentScreen(),
+      // needed by youtube player
+      localizationsDelegates: [DefaultMaterialLocalizations.delegate],
+    );
+  }
 
-  // wraps platform specific app with `AppTheme`
-  Widget _wrap(BuildContext context, Widget Function(BuildContext, Widget) builder) {
-    final platform = Theme.of(context).platform;
-
+  @override
+  Widget buildWrapper(BuildContext context, Widget Function(BuildContext) builder) {
     return ChangeNotifierProvider(
-      create: (context) => SettingsProvider(),
-      builder: (context, _) => AppTheme(
-        child: ChangeNotifierProvider(
-          create: (context) => FullScreenProvider(),
-          builder: builder,
-          child: FutureBuilder<bool>(
-            future: Updater.shared.update(),
-            builder: (context, snapshot) => snapshot.hasData ? ContentScreen() : LoadingScreen(),
-          ),
-        ),
-        platform: platform,
+      create: (_) => SettingsProvider(_prefs),
+      builder: (_, __) => AppTheme(
+        child: StatusBarWrapper(child: Builder(builder: builder)),
+        platform: Theme.of(context).platform,
       ),
     );
   }
-}
-
-// widget for setting platform for debugging
-class DebugWidget extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) => Theme(data: ThemeData(platform: TargetPlatform.iOS), child: MainWidget());
 }

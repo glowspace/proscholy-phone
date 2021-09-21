@@ -5,45 +5,50 @@ publish_to: 'none'
 version: 2.3+1
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
 
-  jaguar_orm: any
-  jaguar_query_sqflite: any
-  sqflite: any
-  path: any
+  sqflite: ^2.0.0+3
+  sqfentity: ^2.0.0
+  sqfentity_gen: ^2.0.0
+  path: ^1.8.0
 
-  shared_preferences: any
-
-  connectivity: any
-  diacritic: any
-  wakelock: any
+  shared_preferences: ^2.0.6
+  intl: ^0.17.0
+  connectivity: ^3.0.6
+  diacritic: ^0.1.3
+  wakelock: ^0.5.2
     
-  provider: any
+  provider: ^6.0.0
 
-  modal_bottom_sheet: any
+  modal_bottom_sheet: ^2.0.0
 
-  url_launcher: any
-  flutter_share: any
+  url_launcher: ^6.0.6
+  share_plus: ^2.1.4
 
-  youtube_player_flutter: any
-  flutter_svg: any
-  flutter_reorderable_list: any
+  youtube_player_flutter: ^8.0.0
+  flutter_svg: ^0.22.0
+  flutter_reorderable_list: ^1.0.0
+  flutter_staggered_grid_view: ^0.4.0
 
-  flutter_staggered_grid_view: any
+  firebase_analytics: ^8.1.1
 
-  uni_links: any
+  uni_links: ^0.5.1
 
-  sqlite_bm25: any
+  flutter_nearby_connections: ^1.0.11
+  device_info: ^2.0.2
 
-  cupertino_icons: any
+  auto_size_text: ^3.0.0-nullsafety.0
+
+  fluttertoast: ^8.0.8
+
+  cupertino_icons: ^1.0.3
 
 dev_dependencies:
-  jaguar_orm_gen: any
-  build_runner: any
+  build_runner: ^2.0.4
 
 flutter:
   uses-material-design: true
@@ -51,11 +56,15 @@ flutter:
   fonts:
     - family: CustomIcon
       fonts:
-      - asset: assets/fonts/CustomIcon.ttf
+        - asset: assets/fonts/CustomIcon.ttf
 
     - family: Amiri
       fonts:
         - asset: assets/fonts/Amiri-Regular.ttf
+
+    - family: KaiseiHarunoUmi
+      fonts:
+        - asset: assets/fonts/KaiseiHarunoUmi-Regular.ttf
 
     - family: Nunito
       fonts:
