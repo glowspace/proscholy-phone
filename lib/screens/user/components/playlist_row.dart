@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/custom/custom_icon_icons.dart';
+import 'package:zpevnik/links.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/platform/components/dialog.dart';
 import 'package:zpevnik/platform/utils/route_builder.dart';
@@ -68,7 +72,7 @@ class _PlaylistRowState extends State<PlaylistRow> {
             playlistsProvider.remove(playlist);
             break;
           case _PlaylistAction.share:
-            // _sharePlaylist();
+            _sharePlaylist();
             break;
         }
       },
@@ -91,6 +95,18 @@ class _PlaylistRowState extends State<PlaylistRow> {
         Text(title, style: appTheme.bodyTextStyle),
       ]),
     );
+  }
+
+  void _sharePlaylist() {
+    final playlist = widget.playlist;
+    final songLyrics = playlist.records.keys.toList();
+
+    songLyrics.sort((first, second) => playlist.records[first]!.rank.compareTo(playlist.records[second]!.rank));
+
+    final ids = jsonEncode(songLyrics);
+    final uri = Uri.encodeFull('$deepLinkUrl/add_playlist?name=${widget.playlist.name}&ids=${ids.toString()}');
+
+    Share.share(uri);
   }
 
   void _pushPlaylist(BuildContext context) {

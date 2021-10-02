@@ -26,7 +26,8 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final itemBuilder = (songLyric) => SongLyricRow(songLyric: songLyric);
+    final itemBuilder =
+        (songLyric) => SongLyricRow(songLyric: songLyric, isReorderable: _songLyricsProvider.searchText.isEmpty);
 
     return ChangeNotifierProvider.value(
       value: _songLyricsProvider,
@@ -37,6 +38,8 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
         searchPlaceholder: 'Zadejte slovo nebo číslo',
         noItemsPlaceholder: 'Playlist neobsahuje žádnou píseň.',
         navigationBarTitle: widget.playlist.name,
+        onReorder: _songLyricsProvider.onReorder,
+        onReorderDone: (Key key) => _songLyricsProvider.onReorderDone(key, playlist: widget.playlist),
       ),
     );
   }

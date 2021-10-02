@@ -87,9 +87,9 @@ class Tag {
   Tag.clone(Tag tag) : entity = tag.entity;
 
   static Future<List<Tag>> get tags async {
-    final tags = await model.Tag().select().orderBy('id').toList();
+    final entities = await model.Tag().select().orderBy('id').toList();
 
-    return tags.map((entity) => Tag(entity)).toList();
+    return entities.map((entity) => Tag(entity)).toList();
   }
 
   int get id => entity.id ?? 0;

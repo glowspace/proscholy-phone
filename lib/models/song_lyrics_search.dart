@@ -30,7 +30,7 @@ extension SongLyricsSearch on Model {
     }
 
     final existing = {};
-    for (final map in (await execDataTable('SELECT id from song_lyrics_search')) ?? []) existing[map['id']] = true;
+    for (final map in (await execDataTable('SELECT id from song_lyrics_search'))) existing[map['id']] = true;
 
     await batchStart();
 

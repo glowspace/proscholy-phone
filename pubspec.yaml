@@ -12,7 +12,7 @@ dependencies:
     sdk: flutter
 
   sqflite: ^2.0.0+3
-  sqfentity: ^2.0.0
+  sqfentity: ^2.1.2+1
   sqfentity_gen: ^2.0.0
   path: ^1.8.0
 

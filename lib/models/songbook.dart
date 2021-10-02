@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:zpevnik/models/model.dart' as model;
 import 'package:zpevnik/models/songbook_record.dart';
 
@@ -14,23 +13,7 @@ class Songbook extends Comparable {
   static Future<List<Songbook>> get songbooks async {
     final entities = await model.Songbook().select().is_private.not.equals(true).orderBy('name').toList();
 
-    final songbooks = List<Songbook>.empty(growable: true);
-
-    for (final entity in entities) {
-      final songbook = Songbook(entity);
-
-      await songbook._preloadRecords();
-
-      songbooks.add(songbook);
-    }
-
-    return songbooks;
-  }
-
-  Future<void> _preloadRecords() async {
-    _records = (await entity.getSongbookRecords()?.toList())?.map((record) => SongbookRecord(record)).toList();
-
-    _records?.sort((first, second) => compareNatural(first.number, second.number));
+    return entities.map((entity) => Songbook(entity)).toList();
   }
 
   int get id => entity.id ?? 0;
@@ -38,10 +21,9 @@ class Songbook extends Comparable {
   String get shortcut => entity.shortcut ?? '';
   bool get isPinned => entity.is_pinned ?? false;
   String? get color => entity.color;
+  String? get colorText => entity.color_text;
 
-  List<SongbookRecord>? _records;
-
-  List<SongbookRecord> get records => _records ?? [];
+  final records = List<SongbookRecord>.empty(growable: true);
 
   void toggleIsPinned() {
     entity.is_pinned = !isPinned;

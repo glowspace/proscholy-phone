@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:uni_links/uni_links.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/platform/components/scaffold.dart';
 import 'package:zpevnik/platform/mixin.dart';
@@ -24,6 +27,7 @@ class ContentScreen extends StatefulWidget {
 class _ContentScreenState extends State<ContentScreen> with PlatformMixin, Updateable {
   final dataProvider = DataProvider();
   final fullScreenProvider = FullScreenProvider();
+  late final playlistsProvider = PlaylistsProvider(dataProvider.playlists);
 
   late int _currentIndex;
   late Future<void> _updateFuture;
@@ -34,6 +38,9 @@ class _ContentScreenState extends State<ContentScreen> with PlatformMixin, Updat
   @override
   void initState() {
     super.initState();
+
+    getInitialUri().then(_handleUri).catchError((error) => print(error));
+    uriLinkStream..listen(_handleUri);
 
     _currentIndex = 0;
     _updateFuture = dataProvider.update();
@@ -93,7 +100,7 @@ class _ContentScreenState extends State<ContentScreen> with PlatformMixin, Updat
           providers: [
             ChangeNotifierProvider.value(value: dataProvider),
             ChangeNotifierProvider.value(value: fullScreenProvider),
-            ChangeNotifierProvider(create: (_) => PlaylistsProvider(dataProvider.playlists)),
+            ChangeNotifierProvider.value(value: playlistsProvider),
           ],
           builder: (context, _) => builder(context),
         );
@@ -119,6 +126,22 @@ class _ContentScreenState extends State<ContentScreen> with PlatformMixin, Updat
     // TODO: pop and reset state
 
     setState(() => _currentIndex = index);
+  }
+
+  void _handleUri(Uri? uri) {
+    if (uri == null) return;
+
+    switch (uri.path) {
+      case "/add_playlist":
+        final playlistName = uri.queryParameters['name'] ?? '';
+        final songLyricIds =
+            (jsonDecode(uri.queryParameters['ids'] ?? '[]') as List<dynamic>).map((e) => e as int).toList();
+
+        playlistsProvider.addSharedPlaylist(context, playlistName, songLyricIds);
+        break;
+      default:
+        break;
+    }
   }
 
   @override

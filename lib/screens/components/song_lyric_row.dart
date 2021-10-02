@@ -6,10 +6,12 @@ import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/platform/utils/route_builder.dart';
 import 'package:zpevnik/providers/selection.dart';
+import 'package:zpevnik/providers/song_lyrics.dart';
 import 'package:zpevnik/screens/components/circular_checkbox.dart';
 import 'package:zpevnik/screens/components/highlightable.dart';
 import 'package:zpevnik/screens/components/reorderable_row.dart';
 import 'package:zpevnik/screens/song_lyric/song_lyric.dart';
+import 'package:zpevnik/screens/utils/status_bar_wrapper.dart';
 import 'package:zpevnik/theme.dart';
 
 class SongLyricRow extends StatefulWidget {
@@ -69,8 +71,6 @@ class _SongLyricRowState extends State<SongLyricRow> {
 
     if (widget.isReorderable) return ReorderableRow(key: widget.songLyric.key, child: child, onPressed: _pushSongLyric);
 
-    // print(context.hashCode);
-
     return Highlightable(
       onPressed: _pushSongLyric,
       onLongPressed: _enableSelection,
@@ -85,7 +85,7 @@ class _SongLyricRowState extends State<SongLyricRow> {
     return FittedBox(fit: BoxFit.scaleDown, alignment: Alignment.centerRight, child: Text(number, style: textStyle));
   }
 
-  void _pushSongLyric() {
+  void _pushSongLyric() async {
     final selectionProvider = context.read<SelectionProvider?>();
     final isSelectionEnabled = selectionProvider?.isSelectionEnabled ?? false;
 
@@ -96,12 +96,17 @@ class _SongLyricRowState extends State<SongLyricRow> {
 
     if (widget.translationSongLyric?.id == widget.songLyric.id)
       Navigator.of(context).pop();
-    else
+    else {
+      StatusBarWrapper.of(context).navigationBarColor.value = null;
+
+      context.read<SongLyricsProvider>().currentSongLyric = widget.songLyric;
+
       Navigator.of(context).push(platformRouteBuilder(
         context,
         SongLyricScreen(songLyric: widget.songLyric, fromTranslations: widget.translationSongLyric != null),
         types: [ProviderType.data, ProviderType.fullScreen, ProviderType.playlist, ProviderType.songLyric],
       ));
+    }
   }
 
   void _enableSelection() {

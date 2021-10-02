@@ -10,7 +10,14 @@ class External {
 
   External.clone(External external) : entity = external.entity;
 
+  static Future<List<External>> get externals async {
+    final entities = await model.External().select().toList();
+
+    return entities.map((entity) => External(entity)).toList();
+  }
+
   int get id => entity.id ?? 0;
+  int get songLyricId => entity.song_lyricsId ?? 0;
   String get name {
     String name = entity.public_name ?? '';
 

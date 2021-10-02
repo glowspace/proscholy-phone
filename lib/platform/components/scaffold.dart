@@ -10,6 +10,7 @@ class PlatformScaffold extends StatelessWidget with PlatformMixin {
 
   final String? title;
   final Color? navigationBarColor;
+  final Color? navigationBarTextColor;
 
   final Widget? leading;
   final Widget? middle;
@@ -20,6 +21,7 @@ class PlatformScaffold extends StatelessWidget with PlatformMixin {
     required this.body,
     this.title,
     this.navigationBarColor,
+    this.navigationBarTextColor,
     this.leading,
     this.middle,
     this.trailing,
@@ -32,9 +34,15 @@ class PlatformScaffold extends StatelessWidget with PlatformMixin {
     final navBar = AppBar(
       automaticallyImplyLeading: middle == null,
       backgroundColor: navigationBarColor,
-      iconTheme: IconThemeData(color: appTheme.iconColor),
+      iconTheme: IconThemeData(color: navigationBarTextColor ?? appTheme.iconColor),
       leading: _wrappedLeading,
-      title: middle ?? FittedBox(child: Text(title ?? '', style: appTheme.bodyTextStyle)),
+      title: middle ??
+          FittedBox(
+            child: Text(
+              title ?? '',
+              style: appTheme.navBarTitleTextStyle?.copyWith(color: navigationBarTextColor),
+            ),
+          ),
       actions: trailing == null ? null : [trailing!],
       titleSpacing: 0,
     );
@@ -47,6 +55,8 @@ class PlatformScaffold extends StatelessWidget with PlatformMixin {
 
   @override
   Widget buildIos(BuildContext context) {
+    final appTheme = AppTheme.of(context);
+
     // there is hardcoded 6px padding in CupertinoNavigationBar, this will remove it using OverflowBox
     final width = MediaQuery.of(context).size.width;
     Widget? middleWrapped;
@@ -56,7 +66,13 @@ class PlatformScaffold extends StatelessWidget with PlatformMixin {
       automaticallyImplyLeading: middle == null,
       backgroundColor: navigationBarColor,
       leading: _wrappedLeading,
-      middle: middleWrapped ?? FittedBox(child: Text(title ?? '')),
+      middle: middleWrapped ??
+          FittedBox(
+            child: Text(
+              title ?? '',
+              style: appTheme.navBarTitleTextStyle?.copyWith(color: navigationBarTextColor),
+            ),
+          ),
       trailing: trailing,
       transitionBetweenRoutes: middle == null, // needed because of search widget
     );

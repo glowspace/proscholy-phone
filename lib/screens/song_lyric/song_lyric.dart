@@ -5,9 +5,11 @@ import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/platform/components/scaffold.dart';
 import 'package:zpevnik/platform/utils/bottom_sheet.dart';
 import 'package:zpevnik/platform/utils/route_builder.dart';
+import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/fullscreen.dart';
 import 'package:zpevnik/providers/scroll.dart';
 import 'package:zpevnik/providers/settings.dart';
+import 'package:zpevnik/providers/song_lyrics.dart';
 import 'package:zpevnik/screens/components/highlightable.dart';
 import 'package:zpevnik/screens/song_lyric/components/bottom_menu.dart';
 import 'package:zpevnik/screens/song_lyric/components/externals.dart';
@@ -60,7 +62,7 @@ class _SongLyricScreenState extends State<SongLyricScreen> with Updateable {
     return WillPopScope(
       onWillPop: fullScreenProvider.isFullScreen ? () async => !Navigator.of(context).userGestureInProgress : null,
       child: PlatformScaffold(
-        title: widget.songLyric.id.toString(),
+        title: _lyricsController.songLyric.id.toString(),
         trailing: _actions(context),
         body: GestureDetector(
           onScaleStart: _onScaleStart,
@@ -88,7 +90,7 @@ class _SongLyricScreenState extends State<SongLyricScreen> with Updateable {
                     showSettings: _showSettings,
                     showExternals: _showExternals,
                     scrollProvider: _scrollProvider,
-                    hasExternals: widget.songLyric.hasExternals,
+                    hasExternals: _lyricsController.songLyric.hasExternals,
                   ),
                 ),
             ],
@@ -99,21 +101,20 @@ class _SongLyricScreenState extends State<SongLyricScreen> with Updateable {
   }
 
   Widget _actions(BuildContext context) {
-    final songLyric = widget.songLyric;
-
     final padding = EdgeInsets.symmetric(horizontal: kDefaultPadding / 2);
 
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
+        if (_hasTranslations)
+          Highlightable(
+            child: Icon(Icons.translate),
+            onPressed: _pushTranslations,
+            padding: padding,
+          ),
         Highlightable(
-          child: Icon(Icons.translate),
-          onPressed: _pushTranslations,
-          padding: padding,
-        ),
-        Highlightable(
-          child: Icon(songLyric.isFavorite ? Icons.star : Icons.star_border),
-          onPressed: () => setState(() => songLyric.toggleFavorite()),
+          child: Icon(_lyricsController.songLyric.isFavorite ? Icons.star : Icons.star_border),
+          onPressed: () => setState(() => _lyricsController.songLyric.toggleFavorite()),
           padding: padding,
         ),
         Highlightable(
@@ -136,7 +137,7 @@ class _SongLyricScreenState extends State<SongLyricScreen> with Updateable {
   void _showExternals() {
     showPlatformBottomSheet(
       context: context,
-      builder: (_) => ExternalsWidget(externals: widget.songLyric.youtubes),
+      builder: (_) => ExternalsWidget(externals: _lyricsController.songLyric.youtubes),
       height: 0.67 * MediaQuery.of(context).size.height,
     );
   }
@@ -145,11 +146,13 @@ class _SongLyricScreenState extends State<SongLyricScreen> with Updateable {
     if (widget.fromTranslations)
       Navigator.of(context).pop();
     else
-      Navigator.of(context).push(platformRouteBuilder(
-        context,
-        TranslationsScreen(songLyric: widget.songLyric),
-        types: [ProviderType.data, ProviderType.fullScreen, ProviderType.playlist, ProviderType.songLyric],
-      ));
+      Navigator.of(context)
+          .push(platformRouteBuilder(
+            context,
+            TranslationsScreen(songLyric: _lyricsController.songLyric),
+            types: [ProviderType.data, ProviderType.fullScreen, ProviderType.playlist, ProviderType.songLyric],
+          ))
+          .then((value) => context.read<SongLyricsProvider>().currentSongLyric = widget.songLyric);
   }
 
   void _onScaleStart(ScaleStartDetails details) {
@@ -173,9 +176,23 @@ class _SongLyricScreenState extends State<SongLyricScreen> with Updateable {
   }
 
   void _onScaleEnd(ScaleEndDetails details) {
-    if (_swipeDirection == SwipeDirection.right)
-      _lyricsController.previousVerse();
-    else if (_swipeDirection == SwipeDirection.left) _lyricsController.nextVerse();
+    if (_swipeDirection == SwipeDirection.right) {
+      if (_lyricsController.isProjectionEnabled)
+        _lyricsController.previousVerse();
+      else {
+        final newSongLyric = context.read<SongLyricsProvider>().previousSongLyric;
+        if (newSongLyric != null)
+          setState(() => _lyricsController = LyricsController(newSongLyric, context.read<SettingsProvider>()));
+      }
+    } else if (_swipeDirection == SwipeDirection.left) {
+      if (_lyricsController.isProjectionEnabled)
+        _lyricsController.nextVerse();
+      else {
+        final newSongLyric = context.read<SongLyricsProvider>().nextSongLyric;
+        if (newSongLyric != null)
+          setState(() => _lyricsController = LyricsController(newSongLyric, context.read<SettingsProvider>()));
+      }
+    }
 
     _panStartLocation = null;
     _swipeDirection = null;
@@ -188,6 +205,10 @@ class _SongLyricScreenState extends State<SongLyricScreen> with Updateable {
       _lyricsController.nextVerse();
     else
       context.read<FullScreenProvider>().toggleFullScreen();
+  }
+
+  bool get _hasTranslations {
+    return (context.read<DataProvider>().songsSongLyrics(widget.songLyric.songId ?? -1)?.length ?? 0) > 1;
   }
 
   @override

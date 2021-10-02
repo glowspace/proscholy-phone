@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zpevnik/models/model.dart' as model;
+import 'package:zpevnik/models/playlist_record.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 
 // wrapper around Playlist db model for easier field access
@@ -19,22 +20,7 @@ class Playlist {
   static Future<List<Playlist>> get playlists async {
     final entities = await model.Playlist().select().orderBy('rank').toList();
 
-    final playlists = List<Playlist>.empty(growable: true);
-
-    for (final entity in entities) {
-      final playlist = Playlist(entity);
-
-      await playlist._preloadSongLyrics();
-
-      playlists.add(playlist);
-    }
-
-    return playlists;
-  }
-
-  Future<void> _preloadSongLyrics() async {
-    _songLyrics =
-        (await entity.getSongLyrics(columnsToSelect: ['id'])?.toList())?.map((songLyric) => songLyric.id!).toList();
+    return entities.map((entity) => Playlist(entity)).toList();
   }
 
   int get id => entity.id ?? 0;
@@ -44,8 +30,7 @@ class Playlist {
 
   Key get key => Key(id.toString());
 
-  List<int>? _songLyrics;
-  List<int> get songLyrics => _songLyrics ?? [];
+  final records = Map<int, PlaylistRecord>.from({});
 
   set name(String? value) {
     if (value != null) {
@@ -64,12 +49,8 @@ class Playlist {
     entity.save();
   }
 
-  void addSongLyrics(List<dynamic> songLyrics) {
-    if (_songLyrics == null) _songLyrics = [];
-
-    final songLyricPlaylists = List<model.Song_lyricsPlaylists>.empty(growable: true);
-
-    for (final songLyric in songLyrics) {
+  void addSongLyrics(List<dynamic> songLyricsToAdd) async {
+    for (final songLyric in songLyricsToAdd) {
       final int songLyricId;
 
       if (songLyric is SongLyric)
@@ -77,11 +58,14 @@ class Playlist {
       else
         songLyricId = songLyric;
 
-      _songLyrics?.add(songLyricId);
-
-      songLyricPlaylists.add(model.Song_lyricsPlaylists(song_lyricsId: songLyricId, playlistsId: id));
+      if (!records.containsKey(songLyricId))
+        records[songLyricId] = await PlaylistRecord.create(songLyricId, id, records.length);
     }
+  }
 
-    model.Song_lyricsPlaylists().upsertAll(songLyricPlaylists);
+  void reorderSongLyrics(List<SongLyric> orderedSongLyrics) {
+    int rank = 0;
+
+    for (final songLyric in orderedSongLyrics) records[songLyric.id]?.rank = rank++;
   }
 }

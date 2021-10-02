@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:connectivity/connectivity.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart';
@@ -16,7 +18,7 @@ const _versionKey = 'version';
 const lastUpdateKey = 'last_update';
 
 const _lastUpdatePlaceholder = '[LAST_UPDATE]';
-const _initialLastUpdate = '2021-03-06 11:30:00';
+const _initialLastUpdate = '2021-09-28 9:47:00';
 
 const _updatePeriod = Duration(hours: 12);
 final _dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
@@ -122,11 +124,17 @@ class Updater {
       await _parse(await rootBundle.loadString('assets/data.json'));
 
       prefs.setInt(_versionKey, kCurrentVersion);
+      prefs.remove(lastUpdateKey);
     }
 
-    if (forceUpdate || connectivityResult == ConnectivityResult.wifi) await _update(forceUpdate);
+    if (version != null && version != kCurrentVersion)
+      try {
+        await _migrateOldDB();
+      } on Exception catch (e) {
+        throw Exception(e.toString());
+      }
 
-    if (version != null && version != kCurrentVersion) await _migrateOldDB();
+    if (forceUpdate || connectivityResult == ConnectivityResult.wifi) await _update(forceUpdate);
   }
 
   Future<void> _update(bool forceUpdate) async {
@@ -179,20 +187,21 @@ class Updater {
     final favorites =
         await SongLyric().select(columnsToSelect: ['id']).favorite_rank.not.isNull().orderBy('favorite_rank').toList();
 
-    await Author().upsertAll(authors);
-    await Tag().upsertAll(tags);
-    await Songbook().upsertAll(songbooks);
-    await Song().upsertAll(songs);
-    await SongLyric().upsertAll(songLyrics);
-    await SongbookRecord().upsertAll(songbookRecords);
-    await External().upsertAll(externals);
-    await Song_lyricsAuthors().upsertAll(songLyricAuthors);
-    await Song_lyricsTags().upsertAll(songLyricTags);
+    await Future.wait([
+      Author().upsertAll(authors),
+      Tag().upsertAll(tags),
+      Songbook().upsertAll(songbooks),
+      Song().upsertAll(songs),
+      SongLyric().upsertAll(songLyrics),
+      SongbookRecord().upsertAll(songbookRecords),
+      External().upsertAll(externals),
+      Song_lyricsAuthors().upsertAll(songLyricAuthors),
+      Song_lyricsTags().upsertAll(songLyricTags),
+      Model().updateSongLyricsSearch(songLyrics, songbooks, songbookRecords),
+    ]);
 
     for (var i = 0; i < favorites.length; i++)
       await SongLyric().select().id.equals(favorites[i].id).update({'favorite_rank': i});
-
-    await Model().updateSongLyricsSearch(songLyrics, songbooks, songbookRecords);
 
     if (isUpdate) {
       final allSongLyrics =
@@ -228,13 +237,14 @@ class Updater {
 
     for (final songLyric in existingSongLyrics.values) songLyric.delete(true);
 
-    await External().upsertAll(externals);
-    await SongbookRecord().upsertAll(songbookRecords);
-    await SongLyric().upsertAll(songLyrics);
-    await Song_lyricsAuthors().upsertAll(songLyricAuthors);
-    await Song_lyricsTags().upsertAll(songLyricTags);
-
-    await Model().updateSongLyricsSearch(songLyrics, songbooks, songbookRecords);
+    await Future.wait([
+      External().upsertAll(externals),
+      SongbookRecord().upsertAll(songbookRecords),
+      SongLyric().upsertAll(songLyrics),
+      Song_lyricsAuthors().upsertAll(songLyricAuthors),
+      Song_lyricsTags().upsertAll(songLyricTags),
+      Model().updateSongLyricsSearch(songLyrics, songbooks, songbookRecords)
+    ]);
   }
 
   Future<SongLyric> _loadSongLyric(
@@ -330,14 +340,17 @@ class Updater {
     await Playlist().upsertAll(playlists);
 
     final songLyricPlaylistsOld = await db.query('song_lyrics_playlists');
-    final songLyricPlaylists = List<Song_lyricsPlaylists>.empty(growable: true);
+    final songLyricPlaylists = List<PlaylistRecord>.empty(growable: true);
 
+    int rank = 0;
     for (final songLyricPlaylist in songLyricPlaylistsOld)
-      songLyricPlaylists.add(Song_lyricsPlaylists(
-          playlistsId: songLyricPlaylist['playlist_id'] as int?,
-          song_lyricsId: songLyricPlaylist['song_lyric_id'] as int?));
+      songLyricPlaylists.add(PlaylistRecord(
+        playlistsId: songLyricPlaylist['playlist_id'] as int?,
+        song_lyricsId: songLyricPlaylist['song_lyric_id'] as int?,
+        rank: rank++,
+      ));
 
-    await Song_lyricsPlaylists().upsertAll(songLyricPlaylists);
+    await PlaylistRecord().upsertAll(songLyricPlaylists);
   }
 
   Future<Response> _postQuery(String body) =>

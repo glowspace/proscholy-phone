@@ -31,6 +31,7 @@ class SearchableListView<T> extends StatefulWidget {
 
   final String? navigationBarTitle;
   final Color? navigationBarColor;
+  final Color? navigationBarTextColor;
 
   final Widget? trailingActions;
 
@@ -45,6 +46,7 @@ class SearchableListView<T> extends StatefulWidget {
     this.onReorderDone,
     this.navigationBarTitle,
     this.navigationBarColor,
+    this.navigationBarTextColor,
     this.trailingActions,
   }) : super(key: key);
 
@@ -67,7 +69,7 @@ class _SearchableListViewState extends State<SearchableListView> with Updateable
   @override
   Widget build(BuildContext context) {
     final searchButton = Highlightable(
-      child: Icon(Icons.search),
+      child: Icon(Icons.search, color: widget.navigationBarTextColor),
       onPressed: () => setState(() => _isShowingSearchField = true),
     );
 
@@ -90,6 +92,7 @@ class _SearchableListViewState extends State<SearchableListView> with Updateable
       middle: middle,
       trailing: trailing,
       navigationBarColor: widget.navigationBarColor,
+      navigationBarTextColor: widget.navigationBarTextColor,
       body: Column(
         children: [
           if (!(_shouldShowNavigationBar || isSelectionEnabled)) _buildSearchField(),

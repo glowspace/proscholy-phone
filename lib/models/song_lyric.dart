@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/models/author.dart';
 import 'package:zpevnik/models/external.dart';
 import 'package:zpevnik/models/model.dart' as model;
 import 'package:zpevnik/models/songbook.dart';
@@ -67,38 +68,9 @@ class SongLyric {
   late ValueNotifier<bool> _isFavoriteNotifier;
 
   static Future<List<SongLyric>> get songLyrics async {
-    final entities = await model.SongLyric()
-        .select()
-        .lyrics
-        .not
-        .isNull()
-        .orderBy('name')
-        .toList(preload: true, preloadFields: ['plExternals']);
+    final entities = await model.SongLyric().select().lyrics.not.isNull().orderBy('name').toList();
 
-    final songLyrics = List<SongLyric>.empty(growable: true);
-
-    for (final entity in entities) {
-      final songLyric = SongLyric(entity);
-
-      await songLyric._preload();
-
-      songLyrics.add(songLyric);
-    }
-
-    return songLyrics;
-  }
-
-  Future<void> _preload() async {
-    final songbookRecords = ((await entity.getSongbookRecords()?.toList())?.map((record) => SongbookRecord(record)));
-
-    _tagIds = await entity.getTags(columnsToSelect: ['id'])?.toListPrimaryKey();
-
-    _authors = await entity.getAuthors(columnsToSelect: ['name'])?.toList() ?? [];
-    _externals = entity.plExternals?.map((entity) => External(entity)).toList() ?? [];
-
-    if (songbookRecords != null)
-      _songbookRecords =
-          Map<int, SongbookRecord>.fromIterable(songbookRecords, key: (songbookRecord) => songbookRecord.songbookId);
+    return entities.map((entity) => SongLyric(entity)).toList();
   }
 
   int get id => entity.id ?? 0;
@@ -150,19 +122,19 @@ class SongLyric {
     return name;
   }
 
-  Map<int, SongbookRecord>? _songbookRecords;
+  final songbookRecords = Map<int, SongbookRecord>.from({});
 
   String number(Songbook? songbook) {
-    if (songbook != null) return _songbookRecords?[songbook.id]?.number ?? '';
+    if (songbook != null) return songbookRecords[songbook.id]?.number ?? '0';
 
     return entity.id.toString();
   }
 
-  List<int>? _tagIds;
-  List<int> get tagIds => _tagIds ?? [];
+  final tagIds = List<int>.empty(growable: true);
+  // List<int> get tagIds => _tagIds ?? [];
 
-  late List<model.Author> _authors;
-  List<model.Author> get authors => _authors;
+  final authors = List<Author>.empty(growable: true);
+  // List<model.Author> get authors => _authors;
 
   String? _authorsText;
   String authorsText(DataProvider provider) {
@@ -202,10 +174,10 @@ class SongLyric {
     return _authorsText ??= text;
   }
 
-  bool get hasExternals => entity.plExternals?.isNotEmpty ?? false;
+  bool get hasExternals => externals.isNotEmpty;
 
-  late List<External> _externals;
-  List<External> get youtubes => _externals.where((external) => external.isYoutube).toList();
+  final externals = List<External>.empty(growable: true);
+  List<External> get youtubes => externals.where((external) => external.isYoutube).toList();
 
   void toggleFavorite() {
     if (isFavorite)

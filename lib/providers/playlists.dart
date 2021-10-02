@@ -1,6 +1,7 @@
 import 'package:diacritic/diacritic.dart';
 import 'package:flutter/material.dart';
 import 'package:zpevnik/models/playlist.dart';
+import 'package:zpevnik/platform/components/dialog.dart';
 import 'package:zpevnik/providers/utils/searchable.dart';
 
 class PlaylistsProvider extends ChangeNotifier with Searchable<Playlist> {
@@ -49,8 +50,29 @@ class PlaylistsProvider extends ChangeNotifier with Searchable<Playlist> {
     notifyListeners();
   }
 
-  void duplicate(Playlist playlist) =>
-      addPlaylist('${playlist.name} (kopie)', songLyrics: playlist.songLyrics, rank: playlist.rank + 1);
+  void addSharedPlaylist(BuildContext context, String playlistName, List<int> songLyrics) {
+    showDialog<String>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => PlatformDialog(
+        title: 'Přidat playlist',
+        initialValue: playlistName,
+        submitText: 'Přidat',
+      ),
+    ).then((text) {
+      if (text != null) {
+        addPlaylist(text, songLyrics: songLyrics);
+      }
+    });
+  }
+
+  void duplicate(Playlist playlist) {
+    final songLyrics = playlist.records.keys.toList();
+
+    songLyrics.sort((first, second) => playlist.records[first]!.rank.compareTo(playlist.records[second]!.rank));
+
+    addPlaylist('${playlist.name} (kopie)', songLyrics: songLyrics, rank: playlist.rank + 1);
+  }
 
   void remove(Playlist playlist) {
     allPlaylists.remove(playlist);

@@ -54,6 +54,27 @@ const playlistsTable = SqfEntityTable(
   ],
 );
 
+const playlistRecordsTable = SqfEntityTable(
+  tableName: 'playlist_records',
+  primaryKeyName: 'id',
+  primaryKeyType: PrimaryKeyType.integer_unique,
+  useSoftDeleting: false,
+  modelName: 'PlaylistRecord',
+  fields: [
+    SqfEntityField('rank', DbType.integer, isNotNull: true),
+    SqfEntityFieldRelationship(
+      parentTable: playlistsTable,
+      deleteRule: DeleteRule.CASCADE,
+      relationType: RelationType.ONE_TO_MANY,
+    ),
+    SqfEntityFieldRelationship(
+      parentTable: songLyricsTable,
+      deleteRule: DeleteRule.CASCADE,
+      relationType: RelationType.ONE_TO_MANY,
+    ),
+  ],
+);
+
 const songsTable = SqfEntityTable(
   tableName: 'songs',
   primaryKeyName: 'id',
@@ -127,11 +148,6 @@ const songLyricsTable = SqfEntityTable(
       relationType: RelationType.MANY_TO_MANY,
     ),
     SqfEntityFieldRelationship(
-      parentTable: playlistsTable,
-      deleteRule: DeleteRule.CASCADE,
-      relationType: RelationType.MANY_TO_MANY,
-    ),
-    SqfEntityFieldRelationship(
       parentTable: songsTable,
       deleteRule: DeleteRule.CASCADE,
       relationType: RelationType.ONE_TO_MANY,
@@ -165,6 +181,7 @@ const model = SqfEntityModel(
     authorsTable,
     externalsTable,
     playlistsTable,
+    playlistRecordsTable,
     songsTable,
     songbooksTable,
     songbookRecordsTable,
@@ -173,5 +190,5 @@ const model = SqfEntityModel(
   ],
   formTables: [],
   sequences: [],
-  dbVersion: 1,
+  dbVersion: 2,
 );

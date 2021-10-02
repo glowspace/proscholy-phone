@@ -98,6 +98,9 @@ class _SongbookTileState extends State<SongbookTile> {
   void _pushSongbook() {
     final isLightMode = AppTheme.of(context).brightness == Brightness.light;
     final navigationBarColor = isLightMode ? HexColor.fromHex(widget.songbook.color) : null;
+    final navigationBarTextColor = (widget.songbook.colorText == null || !AppTheme.of(context).isLight)
+        ? null
+        : HexColor.fromHex(widget.songbook.colorText);
 
     final navigationBarColorNotifier = StatusBarWrapper.of(context).navigationBarColor;
 
@@ -106,7 +109,11 @@ class _SongbookTileState extends State<SongbookTile> {
     Navigator.of(context)
         .push(platformRouteBuilder(
           context,
-          SongbookScreen(songbook: widget.songbook, navigationBarColor: navigationBarColor),
+          SongbookScreen(
+            songbook: widget.songbook,
+            navigationBarColor: navigationBarColor,
+            navigationBarTextColor: navigationBarTextColor,
+          ),
           types: [ProviderType.data, ProviderType.fullScreen, ProviderType.playlist, ProviderType.songbook],
         ))
         .then((_) => navigationBarColorNotifier.value = null);

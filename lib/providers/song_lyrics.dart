@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zpevnik/custom/sqlite-bm25/bm25.dart';
 import 'package:zpevnik/models/model.dart' as model;
+import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/models/song_lyrics_search.dart';
 import 'package:zpevnik/models/tag.dart';
@@ -20,6 +21,39 @@ class SongLyricsProvider extends ChangeNotifier with Searchable<SongLyric> {
   List<Tag> get selectedTags => _selectedTags;
 
   SongLyric? _matchedById;
+
+  int? _currentIndex;
+
+  set currentSongLyric(SongLyric? songLyric) {
+    if (songLyric == null)
+      _currentIndex = null;
+    else
+      _currentIndex = items.indexOf(songLyric);
+  }
+
+  SongLyric? get previousSongLyric {
+    if (_currentIndex == null) return null;
+
+    final _items = items;
+
+    if (_currentIndex == 0) _currentIndex = _items.length;
+
+    _currentIndex = _currentIndex! - 1;
+
+    return _items[_currentIndex!];
+  }
+
+  SongLyric? get nextSongLyric {
+    if (_currentIndex == null) return null;
+
+    final _items = items;
+
+    _currentIndex = _currentIndex! + 1;
+
+    if (_currentIndex == _items.length) _currentIndex = 0;
+
+    return _items[_currentIndex!];
+  }
 
   @override
   set searchText(String newValue) {
@@ -132,20 +166,24 @@ class SongLyricsProvider extends ChangeNotifier with Searchable<SongLyric> {
   }
 
   bool onReorder(Key key, Key other) {
-    int index = allSongLyrics.indexWhere((playlist) => playlist.key == key);
-    int otherIndex = allSongLyrics.indexWhere((playlist) => playlist.key == other);
+    int index = allSongLyrics.indexWhere((songLyric) => songLyric.key == key);
+    int otherIndex = allSongLyrics.indexWhere((songLyric) => songLyric.key == other);
 
-    final playlist = allSongLyrics.removeAt(index);
-    allSongLyrics.insert(otherIndex, playlist);
+    final songLyric = allSongLyrics.removeAt(index);
+    allSongLyrics.insert(otherIndex, songLyric);
 
     notifyListeners();
 
     return true;
   }
 
-  void onReorderDone(Key _) {
-    int rank = 0;
+  void onReorderDone(Key _, {Playlist? playlist}) {
+    if (playlist != null)
+      playlist.reorderSongLyrics(allSongLyrics);
+    else {
+      int rank = 0;
 
-    for (final songLyric in allSongLyrics) if (songLyric.isFavorite) songLyric.favoriteRank = rank++;
+      for (final songLyric in allSongLyrics) if (songLyric.isFavorite) songLyric.favoriteRank = rank++;
+    }
   }
 }

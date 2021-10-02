@@ -56,8 +56,7 @@ class SongLyricMenu extends StatelessWidget {
         IconItem(
           title: 'Sdílet',
           icon: Icons.share,
-          onPressed: () =>
-              _doAndHide(context, () => Share.shareFiles(['$songUrl/${songLyric.id}/'], text: songLyric.name)),
+          onPressed: () => _doAndHide(context, () => Share.share('$songUrl/${songLyric.id}/')),
         ),
         IconItem(
           title: 'Otevřít na webu',
