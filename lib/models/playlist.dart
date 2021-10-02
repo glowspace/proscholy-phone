@@ -1,67 +1,71 @@
 import 'package:flutter/material.dart';
-import 'package:zpevnik/models/entities/playlist.dart';
+import 'package:zpevnik/models/model.dart' as model;
+import 'package:zpevnik/models/playlist_record.dart';
 import 'package:zpevnik/models/song_lyric.dart';
-import 'package:zpevnik/providers/data_provider.dart';
-import 'package:zpevnik/utils/database.dart';
 
+// wrapper around Playlist db model for easier field access
 class Playlist {
-  final PlaylistEntity _entity;
+  final model.Playlist entity;
 
-  static int nextOrder = 1;
-  // fixme: should be used as auto incorement, but doesn't work
-  static int nextId = 1;
+  Playlist(this.entity);
 
-  List<SongLyric> _songLyrics;
+  static Future<Playlist> create(String name, int rank, {List<int> songLyrics = const []}) async {
+    final entity = model.Playlist(name: name, rank: rank, is_archived: false);
 
-  Playlist(this._entity) {
-    if (_entity.orderValue >= nextOrder) nextOrder = _entity.orderValue + 1;
-    if (_entity.id >= nextId) nextId = _entity.id + 1;
+    entity.id = await entity.save();
+
+    return Playlist(entity)..addSongLyrics(songLyrics);
   }
 
-  PlaylistEntity get entity => _entity;
+  static Future<List<Playlist>> get playlists async {
+    final entities = await model.Playlist().select().orderBy('rank').toList();
 
-  Key get key => Key('$id');
-
-  int get id => _entity.id;
-
-  String get name => _entity.name;
-
-  bool get isArchived => _entity.isArchived;
-
-  // todo: probably can be optmized using db, but it's good enough for now
-  List<SongLyric> get songLyrics => _songLyrics ??= DataProvider.shared.songLyrics
-      .where((songLyric) => songLyric.entity.playlists.any((playlist) => playlist.id == _entity.id))
-      .toList()
-        ..sort((first, second) => first.name.compareTo(second.name));
-
-  void addSongLyrics(List<SongLyric> songLyrics) {
-    // fixme: temporary fix, _songLyrics might be null at this time, so make sure it's not
-    _songLyrics ??= DataProvider.shared.songLyrics
-        .where((songLyric) => songLyric.entity.playlists.any((playlist) => playlist.id == _entity.id))
-        .toList()
-          ..sort((first, second) => first.name.compareTo(second.name));
-
-    final songLyricsSet = _songLyrics.toSet()..addAll(songLyrics);
-    _songLyrics = songLyricsSet.toList()..sort((first, second) => first.name.compareTo(second.name));
-
-    Database.shared.addPlaylistSongLyrics(_entity, songLyrics.map((songLyric) => songLyric.entity).toList());
+    return entities.map((entity) => Playlist(entity)).toList();
   }
 
-  set name(String value) {
-    _entity.name = value;
+  int get id => entity.id ?? 0;
+  String get name => entity.name ?? '';
+  int get rank => entity.rank ?? 0;
+  bool get isArchived => entity.is_archived ?? false;
 
-    Database.shared.updatePlaylist(_entity, ['name'].toSet());
+  Key get key => Key(id.toString());
+
+  final records = Map<int, PlaylistRecord>.from({});
+
+  set name(String? value) {
+    if (value != null) {
+      entity.name = value;
+      entity.save();
+    }
   }
 
-  set orderValue(int value) {
-    _entity.orderValue = value;
-
-    Database.shared.updatePlaylist(_entity, ['order_value'].toSet());
+  set rank(int value) {
+    entity.rank = value;
+    entity.save();
   }
 
   set isArchived(bool value) {
-    _entity.isArchived = value;
+    entity.is_archived = value;
+    entity.save();
+  }
 
-    Database.shared.updatePlaylist(_entity, ['is_archived'].toSet());
+  void addSongLyrics(List<dynamic> songLyricsToAdd) async {
+    for (final songLyric in songLyricsToAdd) {
+      final int songLyricId;
+
+      if (songLyric is SongLyric)
+        songLyricId = songLyric.id;
+      else
+        songLyricId = songLyric;
+
+      if (!records.containsKey(songLyricId))
+        records[songLyricId] = await PlaylistRecord.create(songLyricId, id, records.length);
+    }
+  }
+
+  void reorderSongLyrics(List<SongLyric> orderedSongLyrics) {
+    int rank = 0;
+
+    for (final songLyric in orderedSongLyrics) records[songLyric.id]?.rank = rank++;
   }
 }

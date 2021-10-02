@@ -5,26 +5,41 @@ import 'package:zpevnik/theme.dart';
 class BottomFormSheet extends StatelessWidget {
   final String title;
   final List<Widget> items;
+  final Widget? bottomAction;
+  final EdgeInsets contentPadding;
 
-  const BottomFormSheet({Key key, this.title, this.items}) : super(key: key);
+  const BottomFormSheet({
+    Key? key,
+    this.title = '',
+    this.items = const [],
+    this.bottomAction,
+    this.contentPadding = const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+  }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) => Container(
-        padding: EdgeInsets.symmetric(vertical: kDefaultPadding),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (title.isNotEmpty)
-              Container(
-                padding: EdgeInsets.fromLTRB(kDefaultPadding, 0, kDefaultPadding, kDefaultPadding),
-                child: Text(title, style: AppTheme.of(context).titleTextStyle),
-              ),
-            Expanded(
-              child: SingleChildScrollView(
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: kDefaultPadding),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (title.isNotEmpty)
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: kDefaultPadding),
+              margin: EdgeInsets.only(bottom: kDefaultPadding),
+              child: Text(title, style: AppTheme.of(context).titleTextStyle),
+            ),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Container(
+                padding: contentPadding,
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: items),
               ),
-            )
-          ],
-        ),
-      );
+            ),
+          ),
+          if (bottomAction != null) bottomAction!,
+        ],
+      ),
+    );
+  }
 }
