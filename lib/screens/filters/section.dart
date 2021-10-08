@@ -10,30 +10,37 @@ class FiltersSection extends StatelessWidget {
   final List<Tag> tags;
   final bool isLast;
 
-  const FiltersSection({Key key, this.title, this.tags, this.isLast = false}) : super(key: key);
+  const FiltersSection({
+    Key? key,
+    required this.title,
+    required this.tags,
+    this.isLast = false,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final textStyle = Theme.of(context).textTheme.headline6.copyWith(color: AppTheme.of(context).filtersTextColor);
+    final appTheme = AppTheme.of(context);
+    final textStyle = appTheme.titleTextStyle?.copyWith(color: appTheme.filtersTextColor);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          padding: EdgeInsets.all(kDefaultPadding).copyWith(bottom: 1.5 * kDefaultPadding),
+          padding: EdgeInsets.symmetric(vertical: kDefaultPadding),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(padding: EdgeInsets.only(bottom: kDefaultPadding), child: Text(title, style: textStyle)),
+              Text(title, style: textStyle),
+              SizedBox(height: kDefaultPadding),
               Wrap(
-                spacing: kDefaultPadding,
-                runSpacing: kDefaultPadding / 2,
+                spacing: kDefaultPadding / 2,
+                runSpacing: kDefaultPadding / 4,
                 children: List.generate(tags.length, (index) => FilterTag(tag: tags[index])),
               ),
             ],
           ),
         ),
-        if (!isLast) Divider(thickness: 1, color: AppTheme.of(context).filtersSectionSeparatorColor),
+        if (!isLast) Divider(thickness: 1, color: appTheme.filtersSectionSeparatorColor),
       ],
     );
   }

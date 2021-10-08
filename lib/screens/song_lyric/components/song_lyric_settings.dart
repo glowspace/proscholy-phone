@@ -1,115 +1,109 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/models/song_lyric.dart';
-import 'package:zpevnik/providers/settings_provider.dart';
 import 'package:zpevnik/screens/components/bottom_form_sheet.dart';
-import 'package:zpevnik/screens/components/highlightable_button.dart';
-import 'package:zpevnik/screens/components/platform/platform_slider.dart';
-import 'package:zpevnik/screens/song_lyric/components/selector_widget.dart';
+import 'package:zpevnik/screens/components/font_size_slider.dart';
+import 'package:zpevnik/screens/components/highlightable.dart';
+import 'package:zpevnik/screens/components/selector_widget.dart';
+import 'package:zpevnik/screens/song_lyric/utils/lyrics_controller.dart';
+import 'package:zpevnik/screens/utils/updateable.dart';
 import 'package:zpevnik/theme.dart';
 
-class SongLyricSettings extends StatelessWidget {
+class SongLyricSettingsWidget extends StatefulWidget {
+  final LyricsController songLyricController;
+
+  const SongLyricSettingsWidget({Key? key, required this.songLyricController}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => _SongLyricSettingsWidget();
+}
+
+class _SongLyricSettingsWidget extends State<SongLyricSettingsWidget> with Updateable {
   @override
   Widget build(BuildContext context) {
-    final accidentalsStyle = AppTheme.of(context).bodyTextStyle.copyWith(fontSize: 20, fontFamily: 'Hiragino Sans');
+    final appTheme = AppTheme.of(context);
+    final accidentalsStyle = appTheme.bodyTextStyle?.copyWith(fontSize: 20, fontFamily: 'Hiragino Sans');
 
-    return Consumer<SongLyric>(
-      builder: (context, songLyric, _) => BottomFormSheet(
-        title: 'Nastavení zobrazení',
-        items: [
-          _row('Transpozice', SizedBox(width: 96, child: _transpositionStepper())),
-          _row(
-            'Posuvky',
-            SizedBox(
-              width: 96,
-              child: SelectorWidget(
-                onSelected: (index) => songLyric.accidentals = index == 1,
-                options: [
-                  Text('#', style: accidentalsStyle, textAlign: TextAlign.center),
-                  Text('♭', style: accidentalsStyle, textAlign: TextAlign.center)
-                ],
-                selected: songLyric.accidentals ? 1 : 0,
-              ),
-            ),
+    final controller = widget.songLyricController;
+
+    return BottomFormSheet(
+      title: 'Nastavení zobrazení',
+      items: [
+        _row('Transpozice', _transpositionStepper()),
+        _row(
+          'Posuvky',
+          SelectorWidget(
+            onSelected: controller.accidentalsChanged,
+            options: [
+              Text('#', style: accidentalsStyle, textAlign: TextAlign.center),
+              Text('♭', style: accidentalsStyle, textAlign: TextAlign.center)
+            ],
+            selected: controller.accidentals,
+            width: 120,
           ),
-          _row(
-            'Akordy',
-            SizedBox(
-              width: 96,
-              child: SelectorWidget(
-                onSelected: (index) => songLyric.showChords = index == 1,
-                options: [
-                  Icon(Icons.visibility_off),
-                  Icon(Icons.visibility),
-                ],
-                selected: songLyric.showChords ? 1 : 0,
-              ),
-            ),
+        ),
+        _row(
+          'Akordy',
+          SelectorWidget(
+            onSelected: (index) => controller.showChordsChanged(index == 1),
+            options: [
+              Icon(Icons.visibility_off, color: appTheme.iconColor),
+              Icon(Icons.visibility, color: appTheme.iconColor),
+            ],
+            selected: controller.showChords ? 1 : 0,
+            width: 120,
           ),
-          _fontSizeSlider(context),
+        ),
+        FontSizeSlider(),
+      ],
+      bottomAction: Highlightable(
+        padding: EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding),
+        child: Text('Resetovat nastavení', style: AppTheme.of(context).captionTextStyle),
+        onPressed: controller.resetSettings,
+      ),
+    );
+  }
+
+  Widget _row(String name, Widget widget) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(name),
+          widget,
         ],
       ),
     );
   }
 
-  Widget _row(String name, Widget widget) => Container(
-        padding: EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [Text(name), widget],
-        ),
-      );
+  Widget _transpositionStepper() {
+    final controller = widget.songLyricController;
+    final songLyric = controller.songLyric;
 
-  Widget _transpositionStepper() => Container(
-        child: Consumer<SongLyric>(
-          builder: (context, songLyric, _) => Row(
-            children: [
-              HighlightableButton(
-                padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
-                icon: Icon(Icons.remove),
-                highlightColor: AppTheme.of(context).highlightColor,
-                onPressed: () => songLyric.changeTransposition(-1),
-              ),
-              SizedBox(
-                width: 22,
-                child: Text(songLyric.transposition.toString(), textAlign: TextAlign.center),
-              ),
-              HighlightableButton(
-                padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
-                icon: Icon(Icons.add),
-                highlightColor: AppTheme.of(context).highlightColor,
-                onPressed: () => songLyric.changeTransposition(1),
-              ),
-            ],
+    return Container(
+      width: 120,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Highlightable(
+            padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
+            child: Icon(Icons.remove),
+            onPressed: () => controller.changeTransposition(-1),
           ),
-        ),
-      );
+          SizedBox(
+            width: 32,
+            child: Text(songLyric.transposition.toString(), textAlign: TextAlign.center),
+          ),
+          Highlightable(
+            padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
+            child: Icon(Icons.add),
+            onPressed: () => controller.changeTransposition(1),
+          ),
+        ],
+      ),
+    );
+  }
 
-  Widget _fontSizeSlider(BuildContext context) => Container(
-        padding: EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
-        child: Consumer<SettingsProvider>(
-          builder: (context, settingsProvider, _) => Row(children: [
-            RichText(
-              text: TextSpan(text: 'A', style: AppTheme.of(context).bodyTextStyle),
-              textScaleFactor: kMinimumFontSizeScale,
-            ),
-            Expanded(
-              child: PlatformSlider(
-                min: kMinimumFontSizeScale,
-                max: kMaximumFontSizeScale,
-                value: settingsProvider.fontSizeScale,
-                onChanged: settingsProvider.changeFontSizeScale,
-                activeColor: AppTheme.of(context).chordColor,
-                inactiveColor: AppTheme.of(context).disabledColor,
-              ),
-            ),
-            RichText(
-              text: TextSpan(text: 'A', style: AppTheme.of(context).bodyTextStyle),
-              textScaleFactor: kMaximumFontSizeScale,
-            ),
-          ]),
-        ),
-      );
+  @override
+  List<Listenable> get listenables => [widget.songLyricController];
 }

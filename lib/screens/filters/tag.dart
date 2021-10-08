@@ -2,43 +2,62 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/tag.dart';
-import 'package:zpevnik/providers/tags_provider.dart';
+import 'package:zpevnik/providers/song_lyrics.dart';
+import 'package:zpevnik/screens/components/highlightable.dart';
 import 'package:zpevnik/theme.dart';
 
 class FilterTag extends StatelessWidget {
   final Tag tag;
-  final bool cancellable;
+  final bool isPartOfActiveTags;
 
-  const FilterTag({Key key, this.tag, this.cancellable = false}) : super(key: key);
+  const FilterTag({Key? key, required this.tag, this.isPartOfActiveTags = false}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final textStyle = AppTheme.of(context).bodyTextStyle.copyWith(color: AppTheme.of(context).filtersTextColor);
+    final appTheme = AppTheme.of(context);
+    final textStyle = appTheme.bodyTextStyle?.copyWith(color: appTheme.filtersTextColor);
 
-    return Consumer<TagsProvider>(
-      builder: (context, provider, _) => GestureDetector(
-        onTap: cancellable ? null : () => provider.select(tag, !provider.isSelected(tag)),
-        child: Container(
-          decoration: BoxDecoration(
-            color: provider.isSelected(tag) && !cancellable ? tag.type.selectedColor : Colors.transparent,
-            border: Border.all(color: AppTheme.of(context).filterBorderColor),
-            borderRadius: BorderRadius.all(Radius.circular(100)), // big enough number to make it always full circular
-          ),
-          padding: EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
-          child: cancellable
-              ? Row(children: [
-                  Text(tag.name, style: textStyle),
-                  GestureDetector(
-                    onTap: () => provider.select(tag, false),
-                    child: Container(
-                      padding: EdgeInsets.only(left: 4),
-                      child: Icon(Icons.close, size: 12),
-                    ),
-                  ),
-                ])
-              : Text(tag.name, style: textStyle),
+    final provider = context.watch<SongLyricsProvider>();
+
+    return GestureDetector(
+      onTap: () => provider.toggleSelected(tag),
+      child: Container(
+        decoration: BoxDecoration(
+          color: (tag.isSelected && !isPartOfActiveTags) ? _selectedColor(tag) : Colors.transparent,
+          border: Border.all(color: appTheme.borderColor),
+          borderRadius: BorderRadius.all(Radius.circular(100)),
+        ),
+        padding: EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(tag.name, style: textStyle),
+            if (isPartOfActiveTags)
+              Highlightable(
+                padding: EdgeInsets.only(left: kDefaultPadding / 2),
+                child: Icon(Icons.close, size: 14),
+                onPressed: () => provider.toggleSelected(tag),
+              ),
+          ],
         ),
       ),
     );
+  }
+
+  Color _selectedColor(Tag tag) {
+    switch (tag.type) {
+      case TagType.liturgyPart:
+        return blue;
+      case TagType.liturgyPeriod:
+        return red;
+      case TagType.saints:
+      case TagType.generic:
+      case TagType.sacredOccasion:
+        return green;
+      case TagType.language:
+        return red;
+      default:
+        return Colors.transparent;
+    }
   }
 }

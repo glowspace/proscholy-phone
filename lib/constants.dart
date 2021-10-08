@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-const int kCurrentVersion = 3;
+const int kCurrentVersion = 6;
 
-const double kDefaultPadding = 10;
+const double kDefaultPadding = 16;
 const int kDefaultAnimationTime = 300;
 
 const double kMinimumFontSizeScale = 0.5;
@@ -15,4 +15,4 @@ const Color yellow = Color(0xffee9528);
 
 final String unbreakableSpace = String.fromCharCode(0x00A0);
 
-const String imagesPath = 'assets/images';
+const imagesPath = 'assets/images';
