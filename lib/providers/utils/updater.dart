@@ -1,9 +1,7 @@
 import 'dart:convert';
 
 import 'package:connectivity/connectivity.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart';
@@ -139,24 +137,25 @@ class Updater {
 
   Future<void> _update(bool forceUpdate) async {
     final prefs = await SharedPreferences.getInstance();
-    final lastUpdate = prefs.getString(lastUpdateKey) ?? _initialLastUpdate;
+    final lastUpdate = _dateFormat.parse(prefs.getString(lastUpdateKey) ?? _initialLastUpdate);
 
     final now = DateTime.now();
 
-    if (!forceUpdate && !_dateFormat.parse(lastUpdate).isBefore(now.subtract(_updatePeriod))) return;
+    if (!forceUpdate && !lastUpdate.isBefore(now.subtract(_updatePeriod))) return;
 
-    final query =
-        _query.replaceAll('\n', '').replaceFirst(_lastUpdatePlaceholder, '(updated_after: \\"$lastUpdate\\")');
+    final query = _query
+        .replaceAll('\n', '')
+        .replaceFirst(_lastUpdatePlaceholder, '(updated_after: \\"${lastUpdate.toUtc()}\\")');
 
     try {
       final response = await _postQuery(query);
 
       await _parse(response.body, isUpdate: true);
+
+      prefs.setString(lastUpdateKey, _dateFormat.format(now));
     } on Exception catch (e) {
       throw UpdateException(e.toString());
     }
-
-    prefs.setString(lastUpdateKey, _dateFormat.format(now));
   }
 
   Future<void> _parse(String body, {bool isUpdate = false}) async {
