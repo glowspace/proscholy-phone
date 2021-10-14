@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 // source: https://stackoverflow.com/a/56230540/8592888
 class InvisibleCupertinoTabBar extends CupertinoTabBar {
-  static const dummyIcon = Icon(IconData(0x0020));
+  static const dummyIcon = Icon(Icons.select_all);
 
   InvisibleCupertinoTabBar()
       : super(
