@@ -63,6 +63,13 @@ class Playlist {
     }
   }
 
+  void removeSongLyrics(List<SongLyric> songLyrics) {
+    for (final songLyric in songLyrics) {
+      records[songLyric.id]?.entity.delete(true);
+      records.remove(songLyric.id);
+    }
+  }
+
   void reorderSongLyrics(List<SongLyric> orderedSongLyrics) {
     int rank = 0;
 

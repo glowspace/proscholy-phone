@@ -7,8 +7,10 @@ import 'package:zpevnik/theme.dart';
 class ReorderableRow extends StatelessWidget {
   final Widget child;
   final Function() onPressed;
+  final Function()? onLongPressed;
 
-  const ReorderableRow({required Key key, required this.child, required this.onPressed}) : super(key: key);
+  const ReorderableRow({required Key key, required this.child, required this.onPressed, this.onLongPressed})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +36,7 @@ class ReorderableRow extends StatelessWidget {
         ],
       ),
       onPressed: onPressed,
+      onLongPressed: onLongPressed,
     );
   }
 }

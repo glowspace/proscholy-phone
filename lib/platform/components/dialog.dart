@@ -11,6 +11,53 @@ Future<T?> showPlatformDialog<T>(BuildContext context, Widget Function(BuildCont
     return showDialog<T>(context: context, barrierDismissible: false, builder: builder);
 }
 
+class ConfirmDialog extends StatefulWidget {
+  final String title;
+  final String confirmText;
+
+  const ConfirmDialog({
+    Key? key,
+    this.title = '',
+    this.confirmText = '',
+  }) : super(key: key);
+
+  @override
+  _ConfirmDialogState createState() => _ConfirmDialogState();
+}
+
+class _ConfirmDialogState extends State<ConfirmDialog> with PlatformMixin {
+  @override
+  Widget buildAndroid(BuildContext context) {
+    return AlertDialog(
+      title: Text(widget.title),
+      actions: _actions(context),
+    );
+  }
+
+  @override
+  Widget buildIos(BuildContext context) {
+    return CupertinoAlertDialog(
+      title: Text(widget.title),
+      actions: _actions(context),
+    );
+  }
+
+  List<Widget> _actions(BuildContext context) {
+    final appTheme = AppTheme.of(context);
+
+    return [
+      TextButton(
+        child: Text('Zrušit', style: appTheme.bodyTextStyle?.copyWith(color: Colors.red)),
+        onPressed: () => Navigator.of(context).pop(false),
+      ),
+      TextButton(
+        child: Text(widget.confirmText, style: appTheme.bodyTextStyle),
+        onPressed: () => Navigator.of(context).pop(true),
+      ),
+    ];
+  }
+}
+
 class PlatformDialog extends StatefulWidget {
   final String title;
   final String initialValue;

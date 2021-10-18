@@ -125,6 +125,9 @@ class Updater {
       prefs.remove(lastUpdateKey);
     }
 
+    // temporary, can be removed after some time, when every installed app should be fixed
+    if (version == 6) await _fixPlaylistRecords();
+
     if (version != null && version != kCurrentVersion)
       try {
         await _migrateOldDB();
@@ -350,6 +353,23 @@ class Updater {
       ));
 
     await PlaylistRecord().upsertAll(songLyricPlaylists);
+  }
+
+  Future<void> _fixPlaylistRecords() async {
+    final playlistRecords = await PlaylistRecord().select().toList();
+
+    // needs to be dropped, because primary key was changed and this library doesn't support migration of this
+    await Model().execSQL('DROP TABLE playlist_records;');
+
+    Model().databaseTables?.forEach((table) {
+      if (table is TablePlaylistRecord) table.initialized = false;
+    });
+
+    await Model().initializeDB();
+
+    playlistRecords.forEach((element) => element.id = null);
+
+    await PlaylistRecord.saveAll(playlistRecords);
   }
 
   Future<Response> _postQuery(String body) =>
