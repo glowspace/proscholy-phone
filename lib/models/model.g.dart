@@ -114,7 +114,7 @@ class TablePlaylistRecord extends SqfEntityTableBase {
     // declare properties of EntityTable
     tableName = 'playlist_records';
     primaryKeyName = 'id';
-    primaryKeyType = PrimaryKeyType.integer_unique;
+    primaryKeyType = PrimaryKeyType.integer_auto_incremental;
     useSoftDeleting = false;
     // when useSoftDeleting is true, creates a field named 'isDeleted' on the table, and set to '1' this field when item deleted (does not hard delete)
 
@@ -4049,8 +4049,7 @@ class PlaylistRecord extends TableBase {
   PlaylistRecord({this.id, this.rank, this.playlistsId, this.song_lyricsId}) {
     _setDefaultValues();
   }
-  PlaylistRecord.withFields(
-      this.id, this.rank, this.playlistsId, this.song_lyricsId) {
+  PlaylistRecord.withFields(this.rank, this.playlistsId, this.song_lyricsId) {
     _setDefaultValues();
   }
   PlaylistRecord.withId(
@@ -4079,15 +4078,13 @@ class PlaylistRecord extends TableBase {
         ? SongLyric.fromMap(o['songLyric'] as Map<String, dynamic>)
         : null;
     // END RELATIONSHIPS FromMAP
-
-    isSaved = true;
   }
   // FIELDS (PlaylistRecord)
   int? id;
   int? rank;
   int? playlistsId;
   int? song_lyricsId;
-  bool? isSaved;
+
   BoolResult? saveResult;
   // end FIELDS (PlaylistRecord)
 
@@ -4196,7 +4193,7 @@ class PlaylistRecord extends TableBase {
   }
 
   List<dynamic> toArgs() {
-    return [id, rank, playlistsId, song_lyricsId];
+    return [rank, playlistsId, song_lyricsId];
   }
 
   List<dynamic> toArgsWithIds() {
@@ -4340,11 +4337,8 @@ class PlaylistRecord extends TableBase {
   /// ignoreBatch = true as a default. Set ignoreBatch to false if you run more than one save() operation those are between batchStart and batchCommit
   /// <returns>Returns id
   Future<int?> save({bool ignoreBatch = true}) async {
-    if (id == null || id == 0 || !isSaved!) {
-      await _mnPlaylistRecord.insert(this, ignoreBatch);
-      if (saveResult!.success) {
-        isSaved = true;
-      }
+    if (id == null || id == 0) {
+      id = await _mnPlaylistRecord.insert(this, ignoreBatch);
     } else {
       // id= await _upsert(); // removed in sqfentity_gen 1.3.0+6
       await _mnPlaylistRecord.update(this);
@@ -4359,11 +4353,9 @@ class PlaylistRecord extends TableBase {
   ///
   /// <returns>Returns id
   Future<int?> saveOrThrow({bool ignoreBatch = true}) async {
-    if (id == null || id == 0 || !isSaved!) {
-      await _mnPlaylistRecord.insertOrThrow(this, ignoreBatch);
-      if (saveResult != null && saveResult!.success) {
-        isSaved = true;
-      }
+    if (id == null || id == 0) {
+      id = await _mnPlaylistRecord.insertOrThrow(this, ignoreBatch);
+
       isInsert = true;
     } else {
       // id= await _upsert(); // removed in sqfentity_gen 1.3.0+6
@@ -4371,6 +4363,15 @@ class PlaylistRecord extends TableBase {
     }
 
     return id;
+  }
+
+  /// saveAs PlaylistRecord. Returns a new Primary Key value of PlaylistRecord
+
+  /// <returns>Returns a new Primary Key value of PlaylistRecord
+  Future<int?> saveAs() async {
+    id = null;
+
+    return save();
   }
 
   void rollbackId() {
@@ -4392,6 +4393,11 @@ class PlaylistRecord extends TableBase {
     }
     if (!isStartedBatch) {
       result = await Model().batchCommit();
+      for (int i = 0; i < playlistrecords.length; i++) {
+        if (playlistrecords[i].id == null) {
+          playlistrecords[i].id = result![i] as int;
+        }
+      }
     }
     return result!;
   }
@@ -4467,9 +4473,7 @@ class PlaylistRecord extends TableBase {
       ..qparams.distinct = true;
   }
 
-  void _setDefaultValues() {
-    isSaved = false;
-  }
+  void _setDefaultValues() {}
   // END METHODS
   // BEGIN CUSTOM CODE
   /*

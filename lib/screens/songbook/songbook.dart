@@ -5,6 +5,7 @@ import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
 import 'package:zpevnik/screens/components/searchable_list_view.dart';
 import 'package:zpevnik/screens/components/song_lyric_row.dart';
+import 'package:zpevnik/screens/utils/selectable.dart';
 
 class SongbookScreen extends StatefulWidget {
   final Songbook songbook;
@@ -18,7 +19,7 @@ class SongbookScreen extends StatefulWidget {
   _SongbookScreenState createState() => _SongbookScreenState();
 }
 
-class _SongbookScreenState extends State<SongbookScreen> {
+class _SongbookScreenState extends State<SongbookScreen> with Selectable {
   late final SongLyricsProvider _songLyricsProvider;
 
   @override
@@ -33,8 +34,11 @@ class _SongbookScreenState extends State<SongbookScreen> {
     final songbook = widget.songbook;
     final itemBuilder = (songLyric) => SongLyricRow(songLyric: songLyric, songbook: songbook);
 
-    return ChangeNotifierProvider.value(
-      value: _songLyricsProvider,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(value: _songLyricsProvider),
+        ChangeNotifierProvider.value(value: selectionProvider),
+      ],
       builder: (_, __) => SearchableListView(
         key: PageStorageKey('songbook'),
         itemsProvider: _songLyricsProvider,
@@ -44,6 +48,10 @@ class _SongbookScreenState extends State<SongbookScreen> {
         navigationBarTitle: songbook.name,
         navigationBarColor: widget.navigationBarColor,
         navigationBarTextColor: widget.navigationBarTextColor,
+        trailingActions: AnimatedBuilder(
+          animation: selectionProvider,
+          builder: (context, child) => buildSelectableActions(_songLyricsProvider.items),
+        ),
       ),
     );
   }

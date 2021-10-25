@@ -58,9 +58,6 @@ PODS:
   - flutter_inappwebview/Core (0.0.1):
     - Flutter
     - OrderedSet (~> 5.0)
-  - flutter_nearby_connections (0.0.1):
-    - Flutter
-    - SwiftyJSON (~> 4.0)
   - fluttertoast (0.0.2):
     - Flutter
     - Toast
@@ -129,7 +126,6 @@ PODS:
   - SQLCipher/common (4.4.2)
   - SQLCipher/standard (4.4.2):
     - SQLCipher/common
-  - SwiftyJSON (4.3.0)
   - Toast (4.0.0)
   - uni_links (0.0.1):
     - Flutter
@@ -145,7 +141,6 @@ DEPENDENCIES:
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - Flutter (from `Flutter`)
   - flutter_inappwebview (from `.symlinks/plugins/flutter_inappwebview/ios`)
-  - flutter_nearby_connections (from `.symlinks/plugins/flutter_nearby_connections/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - share_plus (from `.symlinks/plugins/share_plus/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
@@ -171,7 +166,6 @@ SPEC REPOS:
     - PromisesObjC
     - Reachability
     - SQLCipher
-    - SwiftyJSON
     - Toast
 
 EXTERNAL SOURCES:
@@ -187,8 +181,6 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_inappwebview:
     :path: ".symlinks/plugins/flutter_inappwebview/ios"
-  flutter_nearby_connections:
-    :path: ".symlinks/plugins/flutter_nearby_connections/ios"
   fluttertoast:
     :path: ".symlinks/plugins/fluttertoast/ios"
   share_plus:
@@ -218,7 +210,6 @@ SPEC CHECKSUMS:
   FirebaseInstallations: 2563cb18a723ef9c6ef18318a49519b75dce613c
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
   flutter_inappwebview: bfd58618f49dc62f2676de690fc6dcda1d6c3721
-  flutter_nearby_connections: 68c6cb88dcbf781e74adac01f4e93b853a30ee34
   fluttertoast: 6122fa75143e992b1d3470f61000f591a798cc58
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   GoogleAppMeasurement: 2be61ce546ad074dbe4dd545f222ac6033bb1d9e
@@ -233,7 +224,6 @@ SPEC CHECKSUMS:
   sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
   sqflite_sqlcipher: 70eb7fd8d4f0b0352d0bde5cf345b810737f54bb
   SQLCipher: 1ab0b9486a77d141e72e92ff30681926ed79c07a
-  SwiftyJSON: 6faa0040f8b59dead0ee07436cbf76b73c08fd08
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
   uni_links: d97da20c7701486ba192624d99bffaaffcfc298a
   url_launcher: b6e016d912f04be9f5bf6e8e82dc599b7ba59649

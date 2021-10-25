@@ -69,7 +69,13 @@ class _SongLyricRowState extends State<SongLyricRow> {
       ],
     );
 
-    if (widget.isReorderable) return ReorderableRow(key: widget.songLyric.key, child: child, onPressed: _pushSongLyric);
+    if (!isSelectionEnabled && widget.isReorderable)
+      return ReorderableRow(
+        key: widget.songLyric.key,
+        child: child,
+        onPressed: _pushSongLyric,
+        onLongPressed: _enableSelection,
+      );
 
     return Highlightable(
       onPressed: _pushSongLyric,

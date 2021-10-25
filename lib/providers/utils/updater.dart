@@ -1,9 +1,7 @@
 import 'dart:convert';
 
 import 'package:connectivity/connectivity.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart';
@@ -127,6 +125,9 @@ class Updater {
       prefs.remove(lastUpdateKey);
     }
 
+    // temporary, can be removed after some time, when every installed app should be fixed
+    if (version == 6) await _fixPlaylistRecords();
+
     if (version != null && version != kCurrentVersion)
       try {
         await _migrateOldDB();
@@ -139,24 +140,25 @@ class Updater {
 
   Future<void> _update(bool forceUpdate) async {
     final prefs = await SharedPreferences.getInstance();
-    final lastUpdate = prefs.getString(lastUpdateKey) ?? _initialLastUpdate;
+    final lastUpdate = _dateFormat.parse(prefs.getString(lastUpdateKey) ?? _initialLastUpdate);
 
     final now = DateTime.now();
 
-    if (!forceUpdate && !_dateFormat.parse(lastUpdate).isBefore(now.subtract(_updatePeriod))) return;
+    if (!forceUpdate && !lastUpdate.isBefore(now.subtract(_updatePeriod))) return;
 
-    final query =
-        _query.replaceAll('\n', '').replaceFirst(_lastUpdatePlaceholder, '(updated_after: \\"$lastUpdate\\")');
+    final query = _query
+        .replaceAll('\n', '')
+        .replaceFirst(_lastUpdatePlaceholder, '(updated_after: \\"${lastUpdate.toUtc()}\\")');
 
     try {
       final response = await _postQuery(query);
 
       await _parse(response.body, isUpdate: true);
+
+      prefs.setString(lastUpdateKey, _dateFormat.format(now));
     } on Exception catch (e) {
       throw UpdateException(e.toString());
     }
-
-    prefs.setString(lastUpdateKey, _dateFormat.format(now));
   }
 
   Future<void> _parse(String body, {bool isUpdate = false}) async {
@@ -351,6 +353,23 @@ class Updater {
       ));
 
     await PlaylistRecord().upsertAll(songLyricPlaylists);
+  }
+
+  Future<void> _fixPlaylistRecords() async {
+    final playlistRecords = await PlaylistRecord().select().toList();
+
+    // needs to be dropped, because primary key was changed and this library doesn't support migration of this
+    await Model().execSQL('DROP TABLE playlist_records;');
+
+    Model().databaseTables?.forEach((table) {
+      if (table is TablePlaylistRecord) table.initialized = false;
+    });
+
+    await Model().initializeDB();
+
+    playlistRecords.forEach((element) => element.id = null);
+
+    await PlaylistRecord.saveAll(playlistRecords);
   }
 
   Future<Response> _postQuery(String body) =>

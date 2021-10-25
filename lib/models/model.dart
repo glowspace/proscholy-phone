@@ -57,7 +57,7 @@ const playlistsTable = SqfEntityTable(
 const playlistRecordsTable = SqfEntityTable(
   tableName: 'playlist_records',
   primaryKeyName: 'id',
-  primaryKeyType: PrimaryKeyType.integer_unique,
+  primaryKeyType: PrimaryKeyType.integer_auto_incremental,
   useSoftDeleting: false,
   modelName: 'PlaylistRecord',
   fields: [
@@ -190,5 +190,5 @@ const model = SqfEntityModel(
   ],
   formTables: [],
   sequences: [],
-  dbVersion: 2,
+  dbVersion: 3,
 );

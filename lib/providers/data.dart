@@ -151,8 +151,6 @@ class DataProvider extends ChangeNotifier {
     for (final playlistRecord in playlistRecords)
       playlistsMap[playlistRecord.playlistId]?.records[playlistRecord.songLyricId] = playlistRecord;
 
-    // for (final playlist in playlistsMap.entries)
-
     _playlists = playlistsMap;
     _songLyrics = songLyricsMap;
     _songbooks = songbooksMap;

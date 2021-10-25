@@ -5,6 +5,7 @@ import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
 import 'package:zpevnik/screens/components/searchable_list_view.dart';
 import 'package:zpevnik/screens/components/song_lyric_row.dart';
+import 'package:zpevnik/screens/utils/selectable.dart';
 import 'package:zpevnik/screens/utils/updateable.dart';
 
 class FavoritesScreen extends StatefulWidget {
@@ -14,7 +15,7 @@ class FavoritesScreen extends StatefulWidget {
   _FavoritesScreenState createState() => _FavoritesScreenState();
 }
 
-class _FavoritesScreenState extends State<FavoritesScreen> with Updateable {
+class _FavoritesScreenState extends State<FavoritesScreen> with Selectable, Updateable {
   late SongLyricsProvider _songLyricsProvider;
 
   @override
@@ -33,8 +34,11 @@ class _FavoritesScreenState extends State<FavoritesScreen> with Updateable {
     final itemBuilder =
         (songLyric) => SongLyricRow(songLyric: songLyric, isReorderable: _songLyricsProvider.searchText.isEmpty);
 
-    return ChangeNotifierProvider.value(
-      value: _songLyricsProvider,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(value: _songLyricsProvider),
+        ChangeNotifierProvider.value(value: selectionProvider),
+      ],
       builder: (_, __) => SearchableListView(
         key: PageStorageKey('favorites'),
         itemsProvider: _songLyricsProvider,
@@ -45,6 +49,10 @@ class _FavoritesScreenState extends State<FavoritesScreen> with Updateable {
         navigationBarTitle: 'Písně s hvězdičkou',
         onReorder: _songLyricsProvider.onReorder,
         onReorderDone: _songLyricsProvider.onReorderDone,
+        trailingActions: AnimatedBuilder(
+          animation: selectionProvider,
+          builder: (context, child) => buildSelectableActions(_songLyricsProvider.items),
+        ),
       ),
     );
   }

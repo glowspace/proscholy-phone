@@ -63,6 +63,7 @@ extension SongLyricsSearch on Model {
   }
 
   Future<List<dynamic>?> searchSongLyrics(String searchText) {
+    searchText = '$searchText*';
     return execDataTable(
         'SELECT id, matchinfo(song_lyrics_search, "pcnalx") as info FROM song_lyrics_search WHERE song_lyrics_search MATCH ?;',
         [searchText]);

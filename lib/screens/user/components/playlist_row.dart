@@ -48,14 +48,12 @@ class _PlaylistRowState extends State<PlaylistRow> {
     return custom.PopupMenuButton(
       itemBuilder: (context) => [
         _buildPopupMenuItem(context, _PlaylistAction.rename, 'Přejmenovat', Icons.drive_file_rename_outline),
+        if (!playlist.isArchived) _buildPopupMenuItem(context, _PlaylistAction.share, 'Sdílet', Icons.share),
         if (!playlist.isArchived)
           _buildPopupMenuItem(context, _PlaylistAction.duplicate, 'Duplikovat', CustomIcon.content_duplicate),
         _buildPopupMenuItem(context, _PlaylistAction.toggleArchive,
             playlist.isArchived ? 'Zrušit archivaci' : 'Archivovat', Icons.archive),
-        if (playlist.isArchived)
-          _buildPopupMenuItem(context, _PlaylistAction.remove, 'Odstranit', Icons.delete)
-        else
-          _buildPopupMenuItem(context, _PlaylistAction.share, 'Sdílet', Icons.share)
+        _buildPopupMenuItem(context, _PlaylistAction.remove, 'Odstranit', Icons.delete)
       ],
       onSelected: (action) {
         switch (action) {
@@ -69,7 +67,7 @@ class _PlaylistRowState extends State<PlaylistRow> {
             playlistsProvider.toggleArchive(playlist);
             break;
           case _PlaylistAction.remove:
-            playlistsProvider.remove(playlist);
+            _removePlaylist(context);
             break;
           case _PlaylistAction.share:
             _sharePlaylist();
@@ -128,5 +126,17 @@ class _PlaylistRowState extends State<PlaylistRow> {
         submitText: 'Přejmenovat',
       ),
     ).then((text) => setState(() => playlist.name = text));
+  }
+
+  void _removePlaylist(BuildContext context) {
+    showPlatformDialog<bool>(
+      context,
+      (context) => ConfirmDialog(
+        title: 'Opravdu chcete playlist smazat?',
+        confirmText: 'Smazat',
+      ),
+    ).then((confirmed) {
+      if (confirmed != null && confirmed) context.read<PlaylistsProvider>().remove(widget.playlist);
+    });
   }
 }
