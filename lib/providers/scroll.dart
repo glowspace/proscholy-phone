@@ -7,10 +7,10 @@ const double _scrollSpeedChangeMult = 1.1;
 
 class ScrollProvider {
   final ScrollController controller;
-  final ValueNotifier<bool> scrolling;
+  final ValueNotifier<bool> isScrolling;
 
   ScrollProvider(this.controller)
-      : scrolling = ValueNotifier(false),
+      : isScrolling = ValueNotifier(false),
         _speed = _defaultScrollSpeed;
 
   double _speed;
@@ -19,7 +19,7 @@ class ScrollProvider {
       !controller.position.hasContentDimensions || !(controller.position.atEdge && controller.position.pixels != 0);
 
   void toggleScroll() {
-    scrolling.value = !scrolling.value;
+    isScrolling.value = !isScrolling.value;
 
     _scroll();
   }
@@ -43,13 +43,15 @@ class ScrollProvider {
   }
 
   void _scroll() {
-    if (scrolling.value) {
+    if (isScrolling.value) {
       final maxExtent = controller.position.maxScrollExtent;
       final distanceDifference = maxExtent - controller.offset;
       final durationDouble = distanceDifference / _speed;
 
-      controller.animateTo(controller.position.maxScrollExtent,
-          duration: Duration(seconds: durationDouble.toInt()), curve: Curves.linear);
+      controller
+          .animateTo(controller.position.maxScrollExtent,
+              duration: Duration(seconds: durationDouble.toInt()), curve: Curves.linear)
+          .then((_) => isScrolling.value = false);
     } else
       controller.position.hold(() => true);
   }

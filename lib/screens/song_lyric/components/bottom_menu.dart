@@ -57,7 +57,7 @@ class _BottomMenuState extends State<BottomMenu> with Updateable {
           if (widget.hasExternals)
             Highlightable(child: Icon(Icons.headset), padding: padding, onPressed: widget.showExternals),
           CollapseableWidget(
-            collapsed: widget.scrollProvider.scrolling,
+            collapsed: widget.scrollProvider.isScrolling,
             collapseAxis: Axis.horizontal,
             inverted: true,
             child: Row(children: [
@@ -66,7 +66,7 @@ class _BottomMenuState extends State<BottomMenu> with Updateable {
             ]),
           ),
           Highlightable(
-            child: Icon(widget.scrollProvider.scrolling.value ? Icons.stop : Icons.arrow_downward),
+            child: Icon(widget.scrollProvider.isScrolling.value ? Icons.stop : Icons.arrow_downward),
             padding: padding,
             onPressed: widget.scrollProvider.canScroll ? widget.scrollProvider.toggleScroll : null,
           ),
@@ -88,5 +88,5 @@ class _BottomMenuState extends State<BottomMenu> with Updateable {
   }
 
   @override
-  List<Listenable> get listenables => [widget.scrollProvider.scrolling];
+  List<Listenable> get listenables => [widget.scrollProvider.isScrolling, widget.scrollProvider.controller];
 }

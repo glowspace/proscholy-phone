@@ -40,6 +40,7 @@ class _LyricsWidgetState extends State<LyricsWidget> with Updateable {
 
     if (!widget.controller.isProjectionEnabled)
       lyrics = Scrollbar(
+        controller: widget.scrollController,
         child: SingleChildScrollView(controller: widget.scrollController, child: lyrics),
       );
 
