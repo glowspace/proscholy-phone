@@ -137,7 +137,7 @@ List<Block> _blocks(String line, bool isComment, bool isInterlude) {
 List<Block> _splitToWords(String chord, String text, bool endsInWordMiddle, bool isComment, bool isInterlude) {
   final blocks = List<Block>.empty(growable: true);
 
-  final words = text.trim().split(_multipleSpacesRE);
+  final words = text.trimRight().split(_multipleSpacesRE);
 
   String previousPart = '';
 
