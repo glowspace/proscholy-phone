@@ -36,7 +36,7 @@ class Block {
 }
 
 final _verseRE = RegExp(
-    r'\s*\(?(\d+\.|[BCR]\d?[:.]|@mezihra:|@dohra:|@předehra:|#(?!.*\]))?\)?\s*((?:=\s*(\d\.)|.|\n)*?)\n*(?=$|[^=]?\d\.|\(?[BCR]\d?[:.]\)?|@mezihra:|@dohra:|@předehra:|#(?!.*\]))');
+    r'\s*\(?(\d+\.|[BCR]\d?[:.]|@mezihra:|@dohra:|@předehra:|#(?!.*\]))?\)?\s*((?:=\s*(\d\.)|.|\n)*?)\n*(?=$|(?<=\n)[^=]?\d\.|\(?[BCR]\d?[:.]\)?|@mezihra:|@dohra:|@předehra:|#(?!.*\]))');
 
 final _chordRE = RegExp(r'\[[^\]]+\]');
 final _placeholderRE = RegExp(r'\[%\]');
@@ -107,7 +107,11 @@ String _removeChords(String lyrics) => lyrics.replaceAll(_chordRE, '');
 List<Line> _lines(String verse, {bool isComment = false, bool isInterlude = false}) {
   int index = 0;
 
-  return verse.split('\n').map((line) => Line(_blocks(line.trim(), isComment && (index++ == 0), isInterlude))).toList();
+  return verse
+      .split('\n')
+      .where((line) => line.isNotEmpty)
+      .map((line) => Line(_blocks(line.trim(), isComment && (index++ == 0), isInterlude)))
+      .toList();
 }
 
 List<Block> _blocks(String line, bool isComment, bool isInterlude) {
