@@ -128,12 +128,10 @@ class Updater {
     // temporary, can be removed after some time, when every installed app should be fixed
     if (version == 6) await _fixPlaylistRecords();
 
-    if (version != null && version != kCurrentVersion)
+    if (version != null && version < 6)
       try {
         await _migrateOldDB();
-      } on Exception catch (e) {
-        throw Exception(e.toString());
-      }
+      } on Exception {}
 
     if (forceUpdate || connectivityResult == ConnectivityResult.wifi) await _update(forceUpdate);
   }
