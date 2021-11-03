@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
@@ -41,7 +42,10 @@ class _SongLyricScreenState extends State<SongLyricScreen> with Updateable {
 
   late ValueNotifier<bool> _menuCollapsed;
 
-  Offset? _panStartLocation;
+  // scaling and swiping cannot be captured simultaneosly by `GestureDetector`
+  // custom functions are implemented to handle it
+  Offset? _swipeStartLocation;
+  DateTime? _swipeStartTime;
   SwipeDirection? _swipeDirection;
 
   @override
@@ -156,17 +160,23 @@ class _SongLyricScreenState extends State<SongLyricScreen> with Updateable {
   }
 
   void _onScaleStart(ScaleStartDetails details) {
-    _panStartLocation = details.focalPoint;
+    // if there is only one pointer at the start it might be swipe
+    if (details.pointerCount == 1) {
+      _swipeStartLocation = details.focalPoint;
+      _swipeStartTime = DateTime.now();
+    }
 
     context.read<SettingsProvider>().fontScaleStarted();
   }
 
   void _onScaleUpdate(ScaleUpdateDetails details) {
-    if (details.scale != 1) {
-      _panStartLocation = null;
+    // if another pointer is added during swipe change it to scale
+    if (details.pointerCount > 1) {
+      _swipeStartLocation = null;
+      _swipeStartTime = null;
       _swipeDirection = null;
-    } else if (_panStartLocation != null) {
-      if (_panStartLocation!.dx < details.focalPoint.dx)
+    } else if (_swipeStartLocation != null) {
+      if (_swipeStartLocation!.dx < details.focalPoint.dx)
         _swipeDirection = SwipeDirection.right;
       else
         _swipeDirection = SwipeDirection.left;
@@ -176,25 +186,30 @@ class _SongLyricScreenState extends State<SongLyricScreen> with Updateable {
   }
 
   void _onScaleEnd(ScaleEndDetails details) {
-    if (_swipeDirection == SwipeDirection.right) {
-      if (_lyricsController.isProjectionEnabled)
-        _lyricsController.previousVerse();
-      else {
-        final newSongLyric = context.read<SongLyricsProvider>().previousSongLyric;
-        if (newSongLyric != null)
-          setState(() => _lyricsController = LyricsController(newSongLyric, context.read<SettingsProvider>()));
-      }
-    } else if (_swipeDirection == SwipeDirection.left) {
-      if (_lyricsController.isProjectionEnabled)
-        _lyricsController.nextVerse();
-      else {
-        final newSongLyric = context.read<SongLyricsProvider>().nextSongLyric;
-        if (newSongLyric != null)
-          setState(() => _lyricsController = LyricsController(newSongLyric, context.read<SettingsProvider>()));
+    // when person lifts up fingers the `GestureDetector` will detect is as new scale event and custom logic will detect is as swipe
+    // normal swipe will take at least 10μs, so if it is lower just ignore it
+    if (_swipeStartTime != null && DateTime.now().difference(_swipeStartTime!).inMicroseconds > 10000) {
+      if (_swipeDirection == SwipeDirection.right) {
+        if (_lyricsController.isProjectionEnabled)
+          _lyricsController.previousVerse();
+        else {
+          final newSongLyric = context.read<SongLyricsProvider>().previousSongLyric;
+          if (newSongLyric != null)
+            setState(() => _lyricsController = LyricsController(newSongLyric, context.read<SettingsProvider>()));
+        }
+      } else if (_swipeDirection == SwipeDirection.left) {
+        if (_lyricsController.isProjectionEnabled)
+          _lyricsController.nextVerse();
+        else {
+          final newSongLyric = context.read<SongLyricsProvider>().nextSongLyric;
+          if (newSongLyric != null)
+            setState(() => _lyricsController = LyricsController(newSongLyric, context.read<SettingsProvider>()));
+        }
       }
     }
 
-    _panStartLocation = null;
+    _swipeStartLocation = null;
+    _swipeStartTime = null;
     _swipeDirection = null;
   }
 
