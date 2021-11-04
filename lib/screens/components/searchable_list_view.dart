@@ -146,7 +146,7 @@ class _SearchableListViewState extends State<SearchableListView> with Updateable
       );
 
     return Container(
-      padding: EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
+      padding: EdgeInsets.only(top: kDefaultPadding / 2),
       child: Scrollbar(child: child),
     );
   }
