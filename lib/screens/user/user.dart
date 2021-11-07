@@ -4,7 +4,6 @@ import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/platform/utils/bottom_sheet.dart';
 import 'package:zpevnik/platform/utils/route_builder.dart';
 import 'package:zpevnik/platform/components/scaffold.dart';
-import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/playlists.dart';
 import 'package:zpevnik/screens/components/highlightable.dart';
 import 'package:zpevnik/screens/components/icon_item.dart';
