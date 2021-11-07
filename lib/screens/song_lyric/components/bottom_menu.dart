@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/scroll.dart';
+import 'package:zpevnik/providers/settings.dart';
 import 'package:zpevnik/screens/components/collapseable.dart';
 import 'package:zpevnik/screens/components/highlightable.dart';
 import 'package:zpevnik/screens/components/rotateable.dart';
@@ -27,7 +29,17 @@ class BottomMenu extends StatefulWidget {
 }
 
 class _BottomMenuState extends State<BottomMenu> with Updateable {
-  final _collapsed = ValueNotifier(false);
+  late ValueNotifier<bool> _collapsed;
+
+  @override
+  void initState() {
+    super.initState();
+
+    final settingsProvider = context.read<SettingsProvider>();
+
+    _collapsed = ValueNotifier(settingsProvider.bottomOptionsCollapsed);
+    _collapsed.addListener(settingsProvider.toggleBottomOptionsCollapsed);
+  }
 
   @override
   Widget build(BuildContext context) {

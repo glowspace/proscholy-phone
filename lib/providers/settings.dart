@@ -9,6 +9,7 @@ const String _showChordsKey = 'show_chords';
 const String _accidentalsKey = 'accidentals';
 const String _blockDisplayOffKey = 'block_display';
 const String _showBottomOptionsKey = 'show_bottom_options';
+const String _bottomOptionsCollapsedKey = 'bottom_options_collapsed';
 const String _isDarkModeKey = 'dark_mode';
 
 class SettingsProvider extends ChangeNotifier {
@@ -20,6 +21,7 @@ class SettingsProvider extends ChangeNotifier {
   late int _accidentals;
   late bool _blockDisplayOff;
   late bool _showBottomOptions;
+  late bool _bottomOptionsCollapsed;
   late bool? _isDarkMode;
 
   SettingsProvider(this._prefs) {
@@ -28,6 +30,7 @@ class SettingsProvider extends ChangeNotifier {
     _accidentals = _prefs.getInt(_accidentalsKey) ?? 0;
     _blockDisplayOff = _prefs.getBool(_blockDisplayOffKey) ?? true;
     _showBottomOptions = _prefs.getBool(_showBottomOptionsKey) ?? true;
+    _bottomOptionsCollapsed = _prefs.getBool(_bottomOptionsCollapsedKey) ?? false;
     _isDarkMode = _prefs.getBool(_isDarkModeKey);
 
     if (_blockDisplayOff) Wakelock.enable();
@@ -42,6 +45,8 @@ class SettingsProvider extends ChangeNotifier {
   bool get blockDisplayOff => _blockDisplayOff;
 
   bool get showBottomOptions => _showBottomOptions;
+
+  bool get bottomOptionsCollapsed => _bottomOptionsCollapsed;
 
   bool? get isDarkMode => _isDarkMode;
 
@@ -94,6 +99,12 @@ class SettingsProvider extends ChangeNotifier {
     _prefs.setBool(_showBottomOptionsKey, value);
 
     notifyListeners();
+  }
+
+  void toggleBottomOptionsCollapsed() {
+    _bottomOptionsCollapsed = !_bottomOptionsCollapsed;
+
+    _prefs.setBool(_bottomOptionsCollapsedKey, bottomOptionsCollapsed);
   }
 
   void changeIsDarkMode(bool value) {
