@@ -107,11 +107,7 @@ String _removeChords(String lyrics) => lyrics.replaceAll(_chordRE, '');
 List<Line> _lines(String verse, {bool isComment = false, bool isInterlude = false}) {
   int index = 0;
 
-  return verse
-      .split('\n')
-      .where((line) => line.isNotEmpty)
-      .map((line) => Line(_blocks(line.trim(), isComment && (index++ == 0), isInterlude)))
-      .toList();
+  return verse.split('\n').map((line) => Line(_blocks(line.trim(), isComment && (index++ == 0), isInterlude))).toList();
 }
 
 List<Block> _blocks(String line, bool isComment, bool isInterlude) {
