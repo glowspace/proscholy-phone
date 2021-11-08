@@ -48,11 +48,7 @@ class _HomeScreenState extends State<HomeScreen> with Selectable, Updateable {
   }
 
   @override
-  void update() {
-    _songLyricsProvider = SongLyricsProvider(context.read<DataProvider>().songLyrics);
-
-    super.update();
-  }
+  void update() => _songLyricsProvider.allSongLyrics = context.read<DataProvider>().songLyrics;
 
   @override
   List<Listenable> get listenables => [context.read<DataProvider>()];

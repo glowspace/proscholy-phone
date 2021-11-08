@@ -7,12 +7,13 @@ import 'package:zpevnik/models/song_lyrics_search.dart';
 import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/platform/utils/route_builder.dart';
 import 'package:zpevnik/providers/utils/searchable.dart';
+import 'package:zpevnik/screens/song_lyric/song_lyric_page.dart';
 
 class SongLyricsProvider extends ChangeNotifier with Searchable<SongLyric> {
-  final List<SongLyric> allSongLyrics;
+  List<SongLyric> _allSongLyrics;
   final bool onlyFavorite;
 
-  SongLyricsProvider(this.allSongLyrics, {this.onlyFavorite = false}) : _selectedTags = [];
+  SongLyricsProvider(this._allSongLyrics, {this.onlyFavorite = false}) : _selectedTags = [];
 
   List<SongLyric>? _songLyrics;
   List<Tag> _selectedTags;
@@ -20,6 +21,14 @@ class SongLyricsProvider extends ChangeNotifier with Searchable<SongLyric> {
   List<Tag> get selectedTags => _selectedTags;
 
   SongLyric? _matchedById;
+
+  List<SongLyric> get allSongLyrics => _allSongLyrics;
+
+  set allSongLyrics(List<SongLyric> songLyrics) {
+    _allSongLyrics = songLyrics;
+
+    notifyListeners();
+  }
 
   @override
   set searchText(String newValue) {
@@ -34,7 +43,7 @@ class SongLyricsProvider extends ChangeNotifier with Searchable<SongLyric> {
 
   @override
   List<SongLyric> get items {
-    final songLyrics = _filter(_songLyrics ?? allSongLyrics);
+    final songLyrics = _filter(_songLyrics ?? _allSongLyrics);
 
     if (onlyFavorite) return songLyrics.where((songLyric) => songLyric.isFavorite).toList();
 
@@ -46,8 +55,9 @@ class SongLyricsProvider extends ChangeNotifier with Searchable<SongLyric> {
     super.onSubmitted(context);
 
     final matchedById = _matchedById;
-    // if (matchedById != null)
-    // Navigator.of(context).push(platformRouteBuilder(context, SongLyricScreen(songLyric: matchedById)));
+    if (matchedById != null)
+      Navigator.of(context)
+          .push(platformRouteBuilder(context, SongLyricPageView(songLyrics: [matchedById], initialSongLyricIndex: 0)));
   }
 
   List<SongLyric> _filter(List<SongLyric> songLyrics) {

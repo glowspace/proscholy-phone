@@ -146,7 +146,7 @@ class Updater {
 
     final query = _query
         .replaceAll('\n', '')
-        .replaceFirst(_lastUpdatePlaceholder, '(updated_after: \\"${lastUpdate.toUtc()}\\")');
+        .replaceFirst(_lastUpdatePlaceholder, '(updated_after: \\"${_dateFormat.format(lastUpdate.toUtc())}\\")');
 
     try {
       final response = await _postQuery(query);

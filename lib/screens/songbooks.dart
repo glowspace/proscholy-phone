@@ -40,11 +40,7 @@ class _SongbooksScreenState extends State<SongbooksScreen> with Updateable {
   }
 
   @override
-  void update() {
-    super.update();
-
-    _songbooksProvider = SongbooksProvider(context.read<DataProvider>().songbooks);
-  }
+  void update() => _songbooksProvider.allSongbooks = context.read<DataProvider>().songbooks;
 
   @override
   List<Listenable> get listenables => [context.read<DataProvider>()];

@@ -4,13 +4,21 @@ import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/providers/utils/searchable.dart';
 
 class SongbooksProvider extends ChangeNotifier with Searchable<Songbook> {
-  final List<Songbook> allSongbooks;
+  List<Songbook> _allSongbooks;
 
-  SongbooksProvider(this.allSongbooks) {
+  SongbooksProvider(this._allSongbooks) {
     _sort();
   }
 
   List<Songbook>? _songbooks;
+
+  List<Songbook> get allSongbooks => _allSongbooks;
+
+  set allSongbooks(List<Songbook> songbooks) {
+    _allSongbooks = songbooks;
+
+    notifyListeners();
+  }
 
   @override
   List<Songbook> get items => _songbooks ?? allSongbooks;
