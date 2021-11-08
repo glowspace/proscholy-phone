@@ -54,7 +54,12 @@ class TranslationsScreen extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: kDefaultPadding),
             child: Text(songLyricType.description, style: textStyle),
           ),
-          for (final songLyric in songLyrics) SongLyricRow(songLyric: songLyric, translationSongLyric: this.songLyric),
+          for (final songLyric in songLyrics)
+            SongLyricRow(
+              songLyric: songLyric,
+              translationSongLyric: this.songLyric,
+              songLyrics: context.watch<DataProvider>().songsSongLyrics(songLyric.songId ?? -1),
+            ),
         ],
       ),
     );

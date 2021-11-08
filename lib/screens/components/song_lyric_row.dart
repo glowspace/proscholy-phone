@@ -20,6 +20,7 @@ class SongLyricRow extends StatefulWidget {
   final Songbook? songbook;
   final SongLyric? translationSongLyric;
   final bool isReorderable;
+  final List<SongLyric>? songLyrics;
 
   const SongLyricRow({
     Key? key,
@@ -28,6 +29,7 @@ class SongLyricRow extends StatefulWidget {
     this.songbook,
     this.translationSongLyric,
     this.isReorderable = false,
+    this.songLyrics,
   }) : super(key: key);
 
   @override
@@ -105,11 +107,10 @@ class _SongLyricRowState extends State<SongLyricRow> {
     else {
       StatusBarWrapper.of(context).navigationBarColor.value = null;
 
-      final songLyrics = context.read<SongLyricsProvider>().items;
+      final songLyrics = widget.songLyrics ?? context.read<SongLyricsProvider>().items;
 
       Navigator.of(context).push(platformRouteBuilder(
         context,
-        // SongLyricScreen(songLyric: widget.songLyric, fromTranslations: widget.translationSongLyric != null),
         SongLyricPageView(
             songLyrics: songLyrics,
             initialSongLyricIndex: songLyrics.indexOf(widget.songLyric),
