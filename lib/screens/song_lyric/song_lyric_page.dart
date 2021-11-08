@@ -55,8 +55,8 @@ class _SongLyricPageViewState extends State<SongLyricPageView> {
     super.initState();
 
     // adding songlyrics length multiple times to initial page, so we can swipe through songlyrics cyclically
-    controller = PageController(initialPage: widget.initialSongLyricIndex + 5 * widget.songLyrics.length)
-      ..addListener(_pageUpdate);
+    final initialPage = widget.songLyrics.length == 1 ? 0 : widget.initialSongLyricIndex + 5 * widget.songLyrics.length;
+    controller = PageController(initialPage: initialPage)..addListener(_pageUpdate);
 
     _menuCollapsed = ValueNotifier(true);
 
@@ -79,7 +79,8 @@ class _SongLyricPageViewState extends State<SongLyricPageView> {
         body: Stack(
           fit: StackFit.expand,
           children: [
-            PageView.builder(itemBuilder: _buildLyrics, controller: controller),
+            PageView.builder(
+                itemBuilder: _buildLyrics, controller: controller, itemCount: widget.songLyrics.length == 1 ? 1 : null),
             Positioned(
               right: 0,
               child: SongLyricMenu(lyricsController: _currentLyricsController, collapsed: _menuCollapsed),
