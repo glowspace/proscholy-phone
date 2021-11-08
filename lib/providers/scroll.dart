@@ -15,8 +15,9 @@ class ScrollProvider {
 
   double _speed;
 
-  bool get canScroll =>
-      !controller.position.hasContentDimensions || !(controller.position.atEdge && controller.position.pixels != 0);
+  bool get canScroll => !controller.hasClients
+      ? false
+      : !controller.position.hasContentDimensions || !(controller.position.atEdge && controller.position.pixels != 0);
 
   void toggleScroll() {
     isScrolling.value = !isScrolling.value;

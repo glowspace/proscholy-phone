@@ -7,7 +7,6 @@ import 'package:zpevnik/models/song_lyrics_search.dart';
 import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/platform/utils/route_builder.dart';
 import 'package:zpevnik/providers/utils/searchable.dart';
-import 'package:zpevnik/screens/song_lyric/song_lyric.dart';
 
 class SongLyricsProvider extends ChangeNotifier with Searchable<SongLyric> {
   final List<SongLyric> allSongLyrics;
@@ -21,39 +20,6 @@ class SongLyricsProvider extends ChangeNotifier with Searchable<SongLyric> {
   List<Tag> get selectedTags => _selectedTags;
 
   SongLyric? _matchedById;
-
-  int? _currentIndex;
-
-  set currentSongLyric(SongLyric? songLyric) {
-    if (songLyric == null)
-      _currentIndex = null;
-    else
-      _currentIndex = items.indexOf(songLyric);
-  }
-
-  SongLyric? get previousSongLyric {
-    if (_currentIndex == null) return null;
-
-    final _items = items;
-
-    if (_currentIndex == 0) _currentIndex = _items.length;
-
-    _currentIndex = _currentIndex! - 1;
-
-    return _items[_currentIndex!];
-  }
-
-  SongLyric? get nextSongLyric {
-    if (_currentIndex == null) return null;
-
-    final _items = items;
-
-    _currentIndex = _currentIndex! + 1;
-
-    if (_currentIndex == _items.length) _currentIndex = 0;
-
-    return _items[_currentIndex!];
-  }
 
   @override
   set searchText(String newValue) {
@@ -80,8 +46,8 @@ class SongLyricsProvider extends ChangeNotifier with Searchable<SongLyric> {
     super.onSubmitted(context);
 
     final matchedById = _matchedById;
-    if (matchedById != null)
-      Navigator.of(context).push(platformRouteBuilder(context, SongLyricScreen(songLyric: matchedById)));
+    // if (matchedById != null)
+    // Navigator.of(context).push(platformRouteBuilder(context, SongLyricScreen(songLyric: matchedById)));
   }
 
   List<SongLyric> _filter(List<SongLyric> songLyrics) {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zpevnik/models/song_lyric.dart';
+import 'package:zpevnik/providers/scroll.dart';
 import 'package:zpevnik/providers/settings.dart';
 import 'package:zpevnik/screens/song_lyric/utils/converter.dart';
 import 'package:zpevnik/screens/song_lyric/utils/parser.dart';
@@ -9,6 +10,11 @@ final _styleRE = RegExp(r'\<style[^\<]*\<\/style\>');
 class LyricsController extends ChangeNotifier {
   final SongLyric songLyric;
   final SettingsProvider settingsProvider;
+
+  final scrollProvider = ScrollProvider(ScrollController());
+
+  // needed so that lyrics widget does not rebuild after toggling full screen mode
+  final lyricsGlobalKey = GlobalKey();
 
   LyricsController(this.songLyric, this.settingsProvider)
       : _isProjectionEnabled = false,

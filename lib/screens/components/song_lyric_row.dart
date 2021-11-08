@@ -10,7 +10,7 @@ import 'package:zpevnik/providers/song_lyrics.dart';
 import 'package:zpevnik/screens/components/circular_checkbox.dart';
 import 'package:zpevnik/screens/components/highlightable.dart';
 import 'package:zpevnik/screens/components/reorderable_row.dart';
-import 'package:zpevnik/screens/song_lyric/song_lyric.dart';
+import 'package:zpevnik/screens/song_lyric/song_lyric_page.dart';
 import 'package:zpevnik/screens/utils/status_bar_wrapper.dart';
 import 'package:zpevnik/theme.dart';
 
@@ -105,11 +105,15 @@ class _SongLyricRowState extends State<SongLyricRow> {
     else {
       StatusBarWrapper.of(context).navigationBarColor.value = null;
 
-      context.read<SongLyricsProvider>().currentSongLyric = widget.songLyric;
+      final songLyrics = context.read<SongLyricsProvider>().items;
 
       Navigator.of(context).push(platformRouteBuilder(
         context,
-        SongLyricScreen(songLyric: widget.songLyric, fromTranslations: widget.translationSongLyric != null),
+        // SongLyricScreen(songLyric: widget.songLyric, fromTranslations: widget.translationSongLyric != null),
+        SongLyricPageView(
+            songLyrics: songLyrics,
+            initialSongLyricIndex: songLyrics.indexOf(widget.songLyric),
+            fromTranslations: widget.translationSongLyric != null),
         types: [ProviderType.data, ProviderType.fullScreen, ProviderType.playlist, ProviderType.songLyric],
       ));
     }
