@@ -44,16 +44,16 @@ class _HighlightableState extends State<Highlightable> {
 
     final child = isIcon ? IconTheme(data: IconThemeData(color: color), child: widget.child) : widget.child;
 
-    return Container(
-      color: isIcon ? null : color,
-      padding: widget.padding,
-      child: GestureDetector(
-        onPanDown: (details) => _setHightlight(!_containsChild(details)),
-        onPanCancel: () => _setHightlight(false),
-        onPanEnd: (_) => _setHightlight(false),
-        onTap: widget.onPressed,
-        onLongPress: widget.onLongPressed,
-        behavior: HitTestBehavior.translucent,
+    return GestureDetector(
+      onPanDown: (details) => _setHightlight(!_containsChild(details)),
+      onPanCancel: () => _setHightlight(false),
+      onPanEnd: (_) => _setHightlight(false),
+      onTap: widget.onPressed,
+      onLongPress: widget.onLongPressed,
+      behavior: HitTestBehavior.translucent,
+      child: Container(
+        color: isIcon ? null : color,
+        padding: widget.padding,
         child: child,
       ),
     );
