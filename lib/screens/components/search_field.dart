@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/platform/mixin.dart';
+import 'package:zpevnik/screens/song_lyric/utils/utils.dart';
 import 'package:zpevnik/theme.dart';
 
 class SearchField extends StatefulWidget {
@@ -120,20 +121,15 @@ class _SearchFieldState extends State<SearchField> with PlatformMixin {
 
     double fontSize = textStyle.fontSize ?? 0;
 
+    final scaleFactor = MediaQuery.of(context).textScaleFactor;
+
     while (true) {
       textStyle = textStyle?.copyWith(fontSize: fontSize);
       fontSize -= 0.1;
 
-      final textPainter = TextPainter(
-        text: TextSpan(text: widget.placeholder, style: textStyle),
-        maxLines: 1,
-        textScaleFactor: MediaQuery.of(context).textScaleFactor,
-        textDirection: TextDirection.ltr,
-      );
+      final placeholderWidth = computeTextWidth(widget.placeholder, textStyle: textStyle, scaleFactor: scaleFactor);
 
-      textPainter.layout();
-
-      if (textPainter.size.width < width) return textStyle;
+      if (placeholderWidth < width) return textStyle;
     }
   }
 }

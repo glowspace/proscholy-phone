@@ -6,6 +6,7 @@ import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/settings.dart';
 import 'package:zpevnik/screens/song_lyric/utils/lyrics_controller.dart';
 import 'package:zpevnik/screens/song_lyric/utils/parser.dart';
+import 'package:zpevnik/screens/song_lyric/utils/utils.dart';
 import 'package:zpevnik/screens/utils/updateable.dart';
 import 'package:zpevnik/theme.dart';
 
@@ -104,12 +105,15 @@ class _LyricsWidgetState extends State<LyricsWidget> with Updateable {
     final verseNumber = verse.number;
     final settingsProvider = context.watch<SettingsProvider>();
 
+    final verseNumberWidth = computeTextWidth(verseNumber,
+        textStyle: _textStyle(verse.hasChords), scaleFactor: settingsProvider.fontSizeScale);
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (verseNumber != null)
           SizedBox(
-            width: (settingsProvider.fontSizeScale + 0.5) * kDefaultPadding,
+            width: verseNumberWidth + kDefaultPadding / 2,
             child: RichText(
               text: TextSpan(text: verseNumber, style: _textStyle(verse.hasChords)),
               textScaleFactor: settingsProvider.fontSizeScale,
