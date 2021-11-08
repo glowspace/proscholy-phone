@@ -123,9 +123,11 @@ class _ContentScreenState extends State<ContentScreen> with PlatformMixin, Updat
   List<Color> get _activeColors => [blue, green, red];
 
   void _indexChanged(int index) {
-    // TODO: pop and reset state
-
-    setState(() => _currentIndex = index);
+    // TODO: pop and reset state for android
+    if (_currentIndex == index)
+      _navigatorKeys[index].currentState?.popUntil((route) => route.isFirst);
+    else
+      setState(() => _currentIndex = index);
   }
 
   void _handleUri(Uri? uri) {
