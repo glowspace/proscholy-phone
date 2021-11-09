@@ -77,9 +77,16 @@ class PlatformScaffold extends StatelessWidget with PlatformMixin {
       transitionBetweenRoutes: middle == null, // needed because of search widget
     );
 
-    return CupertinoPageScaffold(
+    final scaffold = CupertinoPageScaffold(
       child: SafeArea(child: body),
       navigationBar: _showNavBar(context) ? navBar : null,
+    );
+
+    if (navigationBarTextColor == null) return scaffold;
+
+    return CupertinoTheme(
+      child: scaffold,
+      data: appTheme.cupertinoTheme.copyWith(textTheme: CupertinoTextThemeData(primaryColor: navigationBarTextColor!)),
     );
   }
 
