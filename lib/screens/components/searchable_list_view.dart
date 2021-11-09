@@ -55,6 +55,8 @@ class SearchableListView<T> extends StatefulWidget {
 }
 
 class _SearchableListViewState extends State<SearchableListView> with Updateable {
+  final searchFieldFocusNode = FocusNode();
+
   late bool _isShowingSearchField;
 
   TagsProvider? _tagsProvider;
@@ -70,7 +72,11 @@ class _SearchableListViewState extends State<SearchableListView> with Updateable
   Widget build(BuildContext context) {
     final searchButton = Highlightable(
       child: Icon(Icons.search, color: widget.navigationBarTextColor),
-      onPressed: () => setState(() => _isShowingSearchField = true),
+      onPressed: () {
+        setState(() => _isShowingSearchField = true);
+
+        searchFieldFocusNode.requestFocus();
+      },
     );
 
     final provider = widget.itemsProvider;
@@ -114,6 +120,7 @@ class _SearchableListViewState extends State<SearchableListView> with Updateable
         key: PageStorageKey(widget.key.toString() + '_search_field'),
         placeholder: widget.searchPlaceholder,
         onSearch: (searchText) => widget.itemsProvider.searchText = searchText,
+        focusNode: searchFieldFocusNode,
         prefix: _shouldShowNavigationBar ? prefix : null,
         suffix: isFilterable ? suffix : null,
         onSubmitted: (_) => widget.itemsProvider.onSubmitted(context),
@@ -203,6 +210,8 @@ class _SearchableListViewState extends State<SearchableListView> with Updateable
     if (provider is SongLyricsProvider) provider.clearTags();
 
     setState(() => _isShowingSearchField = false);
+
+    searchFieldFocusNode.unfocus();
   }
 
   @override
