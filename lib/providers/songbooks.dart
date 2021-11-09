@@ -17,6 +17,8 @@ class SongbooksProvider extends ChangeNotifier with Searchable<Songbook> {
   set allSongbooks(List<Songbook> songbooks) {
     _allSongbooks = songbooks;
 
+    _sort();
+
     notifyListeners();
   }
 
