@@ -44,8 +44,10 @@ final _firstVerseRE = RegExp(r'1\.(?:.|\n)+?(?=\n+\d\.|\n+\(?[BCR][:.]\)?)', mul
 
 final _multipleSpacesRE = RegExp(r' +');
 
+final _multipleNewLinesRE = RegExp(r'\n\s*\n');
+
 List<Verse> parseLyrics(String lyrics, {bool showChords = true}) {
-  lyrics = lyrics.replaceAll('\r', '');
+  lyrics = lyrics.replaceAll('\r', '').replaceAll(_multipleNewLinesRE, '\n');
 
   final preparedLyrics = showChords ? _substituteChordsPlaceholders(lyrics) : _removeChords(lyrics);
 
