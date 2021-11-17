@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:zpevnik/links.dart';
@@ -66,7 +67,8 @@ class SongLyricMenu extends StatelessWidget {
         IconItem(
           title: 'Nahlásit',
           icon: Icons.warning,
-          onPressed: () => _doAndHide(context, () => launch('$reportUrl=${songLyric.id}')),
+          onPressed: () => _doAndHide(
+              context, () async => launch('$reportUrl?customfield_10056=${await _generateCustomField(context)}')),
         ),
       ],
     );
@@ -89,5 +91,14 @@ class SongLyricMenu extends StatelessWidget {
       ),
       height: 0.67 * MediaQuery.of(context).size.height,
     );
+  }
+
+  Future<String> _generateCustomField(BuildContext context) async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
+    final version = '${packageInfo.version}%2b${packageInfo.buildNumber}';
+    final platform = AppTheme.of(context).isIOS ? 'iOS' : 'android';
+
+    return '${lyricsController.songLyric.id}+$version+$platform';
   }
 }
