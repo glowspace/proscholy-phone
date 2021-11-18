@@ -36,7 +36,7 @@ class Block {
 }
 
 final _verseRE = RegExp(
-    r'\s*\(?(\d+\.|[BCR]\d?[:.]|@mezihra:|@dohra:|@předehra:|#(?!.*\]))?\)?\s*((?:=\s*(\d\.)|.|\n)*?)\n*(?=$|(?<=\n)[^=]?\d\.|\(?[BCR]\d?[:.]\)?|@mezihra:|@dohra:|@předehra:|#(?!.*\]))');
+    r'\s*\(?(\d+\.|[BCR]\d?[:.]|@mezihra:|@dohra:|@předehra:|#(?!.*\]))?\)?\s*((?:=\s*(\d\.)|.|\n)*?)\n*(?=$|(?<=\n)[^=]?\d\.|\(?[BCR]\d?[:.]\)?|@mezihra:|@dohra:|@předehra:|[^a-zA-Z]#(?!.*\]))');
 
 final _chordRE = RegExp(r'\[[^\]]+\]');
 final _placeholderRE = RegExp(r'\[%\]');
