@@ -175,7 +175,7 @@ class SongLyric {
     return _authorsText ??= text;
   }
 
-  bool get hasExternals => externals.isNotEmpty;
+  bool get hasExternals => youtubes.isNotEmpty;
 
   final externals = List<External>.empty(growable: true);
   List<External> get youtubes => externals.where((external) => external.isYoutube).toList();
