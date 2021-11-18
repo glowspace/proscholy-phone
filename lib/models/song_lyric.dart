@@ -68,7 +68,8 @@ class SongLyric {
   late ValueNotifier<bool> _isFavoriteNotifier;
 
   static Future<List<SongLyric>> get songLyrics async {
-    final entities = await model.SongLyric().select().lyrics.not.isNull().orderBy('name').toList();
+    final entities =
+        await model.SongLyric().select().lyrics.not.isNull().or.lilypond_svg.not.isNull().orderBy('name').toList();
 
     return entities.map((entity) => SongLyric(entity)).toList();
   }
