@@ -56,6 +56,7 @@ class SearchableListView<T> extends StatefulWidget {
 
 class _SearchableListViewState extends State<SearchableListView> with Updateable {
   final searchFieldFocusNode = FocusNode();
+  late final scrollController;
 
   late bool _isShowingSearchField;
 
@@ -64,6 +65,8 @@ class _SearchableListViewState extends State<SearchableListView> with Updateable
   @override
   void initState() {
     super.initState();
+
+    scrollController = ScrollController();
 
     _isShowingSearchField = widget.navigationBarTitle == null;
   }
@@ -119,7 +122,10 @@ class _SearchableListViewState extends State<SearchableListView> with Updateable
       child: SearchField(
         key: PageStorageKey(widget.key.toString() + '_search_field'),
         placeholder: widget.searchPlaceholder,
-        onSearch: (searchText) => widget.itemsProvider.searchText = searchText,
+        onSearch: (searchText) {
+          scrollController.animateTo(0.0, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+          widget.itemsProvider.searchText = searchText;
+        },
         focusNode: searchFieldFocusNode,
         prefix: _shouldShowNavigationBar ? prefix : null,
         suffix: isFilterable ? suffix : null,
@@ -135,10 +141,12 @@ class _SearchableListViewState extends State<SearchableListView> with Updateable
 
     Widget child = widget.crossAxisCount == 1
         ? ListView.builder(
+            controller: scrollController,
             itemCount: items.length,
             itemBuilder: (context, index) => widget.itemBuilder(items[index]),
           )
         : StaggeredGridView.countBuilder(
+            controller: scrollController,
             crossAxisCount: widget.crossAxisCount,
             itemCount: items.length,
             itemBuilder: (context, index) => widget.itemBuilder(items[index]),
@@ -154,7 +162,10 @@ class _SearchableListViewState extends State<SearchableListView> with Updateable
 
     return Container(
       padding: EdgeInsets.only(top: kDefaultPadding / 2),
-      child: Scrollbar(child: child),
+      child: Scrollbar(
+        child: child,
+        controller: scrollController,
+      ),
     );
   }
 
