@@ -75,6 +75,7 @@ class _SongLyricPageViewState extends State<SongLyricPageView> {
       onWillPop: fullScreenProvider.isFullScreen ? () async => !Navigator.of(context).userGestureInProgress : null,
       child: PlatformScaffold(
         title: _currentSongLyric.id.toString(),
+        canBeFullscreen: true,
         trailing: _actions(context),
         body: Stack(
           fit: StackFit.expand,

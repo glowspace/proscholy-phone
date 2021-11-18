@@ -16,6 +16,8 @@ class PlatformScaffold extends StatelessWidget with PlatformMixin {
   final Widget? middle;
   final Widget? trailing;
 
+  final bool canBeFullscreen;
+
   const PlatformScaffold({
     Key? key,
     required this.body,
@@ -25,6 +27,7 @@ class PlatformScaffold extends StatelessWidget with PlatformMixin {
     this.leading,
     this.middle,
     this.trailing,
+    this.canBeFullscreen = false,
   }) : super(key: key);
 
   @override
@@ -114,6 +117,6 @@ class PlatformScaffold extends StatelessWidget with PlatformMixin {
   bool _showNavBar(BuildContext context) {
     final fullScreenProvider = context.watch<FullScreenProvider?>();
 
-    return (middle != null || title != null) && !(fullScreenProvider?.isFullScreen ?? false);
+    return (middle != null || title != null) && !(canBeFullscreen && (fullScreenProvider?.isFullScreen ?? false));
   }
 }
