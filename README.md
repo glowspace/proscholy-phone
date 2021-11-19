@@ -1,6 +1,6 @@
 # Zpěvník ProScholy.cz pro Android a iOS
 
-Maintainer: Patrik Dobiáš
+Maintainer: [Patrik Dobiáš](https://github.com/Paprikadobi)
 
 Verze pro Android: https://play.google.com/store/apps/details?id=jozkar.mladez
 Verze pro iOS: https://apps.apple.com/us/app/zpěvn%C3%ADk-pro-scholy/id1475375453
