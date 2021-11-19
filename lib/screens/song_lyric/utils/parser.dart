@@ -44,10 +44,10 @@ final _firstVerseRE = RegExp(r'1\.(?:.|\n)+?(?=\n+\d\.|\n+\(?[BCR][:.]\)?)', mul
 
 final _multipleSpacesRE = RegExp(r' +');
 
-final _multipleNewLinesRE = RegExp(r'\n\s*\n');
+final _multipleNewLinesRE = RegExp(r'\n\s*\n$');
 
 List<Verse> parseLyrics(String lyrics, {bool showChords = true}) {
-  lyrics = lyrics.replaceAll('\r', '').replaceAll(_multipleNewLinesRE, '\n');
+  lyrics = lyrics.replaceAll('\r', '');
 
   final preparedLyrics = showChords ? _substituteChordsPlaceholders(lyrics) : _removeChords(lyrics);
 
@@ -109,7 +109,11 @@ String _removeChords(String lyrics) => lyrics.replaceAll(_chordRE, '');
 List<Line> _lines(String verse, {bool isComment = false, bool isInterlude = false}) {
   int index = 0;
 
-  return verse.split('\n').map((line) => Line(_blocks(line.trim(), isComment && (index++ == 0), isInterlude))).toList();
+  return verse
+      .replaceAll(_multipleNewLinesRE, '\n')
+      .split('\n')
+      .map((line) => Line(_blocks(line.trim(), isComment && (index++ == 0), isInterlude)))
+      .toList();
 }
 
 List<Block> _blocks(String line, bool isComment, bool isInterlude) {
