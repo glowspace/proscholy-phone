@@ -118,7 +118,7 @@ class _SearchableListViewState extends State<SearchableListView> with Updateable
     final suffix = Highlightable(child: Icon(Icons.filter_list), onPressed: () => _showFilters(context));
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: kDefaultPadding),
+      padding: EdgeInsets.symmetric(horizontal: kDefaultPadding).copyWith(bottom: kDefaultPadding / 2),
       child: SearchField(
         key: PageStorageKey(widget.key.toString() + '_search_field'),
         placeholder: widget.searchPlaceholder,
@@ -160,13 +160,7 @@ class _SearchableListViewState extends State<SearchableListView> with Updateable
         child: child,
       );
 
-    return Container(
-      padding: EdgeInsets.only(top: kDefaultPadding / 2),
-      child: Scrollbar(
-        child: child,
-        controller: scrollController,
-      ),
-    );
+    return Scrollbar(child: child, controller: scrollController);
   }
 
   Widget _buildNoItemWidget() {
