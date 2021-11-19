@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/platform/mixin.dart';
 import 'package:zpevnik/providers/fullscreen.dart';
+import 'package:zpevnik/screens/components/invisible_app_bar.dart';
 import 'package:zpevnik/theme.dart';
 
 class PlatformScaffold extends StatelessWidget with PlatformMixin {
@@ -34,11 +36,19 @@ class PlatformScaffold extends StatelessWidget with PlatformMixin {
   Widget buildAndroid(BuildContext context) {
     final appTheme = AppTheme.of(context);
 
+    final systemOverlayStyle = SystemUiOverlayStyle(
+      statusBarColor: navigationBarColor ?? appTheme.backgroundColor,
+      systemNavigationBarColor: appTheme.backgroundColor,
+      statusBarBrightness: appTheme.brightness,
+      statusBarIconBrightness: appTheme.brightness == Brightness.light ? Brightness.dark : Brightness.light,
+    );
+
     final navBar = AppBar(
       automaticallyImplyLeading: middle == null,
       backgroundColor: navigationBarColor,
       iconTheme: IconThemeData(color: navigationBarTextColor ?? appTheme.iconColor),
       leading: _wrappedLeading,
+      systemOverlayStyle: systemOverlayStyle,
       title: middle ??
           FittedBox(
             child: Text(
@@ -52,7 +62,7 @@ class PlatformScaffold extends StatelessWidget with PlatformMixin {
 
     return Scaffold(
       body: SafeArea(child: body),
-      appBar: _showNavBar(context) ? navBar : null,
+      appBar: _showNavBar(context) ? navBar : InvisibleAppBar(systemOverlayStyle: systemOverlayStyle),
     );
   }
 

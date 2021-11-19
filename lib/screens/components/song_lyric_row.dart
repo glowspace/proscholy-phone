@@ -11,7 +11,6 @@ import 'package:zpevnik/screens/components/circular_checkbox.dart';
 import 'package:zpevnik/screens/components/highlightable.dart';
 import 'package:zpevnik/screens/components/reorderable_row.dart';
 import 'package:zpevnik/screens/song_lyric/song_lyric_page.dart';
-import 'package:zpevnik/screens/utils/status_bar_wrapper.dart';
 import 'package:zpevnik/theme.dart';
 
 class SongLyricRow extends StatefulWidget {
@@ -105,8 +104,6 @@ class _SongLyricRowState extends State<SongLyricRow> {
     if (widget.translationSongLyric?.id == widget.songLyric.id)
       Navigator.of(context).pop();
     else {
-      StatusBarWrapper.of(context).navigationBarColor.value = null;
-
       final songLyrics = widget.songLyrics ?? context.read<SongLyricsProvider>().items;
 
       Navigator.of(context).push(platformRouteBuilder(

@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songbook.dart';
@@ -7,7 +8,6 @@ import 'package:zpevnik/platform/utils/route_builder.dart';
 import 'package:zpevnik/providers/songbooks.dart';
 import 'package:zpevnik/screens/components/highlightable.dart';
 import 'package:zpevnik/screens/songbook/songbook.dart';
-import 'package:zpevnik/screens/utils/status_bar_wrapper.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/hex_color.dart';
 
@@ -102,20 +102,14 @@ class _SongbookTileState extends State<SongbookTile> {
         ? null
         : HexColor.fromHex(widget.songbook.colorText);
 
-    final navigationBarColorNotifier = StatusBarWrapper.of(context).navigationBarColor;
-
-    if (isLightMode) navigationBarColorNotifier.value = navigationBarColor;
-
-    Navigator.of(context)
-        .push(platformRouteBuilder(
-          context,
-          SongbookScreen(
-            songbook: widget.songbook,
-            navigationBarColor: navigationBarColor,
-            navigationBarTextColor: navigationBarTextColor,
-          ),
-          types: [ProviderType.data, ProviderType.fullScreen, ProviderType.playlist, ProviderType.songbook],
-        ))
-        .then((_) => navigationBarColorNotifier.value = null);
+    Navigator.of(context).push(platformRouteBuilder(
+      context,
+      SongbookScreen(
+        songbook: widget.songbook,
+        navigationBarColor: navigationBarColor,
+        navigationBarTextColor: navigationBarTextColor,
+      ),
+      types: [ProviderType.data, ProviderType.fullScreen, ProviderType.playlist, ProviderType.songbook],
+    ));
   }
 }

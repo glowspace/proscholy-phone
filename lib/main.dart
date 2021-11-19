@@ -6,7 +6,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zpevnik/platform/mixin.dart';
 import 'package:zpevnik/providers/settings.dart';
 import 'package:zpevnik/screens/content.dart';
-import 'package:zpevnik/screens/utils/status_bar_wrapper.dart';
 import 'package:zpevnik/theme.dart';
 
 const _title = 'Zpěvník';
@@ -51,7 +50,7 @@ class MainWidget extends StatelessWidget with PlatformMixin {
     return ChangeNotifierProvider(
       create: (_) => SettingsProvider(_prefs),
       builder: (_, __) => AppTheme(
-        child: StatusBarWrapper(child: Builder(builder: builder)),
+        child: Builder(builder: builder),
         platform: Theme.of(context).platform,
       ),
     );
