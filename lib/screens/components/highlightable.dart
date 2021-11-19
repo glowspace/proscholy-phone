@@ -45,9 +45,9 @@ class _HighlightableState extends State<Highlightable> {
     final child = isIcon ? IconTheme(data: IconThemeData(color: color), child: widget.child) : widget.child;
 
     return GestureDetector(
-      onPanDown: (details) => _setHightlight(!_containsChild(details)),
-      onPanCancel: () => _setHightlight(false),
-      onPanEnd: (_) => _setHightlight(false),
+      onTapDown: (details) => _setHightlight(!_containsChild(details)),
+      onTapCancel: () => _setHightlight(false),
+      onTapUp: (_) => _setHightlight(false),
       onTap: widget.onPressed,
       onLongPress: widget.onLongPressed,
       behavior: HitTestBehavior.translucent,
@@ -59,7 +59,7 @@ class _HighlightableState extends State<Highlightable> {
     );
   }
 
-  bool _containsChild(DragDownDetails details) {
+  bool _containsChild(TapDownDetails details) {
     final RenderBox? renderBox = widget.highlightableChildKey?.currentContext?.findRenderObject() as RenderBox?;
 
     if (renderBox != null) {
