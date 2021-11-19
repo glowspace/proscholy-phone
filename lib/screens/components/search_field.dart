@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/platform/mixin.dart';
+import 'package:zpevnik/screens/components/highlightable.dart';
 import 'package:zpevnik/screens/song_lyric/utils/utils.dart';
 import 'package:zpevnik/theme.dart';
 
@@ -47,16 +48,17 @@ class _SearchFieldState extends State<SearchField> with PlatformMixin {
           border: InputBorder.none,
           hintText: widget.placeholder,
           hintStyle: _placeholderStyle(context, constraints.maxWidth),
-          // suffixIcon: _textController.text.isEmpty
-          //     ? null
-          //     : HighlightableButton(
-          //         onPressed: () {
-          //           setState(() => _textController.clear());
-          //           _searchTextChanged('');
-          //         },
-          //         icon: Icon(Icons.clear),
-          //         padding: null,
-          //       ),
+          suffixIcon: _textController.text.isEmpty
+              ? null
+              : Highlightable(
+                  onPressed: () {
+                    setState(() => _textController.clear());
+
+                    _searchTextChanged('');
+                  },
+                  child: Icon(Icons.clear, size: kDefaultPadding),
+                  padding: EdgeInsets.zero,
+                ),
           suffixIconConstraints: BoxConstraints(),
         ),
         focusNode: widget.focusNode,
