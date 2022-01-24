@@ -44,8 +44,6 @@ final _firstVerseRE = RegExp(r'1\.(?:.|\n)+?(?=\n+\d\.|\n+\(?[BCR][:.]\)?)', mul
 
 final _multipleSpacesRE = RegExp(r' +');
 
-final _multipleNewLinesRE = RegExp(r'\n\s*\n$');
-
 List<Verse> parseLyrics(String lyrics, {bool showChords = true}) {
   lyrics = lyrics.replaceAll('\r', '');
 
@@ -61,7 +59,7 @@ List<Verse> parseLyrics(String lyrics, {bool showChords = true}) {
     final isComment = number == '#';
     final isInterlude = number?.startsWith('@') ?? false;
 
-    if (number == '#') number = '';
+    if (number == '#') number = null;
 
     if (number == '@mezihra:')
       number = 'M:';
@@ -110,8 +108,8 @@ List<Line> _lines(String verse, {bool isComment = false, bool isInterlude = fals
   int index = 0;
 
   return verse
-      .replaceAll(_multipleNewLinesRE, '\n')
       .split('\n')
+      .where((chars) => chars.length > 0)
       .map((line) => Line(_blocks(line.trim(), isComment && (index++ == 0), isInterlude)))
       .toList();
 }

@@ -108,24 +108,31 @@ class _LyricsWidgetState extends State<LyricsWidget> with Updateable {
     final verseNumberWidth = computeTextWidth(verseNumber,
         textStyle: _textStyle(verse.hasChords), scaleFactor: settingsProvider.fontSizeScale);
 
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (verseNumber != null)
-          SizedBox(
-            width: verseNumberWidth + kDefaultPadding / 2,
-            child: RichText(
-              text: TextSpan(text: verseNumber, style: _textStyle(verse.hasChords)),
-              textScaleFactor: settingsProvider.fontSizeScale,
+    if (verse.lines.any((line) => line.blocks.any((block) => block.isComment))) print(verseNumber);
+
+    return Container(
+      padding: EdgeInsets.only(
+        bottom: verse.lines.any((line) => line.blocks.any((block) => block.isComment)) ? 0 : kDefaultPadding,
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (verseNumber != null)
+            SizedBox(
+              width: verseNumberWidth + kDefaultPadding / 2,
+              child: RichText(
+                text: TextSpan(text: verseNumber, style: _textStyle(verse.hasChords)),
+                textScaleFactor: settingsProvider.fontSizeScale,
+              ),
             ),
-          ),
-        Flexible(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: verse.lines.map((line) => _buildLine(line, verse.hasChords)).toList(),
-          ),
-        )
-      ],
+          Flexible(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: verse.lines.map((line) => _buildLine(line, verse.hasChords)).toList(),
+            ),
+          )
+        ],
+      ),
     );
   }
 
