@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
-import 'package:zpevnik/platform/components/dialog.dart';
 import 'package:zpevnik/platform/utils/bottom_sheet.dart';
 import 'package:zpevnik/providers/playlists.dart';
 import 'package:zpevnik/providers/selection.dart';
@@ -14,7 +12,10 @@ import 'package:zpevnik/theme.dart';
 mixin Selectable<T extends StatefulWidget> on State<T> {
   final SelectionProvider selectionProvider = SelectionProvider();
 
-  Widget buildSelectableActions(List<SongLyric> songLyrics, {Playlist? playlist}) {
+  Widget buildSelectableActions(
+    List<SongLyric> songLyrics, {
+    Function(BuildContext, List<SongLyric>)? removeSongLyrics,
+  }) {
     final appTheme = AppTheme.of(context);
     final padding = EdgeInsets.all(kDefaultPadding / 2);
 
@@ -28,12 +29,12 @@ mixin Selectable<T extends StatefulWidget> on State<T> {
           color: appTheme.chordColor,
           onPressed: hasSelection ? () => selectionProvider.toggleFavorite() : null,
         ),
-        if (playlist != null)
+        if (removeSongLyrics != null)
           Highlightable(
             child: Icon(Icons.delete),
             padding: padding,
             color: appTheme.chordColor,
-            onPressed: hasSelection ? () => _removeSongLyrics(playlist) : null,
+            onPressed: hasSelection ? () => removeSongLyrics(context, selectionProvider.selected) : null,
           )
         else
           Highlightable(
@@ -63,17 +64,5 @@ mixin Selectable<T extends StatefulWidget> on State<T> {
       ),
       height: 0.67 * MediaQuery.of(context).size.height,
     );
-  }
-
-  void _removeSongLyrics(Playlist playlist) {
-    showPlatformDialog<bool>(
-      context,
-      (context) => ConfirmDialog(
-        title: 'Opravdu chcete písně odebrat z playlistu?',
-        confirmText: 'Odebrat',
-      ),
-    ).then((confirmed) {
-      if (confirmed != null && confirmed) playlist.removeSongLyrics(selectionProvider.selected);
-    });
   }
 }

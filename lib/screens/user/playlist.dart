@@ -31,17 +31,18 @@ class _PlaylistScreenState extends State<PlaylistScreen> with Selectable {
   @override
   Widget build(BuildContext context) {
     final itemBuilder = (songLyric) => Slidable(
-          actionPane: SlidableDrawerActionPane(),
-          actionExtentRatio: 0.15,
           child: SongLyricRow(songLyric: songLyric, isReorderable: _songLyricsProvider.searchText.isEmpty),
-          secondaryActions: [
-            IconSlideAction(
-              caption: 'Odebrat',
-              color: Colors.red,
-              icon: Icons.delete,
-              onTap: () => _removeSongLyric(context, songLyric),
-            )
-          ],
+          endActionPane: ActionPane(
+            extentRatio: 0.15,
+            motion: ScrollMotion(),
+            children: [
+              SlidableAction(
+                backgroundColor: Colors.red,
+                icon: Icons.delete,
+                onPressed: (_) => _removeSongLyrics(context, [songLyric]),
+              )
+            ],
+          ),
         );
 
     return MultiProvider(
@@ -60,13 +61,14 @@ class _PlaylistScreenState extends State<PlaylistScreen> with Selectable {
         onReorderDone: (Key key) => _songLyricsProvider.onReorderDone(key, playlist: widget.playlist),
         trailingActions: AnimatedBuilder(
           animation: selectionProvider,
-          builder: (context, child) => buildSelectableActions(_songLyricsProvider.items, playlist: widget.playlist),
+          builder: (context, child) =>
+              buildSelectableActions(_songLyricsProvider.items, removeSongLyrics: _removeSongLyrics),
         ),
       ),
     );
   }
 
-  void _removeSongLyric(BuildContext context, SongLyric songLyric) {
+  void _removeSongLyrics(BuildContext context, List<SongLyric> songLyrics) {
     showPlatformDialog<bool>(
       context,
       (context) => ConfirmDialog(
@@ -75,7 +77,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> with Selectable {
       ),
     ).then((confirmed) {
       if (confirmed != null && confirmed) {
-        widget.playlist.removeSongLyrics([songLyric]);
+        widget.playlist.removeSongLyrics(songLyrics);
         setState(() =>
             _songLyricsProvider = SongLyricsProvider(context.read<DataProvider>().playlistSongLyrics(widget.playlist)));
       }

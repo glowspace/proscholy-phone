@@ -33,8 +33,7 @@ class TableAuthor extends SqfEntityTableBase {
 
     // declare fields
     fields = [
-      SqfEntityFieldBase('name', DbType.text,
-          isUnique: false, isNotNull: true, isIndex: false),
+      SqfEntityFieldBase('name', DbType.text, isNotNull: true),
     ];
     super.init();
   }
@@ -56,19 +55,12 @@ class TableExternal extends SqfEntityTableBase {
 
     // declare fields
     fields = [
-      SqfEntityFieldBase('public_name', DbType.text,
-          isUnique: false, isNotNull: true, isIndex: false),
-      SqfEntityFieldBase('media_id', DbType.text,
-          isUnique: false, isNotNull: false, isIndex: false),
-      SqfEntityFieldBase('media_type', DbType.text,
-          isUnique: false, isNotNull: false, isIndex: false),
+      SqfEntityFieldBase('public_name', DbType.text, isNotNull: true),
+      SqfEntityFieldBase('media_id', DbType.text),
+      SqfEntityFieldBase('media_type', DbType.text),
       SqfEntityFieldRelationshipBase(
           TableSongLyric.getInstance, DeleteRule.CASCADE,
-          relationType: RelationType.ONE_TO_MANY,
-          fieldName: 'song_lyricsId',
-          isUnique: false,
-          isNotNull: false,
-          isIndex: false),
+          relationType: RelationType.ONE_TO_MANY, fieldName: 'song_lyricsId'),
     ];
     super.init();
   }
@@ -90,15 +82,10 @@ class TablePlaylist extends SqfEntityTableBase {
 
     // declare fields
     fields = [
-      SqfEntityFieldBase('name', DbType.text,
-          isUnique: false, isNotNull: true, isIndex: false),
+      SqfEntityFieldBase('name', DbType.text, isNotNull: true),
       SqfEntityFieldBase('is_archived', DbType.bool,
-          defaultValue: false,
-          isUnique: false,
-          isNotNull: true,
-          isIndex: false),
-      SqfEntityFieldBase('rank', DbType.integer,
-          isUnique: false, isNotNull: true, isIndex: false),
+          defaultValue: false, isNotNull: true),
+      SqfEntityFieldBase('rank', DbType.integer, isNotNull: true),
     ];
     super.init();
   }
@@ -120,22 +107,13 @@ class TablePlaylistRecord extends SqfEntityTableBase {
 
     // declare fields
     fields = [
-      SqfEntityFieldBase('rank', DbType.integer,
-          isUnique: false, isNotNull: true, isIndex: false),
+      SqfEntityFieldBase('rank', DbType.integer, isNotNull: true),
       SqfEntityFieldRelationshipBase(
           TablePlaylist.getInstance, DeleteRule.CASCADE,
-          relationType: RelationType.ONE_TO_MANY,
-          fieldName: 'playlistsId',
-          isUnique: false,
-          isNotNull: false,
-          isIndex: false),
+          relationType: RelationType.ONE_TO_MANY, fieldName: 'playlistsId'),
       SqfEntityFieldRelationshipBase(
           TableSongLyric.getInstance, DeleteRule.CASCADE,
-          relationType: RelationType.ONE_TO_MANY,
-          fieldName: 'song_lyricsId',
-          isUnique: false,
-          isNotNull: false,
-          isIndex: false),
+          relationType: RelationType.ONE_TO_MANY, fieldName: 'song_lyricsId'),
     ];
     super.init();
   }
@@ -157,8 +135,7 @@ class TableSong extends SqfEntityTableBase {
 
     // declare fields
     fields = [
-      SqfEntityFieldBase('name', DbType.text,
-          isUnique: false, isNotNull: true, isIndex: false),
+      SqfEntityFieldBase('name', DbType.text, isNotNull: true),
     ];
     super.init();
   }
@@ -180,21 +157,13 @@ class TableSongbook extends SqfEntityTableBase {
 
     // declare fields
     fields = [
-      SqfEntityFieldBase('name', DbType.text,
-          isUnique: false, isNotNull: true, isIndex: false),
-      SqfEntityFieldBase('shortcut', DbType.text,
-          isUnique: false, isNotNull: false, isIndex: false),
-      SqfEntityFieldBase('color', DbType.text,
-          isUnique: false, isNotNull: false, isIndex: false),
-      SqfEntityFieldBase('color_text', DbType.text,
-          isUnique: false, isNotNull: false, isIndex: false),
-      SqfEntityFieldBase('is_private', DbType.bool,
-          isUnique: false, isNotNull: true, isIndex: false),
+      SqfEntityFieldBase('name', DbType.text, isNotNull: true),
+      SqfEntityFieldBase('shortcut', DbType.text),
+      SqfEntityFieldBase('color', DbType.text),
+      SqfEntityFieldBase('color_text', DbType.text),
+      SqfEntityFieldBase('is_private', DbType.bool, isNotNull: true),
       SqfEntityFieldBase('is_pinned', DbType.bool,
-          defaultValue: false,
-          isUnique: false,
-          isNotNull: true,
-          isIndex: false),
+          defaultValue: false, isNotNull: true),
     ];
     super.init();
   }
@@ -216,22 +185,13 @@ class TableSongbookRecord extends SqfEntityTableBase {
 
     // declare fields
     fields = [
-      SqfEntityFieldBase('number', DbType.text,
-          isUnique: false, isNotNull: true, isIndex: false),
+      SqfEntityFieldBase('number', DbType.text, isNotNull: true),
       SqfEntityFieldRelationshipBase(
           TableSongbook.getInstance, DeleteRule.CASCADE,
-          relationType: RelationType.ONE_TO_MANY,
-          fieldName: 'songbooksId',
-          isUnique: false,
-          isNotNull: false,
-          isIndex: false),
+          relationType: RelationType.ONE_TO_MANY, fieldName: 'songbooksId'),
       SqfEntityFieldRelationshipBase(
           TableSongLyric.getInstance, DeleteRule.CASCADE,
-          relationType: RelationType.ONE_TO_MANY,
-          fieldName: 'song_lyricsId',
-          isUnique: false,
-          isNotNull: false,
-          isIndex: false),
+          relationType: RelationType.ONE_TO_MANY, fieldName: 'song_lyricsId'),
     ];
     super.init();
   }
@@ -253,34 +213,19 @@ class TableSongLyric extends SqfEntityTableBase {
 
     // declare fields
     fields = [
-      SqfEntityFieldBase('name', DbType.text,
-          isUnique: false, isNotNull: true, isIndex: false),
-      SqfEntityFieldBase('secondary_name_1', DbType.text,
-          isUnique: false, isNotNull: false, isIndex: false),
-      SqfEntityFieldBase('secondary_name_2', DbType.text,
-          isUnique: false, isNotNull: false, isIndex: false),
-      SqfEntityFieldBase('lyrics', DbType.text,
-          isUnique: false, isNotNull: false, isIndex: false),
-      SqfEntityFieldBase('lang_string', DbType.text,
-          isUnique: false, isNotNull: false, isIndex: false),
-      SqfEntityFieldBase('type_enum', DbType.text,
-          isUnique: false, isNotNull: false, isIndex: false),
-      SqfEntityFieldBase('lilypond_svg', DbType.text,
-          isUnique: false, isNotNull: false, isIndex: false),
-      SqfEntityFieldBase('favorite_rank', DbType.integer,
-          isUnique: false, isNotNull: false, isIndex: false),
-      SqfEntityFieldBase('transposition', DbType.integer,
-          defaultValue: 0, isUnique: false, isNotNull: false, isIndex: false),
-      SqfEntityFieldBase('show_chords', DbType.bool,
-          isUnique: false, isNotNull: false, isIndex: false),
-      SqfEntityFieldBase('accidentals', DbType.integer,
-          isUnique: false, isNotNull: false, isIndex: false),
+      SqfEntityFieldBase('name', DbType.text, isNotNull: true),
+      SqfEntityFieldBase('secondary_name_1', DbType.text),
+      SqfEntityFieldBase('secondary_name_2', DbType.text),
+      SqfEntityFieldBase('lyrics', DbType.text),
+      SqfEntityFieldBase('lang_string', DbType.text),
+      SqfEntityFieldBase('type_enum', DbType.text),
+      SqfEntityFieldBase('lilypond_svg', DbType.text),
+      SqfEntityFieldBase('favorite_rank', DbType.integer),
+      SqfEntityFieldBase('transposition', DbType.integer, defaultValue: 0),
+      SqfEntityFieldBase('show_chords', DbType.bool),
+      SqfEntityFieldBase('accidentals', DbType.integer),
       SqfEntityFieldRelationshipBase(TableSong.getInstance, DeleteRule.CASCADE,
-          relationType: RelationType.ONE_TO_MANY,
-          fieldName: 'songsId',
-          isUnique: false,
-          isNotNull: false,
-          isIndex: false),
+          relationType: RelationType.ONE_TO_MANY, fieldName: 'songsId'),
     ];
     super.init();
   }
@@ -302,10 +247,8 @@ class TableTag extends SqfEntityTableBase {
 
     // declare fields
     fields = [
-      SqfEntityFieldBase('name', DbType.text,
-          isUnique: false, isNotNull: true, isIndex: false),
-      SqfEntityFieldBase('type_enum', DbType.text,
-          isUnique: false, isNotNull: true, isIndex: false),
+      SqfEntityFieldBase('name', DbType.text, isNotNull: true),
+      SqfEntityFieldBase('type_enum', DbType.text, isNotNull: true),
     ];
     super.init();
   }
@@ -520,12 +463,8 @@ class Author extends TableBase {
   Map<String, dynamic> toMap(
       {bool forQuery = false, bool forJson = false, bool forView = false}) {
     final map = <String, dynamic>{};
-    if (id != null) {
-      map['id'] = id;
-    }
-    if (name != null) {
-      map['name'] = name;
-    }
+    map['id'] = id;
+    map['name'] = name;
 
     return map;
   }
@@ -535,12 +474,8 @@ class Author extends TableBase {
       bool forJson = false,
       bool forView = false]) async {
     final map = <String, dynamic>{};
-    if (id != null) {
-      map['id'] = id;
-    }
-    if (name != null) {
-      map['name'] = name;
-    }
+    map['id'] = id;
+    map['name'] = name;
 
 // COLLECTIONS (Author)
     if (!forQuery) {
@@ -769,11 +704,12 @@ class Author extends TableBase {
 
   /// <returns>Returns id
 
-  Future<int?> upsert() async {
+  Future<int?> upsert({bool ignoreBatch = true}) async {
     try {
       final result = await _mnAuthor.rawInsert(
           'INSERT OR REPLACE INTO authors (id, name)  VALUES (?,?)',
-          [id, name]);
+          [id, name],
+          ignoreBatch);
       if (result! > 0) {
         saveResult = BoolResult(
             success: true,
@@ -1696,27 +1632,18 @@ class External extends TableBase {
   Map<String, dynamic> toMap(
       {bool forQuery = false, bool forJson = false, bool forView = false}) {
     final map = <String, dynamic>{};
-    if (id != null) {
-      map['id'] = id;
-    }
-    if (public_name != null) {
-      map['public_name'] = public_name;
-    }
-
-    if (media_id != null) {
-      map['media_id'] = media_id;
-    }
-
-    if (media_type != null) {
-      map['media_type'] = media_type;
-    }
-
+    map['id'] = id;
+    map['public_name'] = public_name;
+    map['media_id'] = media_id;
+    map['media_type'] = media_type;
     if (song_lyricsId != null) {
       map['song_lyricsId'] = forView
           ? plSongLyric == null
               ? song_lyricsId
               : plSongLyric!.name
           : song_lyricsId;
+    } else {
+      map['song_lyricsId'] = null;
     }
 
     return map;
@@ -1727,27 +1654,18 @@ class External extends TableBase {
       bool forJson = false,
       bool forView = false]) async {
     final map = <String, dynamic>{};
-    if (id != null) {
-      map['id'] = id;
-    }
-    if (public_name != null) {
-      map['public_name'] = public_name;
-    }
-
-    if (media_id != null) {
-      map['media_id'] = media_id;
-    }
-
-    if (media_type != null) {
-      map['media_type'] = media_type;
-    }
-
+    map['id'] = id;
+    map['public_name'] = public_name;
+    map['media_id'] = media_id;
+    map['media_type'] = media_type;
     if (song_lyricsId != null) {
       map['song_lyricsId'] = forView
           ? plSongLyric == null
               ? song_lyricsId
               : plSongLyric!.name
           : song_lyricsId;
+    } else {
+      map['song_lyricsId'] = null;
     }
 
 // COLLECTIONS (External)
@@ -1984,11 +1902,12 @@ class External extends TableBase {
 
   /// <returns>Returns id
 
-  Future<int?> upsert() async {
+  Future<int?> upsert({bool ignoreBatch = true}) async {
     try {
       final result = await _mnExternal.rawInsert(
           'INSERT OR REPLACE INTO externals (id, public_name, media_id, media_type, song_lyricsId)  VALUES (?,?,?,?,?)',
-          [id, public_name, media_id, media_type, song_lyricsId]);
+          [id, public_name, media_id, media_type, song_lyricsId],
+          ignoreBatch);
       if (result! > 0) {
         saveResult = BoolResult(
             success: true,
@@ -2924,20 +2843,14 @@ class Playlist extends TableBase {
   Map<String, dynamic> toMap(
       {bool forQuery = false, bool forJson = false, bool forView = false}) {
     final map = <String, dynamic>{};
-    if (id != null) {
-      map['id'] = id;
-    }
-    if (name != null) {
-      map['name'] = name;
-    }
-
+    map['id'] = id;
+    map['name'] = name;
     if (is_archived != null) {
       map['is_archived'] = forQuery ? (is_archived! ? 1 : 0) : is_archived;
+    } else {
+      map['is_archived'] = null;
     }
-
-    if (rank != null) {
-      map['rank'] = rank;
-    }
+    map['rank'] = rank;
 
     return map;
   }
@@ -2947,20 +2860,14 @@ class Playlist extends TableBase {
       bool forJson = false,
       bool forView = false]) async {
     final map = <String, dynamic>{};
-    if (id != null) {
-      map['id'] = id;
-    }
-    if (name != null) {
-      map['name'] = name;
-    }
-
+    map['id'] = id;
+    map['name'] = name;
     if (is_archived != null) {
       map['is_archived'] = forQuery ? (is_archived! ? 1 : 0) : is_archived;
+    } else {
+      map['is_archived'] = null;
     }
-
-    if (rank != null) {
-      map['rank'] = rank;
-    }
+    map['rank'] = rank;
 
 // COLLECTIONS (Playlist)
     if (!forQuery) {
@@ -3177,11 +3084,12 @@ class Playlist extends TableBase {
 
   /// <returns>Returns id
 
-  Future<int?> upsert() async {
+  Future<int?> upsert({bool ignoreBatch = true}) async {
     try {
       final result = await _mnPlaylist.rawInsert(
           'INSERT OR REPLACE INTO playlists (id, name, is_archived, rank)  VALUES (?,?,?,?)',
-          [id, name, is_archived, rank]);
+          [id, name, is_archived, rank],
+          ignoreBatch);
       if (result! > 0) {
         saveResult = BoolResult(
             success: true,
@@ -4125,27 +4033,25 @@ class PlaylistRecord extends TableBase {
   Map<String, dynamic> toMap(
       {bool forQuery = false, bool forJson = false, bool forView = false}) {
     final map = <String, dynamic>{};
-    if (id != null) {
-      map['id'] = id;
-    }
-    if (rank != null) {
-      map['rank'] = rank;
-    }
-
+    map['id'] = id;
+    map['rank'] = rank;
     if (playlistsId != null) {
       map['playlistsId'] = forView
           ? plPlaylist == null
               ? playlistsId
               : plPlaylist!.name
           : playlistsId;
+    } else {
+      map['playlistsId'] = null;
     }
-
     if (song_lyricsId != null) {
       map['song_lyricsId'] = forView
           ? plSongLyric == null
               ? song_lyricsId
               : plSongLyric!.name
           : song_lyricsId;
+    } else {
+      map['song_lyricsId'] = null;
     }
 
     return map;
@@ -4156,27 +4062,25 @@ class PlaylistRecord extends TableBase {
       bool forJson = false,
       bool forView = false]) async {
     final map = <String, dynamic>{};
-    if (id != null) {
-      map['id'] = id;
-    }
-    if (rank != null) {
-      map['rank'] = rank;
-    }
-
+    map['id'] = id;
+    map['rank'] = rank;
     if (playlistsId != null) {
       map['playlistsId'] = forView
           ? plPlaylist == null
               ? playlistsId
               : plPlaylist!.name
           : playlistsId;
+    } else {
+      map['playlistsId'] = null;
     }
-
     if (song_lyricsId != null) {
       map['song_lyricsId'] = forView
           ? plSongLyric == null
               ? song_lyricsId
               : plSongLyric!.name
           : song_lyricsId;
+    } else {
+      map['song_lyricsId'] = null;
     }
 
     return map;
@@ -4406,11 +4310,12 @@ class PlaylistRecord extends TableBase {
 
   /// <returns>Returns id
 
-  Future<int?> upsert() async {
+  Future<int?> upsert({bool ignoreBatch = true}) async {
     try {
       final result = await _mnPlaylistRecord.rawInsert(
           'INSERT OR REPLACE INTO playlist_records (id, rank, playlistsId, song_lyricsId)  VALUES (?,?,?,?)',
-          [id, rank, playlistsId, song_lyricsId]);
+          [id, rank, playlistsId, song_lyricsId],
+          ignoreBatch);
       if (result! > 0) {
         saveResult = BoolResult(
             success: true,
@@ -5347,12 +5252,8 @@ class Song extends TableBase {
   Map<String, dynamic> toMap(
       {bool forQuery = false, bool forJson = false, bool forView = false}) {
     final map = <String, dynamic>{};
-    if (id != null) {
-      map['id'] = id;
-    }
-    if (name != null) {
-      map['name'] = name;
-    }
+    map['id'] = id;
+    map['name'] = name;
 
     return map;
   }
@@ -5362,12 +5263,8 @@ class Song extends TableBase {
       bool forJson = false,
       bool forView = false]) async {
     final map = <String, dynamic>{};
-    if (id != null) {
-      map['id'] = id;
-    }
-    if (name != null) {
-      map['name'] = name;
-    }
+    map['id'] = id;
+    map['name'] = name;
 
 // COLLECTIONS (Song)
     if (!forQuery) {
@@ -5573,10 +5470,12 @@ class Song extends TableBase {
 
   /// <returns>Returns id
 
-  Future<int?> upsert() async {
+  Future<int?> upsert({bool ignoreBatch = true}) async {
     try {
       final result = await _mnSong.rawInsert(
-          'INSERT OR REPLACE INTO songs (id, name)  VALUES (?,?)', [id, name]);
+          'INSERT OR REPLACE INTO songs (id, name)  VALUES (?,?)',
+          [id, name],
+          ignoreBatch);
       if (result! > 0) {
         saveResult = BoolResult(
             success: true, successMessage: 'Song id=$id updated successfully');
@@ -6502,31 +6401,20 @@ class Songbook extends TableBase {
   Map<String, dynamic> toMap(
       {bool forQuery = false, bool forJson = false, bool forView = false}) {
     final map = <String, dynamic>{};
-    if (id != null) {
-      map['id'] = id;
-    }
-    if (name != null) {
-      map['name'] = name;
-    }
-
-    if (shortcut != null) {
-      map['shortcut'] = shortcut;
-    }
-
-    if (color != null) {
-      map['color'] = color;
-    }
-
-    if (color_text != null) {
-      map['color_text'] = color_text;
-    }
-
+    map['id'] = id;
+    map['name'] = name;
+    map['shortcut'] = shortcut;
+    map['color'] = color;
+    map['color_text'] = color_text;
     if (is_private != null) {
       map['is_private'] = forQuery ? (is_private! ? 1 : 0) : is_private;
+    } else {
+      map['is_private'] = null;
     }
-
     if (is_pinned != null) {
       map['is_pinned'] = forQuery ? (is_pinned! ? 1 : 0) : is_pinned;
+    } else {
+      map['is_pinned'] = null;
     }
 
     return map;
@@ -6537,31 +6425,20 @@ class Songbook extends TableBase {
       bool forJson = false,
       bool forView = false]) async {
     final map = <String, dynamic>{};
-    if (id != null) {
-      map['id'] = id;
-    }
-    if (name != null) {
-      map['name'] = name;
-    }
-
-    if (shortcut != null) {
-      map['shortcut'] = shortcut;
-    }
-
-    if (color != null) {
-      map['color'] = color;
-    }
-
-    if (color_text != null) {
-      map['color_text'] = color_text;
-    }
-
+    map['id'] = id;
+    map['name'] = name;
+    map['shortcut'] = shortcut;
+    map['color'] = color;
+    map['color_text'] = color_text;
     if (is_private != null) {
       map['is_private'] = forQuery ? (is_private! ? 1 : 0) : is_private;
+    } else {
+      map['is_private'] = null;
     }
-
     if (is_pinned != null) {
       map['is_pinned'] = forQuery ? (is_pinned! ? 1 : 0) : is_pinned;
+    } else {
+      map['is_pinned'] = null;
     }
 
 // COLLECTIONS (Songbook)
@@ -6770,11 +6647,12 @@ class Songbook extends TableBase {
 
   /// <returns>Returns id
 
-  Future<int?> upsert() async {
+  Future<int?> upsert({bool ignoreBatch = true}) async {
     try {
       final result = await _mnSongbook.rawInsert(
           'INSERT OR REPLACE INTO songbooks (id, name, shortcut, color, color_text, is_private, is_pinned)  VALUES (?,?,?,?,?,?,?)',
-          [id, name, shortcut, color, color_text, is_private, is_pinned]);
+          [id, name, shortcut, color, color_text, is_private, is_pinned],
+          ignoreBatch);
       if (result! > 0) {
         saveResult = BoolResult(
             success: true,
@@ -7755,27 +7633,25 @@ class SongbookRecord extends TableBase {
   Map<String, dynamic> toMap(
       {bool forQuery = false, bool forJson = false, bool forView = false}) {
     final map = <String, dynamic>{};
-    if (id != null) {
-      map['id'] = id;
-    }
-    if (number != null) {
-      map['number'] = number;
-    }
-
+    map['id'] = id;
+    map['number'] = number;
     if (songbooksId != null) {
       map['songbooksId'] = forView
           ? plSongbook == null
               ? songbooksId
               : plSongbook!.name
           : songbooksId;
+    } else {
+      map['songbooksId'] = null;
     }
-
     if (song_lyricsId != null) {
       map['song_lyricsId'] = forView
           ? plSongLyric == null
               ? song_lyricsId
               : plSongLyric!.name
           : song_lyricsId;
+    } else {
+      map['song_lyricsId'] = null;
     }
 
     return map;
@@ -7786,27 +7662,25 @@ class SongbookRecord extends TableBase {
       bool forJson = false,
       bool forView = false]) async {
     final map = <String, dynamic>{};
-    if (id != null) {
-      map['id'] = id;
-    }
-    if (number != null) {
-      map['number'] = number;
-    }
-
+    map['id'] = id;
+    map['number'] = number;
     if (songbooksId != null) {
       map['songbooksId'] = forView
           ? plSongbook == null
               ? songbooksId
               : plSongbook!.name
           : songbooksId;
+    } else {
+      map['songbooksId'] = null;
     }
-
     if (song_lyricsId != null) {
       map['song_lyricsId'] = forView
           ? plSongLyric == null
               ? song_lyricsId
               : plSongLyric!.name
           : song_lyricsId;
+    } else {
+      map['song_lyricsId'] = null;
     }
 
     return map;
@@ -8027,11 +7901,12 @@ class SongbookRecord extends TableBase {
 
   /// <returns>Returns id
 
-  Future<int?> upsert() async {
+  Future<int?> upsert({bool ignoreBatch = true}) async {
     try {
       final result = await _mnSongbookRecord.rawInsert(
           'INSERT OR REPLACE INTO songbook_records (id, number, songbooksId, song_lyricsId)  VALUES (?,?,?,?)',
-          [id, number, songbooksId, song_lyricsId]);
+          [id, number, songbooksId, song_lyricsId],
+          ignoreBatch);
       if (result! > 0) {
         saveResult = BoolResult(
             success: true,
@@ -9136,59 +9011,30 @@ class SongLyric extends TableBase {
   Map<String, dynamic> toMap(
       {bool forQuery = false, bool forJson = false, bool forView = false}) {
     final map = <String, dynamic>{};
-    if (id != null) {
-      map['id'] = id;
-    }
-    if (name != null) {
-      map['name'] = name;
-    }
-
-    if (secondary_name_1 != null) {
-      map['secondary_name_1'] = secondary_name_1;
-    }
-
-    if (secondary_name_2 != null) {
-      map['secondary_name_2'] = secondary_name_2;
-    }
-
-    if (lyrics != null) {
-      map['lyrics'] = lyrics;
-    }
-
-    if (lang_string != null) {
-      map['lang_string'] = lang_string;
-    }
-
-    if (type_enum != null) {
-      map['type_enum'] = type_enum;
-    }
-
-    if (lilypond_svg != null) {
-      map['lilypond_svg'] = lilypond_svg;
-    }
-
-    if (favorite_rank != null) {
-      map['favorite_rank'] = favorite_rank;
-    }
-
-    if (transposition != null) {
-      map['transposition'] = transposition;
-    }
-
+    map['id'] = id;
+    map['name'] = name;
+    map['secondary_name_1'] = secondary_name_1;
+    map['secondary_name_2'] = secondary_name_2;
+    map['lyrics'] = lyrics;
+    map['lang_string'] = lang_string;
+    map['type_enum'] = type_enum;
+    map['lilypond_svg'] = lilypond_svg;
+    map['favorite_rank'] = favorite_rank;
+    map['transposition'] = transposition;
     if (show_chords != null) {
       map['show_chords'] = forQuery ? (show_chords! ? 1 : 0) : show_chords;
+    } else {
+      map['show_chords'] = null;
     }
-
-    if (accidentals != null) {
-      map['accidentals'] = accidentals;
-    }
-
+    map['accidentals'] = accidentals;
     if (songsId != null) {
       map['songsId'] = forView
           ? plSong == null
               ? songsId
               : plSong!.name
           : songsId;
+    } else {
+      map['songsId'] = null;
     }
 
     return map;
@@ -9199,59 +9045,30 @@ class SongLyric extends TableBase {
       bool forJson = false,
       bool forView = false]) async {
     final map = <String, dynamic>{};
-    if (id != null) {
-      map['id'] = id;
-    }
-    if (name != null) {
-      map['name'] = name;
-    }
-
-    if (secondary_name_1 != null) {
-      map['secondary_name_1'] = secondary_name_1;
-    }
-
-    if (secondary_name_2 != null) {
-      map['secondary_name_2'] = secondary_name_2;
-    }
-
-    if (lyrics != null) {
-      map['lyrics'] = lyrics;
-    }
-
-    if (lang_string != null) {
-      map['lang_string'] = lang_string;
-    }
-
-    if (type_enum != null) {
-      map['type_enum'] = type_enum;
-    }
-
-    if (lilypond_svg != null) {
-      map['lilypond_svg'] = lilypond_svg;
-    }
-
-    if (favorite_rank != null) {
-      map['favorite_rank'] = favorite_rank;
-    }
-
-    if (transposition != null) {
-      map['transposition'] = transposition;
-    }
-
+    map['id'] = id;
+    map['name'] = name;
+    map['secondary_name_1'] = secondary_name_1;
+    map['secondary_name_2'] = secondary_name_2;
+    map['lyrics'] = lyrics;
+    map['lang_string'] = lang_string;
+    map['type_enum'] = type_enum;
+    map['lilypond_svg'] = lilypond_svg;
+    map['favorite_rank'] = favorite_rank;
+    map['transposition'] = transposition;
     if (show_chords != null) {
       map['show_chords'] = forQuery ? (show_chords! ? 1 : 0) : show_chords;
+    } else {
+      map['show_chords'] = null;
     }
-
-    if (accidentals != null) {
-      map['accidentals'] = accidentals;
-    }
-
+    map['accidentals'] = accidentals;
     if (songsId != null) {
       map['songsId'] = forView
           ? plSong == null
               ? songsId
               : plSong!.name
           : songsId;
+    } else {
+      map['songsId'] = null;
     }
 
 // COLLECTIONS (SongLyric)
@@ -9609,7 +9426,7 @@ class SongLyric extends TableBase {
 
   /// <returns>Returns id
 
-  Future<int?> upsert() async {
+  Future<int?> upsert({bool ignoreBatch = true}) async {
     try {
       final result = await _mnSongLyric.rawInsert(
           'INSERT OR REPLACE INTO song_lyrics (id, name, secondary_name_1, secondary_name_2, lyrics, lang_string, type_enum, lilypond_svg, favorite_rank, transposition, show_chords, accidentals, songsId)  VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)',
@@ -9627,7 +9444,8 @@ class SongLyric extends TableBase {
             show_chords,
             accidentals,
             songsId
-          ]);
+          ],
+          ignoreBatch);
       if (result! > 0) {
         saveResult = BoolResult(
             success: true,
@@ -10758,16 +10576,9 @@ class Tag extends TableBase {
   Map<String, dynamic> toMap(
       {bool forQuery = false, bool forJson = false, bool forView = false}) {
     final map = <String, dynamic>{};
-    if (id != null) {
-      map['id'] = id;
-    }
-    if (name != null) {
-      map['name'] = name;
-    }
-
-    if (type_enum != null) {
-      map['type_enum'] = type_enum;
-    }
+    map['id'] = id;
+    map['name'] = name;
+    map['type_enum'] = type_enum;
 
     return map;
   }
@@ -10777,16 +10588,9 @@ class Tag extends TableBase {
       bool forJson = false,
       bool forView = false]) async {
     final map = <String, dynamic>{};
-    if (id != null) {
-      map['id'] = id;
-    }
-    if (name != null) {
-      map['name'] = name;
-    }
-
-    if (type_enum != null) {
-      map['type_enum'] = type_enum;
-    }
+    map['id'] = id;
+    map['name'] = name;
+    map['type_enum'] = type_enum;
 
 // COLLECTIONS (Tag)
     if (!forQuery) {
@@ -10990,11 +10794,12 @@ class Tag extends TableBase {
 
   /// <returns>Returns id
 
-  Future<int?> upsert() async {
+  Future<int?> upsert({bool ignoreBatch = true}) async {
     try {
       final result = await _mnTag.rawInsert(
           'INSERT OR REPLACE INTO tags (id, name, type_enum)  VALUES (?,?,?)',
-          [id, name, type_enum]);
+          [id, name, type_enum],
+          ignoreBatch);
       if (result! > 0) {
         saveResult = BoolResult(
             success: true, successMessage: 'Tag id=$id updated successfully');
@@ -11904,14 +11709,17 @@ class ExternalsAuthors extends TableBase {
               ? externalsId
               : plExternal!.public_name
           : externalsId;
+    } else {
+      map['externalsId'] = null;
     }
-
     if (authorsId != null) {
       map['authorsId'] = forView
           ? plAuthor == null
               ? authorsId
               : plAuthor!.name
           : authorsId;
+    } else {
+      map['authorsId'] = null;
     }
 
     return map;
@@ -11928,14 +11736,17 @@ class ExternalsAuthors extends TableBase {
               ? externalsId
               : plExternal!.public_name
           : externalsId;
+    } else {
+      map['externalsId'] = null;
     }
-
     if (authorsId != null) {
       map['authorsId'] = forView
           ? plAuthor == null
               ? authorsId
               : plAuthor!.name
           : authorsId;
+    } else {
+      map['authorsId'] = null;
     }
 
     return map;
@@ -12097,12 +11908,13 @@ class ExternalsAuthors extends TableBase {
   /// Call the saveAs() method if you do not want to save it when there is another row with the same externalsId
   ///
   /// <returns>Returns BoolResult
-  Future<BoolResult> save() async {
+  Future<BoolResult> save({bool ignoreBatch = true}) async {
     final result = BoolResult(success: false);
     try {
       await _mnExternalsAuthors.rawInsert(
           'INSERT ${isSaved! ? 'OR REPLACE' : ''} INTO externalsAuthors ( externalsId, authorsId)  VALUES (?,?)',
-          toArgsWithIds());
+          toArgsWithIds(),
+          ignoreBatch);
       result.success = true;
       isSaved = true;
     } catch (e) {
@@ -12140,11 +11952,12 @@ class ExternalsAuthors extends TableBase {
 
   /// <returns>Returns 1
 
-  Future<int?> upsert() async {
+  Future<int?> upsert({bool ignoreBatch = true}) async {
     try {
       final result = await _mnExternalsAuthors.rawInsert(
           'INSERT OR REPLACE INTO externalsAuthors ( externalsId, authorsId)  VALUES (?,?)',
-          [externalsId, authorsId]);
+          [externalsId, authorsId],
+          ignoreBatch);
       if (result! > 0) {
         saveResult = BoolResult(
             success: true,
@@ -13095,14 +12908,17 @@ class Song_lyricsAuthors extends TableBase {
               ? song_lyricsId
               : plSongLyric!.name
           : song_lyricsId;
+    } else {
+      map['song_lyricsId'] = null;
     }
-
     if (authorsId != null) {
       map['authorsId'] = forView
           ? plAuthor == null
               ? authorsId
               : plAuthor!.name
           : authorsId;
+    } else {
+      map['authorsId'] = null;
     }
 
     return map;
@@ -13119,14 +12935,17 @@ class Song_lyricsAuthors extends TableBase {
               ? song_lyricsId
               : plSongLyric!.name
           : song_lyricsId;
+    } else {
+      map['song_lyricsId'] = null;
     }
-
     if (authorsId != null) {
       map['authorsId'] = forView
           ? plAuthor == null
               ? authorsId
               : plAuthor!.name
           : authorsId;
+    } else {
+      map['authorsId'] = null;
     }
 
     return map;
@@ -13291,12 +13110,13 @@ class Song_lyricsAuthors extends TableBase {
   /// Call the saveAs() method if you do not want to save it when there is another row with the same song_lyricsId
   ///
   /// <returns>Returns BoolResult
-  Future<BoolResult> save() async {
+  Future<BoolResult> save({bool ignoreBatch = true}) async {
     final result = BoolResult(success: false);
     try {
       await _mnSong_lyricsAuthors.rawInsert(
           'INSERT ${isSaved! ? 'OR REPLACE' : ''} INTO song_lyricsAuthors ( song_lyricsId, authorsId)  VALUES (?,?)',
-          toArgsWithIds());
+          toArgsWithIds(),
+          ignoreBatch);
       result.success = true;
       isSaved = true;
     } catch (e) {
@@ -13334,11 +13154,12 @@ class Song_lyricsAuthors extends TableBase {
 
   /// <returns>Returns 1
 
-  Future<int?> upsert() async {
+  Future<int?> upsert({bool ignoreBatch = true}) async {
     try {
       final result = await _mnSong_lyricsAuthors.rawInsert(
           'INSERT OR REPLACE INTO song_lyricsAuthors ( song_lyricsId, authorsId)  VALUES (?,?)',
-          [song_lyricsId, authorsId]);
+          [song_lyricsId, authorsId],
+          ignoreBatch);
       if (result! > 0) {
         saveResult = BoolResult(
             success: true,
@@ -14291,14 +14112,17 @@ class Song_lyricsTags extends TableBase {
               ? song_lyricsId
               : plSongLyric!.name
           : song_lyricsId;
+    } else {
+      map['song_lyricsId'] = null;
     }
-
     if (tagsId != null) {
       map['tagsId'] = forView
           ? plTag == null
               ? tagsId
               : plTag!.name
           : tagsId;
+    } else {
+      map['tagsId'] = null;
     }
 
     return map;
@@ -14315,14 +14139,17 @@ class Song_lyricsTags extends TableBase {
               ? song_lyricsId
               : plSongLyric!.name
           : song_lyricsId;
+    } else {
+      map['song_lyricsId'] = null;
     }
-
     if (tagsId != null) {
       map['tagsId'] = forView
           ? plTag == null
               ? tagsId
               : plTag!.name
           : tagsId;
+    } else {
+      map['tagsId'] = null;
     }
 
     return map;
@@ -14484,12 +14311,13 @@ class Song_lyricsTags extends TableBase {
   /// Call the saveAs() method if you do not want to save it when there is another row with the same song_lyricsId
   ///
   /// <returns>Returns BoolResult
-  Future<BoolResult> save() async {
+  Future<BoolResult> save({bool ignoreBatch = true}) async {
     final result = BoolResult(success: false);
     try {
       await _mnSong_lyricsTags.rawInsert(
           'INSERT ${isSaved! ? 'OR REPLACE' : ''} INTO song_lyricsTags ( song_lyricsId, tagsId)  VALUES (?,?)',
-          toArgsWithIds());
+          toArgsWithIds(),
+          ignoreBatch);
       result.success = true;
       isSaved = true;
     } catch (e) {
@@ -14527,11 +14355,12 @@ class Song_lyricsTags extends TableBase {
 
   /// <returns>Returns 1
 
-  Future<int?> upsert() async {
+  Future<int?> upsert({bool ignoreBatch = true}) async {
     try {
       final result = await _mnSong_lyricsTags.rawInsert(
           'INSERT OR REPLACE INTO song_lyricsTags ( song_lyricsId, tagsId)  VALUES (?,?)',
-          [song_lyricsId, tagsId]);
+          [song_lyricsId, tagsId],
+          ignoreBatch);
       if (result! > 0) {
         saveResult = BoolResult(
             success: true,
