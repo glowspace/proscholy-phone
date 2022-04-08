@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:zpevnik/theme.dart';
 
-void showPlatformBottomSheet({
+Future<T?> showPlatformBottomSheet<T>({
   required BuildContext context,
   required Widget Function(BuildContext) builder,
   required double height,
@@ -14,7 +14,7 @@ void showPlatformBottomSheet({
   FocusScope.of(context).unfocus();
 
   if (appTheme.platform == TargetPlatform.iOS)
-    showCupertinoModalBottomSheet(
+    return showCupertinoModalBottomSheet(
       context: context,
       shape: shape,
       builder: (context) => Container(
@@ -24,7 +24,7 @@ void showPlatformBottomSheet({
       useRootNavigator: true,
     );
   else
-    showMaterialModalBottomSheet(
+    return showMaterialModalBottomSheet(
       context: context,
       shape: shape,
       builder: (context) => SizedBox(height: height, child: builder(context)),

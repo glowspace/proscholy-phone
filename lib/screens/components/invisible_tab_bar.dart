@@ -27,6 +27,7 @@ class InvisibleCupertinoTabBar extends CupertinoTabBar {
     Color? activeColor,
     Color? inactiveColor,
     double? iconSize,
+    double? height,
     Border? border,
     int? currentIndex,
     ValueChanged<int>? onTap,

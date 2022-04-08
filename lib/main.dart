@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zpevnik/platform/mixin.dart';
 import 'package:zpevnik/providers/settings.dart';
-import 'package:zpevnik/screens/content.dart';
+import 'package:zpevnik/screens/miniplayer_wrapper.dart';
 import 'package:zpevnik/theme.dart';
 
 const _title = 'Zpěvník';
@@ -20,7 +20,7 @@ void main() async {
 }
 
 class MainWidget extends StatelessWidget with PlatformMixin {
-  const MainWidget({Key? key}) : super(key: key);
+  MainWidget({Key? key}) : super(key: key);
 
   @override
   Widget buildAndroid(BuildContext context) {
@@ -28,7 +28,7 @@ class MainWidget extends StatelessWidget with PlatformMixin {
       debugShowCheckedModeBanner: false,
       title: _title,
       theme: AppTheme.of(context).materialTheme,
-      home: ContentScreen(),
+      home: MiniPlayerWrapper(),
     );
   }
 
@@ -38,7 +38,7 @@ class MainWidget extends StatelessWidget with PlatformMixin {
       debugShowCheckedModeBanner: false,
       title: _title,
       theme: AppTheme.of(context).cupertinoTheme,
-      home: ContentScreen(),
+      home: MiniPlayerWrapper(),
       // needed by youtube player
       localizationsDelegates: [DefaultMaterialLocalizations.delegate],
     );

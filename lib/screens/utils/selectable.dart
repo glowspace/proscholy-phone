@@ -56,7 +56,7 @@ mixin Selectable<T extends StatefulWidget> on State<T> {
   void _showPlaylists() {
     final playlistsProvider = context.read<PlaylistsProvider>();
 
-    return showPlatformBottomSheet(
+    showPlatformBottomSheet(
       context: context,
       builder: (_) => ChangeNotifierProvider.value(
         value: playlistsProvider,

@@ -393,6 +393,7 @@ class Model extends SqfEntityModelProvider {
 class Author extends TableBase {
   Author({this.id, this.name}) {
     _setDefaultValues();
+    softDeleteActivated = false;
   }
   Author.withFields(this.id, this.name) {
     _setDefaultValues();
@@ -416,7 +417,6 @@ class Author extends TableBase {
   int? id;
   String? name;
   bool? isSaved;
-  BoolResult? saveResult;
   // end FIELDS (Author)
 
 // COLLECTIONS & VIRTUALS (Author)
@@ -460,22 +460,28 @@ class Author extends TableBase {
   }
 
   // METHODS
+  @override
   Map<String, dynamic> toMap(
       {bool forQuery = false, bool forJson = false, bool forView = false}) {
     final map = <String, dynamic>{};
     map['id'] = id;
-    map['name'] = name;
+    if (name != null || !forView) {
+      map['name'] = name;
+    }
 
     return map;
   }
 
+  @override
   Future<Map<String, dynamic>> toMapWithChildren(
       [bool forQuery = false,
       bool forJson = false,
       bool forView = false]) async {
     final map = <String, dynamic>{};
     map['id'] = id;
-    map['name'] = name;
+    if (name != null || !forView) {
+      map['name'] = name;
+    }
 
 // COLLECTIONS (Author)
     if (!forQuery) {
@@ -490,19 +496,23 @@ class Author extends TableBase {
   }
 
   /// This method returns Json String [Author]
+  @override
   String toJson() {
     return json.encode(toMap(forJson: true));
   }
 
   /// This method returns Json String [Author]
+  @override
   Future<String> toJsonWithChilds() async {
     return json.encode(await toMapWithChildren(false, true));
   }
 
+  @override
   List<dynamic> toArgs() {
     return [id, name];
   }
 
+  @override
   List<dynamic> toArgsWithIds() {
     return [id, name];
   }
@@ -581,21 +591,14 @@ class Author extends TableBase {
   }
 
   /// returns Author by ID if exist, otherwise returns null
-  ///
   /// Primary Keys: int? id
-  ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
-  ///
   /// ex: getById(preload:true) -> Loads all related objects
-  ///
   /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
-  ///
   /// ex: getById(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
-  ///
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
-  ///
-  /// <returns>returns Author if exist, otherwise returns null
+  /// <returns>returns [Author] if exist, otherwise returns null
   Future<Author?> getById(int? id,
       {bool preload = false,
       List<String>? preloadFields,
@@ -608,7 +611,6 @@ class Author extends TableBase {
     final data = await _mnAuthor.getById([id]);
     if (data.length != 0) {
       obj = Author.fromMap(data[0] as Map<String, dynamic>);
-      // final List<String> _loadedFields = loadedFields ?? [];
 
       // RELATIONSHIPS PRELOAD CHILD
       if (preload) {
@@ -644,6 +646,7 @@ class Author extends TableBase {
   /// Saves the (Author) object. If the id field is null, saves as a new record and returns new id, if id is not null then updates record
   /// ignoreBatch = true as a default. Set ignoreBatch to false if you run more than one save() operation those are between batchStart and batchCommit
   /// <returns>Returns id
+  @override
   Future<int?> save({bool ignoreBatch = true}) async {
     if (id == null || id == 0 || !isSaved!) {
       await _mnAuthor.insert(this, ignoreBatch);
@@ -651,7 +654,6 @@ class Author extends TableBase {
         isSaved = true;
       }
     } else {
-      // id= await _upsert(); // removed in sqfentity_gen 1.3.0+6
       await _mnAuthor.update(this);
     }
 
@@ -659,10 +661,9 @@ class Author extends TableBase {
   }
 
   /// Saves the (Author) object. If the id field is null, saves as a new record and returns new id, if id is not null then updates record
-  ///
   /// ignoreBatch = true as a default. Set ignoreBatch to false if you run more than one save() operation those are between batchStart and batchCommit
-  ///
   /// <returns>Returns id
+  @override
   Future<int?> saveOrThrow({bool ignoreBatch = true}) async {
     if (id == null || id == 0 || !isSaved!) {
       await _mnAuthor.insertOrThrow(this, ignoreBatch);
@@ -685,7 +686,6 @@ class Author extends TableBase {
   }
 
   /// saveAll method saves the sent List<Author> as a bulk in one transaction
-  ///
   /// Returns a <List<BoolResult>>
   static Future<List<dynamic>> saveAll(List<Author> authors) async {
     List<dynamic>? result = [];
@@ -701,9 +701,8 @@ class Author extends TableBase {
   }
 
   /// Updates if the record exists, otherwise adds a new row
-
   /// <returns>Returns id
-
+  @override
   Future<int?> upsert({bool ignoreBatch = true}) async {
     try {
       final result = await _mnAuthor.rawInsert(
@@ -728,10 +727,9 @@ class Author extends TableBase {
   }
 
   /// inserts or replaces the sent List<<Author>> as a bulk in one transaction.
-  ///
   /// upsertAll() method is faster then saveAll() method. upsertAll() should be used when you are sure that the primary key is greater than zero
-  ///
   /// Returns a BoolCommitResult
+  @override
   Future<BoolCommitResult> upsertAll(List<Author> authors) async {
     final results = await _mnAuthor.rawInsertAll(
         'INSERT OR REPLACE INTO authors (id, name)  VALUES (?,?)', authors);
@@ -740,8 +738,8 @@ class Author extends TableBase {
 
   /// Deletes Author
 
-  /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
-
+  /// <returns>BoolResult res.success= true (Deleted), false (Could not be deleted)
+  @override
   Future<BoolResult> delete([bool hardDelete = false]) async {
     debugPrint('SQFENTITIY: delete Author invoked (id=$id)');
     if (!_softDeleteActivated || hardDelete) {
@@ -754,17 +752,25 @@ class Author extends TableBase {
     }
   }
 
+  @override
+  Future<BoolResult> recover([bool recoverChilds = true]) {
+    // not implemented because:
+    final msg =
+        'set useSoftDeleting:true in the table definition of [Author] to use this feature';
+    throw UnimplementedError(msg);
+  }
+
+  @override
   AuthorFilterBuilder select(
       {List<String>? columnsToSelect, bool? getIsDeleted}) {
-    return AuthorFilterBuilder(this)
-      .._getIsDeleted = getIsDeleted == true
+    return AuthorFilterBuilder(this, getIsDeleted)
       ..qparams.selectColumns = columnsToSelect;
   }
 
+  @override
   AuthorFilterBuilder distinct(
       {List<String>? columnsToSelect, bool? getIsDeleted}) {
-    return AuthorFilterBuilder(this)
-      .._getIsDeleted = getIsDeleted == true
+    return AuthorFilterBuilder(this, getIsDeleted)
       ..qparams.selectColumns = columnsToSelect
       ..qparams.distinct = true;
   }
@@ -796,544 +802,238 @@ class Author extends TableBase {
 // endregion author
 
 // region AuthorField
-class AuthorField extends SearchCriteria {
-  AuthorField(this.authorFB);
-  // { param = DbParameter(); }
-  DbParameter param = DbParameter();
-  String _waitingNot = '';
-  AuthorFilterBuilder authorFB;
+class AuthorField extends FilterBase {
+  AuthorField(AuthorFilterBuilder authorFB) : super(authorFB);
 
-  AuthorField get not {
-    _waitingNot = ' NOT ';
-    return this;
-  }
-
+  @override
   AuthorFilterBuilder equals(dynamic pValue) {
-    param.expression = '=';
-    authorFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, authorFB.parameters, param, SqlSyntax.EQuals,
-            authorFB._addedBlocks)
-        : setCriteria(pValue, authorFB.parameters, param, SqlSyntax.NotEQuals,
-            authorFB._addedBlocks);
-    _waitingNot = '';
-    authorFB._addedBlocks.needEndBlock![authorFB._blockIndex] =
-        authorFB._addedBlocks.retVal;
-    return authorFB;
+    return super.equals(pValue) as AuthorFilterBuilder;
   }
 
+  @override
   AuthorFilterBuilder equalsOrNull(dynamic pValue) {
-    param.expression = '=';
-    authorFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, authorFB.parameters, param,
-            SqlSyntax.EQualsOrNull, authorFB._addedBlocks)
-        : setCriteria(pValue, authorFB.parameters, param,
-            SqlSyntax.NotEQualsOrNull, authorFB._addedBlocks);
-    _waitingNot = '';
-    authorFB._addedBlocks.needEndBlock![authorFB._blockIndex] =
-        authorFB._addedBlocks.retVal;
-    return authorFB;
+    return super.equalsOrNull(pValue) as AuthorFilterBuilder;
   }
 
+  @override
   AuthorFilterBuilder isNull() {
-    authorFB._addedBlocks = setCriteria(
-        0,
-        authorFB.parameters,
-        param,
-        SqlSyntax.IsNULL.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-        authorFB._addedBlocks);
-    _waitingNot = '';
-    authorFB._addedBlocks.needEndBlock![authorFB._blockIndex] =
-        authorFB._addedBlocks.retVal;
-    return authorFB;
+    return super.isNull() as AuthorFilterBuilder;
   }
 
+  @override
   AuthorFilterBuilder contains(dynamic pValue) {
-    if (pValue != null) {
-      authorFB._addedBlocks = setCriteria(
-          '%${pValue.toString()}%',
-          authorFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          authorFB._addedBlocks);
-      _waitingNot = '';
-      authorFB._addedBlocks.needEndBlock![authorFB._blockIndex] =
-          authorFB._addedBlocks.retVal;
-    }
-    return authorFB;
+    return super.contains(pValue) as AuthorFilterBuilder;
   }
 
+  @override
   AuthorFilterBuilder startsWith(dynamic pValue) {
-    if (pValue != null) {
-      authorFB._addedBlocks = setCriteria(
-          '${pValue.toString()}%',
-          authorFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          authorFB._addedBlocks);
-      _waitingNot = '';
-      authorFB._addedBlocks.needEndBlock![authorFB._blockIndex] =
-          authorFB._addedBlocks.retVal;
-      authorFB._addedBlocks.needEndBlock![authorFB._blockIndex] =
-          authorFB._addedBlocks.retVal;
-    }
-    return authorFB;
+    return super.startsWith(pValue) as AuthorFilterBuilder;
   }
 
+  @override
   AuthorFilterBuilder endsWith(dynamic pValue) {
-    if (pValue != null) {
-      authorFB._addedBlocks = setCriteria(
-          '%${pValue.toString()}',
-          authorFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          authorFB._addedBlocks);
-      _waitingNot = '';
-      authorFB._addedBlocks.needEndBlock![authorFB._blockIndex] =
-          authorFB._addedBlocks.retVal;
-    }
-    return authorFB;
+    return super.endsWith(pValue) as AuthorFilterBuilder;
   }
 
+  @override
   AuthorFilterBuilder between(dynamic pFirst, dynamic pLast) {
-    if (pFirst != null && pLast != null) {
-      authorFB._addedBlocks = setCriteria(
-          pFirst,
-          authorFB.parameters,
-          param,
-          SqlSyntax.Between.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          authorFB._addedBlocks,
-          pLast);
-    } else if (pFirst != null) {
-      if (_waitingNot != '') {
-        authorFB._addedBlocks = setCriteria(pFirst, authorFB.parameters, param,
-            SqlSyntax.LessThan, authorFB._addedBlocks);
-      } else {
-        authorFB._addedBlocks = setCriteria(pFirst, authorFB.parameters, param,
-            SqlSyntax.GreaterThanOrEquals, authorFB._addedBlocks);
-      }
-    } else if (pLast != null) {
-      if (_waitingNot != '') {
-        authorFB._addedBlocks = setCriteria(pLast, authorFB.parameters, param,
-            SqlSyntax.GreaterThan, authorFB._addedBlocks);
-      } else {
-        authorFB._addedBlocks = setCriteria(pLast, authorFB.parameters, param,
-            SqlSyntax.LessThanOrEquals, authorFB._addedBlocks);
-      }
-    }
-    _waitingNot = '';
-    authorFB._addedBlocks.needEndBlock![authorFB._blockIndex] =
-        authorFB._addedBlocks.retVal;
-    return authorFB;
+    return super.between(pFirst, pLast) as AuthorFilterBuilder;
   }
 
+  @override
   AuthorFilterBuilder greaterThan(dynamic pValue) {
-    param.expression = '>';
-    authorFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, authorFB.parameters, param, SqlSyntax.GreaterThan,
-            authorFB._addedBlocks)
-        : setCriteria(pValue, authorFB.parameters, param,
-            SqlSyntax.LessThanOrEquals, authorFB._addedBlocks);
-    _waitingNot = '';
-    authorFB._addedBlocks.needEndBlock![authorFB._blockIndex] =
-        authorFB._addedBlocks.retVal;
-    return authorFB;
+    return super.greaterThan(pValue) as AuthorFilterBuilder;
   }
 
+  @override
   AuthorFilterBuilder lessThan(dynamic pValue) {
-    param.expression = '<';
-    authorFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, authorFB.parameters, param, SqlSyntax.LessThan,
-            authorFB._addedBlocks)
-        : setCriteria(pValue, authorFB.parameters, param,
-            SqlSyntax.GreaterThanOrEquals, authorFB._addedBlocks);
-    _waitingNot = '';
-    authorFB._addedBlocks.needEndBlock![authorFB._blockIndex] =
-        authorFB._addedBlocks.retVal;
-    return authorFB;
+    return super.lessThan(pValue) as AuthorFilterBuilder;
   }
 
+  @override
   AuthorFilterBuilder greaterThanOrEquals(dynamic pValue) {
-    param.expression = '>=';
-    authorFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, authorFB.parameters, param,
-            SqlSyntax.GreaterThanOrEquals, authorFB._addedBlocks)
-        : setCriteria(pValue, authorFB.parameters, param, SqlSyntax.LessThan,
-            authorFB._addedBlocks);
-    _waitingNot = '';
-    authorFB._addedBlocks.needEndBlock![authorFB._blockIndex] =
-        authorFB._addedBlocks.retVal;
-    return authorFB;
+    return super.greaterThanOrEquals(pValue) as AuthorFilterBuilder;
   }
 
+  @override
   AuthorFilterBuilder lessThanOrEquals(dynamic pValue) {
-    param.expression = '<=';
-    authorFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, authorFB.parameters, param,
-            SqlSyntax.LessThanOrEquals, authorFB._addedBlocks)
-        : setCriteria(pValue, authorFB.parameters, param, SqlSyntax.GreaterThan,
-            authorFB._addedBlocks);
-    _waitingNot = '';
-    authorFB._addedBlocks.needEndBlock![authorFB._blockIndex] =
-        authorFB._addedBlocks.retVal;
-    return authorFB;
+    return super.lessThanOrEquals(pValue) as AuthorFilterBuilder;
   }
 
+  @override
   AuthorFilterBuilder inValues(dynamic pValue) {
-    authorFB._addedBlocks = setCriteria(
-        pValue,
-        authorFB.parameters,
-        param,
-        SqlSyntax.IN.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-        authorFB._addedBlocks);
-    _waitingNot = '';
-    authorFB._addedBlocks.needEndBlock![authorFB._blockIndex] =
-        authorFB._addedBlocks.retVal;
-    return authorFB;
+    return super.inValues(pValue) as AuthorFilterBuilder;
+  }
+
+  @override
+  AuthorField get not {
+    return super.not as AuthorField;
   }
 }
 // endregion AuthorField
 
 // region AuthorFilterBuilder
-class AuthorFilterBuilder extends SearchCriteria {
-  AuthorFilterBuilder(Author obj) {
-    whereString = '';
-    groupByList = <String>[];
-    _addedBlocks.needEndBlock!.add(false);
-    _addedBlocks.waitingStartBlock!.add(false);
-    _obj = obj;
+class AuthorFilterBuilder extends ConjunctionBase {
+  AuthorFilterBuilder(Author obj, bool? getIsDeleted)
+      : super(obj, getIsDeleted) {
+    _mnAuthor = obj._mnAuthor;
+    _softDeleteActivated = obj.softDeleteActivated;
   }
-  AddedBlocks _addedBlocks = AddedBlocks(<bool>[], <bool>[]);
-  int _blockIndex = 0;
-  List<DbParameter> parameters = <DbParameter>[];
-  List<String> orderByList = <String>[];
-  Author? _obj;
-  QueryParams qparams = QueryParams();
-  int _pagesize = 0;
-  int _page = 0;
+
+  bool _softDeleteActivated = false;
+  AuthorManager? _mnAuthor;
 
   /// put the sql keyword 'AND'
+  @override
   AuthorFilterBuilder get and {
-    if (parameters.isNotEmpty) {
-      parameters[parameters.length - 1].wOperator = ' AND ';
-    }
+    super.and;
     return this;
   }
 
   /// put the sql keyword 'OR'
+  @override
   AuthorFilterBuilder get or {
-    if (parameters.isNotEmpty) {
-      parameters[parameters.length - 1].wOperator = ' OR ';
-    }
+    super.or;
     return this;
   }
 
   /// open parentheses
+  @override
   AuthorFilterBuilder get startBlock {
-    _addedBlocks.waitingStartBlock!.add(true);
-    _addedBlocks.needEndBlock!.add(false);
-    _blockIndex++;
-    if (_blockIndex > 1) {
-      _addedBlocks.needEndBlock![_blockIndex - 1] = true;
-    }
+    super.startBlock;
     return this;
   }
 
   /// String whereCriteria, write raw query without 'where' keyword. Like this: 'field1 like 'test%' and field2 = 3'
+  @override
   AuthorFilterBuilder where(String? whereCriteria, {dynamic parameterValue}) {
-    if (whereCriteria != null && whereCriteria != '') {
-      final DbParameter param = DbParameter(
-          columnName: parameterValue == null ? null : '',
-          hasParameter: parameterValue != null);
-      _addedBlocks = setCriteria(parameterValue ?? 0, parameters, param,
-          '($whereCriteria)', _addedBlocks);
-      _addedBlocks.needEndBlock![_blockIndex] = _addedBlocks.retVal;
-    }
+    super.where(whereCriteria, parameterValue: parameterValue);
     return this;
   }
 
   /// page = page number,
-  ///
   /// pagesize = row(s) per page
+  @override
   AuthorFilterBuilder page(int page, int pagesize) {
-    if (page > 0) {
-      _page = page;
-    }
-    if (pagesize > 0) {
-      _pagesize = pagesize;
-    }
+    super.page(page, pagesize);
     return this;
   }
 
   /// int count = LIMIT
+  @override
   AuthorFilterBuilder top(int count) {
-    if (count > 0) {
-      _pagesize = count;
-    }
+    super.top(count);
     return this;
   }
 
   /// close parentheses
+  @override
   AuthorFilterBuilder get endBlock {
-    if (_addedBlocks.needEndBlock![_blockIndex]) {
-      parameters[parameters.length - 1].whereString += ' ) ';
-    }
-    _addedBlocks.needEndBlock!.removeAt(_blockIndex);
-    _addedBlocks.waitingStartBlock!.removeAt(_blockIndex);
-    _blockIndex--;
+    super.endBlock;
     return this;
   }
 
   /// argFields might be String or List<String>.
-  ///
   /// Example 1: argFields='name, date'
-  ///
   /// Example 2: argFields = ['name', 'date']
+  @override
   AuthorFilterBuilder orderBy(dynamic argFields) {
-    if (argFields != null) {
-      if (argFields is String) {
-        orderByList.add(argFields);
-      } else {
-        for (String? s in argFields as List<String?>) {
-          if (s!.isNotEmpty) {
-            orderByList.add(' $s ');
-          }
-        }
-      }
-    }
+    super.orderBy(argFields);
     return this;
   }
 
   /// argFields might be String or List<String>.
-  ///
   /// Example 1: argFields='field1, field2'
-  ///
   /// Example 2: argFields = ['field1', 'field2']
+  @override
   AuthorFilterBuilder orderByDesc(dynamic argFields) {
-    if (argFields != null) {
-      if (argFields is String) {
-        orderByList.add('$argFields desc ');
-      } else {
-        for (String? s in argFields as List<String?>) {
-          if (s!.isNotEmpty) {
-            orderByList.add(' $s desc ');
-          }
-        }
-      }
-    }
+    super.orderByDesc(argFields);
     return this;
   }
 
   /// argFields might be String or List<String>.
-  ///
   /// Example 1: argFields='field1, field2'
-  ///
   /// Example 2: argFields = ['field1', 'field2']
+  @override
   AuthorFilterBuilder groupBy(dynamic argFields) {
-    if (argFields != null) {
-      if (argFields is String) {
-        groupByList.add(' $argFields ');
-      } else {
-        for (String? s in argFields as List<String?>) {
-          if (s!.isNotEmpty) {
-            groupByList.add(' $s ');
-          }
-        }
-      }
-    }
+    super.groupBy(argFields);
     return this;
   }
 
   /// argFields might be String or List<String>.
-  ///
   /// Example 1: argFields='name, date'
-  ///
   /// Example 2: argFields = ['name', 'date']
+  @override
   AuthorFilterBuilder having(dynamic argFields) {
-    if (argFields != null) {
-      if (argFields is String) {
-        havingList.add(argFields);
-      } else {
-        for (String? s in argFields as List<String?>) {
-          if (s!.isNotEmpty) {
-            havingList.add(' $s ');
-          }
-        }
-      }
-    }
+    super.having(argFields);
     return this;
   }
 
-  AuthorField setField(AuthorField? field, String colName, DbType dbtype) {
+  AuthorField _setField(AuthorField? field, String colName, DbType dbtype) {
     return AuthorField(this)
       ..param = DbParameter(
-          dbType: dbtype,
-          columnName: colName,
-          wStartBlock: _addedBlocks.waitingStartBlock![_blockIndex]);
+          dbType: dbtype, columnName: colName, wStartBlock: openedBlock);
   }
 
   AuthorField? _id;
   AuthorField get id {
-    return _id = setField(_id, 'id', DbType.integer);
+    return _id = _setField(_id, 'id', DbType.integer);
   }
 
   AuthorField? _name;
   AuthorField get name {
-    return _name = setField(_name, 'name', DbType.text);
-  }
-
-  bool _getIsDeleted = false;
-
-  void _buildParameters() {
-    if (_page > 0 && _pagesize > 0) {
-      qparams
-        ..limit = _pagesize
-        ..offset = (_page - 1) * _pagesize;
-    } else {
-      qparams
-        ..limit = _pagesize
-        ..offset = _page;
-    }
-    for (DbParameter param in parameters) {
-      if (param.columnName != null) {
-        if (param.value is List && !param.hasParameter) {
-          param.value = param.dbType == DbType.text || param.value[0] is String
-              ? '\'${param.value.join('\',\'')}\''
-              : param.value.join(',');
-          whereString += param.whereString
-              .replaceAll('{field}', param.columnName!)
-              .replaceAll('?', param.value.toString());
-          param.value = null;
-        } else {
-          if (param.value is Map<String, dynamic> &&
-              param.value['sql'] != null) {
-            param
-              ..whereString = param.whereString
-                  .replaceAll('?', param.value['sql'].toString())
-              ..dbType = DbType.integer
-              ..value = param.value['args'];
-          }
-          whereString +=
-              param.whereString.replaceAll('{field}', param.columnName!);
-        }
-        if (!param.whereString.contains('?')) {
-        } else {
-          switch (param.dbType) {
-            case DbType.bool:
-              param.value = param.value == null
-                  ? null
-                  : param.value == true
-                      ? 1
-                      : 0;
-              param.value2 = param.value2 == null
-                  ? null
-                  : param.value2 == true
-                      ? 1
-                      : 0;
-              break;
-            case DbType.date:
-            case DbType.datetime:
-            case DbType.datetimeUtc:
-              param.value = param.value == null
-                  ? null
-                  : (param.value as DateTime).millisecondsSinceEpoch;
-              param.value2 = param.value2 == null
-                  ? null
-                  : (param.value2 as DateTime).millisecondsSinceEpoch;
-              break;
-            default:
-          }
-          if (param.value != null) {
-            if (param.value is List) {
-              for (var p in param.value) {
-                whereArguments.add(p);
-              }
-            } else {
-              whereArguments.add(param.value);
-            }
-          }
-          if (param.value2 != null) {
-            whereArguments.add(param.value2);
-          }
-        }
-      } else {
-        whereString += param.whereString;
-      }
-    }
-    if (Author._softDeleteActivated) {
-      if (whereString != '') {
-        whereString =
-            '${!_getIsDeleted ? 'ifnull(isDeleted,0)=0 AND' : ''} ($whereString)';
-      } else if (!_getIsDeleted) {
-        whereString = 'ifnull(isDeleted,0)=0';
-      }
-    }
-
-    if (whereString != '') {
-      qparams.whereString = whereString;
-    }
-    qparams
-      ..whereArguments = whereArguments
-      ..groupBy = groupByList.join(',')
-      ..orderBy = orderByList.join(',')
-      ..having = havingList.join(',');
+    return _name = _setField(_name, 'name', DbType.text);
   }
 
   /// Deletes List<Author> bulk by query
   ///
-  /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
+  /// <returns>BoolResult res.success= true (Deleted), false (Could not be deleted)
+  @override
   Future<BoolResult> delete([bool hardDelete = false]) async {
-    _buildParameters();
+    buildParameters();
     var r = BoolResult(success: false);
 
-    if (Author._softDeleteActivated && !hardDelete) {
-      r = await _obj!._mnAuthor.updateBatch(qparams, {'isDeleted': 1});
+    if (_softDeleteActivated && !hardDelete) {
+      r = await _mnAuthor!.updateBatch(qparams, {'isDeleted': 1});
     } else {
-      r = await _obj!._mnAuthor.delete(qparams);
+      r = await _mnAuthor!.delete(qparams);
     }
     return r;
   }
 
   /// using:
-  ///
   /// update({'fieldName': Value})
-  ///
   /// fieldName must be String. Value is dynamic, it can be any of the (int, bool, String.. )
+  @override
   Future<BoolResult> update(Map<String, dynamic> values) {
-    _buildParameters();
+    buildParameters();
     if (qparams.limit! > 0 || qparams.offset! > 0) {
       qparams.whereString =
           'id IN (SELECT id from authors ${qparams.whereString!.isNotEmpty ? 'WHERE ${qparams.whereString}' : ''}${qparams.limit! > 0 ? ' LIMIT ${qparams.limit}' : ''}${qparams.offset! > 0 ? ' OFFSET ${qparams.offset}' : ''})';
     }
-    return _obj!._mnAuthor.updateBatch(qparams, values);
+    return _mnAuthor!.updateBatch(qparams, values);
   }
 
-  /// This method always returns Author Obj if exist, otherwise returns null
-  ///
+  /// This method always returns [Author] Obj if exist, otherwise returns null
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
-  ///
   /// ex: toSingle(preload:true) -> Loads all related objects
-  ///
   /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
-  ///
   /// ex: toSingle(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
-  ///
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
-  ///
-  /// <returns>List<Author>
+  /// <returns> Author?
+  @override
   Future<Author?> toSingle(
       {bool preload = false,
       List<String>? preloadFields,
       bool loadParents = false,
       List<String>? loadedFields}) async {
-    _pagesize = 1;
-    _buildParameters();
-    final objFuture = _obj!._mnAuthor.toList(qparams);
+    buildParameters(pSize: 1);
+    final objFuture = _mnAuthor!.toList(qparams);
     final data = await objFuture;
     Author? obj;
     if (data.isNotEmpty) {
       obj = Author.fromMap(data[0] as Map<String, dynamic>);
-      // final List<String> _loadedFields = loadedFields ?? [];
 
       // RELATIONSHIPS PRELOAD CHILD
       if (preload) {
@@ -1366,13 +1066,35 @@ class AuthorFilterBuilder extends SearchCriteria {
     return obj;
   }
 
+  /// This method always returns [Author]
+  /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
+  /// ex: toSingle(preload:true) -> Loads all related objects
+  /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
+  /// ex: toSingle(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
+  /// bool loadParents: if true, loads all parent objects until the object has no parent
+
+  /// <returns> Author?
+  @override
+  Future<Author> toSingleOrDefault(
+      {bool preload = false,
+      List<String>? preloadFields,
+      bool loadParents = false,
+      List<String>? loadedFields}) async {
+    return await toSingle(
+            preload: preload,
+            preloadFields: preloadFields,
+            loadParents: loadParents,
+            loadedFields: loadedFields) ??
+        Author();
+  }
+
   /// This method returns int. [Author]
-  ///
   /// <returns>int
+  @override
   Future<int> toCount([VoidCallback Function(int c)? authorCount]) async {
-    _buildParameters();
+    buildParameters();
     qparams.selectColumns = ['COUNT(1) AS CNT'];
-    final authorsFuture = await _obj!._mnAuthor.toList(qparams);
+    final authorsFuture = await _mnAuthor!.toList(qparams);
     final int count = authorsFuture[0]['CNT'] as int;
     if (authorCount != null) {
       authorCount(count);
@@ -1381,19 +1103,14 @@ class AuthorFilterBuilder extends SearchCriteria {
   }
 
   /// This method returns List<Author> [Author]
-  ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
-  ///
   /// ex: toList(preload:true) -> Loads all related objects
-  ///
   /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
-  ///
   /// ex: toList(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
-  ///
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
-  ///
   /// <returns>List<Author>
+  @override
   Future<List<Author>> toList(
       {bool preload = false,
       List<String>? preloadFields,
@@ -1410,6 +1127,7 @@ class AuthorFilterBuilder extends SearchCriteria {
   }
 
   /// This method returns Json String [Author]
+  @override
   Future<String> toJson() async {
     final list = <dynamic>[];
     final data = await toList();
@@ -1420,6 +1138,7 @@ class AuthorFilterBuilder extends SearchCriteria {
   }
 
   /// This method returns Json String. [Author]
+  @override
   Future<String> toJsonWithChilds() async {
     final list = <dynamic>[];
     final data = await toList();
@@ -1430,22 +1149,21 @@ class AuthorFilterBuilder extends SearchCriteria {
   }
 
   /// This method returns List<dynamic>. [Author]
-  ///
   /// <returns>List<dynamic>
+  @override
   Future<List<dynamic>> toMapList() async {
-    _buildParameters();
-    return await _obj!._mnAuthor.toList(qparams);
+    buildParameters();
+    return await _mnAuthor!.toList(qparams);
   }
 
   /// This method returns Primary Key List SQL and Parameters retVal = Map<String,dynamic>. [Author]
-  ///
   /// retVal['sql'] = SQL statement string, retVal['args'] = whereArguments List<dynamic>;
-  ///
   /// <returns>List<String>
-  Map<String, dynamic> toListPrimaryKeySQL([bool buildParameters = true]) {
+  @override
+  Map<String, dynamic> toListPrimaryKeySQL([bool buildParams = true]) {
     final Map<String, dynamic> _retVal = <String, dynamic>{};
-    if (buildParameters) {
-      _buildParameters();
+    if (buildParams) {
+      buildParameters();
     }
     _retVal['sql'] = 'SELECT `id` FROM authors WHERE ${qparams.whereString}';
     _retVal['args'] = qparams.whereArguments;
@@ -1454,13 +1172,14 @@ class AuthorFilterBuilder extends SearchCriteria {
 
   /// This method returns Primary Key List<int>.
   /// <returns>List<int>
-  Future<List<int>> toListPrimaryKey([bool buildParameters = true]) async {
-    if (buildParameters) {
-      _buildParameters();
+  @override
+  Future<List<int>> toListPrimaryKey([bool buildParams = true]) async {
+    if (buildParams) {
+      buildParameters();
     }
     final List<int> idData = <int>[];
     qparams.selectColumns = ['id'];
-    final idFuture = await _obj!._mnAuthor.toList(qparams);
+    final idFuture = await _mnAuthor!.toList(qparams);
 
     final int count = idFuture.length;
     for (int i = 0; i < count; i++) {
@@ -1470,12 +1189,12 @@ class AuthorFilterBuilder extends SearchCriteria {
   }
 
   /// Returns List<dynamic> for selected columns. Use this method for 'groupBy' with min,max,avg..  [Author]
-  ///
   /// Sample usage: (see EXAMPLE 4.2 at https://github.com/hhtokpinar/sqfEntity#group-by)
+  @override
   Future<List<dynamic>> toListObject() async {
-    _buildParameters();
+    buildParameters();
 
-    final objectFuture = _obj!._mnAuthor.toList(qparams);
+    final objectFuture = _mnAuthor!.toList(qparams);
 
     final List<dynamic> objectsData = <dynamic>[];
     final data = await objectFuture;
@@ -1487,13 +1206,13 @@ class AuthorFilterBuilder extends SearchCriteria {
   }
 
   /// Returns List<String> for selected first column
-  ///
   /// Sample usage: await Author.select(columnsToSelect: ['columnName']).toListString()
+  @override
   Future<List<String>> toListString(
       [VoidCallback Function(List<String> o)? listString]) async {
-    _buildParameters();
+    buildParameters();
 
-    final objectFuture = _obj!._mnAuthor.toList(qparams);
+    final objectFuture = _mnAuthor!.toList(qparams);
 
     final List<String> objectsData = <String>[];
     final data = await objectFuture;
@@ -1545,6 +1264,7 @@ class External extends TableBase {
       this.media_type,
       this.song_lyricsId}) {
     _setDefaultValues();
+    softDeleteActivated = false;
   }
   External.withFields(this.id, this.public_name, this.media_id, this.media_type,
       this.song_lyricsId) {
@@ -1586,7 +1306,6 @@ class External extends TableBase {
   String? media_type;
   int? song_lyricsId;
   bool? isSaved;
-  BoolResult? saveResult;
   // end FIELDS (External)
 
 // RELATIONSHIPS (External)
@@ -1629,42 +1348,56 @@ class External extends TableBase {
   }
 
   // METHODS
+  @override
   Map<String, dynamic> toMap(
       {bool forQuery = false, bool forJson = false, bool forView = false}) {
     final map = <String, dynamic>{};
     map['id'] = id;
-    map['public_name'] = public_name;
-    map['media_id'] = media_id;
-    map['media_type'] = media_type;
+    if (public_name != null || !forView) {
+      map['public_name'] = public_name;
+    }
+    if (media_id != null || !forView) {
+      map['media_id'] = media_id;
+    }
+    if (media_type != null || !forView) {
+      map['media_type'] = media_type;
+    }
     if (song_lyricsId != null) {
       map['song_lyricsId'] = forView
           ? plSongLyric == null
               ? song_lyricsId
               : plSongLyric!.name
           : song_lyricsId;
-    } else {
+    } else if (song_lyricsId != null || !forView) {
       map['song_lyricsId'] = null;
     }
 
     return map;
   }
 
+  @override
   Future<Map<String, dynamic>> toMapWithChildren(
       [bool forQuery = false,
       bool forJson = false,
       bool forView = false]) async {
     final map = <String, dynamic>{};
     map['id'] = id;
-    map['public_name'] = public_name;
-    map['media_id'] = media_id;
-    map['media_type'] = media_type;
+    if (public_name != null || !forView) {
+      map['public_name'] = public_name;
+    }
+    if (media_id != null || !forView) {
+      map['media_id'] = media_id;
+    }
+    if (media_type != null || !forView) {
+      map['media_type'] = media_type;
+    }
     if (song_lyricsId != null) {
       map['song_lyricsId'] = forView
           ? plSongLyric == null
               ? song_lyricsId
               : plSongLyric!.name
           : song_lyricsId;
-    } else {
+    } else if (song_lyricsId != null || !forView) {
       map['song_lyricsId'] = null;
     }
 
@@ -1678,19 +1411,23 @@ class External extends TableBase {
   }
 
   /// This method returns Json String [External]
+  @override
   String toJson() {
     return json.encode(toMap(forJson: true));
   }
 
   /// This method returns Json String [External]
+  @override
   Future<String> toJsonWithChilds() async {
     return json.encode(await toMapWithChildren(false, true));
   }
 
+  @override
   List<dynamic> toArgs() {
     return [id, public_name, media_id, media_type, song_lyricsId];
   }
 
+  @override
   List<dynamic> toArgsWithIds() {
     return [id, public_name, media_id, media_type, song_lyricsId];
   }
@@ -1756,15 +1493,11 @@ class External extends TableBase {
       // RELATIONSHIPS PRELOAD
       if (preload || loadParents) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedfields!.contains('song_lyrics.plSongLyric') && */ (preloadFields ==
-                null ||
+        if ((preloadFields == null ||
             loadParents ||
             preloadFields.contains('plSongLyric'))) {
-          /*_loadedfields!.add('song_lyrics.plSongLyric');*/ obj.plSongLyric =
-              obj.plSongLyric ??
-                  await obj.getSongLyric(
-                      loadParents:
-                          loadParents /*, loadedFields: _loadedFields*/);
+          obj.plSongLyric = obj.plSongLyric ??
+              await obj.getSongLyric(loadParents: loadParents);
         }
       } // END RELATIONSHIPS PRELOAD
 
@@ -1774,21 +1507,14 @@ class External extends TableBase {
   }
 
   /// returns External by ID if exist, otherwise returns null
-  ///
   /// Primary Keys: int? id
-  ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
-  ///
   /// ex: getById(preload:true) -> Loads all related objects
-  ///
   /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
-  ///
   /// ex: getById(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
-  ///
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
-  ///
-  /// <returns>returns External if exist, otherwise returns null
+  /// <returns>returns [External] if exist, otherwise returns null
   Future<External?> getById(int? id,
       {bool preload = false,
       List<String>? preloadFields,
@@ -1801,7 +1527,6 @@ class External extends TableBase {
     final data = await _mnExternal.getById([id]);
     if (data.length != 0) {
       obj = External.fromMap(data[0] as Map<String, dynamic>);
-      // final List<String> _loadedFields = loadedFields ?? [];
 
       // RELATIONSHIPS PRELOAD CHILD
       if (preload) {
@@ -1821,15 +1546,11 @@ class External extends TableBase {
       // RELATIONSHIPS PRELOAD
       if (preload || loadParents) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedfields!.contains('song_lyrics.plSongLyric') && */ (preloadFields ==
-                null ||
+        if ((preloadFields == null ||
             loadParents ||
             preloadFields.contains('plSongLyric'))) {
-          /*_loadedfields!.add('song_lyrics.plSongLyric');*/ obj.plSongLyric =
-              obj.plSongLyric ??
-                  await obj.getSongLyric(
-                      loadParents:
-                          loadParents /*, loadedFields: _loadedFields*/);
+          obj.plSongLyric = obj.plSongLyric ??
+              await obj.getSongLyric(loadParents: loadParents);
         }
       } // END RELATIONSHIPS PRELOAD
 
@@ -1842,6 +1563,7 @@ class External extends TableBase {
   /// Saves the (External) object. If the id field is null, saves as a new record and returns new id, if id is not null then updates record
   /// ignoreBatch = true as a default. Set ignoreBatch to false if you run more than one save() operation those are between batchStart and batchCommit
   /// <returns>Returns id
+  @override
   Future<int?> save({bool ignoreBatch = true}) async {
     if (id == null || id == 0 || !isSaved!) {
       await _mnExternal.insert(this, ignoreBatch);
@@ -1849,7 +1571,6 @@ class External extends TableBase {
         isSaved = true;
       }
     } else {
-      // id= await _upsert(); // removed in sqfentity_gen 1.3.0+6
       await _mnExternal.update(this);
     }
 
@@ -1857,10 +1578,9 @@ class External extends TableBase {
   }
 
   /// Saves the (External) object. If the id field is null, saves as a new record and returns new id, if id is not null then updates record
-  ///
   /// ignoreBatch = true as a default. Set ignoreBatch to false if you run more than one save() operation those are between batchStart and batchCommit
-  ///
   /// <returns>Returns id
+  @override
   Future<int?> saveOrThrow({bool ignoreBatch = true}) async {
     if (id == null || id == 0 || !isSaved!) {
       await _mnExternal.insertOrThrow(this, ignoreBatch);
@@ -1883,7 +1603,6 @@ class External extends TableBase {
   }
 
   /// saveAll method saves the sent List<External> as a bulk in one transaction
-  ///
   /// Returns a <List<BoolResult>>
   static Future<List<dynamic>> saveAll(List<External> externals) async {
     List<dynamic>? result = [];
@@ -1899,9 +1618,8 @@ class External extends TableBase {
   }
 
   /// Updates if the record exists, otherwise adds a new row
-
   /// <returns>Returns id
-
+  @override
   Future<int?> upsert({bool ignoreBatch = true}) async {
     try {
       final result = await _mnExternal.rawInsert(
@@ -1926,10 +1644,9 @@ class External extends TableBase {
   }
 
   /// inserts or replaces the sent List<<External>> as a bulk in one transaction.
-  ///
   /// upsertAll() method is faster then saveAll() method. upsertAll() should be used when you are sure that the primary key is greater than zero
-  ///
   /// Returns a BoolCommitResult
+  @override
   Future<BoolCommitResult> upsertAll(List<External> externals) async {
     final results = await _mnExternal.rawInsertAll(
         'INSERT OR REPLACE INTO externals (id, public_name, media_id, media_type, song_lyricsId)  VALUES (?,?,?,?,?)',
@@ -1939,8 +1656,8 @@ class External extends TableBase {
 
   /// Deletes External
 
-  /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
-
+  /// <returns>BoolResult res.success= true (Deleted), false (Could not be deleted)
+  @override
   Future<BoolResult> delete([bool hardDelete = false]) async {
     debugPrint('SQFENTITIY: delete External invoked (id=$id)');
     if (!_softDeleteActivated || hardDelete) {
@@ -1953,17 +1670,25 @@ class External extends TableBase {
     }
   }
 
+  @override
+  Future<BoolResult> recover([bool recoverChilds = true]) {
+    // not implemented because:
+    final msg =
+        'set useSoftDeleting:true in the table definition of [External] to use this feature';
+    throw UnimplementedError(msg);
+  }
+
+  @override
   ExternalFilterBuilder select(
       {List<String>? columnsToSelect, bool? getIsDeleted}) {
-    return ExternalFilterBuilder(this)
-      .._getIsDeleted = getIsDeleted == true
+    return ExternalFilterBuilder(this, getIsDeleted)
       ..qparams.selectColumns = columnsToSelect;
   }
 
+  @override
   ExternalFilterBuilder distinct(
       {List<String>? columnsToSelect, bool? getIsDeleted}) {
-    return ExternalFilterBuilder(this)
-      .._getIsDeleted = getIsDeleted == true
+    return ExternalFilterBuilder(this, getIsDeleted)
       ..qparams.selectColumns = columnsToSelect
       ..qparams.distinct = true;
   }
@@ -1995,560 +1720,254 @@ class External extends TableBase {
 // endregion external
 
 // region ExternalField
-class ExternalField extends SearchCriteria {
-  ExternalField(this.externalFB);
-  // { param = DbParameter(); }
-  DbParameter param = DbParameter();
-  String _waitingNot = '';
-  ExternalFilterBuilder externalFB;
+class ExternalField extends FilterBase {
+  ExternalField(ExternalFilterBuilder externalFB) : super(externalFB);
 
-  ExternalField get not {
-    _waitingNot = ' NOT ';
-    return this;
-  }
-
+  @override
   ExternalFilterBuilder equals(dynamic pValue) {
-    param.expression = '=';
-    externalFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, externalFB.parameters, param, SqlSyntax.EQuals,
-            externalFB._addedBlocks)
-        : setCriteria(pValue, externalFB.parameters, param, SqlSyntax.NotEQuals,
-            externalFB._addedBlocks);
-    _waitingNot = '';
-    externalFB._addedBlocks.needEndBlock![externalFB._blockIndex] =
-        externalFB._addedBlocks.retVal;
-    return externalFB;
+    return super.equals(pValue) as ExternalFilterBuilder;
   }
 
+  @override
   ExternalFilterBuilder equalsOrNull(dynamic pValue) {
-    param.expression = '=';
-    externalFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, externalFB.parameters, param,
-            SqlSyntax.EQualsOrNull, externalFB._addedBlocks)
-        : setCriteria(pValue, externalFB.parameters, param,
-            SqlSyntax.NotEQualsOrNull, externalFB._addedBlocks);
-    _waitingNot = '';
-    externalFB._addedBlocks.needEndBlock![externalFB._blockIndex] =
-        externalFB._addedBlocks.retVal;
-    return externalFB;
+    return super.equalsOrNull(pValue) as ExternalFilterBuilder;
   }
 
+  @override
   ExternalFilterBuilder isNull() {
-    externalFB._addedBlocks = setCriteria(
-        0,
-        externalFB.parameters,
-        param,
-        SqlSyntax.IsNULL.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-        externalFB._addedBlocks);
-    _waitingNot = '';
-    externalFB._addedBlocks.needEndBlock![externalFB._blockIndex] =
-        externalFB._addedBlocks.retVal;
-    return externalFB;
+    return super.isNull() as ExternalFilterBuilder;
   }
 
+  @override
   ExternalFilterBuilder contains(dynamic pValue) {
-    if (pValue != null) {
-      externalFB._addedBlocks = setCriteria(
-          '%${pValue.toString()}%',
-          externalFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          externalFB._addedBlocks);
-      _waitingNot = '';
-      externalFB._addedBlocks.needEndBlock![externalFB._blockIndex] =
-          externalFB._addedBlocks.retVal;
-    }
-    return externalFB;
+    return super.contains(pValue) as ExternalFilterBuilder;
   }
 
+  @override
   ExternalFilterBuilder startsWith(dynamic pValue) {
-    if (pValue != null) {
-      externalFB._addedBlocks = setCriteria(
-          '${pValue.toString()}%',
-          externalFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          externalFB._addedBlocks);
-      _waitingNot = '';
-      externalFB._addedBlocks.needEndBlock![externalFB._blockIndex] =
-          externalFB._addedBlocks.retVal;
-      externalFB._addedBlocks.needEndBlock![externalFB._blockIndex] =
-          externalFB._addedBlocks.retVal;
-    }
-    return externalFB;
+    return super.startsWith(pValue) as ExternalFilterBuilder;
   }
 
+  @override
   ExternalFilterBuilder endsWith(dynamic pValue) {
-    if (pValue != null) {
-      externalFB._addedBlocks = setCriteria(
-          '%${pValue.toString()}',
-          externalFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          externalFB._addedBlocks);
-      _waitingNot = '';
-      externalFB._addedBlocks.needEndBlock![externalFB._blockIndex] =
-          externalFB._addedBlocks.retVal;
-    }
-    return externalFB;
+    return super.endsWith(pValue) as ExternalFilterBuilder;
   }
 
+  @override
   ExternalFilterBuilder between(dynamic pFirst, dynamic pLast) {
-    if (pFirst != null && pLast != null) {
-      externalFB._addedBlocks = setCriteria(
-          pFirst,
-          externalFB.parameters,
-          param,
-          SqlSyntax.Between.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          externalFB._addedBlocks,
-          pLast);
-    } else if (pFirst != null) {
-      if (_waitingNot != '') {
-        externalFB._addedBlocks = setCriteria(pFirst, externalFB.parameters,
-            param, SqlSyntax.LessThan, externalFB._addedBlocks);
-      } else {
-        externalFB._addedBlocks = setCriteria(pFirst, externalFB.parameters,
-            param, SqlSyntax.GreaterThanOrEquals, externalFB._addedBlocks);
-      }
-    } else if (pLast != null) {
-      if (_waitingNot != '') {
-        externalFB._addedBlocks = setCriteria(pLast, externalFB.parameters,
-            param, SqlSyntax.GreaterThan, externalFB._addedBlocks);
-      } else {
-        externalFB._addedBlocks = setCriteria(pLast, externalFB.parameters,
-            param, SqlSyntax.LessThanOrEquals, externalFB._addedBlocks);
-      }
-    }
-    _waitingNot = '';
-    externalFB._addedBlocks.needEndBlock![externalFB._blockIndex] =
-        externalFB._addedBlocks.retVal;
-    return externalFB;
+    return super.between(pFirst, pLast) as ExternalFilterBuilder;
   }
 
+  @override
   ExternalFilterBuilder greaterThan(dynamic pValue) {
-    param.expression = '>';
-    externalFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, externalFB.parameters, param,
-            SqlSyntax.GreaterThan, externalFB._addedBlocks)
-        : setCriteria(pValue, externalFB.parameters, param,
-            SqlSyntax.LessThanOrEquals, externalFB._addedBlocks);
-    _waitingNot = '';
-    externalFB._addedBlocks.needEndBlock![externalFB._blockIndex] =
-        externalFB._addedBlocks.retVal;
-    return externalFB;
+    return super.greaterThan(pValue) as ExternalFilterBuilder;
   }
 
+  @override
   ExternalFilterBuilder lessThan(dynamic pValue) {
-    param.expression = '<';
-    externalFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, externalFB.parameters, param, SqlSyntax.LessThan,
-            externalFB._addedBlocks)
-        : setCriteria(pValue, externalFB.parameters, param,
-            SqlSyntax.GreaterThanOrEquals, externalFB._addedBlocks);
-    _waitingNot = '';
-    externalFB._addedBlocks.needEndBlock![externalFB._blockIndex] =
-        externalFB._addedBlocks.retVal;
-    return externalFB;
+    return super.lessThan(pValue) as ExternalFilterBuilder;
   }
 
+  @override
   ExternalFilterBuilder greaterThanOrEquals(dynamic pValue) {
-    param.expression = '>=';
-    externalFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, externalFB.parameters, param,
-            SqlSyntax.GreaterThanOrEquals, externalFB._addedBlocks)
-        : setCriteria(pValue, externalFB.parameters, param, SqlSyntax.LessThan,
-            externalFB._addedBlocks);
-    _waitingNot = '';
-    externalFB._addedBlocks.needEndBlock![externalFB._blockIndex] =
-        externalFB._addedBlocks.retVal;
-    return externalFB;
+    return super.greaterThanOrEquals(pValue) as ExternalFilterBuilder;
   }
 
+  @override
   ExternalFilterBuilder lessThanOrEquals(dynamic pValue) {
-    param.expression = '<=';
-    externalFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, externalFB.parameters, param,
-            SqlSyntax.LessThanOrEquals, externalFB._addedBlocks)
-        : setCriteria(pValue, externalFB.parameters, param,
-            SqlSyntax.GreaterThan, externalFB._addedBlocks);
-    _waitingNot = '';
-    externalFB._addedBlocks.needEndBlock![externalFB._blockIndex] =
-        externalFB._addedBlocks.retVal;
-    return externalFB;
+    return super.lessThanOrEquals(pValue) as ExternalFilterBuilder;
   }
 
+  @override
   ExternalFilterBuilder inValues(dynamic pValue) {
-    externalFB._addedBlocks = setCriteria(
-        pValue,
-        externalFB.parameters,
-        param,
-        SqlSyntax.IN.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-        externalFB._addedBlocks);
-    _waitingNot = '';
-    externalFB._addedBlocks.needEndBlock![externalFB._blockIndex] =
-        externalFB._addedBlocks.retVal;
-    return externalFB;
+    return super.inValues(pValue) as ExternalFilterBuilder;
+  }
+
+  @override
+  ExternalField get not {
+    return super.not as ExternalField;
   }
 }
 // endregion ExternalField
 
 // region ExternalFilterBuilder
-class ExternalFilterBuilder extends SearchCriteria {
-  ExternalFilterBuilder(External obj) {
-    whereString = '';
-    groupByList = <String>[];
-    _addedBlocks.needEndBlock!.add(false);
-    _addedBlocks.waitingStartBlock!.add(false);
-    _obj = obj;
+class ExternalFilterBuilder extends ConjunctionBase {
+  ExternalFilterBuilder(External obj, bool? getIsDeleted)
+      : super(obj, getIsDeleted) {
+    _mnExternal = obj._mnExternal;
+    _softDeleteActivated = obj.softDeleteActivated;
   }
-  AddedBlocks _addedBlocks = AddedBlocks(<bool>[], <bool>[]);
-  int _blockIndex = 0;
-  List<DbParameter> parameters = <DbParameter>[];
-  List<String> orderByList = <String>[];
-  External? _obj;
-  QueryParams qparams = QueryParams();
-  int _pagesize = 0;
-  int _page = 0;
+
+  bool _softDeleteActivated = false;
+  ExternalManager? _mnExternal;
 
   /// put the sql keyword 'AND'
+  @override
   ExternalFilterBuilder get and {
-    if (parameters.isNotEmpty) {
-      parameters[parameters.length - 1].wOperator = ' AND ';
-    }
+    super.and;
     return this;
   }
 
   /// put the sql keyword 'OR'
+  @override
   ExternalFilterBuilder get or {
-    if (parameters.isNotEmpty) {
-      parameters[parameters.length - 1].wOperator = ' OR ';
-    }
+    super.or;
     return this;
   }
 
   /// open parentheses
+  @override
   ExternalFilterBuilder get startBlock {
-    _addedBlocks.waitingStartBlock!.add(true);
-    _addedBlocks.needEndBlock!.add(false);
-    _blockIndex++;
-    if (_blockIndex > 1) {
-      _addedBlocks.needEndBlock![_blockIndex - 1] = true;
-    }
+    super.startBlock;
     return this;
   }
 
   /// String whereCriteria, write raw query without 'where' keyword. Like this: 'field1 like 'test%' and field2 = 3'
+  @override
   ExternalFilterBuilder where(String? whereCriteria, {dynamic parameterValue}) {
-    if (whereCriteria != null && whereCriteria != '') {
-      final DbParameter param = DbParameter(
-          columnName: parameterValue == null ? null : '',
-          hasParameter: parameterValue != null);
-      _addedBlocks = setCriteria(parameterValue ?? 0, parameters, param,
-          '($whereCriteria)', _addedBlocks);
-      _addedBlocks.needEndBlock![_blockIndex] = _addedBlocks.retVal;
-    }
+    super.where(whereCriteria, parameterValue: parameterValue);
     return this;
   }
 
   /// page = page number,
-  ///
   /// pagesize = row(s) per page
+  @override
   ExternalFilterBuilder page(int page, int pagesize) {
-    if (page > 0) {
-      _page = page;
-    }
-    if (pagesize > 0) {
-      _pagesize = pagesize;
-    }
+    super.page(page, pagesize);
     return this;
   }
 
   /// int count = LIMIT
+  @override
   ExternalFilterBuilder top(int count) {
-    if (count > 0) {
-      _pagesize = count;
-    }
+    super.top(count);
     return this;
   }
 
   /// close parentheses
+  @override
   ExternalFilterBuilder get endBlock {
-    if (_addedBlocks.needEndBlock![_blockIndex]) {
-      parameters[parameters.length - 1].whereString += ' ) ';
-    }
-    _addedBlocks.needEndBlock!.removeAt(_blockIndex);
-    _addedBlocks.waitingStartBlock!.removeAt(_blockIndex);
-    _blockIndex--;
+    super.endBlock;
     return this;
   }
 
   /// argFields might be String or List<String>.
-  ///
   /// Example 1: argFields='name, date'
-  ///
   /// Example 2: argFields = ['name', 'date']
+  @override
   ExternalFilterBuilder orderBy(dynamic argFields) {
-    if (argFields != null) {
-      if (argFields is String) {
-        orderByList.add(argFields);
-      } else {
-        for (String? s in argFields as List<String?>) {
-          if (s!.isNotEmpty) {
-            orderByList.add(' $s ');
-          }
-        }
-      }
-    }
+    super.orderBy(argFields);
     return this;
   }
 
   /// argFields might be String or List<String>.
-  ///
   /// Example 1: argFields='field1, field2'
-  ///
   /// Example 2: argFields = ['field1', 'field2']
+  @override
   ExternalFilterBuilder orderByDesc(dynamic argFields) {
-    if (argFields != null) {
-      if (argFields is String) {
-        orderByList.add('$argFields desc ');
-      } else {
-        for (String? s in argFields as List<String?>) {
-          if (s!.isNotEmpty) {
-            orderByList.add(' $s desc ');
-          }
-        }
-      }
-    }
+    super.orderByDesc(argFields);
     return this;
   }
 
   /// argFields might be String or List<String>.
-  ///
   /// Example 1: argFields='field1, field2'
-  ///
   /// Example 2: argFields = ['field1', 'field2']
+  @override
   ExternalFilterBuilder groupBy(dynamic argFields) {
-    if (argFields != null) {
-      if (argFields is String) {
-        groupByList.add(' $argFields ');
-      } else {
-        for (String? s in argFields as List<String?>) {
-          if (s!.isNotEmpty) {
-            groupByList.add(' $s ');
-          }
-        }
-      }
-    }
+    super.groupBy(argFields);
     return this;
   }
 
   /// argFields might be String or List<String>.
-  ///
   /// Example 1: argFields='name, date'
-  ///
   /// Example 2: argFields = ['name', 'date']
+  @override
   ExternalFilterBuilder having(dynamic argFields) {
-    if (argFields != null) {
-      if (argFields is String) {
-        havingList.add(argFields);
-      } else {
-        for (String? s in argFields as List<String?>) {
-          if (s!.isNotEmpty) {
-            havingList.add(' $s ');
-          }
-        }
-      }
-    }
+    super.having(argFields);
     return this;
   }
 
-  ExternalField setField(ExternalField? field, String colName, DbType dbtype) {
+  ExternalField _setField(ExternalField? field, String colName, DbType dbtype) {
     return ExternalField(this)
       ..param = DbParameter(
-          dbType: dbtype,
-          columnName: colName,
-          wStartBlock: _addedBlocks.waitingStartBlock![_blockIndex]);
+          dbType: dbtype, columnName: colName, wStartBlock: openedBlock);
   }
 
   ExternalField? _id;
   ExternalField get id {
-    return _id = setField(_id, 'id', DbType.integer);
+    return _id = _setField(_id, 'id', DbType.integer);
   }
 
   ExternalField? _public_name;
   ExternalField get public_name {
-    return _public_name = setField(_public_name, 'public_name', DbType.text);
+    return _public_name = _setField(_public_name, 'public_name', DbType.text);
   }
 
   ExternalField? _media_id;
   ExternalField get media_id {
-    return _media_id = setField(_media_id, 'media_id', DbType.text);
+    return _media_id = _setField(_media_id, 'media_id', DbType.text);
   }
 
   ExternalField? _media_type;
   ExternalField get media_type {
-    return _media_type = setField(_media_type, 'media_type', DbType.text);
+    return _media_type = _setField(_media_type, 'media_type', DbType.text);
   }
 
   ExternalField? _song_lyricsId;
   ExternalField get song_lyricsId {
     return _song_lyricsId =
-        setField(_song_lyricsId, 'song_lyricsId', DbType.integer);
-  }
-
-  bool _getIsDeleted = false;
-
-  void _buildParameters() {
-    if (_page > 0 && _pagesize > 0) {
-      qparams
-        ..limit = _pagesize
-        ..offset = (_page - 1) * _pagesize;
-    } else {
-      qparams
-        ..limit = _pagesize
-        ..offset = _page;
-    }
-    for (DbParameter param in parameters) {
-      if (param.columnName != null) {
-        if (param.value is List && !param.hasParameter) {
-          param.value = param.dbType == DbType.text || param.value[0] is String
-              ? '\'${param.value.join('\',\'')}\''
-              : param.value.join(',');
-          whereString += param.whereString
-              .replaceAll('{field}', param.columnName!)
-              .replaceAll('?', param.value.toString());
-          param.value = null;
-        } else {
-          if (param.value is Map<String, dynamic> &&
-              param.value['sql'] != null) {
-            param
-              ..whereString = param.whereString
-                  .replaceAll('?', param.value['sql'].toString())
-              ..dbType = DbType.integer
-              ..value = param.value['args'];
-          }
-          whereString +=
-              param.whereString.replaceAll('{field}', param.columnName!);
-        }
-        if (!param.whereString.contains('?')) {
-        } else {
-          switch (param.dbType) {
-            case DbType.bool:
-              param.value = param.value == null
-                  ? null
-                  : param.value == true
-                      ? 1
-                      : 0;
-              param.value2 = param.value2 == null
-                  ? null
-                  : param.value2 == true
-                      ? 1
-                      : 0;
-              break;
-            case DbType.date:
-            case DbType.datetime:
-            case DbType.datetimeUtc:
-              param.value = param.value == null
-                  ? null
-                  : (param.value as DateTime).millisecondsSinceEpoch;
-              param.value2 = param.value2 == null
-                  ? null
-                  : (param.value2 as DateTime).millisecondsSinceEpoch;
-              break;
-            default:
-          }
-          if (param.value != null) {
-            if (param.value is List) {
-              for (var p in param.value) {
-                whereArguments.add(p);
-              }
-            } else {
-              whereArguments.add(param.value);
-            }
-          }
-          if (param.value2 != null) {
-            whereArguments.add(param.value2);
-          }
-        }
-      } else {
-        whereString += param.whereString;
-      }
-    }
-    if (External._softDeleteActivated) {
-      if (whereString != '') {
-        whereString =
-            '${!_getIsDeleted ? 'ifnull(isDeleted,0)=0 AND' : ''} ($whereString)';
-      } else if (!_getIsDeleted) {
-        whereString = 'ifnull(isDeleted,0)=0';
-      }
-    }
-
-    if (whereString != '') {
-      qparams.whereString = whereString;
-    }
-    qparams
-      ..whereArguments = whereArguments
-      ..groupBy = groupByList.join(',')
-      ..orderBy = orderByList.join(',')
-      ..having = havingList.join(',');
+        _setField(_song_lyricsId, 'song_lyricsId', DbType.integer);
   }
 
   /// Deletes List<External> bulk by query
   ///
-  /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
+  /// <returns>BoolResult res.success= true (Deleted), false (Could not be deleted)
+  @override
   Future<BoolResult> delete([bool hardDelete = false]) async {
-    _buildParameters();
+    buildParameters();
     var r = BoolResult(success: false);
 
-    if (External._softDeleteActivated && !hardDelete) {
-      r = await _obj!._mnExternal.updateBatch(qparams, {'isDeleted': 1});
+    if (_softDeleteActivated && !hardDelete) {
+      r = await _mnExternal!.updateBatch(qparams, {'isDeleted': 1});
     } else {
-      r = await _obj!._mnExternal.delete(qparams);
+      r = await _mnExternal!.delete(qparams);
     }
     return r;
   }
 
   /// using:
-  ///
   /// update({'fieldName': Value})
-  ///
   /// fieldName must be String. Value is dynamic, it can be any of the (int, bool, String.. )
+  @override
   Future<BoolResult> update(Map<String, dynamic> values) {
-    _buildParameters();
+    buildParameters();
     if (qparams.limit! > 0 || qparams.offset! > 0) {
       qparams.whereString =
           'id IN (SELECT id from externals ${qparams.whereString!.isNotEmpty ? 'WHERE ${qparams.whereString}' : ''}${qparams.limit! > 0 ? ' LIMIT ${qparams.limit}' : ''}${qparams.offset! > 0 ? ' OFFSET ${qparams.offset}' : ''})';
     }
-    return _obj!._mnExternal.updateBatch(qparams, values);
+    return _mnExternal!.updateBatch(qparams, values);
   }
 
-  /// This method always returns External Obj if exist, otherwise returns null
-  ///
+  /// This method always returns [External] Obj if exist, otherwise returns null
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
-  ///
   /// ex: toSingle(preload:true) -> Loads all related objects
-  ///
   /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
-  ///
   /// ex: toSingle(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
-  ///
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
-  ///
-  /// <returns>List<External>
+  /// <returns> External?
+  @override
   Future<External?> toSingle(
       {bool preload = false,
       List<String>? preloadFields,
       bool loadParents = false,
       List<String>? loadedFields}) async {
-    _pagesize = 1;
-    _buildParameters();
-    final objFuture = _obj!._mnExternal.toList(qparams);
+    buildParameters(pSize: 1);
+    final objFuture = _mnExternal!.toList(qparams);
     final data = await objFuture;
     External? obj;
     if (data.isNotEmpty) {
       obj = External.fromMap(data[0] as Map<String, dynamic>);
-      // final List<String> _loadedFields = loadedFields ?? [];
 
       // RELATIONSHIPS PRELOAD CHILD
       if (preload) {
@@ -2568,15 +1987,11 @@ class ExternalFilterBuilder extends SearchCriteria {
       // RELATIONSHIPS PRELOAD
       if (preload || loadParents) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedfields!.contains('song_lyrics.plSongLyric') && */ (preloadFields ==
-                null ||
+        if ((preloadFields == null ||
             loadParents ||
             preloadFields.contains('plSongLyric'))) {
-          /*_loadedfields!.add('song_lyrics.plSongLyric');*/ obj.plSongLyric =
-              obj.plSongLyric ??
-                  await obj.getSongLyric(
-                      loadParents:
-                          loadParents /*, loadedFields: _loadedFields*/);
+          obj.plSongLyric = obj.plSongLyric ??
+              await obj.getSongLyric(loadParents: loadParents);
         }
       } // END RELATIONSHIPS PRELOAD
 
@@ -2586,13 +2001,35 @@ class ExternalFilterBuilder extends SearchCriteria {
     return obj;
   }
 
+  /// This method always returns [External]
+  /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
+  /// ex: toSingle(preload:true) -> Loads all related objects
+  /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
+  /// ex: toSingle(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
+  /// bool loadParents: if true, loads all parent objects until the object has no parent
+
+  /// <returns> External?
+  @override
+  Future<External> toSingleOrDefault(
+      {bool preload = false,
+      List<String>? preloadFields,
+      bool loadParents = false,
+      List<String>? loadedFields}) async {
+    return await toSingle(
+            preload: preload,
+            preloadFields: preloadFields,
+            loadParents: loadParents,
+            loadedFields: loadedFields) ??
+        External();
+  }
+
   /// This method returns int. [External]
-  ///
   /// <returns>int
+  @override
   Future<int> toCount([VoidCallback Function(int c)? externalCount]) async {
-    _buildParameters();
+    buildParameters();
     qparams.selectColumns = ['COUNT(1) AS CNT'];
-    final externalsFuture = await _obj!._mnExternal.toList(qparams);
+    final externalsFuture = await _mnExternal!.toList(qparams);
     final int count = externalsFuture[0]['CNT'] as int;
     if (externalCount != null) {
       externalCount(count);
@@ -2601,19 +2038,14 @@ class ExternalFilterBuilder extends SearchCriteria {
   }
 
   /// This method returns List<External> [External]
-  ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
-  ///
   /// ex: toList(preload:true) -> Loads all related objects
-  ///
   /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
-  ///
   /// ex: toList(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
-  ///
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
-  ///
   /// <returns>List<External>
+  @override
   Future<List<External>> toList(
       {bool preload = false,
       List<String>? preloadFields,
@@ -2630,6 +2062,7 @@ class ExternalFilterBuilder extends SearchCriteria {
   }
 
   /// This method returns Json String [External]
+  @override
   Future<String> toJson() async {
     final list = <dynamic>[];
     final data = await toList();
@@ -2640,6 +2073,7 @@ class ExternalFilterBuilder extends SearchCriteria {
   }
 
   /// This method returns Json String. [External]
+  @override
   Future<String> toJsonWithChilds() async {
     final list = <dynamic>[];
     final data = await toList();
@@ -2650,22 +2084,21 @@ class ExternalFilterBuilder extends SearchCriteria {
   }
 
   /// This method returns List<dynamic>. [External]
-  ///
   /// <returns>List<dynamic>
+  @override
   Future<List<dynamic>> toMapList() async {
-    _buildParameters();
-    return await _obj!._mnExternal.toList(qparams);
+    buildParameters();
+    return await _mnExternal!.toList(qparams);
   }
 
   /// This method returns Primary Key List SQL and Parameters retVal = Map<String,dynamic>. [External]
-  ///
   /// retVal['sql'] = SQL statement string, retVal['args'] = whereArguments List<dynamic>;
-  ///
   /// <returns>List<String>
-  Map<String, dynamic> toListPrimaryKeySQL([bool buildParameters = true]) {
+  @override
+  Map<String, dynamic> toListPrimaryKeySQL([bool buildParams = true]) {
     final Map<String, dynamic> _retVal = <String, dynamic>{};
-    if (buildParameters) {
-      _buildParameters();
+    if (buildParams) {
+      buildParameters();
     }
     _retVal['sql'] = 'SELECT `id` FROM externals WHERE ${qparams.whereString}';
     _retVal['args'] = qparams.whereArguments;
@@ -2674,13 +2107,14 @@ class ExternalFilterBuilder extends SearchCriteria {
 
   /// This method returns Primary Key List<int>.
   /// <returns>List<int>
-  Future<List<int>> toListPrimaryKey([bool buildParameters = true]) async {
-    if (buildParameters) {
-      _buildParameters();
+  @override
+  Future<List<int>> toListPrimaryKey([bool buildParams = true]) async {
+    if (buildParams) {
+      buildParameters();
     }
     final List<int> idData = <int>[];
     qparams.selectColumns = ['id'];
-    final idFuture = await _obj!._mnExternal.toList(qparams);
+    final idFuture = await _mnExternal!.toList(qparams);
 
     final int count = idFuture.length;
     for (int i = 0; i < count; i++) {
@@ -2690,12 +2124,12 @@ class ExternalFilterBuilder extends SearchCriteria {
   }
 
   /// Returns List<dynamic> for selected columns. Use this method for 'groupBy' with min,max,avg..  [External]
-  ///
   /// Sample usage: (see EXAMPLE 4.2 at https://github.com/hhtokpinar/sqfEntity#group-by)
+  @override
   Future<List<dynamic>> toListObject() async {
-    _buildParameters();
+    buildParameters();
 
-    final objectFuture = _obj!._mnExternal.toList(qparams);
+    final objectFuture = _mnExternal!.toList(qparams);
 
     final List<dynamic> objectsData = <dynamic>[];
     final data = await objectFuture;
@@ -2707,13 +2141,13 @@ class ExternalFilterBuilder extends SearchCriteria {
   }
 
   /// Returns List<String> for selected first column
-  ///
   /// Sample usage: await External.select(columnsToSelect: ['columnName']).toListString()
+  @override
   Future<List<String>> toListString(
       [VoidCallback Function(List<String> o)? listString]) async {
-    _buildParameters();
+    buildParameters();
 
-    final objectFuture = _obj!._mnExternal.toList(qparams);
+    final objectFuture = _mnExternal!.toList(qparams);
 
     final List<String> objectsData = <String>[];
     final data = await objectFuture;
@@ -2779,6 +2213,7 @@ class ExternalManager extends SqfEntityProvider {
 class Playlist extends TableBase {
   Playlist({this.id, this.name, this.is_archived, this.rank}) {
     _setDefaultValues();
+    softDeleteActivated = false;
   }
   Playlist.withFields(this.name, this.is_archived, this.rank) {
     _setDefaultValues();
@@ -2809,7 +2244,6 @@ class Playlist extends TableBase {
   bool? is_archived;
   int? rank;
 
-  BoolResult? saveResult;
   // end FIELDS (Playlist)
 
 // COLLECTIONS & VIRTUALS (Playlist)
@@ -2840,34 +2274,44 @@ class Playlist extends TableBase {
   }
 
   // METHODS
+  @override
   Map<String, dynamic> toMap(
       {bool forQuery = false, bool forJson = false, bool forView = false}) {
     final map = <String, dynamic>{};
     map['id'] = id;
-    map['name'] = name;
+    if (name != null || !forView) {
+      map['name'] = name;
+    }
     if (is_archived != null) {
       map['is_archived'] = forQuery ? (is_archived! ? 1 : 0) : is_archived;
-    } else {
+    } else if (is_archived != null || !forView) {
       map['is_archived'] = null;
     }
-    map['rank'] = rank;
+    if (rank != null || !forView) {
+      map['rank'] = rank;
+    }
 
     return map;
   }
 
+  @override
   Future<Map<String, dynamic>> toMapWithChildren(
       [bool forQuery = false,
       bool forJson = false,
       bool forView = false]) async {
     final map = <String, dynamic>{};
     map['id'] = id;
-    map['name'] = name;
+    if (name != null || !forView) {
+      map['name'] = name;
+    }
     if (is_archived != null) {
       map['is_archived'] = forQuery ? (is_archived! ? 1 : 0) : is_archived;
-    } else {
+    } else if (is_archived != null || !forView) {
       map['is_archived'] = null;
     }
-    map['rank'] = rank;
+    if (rank != null || !forView) {
+      map['rank'] = rank;
+    }
 
 // COLLECTIONS (Playlist)
     if (!forQuery) {
@@ -2879,19 +2323,23 @@ class Playlist extends TableBase {
   }
 
   /// This method returns Json String [Playlist]
+  @override
   String toJson() {
     return json.encode(toMap(forJson: true));
   }
 
   /// This method returns Json String [Playlist]
+  @override
   Future<String> toJsonWithChilds() async {
     return json.encode(await toMapWithChildren(false, true));
   }
 
+  @override
   List<dynamic> toArgs() {
     return [name, is_archived, rank];
   }
 
+  @override
   List<dynamic> toArgsWithIds() {
     return [id, name, is_archived, rank];
   }
@@ -2961,21 +2409,14 @@ class Playlist extends TableBase {
   }
 
   /// returns Playlist by ID if exist, otherwise returns null
-  ///
   /// Primary Keys: int? id
-  ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
-  ///
   /// ex: getById(preload:true) -> Loads all related objects
-  ///
   /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
-  ///
   /// ex: getById(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
-  ///
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
-  ///
-  /// <returns>returns Playlist if exist, otherwise returns null
+  /// <returns>returns [Playlist] if exist, otherwise returns null
   Future<Playlist?> getById(int? id,
       {bool preload = false,
       List<String>? preloadFields,
@@ -2988,7 +2429,6 @@ class Playlist extends TableBase {
     final data = await _mnPlaylist.getById([id]);
     if (data.length != 0) {
       obj = Playlist.fromMap(data[0] as Map<String, dynamic>);
-      // final List<String> _loadedFields = loadedFields ?? [];
 
       // RELATIONSHIPS PRELOAD CHILD
       if (preload) {
@@ -3015,11 +2455,11 @@ class Playlist extends TableBase {
   /// Saves the (Playlist) object. If the id field is null, saves as a new record and returns new id, if id is not null then updates record
   /// ignoreBatch = true as a default. Set ignoreBatch to false if you run more than one save() operation those are between batchStart and batchCommit
   /// <returns>Returns id
+  @override
   Future<int?> save({bool ignoreBatch = true}) async {
     if (id == null || id == 0) {
       id = await _mnPlaylist.insert(this, ignoreBatch);
     } else {
-      // id= await _upsert(); // removed in sqfentity_gen 1.3.0+6
       await _mnPlaylist.update(this);
     }
 
@@ -3027,10 +2467,9 @@ class Playlist extends TableBase {
   }
 
   /// Saves the (Playlist) object. If the id field is null, saves as a new record and returns new id, if id is not null then updates record
-  ///
   /// ignoreBatch = true as a default. Set ignoreBatch to false if you run more than one save() operation those are between batchStart and batchCommit
-  ///
   /// <returns>Returns id
+  @override
   Future<int?> saveOrThrow({bool ignoreBatch = true}) async {
     if (id == null || id == 0) {
       id = await _mnPlaylist.insertOrThrow(this, ignoreBatch);
@@ -3047,10 +2486,11 @@ class Playlist extends TableBase {
   /// saveAs Playlist. Returns a new Primary Key value of Playlist
 
   /// <returns>Returns a new Primary Key value of Playlist
-  Future<int?> saveAs() async {
+  @override
+  Future<int?> saveAs({bool ignoreBatch = true}) async {
     id = null;
 
-    return save();
+    return save(ignoreBatch: ignoreBatch);
   }
 
   void rollbackId() {
@@ -3060,7 +2500,6 @@ class Playlist extends TableBase {
   }
 
   /// saveAll method saves the sent List<Playlist> as a bulk in one transaction
-  ///
   /// Returns a <List<BoolResult>>
   static Future<List<dynamic>> saveAll(List<Playlist> playlists) async {
     List<dynamic>? result = [];
@@ -3081,9 +2520,8 @@ class Playlist extends TableBase {
   }
 
   /// Updates if the record exists, otherwise adds a new row
-
   /// <returns>Returns id
-
+  @override
   Future<int?> upsert({bool ignoreBatch = true}) async {
     try {
       final result = await _mnPlaylist.rawInsert(
@@ -3108,10 +2546,9 @@ class Playlist extends TableBase {
   }
 
   /// inserts or replaces the sent List<<Playlist>> as a bulk in one transaction.
-  ///
   /// upsertAll() method is faster then saveAll() method. upsertAll() should be used when you are sure that the primary key is greater than zero
-  ///
   /// Returns a BoolCommitResult
+  @override
   Future<BoolCommitResult> upsertAll(List<Playlist> playlists) async {
     final results = await _mnPlaylist.rawInsertAll(
         'INSERT OR REPLACE INTO playlists (id, name, is_archived, rank)  VALUES (?,?,?,?)',
@@ -3121,8 +2558,8 @@ class Playlist extends TableBase {
 
   /// Deletes Playlist
 
-  /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
-
+  /// <returns>BoolResult res.success= true (Deleted), false (Could not be deleted)
+  @override
   Future<BoolResult> delete([bool hardDelete = false]) async {
     debugPrint('SQFENTITIY: delete Playlist invoked (id=$id)');
     var result = BoolResult(success: false);
@@ -3147,17 +2584,25 @@ class Playlist extends TableBase {
     }
   }
 
+  @override
+  Future<BoolResult> recover([bool recoverChilds = true]) {
+    // not implemented because:
+    final msg =
+        'set useSoftDeleting:true in the table definition of [Playlist] to use this feature';
+    throw UnimplementedError(msg);
+  }
+
+  @override
   PlaylistFilterBuilder select(
       {List<String>? columnsToSelect, bool? getIsDeleted}) {
-    return PlaylistFilterBuilder(this)
-      .._getIsDeleted = getIsDeleted == true
+    return PlaylistFilterBuilder(this, getIsDeleted)
       ..qparams.selectColumns = columnsToSelect;
   }
 
+  @override
   PlaylistFilterBuilder distinct(
       {List<String>? columnsToSelect, bool? getIsDeleted}) {
-    return PlaylistFilterBuilder(this)
-      .._getIsDeleted = getIsDeleted == true
+    return PlaylistFilterBuilder(this, getIsDeleted)
       ..qparams.selectColumns = columnsToSelect
       ..qparams.distinct = true;
   }
@@ -3189,503 +2634,205 @@ class Playlist extends TableBase {
 // endregion playlist
 
 // region PlaylistField
-class PlaylistField extends SearchCriteria {
-  PlaylistField(this.playlistFB);
-  // { param = DbParameter(); }
-  DbParameter param = DbParameter();
-  String _waitingNot = '';
-  PlaylistFilterBuilder playlistFB;
+class PlaylistField extends FilterBase {
+  PlaylistField(PlaylistFilterBuilder playlistFB) : super(playlistFB);
 
-  PlaylistField get not {
-    _waitingNot = ' NOT ';
-    return this;
-  }
-
+  @override
   PlaylistFilterBuilder equals(dynamic pValue) {
-    param.expression = '=';
-    playlistFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, playlistFB.parameters, param, SqlSyntax.EQuals,
-            playlistFB._addedBlocks)
-        : setCriteria(pValue, playlistFB.parameters, param, SqlSyntax.NotEQuals,
-            playlistFB._addedBlocks);
-    _waitingNot = '';
-    playlistFB._addedBlocks.needEndBlock![playlistFB._blockIndex] =
-        playlistFB._addedBlocks.retVal;
-    return playlistFB;
+    return super.equals(pValue) as PlaylistFilterBuilder;
   }
 
+  @override
   PlaylistFilterBuilder equalsOrNull(dynamic pValue) {
-    param.expression = '=';
-    playlistFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, playlistFB.parameters, param,
-            SqlSyntax.EQualsOrNull, playlistFB._addedBlocks)
-        : setCriteria(pValue, playlistFB.parameters, param,
-            SqlSyntax.NotEQualsOrNull, playlistFB._addedBlocks);
-    _waitingNot = '';
-    playlistFB._addedBlocks.needEndBlock![playlistFB._blockIndex] =
-        playlistFB._addedBlocks.retVal;
-    return playlistFB;
+    return super.equalsOrNull(pValue) as PlaylistFilterBuilder;
   }
 
+  @override
   PlaylistFilterBuilder isNull() {
-    playlistFB._addedBlocks = setCriteria(
-        0,
-        playlistFB.parameters,
-        param,
-        SqlSyntax.IsNULL.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-        playlistFB._addedBlocks);
-    _waitingNot = '';
-    playlistFB._addedBlocks.needEndBlock![playlistFB._blockIndex] =
-        playlistFB._addedBlocks.retVal;
-    return playlistFB;
+    return super.isNull() as PlaylistFilterBuilder;
   }
 
+  @override
   PlaylistFilterBuilder contains(dynamic pValue) {
-    if (pValue != null) {
-      playlistFB._addedBlocks = setCriteria(
-          '%${pValue.toString()}%',
-          playlistFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          playlistFB._addedBlocks);
-      _waitingNot = '';
-      playlistFB._addedBlocks.needEndBlock![playlistFB._blockIndex] =
-          playlistFB._addedBlocks.retVal;
-    }
-    return playlistFB;
+    return super.contains(pValue) as PlaylistFilterBuilder;
   }
 
+  @override
   PlaylistFilterBuilder startsWith(dynamic pValue) {
-    if (pValue != null) {
-      playlistFB._addedBlocks = setCriteria(
-          '${pValue.toString()}%',
-          playlistFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          playlistFB._addedBlocks);
-      _waitingNot = '';
-      playlistFB._addedBlocks.needEndBlock![playlistFB._blockIndex] =
-          playlistFB._addedBlocks.retVal;
-      playlistFB._addedBlocks.needEndBlock![playlistFB._blockIndex] =
-          playlistFB._addedBlocks.retVal;
-    }
-    return playlistFB;
+    return super.startsWith(pValue) as PlaylistFilterBuilder;
   }
 
+  @override
   PlaylistFilterBuilder endsWith(dynamic pValue) {
-    if (pValue != null) {
-      playlistFB._addedBlocks = setCriteria(
-          '%${pValue.toString()}',
-          playlistFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          playlistFB._addedBlocks);
-      _waitingNot = '';
-      playlistFB._addedBlocks.needEndBlock![playlistFB._blockIndex] =
-          playlistFB._addedBlocks.retVal;
-    }
-    return playlistFB;
+    return super.endsWith(pValue) as PlaylistFilterBuilder;
   }
 
+  @override
   PlaylistFilterBuilder between(dynamic pFirst, dynamic pLast) {
-    if (pFirst != null && pLast != null) {
-      playlistFB._addedBlocks = setCriteria(
-          pFirst,
-          playlistFB.parameters,
-          param,
-          SqlSyntax.Between.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          playlistFB._addedBlocks,
-          pLast);
-    } else if (pFirst != null) {
-      if (_waitingNot != '') {
-        playlistFB._addedBlocks = setCriteria(pFirst, playlistFB.parameters,
-            param, SqlSyntax.LessThan, playlistFB._addedBlocks);
-      } else {
-        playlistFB._addedBlocks = setCriteria(pFirst, playlistFB.parameters,
-            param, SqlSyntax.GreaterThanOrEquals, playlistFB._addedBlocks);
-      }
-    } else if (pLast != null) {
-      if (_waitingNot != '') {
-        playlistFB._addedBlocks = setCriteria(pLast, playlistFB.parameters,
-            param, SqlSyntax.GreaterThan, playlistFB._addedBlocks);
-      } else {
-        playlistFB._addedBlocks = setCriteria(pLast, playlistFB.parameters,
-            param, SqlSyntax.LessThanOrEquals, playlistFB._addedBlocks);
-      }
-    }
-    _waitingNot = '';
-    playlistFB._addedBlocks.needEndBlock![playlistFB._blockIndex] =
-        playlistFB._addedBlocks.retVal;
-    return playlistFB;
+    return super.between(pFirst, pLast) as PlaylistFilterBuilder;
   }
 
+  @override
   PlaylistFilterBuilder greaterThan(dynamic pValue) {
-    param.expression = '>';
-    playlistFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, playlistFB.parameters, param,
-            SqlSyntax.GreaterThan, playlistFB._addedBlocks)
-        : setCriteria(pValue, playlistFB.parameters, param,
-            SqlSyntax.LessThanOrEquals, playlistFB._addedBlocks);
-    _waitingNot = '';
-    playlistFB._addedBlocks.needEndBlock![playlistFB._blockIndex] =
-        playlistFB._addedBlocks.retVal;
-    return playlistFB;
+    return super.greaterThan(pValue) as PlaylistFilterBuilder;
   }
 
+  @override
   PlaylistFilterBuilder lessThan(dynamic pValue) {
-    param.expression = '<';
-    playlistFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, playlistFB.parameters, param, SqlSyntax.LessThan,
-            playlistFB._addedBlocks)
-        : setCriteria(pValue, playlistFB.parameters, param,
-            SqlSyntax.GreaterThanOrEquals, playlistFB._addedBlocks);
-    _waitingNot = '';
-    playlistFB._addedBlocks.needEndBlock![playlistFB._blockIndex] =
-        playlistFB._addedBlocks.retVal;
-    return playlistFB;
+    return super.lessThan(pValue) as PlaylistFilterBuilder;
   }
 
+  @override
   PlaylistFilterBuilder greaterThanOrEquals(dynamic pValue) {
-    param.expression = '>=';
-    playlistFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, playlistFB.parameters, param,
-            SqlSyntax.GreaterThanOrEquals, playlistFB._addedBlocks)
-        : setCriteria(pValue, playlistFB.parameters, param, SqlSyntax.LessThan,
-            playlistFB._addedBlocks);
-    _waitingNot = '';
-    playlistFB._addedBlocks.needEndBlock![playlistFB._blockIndex] =
-        playlistFB._addedBlocks.retVal;
-    return playlistFB;
+    return super.greaterThanOrEquals(pValue) as PlaylistFilterBuilder;
   }
 
+  @override
   PlaylistFilterBuilder lessThanOrEquals(dynamic pValue) {
-    param.expression = '<=';
-    playlistFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, playlistFB.parameters, param,
-            SqlSyntax.LessThanOrEquals, playlistFB._addedBlocks)
-        : setCriteria(pValue, playlistFB.parameters, param,
-            SqlSyntax.GreaterThan, playlistFB._addedBlocks);
-    _waitingNot = '';
-    playlistFB._addedBlocks.needEndBlock![playlistFB._blockIndex] =
-        playlistFB._addedBlocks.retVal;
-    return playlistFB;
+    return super.lessThanOrEquals(pValue) as PlaylistFilterBuilder;
   }
 
+  @override
   PlaylistFilterBuilder inValues(dynamic pValue) {
-    playlistFB._addedBlocks = setCriteria(
-        pValue,
-        playlistFB.parameters,
-        param,
-        SqlSyntax.IN.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-        playlistFB._addedBlocks);
-    _waitingNot = '';
-    playlistFB._addedBlocks.needEndBlock![playlistFB._blockIndex] =
-        playlistFB._addedBlocks.retVal;
-    return playlistFB;
+    return super.inValues(pValue) as PlaylistFilterBuilder;
+  }
+
+  @override
+  PlaylistField get not {
+    return super.not as PlaylistField;
   }
 }
 // endregion PlaylistField
 
 // region PlaylistFilterBuilder
-class PlaylistFilterBuilder extends SearchCriteria {
-  PlaylistFilterBuilder(Playlist obj) {
-    whereString = '';
-    groupByList = <String>[];
-    _addedBlocks.needEndBlock!.add(false);
-    _addedBlocks.waitingStartBlock!.add(false);
-    _obj = obj;
+class PlaylistFilterBuilder extends ConjunctionBase {
+  PlaylistFilterBuilder(Playlist obj, bool? getIsDeleted)
+      : super(obj, getIsDeleted) {
+    _mnPlaylist = obj._mnPlaylist;
+    _softDeleteActivated = obj.softDeleteActivated;
   }
-  AddedBlocks _addedBlocks = AddedBlocks(<bool>[], <bool>[]);
-  int _blockIndex = 0;
-  List<DbParameter> parameters = <DbParameter>[];
-  List<String> orderByList = <String>[];
-  Playlist? _obj;
-  QueryParams qparams = QueryParams();
-  int _pagesize = 0;
-  int _page = 0;
+
+  bool _softDeleteActivated = false;
+  PlaylistManager? _mnPlaylist;
 
   /// put the sql keyword 'AND'
+  @override
   PlaylistFilterBuilder get and {
-    if (parameters.isNotEmpty) {
-      parameters[parameters.length - 1].wOperator = ' AND ';
-    }
+    super.and;
     return this;
   }
 
   /// put the sql keyword 'OR'
+  @override
   PlaylistFilterBuilder get or {
-    if (parameters.isNotEmpty) {
-      parameters[parameters.length - 1].wOperator = ' OR ';
-    }
+    super.or;
     return this;
   }
 
   /// open parentheses
+  @override
   PlaylistFilterBuilder get startBlock {
-    _addedBlocks.waitingStartBlock!.add(true);
-    _addedBlocks.needEndBlock!.add(false);
-    _blockIndex++;
-    if (_blockIndex > 1) {
-      _addedBlocks.needEndBlock![_blockIndex - 1] = true;
-    }
+    super.startBlock;
     return this;
   }
 
   /// String whereCriteria, write raw query without 'where' keyword. Like this: 'field1 like 'test%' and field2 = 3'
+  @override
   PlaylistFilterBuilder where(String? whereCriteria, {dynamic parameterValue}) {
-    if (whereCriteria != null && whereCriteria != '') {
-      final DbParameter param = DbParameter(
-          columnName: parameterValue == null ? null : '',
-          hasParameter: parameterValue != null);
-      _addedBlocks = setCriteria(parameterValue ?? 0, parameters, param,
-          '($whereCriteria)', _addedBlocks);
-      _addedBlocks.needEndBlock![_blockIndex] = _addedBlocks.retVal;
-    }
+    super.where(whereCriteria, parameterValue: parameterValue);
     return this;
   }
 
   /// page = page number,
-  ///
   /// pagesize = row(s) per page
+  @override
   PlaylistFilterBuilder page(int page, int pagesize) {
-    if (page > 0) {
-      _page = page;
-    }
-    if (pagesize > 0) {
-      _pagesize = pagesize;
-    }
+    super.page(page, pagesize);
     return this;
   }
 
   /// int count = LIMIT
+  @override
   PlaylistFilterBuilder top(int count) {
-    if (count > 0) {
-      _pagesize = count;
-    }
+    super.top(count);
     return this;
   }
 
   /// close parentheses
+  @override
   PlaylistFilterBuilder get endBlock {
-    if (_addedBlocks.needEndBlock![_blockIndex]) {
-      parameters[parameters.length - 1].whereString += ' ) ';
-    }
-    _addedBlocks.needEndBlock!.removeAt(_blockIndex);
-    _addedBlocks.waitingStartBlock!.removeAt(_blockIndex);
-    _blockIndex--;
+    super.endBlock;
     return this;
   }
 
   /// argFields might be String or List<String>.
-  ///
   /// Example 1: argFields='name, date'
-  ///
   /// Example 2: argFields = ['name', 'date']
+  @override
   PlaylistFilterBuilder orderBy(dynamic argFields) {
-    if (argFields != null) {
-      if (argFields is String) {
-        orderByList.add(argFields);
-      } else {
-        for (String? s in argFields as List<String?>) {
-          if (s!.isNotEmpty) {
-            orderByList.add(' $s ');
-          }
-        }
-      }
-    }
+    super.orderBy(argFields);
     return this;
   }
 
   /// argFields might be String or List<String>.
-  ///
   /// Example 1: argFields='field1, field2'
-  ///
   /// Example 2: argFields = ['field1', 'field2']
+  @override
   PlaylistFilterBuilder orderByDesc(dynamic argFields) {
-    if (argFields != null) {
-      if (argFields is String) {
-        orderByList.add('$argFields desc ');
-      } else {
-        for (String? s in argFields as List<String?>) {
-          if (s!.isNotEmpty) {
-            orderByList.add(' $s desc ');
-          }
-        }
-      }
-    }
+    super.orderByDesc(argFields);
     return this;
   }
 
   /// argFields might be String or List<String>.
-  ///
   /// Example 1: argFields='field1, field2'
-  ///
   /// Example 2: argFields = ['field1', 'field2']
+  @override
   PlaylistFilterBuilder groupBy(dynamic argFields) {
-    if (argFields != null) {
-      if (argFields is String) {
-        groupByList.add(' $argFields ');
-      } else {
-        for (String? s in argFields as List<String?>) {
-          if (s!.isNotEmpty) {
-            groupByList.add(' $s ');
-          }
-        }
-      }
-    }
+    super.groupBy(argFields);
     return this;
   }
 
   /// argFields might be String or List<String>.
-  ///
   /// Example 1: argFields='name, date'
-  ///
   /// Example 2: argFields = ['name', 'date']
+  @override
   PlaylistFilterBuilder having(dynamic argFields) {
-    if (argFields != null) {
-      if (argFields is String) {
-        havingList.add(argFields);
-      } else {
-        for (String? s in argFields as List<String?>) {
-          if (s!.isNotEmpty) {
-            havingList.add(' $s ');
-          }
-        }
-      }
-    }
+    super.having(argFields);
     return this;
   }
 
-  PlaylistField setField(PlaylistField? field, String colName, DbType dbtype) {
+  PlaylistField _setField(PlaylistField? field, String colName, DbType dbtype) {
     return PlaylistField(this)
       ..param = DbParameter(
-          dbType: dbtype,
-          columnName: colName,
-          wStartBlock: _addedBlocks.waitingStartBlock![_blockIndex]);
+          dbType: dbtype, columnName: colName, wStartBlock: openedBlock);
   }
 
   PlaylistField? _id;
   PlaylistField get id {
-    return _id = setField(_id, 'id', DbType.integer);
+    return _id = _setField(_id, 'id', DbType.integer);
   }
 
   PlaylistField? _name;
   PlaylistField get name {
-    return _name = setField(_name, 'name', DbType.text);
+    return _name = _setField(_name, 'name', DbType.text);
   }
 
   PlaylistField? _is_archived;
   PlaylistField get is_archived {
-    return _is_archived = setField(_is_archived, 'is_archived', DbType.bool);
+    return _is_archived = _setField(_is_archived, 'is_archived', DbType.bool);
   }
 
   PlaylistField? _rank;
   PlaylistField get rank {
-    return _rank = setField(_rank, 'rank', DbType.integer);
-  }
-
-  bool _getIsDeleted = false;
-
-  void _buildParameters() {
-    if (_page > 0 && _pagesize > 0) {
-      qparams
-        ..limit = _pagesize
-        ..offset = (_page - 1) * _pagesize;
-    } else {
-      qparams
-        ..limit = _pagesize
-        ..offset = _page;
-    }
-    for (DbParameter param in parameters) {
-      if (param.columnName != null) {
-        if (param.value is List && !param.hasParameter) {
-          param.value = param.dbType == DbType.text || param.value[0] is String
-              ? '\'${param.value.join('\',\'')}\''
-              : param.value.join(',');
-          whereString += param.whereString
-              .replaceAll('{field}', param.columnName!)
-              .replaceAll('?', param.value.toString());
-          param.value = null;
-        } else {
-          if (param.value is Map<String, dynamic> &&
-              param.value['sql'] != null) {
-            param
-              ..whereString = param.whereString
-                  .replaceAll('?', param.value['sql'].toString())
-              ..dbType = DbType.integer
-              ..value = param.value['args'];
-          }
-          whereString +=
-              param.whereString.replaceAll('{field}', param.columnName!);
-        }
-        if (!param.whereString.contains('?')) {
-        } else {
-          switch (param.dbType) {
-            case DbType.bool:
-              param.value = param.value == null
-                  ? null
-                  : param.value == true
-                      ? 1
-                      : 0;
-              param.value2 = param.value2 == null
-                  ? null
-                  : param.value2 == true
-                      ? 1
-                      : 0;
-              break;
-            case DbType.date:
-            case DbType.datetime:
-            case DbType.datetimeUtc:
-              param.value = param.value == null
-                  ? null
-                  : (param.value as DateTime).millisecondsSinceEpoch;
-              param.value2 = param.value2 == null
-                  ? null
-                  : (param.value2 as DateTime).millisecondsSinceEpoch;
-              break;
-            default:
-          }
-          if (param.value != null) {
-            if (param.value is List) {
-              for (var p in param.value) {
-                whereArguments.add(p);
-              }
-            } else {
-              whereArguments.add(param.value);
-            }
-          }
-          if (param.value2 != null) {
-            whereArguments.add(param.value2);
-          }
-        }
-      } else {
-        whereString += param.whereString;
-      }
-    }
-    if (Playlist._softDeleteActivated) {
-      if (whereString != '') {
-        whereString =
-            '${!_getIsDeleted ? 'ifnull(isDeleted,0)=0 AND' : ''} ($whereString)';
-      } else if (!_getIsDeleted) {
-        whereString = 'ifnull(isDeleted,0)=0';
-      }
-    }
-
-    if (whereString != '') {
-      qparams.whereString = whereString;
-    }
-    qparams
-      ..whereArguments = whereArguments
-      ..groupBy = groupByList.join(',')
-      ..orderBy = orderByList.join(',')
-      ..having = havingList.join(',');
+    return _rank = _setField(_rank, 'rank', DbType.integer);
   }
 
   /// Deletes List<Playlist> bulk by query
   ///
-  /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
+  /// <returns>BoolResult res.success= true (Deleted), false (Could not be deleted)
+  @override
   Future<BoolResult> delete([bool hardDelete = false]) async {
-    _buildParameters();
+    buildParameters();
     var r = BoolResult(success: false);
     // Delete sub records where in (PlaylistRecord) according to DeleteRule.CASCADE
     final idListPlaylistRecordBYplaylistsId = toListPrimaryKeySQL(false);
@@ -3698,55 +2845,47 @@ class PlaylistFilterBuilder extends SearchCriteria {
       return resPlaylistRecordBYplaylistsId;
     }
 
-    if (Playlist._softDeleteActivated && !hardDelete) {
-      r = await _obj!._mnPlaylist.updateBatch(qparams, {'isDeleted': 1});
+    if (_softDeleteActivated && !hardDelete) {
+      r = await _mnPlaylist!.updateBatch(qparams, {'isDeleted': 1});
     } else {
-      r = await _obj!._mnPlaylist.delete(qparams);
+      r = await _mnPlaylist!.delete(qparams);
     }
     return r;
   }
 
   /// using:
-  ///
   /// update({'fieldName': Value})
-  ///
   /// fieldName must be String. Value is dynamic, it can be any of the (int, bool, String.. )
+  @override
   Future<BoolResult> update(Map<String, dynamic> values) {
-    _buildParameters();
+    buildParameters();
     if (qparams.limit! > 0 || qparams.offset! > 0) {
       qparams.whereString =
           'id IN (SELECT id from playlists ${qparams.whereString!.isNotEmpty ? 'WHERE ${qparams.whereString}' : ''}${qparams.limit! > 0 ? ' LIMIT ${qparams.limit}' : ''}${qparams.offset! > 0 ? ' OFFSET ${qparams.offset}' : ''})';
     }
-    return _obj!._mnPlaylist.updateBatch(qparams, values);
+    return _mnPlaylist!.updateBatch(qparams, values);
   }
 
-  /// This method always returns Playlist Obj if exist, otherwise returns null
-  ///
+  /// This method always returns [Playlist] Obj if exist, otherwise returns null
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
-  ///
   /// ex: toSingle(preload:true) -> Loads all related objects
-  ///
   /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
-  ///
   /// ex: toSingle(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
-  ///
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
-  ///
-  /// <returns>List<Playlist>
+  /// <returns> Playlist?
+  @override
   Future<Playlist?> toSingle(
       {bool preload = false,
       List<String>? preloadFields,
       bool loadParents = false,
       List<String>? loadedFields}) async {
-    _pagesize = 1;
-    _buildParameters();
-    final objFuture = _obj!._mnPlaylist.toList(qparams);
+    buildParameters(pSize: 1);
+    final objFuture = _mnPlaylist!.toList(qparams);
     final data = await objFuture;
     Playlist? obj;
     if (data.isNotEmpty) {
       obj = Playlist.fromMap(data[0] as Map<String, dynamic>);
-      // final List<String> _loadedFields = loadedFields ?? [];
 
       // RELATIONSHIPS PRELOAD CHILD
       if (preload) {
@@ -3770,13 +2909,35 @@ class PlaylistFilterBuilder extends SearchCriteria {
     return obj;
   }
 
+  /// This method always returns [Playlist]
+  /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
+  /// ex: toSingle(preload:true) -> Loads all related objects
+  /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
+  /// ex: toSingle(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
+  /// bool loadParents: if true, loads all parent objects until the object has no parent
+
+  /// <returns> Playlist?
+  @override
+  Future<Playlist> toSingleOrDefault(
+      {bool preload = false,
+      List<String>? preloadFields,
+      bool loadParents = false,
+      List<String>? loadedFields}) async {
+    return await toSingle(
+            preload: preload,
+            preloadFields: preloadFields,
+            loadParents: loadParents,
+            loadedFields: loadedFields) ??
+        Playlist();
+  }
+
   /// This method returns int. [Playlist]
-  ///
   /// <returns>int
+  @override
   Future<int> toCount([VoidCallback Function(int c)? playlistCount]) async {
-    _buildParameters();
+    buildParameters();
     qparams.selectColumns = ['COUNT(1) AS CNT'];
-    final playlistsFuture = await _obj!._mnPlaylist.toList(qparams);
+    final playlistsFuture = await _mnPlaylist!.toList(qparams);
     final int count = playlistsFuture[0]['CNT'] as int;
     if (playlistCount != null) {
       playlistCount(count);
@@ -3785,19 +2946,14 @@ class PlaylistFilterBuilder extends SearchCriteria {
   }
 
   /// This method returns List<Playlist> [Playlist]
-  ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
-  ///
   /// ex: toList(preload:true) -> Loads all related objects
-  ///
   /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
-  ///
   /// ex: toList(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
-  ///
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
-  ///
   /// <returns>List<Playlist>
+  @override
   Future<List<Playlist>> toList(
       {bool preload = false,
       List<String>? preloadFields,
@@ -3814,6 +2970,7 @@ class PlaylistFilterBuilder extends SearchCriteria {
   }
 
   /// This method returns Json String [Playlist]
+  @override
   Future<String> toJson() async {
     final list = <dynamic>[];
     final data = await toList();
@@ -3824,6 +2981,7 @@ class PlaylistFilterBuilder extends SearchCriteria {
   }
 
   /// This method returns Json String. [Playlist]
+  @override
   Future<String> toJsonWithChilds() async {
     final list = <dynamic>[];
     final data = await toList();
@@ -3834,22 +2992,21 @@ class PlaylistFilterBuilder extends SearchCriteria {
   }
 
   /// This method returns List<dynamic>. [Playlist]
-  ///
   /// <returns>List<dynamic>
+  @override
   Future<List<dynamic>> toMapList() async {
-    _buildParameters();
-    return await _obj!._mnPlaylist.toList(qparams);
+    buildParameters();
+    return await _mnPlaylist!.toList(qparams);
   }
 
   /// This method returns Primary Key List SQL and Parameters retVal = Map<String,dynamic>. [Playlist]
-  ///
   /// retVal['sql'] = SQL statement string, retVal['args'] = whereArguments List<dynamic>;
-  ///
   /// <returns>List<String>
-  Map<String, dynamic> toListPrimaryKeySQL([bool buildParameters = true]) {
+  @override
+  Map<String, dynamic> toListPrimaryKeySQL([bool buildParams = true]) {
     final Map<String, dynamic> _retVal = <String, dynamic>{};
-    if (buildParameters) {
-      _buildParameters();
+    if (buildParams) {
+      buildParameters();
     }
     _retVal['sql'] = 'SELECT `id` FROM playlists WHERE ${qparams.whereString}';
     _retVal['args'] = qparams.whereArguments;
@@ -3858,13 +3015,14 @@ class PlaylistFilterBuilder extends SearchCriteria {
 
   /// This method returns Primary Key List<int>.
   /// <returns>List<int>
-  Future<List<int>> toListPrimaryKey([bool buildParameters = true]) async {
-    if (buildParameters) {
-      _buildParameters();
+  @override
+  Future<List<int>> toListPrimaryKey([bool buildParams = true]) async {
+    if (buildParams) {
+      buildParameters();
     }
     final List<int> idData = <int>[];
     qparams.selectColumns = ['id'];
-    final idFuture = await _obj!._mnPlaylist.toList(qparams);
+    final idFuture = await _mnPlaylist!.toList(qparams);
 
     final int count = idFuture.length;
     for (int i = 0; i < count; i++) {
@@ -3874,12 +3032,12 @@ class PlaylistFilterBuilder extends SearchCriteria {
   }
 
   /// Returns List<dynamic> for selected columns. Use this method for 'groupBy' with min,max,avg..  [Playlist]
-  ///
   /// Sample usage: (see EXAMPLE 4.2 at https://github.com/hhtokpinar/sqfEntity#group-by)
+  @override
   Future<List<dynamic>> toListObject() async {
-    _buildParameters();
+    buildParameters();
 
-    final objectFuture = _obj!._mnPlaylist.toList(qparams);
+    final objectFuture = _mnPlaylist!.toList(qparams);
 
     final List<dynamic> objectsData = <dynamic>[];
     final data = await objectFuture;
@@ -3891,13 +3049,13 @@ class PlaylistFilterBuilder extends SearchCriteria {
   }
 
   /// Returns List<String> for selected first column
-  ///
   /// Sample usage: await Playlist.select(columnsToSelect: ['columnName']).toListString()
+  @override
   Future<List<String>> toListString(
       [VoidCallback Function(List<String> o)? listString]) async {
-    _buildParameters();
+    buildParameters();
 
-    final objectFuture = _obj!._mnPlaylist.toList(qparams);
+    final objectFuture = _mnPlaylist!.toList(qparams);
 
     final List<String> objectsData = <String>[];
     final data = await objectFuture;
@@ -3956,6 +3114,7 @@ class PlaylistManager extends SqfEntityProvider {
 class PlaylistRecord extends TableBase {
   PlaylistRecord({this.id, this.rank, this.playlistsId, this.song_lyricsId}) {
     _setDefaultValues();
+    softDeleteActivated = false;
   }
   PlaylistRecord.withFields(this.rank, this.playlistsId, this.song_lyricsId) {
     _setDefaultValues();
@@ -3993,7 +3152,6 @@ class PlaylistRecord extends TableBase {
   int? playlistsId;
   int? song_lyricsId;
 
-  BoolResult? saveResult;
   // end FIELDS (PlaylistRecord)
 
 // RELATIONSHIPS (PlaylistRecord)
@@ -4030,18 +3188,21 @@ class PlaylistRecord extends TableBase {
   }
 
   // METHODS
+  @override
   Map<String, dynamic> toMap(
       {bool forQuery = false, bool forJson = false, bool forView = false}) {
     final map = <String, dynamic>{};
     map['id'] = id;
-    map['rank'] = rank;
+    if (rank != null || !forView) {
+      map['rank'] = rank;
+    }
     if (playlistsId != null) {
       map['playlistsId'] = forView
           ? plPlaylist == null
               ? playlistsId
               : plPlaylist!.name
           : playlistsId;
-    } else {
+    } else if (playlistsId != null || !forView) {
       map['playlistsId'] = null;
     }
     if (song_lyricsId != null) {
@@ -4050,27 +3211,30 @@ class PlaylistRecord extends TableBase {
               ? song_lyricsId
               : plSongLyric!.name
           : song_lyricsId;
-    } else {
+    } else if (song_lyricsId != null || !forView) {
       map['song_lyricsId'] = null;
     }
 
     return map;
   }
 
+  @override
   Future<Map<String, dynamic>> toMapWithChildren(
       [bool forQuery = false,
       bool forJson = false,
       bool forView = false]) async {
     final map = <String, dynamic>{};
     map['id'] = id;
-    map['rank'] = rank;
+    if (rank != null || !forView) {
+      map['rank'] = rank;
+    }
     if (playlistsId != null) {
       map['playlistsId'] = forView
           ? plPlaylist == null
               ? playlistsId
               : plPlaylist!.name
           : playlistsId;
-    } else {
+    } else if (playlistsId != null || !forView) {
       map['playlistsId'] = null;
     }
     if (song_lyricsId != null) {
@@ -4079,7 +3243,7 @@ class PlaylistRecord extends TableBase {
               ? song_lyricsId
               : plSongLyric!.name
           : song_lyricsId;
-    } else {
+    } else if (song_lyricsId != null || !forView) {
       map['song_lyricsId'] = null;
     }
 
@@ -4087,19 +3251,23 @@ class PlaylistRecord extends TableBase {
   }
 
   /// This method returns Json String [PlaylistRecord]
+  @override
   String toJson() {
     return json.encode(toMap(forJson: true));
   }
 
   /// This method returns Json String [PlaylistRecord]
+  @override
   Future<String> toJsonWithChilds() async {
     return json.encode(await toMapWithChildren(false, true));
   }
 
+  @override
   List<dynamic> toArgs() {
     return [rank, playlistsId, song_lyricsId];
   }
 
+  @override
   List<dynamic> toArgsWithIds() {
     return [id, rank, playlistsId, song_lyricsId];
   }
@@ -4151,24 +3319,17 @@ class PlaylistRecord extends TableBase {
       // RELATIONSHIPS PRELOAD
       if (preload || loadParents) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedfields!.contains('playlists.plPlaylist') && */ (preloadFields ==
-                null ||
+        if ((preloadFields == null ||
             loadParents ||
             preloadFields.contains('plPlaylist'))) {
-          /*_loadedfields!.add('playlists.plPlaylist');*/ obj.plPlaylist = obj
-                  .plPlaylist ??
-              await obj.getPlaylist(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+          obj.plPlaylist =
+              obj.plPlaylist ?? await obj.getPlaylist(loadParents: loadParents);
         }
-        if (/*!_loadedfields!.contains('song_lyrics.plSongLyric') && */ (preloadFields ==
-                null ||
+        if ((preloadFields == null ||
             loadParents ||
             preloadFields.contains('plSongLyric'))) {
-          /*_loadedfields!.add('song_lyrics.plSongLyric');*/ obj.plSongLyric =
-              obj.plSongLyric ??
-                  await obj.getSongLyric(
-                      loadParents:
-                          loadParents /*, loadedFields: _loadedFields*/);
+          obj.plSongLyric = obj.plSongLyric ??
+              await obj.getSongLyric(loadParents: loadParents);
         }
       } // END RELATIONSHIPS PRELOAD
 
@@ -4178,21 +3339,14 @@ class PlaylistRecord extends TableBase {
   }
 
   /// returns PlaylistRecord by ID if exist, otherwise returns null
-  ///
   /// Primary Keys: int? id
-  ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
-  ///
   /// ex: getById(preload:true) -> Loads all related objects
-  ///
   /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
-  ///
   /// ex: getById(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
-  ///
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
-  ///
-  /// <returns>returns PlaylistRecord if exist, otherwise returns null
+  /// <returns>returns [PlaylistRecord] if exist, otherwise returns null
   Future<PlaylistRecord?> getById(int? id,
       {bool preload = false,
       List<String>? preloadFields,
@@ -4205,29 +3359,21 @@ class PlaylistRecord extends TableBase {
     final data = await _mnPlaylistRecord.getById([id]);
     if (data.length != 0) {
       obj = PlaylistRecord.fromMap(data[0] as Map<String, dynamic>);
-      // final List<String> _loadedFields = loadedFields ?? [];
 
       // RELATIONSHIPS PRELOAD
       if (preload || loadParents) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedfields!.contains('playlists.plPlaylist') && */ (preloadFields ==
-                null ||
+        if ((preloadFields == null ||
             loadParents ||
             preloadFields.contains('plPlaylist'))) {
-          /*_loadedfields!.add('playlists.plPlaylist');*/ obj.plPlaylist = obj
-                  .plPlaylist ??
-              await obj.getPlaylist(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+          obj.plPlaylist =
+              obj.plPlaylist ?? await obj.getPlaylist(loadParents: loadParents);
         }
-        if (/*!_loadedfields!.contains('song_lyrics.plSongLyric') && */ (preloadFields ==
-                null ||
+        if ((preloadFields == null ||
             loadParents ||
             preloadFields.contains('plSongLyric'))) {
-          /*_loadedfields!.add('song_lyrics.plSongLyric');*/ obj.plSongLyric =
-              obj.plSongLyric ??
-                  await obj.getSongLyric(
-                      loadParents:
-                          loadParents /*, loadedFields: _loadedFields*/);
+          obj.plSongLyric = obj.plSongLyric ??
+              await obj.getSongLyric(loadParents: loadParents);
         }
       } // END RELATIONSHIPS PRELOAD
 
@@ -4240,11 +3386,11 @@ class PlaylistRecord extends TableBase {
   /// Saves the (PlaylistRecord) object. If the id field is null, saves as a new record and returns new id, if id is not null then updates record
   /// ignoreBatch = true as a default. Set ignoreBatch to false if you run more than one save() operation those are between batchStart and batchCommit
   /// <returns>Returns id
+  @override
   Future<int?> save({bool ignoreBatch = true}) async {
     if (id == null || id == 0) {
       id = await _mnPlaylistRecord.insert(this, ignoreBatch);
     } else {
-      // id= await _upsert(); // removed in sqfentity_gen 1.3.0+6
       await _mnPlaylistRecord.update(this);
     }
 
@@ -4252,10 +3398,9 @@ class PlaylistRecord extends TableBase {
   }
 
   /// Saves the (PlaylistRecord) object. If the id field is null, saves as a new record and returns new id, if id is not null then updates record
-  ///
   /// ignoreBatch = true as a default. Set ignoreBatch to false if you run more than one save() operation those are between batchStart and batchCommit
-  ///
   /// <returns>Returns id
+  @override
   Future<int?> saveOrThrow({bool ignoreBatch = true}) async {
     if (id == null || id == 0) {
       id = await _mnPlaylistRecord.insertOrThrow(this, ignoreBatch);
@@ -4272,10 +3417,11 @@ class PlaylistRecord extends TableBase {
   /// saveAs PlaylistRecord. Returns a new Primary Key value of PlaylistRecord
 
   /// <returns>Returns a new Primary Key value of PlaylistRecord
-  Future<int?> saveAs() async {
+  @override
+  Future<int?> saveAs({bool ignoreBatch = true}) async {
     id = null;
 
-    return save();
+    return save(ignoreBatch: ignoreBatch);
   }
 
   void rollbackId() {
@@ -4285,7 +3431,6 @@ class PlaylistRecord extends TableBase {
   }
 
   /// saveAll method saves the sent List<PlaylistRecord> as a bulk in one transaction
-  ///
   /// Returns a <List<BoolResult>>
   static Future<List<dynamic>> saveAll(
       List<PlaylistRecord> playlistrecords) async {
@@ -4307,9 +3452,8 @@ class PlaylistRecord extends TableBase {
   }
 
   /// Updates if the record exists, otherwise adds a new row
-
   /// <returns>Returns id
-
+  @override
   Future<int?> upsert({bool ignoreBatch = true}) async {
     try {
       final result = await _mnPlaylistRecord.rawInsert(
@@ -4335,10 +3479,9 @@ class PlaylistRecord extends TableBase {
   }
 
   /// inserts or replaces the sent List<<PlaylistRecord>> as a bulk in one transaction.
-  ///
   /// upsertAll() method is faster then saveAll() method. upsertAll() should be used when you are sure that the primary key is greater than zero
-  ///
   /// Returns a BoolCommitResult
+  @override
   Future<BoolCommitResult> upsertAll(
       List<PlaylistRecord> playlistrecords) async {
     final results = await _mnPlaylistRecord.rawInsertAll(
@@ -4349,8 +3492,8 @@ class PlaylistRecord extends TableBase {
 
   /// Deletes PlaylistRecord
 
-  /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
-
+  /// <returns>BoolResult res.success= true (Deleted), false (Could not be deleted)
+  @override
   Future<BoolResult> delete([bool hardDelete = false]) async {
     debugPrint('SQFENTITIY: delete PlaylistRecord invoked (id=$id)');
     if (!_softDeleteActivated || hardDelete) {
@@ -4363,17 +3506,25 @@ class PlaylistRecord extends TableBase {
     }
   }
 
+  @override
+  Future<BoolResult> recover([bool recoverChilds = true]) {
+    // not implemented because:
+    final msg =
+        'set useSoftDeleting:true in the table definition of [PlaylistRecord] to use this feature';
+    throw UnimplementedError(msg);
+  }
+
+  @override
   PlaylistRecordFilterBuilder select(
       {List<String>? columnsToSelect, bool? getIsDeleted}) {
-    return PlaylistRecordFilterBuilder(this)
-      .._getIsDeleted = getIsDeleted == true
+    return PlaylistRecordFilterBuilder(this, getIsDeleted)
       ..qparams.selectColumns = columnsToSelect;
   }
 
+  @override
   PlaylistRecordFilterBuilder distinct(
       {List<String>? columnsToSelect, bool? getIsDeleted}) {
-    return PlaylistRecordFilterBuilder(this)
-      .._getIsDeleted = getIsDeleted == true
+    return PlaylistRecordFilterBuilder(this, getIsDeleted)
       ..qparams.selectColumns = columnsToSelect
       ..qparams.distinct = true;
   }
@@ -4403,599 +3554,268 @@ class PlaylistRecord extends TableBase {
 // endregion playlistrecord
 
 // region PlaylistRecordField
-class PlaylistRecordField extends SearchCriteria {
-  PlaylistRecordField(this.playlistrecordFB);
-  // { param = DbParameter(); }
-  DbParameter param = DbParameter();
-  String _waitingNot = '';
-  PlaylistRecordFilterBuilder playlistrecordFB;
+class PlaylistRecordField extends FilterBase {
+  PlaylistRecordField(PlaylistRecordFilterBuilder playlistrecordFB)
+      : super(playlistrecordFB);
 
-  PlaylistRecordField get not {
-    _waitingNot = ' NOT ';
-    return this;
-  }
-
+  @override
   PlaylistRecordFilterBuilder equals(dynamic pValue) {
-    param.expression = '=';
-    playlistrecordFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, playlistrecordFB.parameters, param,
-            SqlSyntax.EQuals, playlistrecordFB._addedBlocks)
-        : setCriteria(pValue, playlistrecordFB.parameters, param,
-            SqlSyntax.NotEQuals, playlistrecordFB._addedBlocks);
-    _waitingNot = '';
-    playlistrecordFB._addedBlocks.needEndBlock![playlistrecordFB._blockIndex] =
-        playlistrecordFB._addedBlocks.retVal;
-    return playlistrecordFB;
+    return super.equals(pValue) as PlaylistRecordFilterBuilder;
   }
 
+  @override
   PlaylistRecordFilterBuilder equalsOrNull(dynamic pValue) {
-    param.expression = '=';
-    playlistrecordFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, playlistrecordFB.parameters, param,
-            SqlSyntax.EQualsOrNull, playlistrecordFB._addedBlocks)
-        : setCriteria(pValue, playlistrecordFB.parameters, param,
-            SqlSyntax.NotEQualsOrNull, playlistrecordFB._addedBlocks);
-    _waitingNot = '';
-    playlistrecordFB._addedBlocks.needEndBlock![playlistrecordFB._blockIndex] =
-        playlistrecordFB._addedBlocks.retVal;
-    return playlistrecordFB;
+    return super.equalsOrNull(pValue) as PlaylistRecordFilterBuilder;
   }
 
+  @override
   PlaylistRecordFilterBuilder isNull() {
-    playlistrecordFB._addedBlocks = setCriteria(
-        0,
-        playlistrecordFB.parameters,
-        param,
-        SqlSyntax.IsNULL.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-        playlistrecordFB._addedBlocks);
-    _waitingNot = '';
-    playlistrecordFB._addedBlocks.needEndBlock![playlistrecordFB._blockIndex] =
-        playlistrecordFB._addedBlocks.retVal;
-    return playlistrecordFB;
+    return super.isNull() as PlaylistRecordFilterBuilder;
   }
 
+  @override
   PlaylistRecordFilterBuilder contains(dynamic pValue) {
-    if (pValue != null) {
-      playlistrecordFB._addedBlocks = setCriteria(
-          '%${pValue.toString()}%',
-          playlistrecordFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          playlistrecordFB._addedBlocks);
-      _waitingNot = '';
-      playlistrecordFB
-              ._addedBlocks.needEndBlock![playlistrecordFB._blockIndex] =
-          playlistrecordFB._addedBlocks.retVal;
-    }
-    return playlistrecordFB;
+    return super.contains(pValue) as PlaylistRecordFilterBuilder;
   }
 
+  @override
   PlaylistRecordFilterBuilder startsWith(dynamic pValue) {
-    if (pValue != null) {
-      playlistrecordFB._addedBlocks = setCriteria(
-          '${pValue.toString()}%',
-          playlistrecordFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          playlistrecordFB._addedBlocks);
-      _waitingNot = '';
-      playlistrecordFB
-              ._addedBlocks.needEndBlock![playlistrecordFB._blockIndex] =
-          playlistrecordFB._addedBlocks.retVal;
-      playlistrecordFB
-              ._addedBlocks.needEndBlock![playlistrecordFB._blockIndex] =
-          playlistrecordFB._addedBlocks.retVal;
-    }
-    return playlistrecordFB;
+    return super.startsWith(pValue) as PlaylistRecordFilterBuilder;
   }
 
+  @override
   PlaylistRecordFilterBuilder endsWith(dynamic pValue) {
-    if (pValue != null) {
-      playlistrecordFB._addedBlocks = setCriteria(
-          '%${pValue.toString()}',
-          playlistrecordFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          playlistrecordFB._addedBlocks);
-      _waitingNot = '';
-      playlistrecordFB
-              ._addedBlocks.needEndBlock![playlistrecordFB._blockIndex] =
-          playlistrecordFB._addedBlocks.retVal;
-    }
-    return playlistrecordFB;
+    return super.endsWith(pValue) as PlaylistRecordFilterBuilder;
   }
 
+  @override
   PlaylistRecordFilterBuilder between(dynamic pFirst, dynamic pLast) {
-    if (pFirst != null && pLast != null) {
-      playlistrecordFB._addedBlocks = setCriteria(
-          pFirst,
-          playlistrecordFB.parameters,
-          param,
-          SqlSyntax.Between.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          playlistrecordFB._addedBlocks,
-          pLast);
-    } else if (pFirst != null) {
-      if (_waitingNot != '') {
-        playlistrecordFB._addedBlocks = setCriteria(
-            pFirst,
-            playlistrecordFB.parameters,
-            param,
-            SqlSyntax.LessThan,
-            playlistrecordFB._addedBlocks);
-      } else {
-        playlistrecordFB._addedBlocks = setCriteria(
-            pFirst,
-            playlistrecordFB.parameters,
-            param,
-            SqlSyntax.GreaterThanOrEquals,
-            playlistrecordFB._addedBlocks);
-      }
-    } else if (pLast != null) {
-      if (_waitingNot != '') {
-        playlistrecordFB._addedBlocks = setCriteria(
-            pLast,
-            playlistrecordFB.parameters,
-            param,
-            SqlSyntax.GreaterThan,
-            playlistrecordFB._addedBlocks);
-      } else {
-        playlistrecordFB._addedBlocks = setCriteria(
-            pLast,
-            playlistrecordFB.parameters,
-            param,
-            SqlSyntax.LessThanOrEquals,
-            playlistrecordFB._addedBlocks);
-      }
-    }
-    _waitingNot = '';
-    playlistrecordFB._addedBlocks.needEndBlock![playlistrecordFB._blockIndex] =
-        playlistrecordFB._addedBlocks.retVal;
-    return playlistrecordFB;
+    return super.between(pFirst, pLast) as PlaylistRecordFilterBuilder;
   }
 
+  @override
   PlaylistRecordFilterBuilder greaterThan(dynamic pValue) {
-    param.expression = '>';
-    playlistrecordFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, playlistrecordFB.parameters, param,
-            SqlSyntax.GreaterThan, playlistrecordFB._addedBlocks)
-        : setCriteria(pValue, playlistrecordFB.parameters, param,
-            SqlSyntax.LessThanOrEquals, playlistrecordFB._addedBlocks);
-    _waitingNot = '';
-    playlistrecordFB._addedBlocks.needEndBlock![playlistrecordFB._blockIndex] =
-        playlistrecordFB._addedBlocks.retVal;
-    return playlistrecordFB;
+    return super.greaterThan(pValue) as PlaylistRecordFilterBuilder;
   }
 
+  @override
   PlaylistRecordFilterBuilder lessThan(dynamic pValue) {
-    param.expression = '<';
-    playlistrecordFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, playlistrecordFB.parameters, param,
-            SqlSyntax.LessThan, playlistrecordFB._addedBlocks)
-        : setCriteria(pValue, playlistrecordFB.parameters, param,
-            SqlSyntax.GreaterThanOrEquals, playlistrecordFB._addedBlocks);
-    _waitingNot = '';
-    playlistrecordFB._addedBlocks.needEndBlock![playlistrecordFB._blockIndex] =
-        playlistrecordFB._addedBlocks.retVal;
-    return playlistrecordFB;
+    return super.lessThan(pValue) as PlaylistRecordFilterBuilder;
   }
 
+  @override
   PlaylistRecordFilterBuilder greaterThanOrEquals(dynamic pValue) {
-    param.expression = '>=';
-    playlistrecordFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, playlistrecordFB.parameters, param,
-            SqlSyntax.GreaterThanOrEquals, playlistrecordFB._addedBlocks)
-        : setCriteria(pValue, playlistrecordFB.parameters, param,
-            SqlSyntax.LessThan, playlistrecordFB._addedBlocks);
-    _waitingNot = '';
-    playlistrecordFB._addedBlocks.needEndBlock![playlistrecordFB._blockIndex] =
-        playlistrecordFB._addedBlocks.retVal;
-    return playlistrecordFB;
+    return super.greaterThanOrEquals(pValue) as PlaylistRecordFilterBuilder;
   }
 
+  @override
   PlaylistRecordFilterBuilder lessThanOrEquals(dynamic pValue) {
-    param.expression = '<=';
-    playlistrecordFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, playlistrecordFB.parameters, param,
-            SqlSyntax.LessThanOrEquals, playlistrecordFB._addedBlocks)
-        : setCriteria(pValue, playlistrecordFB.parameters, param,
-            SqlSyntax.GreaterThan, playlistrecordFB._addedBlocks);
-    _waitingNot = '';
-    playlistrecordFB._addedBlocks.needEndBlock![playlistrecordFB._blockIndex] =
-        playlistrecordFB._addedBlocks.retVal;
-    return playlistrecordFB;
+    return super.lessThanOrEquals(pValue) as PlaylistRecordFilterBuilder;
   }
 
+  @override
   PlaylistRecordFilterBuilder inValues(dynamic pValue) {
-    playlistrecordFB._addedBlocks = setCriteria(
-        pValue,
-        playlistrecordFB.parameters,
-        param,
-        SqlSyntax.IN.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-        playlistrecordFB._addedBlocks);
-    _waitingNot = '';
-    playlistrecordFB._addedBlocks.needEndBlock![playlistrecordFB._blockIndex] =
-        playlistrecordFB._addedBlocks.retVal;
-    return playlistrecordFB;
+    return super.inValues(pValue) as PlaylistRecordFilterBuilder;
+  }
+
+  @override
+  PlaylistRecordField get not {
+    return super.not as PlaylistRecordField;
   }
 }
 // endregion PlaylistRecordField
 
 // region PlaylistRecordFilterBuilder
-class PlaylistRecordFilterBuilder extends SearchCriteria {
-  PlaylistRecordFilterBuilder(PlaylistRecord obj) {
-    whereString = '';
-    groupByList = <String>[];
-    _addedBlocks.needEndBlock!.add(false);
-    _addedBlocks.waitingStartBlock!.add(false);
-    _obj = obj;
+class PlaylistRecordFilterBuilder extends ConjunctionBase {
+  PlaylistRecordFilterBuilder(PlaylistRecord obj, bool? getIsDeleted)
+      : super(obj, getIsDeleted) {
+    _mnPlaylistRecord = obj._mnPlaylistRecord;
+    _softDeleteActivated = obj.softDeleteActivated;
   }
-  AddedBlocks _addedBlocks = AddedBlocks(<bool>[], <bool>[]);
-  int _blockIndex = 0;
-  List<DbParameter> parameters = <DbParameter>[];
-  List<String> orderByList = <String>[];
-  PlaylistRecord? _obj;
-  QueryParams qparams = QueryParams();
-  int _pagesize = 0;
-  int _page = 0;
+
+  bool _softDeleteActivated = false;
+  PlaylistRecordManager? _mnPlaylistRecord;
 
   /// put the sql keyword 'AND'
+  @override
   PlaylistRecordFilterBuilder get and {
-    if (parameters.isNotEmpty) {
-      parameters[parameters.length - 1].wOperator = ' AND ';
-    }
+    super.and;
     return this;
   }
 
   /// put the sql keyword 'OR'
+  @override
   PlaylistRecordFilterBuilder get or {
-    if (parameters.isNotEmpty) {
-      parameters[parameters.length - 1].wOperator = ' OR ';
-    }
+    super.or;
     return this;
   }
 
   /// open parentheses
+  @override
   PlaylistRecordFilterBuilder get startBlock {
-    _addedBlocks.waitingStartBlock!.add(true);
-    _addedBlocks.needEndBlock!.add(false);
-    _blockIndex++;
-    if (_blockIndex > 1) {
-      _addedBlocks.needEndBlock![_blockIndex - 1] = true;
-    }
+    super.startBlock;
     return this;
   }
 
   /// String whereCriteria, write raw query without 'where' keyword. Like this: 'field1 like 'test%' and field2 = 3'
+  @override
   PlaylistRecordFilterBuilder where(String? whereCriteria,
       {dynamic parameterValue}) {
-    if (whereCriteria != null && whereCriteria != '') {
-      final DbParameter param = DbParameter(
-          columnName: parameterValue == null ? null : '',
-          hasParameter: parameterValue != null);
-      _addedBlocks = setCriteria(parameterValue ?? 0, parameters, param,
-          '($whereCriteria)', _addedBlocks);
-      _addedBlocks.needEndBlock![_blockIndex] = _addedBlocks.retVal;
-    }
+    super.where(whereCriteria, parameterValue: parameterValue);
     return this;
   }
 
   /// page = page number,
-  ///
   /// pagesize = row(s) per page
+  @override
   PlaylistRecordFilterBuilder page(int page, int pagesize) {
-    if (page > 0) {
-      _page = page;
-    }
-    if (pagesize > 0) {
-      _pagesize = pagesize;
-    }
+    super.page(page, pagesize);
     return this;
   }
 
   /// int count = LIMIT
+  @override
   PlaylistRecordFilterBuilder top(int count) {
-    if (count > 0) {
-      _pagesize = count;
-    }
+    super.top(count);
     return this;
   }
 
   /// close parentheses
+  @override
   PlaylistRecordFilterBuilder get endBlock {
-    if (_addedBlocks.needEndBlock![_blockIndex]) {
-      parameters[parameters.length - 1].whereString += ' ) ';
-    }
-    _addedBlocks.needEndBlock!.removeAt(_blockIndex);
-    _addedBlocks.waitingStartBlock!.removeAt(_blockIndex);
-    _blockIndex--;
+    super.endBlock;
     return this;
   }
 
   /// argFields might be String or List<String>.
-  ///
   /// Example 1: argFields='name, date'
-  ///
   /// Example 2: argFields = ['name', 'date']
+  @override
   PlaylistRecordFilterBuilder orderBy(dynamic argFields) {
-    if (argFields != null) {
-      if (argFields is String) {
-        orderByList.add(argFields);
-      } else {
-        for (String? s in argFields as List<String?>) {
-          if (s!.isNotEmpty) {
-            orderByList.add(' $s ');
-          }
-        }
-      }
-    }
+    super.orderBy(argFields);
     return this;
   }
 
   /// argFields might be String or List<String>.
-  ///
   /// Example 1: argFields='field1, field2'
-  ///
   /// Example 2: argFields = ['field1', 'field2']
+  @override
   PlaylistRecordFilterBuilder orderByDesc(dynamic argFields) {
-    if (argFields != null) {
-      if (argFields is String) {
-        orderByList.add('$argFields desc ');
-      } else {
-        for (String? s in argFields as List<String?>) {
-          if (s!.isNotEmpty) {
-            orderByList.add(' $s desc ');
-          }
-        }
-      }
-    }
+    super.orderByDesc(argFields);
     return this;
   }
 
   /// argFields might be String or List<String>.
-  ///
   /// Example 1: argFields='field1, field2'
-  ///
   /// Example 2: argFields = ['field1', 'field2']
+  @override
   PlaylistRecordFilterBuilder groupBy(dynamic argFields) {
-    if (argFields != null) {
-      if (argFields is String) {
-        groupByList.add(' $argFields ');
-      } else {
-        for (String? s in argFields as List<String?>) {
-          if (s!.isNotEmpty) {
-            groupByList.add(' $s ');
-          }
-        }
-      }
-    }
+    super.groupBy(argFields);
     return this;
   }
 
   /// argFields might be String or List<String>.
-  ///
   /// Example 1: argFields='name, date'
-  ///
   /// Example 2: argFields = ['name', 'date']
+  @override
   PlaylistRecordFilterBuilder having(dynamic argFields) {
-    if (argFields != null) {
-      if (argFields is String) {
-        havingList.add(argFields);
-      } else {
-        for (String? s in argFields as List<String?>) {
-          if (s!.isNotEmpty) {
-            havingList.add(' $s ');
-          }
-        }
-      }
-    }
+    super.having(argFields);
     return this;
   }
 
-  PlaylistRecordField setField(
+  PlaylistRecordField _setField(
       PlaylistRecordField? field, String colName, DbType dbtype) {
     return PlaylistRecordField(this)
       ..param = DbParameter(
-          dbType: dbtype,
-          columnName: colName,
-          wStartBlock: _addedBlocks.waitingStartBlock![_blockIndex]);
+          dbType: dbtype, columnName: colName, wStartBlock: openedBlock);
   }
 
   PlaylistRecordField? _id;
   PlaylistRecordField get id {
-    return _id = setField(_id, 'id', DbType.integer);
+    return _id = _setField(_id, 'id', DbType.integer);
   }
 
   PlaylistRecordField? _rank;
   PlaylistRecordField get rank {
-    return _rank = setField(_rank, 'rank', DbType.integer);
+    return _rank = _setField(_rank, 'rank', DbType.integer);
   }
 
   PlaylistRecordField? _playlistsId;
   PlaylistRecordField get playlistsId {
-    return _playlistsId = setField(_playlistsId, 'playlistsId', DbType.integer);
+    return _playlistsId =
+        _setField(_playlistsId, 'playlistsId', DbType.integer);
   }
 
   PlaylistRecordField? _song_lyricsId;
   PlaylistRecordField get song_lyricsId {
     return _song_lyricsId =
-        setField(_song_lyricsId, 'song_lyricsId', DbType.integer);
-  }
-
-  bool _getIsDeleted = false;
-
-  void _buildParameters() {
-    if (_page > 0 && _pagesize > 0) {
-      qparams
-        ..limit = _pagesize
-        ..offset = (_page - 1) * _pagesize;
-    } else {
-      qparams
-        ..limit = _pagesize
-        ..offset = _page;
-    }
-    for (DbParameter param in parameters) {
-      if (param.columnName != null) {
-        if (param.value is List && !param.hasParameter) {
-          param.value = param.dbType == DbType.text || param.value[0] is String
-              ? '\'${param.value.join('\',\'')}\''
-              : param.value.join(',');
-          whereString += param.whereString
-              .replaceAll('{field}', param.columnName!)
-              .replaceAll('?', param.value.toString());
-          param.value = null;
-        } else {
-          if (param.value is Map<String, dynamic> &&
-              param.value['sql'] != null) {
-            param
-              ..whereString = param.whereString
-                  .replaceAll('?', param.value['sql'].toString())
-              ..dbType = DbType.integer
-              ..value = param.value['args'];
-          }
-          whereString +=
-              param.whereString.replaceAll('{field}', param.columnName!);
-        }
-        if (!param.whereString.contains('?')) {
-        } else {
-          switch (param.dbType) {
-            case DbType.bool:
-              param.value = param.value == null
-                  ? null
-                  : param.value == true
-                      ? 1
-                      : 0;
-              param.value2 = param.value2 == null
-                  ? null
-                  : param.value2 == true
-                      ? 1
-                      : 0;
-              break;
-            case DbType.date:
-            case DbType.datetime:
-            case DbType.datetimeUtc:
-              param.value = param.value == null
-                  ? null
-                  : (param.value as DateTime).millisecondsSinceEpoch;
-              param.value2 = param.value2 == null
-                  ? null
-                  : (param.value2 as DateTime).millisecondsSinceEpoch;
-              break;
-            default:
-          }
-          if (param.value != null) {
-            if (param.value is List) {
-              for (var p in param.value) {
-                whereArguments.add(p);
-              }
-            } else {
-              whereArguments.add(param.value);
-            }
-          }
-          if (param.value2 != null) {
-            whereArguments.add(param.value2);
-          }
-        }
-      } else {
-        whereString += param.whereString;
-      }
-    }
-    if (PlaylistRecord._softDeleteActivated) {
-      if (whereString != '') {
-        whereString =
-            '${!_getIsDeleted ? 'ifnull(isDeleted,0)=0 AND' : ''} ($whereString)';
-      } else if (!_getIsDeleted) {
-        whereString = 'ifnull(isDeleted,0)=0';
-      }
-    }
-
-    if (whereString != '') {
-      qparams.whereString = whereString;
-    }
-    qparams
-      ..whereArguments = whereArguments
-      ..groupBy = groupByList.join(',')
-      ..orderBy = orderByList.join(',')
-      ..having = havingList.join(',');
+        _setField(_song_lyricsId, 'song_lyricsId', DbType.integer);
   }
 
   /// Deletes List<PlaylistRecord> bulk by query
   ///
-  /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
+  /// <returns>BoolResult res.success= true (Deleted), false (Could not be deleted)
+  @override
   Future<BoolResult> delete([bool hardDelete = false]) async {
-    _buildParameters();
+    buildParameters();
     var r = BoolResult(success: false);
 
-    if (PlaylistRecord._softDeleteActivated && !hardDelete) {
-      r = await _obj!._mnPlaylistRecord.updateBatch(qparams, {'isDeleted': 1});
+    if (_softDeleteActivated && !hardDelete) {
+      r = await _mnPlaylistRecord!.updateBatch(qparams, {'isDeleted': 1});
     } else {
-      r = await _obj!._mnPlaylistRecord.delete(qparams);
+      r = await _mnPlaylistRecord!.delete(qparams);
     }
     return r;
   }
 
   /// using:
-  ///
   /// update({'fieldName': Value})
-  ///
   /// fieldName must be String. Value is dynamic, it can be any of the (int, bool, String.. )
+  @override
   Future<BoolResult> update(Map<String, dynamic> values) {
-    _buildParameters();
+    buildParameters();
     if (qparams.limit! > 0 || qparams.offset! > 0) {
       qparams.whereString =
           'id IN (SELECT id from playlist_records ${qparams.whereString!.isNotEmpty ? 'WHERE ${qparams.whereString}' : ''}${qparams.limit! > 0 ? ' LIMIT ${qparams.limit}' : ''}${qparams.offset! > 0 ? ' OFFSET ${qparams.offset}' : ''})';
     }
-    return _obj!._mnPlaylistRecord.updateBatch(qparams, values);
+    return _mnPlaylistRecord!.updateBatch(qparams, values);
   }
 
-  /// This method always returns PlaylistRecord Obj if exist, otherwise returns null
-  ///
+  /// This method always returns [PlaylistRecord] Obj if exist, otherwise returns null
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
-  ///
   /// ex: toSingle(preload:true) -> Loads all related objects
-  ///
   /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
-  ///
   /// ex: toSingle(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
-  ///
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
-  ///
-  /// <returns>List<PlaylistRecord>
+  /// <returns> PlaylistRecord?
+  @override
   Future<PlaylistRecord?> toSingle(
       {bool preload = false,
       List<String>? preloadFields,
       bool loadParents = false,
       List<String>? loadedFields}) async {
-    _pagesize = 1;
-    _buildParameters();
-    final objFuture = _obj!._mnPlaylistRecord.toList(qparams);
+    buildParameters(pSize: 1);
+    final objFuture = _mnPlaylistRecord!.toList(qparams);
     final data = await objFuture;
     PlaylistRecord? obj;
     if (data.isNotEmpty) {
       obj = PlaylistRecord.fromMap(data[0] as Map<String, dynamic>);
-      // final List<String> _loadedFields = loadedFields ?? [];
 
       // RELATIONSHIPS PRELOAD
       if (preload || loadParents) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedfields!.contains('playlists.plPlaylist') && */ (preloadFields ==
-                null ||
+        if ((preloadFields == null ||
             loadParents ||
             preloadFields.contains('plPlaylist'))) {
-          /*_loadedfields!.add('playlists.plPlaylist');*/ obj.plPlaylist = obj
-                  .plPlaylist ??
-              await obj.getPlaylist(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+          obj.plPlaylist =
+              obj.plPlaylist ?? await obj.getPlaylist(loadParents: loadParents);
         }
-        if (/*!_loadedfields!.contains('song_lyrics.plSongLyric') && */ (preloadFields ==
-                null ||
+        if ((preloadFields == null ||
             loadParents ||
             preloadFields.contains('plSongLyric'))) {
-          /*_loadedfields!.add('song_lyrics.plSongLyric');*/ obj.plSongLyric =
-              obj.plSongLyric ??
-                  await obj.getSongLyric(
-                      loadParents:
-                          loadParents /*, loadedFields: _loadedFields*/);
+          obj.plSongLyric = obj.plSongLyric ??
+              await obj.getSongLyric(loadParents: loadParents);
         }
       } // END RELATIONSHIPS PRELOAD
 
@@ -5005,14 +3825,36 @@ class PlaylistRecordFilterBuilder extends SearchCriteria {
     return obj;
   }
 
+  /// This method always returns [PlaylistRecord]
+  /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
+  /// ex: toSingle(preload:true) -> Loads all related objects
+  /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
+  /// ex: toSingle(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
+  /// bool loadParents: if true, loads all parent objects until the object has no parent
+
+  /// <returns> PlaylistRecord?
+  @override
+  Future<PlaylistRecord> toSingleOrDefault(
+      {bool preload = false,
+      List<String>? preloadFields,
+      bool loadParents = false,
+      List<String>? loadedFields}) async {
+    return await toSingle(
+            preload: preload,
+            preloadFields: preloadFields,
+            loadParents: loadParents,
+            loadedFields: loadedFields) ??
+        PlaylistRecord();
+  }
+
   /// This method returns int. [PlaylistRecord]
-  ///
   /// <returns>int
+  @override
   Future<int> toCount(
       [VoidCallback Function(int c)? playlistrecordCount]) async {
-    _buildParameters();
+    buildParameters();
     qparams.selectColumns = ['COUNT(1) AS CNT'];
-    final playlistrecordsFuture = await _obj!._mnPlaylistRecord.toList(qparams);
+    final playlistrecordsFuture = await _mnPlaylistRecord!.toList(qparams);
     final int count = playlistrecordsFuture[0]['CNT'] as int;
     if (playlistrecordCount != null) {
       playlistrecordCount(count);
@@ -5021,19 +3863,14 @@ class PlaylistRecordFilterBuilder extends SearchCriteria {
   }
 
   /// This method returns List<PlaylistRecord> [PlaylistRecord]
-  ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
-  ///
   /// ex: toList(preload:true) -> Loads all related objects
-  ///
   /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
-  ///
   /// ex: toList(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
-  ///
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
-  ///
   /// <returns>List<PlaylistRecord>
+  @override
   Future<List<PlaylistRecord>> toList(
       {bool preload = false,
       List<String>? preloadFields,
@@ -5051,6 +3888,7 @@ class PlaylistRecordFilterBuilder extends SearchCriteria {
   }
 
   /// This method returns Json String [PlaylistRecord]
+  @override
   Future<String> toJson() async {
     final list = <dynamic>[];
     final data = await toList();
@@ -5061,6 +3899,7 @@ class PlaylistRecordFilterBuilder extends SearchCriteria {
   }
 
   /// This method returns Json String. [PlaylistRecord]
+  @override
   Future<String> toJsonWithChilds() async {
     final list = <dynamic>[];
     final data = await toList();
@@ -5071,22 +3910,21 @@ class PlaylistRecordFilterBuilder extends SearchCriteria {
   }
 
   /// This method returns List<dynamic>. [PlaylistRecord]
-  ///
   /// <returns>List<dynamic>
+  @override
   Future<List<dynamic>> toMapList() async {
-    _buildParameters();
-    return await _obj!._mnPlaylistRecord.toList(qparams);
+    buildParameters();
+    return await _mnPlaylistRecord!.toList(qparams);
   }
 
   /// This method returns Primary Key List SQL and Parameters retVal = Map<String,dynamic>. [PlaylistRecord]
-  ///
   /// retVal['sql'] = SQL statement string, retVal['args'] = whereArguments List<dynamic>;
-  ///
   /// <returns>List<String>
-  Map<String, dynamic> toListPrimaryKeySQL([bool buildParameters = true]) {
+  @override
+  Map<String, dynamic> toListPrimaryKeySQL([bool buildParams = true]) {
     final Map<String, dynamic> _retVal = <String, dynamic>{};
-    if (buildParameters) {
-      _buildParameters();
+    if (buildParams) {
+      buildParameters();
     }
     _retVal['sql'] =
         'SELECT `id` FROM playlist_records WHERE ${qparams.whereString}';
@@ -5096,13 +3934,14 @@ class PlaylistRecordFilterBuilder extends SearchCriteria {
 
   /// This method returns Primary Key List<int>.
   /// <returns>List<int>
-  Future<List<int>> toListPrimaryKey([bool buildParameters = true]) async {
-    if (buildParameters) {
-      _buildParameters();
+  @override
+  Future<List<int>> toListPrimaryKey([bool buildParams = true]) async {
+    if (buildParams) {
+      buildParameters();
     }
     final List<int> idData = <int>[];
     qparams.selectColumns = ['id'];
-    final idFuture = await _obj!._mnPlaylistRecord.toList(qparams);
+    final idFuture = await _mnPlaylistRecord!.toList(qparams);
 
     final int count = idFuture.length;
     for (int i = 0; i < count; i++) {
@@ -5112,12 +3951,12 @@ class PlaylistRecordFilterBuilder extends SearchCriteria {
   }
 
   /// Returns List<dynamic> for selected columns. Use this method for 'groupBy' with min,max,avg..  [PlaylistRecord]
-  ///
   /// Sample usage: (see EXAMPLE 4.2 at https://github.com/hhtokpinar/sqfEntity#group-by)
+  @override
   Future<List<dynamic>> toListObject() async {
-    _buildParameters();
+    buildParameters();
 
-    final objectFuture = _obj!._mnPlaylistRecord.toList(qparams);
+    final objectFuture = _mnPlaylistRecord!.toList(qparams);
 
     final List<dynamic> objectsData = <dynamic>[];
     final data = await objectFuture;
@@ -5129,13 +3968,13 @@ class PlaylistRecordFilterBuilder extends SearchCriteria {
   }
 
   /// Returns List<String> for selected first column
-  ///
   /// Sample usage: await PlaylistRecord.select(columnsToSelect: ['columnName']).toListString()
+  @override
   Future<List<String>> toListString(
       [VoidCallback Function(List<String> o)? listString]) async {
-    _buildParameters();
+    buildParameters();
 
-    final objectFuture = _obj!._mnPlaylistRecord.toList(qparams);
+    final objectFuture = _mnPlaylistRecord!.toList(qparams);
 
     final List<String> objectsData = <String>[];
     final data = await objectFuture;
@@ -5195,6 +4034,7 @@ class PlaylistRecordManager extends SqfEntityProvider {
 class Song extends TableBase {
   Song({this.id, this.name}) {
     _setDefaultValues();
+    softDeleteActivated = false;
   }
   Song.withFields(this.id, this.name) {
     _setDefaultValues();
@@ -5218,7 +4058,6 @@ class Song extends TableBase {
   int? id;
   String? name;
   bool? isSaved;
-  BoolResult? saveResult;
   // end FIELDS (Song)
 
 // COLLECTIONS & VIRTUALS (Song)
@@ -5249,22 +4088,28 @@ class Song extends TableBase {
   }
 
   // METHODS
+  @override
   Map<String, dynamic> toMap(
       {bool forQuery = false, bool forJson = false, bool forView = false}) {
     final map = <String, dynamic>{};
     map['id'] = id;
-    map['name'] = name;
+    if (name != null || !forView) {
+      map['name'] = name;
+    }
 
     return map;
   }
 
+  @override
   Future<Map<String, dynamic>> toMapWithChildren(
       [bool forQuery = false,
       bool forJson = false,
       bool forView = false]) async {
     final map = <String, dynamic>{};
     map['id'] = id;
-    map['name'] = name;
+    if (name != null || !forView) {
+      map['name'] = name;
+    }
 
 // COLLECTIONS (Song)
     if (!forQuery) {
@@ -5276,19 +4121,23 @@ class Song extends TableBase {
   }
 
   /// This method returns Json String [Song]
+  @override
   String toJson() {
     return json.encode(toMap(forJson: true));
   }
 
   /// This method returns Json String [Song]
+  @override
   Future<String> toJsonWithChilds() async {
     return json.encode(await toMapWithChildren(false, true));
   }
 
+  @override
   List<dynamic> toArgs() {
     return [id, name];
   }
 
+  @override
   List<dynamic> toArgsWithIds() {
     return [id, name];
   }
@@ -5357,21 +4206,14 @@ class Song extends TableBase {
   }
 
   /// returns Song by ID if exist, otherwise returns null
-  ///
   /// Primary Keys: int? id
-  ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
-  ///
   /// ex: getById(preload:true) -> Loads all related objects
-  ///
   /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
-  ///
   /// ex: getById(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
-  ///
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
-  ///
-  /// <returns>returns Song if exist, otherwise returns null
+  /// <returns>returns [Song] if exist, otherwise returns null
   Future<Song?> getById(int? id,
       {bool preload = false,
       List<String>? preloadFields,
@@ -5384,7 +4226,6 @@ class Song extends TableBase {
     final data = await _mnSong.getById([id]);
     if (data.length != 0) {
       obj = Song.fromMap(data[0] as Map<String, dynamic>);
-      // final List<String> _loadedFields = loadedFields ?? [];
 
       // RELATIONSHIPS PRELOAD CHILD
       if (preload) {
@@ -5410,6 +4251,7 @@ class Song extends TableBase {
   /// Saves the (Song) object. If the id field is null, saves as a new record and returns new id, if id is not null then updates record
   /// ignoreBatch = true as a default. Set ignoreBatch to false if you run more than one save() operation those are between batchStart and batchCommit
   /// <returns>Returns id
+  @override
   Future<int?> save({bool ignoreBatch = true}) async {
     if (id == null || id == 0 || !isSaved!) {
       await _mnSong.insert(this, ignoreBatch);
@@ -5417,7 +4259,6 @@ class Song extends TableBase {
         isSaved = true;
       }
     } else {
-      // id= await _upsert(); // removed in sqfentity_gen 1.3.0+6
       await _mnSong.update(this);
     }
 
@@ -5425,10 +4266,9 @@ class Song extends TableBase {
   }
 
   /// Saves the (Song) object. If the id field is null, saves as a new record and returns new id, if id is not null then updates record
-  ///
   /// ignoreBatch = true as a default. Set ignoreBatch to false if you run more than one save() operation those are between batchStart and batchCommit
-  ///
   /// <returns>Returns id
+  @override
   Future<int?> saveOrThrow({bool ignoreBatch = true}) async {
     if (id == null || id == 0 || !isSaved!) {
       await _mnSong.insertOrThrow(this, ignoreBatch);
@@ -5451,7 +4291,6 @@ class Song extends TableBase {
   }
 
   /// saveAll method saves the sent List<Song> as a bulk in one transaction
-  ///
   /// Returns a <List<BoolResult>>
   static Future<List<dynamic>> saveAll(List<Song> songs) async {
     List<dynamic>? result = [];
@@ -5467,9 +4306,8 @@ class Song extends TableBase {
   }
 
   /// Updates if the record exists, otherwise adds a new row
-
   /// <returns>Returns id
-
+  @override
   Future<int?> upsert({bool ignoreBatch = true}) async {
     try {
       final result = await _mnSong.rawInsert(
@@ -5493,10 +4331,9 @@ class Song extends TableBase {
   }
 
   /// inserts or replaces the sent List<<Song>> as a bulk in one transaction.
-  ///
   /// upsertAll() method is faster then saveAll() method. upsertAll() should be used when you are sure that the primary key is greater than zero
-  ///
   /// Returns a BoolCommitResult
+  @override
   Future<BoolCommitResult> upsertAll(List<Song> songs) async {
     final results = await _mnSong.rawInsertAll(
         'INSERT OR REPLACE INTO songs (id, name)  VALUES (?,?)', songs);
@@ -5505,8 +4342,8 @@ class Song extends TableBase {
 
   /// Deletes Song
 
-  /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
-
+  /// <returns>BoolResult res.success= true (Deleted), false (Could not be deleted)
+  @override
   Future<BoolResult> delete([bool hardDelete = false]) async {
     debugPrint('SQFENTITIY: delete Song invoked (id=$id)');
     var result = BoolResult(success: false);
@@ -5527,17 +4364,25 @@ class Song extends TableBase {
     }
   }
 
+  @override
+  Future<BoolResult> recover([bool recoverChilds = true]) {
+    // not implemented because:
+    final msg =
+        'set useSoftDeleting:true in the table definition of [Song] to use this feature';
+    throw UnimplementedError(msg);
+  }
+
+  @override
   SongFilterBuilder select(
       {List<String>? columnsToSelect, bool? getIsDeleted}) {
-    return SongFilterBuilder(this)
-      .._getIsDeleted = getIsDeleted == true
+    return SongFilterBuilder(this, getIsDeleted)
       ..qparams.selectColumns = columnsToSelect;
   }
 
+  @override
   SongFilterBuilder distinct(
       {List<String>? columnsToSelect, bool? getIsDeleted}) {
-    return SongFilterBuilder(this)
-      .._getIsDeleted = getIsDeleted == true
+    return SongFilterBuilder(this, getIsDeleted)
       ..qparams.selectColumns = columnsToSelect
       ..qparams.distinct = true;
   }
@@ -5569,493 +4414,194 @@ class Song extends TableBase {
 // endregion song
 
 // region SongField
-class SongField extends SearchCriteria {
-  SongField(this.songFB);
-  // { param = DbParameter(); }
-  DbParameter param = DbParameter();
-  String _waitingNot = '';
-  SongFilterBuilder songFB;
+class SongField extends FilterBase {
+  SongField(SongFilterBuilder songFB) : super(songFB);
 
-  SongField get not {
-    _waitingNot = ' NOT ';
-    return this;
-  }
-
+  @override
   SongFilterBuilder equals(dynamic pValue) {
-    param.expression = '=';
-    songFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, songFB.parameters, param, SqlSyntax.EQuals,
-            songFB._addedBlocks)
-        : setCriteria(pValue, songFB.parameters, param, SqlSyntax.NotEQuals,
-            songFB._addedBlocks);
-    _waitingNot = '';
-    songFB._addedBlocks.needEndBlock![songFB._blockIndex] =
-        songFB._addedBlocks.retVal;
-    return songFB;
+    return super.equals(pValue) as SongFilterBuilder;
   }
 
+  @override
   SongFilterBuilder equalsOrNull(dynamic pValue) {
-    param.expression = '=';
-    songFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, songFB.parameters, param, SqlSyntax.EQualsOrNull,
-            songFB._addedBlocks)
-        : setCriteria(pValue, songFB.parameters, param,
-            SqlSyntax.NotEQualsOrNull, songFB._addedBlocks);
-    _waitingNot = '';
-    songFB._addedBlocks.needEndBlock![songFB._blockIndex] =
-        songFB._addedBlocks.retVal;
-    return songFB;
+    return super.equalsOrNull(pValue) as SongFilterBuilder;
   }
 
+  @override
   SongFilterBuilder isNull() {
-    songFB._addedBlocks = setCriteria(
-        0,
-        songFB.parameters,
-        param,
-        SqlSyntax.IsNULL.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-        songFB._addedBlocks);
-    _waitingNot = '';
-    songFB._addedBlocks.needEndBlock![songFB._blockIndex] =
-        songFB._addedBlocks.retVal;
-    return songFB;
+    return super.isNull() as SongFilterBuilder;
   }
 
+  @override
   SongFilterBuilder contains(dynamic pValue) {
-    if (pValue != null) {
-      songFB._addedBlocks = setCriteria(
-          '%${pValue.toString()}%',
-          songFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          songFB._addedBlocks);
-      _waitingNot = '';
-      songFB._addedBlocks.needEndBlock![songFB._blockIndex] =
-          songFB._addedBlocks.retVal;
-    }
-    return songFB;
+    return super.contains(pValue) as SongFilterBuilder;
   }
 
+  @override
   SongFilterBuilder startsWith(dynamic pValue) {
-    if (pValue != null) {
-      songFB._addedBlocks = setCriteria(
-          '${pValue.toString()}%',
-          songFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          songFB._addedBlocks);
-      _waitingNot = '';
-      songFB._addedBlocks.needEndBlock![songFB._blockIndex] =
-          songFB._addedBlocks.retVal;
-      songFB._addedBlocks.needEndBlock![songFB._blockIndex] =
-          songFB._addedBlocks.retVal;
-    }
-    return songFB;
+    return super.startsWith(pValue) as SongFilterBuilder;
   }
 
+  @override
   SongFilterBuilder endsWith(dynamic pValue) {
-    if (pValue != null) {
-      songFB._addedBlocks = setCriteria(
-          '%${pValue.toString()}',
-          songFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          songFB._addedBlocks);
-      _waitingNot = '';
-      songFB._addedBlocks.needEndBlock![songFB._blockIndex] =
-          songFB._addedBlocks.retVal;
-    }
-    return songFB;
+    return super.endsWith(pValue) as SongFilterBuilder;
   }
 
+  @override
   SongFilterBuilder between(dynamic pFirst, dynamic pLast) {
-    if (pFirst != null && pLast != null) {
-      songFB._addedBlocks = setCriteria(
-          pFirst,
-          songFB.parameters,
-          param,
-          SqlSyntax.Between.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          songFB._addedBlocks,
-          pLast);
-    } else if (pFirst != null) {
-      if (_waitingNot != '') {
-        songFB._addedBlocks = setCriteria(pFirst, songFB.parameters, param,
-            SqlSyntax.LessThan, songFB._addedBlocks);
-      } else {
-        songFB._addedBlocks = setCriteria(pFirst, songFB.parameters, param,
-            SqlSyntax.GreaterThanOrEquals, songFB._addedBlocks);
-      }
-    } else if (pLast != null) {
-      if (_waitingNot != '') {
-        songFB._addedBlocks = setCriteria(pLast, songFB.parameters, param,
-            SqlSyntax.GreaterThan, songFB._addedBlocks);
-      } else {
-        songFB._addedBlocks = setCriteria(pLast, songFB.parameters, param,
-            SqlSyntax.LessThanOrEquals, songFB._addedBlocks);
-      }
-    }
-    _waitingNot = '';
-    songFB._addedBlocks.needEndBlock![songFB._blockIndex] =
-        songFB._addedBlocks.retVal;
-    return songFB;
+    return super.between(pFirst, pLast) as SongFilterBuilder;
   }
 
+  @override
   SongFilterBuilder greaterThan(dynamic pValue) {
-    param.expression = '>';
-    songFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, songFB.parameters, param, SqlSyntax.GreaterThan,
-            songFB._addedBlocks)
-        : setCriteria(pValue, songFB.parameters, param,
-            SqlSyntax.LessThanOrEquals, songFB._addedBlocks);
-    _waitingNot = '';
-    songFB._addedBlocks.needEndBlock![songFB._blockIndex] =
-        songFB._addedBlocks.retVal;
-    return songFB;
+    return super.greaterThan(pValue) as SongFilterBuilder;
   }
 
+  @override
   SongFilterBuilder lessThan(dynamic pValue) {
-    param.expression = '<';
-    songFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, songFB.parameters, param, SqlSyntax.LessThan,
-            songFB._addedBlocks)
-        : setCriteria(pValue, songFB.parameters, param,
-            SqlSyntax.GreaterThanOrEquals, songFB._addedBlocks);
-    _waitingNot = '';
-    songFB._addedBlocks.needEndBlock![songFB._blockIndex] =
-        songFB._addedBlocks.retVal;
-    return songFB;
+    return super.lessThan(pValue) as SongFilterBuilder;
   }
 
+  @override
   SongFilterBuilder greaterThanOrEquals(dynamic pValue) {
-    param.expression = '>=';
-    songFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, songFB.parameters, param,
-            SqlSyntax.GreaterThanOrEquals, songFB._addedBlocks)
-        : setCriteria(pValue, songFB.parameters, param, SqlSyntax.LessThan,
-            songFB._addedBlocks);
-    _waitingNot = '';
-    songFB._addedBlocks.needEndBlock![songFB._blockIndex] =
-        songFB._addedBlocks.retVal;
-    return songFB;
+    return super.greaterThanOrEquals(pValue) as SongFilterBuilder;
   }
 
+  @override
   SongFilterBuilder lessThanOrEquals(dynamic pValue) {
-    param.expression = '<=';
-    songFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, songFB.parameters, param,
-            SqlSyntax.LessThanOrEquals, songFB._addedBlocks)
-        : setCriteria(pValue, songFB.parameters, param, SqlSyntax.GreaterThan,
-            songFB._addedBlocks);
-    _waitingNot = '';
-    songFB._addedBlocks.needEndBlock![songFB._blockIndex] =
-        songFB._addedBlocks.retVal;
-    return songFB;
+    return super.lessThanOrEquals(pValue) as SongFilterBuilder;
   }
 
+  @override
   SongFilterBuilder inValues(dynamic pValue) {
-    songFB._addedBlocks = setCriteria(
-        pValue,
-        songFB.parameters,
-        param,
-        SqlSyntax.IN.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-        songFB._addedBlocks);
-    _waitingNot = '';
-    songFB._addedBlocks.needEndBlock![songFB._blockIndex] =
-        songFB._addedBlocks.retVal;
-    return songFB;
+    return super.inValues(pValue) as SongFilterBuilder;
+  }
+
+  @override
+  SongField get not {
+    return super.not as SongField;
   }
 }
 // endregion SongField
 
 // region SongFilterBuilder
-class SongFilterBuilder extends SearchCriteria {
-  SongFilterBuilder(Song obj) {
-    whereString = '';
-    groupByList = <String>[];
-    _addedBlocks.needEndBlock!.add(false);
-    _addedBlocks.waitingStartBlock!.add(false);
-    _obj = obj;
+class SongFilterBuilder extends ConjunctionBase {
+  SongFilterBuilder(Song obj, bool? getIsDeleted) : super(obj, getIsDeleted) {
+    _mnSong = obj._mnSong;
+    _softDeleteActivated = obj.softDeleteActivated;
   }
-  AddedBlocks _addedBlocks = AddedBlocks(<bool>[], <bool>[]);
-  int _blockIndex = 0;
-  List<DbParameter> parameters = <DbParameter>[];
-  List<String> orderByList = <String>[];
-  Song? _obj;
-  QueryParams qparams = QueryParams();
-  int _pagesize = 0;
-  int _page = 0;
+
+  bool _softDeleteActivated = false;
+  SongManager? _mnSong;
 
   /// put the sql keyword 'AND'
+  @override
   SongFilterBuilder get and {
-    if (parameters.isNotEmpty) {
-      parameters[parameters.length - 1].wOperator = ' AND ';
-    }
+    super.and;
     return this;
   }
 
   /// put the sql keyword 'OR'
+  @override
   SongFilterBuilder get or {
-    if (parameters.isNotEmpty) {
-      parameters[parameters.length - 1].wOperator = ' OR ';
-    }
+    super.or;
     return this;
   }
 
   /// open parentheses
+  @override
   SongFilterBuilder get startBlock {
-    _addedBlocks.waitingStartBlock!.add(true);
-    _addedBlocks.needEndBlock!.add(false);
-    _blockIndex++;
-    if (_blockIndex > 1) {
-      _addedBlocks.needEndBlock![_blockIndex - 1] = true;
-    }
+    super.startBlock;
     return this;
   }
 
   /// String whereCriteria, write raw query without 'where' keyword. Like this: 'field1 like 'test%' and field2 = 3'
+  @override
   SongFilterBuilder where(String? whereCriteria, {dynamic parameterValue}) {
-    if (whereCriteria != null && whereCriteria != '') {
-      final DbParameter param = DbParameter(
-          columnName: parameterValue == null ? null : '',
-          hasParameter: parameterValue != null);
-      _addedBlocks = setCriteria(parameterValue ?? 0, parameters, param,
-          '($whereCriteria)', _addedBlocks);
-      _addedBlocks.needEndBlock![_blockIndex] = _addedBlocks.retVal;
-    }
+    super.where(whereCriteria, parameterValue: parameterValue);
     return this;
   }
 
   /// page = page number,
-  ///
   /// pagesize = row(s) per page
+  @override
   SongFilterBuilder page(int page, int pagesize) {
-    if (page > 0) {
-      _page = page;
-    }
-    if (pagesize > 0) {
-      _pagesize = pagesize;
-    }
+    super.page(page, pagesize);
     return this;
   }
 
   /// int count = LIMIT
+  @override
   SongFilterBuilder top(int count) {
-    if (count > 0) {
-      _pagesize = count;
-    }
+    super.top(count);
     return this;
   }
 
   /// close parentheses
+  @override
   SongFilterBuilder get endBlock {
-    if (_addedBlocks.needEndBlock![_blockIndex]) {
-      parameters[parameters.length - 1].whereString += ' ) ';
-    }
-    _addedBlocks.needEndBlock!.removeAt(_blockIndex);
-    _addedBlocks.waitingStartBlock!.removeAt(_blockIndex);
-    _blockIndex--;
+    super.endBlock;
     return this;
   }
 
   /// argFields might be String or List<String>.
-  ///
   /// Example 1: argFields='name, date'
-  ///
   /// Example 2: argFields = ['name', 'date']
+  @override
   SongFilterBuilder orderBy(dynamic argFields) {
-    if (argFields != null) {
-      if (argFields is String) {
-        orderByList.add(argFields);
-      } else {
-        for (String? s in argFields as List<String?>) {
-          if (s!.isNotEmpty) {
-            orderByList.add(' $s ');
-          }
-        }
-      }
-    }
+    super.orderBy(argFields);
     return this;
   }
 
   /// argFields might be String or List<String>.
-  ///
   /// Example 1: argFields='field1, field2'
-  ///
   /// Example 2: argFields = ['field1', 'field2']
+  @override
   SongFilterBuilder orderByDesc(dynamic argFields) {
-    if (argFields != null) {
-      if (argFields is String) {
-        orderByList.add('$argFields desc ');
-      } else {
-        for (String? s in argFields as List<String?>) {
-          if (s!.isNotEmpty) {
-            orderByList.add(' $s desc ');
-          }
-        }
-      }
-    }
+    super.orderByDesc(argFields);
     return this;
   }
 
   /// argFields might be String or List<String>.
-  ///
   /// Example 1: argFields='field1, field2'
-  ///
   /// Example 2: argFields = ['field1', 'field2']
+  @override
   SongFilterBuilder groupBy(dynamic argFields) {
-    if (argFields != null) {
-      if (argFields is String) {
-        groupByList.add(' $argFields ');
-      } else {
-        for (String? s in argFields as List<String?>) {
-          if (s!.isNotEmpty) {
-            groupByList.add(' $s ');
-          }
-        }
-      }
-    }
+    super.groupBy(argFields);
     return this;
   }
 
   /// argFields might be String or List<String>.
-  ///
   /// Example 1: argFields='name, date'
-  ///
   /// Example 2: argFields = ['name', 'date']
+  @override
   SongFilterBuilder having(dynamic argFields) {
-    if (argFields != null) {
-      if (argFields is String) {
-        havingList.add(argFields);
-      } else {
-        for (String? s in argFields as List<String?>) {
-          if (s!.isNotEmpty) {
-            havingList.add(' $s ');
-          }
-        }
-      }
-    }
+    super.having(argFields);
     return this;
   }
 
-  SongField setField(SongField? field, String colName, DbType dbtype) {
+  SongField _setField(SongField? field, String colName, DbType dbtype) {
     return SongField(this)
       ..param = DbParameter(
-          dbType: dbtype,
-          columnName: colName,
-          wStartBlock: _addedBlocks.waitingStartBlock![_blockIndex]);
+          dbType: dbtype, columnName: colName, wStartBlock: openedBlock);
   }
 
   SongField? _id;
   SongField get id {
-    return _id = setField(_id, 'id', DbType.integer);
+    return _id = _setField(_id, 'id', DbType.integer);
   }
 
   SongField? _name;
   SongField get name {
-    return _name = setField(_name, 'name', DbType.text);
-  }
-
-  bool _getIsDeleted = false;
-
-  void _buildParameters() {
-    if (_page > 0 && _pagesize > 0) {
-      qparams
-        ..limit = _pagesize
-        ..offset = (_page - 1) * _pagesize;
-    } else {
-      qparams
-        ..limit = _pagesize
-        ..offset = _page;
-    }
-    for (DbParameter param in parameters) {
-      if (param.columnName != null) {
-        if (param.value is List && !param.hasParameter) {
-          param.value = param.dbType == DbType.text || param.value[0] is String
-              ? '\'${param.value.join('\',\'')}\''
-              : param.value.join(',');
-          whereString += param.whereString
-              .replaceAll('{field}', param.columnName!)
-              .replaceAll('?', param.value.toString());
-          param.value = null;
-        } else {
-          if (param.value is Map<String, dynamic> &&
-              param.value['sql'] != null) {
-            param
-              ..whereString = param.whereString
-                  .replaceAll('?', param.value['sql'].toString())
-              ..dbType = DbType.integer
-              ..value = param.value['args'];
-          }
-          whereString +=
-              param.whereString.replaceAll('{field}', param.columnName!);
-        }
-        if (!param.whereString.contains('?')) {
-        } else {
-          switch (param.dbType) {
-            case DbType.bool:
-              param.value = param.value == null
-                  ? null
-                  : param.value == true
-                      ? 1
-                      : 0;
-              param.value2 = param.value2 == null
-                  ? null
-                  : param.value2 == true
-                      ? 1
-                      : 0;
-              break;
-            case DbType.date:
-            case DbType.datetime:
-            case DbType.datetimeUtc:
-              param.value = param.value == null
-                  ? null
-                  : (param.value as DateTime).millisecondsSinceEpoch;
-              param.value2 = param.value2 == null
-                  ? null
-                  : (param.value2 as DateTime).millisecondsSinceEpoch;
-              break;
-            default:
-          }
-          if (param.value != null) {
-            if (param.value is List) {
-              for (var p in param.value) {
-                whereArguments.add(p);
-              }
-            } else {
-              whereArguments.add(param.value);
-            }
-          }
-          if (param.value2 != null) {
-            whereArguments.add(param.value2);
-          }
-        }
-      } else {
-        whereString += param.whereString;
-      }
-    }
-    if (Song._softDeleteActivated) {
-      if (whereString != '') {
-        whereString =
-            '${!_getIsDeleted ? 'ifnull(isDeleted,0)=0 AND' : ''} ($whereString)';
-      } else if (!_getIsDeleted) {
-        whereString = 'ifnull(isDeleted,0)=0';
-      }
-    }
-
-    if (whereString != '') {
-      qparams.whereString = whereString;
-    }
-    qparams
-      ..whereArguments = whereArguments
-      ..groupBy = groupByList.join(',')
-      ..orderBy = orderByList.join(',')
-      ..having = havingList.join(',');
+    return _name = _setField(_name, 'name', DbType.text);
   }
 
   /// Deletes List<Song> bulk by query
   ///
-  /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
+  /// <returns>BoolResult res.success= true (Deleted), false (Could not be deleted)
+  @override
   Future<BoolResult> delete([bool hardDelete = false]) async {
-    _buildParameters();
+    buildParameters();
     var r = BoolResult(success: false);
     // Delete sub records where in (SongLyric) according to DeleteRule.CASCADE
     final idListSongLyricBYsongsId = toListPrimaryKeySQL(false);
@@ -6068,55 +4614,47 @@ class SongFilterBuilder extends SearchCriteria {
       return resSongLyricBYsongsId;
     }
 
-    if (Song._softDeleteActivated && !hardDelete) {
-      r = await _obj!._mnSong.updateBatch(qparams, {'isDeleted': 1});
+    if (_softDeleteActivated && !hardDelete) {
+      r = await _mnSong!.updateBatch(qparams, {'isDeleted': 1});
     } else {
-      r = await _obj!._mnSong.delete(qparams);
+      r = await _mnSong!.delete(qparams);
     }
     return r;
   }
 
   /// using:
-  ///
   /// update({'fieldName': Value})
-  ///
   /// fieldName must be String. Value is dynamic, it can be any of the (int, bool, String.. )
+  @override
   Future<BoolResult> update(Map<String, dynamic> values) {
-    _buildParameters();
+    buildParameters();
     if (qparams.limit! > 0 || qparams.offset! > 0) {
       qparams.whereString =
           'id IN (SELECT id from songs ${qparams.whereString!.isNotEmpty ? 'WHERE ${qparams.whereString}' : ''}${qparams.limit! > 0 ? ' LIMIT ${qparams.limit}' : ''}${qparams.offset! > 0 ? ' OFFSET ${qparams.offset}' : ''})';
     }
-    return _obj!._mnSong.updateBatch(qparams, values);
+    return _mnSong!.updateBatch(qparams, values);
   }
 
-  /// This method always returns Song Obj if exist, otherwise returns null
-  ///
+  /// This method always returns [Song] Obj if exist, otherwise returns null
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
-  ///
   /// ex: toSingle(preload:true) -> Loads all related objects
-  ///
   /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
-  ///
   /// ex: toSingle(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
-  ///
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
-  ///
-  /// <returns>List<Song>
+  /// <returns> Song?
+  @override
   Future<Song?> toSingle(
       {bool preload = false,
       List<String>? preloadFields,
       bool loadParents = false,
       List<String>? loadedFields}) async {
-    _pagesize = 1;
-    _buildParameters();
-    final objFuture = _obj!._mnSong.toList(qparams);
+    buildParameters(pSize: 1);
+    final objFuture = _mnSong!.toList(qparams);
     final data = await objFuture;
     Song? obj;
     if (data.isNotEmpty) {
       obj = Song.fromMap(data[0] as Map<String, dynamic>);
-      // final List<String> _loadedFields = loadedFields ?? [];
 
       // RELATIONSHIPS PRELOAD CHILD
       if (preload) {
@@ -6139,13 +4677,35 @@ class SongFilterBuilder extends SearchCriteria {
     return obj;
   }
 
+  /// This method always returns [Song]
+  /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
+  /// ex: toSingle(preload:true) -> Loads all related objects
+  /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
+  /// ex: toSingle(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
+  /// bool loadParents: if true, loads all parent objects until the object has no parent
+
+  /// <returns> Song?
+  @override
+  Future<Song> toSingleOrDefault(
+      {bool preload = false,
+      List<String>? preloadFields,
+      bool loadParents = false,
+      List<String>? loadedFields}) async {
+    return await toSingle(
+            preload: preload,
+            preloadFields: preloadFields,
+            loadParents: loadParents,
+            loadedFields: loadedFields) ??
+        Song();
+  }
+
   /// This method returns int. [Song]
-  ///
   /// <returns>int
+  @override
   Future<int> toCount([VoidCallback Function(int c)? songCount]) async {
-    _buildParameters();
+    buildParameters();
     qparams.selectColumns = ['COUNT(1) AS CNT'];
-    final songsFuture = await _obj!._mnSong.toList(qparams);
+    final songsFuture = await _mnSong!.toList(qparams);
     final int count = songsFuture[0]['CNT'] as int;
     if (songCount != null) {
       songCount(count);
@@ -6154,19 +4714,14 @@ class SongFilterBuilder extends SearchCriteria {
   }
 
   /// This method returns List<Song> [Song]
-  ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
-  ///
   /// ex: toList(preload:true) -> Loads all related objects
-  ///
   /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
-  ///
   /// ex: toList(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
-  ///
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
-  ///
   /// <returns>List<Song>
+  @override
   Future<List<Song>> toList(
       {bool preload = false,
       List<String>? preloadFields,
@@ -6183,6 +4738,7 @@ class SongFilterBuilder extends SearchCriteria {
   }
 
   /// This method returns Json String [Song]
+  @override
   Future<String> toJson() async {
     final list = <dynamic>[];
     final data = await toList();
@@ -6193,6 +4749,7 @@ class SongFilterBuilder extends SearchCriteria {
   }
 
   /// This method returns Json String. [Song]
+  @override
   Future<String> toJsonWithChilds() async {
     final list = <dynamic>[];
     final data = await toList();
@@ -6203,22 +4760,21 @@ class SongFilterBuilder extends SearchCriteria {
   }
 
   /// This method returns List<dynamic>. [Song]
-  ///
   /// <returns>List<dynamic>
+  @override
   Future<List<dynamic>> toMapList() async {
-    _buildParameters();
-    return await _obj!._mnSong.toList(qparams);
+    buildParameters();
+    return await _mnSong!.toList(qparams);
   }
 
   /// This method returns Primary Key List SQL and Parameters retVal = Map<String,dynamic>. [Song]
-  ///
   /// retVal['sql'] = SQL statement string, retVal['args'] = whereArguments List<dynamic>;
-  ///
   /// <returns>List<String>
-  Map<String, dynamic> toListPrimaryKeySQL([bool buildParameters = true]) {
+  @override
+  Map<String, dynamic> toListPrimaryKeySQL([bool buildParams = true]) {
     final Map<String, dynamic> _retVal = <String, dynamic>{};
-    if (buildParameters) {
-      _buildParameters();
+    if (buildParams) {
+      buildParameters();
     }
     _retVal['sql'] = 'SELECT `id` FROM songs WHERE ${qparams.whereString}';
     _retVal['args'] = qparams.whereArguments;
@@ -6227,13 +4783,14 @@ class SongFilterBuilder extends SearchCriteria {
 
   /// This method returns Primary Key List<int>.
   /// <returns>List<int>
-  Future<List<int>> toListPrimaryKey([bool buildParameters = true]) async {
-    if (buildParameters) {
-      _buildParameters();
+  @override
+  Future<List<int>> toListPrimaryKey([bool buildParams = true]) async {
+    if (buildParams) {
+      buildParameters();
     }
     final List<int> idData = <int>[];
     qparams.selectColumns = ['id'];
-    final idFuture = await _obj!._mnSong.toList(qparams);
+    final idFuture = await _mnSong!.toList(qparams);
 
     final int count = idFuture.length;
     for (int i = 0; i < count; i++) {
@@ -6243,12 +4800,12 @@ class SongFilterBuilder extends SearchCriteria {
   }
 
   /// Returns List<dynamic> for selected columns. Use this method for 'groupBy' with min,max,avg..  [Song]
-  ///
   /// Sample usage: (see EXAMPLE 4.2 at https://github.com/hhtokpinar/sqfEntity#group-by)
+  @override
   Future<List<dynamic>> toListObject() async {
-    _buildParameters();
+    buildParameters();
 
-    final objectFuture = _obj!._mnSong.toList(qparams);
+    final objectFuture = _mnSong!.toList(qparams);
 
     final List<dynamic> objectsData = <dynamic>[];
     final data = await objectFuture;
@@ -6260,13 +4817,13 @@ class SongFilterBuilder extends SearchCriteria {
   }
 
   /// Returns List<String> for selected first column
-  ///
   /// Sample usage: await Song.select(columnsToSelect: ['columnName']).toListString()
+  @override
   Future<List<String>> toListString(
       [VoidCallback Function(List<String> o)? listString]) async {
-    _buildParameters();
+    buildParameters();
 
-    final objectFuture = _obj!._mnSong.toList(qparams);
+    final objectFuture = _mnSong!.toList(qparams);
 
     final List<String> objectsData = <String>[];
     final data = await objectFuture;
@@ -6320,6 +4877,7 @@ class Songbook extends TableBase {
       this.is_private,
       this.is_pinned}) {
     _setDefaultValues();
+    softDeleteActivated = false;
   }
   Songbook.withFields(this.id, this.name, this.shortcut, this.color,
       this.color_text, this.is_private, this.is_pinned) {
@@ -6367,7 +4925,6 @@ class Songbook extends TableBase {
   bool? is_private;
   bool? is_pinned;
   bool? isSaved;
-  BoolResult? saveResult;
   // end FIELDS (Songbook)
 
 // COLLECTIONS & VIRTUALS (Songbook)
@@ -6398,46 +4955,64 @@ class Songbook extends TableBase {
   }
 
   // METHODS
+  @override
   Map<String, dynamic> toMap(
       {bool forQuery = false, bool forJson = false, bool forView = false}) {
     final map = <String, dynamic>{};
     map['id'] = id;
-    map['name'] = name;
-    map['shortcut'] = shortcut;
-    map['color'] = color;
-    map['color_text'] = color_text;
+    if (name != null || !forView) {
+      map['name'] = name;
+    }
+    if (shortcut != null || !forView) {
+      map['shortcut'] = shortcut;
+    }
+    if (color != null || !forView) {
+      map['color'] = color;
+    }
+    if (color_text != null || !forView) {
+      map['color_text'] = color_text;
+    }
     if (is_private != null) {
       map['is_private'] = forQuery ? (is_private! ? 1 : 0) : is_private;
-    } else {
+    } else if (is_private != null || !forView) {
       map['is_private'] = null;
     }
     if (is_pinned != null) {
       map['is_pinned'] = forQuery ? (is_pinned! ? 1 : 0) : is_pinned;
-    } else {
+    } else if (is_pinned != null || !forView) {
       map['is_pinned'] = null;
     }
 
     return map;
   }
 
+  @override
   Future<Map<String, dynamic>> toMapWithChildren(
       [bool forQuery = false,
       bool forJson = false,
       bool forView = false]) async {
     final map = <String, dynamic>{};
     map['id'] = id;
-    map['name'] = name;
-    map['shortcut'] = shortcut;
-    map['color'] = color;
-    map['color_text'] = color_text;
+    if (name != null || !forView) {
+      map['name'] = name;
+    }
+    if (shortcut != null || !forView) {
+      map['shortcut'] = shortcut;
+    }
+    if (color != null || !forView) {
+      map['color'] = color;
+    }
+    if (color_text != null || !forView) {
+      map['color_text'] = color_text;
+    }
     if (is_private != null) {
       map['is_private'] = forQuery ? (is_private! ? 1 : 0) : is_private;
-    } else {
+    } else if (is_private != null || !forView) {
       map['is_private'] = null;
     }
     if (is_pinned != null) {
       map['is_pinned'] = forQuery ? (is_pinned! ? 1 : 0) : is_pinned;
-    } else {
+    } else if (is_pinned != null || !forView) {
       map['is_pinned'] = null;
     }
 
@@ -6451,19 +5026,23 @@ class Songbook extends TableBase {
   }
 
   /// This method returns Json String [Songbook]
+  @override
   String toJson() {
     return json.encode(toMap(forJson: true));
   }
 
   /// This method returns Json String [Songbook]
+  @override
   Future<String> toJsonWithChilds() async {
     return json.encode(await toMapWithChildren(false, true));
   }
 
+  @override
   List<dynamic> toArgs() {
     return [id, name, shortcut, color, color_text, is_private, is_pinned];
   }
 
+  @override
   List<dynamic> toArgsWithIds() {
     return [id, name, shortcut, color, color_text, is_private, is_pinned];
   }
@@ -6533,21 +5112,14 @@ class Songbook extends TableBase {
   }
 
   /// returns Songbook by ID if exist, otherwise returns null
-  ///
   /// Primary Keys: int? id
-  ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
-  ///
   /// ex: getById(preload:true) -> Loads all related objects
-  ///
   /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
-  ///
   /// ex: getById(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
-  ///
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
-  ///
-  /// <returns>returns Songbook if exist, otherwise returns null
+  /// <returns>returns [Songbook] if exist, otherwise returns null
   Future<Songbook?> getById(int? id,
       {bool preload = false,
       List<String>? preloadFields,
@@ -6560,7 +5132,6 @@ class Songbook extends TableBase {
     final data = await _mnSongbook.getById([id]);
     if (data.length != 0) {
       obj = Songbook.fromMap(data[0] as Map<String, dynamic>);
-      // final List<String> _loadedFields = loadedFields ?? [];
 
       // RELATIONSHIPS PRELOAD CHILD
       if (preload) {
@@ -6587,6 +5158,7 @@ class Songbook extends TableBase {
   /// Saves the (Songbook) object. If the id field is null, saves as a new record and returns new id, if id is not null then updates record
   /// ignoreBatch = true as a default. Set ignoreBatch to false if you run more than one save() operation those are between batchStart and batchCommit
   /// <returns>Returns id
+  @override
   Future<int?> save({bool ignoreBatch = true}) async {
     if (id == null || id == 0 || !isSaved!) {
       await _mnSongbook.insert(this, ignoreBatch);
@@ -6594,7 +5166,6 @@ class Songbook extends TableBase {
         isSaved = true;
       }
     } else {
-      // id= await _upsert(); // removed in sqfentity_gen 1.3.0+6
       await _mnSongbook.update(this);
     }
 
@@ -6602,10 +5173,9 @@ class Songbook extends TableBase {
   }
 
   /// Saves the (Songbook) object. If the id field is null, saves as a new record and returns new id, if id is not null then updates record
-  ///
   /// ignoreBatch = true as a default. Set ignoreBatch to false if you run more than one save() operation those are between batchStart and batchCommit
-  ///
   /// <returns>Returns id
+  @override
   Future<int?> saveOrThrow({bool ignoreBatch = true}) async {
     if (id == null || id == 0 || !isSaved!) {
       await _mnSongbook.insertOrThrow(this, ignoreBatch);
@@ -6628,7 +5198,6 @@ class Songbook extends TableBase {
   }
 
   /// saveAll method saves the sent List<Songbook> as a bulk in one transaction
-  ///
   /// Returns a <List<BoolResult>>
   static Future<List<dynamic>> saveAll(List<Songbook> songbooks) async {
     List<dynamic>? result = [];
@@ -6644,9 +5213,8 @@ class Songbook extends TableBase {
   }
 
   /// Updates if the record exists, otherwise adds a new row
-
   /// <returns>Returns id
-
+  @override
   Future<int?> upsert({bool ignoreBatch = true}) async {
     try {
       final result = await _mnSongbook.rawInsert(
@@ -6671,10 +5239,9 @@ class Songbook extends TableBase {
   }
 
   /// inserts or replaces the sent List<<Songbook>> as a bulk in one transaction.
-  ///
   /// upsertAll() method is faster then saveAll() method. upsertAll() should be used when you are sure that the primary key is greater than zero
-  ///
   /// Returns a BoolCommitResult
+  @override
   Future<BoolCommitResult> upsertAll(List<Songbook> songbooks) async {
     final results = await _mnSongbook.rawInsertAll(
         'INSERT OR REPLACE INTO songbooks (id, name, shortcut, color, color_text, is_private, is_pinned)  VALUES (?,?,?,?,?,?,?)',
@@ -6684,8 +5251,8 @@ class Songbook extends TableBase {
 
   /// Deletes Songbook
 
-  /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
-
+  /// <returns>BoolResult res.success= true (Deleted), false (Could not be deleted)
+  @override
   Future<BoolResult> delete([bool hardDelete = false]) async {
     debugPrint('SQFENTITIY: delete Songbook invoked (id=$id)');
     var result = BoolResult(success: false);
@@ -6710,17 +5277,25 @@ class Songbook extends TableBase {
     }
   }
 
+  @override
+  Future<BoolResult> recover([bool recoverChilds = true]) {
+    // not implemented because:
+    final msg =
+        'set useSoftDeleting:true in the table definition of [Songbook] to use this feature';
+    throw UnimplementedError(msg);
+  }
+
+  @override
   SongbookFilterBuilder select(
       {List<String>? columnsToSelect, bool? getIsDeleted}) {
-    return SongbookFilterBuilder(this)
-      .._getIsDeleted = getIsDeleted == true
+    return SongbookFilterBuilder(this, getIsDeleted)
       ..qparams.selectColumns = columnsToSelect;
   }
 
+  @override
   SongbookFilterBuilder distinct(
       {List<String>? columnsToSelect, bool? getIsDeleted}) {
-    return SongbookFilterBuilder(this)
-      .._getIsDeleted = getIsDeleted == true
+    return SongbookFilterBuilder(this, getIsDeleted)
       ..qparams.selectColumns = columnsToSelect
       ..qparams.distinct = true;
   }
@@ -6753,518 +5328,220 @@ class Songbook extends TableBase {
 // endregion songbook
 
 // region SongbookField
-class SongbookField extends SearchCriteria {
-  SongbookField(this.songbookFB);
-  // { param = DbParameter(); }
-  DbParameter param = DbParameter();
-  String _waitingNot = '';
-  SongbookFilterBuilder songbookFB;
+class SongbookField extends FilterBase {
+  SongbookField(SongbookFilterBuilder songbookFB) : super(songbookFB);
 
-  SongbookField get not {
-    _waitingNot = ' NOT ';
-    return this;
-  }
-
+  @override
   SongbookFilterBuilder equals(dynamic pValue) {
-    param.expression = '=';
-    songbookFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, songbookFB.parameters, param, SqlSyntax.EQuals,
-            songbookFB._addedBlocks)
-        : setCriteria(pValue, songbookFB.parameters, param, SqlSyntax.NotEQuals,
-            songbookFB._addedBlocks);
-    _waitingNot = '';
-    songbookFB._addedBlocks.needEndBlock![songbookFB._blockIndex] =
-        songbookFB._addedBlocks.retVal;
-    return songbookFB;
+    return super.equals(pValue) as SongbookFilterBuilder;
   }
 
+  @override
   SongbookFilterBuilder equalsOrNull(dynamic pValue) {
-    param.expression = '=';
-    songbookFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, songbookFB.parameters, param,
-            SqlSyntax.EQualsOrNull, songbookFB._addedBlocks)
-        : setCriteria(pValue, songbookFB.parameters, param,
-            SqlSyntax.NotEQualsOrNull, songbookFB._addedBlocks);
-    _waitingNot = '';
-    songbookFB._addedBlocks.needEndBlock![songbookFB._blockIndex] =
-        songbookFB._addedBlocks.retVal;
-    return songbookFB;
+    return super.equalsOrNull(pValue) as SongbookFilterBuilder;
   }
 
+  @override
   SongbookFilterBuilder isNull() {
-    songbookFB._addedBlocks = setCriteria(
-        0,
-        songbookFB.parameters,
-        param,
-        SqlSyntax.IsNULL.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-        songbookFB._addedBlocks);
-    _waitingNot = '';
-    songbookFB._addedBlocks.needEndBlock![songbookFB._blockIndex] =
-        songbookFB._addedBlocks.retVal;
-    return songbookFB;
+    return super.isNull() as SongbookFilterBuilder;
   }
 
+  @override
   SongbookFilterBuilder contains(dynamic pValue) {
-    if (pValue != null) {
-      songbookFB._addedBlocks = setCriteria(
-          '%${pValue.toString()}%',
-          songbookFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          songbookFB._addedBlocks);
-      _waitingNot = '';
-      songbookFB._addedBlocks.needEndBlock![songbookFB._blockIndex] =
-          songbookFB._addedBlocks.retVal;
-    }
-    return songbookFB;
+    return super.contains(pValue) as SongbookFilterBuilder;
   }
 
+  @override
   SongbookFilterBuilder startsWith(dynamic pValue) {
-    if (pValue != null) {
-      songbookFB._addedBlocks = setCriteria(
-          '${pValue.toString()}%',
-          songbookFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          songbookFB._addedBlocks);
-      _waitingNot = '';
-      songbookFB._addedBlocks.needEndBlock![songbookFB._blockIndex] =
-          songbookFB._addedBlocks.retVal;
-      songbookFB._addedBlocks.needEndBlock![songbookFB._blockIndex] =
-          songbookFB._addedBlocks.retVal;
-    }
-    return songbookFB;
+    return super.startsWith(pValue) as SongbookFilterBuilder;
   }
 
+  @override
   SongbookFilterBuilder endsWith(dynamic pValue) {
-    if (pValue != null) {
-      songbookFB._addedBlocks = setCriteria(
-          '%${pValue.toString()}',
-          songbookFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          songbookFB._addedBlocks);
-      _waitingNot = '';
-      songbookFB._addedBlocks.needEndBlock![songbookFB._blockIndex] =
-          songbookFB._addedBlocks.retVal;
-    }
-    return songbookFB;
+    return super.endsWith(pValue) as SongbookFilterBuilder;
   }
 
+  @override
   SongbookFilterBuilder between(dynamic pFirst, dynamic pLast) {
-    if (pFirst != null && pLast != null) {
-      songbookFB._addedBlocks = setCriteria(
-          pFirst,
-          songbookFB.parameters,
-          param,
-          SqlSyntax.Between.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          songbookFB._addedBlocks,
-          pLast);
-    } else if (pFirst != null) {
-      if (_waitingNot != '') {
-        songbookFB._addedBlocks = setCriteria(pFirst, songbookFB.parameters,
-            param, SqlSyntax.LessThan, songbookFB._addedBlocks);
-      } else {
-        songbookFB._addedBlocks = setCriteria(pFirst, songbookFB.parameters,
-            param, SqlSyntax.GreaterThanOrEquals, songbookFB._addedBlocks);
-      }
-    } else if (pLast != null) {
-      if (_waitingNot != '') {
-        songbookFB._addedBlocks = setCriteria(pLast, songbookFB.parameters,
-            param, SqlSyntax.GreaterThan, songbookFB._addedBlocks);
-      } else {
-        songbookFB._addedBlocks = setCriteria(pLast, songbookFB.parameters,
-            param, SqlSyntax.LessThanOrEquals, songbookFB._addedBlocks);
-      }
-    }
-    _waitingNot = '';
-    songbookFB._addedBlocks.needEndBlock![songbookFB._blockIndex] =
-        songbookFB._addedBlocks.retVal;
-    return songbookFB;
+    return super.between(pFirst, pLast) as SongbookFilterBuilder;
   }
 
+  @override
   SongbookFilterBuilder greaterThan(dynamic pValue) {
-    param.expression = '>';
-    songbookFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, songbookFB.parameters, param,
-            SqlSyntax.GreaterThan, songbookFB._addedBlocks)
-        : setCriteria(pValue, songbookFB.parameters, param,
-            SqlSyntax.LessThanOrEquals, songbookFB._addedBlocks);
-    _waitingNot = '';
-    songbookFB._addedBlocks.needEndBlock![songbookFB._blockIndex] =
-        songbookFB._addedBlocks.retVal;
-    return songbookFB;
+    return super.greaterThan(pValue) as SongbookFilterBuilder;
   }
 
+  @override
   SongbookFilterBuilder lessThan(dynamic pValue) {
-    param.expression = '<';
-    songbookFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, songbookFB.parameters, param, SqlSyntax.LessThan,
-            songbookFB._addedBlocks)
-        : setCriteria(pValue, songbookFB.parameters, param,
-            SqlSyntax.GreaterThanOrEquals, songbookFB._addedBlocks);
-    _waitingNot = '';
-    songbookFB._addedBlocks.needEndBlock![songbookFB._blockIndex] =
-        songbookFB._addedBlocks.retVal;
-    return songbookFB;
+    return super.lessThan(pValue) as SongbookFilterBuilder;
   }
 
+  @override
   SongbookFilterBuilder greaterThanOrEquals(dynamic pValue) {
-    param.expression = '>=';
-    songbookFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, songbookFB.parameters, param,
-            SqlSyntax.GreaterThanOrEquals, songbookFB._addedBlocks)
-        : setCriteria(pValue, songbookFB.parameters, param, SqlSyntax.LessThan,
-            songbookFB._addedBlocks);
-    _waitingNot = '';
-    songbookFB._addedBlocks.needEndBlock![songbookFB._blockIndex] =
-        songbookFB._addedBlocks.retVal;
-    return songbookFB;
+    return super.greaterThanOrEquals(pValue) as SongbookFilterBuilder;
   }
 
+  @override
   SongbookFilterBuilder lessThanOrEquals(dynamic pValue) {
-    param.expression = '<=';
-    songbookFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, songbookFB.parameters, param,
-            SqlSyntax.LessThanOrEquals, songbookFB._addedBlocks)
-        : setCriteria(pValue, songbookFB.parameters, param,
-            SqlSyntax.GreaterThan, songbookFB._addedBlocks);
-    _waitingNot = '';
-    songbookFB._addedBlocks.needEndBlock![songbookFB._blockIndex] =
-        songbookFB._addedBlocks.retVal;
-    return songbookFB;
+    return super.lessThanOrEquals(pValue) as SongbookFilterBuilder;
   }
 
+  @override
   SongbookFilterBuilder inValues(dynamic pValue) {
-    songbookFB._addedBlocks = setCriteria(
-        pValue,
-        songbookFB.parameters,
-        param,
-        SqlSyntax.IN.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-        songbookFB._addedBlocks);
-    _waitingNot = '';
-    songbookFB._addedBlocks.needEndBlock![songbookFB._blockIndex] =
-        songbookFB._addedBlocks.retVal;
-    return songbookFB;
+    return super.inValues(pValue) as SongbookFilterBuilder;
+  }
+
+  @override
+  SongbookField get not {
+    return super.not as SongbookField;
   }
 }
 // endregion SongbookField
 
 // region SongbookFilterBuilder
-class SongbookFilterBuilder extends SearchCriteria {
-  SongbookFilterBuilder(Songbook obj) {
-    whereString = '';
-    groupByList = <String>[];
-    _addedBlocks.needEndBlock!.add(false);
-    _addedBlocks.waitingStartBlock!.add(false);
-    _obj = obj;
+class SongbookFilterBuilder extends ConjunctionBase {
+  SongbookFilterBuilder(Songbook obj, bool? getIsDeleted)
+      : super(obj, getIsDeleted) {
+    _mnSongbook = obj._mnSongbook;
+    _softDeleteActivated = obj.softDeleteActivated;
   }
-  AddedBlocks _addedBlocks = AddedBlocks(<bool>[], <bool>[]);
-  int _blockIndex = 0;
-  List<DbParameter> parameters = <DbParameter>[];
-  List<String> orderByList = <String>[];
-  Songbook? _obj;
-  QueryParams qparams = QueryParams();
-  int _pagesize = 0;
-  int _page = 0;
+
+  bool _softDeleteActivated = false;
+  SongbookManager? _mnSongbook;
 
   /// put the sql keyword 'AND'
+  @override
   SongbookFilterBuilder get and {
-    if (parameters.isNotEmpty) {
-      parameters[parameters.length - 1].wOperator = ' AND ';
-    }
+    super.and;
     return this;
   }
 
   /// put the sql keyword 'OR'
+  @override
   SongbookFilterBuilder get or {
-    if (parameters.isNotEmpty) {
-      parameters[parameters.length - 1].wOperator = ' OR ';
-    }
+    super.or;
     return this;
   }
 
   /// open parentheses
+  @override
   SongbookFilterBuilder get startBlock {
-    _addedBlocks.waitingStartBlock!.add(true);
-    _addedBlocks.needEndBlock!.add(false);
-    _blockIndex++;
-    if (_blockIndex > 1) {
-      _addedBlocks.needEndBlock![_blockIndex - 1] = true;
-    }
+    super.startBlock;
     return this;
   }
 
   /// String whereCriteria, write raw query without 'where' keyword. Like this: 'field1 like 'test%' and field2 = 3'
+  @override
   SongbookFilterBuilder where(String? whereCriteria, {dynamic parameterValue}) {
-    if (whereCriteria != null && whereCriteria != '') {
-      final DbParameter param = DbParameter(
-          columnName: parameterValue == null ? null : '',
-          hasParameter: parameterValue != null);
-      _addedBlocks = setCriteria(parameterValue ?? 0, parameters, param,
-          '($whereCriteria)', _addedBlocks);
-      _addedBlocks.needEndBlock![_blockIndex] = _addedBlocks.retVal;
-    }
+    super.where(whereCriteria, parameterValue: parameterValue);
     return this;
   }
 
   /// page = page number,
-  ///
   /// pagesize = row(s) per page
+  @override
   SongbookFilterBuilder page(int page, int pagesize) {
-    if (page > 0) {
-      _page = page;
-    }
-    if (pagesize > 0) {
-      _pagesize = pagesize;
-    }
+    super.page(page, pagesize);
     return this;
   }
 
   /// int count = LIMIT
+  @override
   SongbookFilterBuilder top(int count) {
-    if (count > 0) {
-      _pagesize = count;
-    }
+    super.top(count);
     return this;
   }
 
   /// close parentheses
+  @override
   SongbookFilterBuilder get endBlock {
-    if (_addedBlocks.needEndBlock![_blockIndex]) {
-      parameters[parameters.length - 1].whereString += ' ) ';
-    }
-    _addedBlocks.needEndBlock!.removeAt(_blockIndex);
-    _addedBlocks.waitingStartBlock!.removeAt(_blockIndex);
-    _blockIndex--;
+    super.endBlock;
     return this;
   }
 
   /// argFields might be String or List<String>.
-  ///
   /// Example 1: argFields='name, date'
-  ///
   /// Example 2: argFields = ['name', 'date']
+  @override
   SongbookFilterBuilder orderBy(dynamic argFields) {
-    if (argFields != null) {
-      if (argFields is String) {
-        orderByList.add(argFields);
-      } else {
-        for (String? s in argFields as List<String?>) {
-          if (s!.isNotEmpty) {
-            orderByList.add(' $s ');
-          }
-        }
-      }
-    }
+    super.orderBy(argFields);
     return this;
   }
 
   /// argFields might be String or List<String>.
-  ///
   /// Example 1: argFields='field1, field2'
-  ///
   /// Example 2: argFields = ['field1', 'field2']
+  @override
   SongbookFilterBuilder orderByDesc(dynamic argFields) {
-    if (argFields != null) {
-      if (argFields is String) {
-        orderByList.add('$argFields desc ');
-      } else {
-        for (String? s in argFields as List<String?>) {
-          if (s!.isNotEmpty) {
-            orderByList.add(' $s desc ');
-          }
-        }
-      }
-    }
+    super.orderByDesc(argFields);
     return this;
   }
 
   /// argFields might be String or List<String>.
-  ///
   /// Example 1: argFields='field1, field2'
-  ///
   /// Example 2: argFields = ['field1', 'field2']
+  @override
   SongbookFilterBuilder groupBy(dynamic argFields) {
-    if (argFields != null) {
-      if (argFields is String) {
-        groupByList.add(' $argFields ');
-      } else {
-        for (String? s in argFields as List<String?>) {
-          if (s!.isNotEmpty) {
-            groupByList.add(' $s ');
-          }
-        }
-      }
-    }
+    super.groupBy(argFields);
     return this;
   }
 
   /// argFields might be String or List<String>.
-  ///
   /// Example 1: argFields='name, date'
-  ///
   /// Example 2: argFields = ['name', 'date']
+  @override
   SongbookFilterBuilder having(dynamic argFields) {
-    if (argFields != null) {
-      if (argFields is String) {
-        havingList.add(argFields);
-      } else {
-        for (String? s in argFields as List<String?>) {
-          if (s!.isNotEmpty) {
-            havingList.add(' $s ');
-          }
-        }
-      }
-    }
+    super.having(argFields);
     return this;
   }
 
-  SongbookField setField(SongbookField? field, String colName, DbType dbtype) {
+  SongbookField _setField(SongbookField? field, String colName, DbType dbtype) {
     return SongbookField(this)
       ..param = DbParameter(
-          dbType: dbtype,
-          columnName: colName,
-          wStartBlock: _addedBlocks.waitingStartBlock![_blockIndex]);
+          dbType: dbtype, columnName: colName, wStartBlock: openedBlock);
   }
 
   SongbookField? _id;
   SongbookField get id {
-    return _id = setField(_id, 'id', DbType.integer);
+    return _id = _setField(_id, 'id', DbType.integer);
   }
 
   SongbookField? _name;
   SongbookField get name {
-    return _name = setField(_name, 'name', DbType.text);
+    return _name = _setField(_name, 'name', DbType.text);
   }
 
   SongbookField? _shortcut;
   SongbookField get shortcut {
-    return _shortcut = setField(_shortcut, 'shortcut', DbType.text);
+    return _shortcut = _setField(_shortcut, 'shortcut', DbType.text);
   }
 
   SongbookField? _color;
   SongbookField get color {
-    return _color = setField(_color, 'color', DbType.text);
+    return _color = _setField(_color, 'color', DbType.text);
   }
 
   SongbookField? _color_text;
   SongbookField get color_text {
-    return _color_text = setField(_color_text, 'color_text', DbType.text);
+    return _color_text = _setField(_color_text, 'color_text', DbType.text);
   }
 
   SongbookField? _is_private;
   SongbookField get is_private {
-    return _is_private = setField(_is_private, 'is_private', DbType.bool);
+    return _is_private = _setField(_is_private, 'is_private', DbType.bool);
   }
 
   SongbookField? _is_pinned;
   SongbookField get is_pinned {
-    return _is_pinned = setField(_is_pinned, 'is_pinned', DbType.bool);
-  }
-
-  bool _getIsDeleted = false;
-
-  void _buildParameters() {
-    if (_page > 0 && _pagesize > 0) {
-      qparams
-        ..limit = _pagesize
-        ..offset = (_page - 1) * _pagesize;
-    } else {
-      qparams
-        ..limit = _pagesize
-        ..offset = _page;
-    }
-    for (DbParameter param in parameters) {
-      if (param.columnName != null) {
-        if (param.value is List && !param.hasParameter) {
-          param.value = param.dbType == DbType.text || param.value[0] is String
-              ? '\'${param.value.join('\',\'')}\''
-              : param.value.join(',');
-          whereString += param.whereString
-              .replaceAll('{field}', param.columnName!)
-              .replaceAll('?', param.value.toString());
-          param.value = null;
-        } else {
-          if (param.value is Map<String, dynamic> &&
-              param.value['sql'] != null) {
-            param
-              ..whereString = param.whereString
-                  .replaceAll('?', param.value['sql'].toString())
-              ..dbType = DbType.integer
-              ..value = param.value['args'];
-          }
-          whereString +=
-              param.whereString.replaceAll('{field}', param.columnName!);
-        }
-        if (!param.whereString.contains('?')) {
-        } else {
-          switch (param.dbType) {
-            case DbType.bool:
-              param.value = param.value == null
-                  ? null
-                  : param.value == true
-                      ? 1
-                      : 0;
-              param.value2 = param.value2 == null
-                  ? null
-                  : param.value2 == true
-                      ? 1
-                      : 0;
-              break;
-            case DbType.date:
-            case DbType.datetime:
-            case DbType.datetimeUtc:
-              param.value = param.value == null
-                  ? null
-                  : (param.value as DateTime).millisecondsSinceEpoch;
-              param.value2 = param.value2 == null
-                  ? null
-                  : (param.value2 as DateTime).millisecondsSinceEpoch;
-              break;
-            default:
-          }
-          if (param.value != null) {
-            if (param.value is List) {
-              for (var p in param.value) {
-                whereArguments.add(p);
-              }
-            } else {
-              whereArguments.add(param.value);
-            }
-          }
-          if (param.value2 != null) {
-            whereArguments.add(param.value2);
-          }
-        }
-      } else {
-        whereString += param.whereString;
-      }
-    }
-    if (Songbook._softDeleteActivated) {
-      if (whereString != '') {
-        whereString =
-            '${!_getIsDeleted ? 'ifnull(isDeleted,0)=0 AND' : ''} ($whereString)';
-      } else if (!_getIsDeleted) {
-        whereString = 'ifnull(isDeleted,0)=0';
-      }
-    }
-
-    if (whereString != '') {
-      qparams.whereString = whereString;
-    }
-    qparams
-      ..whereArguments = whereArguments
-      ..groupBy = groupByList.join(',')
-      ..orderBy = orderByList.join(',')
-      ..having = havingList.join(',');
+    return _is_pinned = _setField(_is_pinned, 'is_pinned', DbType.bool);
   }
 
   /// Deletes List<Songbook> bulk by query
   ///
-  /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
+  /// <returns>BoolResult res.success= true (Deleted), false (Could not be deleted)
+  @override
   Future<BoolResult> delete([bool hardDelete = false]) async {
-    _buildParameters();
+    buildParameters();
     var r = BoolResult(success: false);
     // Delete sub records where in (SongbookRecord) according to DeleteRule.CASCADE
     final idListSongbookRecordBYsongbooksId = toListPrimaryKeySQL(false);
@@ -7277,55 +5554,47 @@ class SongbookFilterBuilder extends SearchCriteria {
       return resSongbookRecordBYsongbooksId;
     }
 
-    if (Songbook._softDeleteActivated && !hardDelete) {
-      r = await _obj!._mnSongbook.updateBatch(qparams, {'isDeleted': 1});
+    if (_softDeleteActivated && !hardDelete) {
+      r = await _mnSongbook!.updateBatch(qparams, {'isDeleted': 1});
     } else {
-      r = await _obj!._mnSongbook.delete(qparams);
+      r = await _mnSongbook!.delete(qparams);
     }
     return r;
   }
 
   /// using:
-  ///
   /// update({'fieldName': Value})
-  ///
   /// fieldName must be String. Value is dynamic, it can be any of the (int, bool, String.. )
+  @override
   Future<BoolResult> update(Map<String, dynamic> values) {
-    _buildParameters();
+    buildParameters();
     if (qparams.limit! > 0 || qparams.offset! > 0) {
       qparams.whereString =
           'id IN (SELECT id from songbooks ${qparams.whereString!.isNotEmpty ? 'WHERE ${qparams.whereString}' : ''}${qparams.limit! > 0 ? ' LIMIT ${qparams.limit}' : ''}${qparams.offset! > 0 ? ' OFFSET ${qparams.offset}' : ''})';
     }
-    return _obj!._mnSongbook.updateBatch(qparams, values);
+    return _mnSongbook!.updateBatch(qparams, values);
   }
 
-  /// This method always returns Songbook Obj if exist, otherwise returns null
-  ///
+  /// This method always returns [Songbook] Obj if exist, otherwise returns null
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
-  ///
   /// ex: toSingle(preload:true) -> Loads all related objects
-  ///
   /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
-  ///
   /// ex: toSingle(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
-  ///
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
-  ///
-  /// <returns>List<Songbook>
+  /// <returns> Songbook?
+  @override
   Future<Songbook?> toSingle(
       {bool preload = false,
       List<String>? preloadFields,
       bool loadParents = false,
       List<String>? loadedFields}) async {
-    _pagesize = 1;
-    _buildParameters();
-    final objFuture = _obj!._mnSongbook.toList(qparams);
+    buildParameters(pSize: 1);
+    final objFuture = _mnSongbook!.toList(qparams);
     final data = await objFuture;
     Songbook? obj;
     if (data.isNotEmpty) {
       obj = Songbook.fromMap(data[0] as Map<String, dynamic>);
-      // final List<String> _loadedFields = loadedFields ?? [];
 
       // RELATIONSHIPS PRELOAD CHILD
       if (preload) {
@@ -7349,13 +5618,35 @@ class SongbookFilterBuilder extends SearchCriteria {
     return obj;
   }
 
+  /// This method always returns [Songbook]
+  /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
+  /// ex: toSingle(preload:true) -> Loads all related objects
+  /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
+  /// ex: toSingle(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
+  /// bool loadParents: if true, loads all parent objects until the object has no parent
+
+  /// <returns> Songbook?
+  @override
+  Future<Songbook> toSingleOrDefault(
+      {bool preload = false,
+      List<String>? preloadFields,
+      bool loadParents = false,
+      List<String>? loadedFields}) async {
+    return await toSingle(
+            preload: preload,
+            preloadFields: preloadFields,
+            loadParents: loadParents,
+            loadedFields: loadedFields) ??
+        Songbook();
+  }
+
   /// This method returns int. [Songbook]
-  ///
   /// <returns>int
+  @override
   Future<int> toCount([VoidCallback Function(int c)? songbookCount]) async {
-    _buildParameters();
+    buildParameters();
     qparams.selectColumns = ['COUNT(1) AS CNT'];
-    final songbooksFuture = await _obj!._mnSongbook.toList(qparams);
+    final songbooksFuture = await _mnSongbook!.toList(qparams);
     final int count = songbooksFuture[0]['CNT'] as int;
     if (songbookCount != null) {
       songbookCount(count);
@@ -7364,19 +5655,14 @@ class SongbookFilterBuilder extends SearchCriteria {
   }
 
   /// This method returns List<Songbook> [Songbook]
-  ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
-  ///
   /// ex: toList(preload:true) -> Loads all related objects
-  ///
   /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
-  ///
   /// ex: toList(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
-  ///
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
-  ///
   /// <returns>List<Songbook>
+  @override
   Future<List<Songbook>> toList(
       {bool preload = false,
       List<String>? preloadFields,
@@ -7393,6 +5679,7 @@ class SongbookFilterBuilder extends SearchCriteria {
   }
 
   /// This method returns Json String [Songbook]
+  @override
   Future<String> toJson() async {
     final list = <dynamic>[];
     final data = await toList();
@@ -7403,6 +5690,7 @@ class SongbookFilterBuilder extends SearchCriteria {
   }
 
   /// This method returns Json String. [Songbook]
+  @override
   Future<String> toJsonWithChilds() async {
     final list = <dynamic>[];
     final data = await toList();
@@ -7413,22 +5701,21 @@ class SongbookFilterBuilder extends SearchCriteria {
   }
 
   /// This method returns List<dynamic>. [Songbook]
-  ///
   /// <returns>List<dynamic>
+  @override
   Future<List<dynamic>> toMapList() async {
-    _buildParameters();
-    return await _obj!._mnSongbook.toList(qparams);
+    buildParameters();
+    return await _mnSongbook!.toList(qparams);
   }
 
   /// This method returns Primary Key List SQL and Parameters retVal = Map<String,dynamic>. [Songbook]
-  ///
   /// retVal['sql'] = SQL statement string, retVal['args'] = whereArguments List<dynamic>;
-  ///
   /// <returns>List<String>
-  Map<String, dynamic> toListPrimaryKeySQL([bool buildParameters = true]) {
+  @override
+  Map<String, dynamic> toListPrimaryKeySQL([bool buildParams = true]) {
     final Map<String, dynamic> _retVal = <String, dynamic>{};
-    if (buildParameters) {
-      _buildParameters();
+    if (buildParams) {
+      buildParameters();
     }
     _retVal['sql'] = 'SELECT `id` FROM songbooks WHERE ${qparams.whereString}';
     _retVal['args'] = qparams.whereArguments;
@@ -7437,13 +5724,14 @@ class SongbookFilterBuilder extends SearchCriteria {
 
   /// This method returns Primary Key List<int>.
   /// <returns>List<int>
-  Future<List<int>> toListPrimaryKey([bool buildParameters = true]) async {
-    if (buildParameters) {
-      _buildParameters();
+  @override
+  Future<List<int>> toListPrimaryKey([bool buildParams = true]) async {
+    if (buildParams) {
+      buildParameters();
     }
     final List<int> idData = <int>[];
     qparams.selectColumns = ['id'];
-    final idFuture = await _obj!._mnSongbook.toList(qparams);
+    final idFuture = await _mnSongbook!.toList(qparams);
 
     final int count = idFuture.length;
     for (int i = 0; i < count; i++) {
@@ -7453,12 +5741,12 @@ class SongbookFilterBuilder extends SearchCriteria {
   }
 
   /// Returns List<dynamic> for selected columns. Use this method for 'groupBy' with min,max,avg..  [Songbook]
-  ///
   /// Sample usage: (see EXAMPLE 4.2 at https://github.com/hhtokpinar/sqfEntity#group-by)
+  @override
   Future<List<dynamic>> toListObject() async {
-    _buildParameters();
+    buildParameters();
 
-    final objectFuture = _obj!._mnSongbook.toList(qparams);
+    final objectFuture = _mnSongbook!.toList(qparams);
 
     final List<dynamic> objectsData = <dynamic>[];
     final data = await objectFuture;
@@ -7470,13 +5758,13 @@ class SongbookFilterBuilder extends SearchCriteria {
   }
 
   /// Returns List<String> for selected first column
-  ///
   /// Sample usage: await Songbook.select(columnsToSelect: ['columnName']).toListString()
+  @override
   Future<List<String>> toListString(
       [VoidCallback Function(List<String> o)? listString]) async {
-    _buildParameters();
+    buildParameters();
 
-    final objectFuture = _obj!._mnSongbook.toList(qparams);
+    final objectFuture = _mnSongbook!.toList(qparams);
 
     final List<String> objectsData = <String>[];
     final data = await objectFuture;
@@ -7553,6 +5841,7 @@ class SongbookManager extends SqfEntityProvider {
 class SongbookRecord extends TableBase {
   SongbookRecord({this.id, this.number, this.songbooksId, this.song_lyricsId}) {
     _setDefaultValues();
+    softDeleteActivated = false;
   }
   SongbookRecord.withFields(
       this.id, this.number, this.songbooksId, this.song_lyricsId) {
@@ -7593,7 +5882,6 @@ class SongbookRecord extends TableBase {
   int? songbooksId;
   int? song_lyricsId;
   bool? isSaved;
-  BoolResult? saveResult;
   // end FIELDS (SongbookRecord)
 
 // RELATIONSHIPS (SongbookRecord)
@@ -7630,18 +5918,21 @@ class SongbookRecord extends TableBase {
   }
 
   // METHODS
+  @override
   Map<String, dynamic> toMap(
       {bool forQuery = false, bool forJson = false, bool forView = false}) {
     final map = <String, dynamic>{};
     map['id'] = id;
-    map['number'] = number;
+    if (number != null || !forView) {
+      map['number'] = number;
+    }
     if (songbooksId != null) {
       map['songbooksId'] = forView
           ? plSongbook == null
               ? songbooksId
               : plSongbook!.name
           : songbooksId;
-    } else {
+    } else if (songbooksId != null || !forView) {
       map['songbooksId'] = null;
     }
     if (song_lyricsId != null) {
@@ -7650,27 +5941,30 @@ class SongbookRecord extends TableBase {
               ? song_lyricsId
               : plSongLyric!.name
           : song_lyricsId;
-    } else {
+    } else if (song_lyricsId != null || !forView) {
       map['song_lyricsId'] = null;
     }
 
     return map;
   }
 
+  @override
   Future<Map<String, dynamic>> toMapWithChildren(
       [bool forQuery = false,
       bool forJson = false,
       bool forView = false]) async {
     final map = <String, dynamic>{};
     map['id'] = id;
-    map['number'] = number;
+    if (number != null || !forView) {
+      map['number'] = number;
+    }
     if (songbooksId != null) {
       map['songbooksId'] = forView
           ? plSongbook == null
               ? songbooksId
               : plSongbook!.name
           : songbooksId;
-    } else {
+    } else if (songbooksId != null || !forView) {
       map['songbooksId'] = null;
     }
     if (song_lyricsId != null) {
@@ -7679,7 +5973,7 @@ class SongbookRecord extends TableBase {
               ? song_lyricsId
               : plSongLyric!.name
           : song_lyricsId;
-    } else {
+    } else if (song_lyricsId != null || !forView) {
       map['song_lyricsId'] = null;
     }
 
@@ -7687,19 +5981,23 @@ class SongbookRecord extends TableBase {
   }
 
   /// This method returns Json String [SongbookRecord]
+  @override
   String toJson() {
     return json.encode(toMap(forJson: true));
   }
 
   /// This method returns Json String [SongbookRecord]
+  @override
   Future<String> toJsonWithChilds() async {
     return json.encode(await toMapWithChildren(false, true));
   }
 
+  @override
   List<dynamic> toArgs() {
     return [id, number, songbooksId, song_lyricsId];
   }
 
+  @override
   List<dynamic> toArgsWithIds() {
     return [id, number, songbooksId, song_lyricsId];
   }
@@ -7751,24 +6049,17 @@ class SongbookRecord extends TableBase {
       // RELATIONSHIPS PRELOAD
       if (preload || loadParents) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedfields!.contains('songbooks.plSongbook') && */ (preloadFields ==
-                null ||
+        if ((preloadFields == null ||
             loadParents ||
             preloadFields.contains('plSongbook'))) {
-          /*_loadedfields!.add('songbooks.plSongbook');*/ obj.plSongbook = obj
-                  .plSongbook ??
-              await obj.getSongbook(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+          obj.plSongbook =
+              obj.plSongbook ?? await obj.getSongbook(loadParents: loadParents);
         }
-        if (/*!_loadedfields!.contains('song_lyrics.plSongLyric') && */ (preloadFields ==
-                null ||
+        if ((preloadFields == null ||
             loadParents ||
             preloadFields.contains('plSongLyric'))) {
-          /*_loadedfields!.add('song_lyrics.plSongLyric');*/ obj.plSongLyric =
-              obj.plSongLyric ??
-                  await obj.getSongLyric(
-                      loadParents:
-                          loadParents /*, loadedFields: _loadedFields*/);
+          obj.plSongLyric = obj.plSongLyric ??
+              await obj.getSongLyric(loadParents: loadParents);
         }
       } // END RELATIONSHIPS PRELOAD
 
@@ -7778,21 +6069,14 @@ class SongbookRecord extends TableBase {
   }
 
   /// returns SongbookRecord by ID if exist, otherwise returns null
-  ///
   /// Primary Keys: int? id
-  ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
-  ///
   /// ex: getById(preload:true) -> Loads all related objects
-  ///
   /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
-  ///
   /// ex: getById(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
-  ///
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
-  ///
-  /// <returns>returns SongbookRecord if exist, otherwise returns null
+  /// <returns>returns [SongbookRecord] if exist, otherwise returns null
   Future<SongbookRecord?> getById(int? id,
       {bool preload = false,
       List<String>? preloadFields,
@@ -7805,29 +6089,21 @@ class SongbookRecord extends TableBase {
     final data = await _mnSongbookRecord.getById([id]);
     if (data.length != 0) {
       obj = SongbookRecord.fromMap(data[0] as Map<String, dynamic>);
-      // final List<String> _loadedFields = loadedFields ?? [];
 
       // RELATIONSHIPS PRELOAD
       if (preload || loadParents) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedfields!.contains('songbooks.plSongbook') && */ (preloadFields ==
-                null ||
+        if ((preloadFields == null ||
             loadParents ||
             preloadFields.contains('plSongbook'))) {
-          /*_loadedfields!.add('songbooks.plSongbook');*/ obj.plSongbook = obj
-                  .plSongbook ??
-              await obj.getSongbook(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+          obj.plSongbook =
+              obj.plSongbook ?? await obj.getSongbook(loadParents: loadParents);
         }
-        if (/*!_loadedfields!.contains('song_lyrics.plSongLyric') && */ (preloadFields ==
-                null ||
+        if ((preloadFields == null ||
             loadParents ||
             preloadFields.contains('plSongLyric'))) {
-          /*_loadedfields!.add('song_lyrics.plSongLyric');*/ obj.plSongLyric =
-              obj.plSongLyric ??
-                  await obj.getSongLyric(
-                      loadParents:
-                          loadParents /*, loadedFields: _loadedFields*/);
+          obj.plSongLyric = obj.plSongLyric ??
+              await obj.getSongLyric(loadParents: loadParents);
         }
       } // END RELATIONSHIPS PRELOAD
 
@@ -7840,6 +6116,7 @@ class SongbookRecord extends TableBase {
   /// Saves the (SongbookRecord) object. If the id field is null, saves as a new record and returns new id, if id is not null then updates record
   /// ignoreBatch = true as a default. Set ignoreBatch to false if you run more than one save() operation those are between batchStart and batchCommit
   /// <returns>Returns id
+  @override
   Future<int?> save({bool ignoreBatch = true}) async {
     if (id == null || id == 0 || !isSaved!) {
       await _mnSongbookRecord.insert(this, ignoreBatch);
@@ -7847,7 +6124,6 @@ class SongbookRecord extends TableBase {
         isSaved = true;
       }
     } else {
-      // id= await _upsert(); // removed in sqfentity_gen 1.3.0+6
       await _mnSongbookRecord.update(this);
     }
 
@@ -7855,10 +6131,9 @@ class SongbookRecord extends TableBase {
   }
 
   /// Saves the (SongbookRecord) object. If the id field is null, saves as a new record and returns new id, if id is not null then updates record
-  ///
   /// ignoreBatch = true as a default. Set ignoreBatch to false if you run more than one save() operation those are between batchStart and batchCommit
-  ///
   /// <returns>Returns id
+  @override
   Future<int?> saveOrThrow({bool ignoreBatch = true}) async {
     if (id == null || id == 0 || !isSaved!) {
       await _mnSongbookRecord.insertOrThrow(this, ignoreBatch);
@@ -7881,7 +6156,6 @@ class SongbookRecord extends TableBase {
   }
 
   /// saveAll method saves the sent List<SongbookRecord> as a bulk in one transaction
-  ///
   /// Returns a <List<BoolResult>>
   static Future<List<dynamic>> saveAll(
       List<SongbookRecord> songbookrecords) async {
@@ -7898,9 +6172,8 @@ class SongbookRecord extends TableBase {
   }
 
   /// Updates if the record exists, otherwise adds a new row
-
   /// <returns>Returns id
-
+  @override
   Future<int?> upsert({bool ignoreBatch = true}) async {
     try {
       final result = await _mnSongbookRecord.rawInsert(
@@ -7926,10 +6199,9 @@ class SongbookRecord extends TableBase {
   }
 
   /// inserts or replaces the sent List<<SongbookRecord>> as a bulk in one transaction.
-  ///
   /// upsertAll() method is faster then saveAll() method. upsertAll() should be used when you are sure that the primary key is greater than zero
-  ///
   /// Returns a BoolCommitResult
+  @override
   Future<BoolCommitResult> upsertAll(
       List<SongbookRecord> songbookrecords) async {
     final results = await _mnSongbookRecord.rawInsertAll(
@@ -7940,8 +6212,8 @@ class SongbookRecord extends TableBase {
 
   /// Deletes SongbookRecord
 
-  /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
-
+  /// <returns>BoolResult res.success= true (Deleted), false (Could not be deleted)
+  @override
   Future<BoolResult> delete([bool hardDelete = false]) async {
     debugPrint('SQFENTITIY: delete SongbookRecord invoked (id=$id)');
     if (!_softDeleteActivated || hardDelete) {
@@ -7954,17 +6226,25 @@ class SongbookRecord extends TableBase {
     }
   }
 
+  @override
+  Future<BoolResult> recover([bool recoverChilds = true]) {
+    // not implemented because:
+    final msg =
+        'set useSoftDeleting:true in the table definition of [SongbookRecord] to use this feature';
+    throw UnimplementedError(msg);
+  }
+
+  @override
   SongbookRecordFilterBuilder select(
       {List<String>? columnsToSelect, bool? getIsDeleted}) {
-    return SongbookRecordFilterBuilder(this)
-      .._getIsDeleted = getIsDeleted == true
+    return SongbookRecordFilterBuilder(this, getIsDeleted)
       ..qparams.selectColumns = columnsToSelect;
   }
 
+  @override
   SongbookRecordFilterBuilder distinct(
       {List<String>? columnsToSelect, bool? getIsDeleted}) {
-    return SongbookRecordFilterBuilder(this)
-      .._getIsDeleted = getIsDeleted == true
+    return SongbookRecordFilterBuilder(this, getIsDeleted)
       ..qparams.selectColumns = columnsToSelect
       ..qparams.distinct = true;
   }
@@ -7996,599 +6276,268 @@ class SongbookRecord extends TableBase {
 // endregion songbookrecord
 
 // region SongbookRecordField
-class SongbookRecordField extends SearchCriteria {
-  SongbookRecordField(this.songbookrecordFB);
-  // { param = DbParameter(); }
-  DbParameter param = DbParameter();
-  String _waitingNot = '';
-  SongbookRecordFilterBuilder songbookrecordFB;
+class SongbookRecordField extends FilterBase {
+  SongbookRecordField(SongbookRecordFilterBuilder songbookrecordFB)
+      : super(songbookrecordFB);
 
-  SongbookRecordField get not {
-    _waitingNot = ' NOT ';
-    return this;
-  }
-
+  @override
   SongbookRecordFilterBuilder equals(dynamic pValue) {
-    param.expression = '=';
-    songbookrecordFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, songbookrecordFB.parameters, param,
-            SqlSyntax.EQuals, songbookrecordFB._addedBlocks)
-        : setCriteria(pValue, songbookrecordFB.parameters, param,
-            SqlSyntax.NotEQuals, songbookrecordFB._addedBlocks);
-    _waitingNot = '';
-    songbookrecordFB._addedBlocks.needEndBlock![songbookrecordFB._blockIndex] =
-        songbookrecordFB._addedBlocks.retVal;
-    return songbookrecordFB;
+    return super.equals(pValue) as SongbookRecordFilterBuilder;
   }
 
+  @override
   SongbookRecordFilterBuilder equalsOrNull(dynamic pValue) {
-    param.expression = '=';
-    songbookrecordFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, songbookrecordFB.parameters, param,
-            SqlSyntax.EQualsOrNull, songbookrecordFB._addedBlocks)
-        : setCriteria(pValue, songbookrecordFB.parameters, param,
-            SqlSyntax.NotEQualsOrNull, songbookrecordFB._addedBlocks);
-    _waitingNot = '';
-    songbookrecordFB._addedBlocks.needEndBlock![songbookrecordFB._blockIndex] =
-        songbookrecordFB._addedBlocks.retVal;
-    return songbookrecordFB;
+    return super.equalsOrNull(pValue) as SongbookRecordFilterBuilder;
   }
 
+  @override
   SongbookRecordFilterBuilder isNull() {
-    songbookrecordFB._addedBlocks = setCriteria(
-        0,
-        songbookrecordFB.parameters,
-        param,
-        SqlSyntax.IsNULL.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-        songbookrecordFB._addedBlocks);
-    _waitingNot = '';
-    songbookrecordFB._addedBlocks.needEndBlock![songbookrecordFB._blockIndex] =
-        songbookrecordFB._addedBlocks.retVal;
-    return songbookrecordFB;
+    return super.isNull() as SongbookRecordFilterBuilder;
   }
 
+  @override
   SongbookRecordFilterBuilder contains(dynamic pValue) {
-    if (pValue != null) {
-      songbookrecordFB._addedBlocks = setCriteria(
-          '%${pValue.toString()}%',
-          songbookrecordFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          songbookrecordFB._addedBlocks);
-      _waitingNot = '';
-      songbookrecordFB
-              ._addedBlocks.needEndBlock![songbookrecordFB._blockIndex] =
-          songbookrecordFB._addedBlocks.retVal;
-    }
-    return songbookrecordFB;
+    return super.contains(pValue) as SongbookRecordFilterBuilder;
   }
 
+  @override
   SongbookRecordFilterBuilder startsWith(dynamic pValue) {
-    if (pValue != null) {
-      songbookrecordFB._addedBlocks = setCriteria(
-          '${pValue.toString()}%',
-          songbookrecordFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          songbookrecordFB._addedBlocks);
-      _waitingNot = '';
-      songbookrecordFB
-              ._addedBlocks.needEndBlock![songbookrecordFB._blockIndex] =
-          songbookrecordFB._addedBlocks.retVal;
-      songbookrecordFB
-              ._addedBlocks.needEndBlock![songbookrecordFB._blockIndex] =
-          songbookrecordFB._addedBlocks.retVal;
-    }
-    return songbookrecordFB;
+    return super.startsWith(pValue) as SongbookRecordFilterBuilder;
   }
 
+  @override
   SongbookRecordFilterBuilder endsWith(dynamic pValue) {
-    if (pValue != null) {
-      songbookrecordFB._addedBlocks = setCriteria(
-          '%${pValue.toString()}',
-          songbookrecordFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          songbookrecordFB._addedBlocks);
-      _waitingNot = '';
-      songbookrecordFB
-              ._addedBlocks.needEndBlock![songbookrecordFB._blockIndex] =
-          songbookrecordFB._addedBlocks.retVal;
-    }
-    return songbookrecordFB;
+    return super.endsWith(pValue) as SongbookRecordFilterBuilder;
   }
 
+  @override
   SongbookRecordFilterBuilder between(dynamic pFirst, dynamic pLast) {
-    if (pFirst != null && pLast != null) {
-      songbookrecordFB._addedBlocks = setCriteria(
-          pFirst,
-          songbookrecordFB.parameters,
-          param,
-          SqlSyntax.Between.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          songbookrecordFB._addedBlocks,
-          pLast);
-    } else if (pFirst != null) {
-      if (_waitingNot != '') {
-        songbookrecordFB._addedBlocks = setCriteria(
-            pFirst,
-            songbookrecordFB.parameters,
-            param,
-            SqlSyntax.LessThan,
-            songbookrecordFB._addedBlocks);
-      } else {
-        songbookrecordFB._addedBlocks = setCriteria(
-            pFirst,
-            songbookrecordFB.parameters,
-            param,
-            SqlSyntax.GreaterThanOrEquals,
-            songbookrecordFB._addedBlocks);
-      }
-    } else if (pLast != null) {
-      if (_waitingNot != '') {
-        songbookrecordFB._addedBlocks = setCriteria(
-            pLast,
-            songbookrecordFB.parameters,
-            param,
-            SqlSyntax.GreaterThan,
-            songbookrecordFB._addedBlocks);
-      } else {
-        songbookrecordFB._addedBlocks = setCriteria(
-            pLast,
-            songbookrecordFB.parameters,
-            param,
-            SqlSyntax.LessThanOrEquals,
-            songbookrecordFB._addedBlocks);
-      }
-    }
-    _waitingNot = '';
-    songbookrecordFB._addedBlocks.needEndBlock![songbookrecordFB._blockIndex] =
-        songbookrecordFB._addedBlocks.retVal;
-    return songbookrecordFB;
+    return super.between(pFirst, pLast) as SongbookRecordFilterBuilder;
   }
 
+  @override
   SongbookRecordFilterBuilder greaterThan(dynamic pValue) {
-    param.expression = '>';
-    songbookrecordFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, songbookrecordFB.parameters, param,
-            SqlSyntax.GreaterThan, songbookrecordFB._addedBlocks)
-        : setCriteria(pValue, songbookrecordFB.parameters, param,
-            SqlSyntax.LessThanOrEquals, songbookrecordFB._addedBlocks);
-    _waitingNot = '';
-    songbookrecordFB._addedBlocks.needEndBlock![songbookrecordFB._blockIndex] =
-        songbookrecordFB._addedBlocks.retVal;
-    return songbookrecordFB;
+    return super.greaterThan(pValue) as SongbookRecordFilterBuilder;
   }
 
+  @override
   SongbookRecordFilterBuilder lessThan(dynamic pValue) {
-    param.expression = '<';
-    songbookrecordFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, songbookrecordFB.parameters, param,
-            SqlSyntax.LessThan, songbookrecordFB._addedBlocks)
-        : setCriteria(pValue, songbookrecordFB.parameters, param,
-            SqlSyntax.GreaterThanOrEquals, songbookrecordFB._addedBlocks);
-    _waitingNot = '';
-    songbookrecordFB._addedBlocks.needEndBlock![songbookrecordFB._blockIndex] =
-        songbookrecordFB._addedBlocks.retVal;
-    return songbookrecordFB;
+    return super.lessThan(pValue) as SongbookRecordFilterBuilder;
   }
 
+  @override
   SongbookRecordFilterBuilder greaterThanOrEquals(dynamic pValue) {
-    param.expression = '>=';
-    songbookrecordFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, songbookrecordFB.parameters, param,
-            SqlSyntax.GreaterThanOrEquals, songbookrecordFB._addedBlocks)
-        : setCriteria(pValue, songbookrecordFB.parameters, param,
-            SqlSyntax.LessThan, songbookrecordFB._addedBlocks);
-    _waitingNot = '';
-    songbookrecordFB._addedBlocks.needEndBlock![songbookrecordFB._blockIndex] =
-        songbookrecordFB._addedBlocks.retVal;
-    return songbookrecordFB;
+    return super.greaterThanOrEquals(pValue) as SongbookRecordFilterBuilder;
   }
 
+  @override
   SongbookRecordFilterBuilder lessThanOrEquals(dynamic pValue) {
-    param.expression = '<=';
-    songbookrecordFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, songbookrecordFB.parameters, param,
-            SqlSyntax.LessThanOrEquals, songbookrecordFB._addedBlocks)
-        : setCriteria(pValue, songbookrecordFB.parameters, param,
-            SqlSyntax.GreaterThan, songbookrecordFB._addedBlocks);
-    _waitingNot = '';
-    songbookrecordFB._addedBlocks.needEndBlock![songbookrecordFB._blockIndex] =
-        songbookrecordFB._addedBlocks.retVal;
-    return songbookrecordFB;
+    return super.lessThanOrEquals(pValue) as SongbookRecordFilterBuilder;
   }
 
+  @override
   SongbookRecordFilterBuilder inValues(dynamic pValue) {
-    songbookrecordFB._addedBlocks = setCriteria(
-        pValue,
-        songbookrecordFB.parameters,
-        param,
-        SqlSyntax.IN.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-        songbookrecordFB._addedBlocks);
-    _waitingNot = '';
-    songbookrecordFB._addedBlocks.needEndBlock![songbookrecordFB._blockIndex] =
-        songbookrecordFB._addedBlocks.retVal;
-    return songbookrecordFB;
+    return super.inValues(pValue) as SongbookRecordFilterBuilder;
+  }
+
+  @override
+  SongbookRecordField get not {
+    return super.not as SongbookRecordField;
   }
 }
 // endregion SongbookRecordField
 
 // region SongbookRecordFilterBuilder
-class SongbookRecordFilterBuilder extends SearchCriteria {
-  SongbookRecordFilterBuilder(SongbookRecord obj) {
-    whereString = '';
-    groupByList = <String>[];
-    _addedBlocks.needEndBlock!.add(false);
-    _addedBlocks.waitingStartBlock!.add(false);
-    _obj = obj;
+class SongbookRecordFilterBuilder extends ConjunctionBase {
+  SongbookRecordFilterBuilder(SongbookRecord obj, bool? getIsDeleted)
+      : super(obj, getIsDeleted) {
+    _mnSongbookRecord = obj._mnSongbookRecord;
+    _softDeleteActivated = obj.softDeleteActivated;
   }
-  AddedBlocks _addedBlocks = AddedBlocks(<bool>[], <bool>[]);
-  int _blockIndex = 0;
-  List<DbParameter> parameters = <DbParameter>[];
-  List<String> orderByList = <String>[];
-  SongbookRecord? _obj;
-  QueryParams qparams = QueryParams();
-  int _pagesize = 0;
-  int _page = 0;
+
+  bool _softDeleteActivated = false;
+  SongbookRecordManager? _mnSongbookRecord;
 
   /// put the sql keyword 'AND'
+  @override
   SongbookRecordFilterBuilder get and {
-    if (parameters.isNotEmpty) {
-      parameters[parameters.length - 1].wOperator = ' AND ';
-    }
+    super.and;
     return this;
   }
 
   /// put the sql keyword 'OR'
+  @override
   SongbookRecordFilterBuilder get or {
-    if (parameters.isNotEmpty) {
-      parameters[parameters.length - 1].wOperator = ' OR ';
-    }
+    super.or;
     return this;
   }
 
   /// open parentheses
+  @override
   SongbookRecordFilterBuilder get startBlock {
-    _addedBlocks.waitingStartBlock!.add(true);
-    _addedBlocks.needEndBlock!.add(false);
-    _blockIndex++;
-    if (_blockIndex > 1) {
-      _addedBlocks.needEndBlock![_blockIndex - 1] = true;
-    }
+    super.startBlock;
     return this;
   }
 
   /// String whereCriteria, write raw query without 'where' keyword. Like this: 'field1 like 'test%' and field2 = 3'
+  @override
   SongbookRecordFilterBuilder where(String? whereCriteria,
       {dynamic parameterValue}) {
-    if (whereCriteria != null && whereCriteria != '') {
-      final DbParameter param = DbParameter(
-          columnName: parameterValue == null ? null : '',
-          hasParameter: parameterValue != null);
-      _addedBlocks = setCriteria(parameterValue ?? 0, parameters, param,
-          '($whereCriteria)', _addedBlocks);
-      _addedBlocks.needEndBlock![_blockIndex] = _addedBlocks.retVal;
-    }
+    super.where(whereCriteria, parameterValue: parameterValue);
     return this;
   }
 
   /// page = page number,
-  ///
   /// pagesize = row(s) per page
+  @override
   SongbookRecordFilterBuilder page(int page, int pagesize) {
-    if (page > 0) {
-      _page = page;
-    }
-    if (pagesize > 0) {
-      _pagesize = pagesize;
-    }
+    super.page(page, pagesize);
     return this;
   }
 
   /// int count = LIMIT
+  @override
   SongbookRecordFilterBuilder top(int count) {
-    if (count > 0) {
-      _pagesize = count;
-    }
+    super.top(count);
     return this;
   }
 
   /// close parentheses
+  @override
   SongbookRecordFilterBuilder get endBlock {
-    if (_addedBlocks.needEndBlock![_blockIndex]) {
-      parameters[parameters.length - 1].whereString += ' ) ';
-    }
-    _addedBlocks.needEndBlock!.removeAt(_blockIndex);
-    _addedBlocks.waitingStartBlock!.removeAt(_blockIndex);
-    _blockIndex--;
+    super.endBlock;
     return this;
   }
 
   /// argFields might be String or List<String>.
-  ///
   /// Example 1: argFields='name, date'
-  ///
   /// Example 2: argFields = ['name', 'date']
+  @override
   SongbookRecordFilterBuilder orderBy(dynamic argFields) {
-    if (argFields != null) {
-      if (argFields is String) {
-        orderByList.add(argFields);
-      } else {
-        for (String? s in argFields as List<String?>) {
-          if (s!.isNotEmpty) {
-            orderByList.add(' $s ');
-          }
-        }
-      }
-    }
+    super.orderBy(argFields);
     return this;
   }
 
   /// argFields might be String or List<String>.
-  ///
   /// Example 1: argFields='field1, field2'
-  ///
   /// Example 2: argFields = ['field1', 'field2']
+  @override
   SongbookRecordFilterBuilder orderByDesc(dynamic argFields) {
-    if (argFields != null) {
-      if (argFields is String) {
-        orderByList.add('$argFields desc ');
-      } else {
-        for (String? s in argFields as List<String?>) {
-          if (s!.isNotEmpty) {
-            orderByList.add(' $s desc ');
-          }
-        }
-      }
-    }
+    super.orderByDesc(argFields);
     return this;
   }
 
   /// argFields might be String or List<String>.
-  ///
   /// Example 1: argFields='field1, field2'
-  ///
   /// Example 2: argFields = ['field1', 'field2']
+  @override
   SongbookRecordFilterBuilder groupBy(dynamic argFields) {
-    if (argFields != null) {
-      if (argFields is String) {
-        groupByList.add(' $argFields ');
-      } else {
-        for (String? s in argFields as List<String?>) {
-          if (s!.isNotEmpty) {
-            groupByList.add(' $s ');
-          }
-        }
-      }
-    }
+    super.groupBy(argFields);
     return this;
   }
 
   /// argFields might be String or List<String>.
-  ///
   /// Example 1: argFields='name, date'
-  ///
   /// Example 2: argFields = ['name', 'date']
+  @override
   SongbookRecordFilterBuilder having(dynamic argFields) {
-    if (argFields != null) {
-      if (argFields is String) {
-        havingList.add(argFields);
-      } else {
-        for (String? s in argFields as List<String?>) {
-          if (s!.isNotEmpty) {
-            havingList.add(' $s ');
-          }
-        }
-      }
-    }
+    super.having(argFields);
     return this;
   }
 
-  SongbookRecordField setField(
+  SongbookRecordField _setField(
       SongbookRecordField? field, String colName, DbType dbtype) {
     return SongbookRecordField(this)
       ..param = DbParameter(
-          dbType: dbtype,
-          columnName: colName,
-          wStartBlock: _addedBlocks.waitingStartBlock![_blockIndex]);
+          dbType: dbtype, columnName: colName, wStartBlock: openedBlock);
   }
 
   SongbookRecordField? _id;
   SongbookRecordField get id {
-    return _id = setField(_id, 'id', DbType.integer);
+    return _id = _setField(_id, 'id', DbType.integer);
   }
 
   SongbookRecordField? _number;
   SongbookRecordField get number {
-    return _number = setField(_number, 'number', DbType.text);
+    return _number = _setField(_number, 'number', DbType.text);
   }
 
   SongbookRecordField? _songbooksId;
   SongbookRecordField get songbooksId {
-    return _songbooksId = setField(_songbooksId, 'songbooksId', DbType.integer);
+    return _songbooksId =
+        _setField(_songbooksId, 'songbooksId', DbType.integer);
   }
 
   SongbookRecordField? _song_lyricsId;
   SongbookRecordField get song_lyricsId {
     return _song_lyricsId =
-        setField(_song_lyricsId, 'song_lyricsId', DbType.integer);
-  }
-
-  bool _getIsDeleted = false;
-
-  void _buildParameters() {
-    if (_page > 0 && _pagesize > 0) {
-      qparams
-        ..limit = _pagesize
-        ..offset = (_page - 1) * _pagesize;
-    } else {
-      qparams
-        ..limit = _pagesize
-        ..offset = _page;
-    }
-    for (DbParameter param in parameters) {
-      if (param.columnName != null) {
-        if (param.value is List && !param.hasParameter) {
-          param.value = param.dbType == DbType.text || param.value[0] is String
-              ? '\'${param.value.join('\',\'')}\''
-              : param.value.join(',');
-          whereString += param.whereString
-              .replaceAll('{field}', param.columnName!)
-              .replaceAll('?', param.value.toString());
-          param.value = null;
-        } else {
-          if (param.value is Map<String, dynamic> &&
-              param.value['sql'] != null) {
-            param
-              ..whereString = param.whereString
-                  .replaceAll('?', param.value['sql'].toString())
-              ..dbType = DbType.integer
-              ..value = param.value['args'];
-          }
-          whereString +=
-              param.whereString.replaceAll('{field}', param.columnName!);
-        }
-        if (!param.whereString.contains('?')) {
-        } else {
-          switch (param.dbType) {
-            case DbType.bool:
-              param.value = param.value == null
-                  ? null
-                  : param.value == true
-                      ? 1
-                      : 0;
-              param.value2 = param.value2 == null
-                  ? null
-                  : param.value2 == true
-                      ? 1
-                      : 0;
-              break;
-            case DbType.date:
-            case DbType.datetime:
-            case DbType.datetimeUtc:
-              param.value = param.value == null
-                  ? null
-                  : (param.value as DateTime).millisecondsSinceEpoch;
-              param.value2 = param.value2 == null
-                  ? null
-                  : (param.value2 as DateTime).millisecondsSinceEpoch;
-              break;
-            default:
-          }
-          if (param.value != null) {
-            if (param.value is List) {
-              for (var p in param.value) {
-                whereArguments.add(p);
-              }
-            } else {
-              whereArguments.add(param.value);
-            }
-          }
-          if (param.value2 != null) {
-            whereArguments.add(param.value2);
-          }
-        }
-      } else {
-        whereString += param.whereString;
-      }
-    }
-    if (SongbookRecord._softDeleteActivated) {
-      if (whereString != '') {
-        whereString =
-            '${!_getIsDeleted ? 'ifnull(isDeleted,0)=0 AND' : ''} ($whereString)';
-      } else if (!_getIsDeleted) {
-        whereString = 'ifnull(isDeleted,0)=0';
-      }
-    }
-
-    if (whereString != '') {
-      qparams.whereString = whereString;
-    }
-    qparams
-      ..whereArguments = whereArguments
-      ..groupBy = groupByList.join(',')
-      ..orderBy = orderByList.join(',')
-      ..having = havingList.join(',');
+        _setField(_song_lyricsId, 'song_lyricsId', DbType.integer);
   }
 
   /// Deletes List<SongbookRecord> bulk by query
   ///
-  /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
+  /// <returns>BoolResult res.success= true (Deleted), false (Could not be deleted)
+  @override
   Future<BoolResult> delete([bool hardDelete = false]) async {
-    _buildParameters();
+    buildParameters();
     var r = BoolResult(success: false);
 
-    if (SongbookRecord._softDeleteActivated && !hardDelete) {
-      r = await _obj!._mnSongbookRecord.updateBatch(qparams, {'isDeleted': 1});
+    if (_softDeleteActivated && !hardDelete) {
+      r = await _mnSongbookRecord!.updateBatch(qparams, {'isDeleted': 1});
     } else {
-      r = await _obj!._mnSongbookRecord.delete(qparams);
+      r = await _mnSongbookRecord!.delete(qparams);
     }
     return r;
   }
 
   /// using:
-  ///
   /// update({'fieldName': Value})
-  ///
   /// fieldName must be String. Value is dynamic, it can be any of the (int, bool, String.. )
+  @override
   Future<BoolResult> update(Map<String, dynamic> values) {
-    _buildParameters();
+    buildParameters();
     if (qparams.limit! > 0 || qparams.offset! > 0) {
       qparams.whereString =
           'id IN (SELECT id from songbook_records ${qparams.whereString!.isNotEmpty ? 'WHERE ${qparams.whereString}' : ''}${qparams.limit! > 0 ? ' LIMIT ${qparams.limit}' : ''}${qparams.offset! > 0 ? ' OFFSET ${qparams.offset}' : ''})';
     }
-    return _obj!._mnSongbookRecord.updateBatch(qparams, values);
+    return _mnSongbookRecord!.updateBatch(qparams, values);
   }
 
-  /// This method always returns SongbookRecord Obj if exist, otherwise returns null
-  ///
+  /// This method always returns [SongbookRecord] Obj if exist, otherwise returns null
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
-  ///
   /// ex: toSingle(preload:true) -> Loads all related objects
-  ///
   /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
-  ///
   /// ex: toSingle(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
-  ///
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
-  ///
-  /// <returns>List<SongbookRecord>
+  /// <returns> SongbookRecord?
+  @override
   Future<SongbookRecord?> toSingle(
       {bool preload = false,
       List<String>? preloadFields,
       bool loadParents = false,
       List<String>? loadedFields}) async {
-    _pagesize = 1;
-    _buildParameters();
-    final objFuture = _obj!._mnSongbookRecord.toList(qparams);
+    buildParameters(pSize: 1);
+    final objFuture = _mnSongbookRecord!.toList(qparams);
     final data = await objFuture;
     SongbookRecord? obj;
     if (data.isNotEmpty) {
       obj = SongbookRecord.fromMap(data[0] as Map<String, dynamic>);
-      // final List<String> _loadedFields = loadedFields ?? [];
 
       // RELATIONSHIPS PRELOAD
       if (preload || loadParents) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedfields!.contains('songbooks.plSongbook') && */ (preloadFields ==
-                null ||
+        if ((preloadFields == null ||
             loadParents ||
             preloadFields.contains('plSongbook'))) {
-          /*_loadedfields!.add('songbooks.plSongbook');*/ obj.plSongbook = obj
-                  .plSongbook ??
-              await obj.getSongbook(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+          obj.plSongbook =
+              obj.plSongbook ?? await obj.getSongbook(loadParents: loadParents);
         }
-        if (/*!_loadedfields!.contains('song_lyrics.plSongLyric') && */ (preloadFields ==
-                null ||
+        if ((preloadFields == null ||
             loadParents ||
             preloadFields.contains('plSongLyric'))) {
-          /*_loadedfields!.add('song_lyrics.plSongLyric');*/ obj.plSongLyric =
-              obj.plSongLyric ??
-                  await obj.getSongLyric(
-                      loadParents:
-                          loadParents /*, loadedFields: _loadedFields*/);
+          obj.plSongLyric = obj.plSongLyric ??
+              await obj.getSongLyric(loadParents: loadParents);
         }
       } // END RELATIONSHIPS PRELOAD
 
@@ -8598,14 +6547,36 @@ class SongbookRecordFilterBuilder extends SearchCriteria {
     return obj;
   }
 
+  /// This method always returns [SongbookRecord]
+  /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
+  /// ex: toSingle(preload:true) -> Loads all related objects
+  /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
+  /// ex: toSingle(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
+  /// bool loadParents: if true, loads all parent objects until the object has no parent
+
+  /// <returns> SongbookRecord?
+  @override
+  Future<SongbookRecord> toSingleOrDefault(
+      {bool preload = false,
+      List<String>? preloadFields,
+      bool loadParents = false,
+      List<String>? loadedFields}) async {
+    return await toSingle(
+            preload: preload,
+            preloadFields: preloadFields,
+            loadParents: loadParents,
+            loadedFields: loadedFields) ??
+        SongbookRecord();
+  }
+
   /// This method returns int. [SongbookRecord]
-  ///
   /// <returns>int
+  @override
   Future<int> toCount(
       [VoidCallback Function(int c)? songbookrecordCount]) async {
-    _buildParameters();
+    buildParameters();
     qparams.selectColumns = ['COUNT(1) AS CNT'];
-    final songbookrecordsFuture = await _obj!._mnSongbookRecord.toList(qparams);
+    final songbookrecordsFuture = await _mnSongbookRecord!.toList(qparams);
     final int count = songbookrecordsFuture[0]['CNT'] as int;
     if (songbookrecordCount != null) {
       songbookrecordCount(count);
@@ -8614,19 +6585,14 @@ class SongbookRecordFilterBuilder extends SearchCriteria {
   }
 
   /// This method returns List<SongbookRecord> [SongbookRecord]
-  ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
-  ///
   /// ex: toList(preload:true) -> Loads all related objects
-  ///
   /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
-  ///
   /// ex: toList(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
-  ///
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
-  ///
   /// <returns>List<SongbookRecord>
+  @override
   Future<List<SongbookRecord>> toList(
       {bool preload = false,
       List<String>? preloadFields,
@@ -8644,6 +6610,7 @@ class SongbookRecordFilterBuilder extends SearchCriteria {
   }
 
   /// This method returns Json String [SongbookRecord]
+  @override
   Future<String> toJson() async {
     final list = <dynamic>[];
     final data = await toList();
@@ -8654,6 +6621,7 @@ class SongbookRecordFilterBuilder extends SearchCriteria {
   }
 
   /// This method returns Json String. [SongbookRecord]
+  @override
   Future<String> toJsonWithChilds() async {
     final list = <dynamic>[];
     final data = await toList();
@@ -8664,22 +6632,21 @@ class SongbookRecordFilterBuilder extends SearchCriteria {
   }
 
   /// This method returns List<dynamic>. [SongbookRecord]
-  ///
   /// <returns>List<dynamic>
+  @override
   Future<List<dynamic>> toMapList() async {
-    _buildParameters();
-    return await _obj!._mnSongbookRecord.toList(qparams);
+    buildParameters();
+    return await _mnSongbookRecord!.toList(qparams);
   }
 
   /// This method returns Primary Key List SQL and Parameters retVal = Map<String,dynamic>. [SongbookRecord]
-  ///
   /// retVal['sql'] = SQL statement string, retVal['args'] = whereArguments List<dynamic>;
-  ///
   /// <returns>List<String>
-  Map<String, dynamic> toListPrimaryKeySQL([bool buildParameters = true]) {
+  @override
+  Map<String, dynamic> toListPrimaryKeySQL([bool buildParams = true]) {
     final Map<String, dynamic> _retVal = <String, dynamic>{};
-    if (buildParameters) {
-      _buildParameters();
+    if (buildParams) {
+      buildParameters();
     }
     _retVal['sql'] =
         'SELECT `id` FROM songbook_records WHERE ${qparams.whereString}';
@@ -8689,13 +6656,14 @@ class SongbookRecordFilterBuilder extends SearchCriteria {
 
   /// This method returns Primary Key List<int>.
   /// <returns>List<int>
-  Future<List<int>> toListPrimaryKey([bool buildParameters = true]) async {
-    if (buildParameters) {
-      _buildParameters();
+  @override
+  Future<List<int>> toListPrimaryKey([bool buildParams = true]) async {
+    if (buildParams) {
+      buildParameters();
     }
     final List<int> idData = <int>[];
     qparams.selectColumns = ['id'];
-    final idFuture = await _obj!._mnSongbookRecord.toList(qparams);
+    final idFuture = await _mnSongbookRecord!.toList(qparams);
 
     final int count = idFuture.length;
     for (int i = 0; i < count; i++) {
@@ -8705,12 +6673,12 @@ class SongbookRecordFilterBuilder extends SearchCriteria {
   }
 
   /// Returns List<dynamic> for selected columns. Use this method for 'groupBy' with min,max,avg..  [SongbookRecord]
-  ///
   /// Sample usage: (see EXAMPLE 4.2 at https://github.com/hhtokpinar/sqfEntity#group-by)
+  @override
   Future<List<dynamic>> toListObject() async {
-    _buildParameters();
+    buildParameters();
 
-    final objectFuture = _obj!._mnSongbookRecord.toList(qparams);
+    final objectFuture = _mnSongbookRecord!.toList(qparams);
 
     final List<dynamic> objectsData = <dynamic>[];
     final data = await objectFuture;
@@ -8722,13 +6690,13 @@ class SongbookRecordFilterBuilder extends SearchCriteria {
   }
 
   /// Returns List<String> for selected first column
-  ///
   /// Sample usage: await SongbookRecord.select(columnsToSelect: ['columnName']).toListString()
+  @override
   Future<List<String>> toListString(
       [VoidCallback Function(List<String> o)? listString]) async {
-    _buildParameters();
+    buildParameters();
 
-    final objectFuture = _obj!._mnSongbookRecord.toList(qparams);
+    final objectFuture = _mnSongbookRecord!.toList(qparams);
 
     final List<String> objectsData = <String>[];
     final data = await objectFuture;
@@ -8801,6 +6769,7 @@ class SongLyric extends TableBase {
       this.accidentals,
       this.songsId}) {
     _setDefaultValues();
+    softDeleteActivated = false;
   }
   SongLyric.withFields(
       this.id,
@@ -8899,7 +6868,6 @@ class SongLyric extends TableBase {
   int? accidentals;
   int? songsId;
   bool? isSaved;
-  BoolResult? saveResult;
   // end FIELDS (SongLyric)
 
 // RELATIONSHIPS (SongLyric)
@@ -9008,66 +6976,108 @@ class SongLyric extends TableBase {
   }
 
   // METHODS
+  @override
   Map<String, dynamic> toMap(
       {bool forQuery = false, bool forJson = false, bool forView = false}) {
     final map = <String, dynamic>{};
     map['id'] = id;
-    map['name'] = name;
-    map['secondary_name_1'] = secondary_name_1;
-    map['secondary_name_2'] = secondary_name_2;
-    map['lyrics'] = lyrics;
-    map['lang_string'] = lang_string;
-    map['type_enum'] = type_enum;
-    map['lilypond_svg'] = lilypond_svg;
-    map['favorite_rank'] = favorite_rank;
-    map['transposition'] = transposition;
+    if (name != null || !forView) {
+      map['name'] = name;
+    }
+    if (secondary_name_1 != null || !forView) {
+      map['secondary_name_1'] = secondary_name_1;
+    }
+    if (secondary_name_2 != null || !forView) {
+      map['secondary_name_2'] = secondary_name_2;
+    }
+    if (lyrics != null || !forView) {
+      map['lyrics'] = lyrics;
+    }
+    if (lang_string != null || !forView) {
+      map['lang_string'] = lang_string;
+    }
+    if (type_enum != null || !forView) {
+      map['type_enum'] = type_enum;
+    }
+    if (lilypond_svg != null || !forView) {
+      map['lilypond_svg'] = lilypond_svg;
+    }
+    if (favorite_rank != null || !forView) {
+      map['favorite_rank'] = favorite_rank;
+    }
+    if (transposition != null || !forView) {
+      map['transposition'] = transposition;
+    }
     if (show_chords != null) {
       map['show_chords'] = forQuery ? (show_chords! ? 1 : 0) : show_chords;
-    } else {
+    } else if (show_chords != null || !forView) {
       map['show_chords'] = null;
     }
-    map['accidentals'] = accidentals;
+    if (accidentals != null || !forView) {
+      map['accidentals'] = accidentals;
+    }
     if (songsId != null) {
       map['songsId'] = forView
           ? plSong == null
               ? songsId
               : plSong!.name
           : songsId;
-    } else {
+    } else if (songsId != null || !forView) {
       map['songsId'] = null;
     }
 
     return map;
   }
 
+  @override
   Future<Map<String, dynamic>> toMapWithChildren(
       [bool forQuery = false,
       bool forJson = false,
       bool forView = false]) async {
     final map = <String, dynamic>{};
     map['id'] = id;
-    map['name'] = name;
-    map['secondary_name_1'] = secondary_name_1;
-    map['secondary_name_2'] = secondary_name_2;
-    map['lyrics'] = lyrics;
-    map['lang_string'] = lang_string;
-    map['type_enum'] = type_enum;
-    map['lilypond_svg'] = lilypond_svg;
-    map['favorite_rank'] = favorite_rank;
-    map['transposition'] = transposition;
+    if (name != null || !forView) {
+      map['name'] = name;
+    }
+    if (secondary_name_1 != null || !forView) {
+      map['secondary_name_1'] = secondary_name_1;
+    }
+    if (secondary_name_2 != null || !forView) {
+      map['secondary_name_2'] = secondary_name_2;
+    }
+    if (lyrics != null || !forView) {
+      map['lyrics'] = lyrics;
+    }
+    if (lang_string != null || !forView) {
+      map['lang_string'] = lang_string;
+    }
+    if (type_enum != null || !forView) {
+      map['type_enum'] = type_enum;
+    }
+    if (lilypond_svg != null || !forView) {
+      map['lilypond_svg'] = lilypond_svg;
+    }
+    if (favorite_rank != null || !forView) {
+      map['favorite_rank'] = favorite_rank;
+    }
+    if (transposition != null || !forView) {
+      map['transposition'] = transposition;
+    }
     if (show_chords != null) {
       map['show_chords'] = forQuery ? (show_chords! ? 1 : 0) : show_chords;
-    } else {
+    } else if (show_chords != null || !forView) {
       map['show_chords'] = null;
     }
-    map['accidentals'] = accidentals;
+    if (accidentals != null || !forView) {
+      map['accidentals'] = accidentals;
+    }
     if (songsId != null) {
       map['songsId'] = forView
           ? plSong == null
               ? songsId
               : plSong!.name
           : songsId;
-    } else {
+    } else if (songsId != null || !forView) {
       map['songsId'] = null;
     }
 
@@ -9093,15 +7103,18 @@ class SongLyric extends TableBase {
   }
 
   /// This method returns Json String [SongLyric]
+  @override
   String toJson() {
     return json.encode(toMap(forJson: true));
   }
 
   /// This method returns Json String [SongLyric]
+  @override
   Future<String> toJsonWithChilds() async {
     return json.encode(await toMapWithChildren(false, true));
   }
 
+  @override
   List<dynamic> toArgs() {
     return [
       id,
@@ -9120,6 +7133,7 @@ class SongLyric extends TableBase {
     ];
   }
 
+  @override
   List<dynamic> toArgsWithIds() {
     return [
       id,
@@ -9242,13 +7256,11 @@ class SongLyric extends TableBase {
       // RELATIONSHIPS PRELOAD
       if (preload || loadParents) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedfields!.contains('songs.plSong') && */ (preloadFields ==
-                null ||
+        if ((preloadFields == null ||
             loadParents ||
             preloadFields.contains('plSong'))) {
-          /*_loadedfields!.add('songs.plSong');*/ obj.plSong = obj.plSong ??
-              await obj.getSong(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+          obj.plSong =
+              obj.plSong ?? await obj.getSong(loadParents: loadParents);
         }
       } // END RELATIONSHIPS PRELOAD
 
@@ -9258,21 +7270,14 @@ class SongLyric extends TableBase {
   }
 
   /// returns SongLyric by ID if exist, otherwise returns null
-  ///
   /// Primary Keys: int? id
-  ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
-  ///
   /// ex: getById(preload:true) -> Loads all related objects
-  ///
   /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
-  ///
   /// ex: getById(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
-  ///
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
-  ///
-  /// <returns>returns SongLyric if exist, otherwise returns null
+  /// <returns>returns [SongLyric] if exist, otherwise returns null
   Future<SongLyric?> getById(int? id,
       {bool preload = false,
       List<String>? preloadFields,
@@ -9285,7 +7290,6 @@ class SongLyric extends TableBase {
     final data = await _mnSongLyric.getById([id]);
     if (data.length != 0) {
       obj = SongLyric.fromMap(data[0] as Map<String, dynamic>);
-      // final List<String> _loadedFields = loadedFields ?? [];
 
       // RELATIONSHIPS PRELOAD CHILD
       if (preload) {
@@ -9347,13 +7351,11 @@ class SongLyric extends TableBase {
       // RELATIONSHIPS PRELOAD
       if (preload || loadParents) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedfields!.contains('songs.plSong') && */ (preloadFields ==
-                null ||
+        if ((preloadFields == null ||
             loadParents ||
             preloadFields.contains('plSong'))) {
-          /*_loadedfields!.add('songs.plSong');*/ obj.plSong = obj.plSong ??
-              await obj.getSong(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+          obj.plSong =
+              obj.plSong ?? await obj.getSong(loadParents: loadParents);
         }
       } // END RELATIONSHIPS PRELOAD
 
@@ -9366,6 +7368,7 @@ class SongLyric extends TableBase {
   /// Saves the (SongLyric) object. If the id field is null, saves as a new record and returns new id, if id is not null then updates record
   /// ignoreBatch = true as a default. Set ignoreBatch to false if you run more than one save() operation those are between batchStart and batchCommit
   /// <returns>Returns id
+  @override
   Future<int?> save({bool ignoreBatch = true}) async {
     if (id == null || id == 0 || !isSaved!) {
       await _mnSongLyric.insert(this, ignoreBatch);
@@ -9373,7 +7376,6 @@ class SongLyric extends TableBase {
         isSaved = true;
       }
     } else {
-      // id= await _upsert(); // removed in sqfentity_gen 1.3.0+6
       await _mnSongLyric.update(this);
     }
 
@@ -9381,10 +7383,9 @@ class SongLyric extends TableBase {
   }
 
   /// Saves the (SongLyric) object. If the id field is null, saves as a new record and returns new id, if id is not null then updates record
-  ///
   /// ignoreBatch = true as a default. Set ignoreBatch to false if you run more than one save() operation those are between batchStart and batchCommit
-  ///
   /// <returns>Returns id
+  @override
   Future<int?> saveOrThrow({bool ignoreBatch = true}) async {
     if (id == null || id == 0 || !isSaved!) {
       await _mnSongLyric.insertOrThrow(this, ignoreBatch);
@@ -9407,7 +7408,6 @@ class SongLyric extends TableBase {
   }
 
   /// saveAll method saves the sent List<SongLyric> as a bulk in one transaction
-  ///
   /// Returns a <List<BoolResult>>
   static Future<List<dynamic>> saveAll(List<SongLyric> songlyrics) async {
     List<dynamic>? result = [];
@@ -9423,9 +7423,8 @@ class SongLyric extends TableBase {
   }
 
   /// Updates if the record exists, otherwise adds a new row
-
   /// <returns>Returns id
-
+  @override
   Future<int?> upsert({bool ignoreBatch = true}) async {
     try {
       final result = await _mnSongLyric.rawInsert(
@@ -9464,10 +7463,9 @@ class SongLyric extends TableBase {
   }
 
   /// inserts or replaces the sent List<<SongLyric>> as a bulk in one transaction.
-  ///
   /// upsertAll() method is faster then saveAll() method. upsertAll() should be used when you are sure that the primary key is greater than zero
-  ///
   /// Returns a BoolCommitResult
+  @override
   Future<BoolCommitResult> upsertAll(List<SongLyric> songlyrics) async {
     final results = await _mnSongLyric.rawInsertAll(
         'INSERT OR REPLACE INTO song_lyrics (id, name, secondary_name_1, secondary_name_2, lyrics, lang_string, type_enum, lilypond_svg, favorite_rank, transposition, show_chords, accidentals, songsId)  VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)',
@@ -9477,8 +7475,8 @@ class SongLyric extends TableBase {
 
   /// Deletes SongLyric
 
-  /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
-
+  /// <returns>BoolResult res.success= true (Deleted), false (Could not be deleted)
+  @override
   Future<BoolResult> delete([bool hardDelete = false]) async {
     debugPrint('SQFENTITIY: delete SongLyric invoked (id=$id)');
     var result = BoolResult(success: false);
@@ -9525,17 +7523,25 @@ class SongLyric extends TableBase {
     }
   }
 
+  @override
+  Future<BoolResult> recover([bool recoverChilds = true]) {
+    // not implemented because:
+    final msg =
+        'set useSoftDeleting:true in the table definition of [SongLyric] to use this feature';
+    throw UnimplementedError(msg);
+  }
+
+  @override
   SongLyricFilterBuilder select(
       {List<String>? columnsToSelect, bool? getIsDeleted}) {
-    return SongLyricFilterBuilder(this)
-      .._getIsDeleted = getIsDeleted == true
+    return SongLyricFilterBuilder(this, getIsDeleted)
       ..qparams.selectColumns = columnsToSelect;
   }
 
+  @override
   SongLyricFilterBuilder distinct(
       {List<String>? columnsToSelect, bool? getIsDeleted}) {
-    return SongLyricFilterBuilder(this)
-      .._getIsDeleted = getIsDeleted == true
+    return SongLyricFilterBuilder(this, getIsDeleted)
       ..qparams.selectColumns = columnsToSelect
       ..qparams.distinct = true;
   }
@@ -9568,554 +7574,258 @@ class SongLyric extends TableBase {
 // endregion songlyric
 
 // region SongLyricField
-class SongLyricField extends SearchCriteria {
-  SongLyricField(this.songlyricFB);
-  // { param = DbParameter(); }
-  DbParameter param = DbParameter();
-  String _waitingNot = '';
-  SongLyricFilterBuilder songlyricFB;
+class SongLyricField extends FilterBase {
+  SongLyricField(SongLyricFilterBuilder songlyricFB) : super(songlyricFB);
 
-  SongLyricField get not {
-    _waitingNot = ' NOT ';
-    return this;
-  }
-
+  @override
   SongLyricFilterBuilder equals(dynamic pValue) {
-    param.expression = '=';
-    songlyricFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, songlyricFB.parameters, param, SqlSyntax.EQuals,
-            songlyricFB._addedBlocks)
-        : setCriteria(pValue, songlyricFB.parameters, param,
-            SqlSyntax.NotEQuals, songlyricFB._addedBlocks);
-    _waitingNot = '';
-    songlyricFB._addedBlocks.needEndBlock![songlyricFB._blockIndex] =
-        songlyricFB._addedBlocks.retVal;
-    return songlyricFB;
+    return super.equals(pValue) as SongLyricFilterBuilder;
   }
 
+  @override
   SongLyricFilterBuilder equalsOrNull(dynamic pValue) {
-    param.expression = '=';
-    songlyricFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, songlyricFB.parameters, param,
-            SqlSyntax.EQualsOrNull, songlyricFB._addedBlocks)
-        : setCriteria(pValue, songlyricFB.parameters, param,
-            SqlSyntax.NotEQualsOrNull, songlyricFB._addedBlocks);
-    _waitingNot = '';
-    songlyricFB._addedBlocks.needEndBlock![songlyricFB._blockIndex] =
-        songlyricFB._addedBlocks.retVal;
-    return songlyricFB;
+    return super.equalsOrNull(pValue) as SongLyricFilterBuilder;
   }
 
+  @override
   SongLyricFilterBuilder isNull() {
-    songlyricFB._addedBlocks = setCriteria(
-        0,
-        songlyricFB.parameters,
-        param,
-        SqlSyntax.IsNULL.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-        songlyricFB._addedBlocks);
-    _waitingNot = '';
-    songlyricFB._addedBlocks.needEndBlock![songlyricFB._blockIndex] =
-        songlyricFB._addedBlocks.retVal;
-    return songlyricFB;
+    return super.isNull() as SongLyricFilterBuilder;
   }
 
+  @override
   SongLyricFilterBuilder contains(dynamic pValue) {
-    if (pValue != null) {
-      songlyricFB._addedBlocks = setCriteria(
-          '%${pValue.toString()}%',
-          songlyricFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          songlyricFB._addedBlocks);
-      _waitingNot = '';
-      songlyricFB._addedBlocks.needEndBlock![songlyricFB._blockIndex] =
-          songlyricFB._addedBlocks.retVal;
-    }
-    return songlyricFB;
+    return super.contains(pValue) as SongLyricFilterBuilder;
   }
 
+  @override
   SongLyricFilterBuilder startsWith(dynamic pValue) {
-    if (pValue != null) {
-      songlyricFB._addedBlocks = setCriteria(
-          '${pValue.toString()}%',
-          songlyricFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          songlyricFB._addedBlocks);
-      _waitingNot = '';
-      songlyricFB._addedBlocks.needEndBlock![songlyricFB._blockIndex] =
-          songlyricFB._addedBlocks.retVal;
-      songlyricFB._addedBlocks.needEndBlock![songlyricFB._blockIndex] =
-          songlyricFB._addedBlocks.retVal;
-    }
-    return songlyricFB;
+    return super.startsWith(pValue) as SongLyricFilterBuilder;
   }
 
+  @override
   SongLyricFilterBuilder endsWith(dynamic pValue) {
-    if (pValue != null) {
-      songlyricFB._addedBlocks = setCriteria(
-          '%${pValue.toString()}',
-          songlyricFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          songlyricFB._addedBlocks);
-      _waitingNot = '';
-      songlyricFB._addedBlocks.needEndBlock![songlyricFB._blockIndex] =
-          songlyricFB._addedBlocks.retVal;
-    }
-    return songlyricFB;
+    return super.endsWith(pValue) as SongLyricFilterBuilder;
   }
 
+  @override
   SongLyricFilterBuilder between(dynamic pFirst, dynamic pLast) {
-    if (pFirst != null && pLast != null) {
-      songlyricFB._addedBlocks = setCriteria(
-          pFirst,
-          songlyricFB.parameters,
-          param,
-          SqlSyntax.Between.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          songlyricFB._addedBlocks,
-          pLast);
-    } else if (pFirst != null) {
-      if (_waitingNot != '') {
-        songlyricFB._addedBlocks = setCriteria(pFirst, songlyricFB.parameters,
-            param, SqlSyntax.LessThan, songlyricFB._addedBlocks);
-      } else {
-        songlyricFB._addedBlocks = setCriteria(pFirst, songlyricFB.parameters,
-            param, SqlSyntax.GreaterThanOrEquals, songlyricFB._addedBlocks);
-      }
-    } else if (pLast != null) {
-      if (_waitingNot != '') {
-        songlyricFB._addedBlocks = setCriteria(pLast, songlyricFB.parameters,
-            param, SqlSyntax.GreaterThan, songlyricFB._addedBlocks);
-      } else {
-        songlyricFB._addedBlocks = setCriteria(pLast, songlyricFB.parameters,
-            param, SqlSyntax.LessThanOrEquals, songlyricFB._addedBlocks);
-      }
-    }
-    _waitingNot = '';
-    songlyricFB._addedBlocks.needEndBlock![songlyricFB._blockIndex] =
-        songlyricFB._addedBlocks.retVal;
-    return songlyricFB;
+    return super.between(pFirst, pLast) as SongLyricFilterBuilder;
   }
 
+  @override
   SongLyricFilterBuilder greaterThan(dynamic pValue) {
-    param.expression = '>';
-    songlyricFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, songlyricFB.parameters, param,
-            SqlSyntax.GreaterThan, songlyricFB._addedBlocks)
-        : setCriteria(pValue, songlyricFB.parameters, param,
-            SqlSyntax.LessThanOrEquals, songlyricFB._addedBlocks);
-    _waitingNot = '';
-    songlyricFB._addedBlocks.needEndBlock![songlyricFB._blockIndex] =
-        songlyricFB._addedBlocks.retVal;
-    return songlyricFB;
+    return super.greaterThan(pValue) as SongLyricFilterBuilder;
   }
 
+  @override
   SongLyricFilterBuilder lessThan(dynamic pValue) {
-    param.expression = '<';
-    songlyricFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, songlyricFB.parameters, param, SqlSyntax.LessThan,
-            songlyricFB._addedBlocks)
-        : setCriteria(pValue, songlyricFB.parameters, param,
-            SqlSyntax.GreaterThanOrEquals, songlyricFB._addedBlocks);
-    _waitingNot = '';
-    songlyricFB._addedBlocks.needEndBlock![songlyricFB._blockIndex] =
-        songlyricFB._addedBlocks.retVal;
-    return songlyricFB;
+    return super.lessThan(pValue) as SongLyricFilterBuilder;
   }
 
+  @override
   SongLyricFilterBuilder greaterThanOrEquals(dynamic pValue) {
-    param.expression = '>=';
-    songlyricFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, songlyricFB.parameters, param,
-            SqlSyntax.GreaterThanOrEquals, songlyricFB._addedBlocks)
-        : setCriteria(pValue, songlyricFB.parameters, param, SqlSyntax.LessThan,
-            songlyricFB._addedBlocks);
-    _waitingNot = '';
-    songlyricFB._addedBlocks.needEndBlock![songlyricFB._blockIndex] =
-        songlyricFB._addedBlocks.retVal;
-    return songlyricFB;
+    return super.greaterThanOrEquals(pValue) as SongLyricFilterBuilder;
   }
 
+  @override
   SongLyricFilterBuilder lessThanOrEquals(dynamic pValue) {
-    param.expression = '<=';
-    songlyricFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, songlyricFB.parameters, param,
-            SqlSyntax.LessThanOrEquals, songlyricFB._addedBlocks)
-        : setCriteria(pValue, songlyricFB.parameters, param,
-            SqlSyntax.GreaterThan, songlyricFB._addedBlocks);
-    _waitingNot = '';
-    songlyricFB._addedBlocks.needEndBlock![songlyricFB._blockIndex] =
-        songlyricFB._addedBlocks.retVal;
-    return songlyricFB;
+    return super.lessThanOrEquals(pValue) as SongLyricFilterBuilder;
   }
 
+  @override
   SongLyricFilterBuilder inValues(dynamic pValue) {
-    songlyricFB._addedBlocks = setCriteria(
-        pValue,
-        songlyricFB.parameters,
-        param,
-        SqlSyntax.IN.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-        songlyricFB._addedBlocks);
-    _waitingNot = '';
-    songlyricFB._addedBlocks.needEndBlock![songlyricFB._blockIndex] =
-        songlyricFB._addedBlocks.retVal;
-    return songlyricFB;
+    return super.inValues(pValue) as SongLyricFilterBuilder;
+  }
+
+  @override
+  SongLyricField get not {
+    return super.not as SongLyricField;
   }
 }
 // endregion SongLyricField
 
 // region SongLyricFilterBuilder
-class SongLyricFilterBuilder extends SearchCriteria {
-  SongLyricFilterBuilder(SongLyric obj) {
-    whereString = '';
-    groupByList = <String>[];
-    _addedBlocks.needEndBlock!.add(false);
-    _addedBlocks.waitingStartBlock!.add(false);
-    _obj = obj;
+class SongLyricFilterBuilder extends ConjunctionBase {
+  SongLyricFilterBuilder(SongLyric obj, bool? getIsDeleted)
+      : super(obj, getIsDeleted) {
+    _mnSongLyric = obj._mnSongLyric;
+    _softDeleteActivated = obj.softDeleteActivated;
   }
-  AddedBlocks _addedBlocks = AddedBlocks(<bool>[], <bool>[]);
-  int _blockIndex = 0;
-  List<DbParameter> parameters = <DbParameter>[];
-  List<String> orderByList = <String>[];
-  SongLyric? _obj;
-  QueryParams qparams = QueryParams();
-  int _pagesize = 0;
-  int _page = 0;
+
+  bool _softDeleteActivated = false;
+  SongLyricManager? _mnSongLyric;
 
   /// put the sql keyword 'AND'
+  @override
   SongLyricFilterBuilder get and {
-    if (parameters.isNotEmpty) {
-      parameters[parameters.length - 1].wOperator = ' AND ';
-    }
+    super.and;
     return this;
   }
 
   /// put the sql keyword 'OR'
+  @override
   SongLyricFilterBuilder get or {
-    if (parameters.isNotEmpty) {
-      parameters[parameters.length - 1].wOperator = ' OR ';
-    }
+    super.or;
     return this;
   }
 
   /// open parentheses
+  @override
   SongLyricFilterBuilder get startBlock {
-    _addedBlocks.waitingStartBlock!.add(true);
-    _addedBlocks.needEndBlock!.add(false);
-    _blockIndex++;
-    if (_blockIndex > 1) {
-      _addedBlocks.needEndBlock![_blockIndex - 1] = true;
-    }
+    super.startBlock;
     return this;
   }
 
   /// String whereCriteria, write raw query without 'where' keyword. Like this: 'field1 like 'test%' and field2 = 3'
+  @override
   SongLyricFilterBuilder where(String? whereCriteria,
       {dynamic parameterValue}) {
-    if (whereCriteria != null && whereCriteria != '') {
-      final DbParameter param = DbParameter(
-          columnName: parameterValue == null ? null : '',
-          hasParameter: parameterValue != null);
-      _addedBlocks = setCriteria(parameterValue ?? 0, parameters, param,
-          '($whereCriteria)', _addedBlocks);
-      _addedBlocks.needEndBlock![_blockIndex] = _addedBlocks.retVal;
-    }
+    super.where(whereCriteria, parameterValue: parameterValue);
     return this;
   }
 
   /// page = page number,
-  ///
   /// pagesize = row(s) per page
+  @override
   SongLyricFilterBuilder page(int page, int pagesize) {
-    if (page > 0) {
-      _page = page;
-    }
-    if (pagesize > 0) {
-      _pagesize = pagesize;
-    }
+    super.page(page, pagesize);
     return this;
   }
 
   /// int count = LIMIT
+  @override
   SongLyricFilterBuilder top(int count) {
-    if (count > 0) {
-      _pagesize = count;
-    }
+    super.top(count);
     return this;
   }
 
   /// close parentheses
+  @override
   SongLyricFilterBuilder get endBlock {
-    if (_addedBlocks.needEndBlock![_blockIndex]) {
-      parameters[parameters.length - 1].whereString += ' ) ';
-    }
-    _addedBlocks.needEndBlock!.removeAt(_blockIndex);
-    _addedBlocks.waitingStartBlock!.removeAt(_blockIndex);
-    _blockIndex--;
+    super.endBlock;
     return this;
   }
 
   /// argFields might be String or List<String>.
-  ///
   /// Example 1: argFields='name, date'
-  ///
   /// Example 2: argFields = ['name', 'date']
+  @override
   SongLyricFilterBuilder orderBy(dynamic argFields) {
-    if (argFields != null) {
-      if (argFields is String) {
-        orderByList.add(argFields);
-      } else {
-        for (String? s in argFields as List<String?>) {
-          if (s!.isNotEmpty) {
-            orderByList.add(' $s ');
-          }
-        }
-      }
-    }
+    super.orderBy(argFields);
     return this;
   }
 
   /// argFields might be String or List<String>.
-  ///
   /// Example 1: argFields='field1, field2'
-  ///
   /// Example 2: argFields = ['field1', 'field2']
+  @override
   SongLyricFilterBuilder orderByDesc(dynamic argFields) {
-    if (argFields != null) {
-      if (argFields is String) {
-        orderByList.add('$argFields desc ');
-      } else {
-        for (String? s in argFields as List<String?>) {
-          if (s!.isNotEmpty) {
-            orderByList.add(' $s desc ');
-          }
-        }
-      }
-    }
+    super.orderByDesc(argFields);
     return this;
   }
 
   /// argFields might be String or List<String>.
-  ///
   /// Example 1: argFields='field1, field2'
-  ///
   /// Example 2: argFields = ['field1', 'field2']
+  @override
   SongLyricFilterBuilder groupBy(dynamic argFields) {
-    if (argFields != null) {
-      if (argFields is String) {
-        groupByList.add(' $argFields ');
-      } else {
-        for (String? s in argFields as List<String?>) {
-          if (s!.isNotEmpty) {
-            groupByList.add(' $s ');
-          }
-        }
-      }
-    }
+    super.groupBy(argFields);
     return this;
   }
 
   /// argFields might be String or List<String>.
-  ///
   /// Example 1: argFields='name, date'
-  ///
   /// Example 2: argFields = ['name', 'date']
+  @override
   SongLyricFilterBuilder having(dynamic argFields) {
-    if (argFields != null) {
-      if (argFields is String) {
-        havingList.add(argFields);
-      } else {
-        for (String? s in argFields as List<String?>) {
-          if (s!.isNotEmpty) {
-            havingList.add(' $s ');
-          }
-        }
-      }
-    }
+    super.having(argFields);
     return this;
   }
 
-  SongLyricField setField(
+  SongLyricField _setField(
       SongLyricField? field, String colName, DbType dbtype) {
     return SongLyricField(this)
       ..param = DbParameter(
-          dbType: dbtype,
-          columnName: colName,
-          wStartBlock: _addedBlocks.waitingStartBlock![_blockIndex]);
+          dbType: dbtype, columnName: colName, wStartBlock: openedBlock);
   }
 
   SongLyricField? _id;
   SongLyricField get id {
-    return _id = setField(_id, 'id', DbType.integer);
+    return _id = _setField(_id, 'id', DbType.integer);
   }
 
   SongLyricField? _name;
   SongLyricField get name {
-    return _name = setField(_name, 'name', DbType.text);
+    return _name = _setField(_name, 'name', DbType.text);
   }
 
   SongLyricField? _secondary_name_1;
   SongLyricField get secondary_name_1 {
     return _secondary_name_1 =
-        setField(_secondary_name_1, 'secondary_name_1', DbType.text);
+        _setField(_secondary_name_1, 'secondary_name_1', DbType.text);
   }
 
   SongLyricField? _secondary_name_2;
   SongLyricField get secondary_name_2 {
     return _secondary_name_2 =
-        setField(_secondary_name_2, 'secondary_name_2', DbType.text);
+        _setField(_secondary_name_2, 'secondary_name_2', DbType.text);
   }
 
   SongLyricField? _lyrics;
   SongLyricField get lyrics {
-    return _lyrics = setField(_lyrics, 'lyrics', DbType.text);
+    return _lyrics = _setField(_lyrics, 'lyrics', DbType.text);
   }
 
   SongLyricField? _lang_string;
   SongLyricField get lang_string {
-    return _lang_string = setField(_lang_string, 'lang_string', DbType.text);
+    return _lang_string = _setField(_lang_string, 'lang_string', DbType.text);
   }
 
   SongLyricField? _type_enum;
   SongLyricField get type_enum {
-    return _type_enum = setField(_type_enum, 'type_enum', DbType.text);
+    return _type_enum = _setField(_type_enum, 'type_enum', DbType.text);
   }
 
   SongLyricField? _lilypond_svg;
   SongLyricField get lilypond_svg {
-    return _lilypond_svg = setField(_lilypond_svg, 'lilypond_svg', DbType.text);
+    return _lilypond_svg =
+        _setField(_lilypond_svg, 'lilypond_svg', DbType.text);
   }
 
   SongLyricField? _favorite_rank;
   SongLyricField get favorite_rank {
     return _favorite_rank =
-        setField(_favorite_rank, 'favorite_rank', DbType.integer);
+        _setField(_favorite_rank, 'favorite_rank', DbType.integer);
   }
 
   SongLyricField? _transposition;
   SongLyricField get transposition {
     return _transposition =
-        setField(_transposition, 'transposition', DbType.integer);
+        _setField(_transposition, 'transposition', DbType.integer);
   }
 
   SongLyricField? _show_chords;
   SongLyricField get show_chords {
-    return _show_chords = setField(_show_chords, 'show_chords', DbType.bool);
+    return _show_chords = _setField(_show_chords, 'show_chords', DbType.bool);
   }
 
   SongLyricField? _accidentals;
   SongLyricField get accidentals {
-    return _accidentals = setField(_accidentals, 'accidentals', DbType.integer);
+    return _accidentals =
+        _setField(_accidentals, 'accidentals', DbType.integer);
   }
 
   SongLyricField? _songsId;
   SongLyricField get songsId {
-    return _songsId = setField(_songsId, 'songsId', DbType.integer);
-  }
-
-  bool _getIsDeleted = false;
-
-  void _buildParameters() {
-    if (_page > 0 && _pagesize > 0) {
-      qparams
-        ..limit = _pagesize
-        ..offset = (_page - 1) * _pagesize;
-    } else {
-      qparams
-        ..limit = _pagesize
-        ..offset = _page;
-    }
-    for (DbParameter param in parameters) {
-      if (param.columnName != null) {
-        if (param.value is List && !param.hasParameter) {
-          param.value = param.dbType == DbType.text || param.value[0] is String
-              ? '\'${param.value.join('\',\'')}\''
-              : param.value.join(',');
-          whereString += param.whereString
-              .replaceAll('{field}', param.columnName!)
-              .replaceAll('?', param.value.toString());
-          param.value = null;
-        } else {
-          if (param.value is Map<String, dynamic> &&
-              param.value['sql'] != null) {
-            param
-              ..whereString = param.whereString
-                  .replaceAll('?', param.value['sql'].toString())
-              ..dbType = DbType.integer
-              ..value = param.value['args'];
-          }
-          whereString +=
-              param.whereString.replaceAll('{field}', param.columnName!);
-        }
-        if (!param.whereString.contains('?')) {
-        } else {
-          switch (param.dbType) {
-            case DbType.bool:
-              param.value = param.value == null
-                  ? null
-                  : param.value == true
-                      ? 1
-                      : 0;
-              param.value2 = param.value2 == null
-                  ? null
-                  : param.value2 == true
-                      ? 1
-                      : 0;
-              break;
-            case DbType.date:
-            case DbType.datetime:
-            case DbType.datetimeUtc:
-              param.value = param.value == null
-                  ? null
-                  : (param.value as DateTime).millisecondsSinceEpoch;
-              param.value2 = param.value2 == null
-                  ? null
-                  : (param.value2 as DateTime).millisecondsSinceEpoch;
-              break;
-            default:
-          }
-          if (param.value != null) {
-            if (param.value is List) {
-              for (var p in param.value) {
-                whereArguments.add(p);
-              }
-            } else {
-              whereArguments.add(param.value);
-            }
-          }
-          if (param.value2 != null) {
-            whereArguments.add(param.value2);
-          }
-        }
-      } else {
-        whereString += param.whereString;
-      }
-    }
-    if (SongLyric._softDeleteActivated) {
-      if (whereString != '') {
-        whereString =
-            '${!_getIsDeleted ? 'ifnull(isDeleted,0)=0 AND' : ''} ($whereString)';
-      } else if (!_getIsDeleted) {
-        whereString = 'ifnull(isDeleted,0)=0';
-      }
-    }
-
-    if (whereString != '') {
-      qparams.whereString = whereString;
-    }
-    qparams
-      ..whereArguments = whereArguments
-      ..groupBy = groupByList.join(',')
-      ..orderBy = orderByList.join(',')
-      ..having = havingList.join(',');
+    return _songsId = _setField(_songsId, 'songsId', DbType.integer);
   }
 
   /// Deletes List<SongLyric> bulk by query
   ///
-  /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
+  /// <returns>BoolResult res.success= true (Deleted), false (Could not be deleted)
+  @override
   Future<BoolResult> delete([bool hardDelete = false]) async {
-    _buildParameters();
+    buildParameters();
     var r = BoolResult(success: false);
     // Delete sub records where in (External) according to DeleteRule.CASCADE
     final idListExternalBYsong_lyricsId = toListPrimaryKeySQL(false);
@@ -10150,55 +7860,47 @@ class SongLyricFilterBuilder extends SearchCriteria {
       return resSongbookRecordBYsong_lyricsId;
     }
 
-    if (SongLyric._softDeleteActivated && !hardDelete) {
-      r = await _obj!._mnSongLyric.updateBatch(qparams, {'isDeleted': 1});
+    if (_softDeleteActivated && !hardDelete) {
+      r = await _mnSongLyric!.updateBatch(qparams, {'isDeleted': 1});
     } else {
-      r = await _obj!._mnSongLyric.delete(qparams);
+      r = await _mnSongLyric!.delete(qparams);
     }
     return r;
   }
 
   /// using:
-  ///
   /// update({'fieldName': Value})
-  ///
   /// fieldName must be String. Value is dynamic, it can be any of the (int, bool, String.. )
+  @override
   Future<BoolResult> update(Map<String, dynamic> values) {
-    _buildParameters();
+    buildParameters();
     if (qparams.limit! > 0 || qparams.offset! > 0) {
       qparams.whereString =
           'id IN (SELECT id from song_lyrics ${qparams.whereString!.isNotEmpty ? 'WHERE ${qparams.whereString}' : ''}${qparams.limit! > 0 ? ' LIMIT ${qparams.limit}' : ''}${qparams.offset! > 0 ? ' OFFSET ${qparams.offset}' : ''})';
     }
-    return _obj!._mnSongLyric.updateBatch(qparams, values);
+    return _mnSongLyric!.updateBatch(qparams, values);
   }
 
-  /// This method always returns SongLyric Obj if exist, otherwise returns null
-  ///
+  /// This method always returns [SongLyric] Obj if exist, otherwise returns null
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
-  ///
   /// ex: toSingle(preload:true) -> Loads all related objects
-  ///
   /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
-  ///
   /// ex: toSingle(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
-  ///
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
-  ///
-  /// <returns>List<SongLyric>
+  /// <returns> SongLyric?
+  @override
   Future<SongLyric?> toSingle(
       {bool preload = false,
       List<String>? preloadFields,
       bool loadParents = false,
       List<String>? loadedFields}) async {
-    _pagesize = 1;
-    _buildParameters();
-    final objFuture = _obj!._mnSongLyric.toList(qparams);
+    buildParameters(pSize: 1);
+    final objFuture = _mnSongLyric!.toList(qparams);
     final data = await objFuture;
     SongLyric? obj;
     if (data.isNotEmpty) {
       obj = SongLyric.fromMap(data[0] as Map<String, dynamic>);
-      // final List<String> _loadedFields = loadedFields ?? [];
 
       // RELATIONSHIPS PRELOAD CHILD
       if (preload) {
@@ -10260,13 +7962,11 @@ class SongLyricFilterBuilder extends SearchCriteria {
       // RELATIONSHIPS PRELOAD
       if (preload || loadParents) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedfields!.contains('songs.plSong') && */ (preloadFields ==
-                null ||
+        if ((preloadFields == null ||
             loadParents ||
             preloadFields.contains('plSong'))) {
-          /*_loadedfields!.add('songs.plSong');*/ obj.plSong = obj.plSong ??
-              await obj.getSong(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+          obj.plSong =
+              obj.plSong ?? await obj.getSong(loadParents: loadParents);
         }
       } // END RELATIONSHIPS PRELOAD
 
@@ -10276,13 +7976,35 @@ class SongLyricFilterBuilder extends SearchCriteria {
     return obj;
   }
 
+  /// This method always returns [SongLyric]
+  /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
+  /// ex: toSingle(preload:true) -> Loads all related objects
+  /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
+  /// ex: toSingle(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
+  /// bool loadParents: if true, loads all parent objects until the object has no parent
+
+  /// <returns> SongLyric?
+  @override
+  Future<SongLyric> toSingleOrDefault(
+      {bool preload = false,
+      List<String>? preloadFields,
+      bool loadParents = false,
+      List<String>? loadedFields}) async {
+    return await toSingle(
+            preload: preload,
+            preloadFields: preloadFields,
+            loadParents: loadParents,
+            loadedFields: loadedFields) ??
+        SongLyric();
+  }
+
   /// This method returns int. [SongLyric]
-  ///
   /// <returns>int
+  @override
   Future<int> toCount([VoidCallback Function(int c)? songlyricCount]) async {
-    _buildParameters();
+    buildParameters();
     qparams.selectColumns = ['COUNT(1) AS CNT'];
-    final songlyricsFuture = await _obj!._mnSongLyric.toList(qparams);
+    final songlyricsFuture = await _mnSongLyric!.toList(qparams);
     final int count = songlyricsFuture[0]['CNT'] as int;
     if (songlyricCount != null) {
       songlyricCount(count);
@@ -10291,19 +8013,14 @@ class SongLyricFilterBuilder extends SearchCriteria {
   }
 
   /// This method returns List<SongLyric> [SongLyric]
-  ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
-  ///
   /// ex: toList(preload:true) -> Loads all related objects
-  ///
   /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
-  ///
   /// ex: toList(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
-  ///
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
-  ///
   /// <returns>List<SongLyric>
+  @override
   Future<List<SongLyric>> toList(
       {bool preload = false,
       List<String>? preloadFields,
@@ -10320,6 +8037,7 @@ class SongLyricFilterBuilder extends SearchCriteria {
   }
 
   /// This method returns Json String [SongLyric]
+  @override
   Future<String> toJson() async {
     final list = <dynamic>[];
     final data = await toList();
@@ -10330,6 +8048,7 @@ class SongLyricFilterBuilder extends SearchCriteria {
   }
 
   /// This method returns Json String. [SongLyric]
+  @override
   Future<String> toJsonWithChilds() async {
     final list = <dynamic>[];
     final data = await toList();
@@ -10340,22 +8059,21 @@ class SongLyricFilterBuilder extends SearchCriteria {
   }
 
   /// This method returns List<dynamic>. [SongLyric]
-  ///
   /// <returns>List<dynamic>
+  @override
   Future<List<dynamic>> toMapList() async {
-    _buildParameters();
-    return await _obj!._mnSongLyric.toList(qparams);
+    buildParameters();
+    return await _mnSongLyric!.toList(qparams);
   }
 
   /// This method returns Primary Key List SQL and Parameters retVal = Map<String,dynamic>. [SongLyric]
-  ///
   /// retVal['sql'] = SQL statement string, retVal['args'] = whereArguments List<dynamic>;
-  ///
   /// <returns>List<String>
-  Map<String, dynamic> toListPrimaryKeySQL([bool buildParameters = true]) {
+  @override
+  Map<String, dynamic> toListPrimaryKeySQL([bool buildParams = true]) {
     final Map<String, dynamic> _retVal = <String, dynamic>{};
-    if (buildParameters) {
-      _buildParameters();
+    if (buildParams) {
+      buildParameters();
     }
     _retVal['sql'] =
         'SELECT `id` FROM song_lyrics WHERE ${qparams.whereString}';
@@ -10365,13 +8083,14 @@ class SongLyricFilterBuilder extends SearchCriteria {
 
   /// This method returns Primary Key List<int>.
   /// <returns>List<int>
-  Future<List<int>> toListPrimaryKey([bool buildParameters = true]) async {
-    if (buildParameters) {
-      _buildParameters();
+  @override
+  Future<List<int>> toListPrimaryKey([bool buildParams = true]) async {
+    if (buildParams) {
+      buildParameters();
     }
     final List<int> idData = <int>[];
     qparams.selectColumns = ['id'];
-    final idFuture = await _obj!._mnSongLyric.toList(qparams);
+    final idFuture = await _mnSongLyric!.toList(qparams);
 
     final int count = idFuture.length;
     for (int i = 0; i < count; i++) {
@@ -10381,12 +8100,12 @@ class SongLyricFilterBuilder extends SearchCriteria {
   }
 
   /// Returns List<dynamic> for selected columns. Use this method for 'groupBy' with min,max,avg..  [SongLyric]
-  ///
   /// Sample usage: (see EXAMPLE 4.2 at https://github.com/hhtokpinar/sqfEntity#group-by)
+  @override
   Future<List<dynamic>> toListObject() async {
-    _buildParameters();
+    buildParameters();
 
-    final objectFuture = _obj!._mnSongLyric.toList(qparams);
+    final objectFuture = _mnSongLyric!.toList(qparams);
 
     final List<dynamic> objectsData = <dynamic>[];
     final data = await objectFuture;
@@ -10398,13 +8117,13 @@ class SongLyricFilterBuilder extends SearchCriteria {
   }
 
   /// Returns List<String> for selected first column
-  ///
   /// Sample usage: await SongLyric.select(columnsToSelect: ['columnName']).toListString()
+  @override
   Future<List<String>> toListString(
       [VoidCallback Function(List<String> o)? listString]) async {
-    _buildParameters();
+    buildParameters();
 
-    final objectFuture = _obj!._mnSongLyric.toList(qparams);
+    final objectFuture = _mnSongLyric!.toList(qparams);
 
     final List<String> objectsData = <String>[];
     final data = await objectFuture;
@@ -10517,6 +8236,7 @@ class SongLyricManager extends SqfEntityProvider {
 class Tag extends TableBase {
   Tag({this.id, this.name, this.type_enum}) {
     _setDefaultValues();
+    softDeleteActivated = false;
   }
   Tag.withFields(this.id, this.name, this.type_enum) {
     _setDefaultValues();
@@ -10544,7 +8264,6 @@ class Tag extends TableBase {
   String? name;
   String? type_enum;
   bool? isSaved;
-  BoolResult? saveResult;
   // end FIELDS (Tag)
 
 // COLLECTIONS & VIRTUALS (Tag)
@@ -10573,24 +8292,34 @@ class Tag extends TableBase {
   }
 
   // METHODS
+  @override
   Map<String, dynamic> toMap(
       {bool forQuery = false, bool forJson = false, bool forView = false}) {
     final map = <String, dynamic>{};
     map['id'] = id;
-    map['name'] = name;
-    map['type_enum'] = type_enum;
+    if (name != null || !forView) {
+      map['name'] = name;
+    }
+    if (type_enum != null || !forView) {
+      map['type_enum'] = type_enum;
+    }
 
     return map;
   }
 
+  @override
   Future<Map<String, dynamic>> toMapWithChildren(
       [bool forQuery = false,
       bool forJson = false,
       bool forView = false]) async {
     final map = <String, dynamic>{};
     map['id'] = id;
-    map['name'] = name;
-    map['type_enum'] = type_enum;
+    if (name != null || !forView) {
+      map['name'] = name;
+    }
+    if (type_enum != null || !forView) {
+      map['type_enum'] = type_enum;
+    }
 
 // COLLECTIONS (Tag)
     if (!forQuery) {
@@ -10602,19 +8331,23 @@ class Tag extends TableBase {
   }
 
   /// This method returns Json String [Tag]
+  @override
   String toJson() {
     return json.encode(toMap(forJson: true));
   }
 
   /// This method returns Json String [Tag]
+  @override
   Future<String> toJsonWithChilds() async {
     return json.encode(await toMapWithChildren(false, true));
   }
 
+  @override
   List<dynamic> toArgs() {
     return [id, name, type_enum];
   }
 
+  @override
   List<dynamic> toArgsWithIds() {
     return [id, name, type_enum];
   }
@@ -10681,21 +8414,14 @@ class Tag extends TableBase {
   }
 
   /// returns Tag by ID if exist, otherwise returns null
-  ///
   /// Primary Keys: int? id
-  ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
-  ///
   /// ex: getById(preload:true) -> Loads all related objects
-  ///
   /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
-  ///
   /// ex: getById(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
-  ///
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
-  ///
-  /// <returns>returns Tag if exist, otherwise returns null
+  /// <returns>returns [Tag] if exist, otherwise returns null
   Future<Tag?> getById(int? id,
       {bool preload = false,
       List<String>? preloadFields,
@@ -10708,7 +8434,6 @@ class Tag extends TableBase {
     final data = await _mnTag.getById([id]);
     if (data.length != 0) {
       obj = Tag.fromMap(data[0] as Map<String, dynamic>);
-      // final List<String> _loadedFields = loadedFields ?? [];
 
       // RELATIONSHIPS PRELOAD CHILD
       if (preload) {
@@ -10734,6 +8459,7 @@ class Tag extends TableBase {
   /// Saves the (Tag) object. If the id field is null, saves as a new record and returns new id, if id is not null then updates record
   /// ignoreBatch = true as a default. Set ignoreBatch to false if you run more than one save() operation those are between batchStart and batchCommit
   /// <returns>Returns id
+  @override
   Future<int?> save({bool ignoreBatch = true}) async {
     if (id == null || id == 0 || !isSaved!) {
       await _mnTag.insert(this, ignoreBatch);
@@ -10741,7 +8467,6 @@ class Tag extends TableBase {
         isSaved = true;
       }
     } else {
-      // id= await _upsert(); // removed in sqfentity_gen 1.3.0+6
       await _mnTag.update(this);
     }
 
@@ -10749,10 +8474,9 @@ class Tag extends TableBase {
   }
 
   /// Saves the (Tag) object. If the id field is null, saves as a new record and returns new id, if id is not null then updates record
-  ///
   /// ignoreBatch = true as a default. Set ignoreBatch to false if you run more than one save() operation those are between batchStart and batchCommit
-  ///
   /// <returns>Returns id
+  @override
   Future<int?> saveOrThrow({bool ignoreBatch = true}) async {
     if (id == null || id == 0 || !isSaved!) {
       await _mnTag.insertOrThrow(this, ignoreBatch);
@@ -10775,7 +8499,6 @@ class Tag extends TableBase {
   }
 
   /// saveAll method saves the sent List<Tag> as a bulk in one transaction
-  ///
   /// Returns a <List<BoolResult>>
   static Future<List<dynamic>> saveAll(List<Tag> tags) async {
     List<dynamic>? result = [];
@@ -10791,9 +8514,8 @@ class Tag extends TableBase {
   }
 
   /// Updates if the record exists, otherwise adds a new row
-
   /// <returns>Returns id
-
+  @override
   Future<int?> upsert({bool ignoreBatch = true}) async {
     try {
       final result = await _mnTag.rawInsert(
@@ -10817,10 +8539,9 @@ class Tag extends TableBase {
   }
 
   /// inserts or replaces the sent List<<Tag>> as a bulk in one transaction.
-  ///
   /// upsertAll() method is faster then saveAll() method. upsertAll() should be used when you are sure that the primary key is greater than zero
-  ///
   /// Returns a BoolCommitResult
+  @override
   Future<BoolCommitResult> upsertAll(List<Tag> tags) async {
     final results = await _mnTag.rawInsertAll(
         'INSERT OR REPLACE INTO tags (id, name, type_enum)  VALUES (?,?,?)',
@@ -10830,8 +8551,8 @@ class Tag extends TableBase {
 
   /// Deletes Tag
 
-  /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
-
+  /// <returns>BoolResult res.success= true (Deleted), false (Could not be deleted)
+  @override
   Future<BoolResult> delete([bool hardDelete = false]) async {
     debugPrint('SQFENTITIY: delete Tag invoked (id=$id)');
     if (!_softDeleteActivated || hardDelete) {
@@ -10844,16 +8565,24 @@ class Tag extends TableBase {
     }
   }
 
+  @override
+  Future<BoolResult> recover([bool recoverChilds = true]) {
+    // not implemented because:
+    final msg =
+        'set useSoftDeleting:true in the table definition of [Tag] to use this feature';
+    throw UnimplementedError(msg);
+  }
+
+  @override
   TagFilterBuilder select({List<String>? columnsToSelect, bool? getIsDeleted}) {
-    return TagFilterBuilder(this)
-      .._getIsDeleted = getIsDeleted == true
+    return TagFilterBuilder(this, getIsDeleted)
       ..qparams.selectColumns = columnsToSelect;
   }
 
+  @override
   TagFilterBuilder distinct(
       {List<String>? columnsToSelect, bool? getIsDeleted}) {
-    return TagFilterBuilder(this)
-      .._getIsDeleted = getIsDeleted == true
+    return TagFilterBuilder(this, getIsDeleted)
       ..qparams.selectColumns = columnsToSelect
       ..qparams.distinct = true;
   }
@@ -10885,549 +8614,242 @@ class Tag extends TableBase {
 // endregion tag
 
 // region TagField
-class TagField extends SearchCriteria {
-  TagField(this.tagFB);
-  // { param = DbParameter(); }
-  DbParameter param = DbParameter();
-  String _waitingNot = '';
-  TagFilterBuilder tagFB;
+class TagField extends FilterBase {
+  TagField(TagFilterBuilder tagFB) : super(tagFB);
 
-  TagField get not {
-    _waitingNot = ' NOT ';
-    return this;
-  }
-
+  @override
   TagFilterBuilder equals(dynamic pValue) {
-    param.expression = '=';
-    tagFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, tagFB.parameters, param, SqlSyntax.EQuals,
-            tagFB._addedBlocks)
-        : setCriteria(pValue, tagFB.parameters, param, SqlSyntax.NotEQuals,
-            tagFB._addedBlocks);
-    _waitingNot = '';
-    tagFB._addedBlocks.needEndBlock![tagFB._blockIndex] =
-        tagFB._addedBlocks.retVal;
-    return tagFB;
+    return super.equals(pValue) as TagFilterBuilder;
   }
 
+  @override
   TagFilterBuilder equalsOrNull(dynamic pValue) {
-    param.expression = '=';
-    tagFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, tagFB.parameters, param, SqlSyntax.EQualsOrNull,
-            tagFB._addedBlocks)
-        : setCriteria(pValue, tagFB.parameters, param,
-            SqlSyntax.NotEQualsOrNull, tagFB._addedBlocks);
-    _waitingNot = '';
-    tagFB._addedBlocks.needEndBlock![tagFB._blockIndex] =
-        tagFB._addedBlocks.retVal;
-    return tagFB;
+    return super.equalsOrNull(pValue) as TagFilterBuilder;
   }
 
+  @override
   TagFilterBuilder isNull() {
-    tagFB._addedBlocks = setCriteria(
-        0,
-        tagFB.parameters,
-        param,
-        SqlSyntax.IsNULL.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-        tagFB._addedBlocks);
-    _waitingNot = '';
-    tagFB._addedBlocks.needEndBlock![tagFB._blockIndex] =
-        tagFB._addedBlocks.retVal;
-    return tagFB;
+    return super.isNull() as TagFilterBuilder;
   }
 
+  @override
   TagFilterBuilder contains(dynamic pValue) {
-    if (pValue != null) {
-      tagFB._addedBlocks = setCriteria(
-          '%${pValue.toString()}%',
-          tagFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          tagFB._addedBlocks);
-      _waitingNot = '';
-      tagFB._addedBlocks.needEndBlock![tagFB._blockIndex] =
-          tagFB._addedBlocks.retVal;
-    }
-    return tagFB;
+    return super.contains(pValue) as TagFilterBuilder;
   }
 
+  @override
   TagFilterBuilder startsWith(dynamic pValue) {
-    if (pValue != null) {
-      tagFB._addedBlocks = setCriteria(
-          '${pValue.toString()}%',
-          tagFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          tagFB._addedBlocks);
-      _waitingNot = '';
-      tagFB._addedBlocks.needEndBlock![tagFB._blockIndex] =
-          tagFB._addedBlocks.retVal;
-      tagFB._addedBlocks.needEndBlock![tagFB._blockIndex] =
-          tagFB._addedBlocks.retVal;
-    }
-    return tagFB;
+    return super.startsWith(pValue) as TagFilterBuilder;
   }
 
+  @override
   TagFilterBuilder endsWith(dynamic pValue) {
-    if (pValue != null) {
-      tagFB._addedBlocks = setCriteria(
-          '%${pValue.toString()}',
-          tagFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          tagFB._addedBlocks);
-      _waitingNot = '';
-      tagFB._addedBlocks.needEndBlock![tagFB._blockIndex] =
-          tagFB._addedBlocks.retVal;
-    }
-    return tagFB;
+    return super.endsWith(pValue) as TagFilterBuilder;
   }
 
+  @override
   TagFilterBuilder between(dynamic pFirst, dynamic pLast) {
-    if (pFirst != null && pLast != null) {
-      tagFB._addedBlocks = setCriteria(
-          pFirst,
-          tagFB.parameters,
-          param,
-          SqlSyntax.Between.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          tagFB._addedBlocks,
-          pLast);
-    } else if (pFirst != null) {
-      if (_waitingNot != '') {
-        tagFB._addedBlocks = setCriteria(pFirst, tagFB.parameters, param,
-            SqlSyntax.LessThan, tagFB._addedBlocks);
-      } else {
-        tagFB._addedBlocks = setCriteria(pFirst, tagFB.parameters, param,
-            SqlSyntax.GreaterThanOrEquals, tagFB._addedBlocks);
-      }
-    } else if (pLast != null) {
-      if (_waitingNot != '') {
-        tagFB._addedBlocks = setCriteria(pLast, tagFB.parameters, param,
-            SqlSyntax.GreaterThan, tagFB._addedBlocks);
-      } else {
-        tagFB._addedBlocks = setCriteria(pLast, tagFB.parameters, param,
-            SqlSyntax.LessThanOrEquals, tagFB._addedBlocks);
-      }
-    }
-    _waitingNot = '';
-    tagFB._addedBlocks.needEndBlock![tagFB._blockIndex] =
-        tagFB._addedBlocks.retVal;
-    return tagFB;
+    return super.between(pFirst, pLast) as TagFilterBuilder;
   }
 
+  @override
   TagFilterBuilder greaterThan(dynamic pValue) {
-    param.expression = '>';
-    tagFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, tagFB.parameters, param, SqlSyntax.GreaterThan,
-            tagFB._addedBlocks)
-        : setCriteria(pValue, tagFB.parameters, param,
-            SqlSyntax.LessThanOrEquals, tagFB._addedBlocks);
-    _waitingNot = '';
-    tagFB._addedBlocks.needEndBlock![tagFB._blockIndex] =
-        tagFB._addedBlocks.retVal;
-    return tagFB;
+    return super.greaterThan(pValue) as TagFilterBuilder;
   }
 
+  @override
   TagFilterBuilder lessThan(dynamic pValue) {
-    param.expression = '<';
-    tagFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, tagFB.parameters, param, SqlSyntax.LessThan,
-            tagFB._addedBlocks)
-        : setCriteria(pValue, tagFB.parameters, param,
-            SqlSyntax.GreaterThanOrEquals, tagFB._addedBlocks);
-    _waitingNot = '';
-    tagFB._addedBlocks.needEndBlock![tagFB._blockIndex] =
-        tagFB._addedBlocks.retVal;
-    return tagFB;
+    return super.lessThan(pValue) as TagFilterBuilder;
   }
 
+  @override
   TagFilterBuilder greaterThanOrEquals(dynamic pValue) {
-    param.expression = '>=';
-    tagFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, tagFB.parameters, param,
-            SqlSyntax.GreaterThanOrEquals, tagFB._addedBlocks)
-        : setCriteria(pValue, tagFB.parameters, param, SqlSyntax.LessThan,
-            tagFB._addedBlocks);
-    _waitingNot = '';
-    tagFB._addedBlocks.needEndBlock![tagFB._blockIndex] =
-        tagFB._addedBlocks.retVal;
-    return tagFB;
+    return super.greaterThanOrEquals(pValue) as TagFilterBuilder;
   }
 
+  @override
   TagFilterBuilder lessThanOrEquals(dynamic pValue) {
-    param.expression = '<=';
-    tagFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, tagFB.parameters, param,
-            SqlSyntax.LessThanOrEquals, tagFB._addedBlocks)
-        : setCriteria(pValue, tagFB.parameters, param, SqlSyntax.GreaterThan,
-            tagFB._addedBlocks);
-    _waitingNot = '';
-    tagFB._addedBlocks.needEndBlock![tagFB._blockIndex] =
-        tagFB._addedBlocks.retVal;
-    return tagFB;
+    return super.lessThanOrEquals(pValue) as TagFilterBuilder;
   }
 
+  @override
   TagFilterBuilder inValues(dynamic pValue) {
-    tagFB._addedBlocks = setCriteria(
-        pValue,
-        tagFB.parameters,
-        param,
-        SqlSyntax.IN.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-        tagFB._addedBlocks);
-    _waitingNot = '';
-    tagFB._addedBlocks.needEndBlock![tagFB._blockIndex] =
-        tagFB._addedBlocks.retVal;
-    return tagFB;
+    return super.inValues(pValue) as TagFilterBuilder;
+  }
+
+  @override
+  TagField get not {
+    return super.not as TagField;
   }
 }
 // endregion TagField
 
 // region TagFilterBuilder
-class TagFilterBuilder extends SearchCriteria {
-  TagFilterBuilder(Tag obj) {
-    whereString = '';
-    groupByList = <String>[];
-    _addedBlocks.needEndBlock!.add(false);
-    _addedBlocks.waitingStartBlock!.add(false);
-    _obj = obj;
+class TagFilterBuilder extends ConjunctionBase {
+  TagFilterBuilder(Tag obj, bool? getIsDeleted) : super(obj, getIsDeleted) {
+    _mnTag = obj._mnTag;
+    _softDeleteActivated = obj.softDeleteActivated;
   }
-  AddedBlocks _addedBlocks = AddedBlocks(<bool>[], <bool>[]);
-  int _blockIndex = 0;
-  List<DbParameter> parameters = <DbParameter>[];
-  List<String> orderByList = <String>[];
-  Tag? _obj;
-  QueryParams qparams = QueryParams();
-  int _pagesize = 0;
-  int _page = 0;
+
+  bool _softDeleteActivated = false;
+  TagManager? _mnTag;
 
   /// put the sql keyword 'AND'
+  @override
   TagFilterBuilder get and {
-    if (parameters.isNotEmpty) {
-      parameters[parameters.length - 1].wOperator = ' AND ';
-    }
+    super.and;
     return this;
   }
 
   /// put the sql keyword 'OR'
+  @override
   TagFilterBuilder get or {
-    if (parameters.isNotEmpty) {
-      parameters[parameters.length - 1].wOperator = ' OR ';
-    }
+    super.or;
     return this;
   }
 
   /// open parentheses
+  @override
   TagFilterBuilder get startBlock {
-    _addedBlocks.waitingStartBlock!.add(true);
-    _addedBlocks.needEndBlock!.add(false);
-    _blockIndex++;
-    if (_blockIndex > 1) {
-      _addedBlocks.needEndBlock![_blockIndex - 1] = true;
-    }
+    super.startBlock;
     return this;
   }
 
   /// String whereCriteria, write raw query without 'where' keyword. Like this: 'field1 like 'test%' and field2 = 3'
+  @override
   TagFilterBuilder where(String? whereCriteria, {dynamic parameterValue}) {
-    if (whereCriteria != null && whereCriteria != '') {
-      final DbParameter param = DbParameter(
-          columnName: parameterValue == null ? null : '',
-          hasParameter: parameterValue != null);
-      _addedBlocks = setCriteria(parameterValue ?? 0, parameters, param,
-          '($whereCriteria)', _addedBlocks);
-      _addedBlocks.needEndBlock![_blockIndex] = _addedBlocks.retVal;
-    }
+    super.where(whereCriteria, parameterValue: parameterValue);
     return this;
   }
 
   /// page = page number,
-  ///
   /// pagesize = row(s) per page
+  @override
   TagFilterBuilder page(int page, int pagesize) {
-    if (page > 0) {
-      _page = page;
-    }
-    if (pagesize > 0) {
-      _pagesize = pagesize;
-    }
+    super.page(page, pagesize);
     return this;
   }
 
   /// int count = LIMIT
+  @override
   TagFilterBuilder top(int count) {
-    if (count > 0) {
-      _pagesize = count;
-    }
+    super.top(count);
     return this;
   }
 
   /// close parentheses
+  @override
   TagFilterBuilder get endBlock {
-    if (_addedBlocks.needEndBlock![_blockIndex]) {
-      parameters[parameters.length - 1].whereString += ' ) ';
-    }
-    _addedBlocks.needEndBlock!.removeAt(_blockIndex);
-    _addedBlocks.waitingStartBlock!.removeAt(_blockIndex);
-    _blockIndex--;
+    super.endBlock;
     return this;
   }
 
   /// argFields might be String or List<String>.
-  ///
   /// Example 1: argFields='name, date'
-  ///
   /// Example 2: argFields = ['name', 'date']
+  @override
   TagFilterBuilder orderBy(dynamic argFields) {
-    if (argFields != null) {
-      if (argFields is String) {
-        orderByList.add(argFields);
-      } else {
-        for (String? s in argFields as List<String?>) {
-          if (s!.isNotEmpty) {
-            orderByList.add(' $s ');
-          }
-        }
-      }
-    }
+    super.orderBy(argFields);
     return this;
   }
 
   /// argFields might be String or List<String>.
-  ///
   /// Example 1: argFields='field1, field2'
-  ///
   /// Example 2: argFields = ['field1', 'field2']
+  @override
   TagFilterBuilder orderByDesc(dynamic argFields) {
-    if (argFields != null) {
-      if (argFields is String) {
-        orderByList.add('$argFields desc ');
-      } else {
-        for (String? s in argFields as List<String?>) {
-          if (s!.isNotEmpty) {
-            orderByList.add(' $s desc ');
-          }
-        }
-      }
-    }
+    super.orderByDesc(argFields);
     return this;
   }
 
   /// argFields might be String or List<String>.
-  ///
   /// Example 1: argFields='field1, field2'
-  ///
   /// Example 2: argFields = ['field1', 'field2']
+  @override
   TagFilterBuilder groupBy(dynamic argFields) {
-    if (argFields != null) {
-      if (argFields is String) {
-        groupByList.add(' $argFields ');
-      } else {
-        for (String? s in argFields as List<String?>) {
-          if (s!.isNotEmpty) {
-            groupByList.add(' $s ');
-          }
-        }
-      }
-    }
+    super.groupBy(argFields);
     return this;
   }
 
   /// argFields might be String or List<String>.
-  ///
   /// Example 1: argFields='name, date'
-  ///
   /// Example 2: argFields = ['name', 'date']
+  @override
   TagFilterBuilder having(dynamic argFields) {
-    if (argFields != null) {
-      if (argFields is String) {
-        havingList.add(argFields);
-      } else {
-        for (String? s in argFields as List<String?>) {
-          if (s!.isNotEmpty) {
-            havingList.add(' $s ');
-          }
-        }
-      }
-    }
+    super.having(argFields);
     return this;
   }
 
-  TagField setField(TagField? field, String colName, DbType dbtype) {
+  TagField _setField(TagField? field, String colName, DbType dbtype) {
     return TagField(this)
       ..param = DbParameter(
-          dbType: dbtype,
-          columnName: colName,
-          wStartBlock: _addedBlocks.waitingStartBlock![_blockIndex]);
+          dbType: dbtype, columnName: colName, wStartBlock: openedBlock);
   }
 
   TagField? _id;
   TagField get id {
-    return _id = setField(_id, 'id', DbType.integer);
+    return _id = _setField(_id, 'id', DbType.integer);
   }
 
   TagField? _name;
   TagField get name {
-    return _name = setField(_name, 'name', DbType.text);
+    return _name = _setField(_name, 'name', DbType.text);
   }
 
   TagField? _type_enum;
   TagField get type_enum {
-    return _type_enum = setField(_type_enum, 'type_enum', DbType.text);
-  }
-
-  bool _getIsDeleted = false;
-
-  void _buildParameters() {
-    if (_page > 0 && _pagesize > 0) {
-      qparams
-        ..limit = _pagesize
-        ..offset = (_page - 1) * _pagesize;
-    } else {
-      qparams
-        ..limit = _pagesize
-        ..offset = _page;
-    }
-    for (DbParameter param in parameters) {
-      if (param.columnName != null) {
-        if (param.value is List && !param.hasParameter) {
-          param.value = param.dbType == DbType.text || param.value[0] is String
-              ? '\'${param.value.join('\',\'')}\''
-              : param.value.join(',');
-          whereString += param.whereString
-              .replaceAll('{field}', param.columnName!)
-              .replaceAll('?', param.value.toString());
-          param.value = null;
-        } else {
-          if (param.value is Map<String, dynamic> &&
-              param.value['sql'] != null) {
-            param
-              ..whereString = param.whereString
-                  .replaceAll('?', param.value['sql'].toString())
-              ..dbType = DbType.integer
-              ..value = param.value['args'];
-          }
-          whereString +=
-              param.whereString.replaceAll('{field}', param.columnName!);
-        }
-        if (!param.whereString.contains('?')) {
-        } else {
-          switch (param.dbType) {
-            case DbType.bool:
-              param.value = param.value == null
-                  ? null
-                  : param.value == true
-                      ? 1
-                      : 0;
-              param.value2 = param.value2 == null
-                  ? null
-                  : param.value2 == true
-                      ? 1
-                      : 0;
-              break;
-            case DbType.date:
-            case DbType.datetime:
-            case DbType.datetimeUtc:
-              param.value = param.value == null
-                  ? null
-                  : (param.value as DateTime).millisecondsSinceEpoch;
-              param.value2 = param.value2 == null
-                  ? null
-                  : (param.value2 as DateTime).millisecondsSinceEpoch;
-              break;
-            default:
-          }
-          if (param.value != null) {
-            if (param.value is List) {
-              for (var p in param.value) {
-                whereArguments.add(p);
-              }
-            } else {
-              whereArguments.add(param.value);
-            }
-          }
-          if (param.value2 != null) {
-            whereArguments.add(param.value2);
-          }
-        }
-      } else {
-        whereString += param.whereString;
-      }
-    }
-    if (Tag._softDeleteActivated) {
-      if (whereString != '') {
-        whereString =
-            '${!_getIsDeleted ? 'ifnull(isDeleted,0)=0 AND' : ''} ($whereString)';
-      } else if (!_getIsDeleted) {
-        whereString = 'ifnull(isDeleted,0)=0';
-      }
-    }
-
-    if (whereString != '') {
-      qparams.whereString = whereString;
-    }
-    qparams
-      ..whereArguments = whereArguments
-      ..groupBy = groupByList.join(',')
-      ..orderBy = orderByList.join(',')
-      ..having = havingList.join(',');
+    return _type_enum = _setField(_type_enum, 'type_enum', DbType.text);
   }
 
   /// Deletes List<Tag> bulk by query
   ///
-  /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
+  /// <returns>BoolResult res.success= true (Deleted), false (Could not be deleted)
+  @override
   Future<BoolResult> delete([bool hardDelete = false]) async {
-    _buildParameters();
+    buildParameters();
     var r = BoolResult(success: false);
 
-    if (Tag._softDeleteActivated && !hardDelete) {
-      r = await _obj!._mnTag.updateBatch(qparams, {'isDeleted': 1});
+    if (_softDeleteActivated && !hardDelete) {
+      r = await _mnTag!.updateBatch(qparams, {'isDeleted': 1});
     } else {
-      r = await _obj!._mnTag.delete(qparams);
+      r = await _mnTag!.delete(qparams);
     }
     return r;
   }
 
   /// using:
-  ///
   /// update({'fieldName': Value})
-  ///
   /// fieldName must be String. Value is dynamic, it can be any of the (int, bool, String.. )
+  @override
   Future<BoolResult> update(Map<String, dynamic> values) {
-    _buildParameters();
+    buildParameters();
     if (qparams.limit! > 0 || qparams.offset! > 0) {
       qparams.whereString =
           'id IN (SELECT id from tags ${qparams.whereString!.isNotEmpty ? 'WHERE ${qparams.whereString}' : ''}${qparams.limit! > 0 ? ' LIMIT ${qparams.limit}' : ''}${qparams.offset! > 0 ? ' OFFSET ${qparams.offset}' : ''})';
     }
-    return _obj!._mnTag.updateBatch(qparams, values);
+    return _mnTag!.updateBatch(qparams, values);
   }
 
-  /// This method always returns Tag Obj if exist, otherwise returns null
-  ///
+  /// This method always returns [Tag] Obj if exist, otherwise returns null
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
-  ///
   /// ex: toSingle(preload:true) -> Loads all related objects
-  ///
   /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
-  ///
   /// ex: toSingle(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
-  ///
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
-  ///
-  /// <returns>List<Tag>
+  /// <returns> Tag?
+  @override
   Future<Tag?> toSingle(
       {bool preload = false,
       List<String>? preloadFields,
       bool loadParents = false,
       List<String>? loadedFields}) async {
-    _pagesize = 1;
-    _buildParameters();
-    final objFuture = _obj!._mnTag.toList(qparams);
+    buildParameters(pSize: 1);
+    final objFuture = _mnTag!.toList(qparams);
     final data = await objFuture;
     Tag? obj;
     if (data.isNotEmpty) {
       obj = Tag.fromMap(data[0] as Map<String, dynamic>);
-      // final List<String> _loadedFields = loadedFields ?? [];
 
       // RELATIONSHIPS PRELOAD CHILD
       if (preload) {
@@ -11450,13 +8872,35 @@ class TagFilterBuilder extends SearchCriteria {
     return obj;
   }
 
+  /// This method always returns [Tag]
+  /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
+  /// ex: toSingle(preload:true) -> Loads all related objects
+  /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
+  /// ex: toSingle(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
+  /// bool loadParents: if true, loads all parent objects until the object has no parent
+
+  /// <returns> Tag?
+  @override
+  Future<Tag> toSingleOrDefault(
+      {bool preload = false,
+      List<String>? preloadFields,
+      bool loadParents = false,
+      List<String>? loadedFields}) async {
+    return await toSingle(
+            preload: preload,
+            preloadFields: preloadFields,
+            loadParents: loadParents,
+            loadedFields: loadedFields) ??
+        Tag();
+  }
+
   /// This method returns int. [Tag]
-  ///
   /// <returns>int
+  @override
   Future<int> toCount([VoidCallback Function(int c)? tagCount]) async {
-    _buildParameters();
+    buildParameters();
     qparams.selectColumns = ['COUNT(1) AS CNT'];
-    final tagsFuture = await _obj!._mnTag.toList(qparams);
+    final tagsFuture = await _mnTag!.toList(qparams);
     final int count = tagsFuture[0]['CNT'] as int;
     if (tagCount != null) {
       tagCount(count);
@@ -11465,19 +8909,14 @@ class TagFilterBuilder extends SearchCriteria {
   }
 
   /// This method returns List<Tag> [Tag]
-  ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
-  ///
   /// ex: toList(preload:true) -> Loads all related objects
-  ///
   /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
-  ///
   /// ex: toList(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
-  ///
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
-  ///
   /// <returns>List<Tag>
+  @override
   Future<List<Tag>> toList(
       {bool preload = false,
       List<String>? preloadFields,
@@ -11494,6 +8933,7 @@ class TagFilterBuilder extends SearchCriteria {
   }
 
   /// This method returns Json String [Tag]
+  @override
   Future<String> toJson() async {
     final list = <dynamic>[];
     final data = await toList();
@@ -11504,6 +8944,7 @@ class TagFilterBuilder extends SearchCriteria {
   }
 
   /// This method returns Json String. [Tag]
+  @override
   Future<String> toJsonWithChilds() async {
     final list = <dynamic>[];
     final data = await toList();
@@ -11514,22 +8955,21 @@ class TagFilterBuilder extends SearchCriteria {
   }
 
   /// This method returns List<dynamic>. [Tag]
-  ///
   /// <returns>List<dynamic>
+  @override
   Future<List<dynamic>> toMapList() async {
-    _buildParameters();
-    return await _obj!._mnTag.toList(qparams);
+    buildParameters();
+    return await _mnTag!.toList(qparams);
   }
 
   /// This method returns Primary Key List SQL and Parameters retVal = Map<String,dynamic>. [Tag]
-  ///
   /// retVal['sql'] = SQL statement string, retVal['args'] = whereArguments List<dynamic>;
-  ///
   /// <returns>List<String>
-  Map<String, dynamic> toListPrimaryKeySQL([bool buildParameters = true]) {
+  @override
+  Map<String, dynamic> toListPrimaryKeySQL([bool buildParams = true]) {
     final Map<String, dynamic> _retVal = <String, dynamic>{};
-    if (buildParameters) {
-      _buildParameters();
+    if (buildParams) {
+      buildParameters();
     }
     _retVal['sql'] = 'SELECT `id` FROM tags WHERE ${qparams.whereString}';
     _retVal['args'] = qparams.whereArguments;
@@ -11538,13 +8978,14 @@ class TagFilterBuilder extends SearchCriteria {
 
   /// This method returns Primary Key List<int>.
   /// <returns>List<int>
-  Future<List<int>> toListPrimaryKey([bool buildParameters = true]) async {
-    if (buildParameters) {
-      _buildParameters();
+  @override
+  Future<List<int>> toListPrimaryKey([bool buildParams = true]) async {
+    if (buildParams) {
+      buildParameters();
     }
     final List<int> idData = <int>[];
     qparams.selectColumns = ['id'];
-    final idFuture = await _obj!._mnTag.toList(qparams);
+    final idFuture = await _mnTag!.toList(qparams);
 
     final int count = idFuture.length;
     for (int i = 0; i < count; i++) {
@@ -11554,12 +8995,12 @@ class TagFilterBuilder extends SearchCriteria {
   }
 
   /// Returns List<dynamic> for selected columns. Use this method for 'groupBy' with min,max,avg..  [Tag]
-  ///
   /// Sample usage: (see EXAMPLE 4.2 at https://github.com/hhtokpinar/sqfEntity#group-by)
+  @override
   Future<List<dynamic>> toListObject() async {
-    _buildParameters();
+    buildParameters();
 
-    final objectFuture = _obj!._mnTag.toList(qparams);
+    final objectFuture = _mnTag!.toList(qparams);
 
     final List<dynamic> objectsData = <dynamic>[];
     final data = await objectFuture;
@@ -11571,13 +9012,13 @@ class TagFilterBuilder extends SearchCriteria {
   }
 
   /// Returns List<String> for selected first column
-  ///
   /// Sample usage: await Tag.select(columnsToSelect: ['columnName']).toListString()
+  @override
   Future<List<String>> toListString(
       [VoidCallback Function(List<String> o)? listString]) async {
-    _buildParameters();
+    buildParameters();
 
-    final objectFuture = _obj!._mnTag.toList(qparams);
+    final objectFuture = _mnTag!.toList(qparams);
 
     final List<String> objectsData = <String>[];
     final data = await objectFuture;
@@ -11630,6 +9071,7 @@ class TagManager extends SqfEntityProvider {
 class ExternalsAuthors extends TableBase {
   ExternalsAuthors({this.externalsId, this.authorsId}) {
     _setDefaultValues();
+    softDeleteActivated = false;
   }
   ExternalsAuthors.withFields(this.externalsId, this.authorsId) {
     _setDefaultValues();
@@ -11662,7 +9104,6 @@ class ExternalsAuthors extends TableBase {
   int? externalsId;
   int? authorsId;
   bool? isSaved;
-  BoolResult? saveResult;
   // end FIELDS (ExternalsAuthors)
 
 // RELATIONSHIPS (ExternalsAuthors)
@@ -11700,6 +9141,7 @@ class ExternalsAuthors extends TableBase {
   }
 
   // METHODS
+  @override
   Map<String, dynamic> toMap(
       {bool forQuery = false, bool forJson = false, bool forView = false}) {
     final map = <String, dynamic>{};
@@ -11709,7 +9151,7 @@ class ExternalsAuthors extends TableBase {
               ? externalsId
               : plExternal!.public_name
           : externalsId;
-    } else {
+    } else if (externalsId != null || !forView) {
       map['externalsId'] = null;
     }
     if (authorsId != null) {
@@ -11718,13 +9160,14 @@ class ExternalsAuthors extends TableBase {
               ? authorsId
               : plAuthor!.name
           : authorsId;
-    } else {
+    } else if (authorsId != null || !forView) {
       map['authorsId'] = null;
     }
 
     return map;
   }
 
+  @override
   Future<Map<String, dynamic>> toMapWithChildren(
       [bool forQuery = false,
       bool forJson = false,
@@ -11736,7 +9179,7 @@ class ExternalsAuthors extends TableBase {
               ? externalsId
               : plExternal!.public_name
           : externalsId;
-    } else {
+    } else if (externalsId != null || !forView) {
       map['externalsId'] = null;
     }
     if (authorsId != null) {
@@ -11745,7 +9188,7 @@ class ExternalsAuthors extends TableBase {
               ? authorsId
               : plAuthor!.name
           : authorsId;
-    } else {
+    } else if (authorsId != null || !forView) {
       map['authorsId'] = null;
     }
 
@@ -11753,19 +9196,23 @@ class ExternalsAuthors extends TableBase {
   }
 
   /// This method returns Json String [ExternalsAuthors]
+  @override
   String toJson() {
     return json.encode(toMap(forJson: true));
   }
 
   /// This method returns Json String [ExternalsAuthors]
+  @override
   Future<String> toJsonWithChilds() async {
     return json.encode(await toMapWithChildren(false, true));
   }
 
+  @override
   List<dynamic> toArgs() {
     return [externalsId, authorsId];
   }
 
+  @override
   List<dynamic> toArgsWithIds() {
     return [externalsId, authorsId];
   }
@@ -11817,23 +9264,17 @@ class ExternalsAuthors extends TableBase {
       // RELATIONSHIPS PRELOAD
       if (preload || loadParents) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedfields!.contains('externals.plExternal') && */ (preloadFields ==
-                null ||
+        if ((preloadFields == null ||
             loadParents ||
             preloadFields.contains('plExternal'))) {
-          /*_loadedfields!.add('externals.plExternal');*/ obj.plExternal = obj
-                  .plExternal ??
-              await obj.getExternal(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+          obj.plExternal =
+              obj.plExternal ?? await obj.getExternal(loadParents: loadParents);
         }
-        if (/*!_loadedfields!.contains('authors.plAuthor') && */ (preloadFields ==
-                null ||
+        if ((preloadFields == null ||
             loadParents ||
             preloadFields.contains('plAuthor'))) {
-          /*_loadedfields!.add('authors.plAuthor');*/ obj.plAuthor = obj
-                  .plAuthor ??
-              await obj.getAuthor(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+          obj.plAuthor =
+              obj.plAuthor ?? await obj.getAuthor(loadParents: loadParents);
         }
       } // END RELATIONSHIPS PRELOAD
 
@@ -11843,21 +9284,14 @@ class ExternalsAuthors extends TableBase {
   }
 
   /// returns ExternalsAuthors by ID if exist, otherwise returns null
-  ///
   /// Primary Keys: int? externalsId, int? authorsId
-  ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
-  ///
   /// ex: getById(preload:true) -> Loads all related objects
-  ///
   /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
-  ///
   /// ex: getById(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
-  ///
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
-  ///
-  /// <returns>returns ExternalsAuthors if exist, otherwise returns null
+  /// <returns>returns [ExternalsAuthors] if exist, otherwise returns null
   Future<ExternalsAuthors?> getById(int? externalsId, int? authorsId,
       {bool preload = false,
       List<String>? preloadFields,
@@ -11870,28 +9304,21 @@ class ExternalsAuthors extends TableBase {
     final data = await _mnExternalsAuthors.getById([externalsId, authorsId]);
     if (data.length != 0) {
       obj = ExternalsAuthors.fromMap(data[0] as Map<String, dynamic>);
-      // final List<String> _loadedFields = loadedFields ?? [];
 
       // RELATIONSHIPS PRELOAD
       if (preload || loadParents) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedfields!.contains('externals.plExternal') && */ (preloadFields ==
-                null ||
+        if ((preloadFields == null ||
             loadParents ||
             preloadFields.contains('plExternal'))) {
-          /*_loadedfields!.add('externals.plExternal');*/ obj.plExternal = obj
-                  .plExternal ??
-              await obj.getExternal(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+          obj.plExternal =
+              obj.plExternal ?? await obj.getExternal(loadParents: loadParents);
         }
-        if (/*!_loadedfields!.contains('authors.plAuthor') && */ (preloadFields ==
-                null ||
+        if ((preloadFields == null ||
             loadParents ||
             preloadFields.contains('plAuthor'))) {
-          /*_loadedfields!.add('authors.plAuthor');*/ obj.plAuthor = obj
-                  .plAuthor ??
-              await obj.getAuthor(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+          obj.plAuthor =
+              obj.plAuthor ?? await obj.getAuthor(loadParents: loadParents);
         }
       } // END RELATIONSHIPS PRELOAD
 
@@ -11902,12 +9329,10 @@ class ExternalsAuthors extends TableBase {
   }
 
   /// Saves the (ExternalsAuthors) object. If the Primary Key (externalsId) field is null, returns Error.
-  ///
   /// INSERTS (If not exist) OR REPLACES (If exist) data while Primary Key is not null.
-  ///
   /// Call the saveAs() method if you do not want to save it when there is another row with the same externalsId
-  ///
   /// <returns>Returns BoolResult
+  @override
   Future<BoolResult> save({bool ignoreBatch = true}) async {
     final result = BoolResult(success: false);
     try {
@@ -11932,7 +9357,6 @@ class ExternalsAuthors extends TableBase {
   }
 
   /// saveAll method saves the sent List<ExternalsAuthors> as a bulk in one transaction
-  ///
   /// Returns a <List<BoolResult>>
   static Future<List<dynamic>> saveAll(
       List<ExternalsAuthors> externalsauthorses) async {
@@ -11949,9 +9373,8 @@ class ExternalsAuthors extends TableBase {
   }
 
   /// Updates if the record exists, otherwise adds a new row
-
   /// <returns>Returns 1
-
+  @override
   Future<int?> upsert({bool ignoreBatch = true}) async {
     try {
       final result = await _mnExternalsAuthors.rawInsert(
@@ -11979,10 +9402,9 @@ class ExternalsAuthors extends TableBase {
   }
 
   /// inserts or replaces the sent List<<ExternalsAuthors>> as a bulk in one transaction.
-  ///
   /// upsertAll() method is faster then saveAll() method. upsertAll() should be used when you are sure that the primary key is greater than zero
-  ///
   /// Returns a BoolCommitResult
+  @override
   Future<BoolCommitResult> upsertAll(
       List<ExternalsAuthors> externalsauthorses) async {
     final results = await _mnExternalsAuthors.rawInsertAll(
@@ -11993,8 +9415,8 @@ class ExternalsAuthors extends TableBase {
 
   /// Deletes ExternalsAuthors
 
-  /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
-
+  /// <returns>BoolResult res.success= true (Deleted), false (Could not be deleted)
+  @override
   Future<BoolResult> delete([bool hardDelete = false]) async {
     debugPrint(
         'SQFENTITIY: delete ExternalsAuthors invoked (externalsId=$externalsId)');
@@ -12011,17 +9433,25 @@ class ExternalsAuthors extends TableBase {
     }
   }
 
+  @override
+  Future<BoolResult> recover([bool recoverChilds = true]) {
+    // not implemented because:
+    final msg =
+        'set useSoftDeleting:true in the table definition of [ExternalsAuthors] to use this feature';
+    throw UnimplementedError(msg);
+  }
+
+  @override
   ExternalsAuthorsFilterBuilder select(
       {List<String>? columnsToSelect, bool? getIsDeleted}) {
-    return ExternalsAuthorsFilterBuilder(this)
-      .._getIsDeleted = getIsDeleted == true
+    return ExternalsAuthorsFilterBuilder(this, getIsDeleted)
       ..qparams.selectColumns = columnsToSelect;
   }
 
+  @override
   ExternalsAuthorsFilterBuilder distinct(
       {List<String>? columnsToSelect, bool? getIsDeleted}) {
-    return ExternalsAuthorsFilterBuilder(this)
-      .._getIsDeleted = getIsDeleted == true
+    return ExternalsAuthorsFilterBuilder(this, getIsDeleted)
       ..qparams.selectColumns = columnsToSelect
       ..qparams.distinct = true;
   }
@@ -12053,597 +9483,257 @@ class ExternalsAuthors extends TableBase {
 // endregion externalsauthors
 
 // region ExternalsAuthorsField
-class ExternalsAuthorsField extends SearchCriteria {
-  ExternalsAuthorsField(this.externalsauthorsFB);
-  // { param = DbParameter(); }
-  DbParameter param = DbParameter();
-  String _waitingNot = '';
-  ExternalsAuthorsFilterBuilder externalsauthorsFB;
+class ExternalsAuthorsField extends FilterBase {
+  ExternalsAuthorsField(ExternalsAuthorsFilterBuilder externalsauthorsFB)
+      : super(externalsauthorsFB);
 
-  ExternalsAuthorsField get not {
-    _waitingNot = ' NOT ';
-    return this;
-  }
-
+  @override
   ExternalsAuthorsFilterBuilder equals(dynamic pValue) {
-    param.expression = '=';
-    externalsauthorsFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, externalsauthorsFB.parameters, param,
-            SqlSyntax.EQuals, externalsauthorsFB._addedBlocks)
-        : setCriteria(pValue, externalsauthorsFB.parameters, param,
-            SqlSyntax.NotEQuals, externalsauthorsFB._addedBlocks);
-    _waitingNot = '';
-    externalsauthorsFB
-            ._addedBlocks.needEndBlock![externalsauthorsFB._blockIndex] =
-        externalsauthorsFB._addedBlocks.retVal;
-    return externalsauthorsFB;
+    return super.equals(pValue) as ExternalsAuthorsFilterBuilder;
   }
 
+  @override
   ExternalsAuthorsFilterBuilder equalsOrNull(dynamic pValue) {
-    param.expression = '=';
-    externalsauthorsFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, externalsauthorsFB.parameters, param,
-            SqlSyntax.EQualsOrNull, externalsauthorsFB._addedBlocks)
-        : setCriteria(pValue, externalsauthorsFB.parameters, param,
-            SqlSyntax.NotEQualsOrNull, externalsauthorsFB._addedBlocks);
-    _waitingNot = '';
-    externalsauthorsFB
-            ._addedBlocks.needEndBlock![externalsauthorsFB._blockIndex] =
-        externalsauthorsFB._addedBlocks.retVal;
-    return externalsauthorsFB;
+    return super.equalsOrNull(pValue) as ExternalsAuthorsFilterBuilder;
   }
 
+  @override
   ExternalsAuthorsFilterBuilder isNull() {
-    externalsauthorsFB._addedBlocks = setCriteria(
-        0,
-        externalsauthorsFB.parameters,
-        param,
-        SqlSyntax.IsNULL.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-        externalsauthorsFB._addedBlocks);
-    _waitingNot = '';
-    externalsauthorsFB
-            ._addedBlocks.needEndBlock![externalsauthorsFB._blockIndex] =
-        externalsauthorsFB._addedBlocks.retVal;
-    return externalsauthorsFB;
+    return super.isNull() as ExternalsAuthorsFilterBuilder;
   }
 
+  @override
   ExternalsAuthorsFilterBuilder contains(dynamic pValue) {
-    if (pValue != null) {
-      externalsauthorsFB._addedBlocks = setCriteria(
-          '%${pValue.toString()}%',
-          externalsauthorsFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          externalsauthorsFB._addedBlocks);
-      _waitingNot = '';
-      externalsauthorsFB
-              ._addedBlocks.needEndBlock![externalsauthorsFB._blockIndex] =
-          externalsauthorsFB._addedBlocks.retVal;
-    }
-    return externalsauthorsFB;
+    return super.contains(pValue) as ExternalsAuthorsFilterBuilder;
   }
 
+  @override
   ExternalsAuthorsFilterBuilder startsWith(dynamic pValue) {
-    if (pValue != null) {
-      externalsauthorsFB._addedBlocks = setCriteria(
-          '${pValue.toString()}%',
-          externalsauthorsFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          externalsauthorsFB._addedBlocks);
-      _waitingNot = '';
-      externalsauthorsFB
-              ._addedBlocks.needEndBlock![externalsauthorsFB._blockIndex] =
-          externalsauthorsFB._addedBlocks.retVal;
-      externalsauthorsFB
-              ._addedBlocks.needEndBlock![externalsauthorsFB._blockIndex] =
-          externalsauthorsFB._addedBlocks.retVal;
-    }
-    return externalsauthorsFB;
+    return super.startsWith(pValue) as ExternalsAuthorsFilterBuilder;
   }
 
+  @override
   ExternalsAuthorsFilterBuilder endsWith(dynamic pValue) {
-    if (pValue != null) {
-      externalsauthorsFB._addedBlocks = setCriteria(
-          '%${pValue.toString()}',
-          externalsauthorsFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          externalsauthorsFB._addedBlocks);
-      _waitingNot = '';
-      externalsauthorsFB
-              ._addedBlocks.needEndBlock![externalsauthorsFB._blockIndex] =
-          externalsauthorsFB._addedBlocks.retVal;
-    }
-    return externalsauthorsFB;
+    return super.endsWith(pValue) as ExternalsAuthorsFilterBuilder;
   }
 
+  @override
   ExternalsAuthorsFilterBuilder between(dynamic pFirst, dynamic pLast) {
-    if (pFirst != null && pLast != null) {
-      externalsauthorsFB._addedBlocks = setCriteria(
-          pFirst,
-          externalsauthorsFB.parameters,
-          param,
-          SqlSyntax.Between.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          externalsauthorsFB._addedBlocks,
-          pLast);
-    } else if (pFirst != null) {
-      if (_waitingNot != '') {
-        externalsauthorsFB._addedBlocks = setCriteria(
-            pFirst,
-            externalsauthorsFB.parameters,
-            param,
-            SqlSyntax.LessThan,
-            externalsauthorsFB._addedBlocks);
-      } else {
-        externalsauthorsFB._addedBlocks = setCriteria(
-            pFirst,
-            externalsauthorsFB.parameters,
-            param,
-            SqlSyntax.GreaterThanOrEquals,
-            externalsauthorsFB._addedBlocks);
-      }
-    } else if (pLast != null) {
-      if (_waitingNot != '') {
-        externalsauthorsFB._addedBlocks = setCriteria(
-            pLast,
-            externalsauthorsFB.parameters,
-            param,
-            SqlSyntax.GreaterThan,
-            externalsauthorsFB._addedBlocks);
-      } else {
-        externalsauthorsFB._addedBlocks = setCriteria(
-            pLast,
-            externalsauthorsFB.parameters,
-            param,
-            SqlSyntax.LessThanOrEquals,
-            externalsauthorsFB._addedBlocks);
-      }
-    }
-    _waitingNot = '';
-    externalsauthorsFB
-            ._addedBlocks.needEndBlock![externalsauthorsFB._blockIndex] =
-        externalsauthorsFB._addedBlocks.retVal;
-    return externalsauthorsFB;
+    return super.between(pFirst, pLast) as ExternalsAuthorsFilterBuilder;
   }
 
+  @override
   ExternalsAuthorsFilterBuilder greaterThan(dynamic pValue) {
-    param.expression = '>';
-    externalsauthorsFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, externalsauthorsFB.parameters, param,
-            SqlSyntax.GreaterThan, externalsauthorsFB._addedBlocks)
-        : setCriteria(pValue, externalsauthorsFB.parameters, param,
-            SqlSyntax.LessThanOrEquals, externalsauthorsFB._addedBlocks);
-    _waitingNot = '';
-    externalsauthorsFB
-            ._addedBlocks.needEndBlock![externalsauthorsFB._blockIndex] =
-        externalsauthorsFB._addedBlocks.retVal;
-    return externalsauthorsFB;
+    return super.greaterThan(pValue) as ExternalsAuthorsFilterBuilder;
   }
 
+  @override
   ExternalsAuthorsFilterBuilder lessThan(dynamic pValue) {
-    param.expression = '<';
-    externalsauthorsFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, externalsauthorsFB.parameters, param,
-            SqlSyntax.LessThan, externalsauthorsFB._addedBlocks)
-        : setCriteria(pValue, externalsauthorsFB.parameters, param,
-            SqlSyntax.GreaterThanOrEquals, externalsauthorsFB._addedBlocks);
-    _waitingNot = '';
-    externalsauthorsFB
-            ._addedBlocks.needEndBlock![externalsauthorsFB._blockIndex] =
-        externalsauthorsFB._addedBlocks.retVal;
-    return externalsauthorsFB;
+    return super.lessThan(pValue) as ExternalsAuthorsFilterBuilder;
   }
 
+  @override
   ExternalsAuthorsFilterBuilder greaterThanOrEquals(dynamic pValue) {
-    param.expression = '>=';
-    externalsauthorsFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, externalsauthorsFB.parameters, param,
-            SqlSyntax.GreaterThanOrEquals, externalsauthorsFB._addedBlocks)
-        : setCriteria(pValue, externalsauthorsFB.parameters, param,
-            SqlSyntax.LessThan, externalsauthorsFB._addedBlocks);
-    _waitingNot = '';
-    externalsauthorsFB
-            ._addedBlocks.needEndBlock![externalsauthorsFB._blockIndex] =
-        externalsauthorsFB._addedBlocks.retVal;
-    return externalsauthorsFB;
+    return super.greaterThanOrEquals(pValue) as ExternalsAuthorsFilterBuilder;
   }
 
+  @override
   ExternalsAuthorsFilterBuilder lessThanOrEquals(dynamic pValue) {
-    param.expression = '<=';
-    externalsauthorsFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, externalsauthorsFB.parameters, param,
-            SqlSyntax.LessThanOrEquals, externalsauthorsFB._addedBlocks)
-        : setCriteria(pValue, externalsauthorsFB.parameters, param,
-            SqlSyntax.GreaterThan, externalsauthorsFB._addedBlocks);
-    _waitingNot = '';
-    externalsauthorsFB
-            ._addedBlocks.needEndBlock![externalsauthorsFB._blockIndex] =
-        externalsauthorsFB._addedBlocks.retVal;
-    return externalsauthorsFB;
+    return super.lessThanOrEquals(pValue) as ExternalsAuthorsFilterBuilder;
   }
 
+  @override
   ExternalsAuthorsFilterBuilder inValues(dynamic pValue) {
-    externalsauthorsFB._addedBlocks = setCriteria(
-        pValue,
-        externalsauthorsFB.parameters,
-        param,
-        SqlSyntax.IN.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-        externalsauthorsFB._addedBlocks);
-    _waitingNot = '';
-    externalsauthorsFB
-            ._addedBlocks.needEndBlock![externalsauthorsFB._blockIndex] =
-        externalsauthorsFB._addedBlocks.retVal;
-    return externalsauthorsFB;
+    return super.inValues(pValue) as ExternalsAuthorsFilterBuilder;
+  }
+
+  @override
+  ExternalsAuthorsField get not {
+    return super.not as ExternalsAuthorsField;
   }
 }
 // endregion ExternalsAuthorsField
 
 // region ExternalsAuthorsFilterBuilder
-class ExternalsAuthorsFilterBuilder extends SearchCriteria {
-  ExternalsAuthorsFilterBuilder(ExternalsAuthors obj) {
-    whereString = '';
-    groupByList = <String>[];
-    _addedBlocks.needEndBlock!.add(false);
-    _addedBlocks.waitingStartBlock!.add(false);
-    _obj = obj;
+class ExternalsAuthorsFilterBuilder extends ConjunctionBase {
+  ExternalsAuthorsFilterBuilder(ExternalsAuthors obj, bool? getIsDeleted)
+      : super(obj, getIsDeleted) {
+    _mnExternalsAuthors = obj._mnExternalsAuthors;
+    _softDeleteActivated = obj.softDeleteActivated;
   }
-  AddedBlocks _addedBlocks = AddedBlocks(<bool>[], <bool>[]);
-  int _blockIndex = 0;
-  List<DbParameter> parameters = <DbParameter>[];
-  List<String> orderByList = <String>[];
-  ExternalsAuthors? _obj;
-  QueryParams qparams = QueryParams();
-  int _pagesize = 0;
-  int _page = 0;
+
+  bool _softDeleteActivated = false;
+  ExternalsAuthorsManager? _mnExternalsAuthors;
 
   /// put the sql keyword 'AND'
+  @override
   ExternalsAuthorsFilterBuilder get and {
-    if (parameters.isNotEmpty) {
-      parameters[parameters.length - 1].wOperator = ' AND ';
-    }
+    super.and;
     return this;
   }
 
   /// put the sql keyword 'OR'
+  @override
   ExternalsAuthorsFilterBuilder get or {
-    if (parameters.isNotEmpty) {
-      parameters[parameters.length - 1].wOperator = ' OR ';
-    }
+    super.or;
     return this;
   }
 
   /// open parentheses
+  @override
   ExternalsAuthorsFilterBuilder get startBlock {
-    _addedBlocks.waitingStartBlock!.add(true);
-    _addedBlocks.needEndBlock!.add(false);
-    _blockIndex++;
-    if (_blockIndex > 1) {
-      _addedBlocks.needEndBlock![_blockIndex - 1] = true;
-    }
+    super.startBlock;
     return this;
   }
 
   /// String whereCriteria, write raw query without 'where' keyword. Like this: 'field1 like 'test%' and field2 = 3'
+  @override
   ExternalsAuthorsFilterBuilder where(String? whereCriteria,
       {dynamic parameterValue}) {
-    if (whereCriteria != null && whereCriteria != '') {
-      final DbParameter param = DbParameter(
-          columnName: parameterValue == null ? null : '',
-          hasParameter: parameterValue != null);
-      _addedBlocks = setCriteria(parameterValue ?? 0, parameters, param,
-          '($whereCriteria)', _addedBlocks);
-      _addedBlocks.needEndBlock![_blockIndex] = _addedBlocks.retVal;
-    }
+    super.where(whereCriteria, parameterValue: parameterValue);
     return this;
   }
 
   /// page = page number,
-  ///
   /// pagesize = row(s) per page
+  @override
   ExternalsAuthorsFilterBuilder page(int page, int pagesize) {
-    if (page > 0) {
-      _page = page;
-    }
-    if (pagesize > 0) {
-      _pagesize = pagesize;
-    }
+    super.page(page, pagesize);
     return this;
   }
 
   /// int count = LIMIT
+  @override
   ExternalsAuthorsFilterBuilder top(int count) {
-    if (count > 0) {
-      _pagesize = count;
-    }
+    super.top(count);
     return this;
   }
 
   /// close parentheses
+  @override
   ExternalsAuthorsFilterBuilder get endBlock {
-    if (_addedBlocks.needEndBlock![_blockIndex]) {
-      parameters[parameters.length - 1].whereString += ' ) ';
-    }
-    _addedBlocks.needEndBlock!.removeAt(_blockIndex);
-    _addedBlocks.waitingStartBlock!.removeAt(_blockIndex);
-    _blockIndex--;
+    super.endBlock;
     return this;
   }
 
   /// argFields might be String or List<String>.
-  ///
   /// Example 1: argFields='name, date'
-  ///
   /// Example 2: argFields = ['name', 'date']
+  @override
   ExternalsAuthorsFilterBuilder orderBy(dynamic argFields) {
-    if (argFields != null) {
-      if (argFields is String) {
-        orderByList.add(argFields);
-      } else {
-        for (String? s in argFields as List<String?>) {
-          if (s!.isNotEmpty) {
-            orderByList.add(' $s ');
-          }
-        }
-      }
-    }
+    super.orderBy(argFields);
     return this;
   }
 
   /// argFields might be String or List<String>.
-  ///
   /// Example 1: argFields='field1, field2'
-  ///
   /// Example 2: argFields = ['field1', 'field2']
+  @override
   ExternalsAuthorsFilterBuilder orderByDesc(dynamic argFields) {
-    if (argFields != null) {
-      if (argFields is String) {
-        orderByList.add('$argFields desc ');
-      } else {
-        for (String? s in argFields as List<String?>) {
-          if (s!.isNotEmpty) {
-            orderByList.add(' $s desc ');
-          }
-        }
-      }
-    }
+    super.orderByDesc(argFields);
     return this;
   }
 
   /// argFields might be String or List<String>.
-  ///
   /// Example 1: argFields='field1, field2'
-  ///
   /// Example 2: argFields = ['field1', 'field2']
+  @override
   ExternalsAuthorsFilterBuilder groupBy(dynamic argFields) {
-    if (argFields != null) {
-      if (argFields is String) {
-        groupByList.add(' $argFields ');
-      } else {
-        for (String? s in argFields as List<String?>) {
-          if (s!.isNotEmpty) {
-            groupByList.add(' $s ');
-          }
-        }
-      }
-    }
+    super.groupBy(argFields);
     return this;
   }
 
   /// argFields might be String or List<String>.
-  ///
   /// Example 1: argFields='name, date'
-  ///
   /// Example 2: argFields = ['name', 'date']
+  @override
   ExternalsAuthorsFilterBuilder having(dynamic argFields) {
-    if (argFields != null) {
-      if (argFields is String) {
-        havingList.add(argFields);
-      } else {
-        for (String? s in argFields as List<String?>) {
-          if (s!.isNotEmpty) {
-            havingList.add(' $s ');
-          }
-        }
-      }
-    }
+    super.having(argFields);
     return this;
   }
 
-  ExternalsAuthorsField setField(
+  ExternalsAuthorsField _setField(
       ExternalsAuthorsField? field, String colName, DbType dbtype) {
     return ExternalsAuthorsField(this)
       ..param = DbParameter(
-          dbType: dbtype,
-          columnName: colName,
-          wStartBlock: _addedBlocks.waitingStartBlock![_blockIndex]);
+          dbType: dbtype, columnName: colName, wStartBlock: openedBlock);
   }
 
   ExternalsAuthorsField? _externalsId;
   ExternalsAuthorsField get externalsId {
-    return _externalsId = setField(_externalsId, 'externalsId', DbType.integer);
+    return _externalsId =
+        _setField(_externalsId, 'externalsId', DbType.integer);
   }
 
   ExternalsAuthorsField? _authorsId;
   ExternalsAuthorsField get authorsId {
-    return _authorsId = setField(_authorsId, 'authorsId', DbType.integer);
-  }
-
-  bool _getIsDeleted = false;
-
-  void _buildParameters() {
-    if (_page > 0 && _pagesize > 0) {
-      qparams
-        ..limit = _pagesize
-        ..offset = (_page - 1) * _pagesize;
-    } else {
-      qparams
-        ..limit = _pagesize
-        ..offset = _page;
-    }
-    for (DbParameter param in parameters) {
-      if (param.columnName != null) {
-        if (param.value is List && !param.hasParameter) {
-          param.value = param.dbType == DbType.text || param.value[0] is String
-              ? '\'${param.value.join('\',\'')}\''
-              : param.value.join(',');
-          whereString += param.whereString
-              .replaceAll('{field}', param.columnName!)
-              .replaceAll('?', param.value.toString());
-          param.value = null;
-        } else {
-          if (param.value is Map<String, dynamic> &&
-              param.value['sql'] != null) {
-            param
-              ..whereString = param.whereString
-                  .replaceAll('?', param.value['sql'].toString())
-              ..dbType = DbType.integer
-              ..value = param.value['args'];
-          }
-          whereString +=
-              param.whereString.replaceAll('{field}', param.columnName!);
-        }
-        if (!param.whereString.contains('?')) {
-        } else {
-          switch (param.dbType) {
-            case DbType.bool:
-              param.value = param.value == null
-                  ? null
-                  : param.value == true
-                      ? 1
-                      : 0;
-              param.value2 = param.value2 == null
-                  ? null
-                  : param.value2 == true
-                      ? 1
-                      : 0;
-              break;
-            case DbType.date:
-            case DbType.datetime:
-            case DbType.datetimeUtc:
-              param.value = param.value == null
-                  ? null
-                  : (param.value as DateTime).millisecondsSinceEpoch;
-              param.value2 = param.value2 == null
-                  ? null
-                  : (param.value2 as DateTime).millisecondsSinceEpoch;
-              break;
-            default:
-          }
-          if (param.value != null) {
-            if (param.value is List) {
-              for (var p in param.value) {
-                whereArguments.add(p);
-              }
-            } else {
-              whereArguments.add(param.value);
-            }
-          }
-          if (param.value2 != null) {
-            whereArguments.add(param.value2);
-          }
-        }
-      } else {
-        whereString += param.whereString;
-      }
-    }
-    if (ExternalsAuthors._softDeleteActivated) {
-      if (whereString != '') {
-        whereString =
-            '${!_getIsDeleted ? 'ifnull(isDeleted,0)=0 AND' : ''} ($whereString)';
-      } else if (!_getIsDeleted) {
-        whereString = 'ifnull(isDeleted,0)=0';
-      }
-    }
-
-    if (whereString != '') {
-      qparams.whereString = whereString;
-    }
-    qparams
-      ..whereArguments = whereArguments
-      ..groupBy = groupByList.join(',')
-      ..orderBy = orderByList.join(',')
-      ..having = havingList.join(',');
+    return _authorsId = _setField(_authorsId, 'authorsId', DbType.integer);
   }
 
   /// Deletes List<ExternalsAuthors> bulk by query
   ///
-  /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
+  /// <returns>BoolResult res.success= true (Deleted), false (Could not be deleted)
+  @override
   Future<BoolResult> delete([bool hardDelete = false]) async {
-    _buildParameters();
+    buildParameters();
     var r = BoolResult(success: false);
 
-    if (ExternalsAuthors._softDeleteActivated && !hardDelete) {
-      r = await _obj!._mnExternalsAuthors
-          .updateBatch(qparams, {'isDeleted': 1});
+    if (_softDeleteActivated && !hardDelete) {
+      r = await _mnExternalsAuthors!.updateBatch(qparams, {'isDeleted': 1});
     } else {
-      r = await _obj!._mnExternalsAuthors.delete(qparams);
+      r = await _mnExternalsAuthors!.delete(qparams);
     }
     return r;
   }
 
   /// using:
-  ///
   /// update({'fieldName': Value})
-  ///
   /// fieldName must be String. Value is dynamic, it can be any of the (int, bool, String.. )
+  @override
   Future<BoolResult> update(Map<String, dynamic> values) {
-    _buildParameters();
+    buildParameters();
     if (qparams.limit! > 0 || qparams.offset! > 0) {
       qparams.whereString =
           'externalsId IN (SELECT externalsId from externalsAuthors ${qparams.whereString!.isNotEmpty ? 'WHERE ${qparams.whereString}' : ''}${qparams.limit! > 0 ? ' LIMIT ${qparams.limit}' : ''}${qparams.offset! > 0 ? ' OFFSET ${qparams.offset}' : ''})';
     }
-    return _obj!._mnExternalsAuthors.updateBatch(qparams, values);
+    return _mnExternalsAuthors!.updateBatch(qparams, values);
   }
 
-  /// This method always returns ExternalsAuthors Obj if exist, otherwise returns null
-  ///
+  /// This method always returns [ExternalsAuthors] Obj if exist, otherwise returns null
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
-  ///
   /// ex: toSingle(preload:true) -> Loads all related objects
-  ///
   /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
-  ///
   /// ex: toSingle(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
-  ///
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
-  ///
-  /// <returns>List<ExternalsAuthors>
+  /// <returns> ExternalsAuthors?
+  @override
   Future<ExternalsAuthors?> toSingle(
       {bool preload = false,
       List<String>? preloadFields,
       bool loadParents = false,
       List<String>? loadedFields}) async {
-    _pagesize = 1;
-    _buildParameters();
-    final objFuture = _obj!._mnExternalsAuthors.toList(qparams);
+    buildParameters(pSize: 1);
+    final objFuture = _mnExternalsAuthors!.toList(qparams);
     final data = await objFuture;
     ExternalsAuthors? obj;
     if (data.isNotEmpty) {
       obj = ExternalsAuthors.fromMap(data[0] as Map<String, dynamic>);
-      // final List<String> _loadedFields = loadedFields ?? [];
 
       // RELATIONSHIPS PRELOAD
       if (preload || loadParents) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedfields!.contains('externals.plExternal') && */ (preloadFields ==
-                null ||
+        if ((preloadFields == null ||
             loadParents ||
             preloadFields.contains('plExternal'))) {
-          /*_loadedfields!.add('externals.plExternal');*/ obj.plExternal = obj
-                  .plExternal ??
-              await obj.getExternal(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+          obj.plExternal =
+              obj.plExternal ?? await obj.getExternal(loadParents: loadParents);
         }
-        if (/*!_loadedfields!.contains('authors.plAuthor') && */ (preloadFields ==
-                null ||
+        if ((preloadFields == null ||
             loadParents ||
             preloadFields.contains('plAuthor'))) {
-          /*_loadedfields!.add('authors.plAuthor');*/ obj.plAuthor = obj
-                  .plAuthor ??
-              await obj.getAuthor(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+          obj.plAuthor =
+              obj.plAuthor ?? await obj.getAuthor(loadParents: loadParents);
         }
       } // END RELATIONSHIPS PRELOAD
 
@@ -12653,15 +9743,36 @@ class ExternalsAuthorsFilterBuilder extends SearchCriteria {
     return obj;
   }
 
+  /// This method always returns [ExternalsAuthors]
+  /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
+  /// ex: toSingle(preload:true) -> Loads all related objects
+  /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
+  /// ex: toSingle(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
+  /// bool loadParents: if true, loads all parent objects until the object has no parent
+
+  /// <returns> ExternalsAuthors?
+  @override
+  Future<ExternalsAuthors> toSingleOrDefault(
+      {bool preload = false,
+      List<String>? preloadFields,
+      bool loadParents = false,
+      List<String>? loadedFields}) async {
+    return await toSingle(
+            preload: preload,
+            preloadFields: preloadFields,
+            loadParents: loadParents,
+            loadedFields: loadedFields) ??
+        ExternalsAuthors();
+  }
+
   /// This method returns int. [ExternalsAuthors]
-  ///
   /// <returns>int
+  @override
   Future<int> toCount(
       [VoidCallback Function(int c)? externalsauthorsCount]) async {
-    _buildParameters();
+    buildParameters();
     qparams.selectColumns = ['COUNT(1) AS CNT'];
-    final externalsauthorsesFuture =
-        await _obj!._mnExternalsAuthors.toList(qparams);
+    final externalsauthorsesFuture = await _mnExternalsAuthors!.toList(qparams);
     final int count = externalsauthorsesFuture[0]['CNT'] as int;
     if (externalsauthorsCount != null) {
       externalsauthorsCount(count);
@@ -12670,19 +9781,14 @@ class ExternalsAuthorsFilterBuilder extends SearchCriteria {
   }
 
   /// This method returns List<ExternalsAuthors> [ExternalsAuthors]
-  ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
-  ///
   /// ex: toList(preload:true) -> Loads all related objects
-  ///
   /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
-  ///
   /// ex: toList(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
-  ///
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
-  ///
   /// <returns>List<ExternalsAuthors>
+  @override
   Future<List<ExternalsAuthors>> toList(
       {bool preload = false,
       List<String>? preloadFields,
@@ -12700,6 +9806,7 @@ class ExternalsAuthorsFilterBuilder extends SearchCriteria {
   }
 
   /// This method returns Json String [ExternalsAuthors]
+  @override
   Future<String> toJson() async {
     final list = <dynamic>[];
     final data = await toList();
@@ -12710,6 +9817,7 @@ class ExternalsAuthorsFilterBuilder extends SearchCriteria {
   }
 
   /// This method returns Json String. [ExternalsAuthors]
+  @override
   Future<String> toJsonWithChilds() async {
     final list = <dynamic>[];
     final data = await toList();
@@ -12720,22 +9828,21 @@ class ExternalsAuthorsFilterBuilder extends SearchCriteria {
   }
 
   /// This method returns List<dynamic>. [ExternalsAuthors]
-  ///
   /// <returns>List<dynamic>
+  @override
   Future<List<dynamic>> toMapList() async {
-    _buildParameters();
-    return await _obj!._mnExternalsAuthors.toList(qparams);
+    buildParameters();
+    return await _mnExternalsAuthors!.toList(qparams);
   }
 
   /// This method returns Primary Key List SQL and Parameters retVal = Map<String,dynamic>. [ExternalsAuthors]
-  ///
   /// retVal['sql'] = SQL statement string, retVal['args'] = whereArguments List<dynamic>;
-  ///
   /// <returns>List<String>
-  Map<String, dynamic> toListPrimaryKeySQL([bool buildParameters = true]) {
+  @override
+  Map<String, dynamic> toListPrimaryKeySQL([bool buildParams = true]) {
     final Map<String, dynamic> _retVal = <String, dynamic>{};
-    if (buildParameters) {
-      _buildParameters();
+    if (buildParams) {
+      buildParameters();
     }
     _retVal['sql'] =
         'SELECT `externalsId`authorsId` FROM externalsAuthors WHERE ${qparams.whereString}';
@@ -12745,24 +9852,24 @@ class ExternalsAuthorsFilterBuilder extends SearchCriteria {
 
   /// This method returns Primary Key List<externalsId,authorsId> [ExternalsAuthors]
   /// <returns>List<externalsId,authorsId>
+  @override
   Future<List<ExternalsAuthors>> toListPrimaryKey(
-      [bool buildParameters = true]) async {
-    if (buildParameters) {
-      _buildParameters();
+      [bool buildParams = true]) async {
+    if (buildParams) {
+      buildParameters();
     }
     qparams.selectColumns = ['externalsId', 'authorsId'];
-    final externalsauthorsFuture =
-        await _obj!._mnExternalsAuthors.toList(qparams);
+    final externalsauthorsFuture = await _mnExternalsAuthors!.toList(qparams);
     return await ExternalsAuthors.fromMapList(externalsauthorsFuture);
   }
 
   /// Returns List<dynamic> for selected columns. Use this method for 'groupBy' with min,max,avg..  [ExternalsAuthors]
-  ///
   /// Sample usage: (see EXAMPLE 4.2 at https://github.com/hhtokpinar/sqfEntity#group-by)
+  @override
   Future<List<dynamic>> toListObject() async {
-    _buildParameters();
+    buildParameters();
 
-    final objectFuture = _obj!._mnExternalsAuthors.toList(qparams);
+    final objectFuture = _mnExternalsAuthors!.toList(qparams);
 
     final List<dynamic> objectsData = <dynamic>[];
     final data = await objectFuture;
@@ -12774,13 +9881,13 @@ class ExternalsAuthorsFilterBuilder extends SearchCriteria {
   }
 
   /// Returns List<String> for selected first column
-  ///
   /// Sample usage: await ExternalsAuthors.select(columnsToSelect: ['columnName']).toListString()
+  @override
   Future<List<String>> toListString(
       [VoidCallback Function(List<String> o)? listString]) async {
-    _buildParameters();
+    buildParameters();
 
-    final objectFuture = _obj!._mnExternalsAuthors.toList(qparams);
+    final objectFuture = _mnExternalsAuthors!.toList(qparams);
 
     final List<String> objectsData = <String>[];
     final data = await objectFuture;
@@ -12829,6 +9936,7 @@ class ExternalsAuthorsManager extends SqfEntityProvider {
 class Song_lyricsAuthors extends TableBase {
   Song_lyricsAuthors({this.song_lyricsId, this.authorsId}) {
     _setDefaultValues();
+    softDeleteActivated = false;
   }
   Song_lyricsAuthors.withFields(this.song_lyricsId, this.authorsId) {
     _setDefaultValues();
@@ -12861,7 +9969,6 @@ class Song_lyricsAuthors extends TableBase {
   int? song_lyricsId;
   int? authorsId;
   bool? isSaved;
-  BoolResult? saveResult;
   // end FIELDS (Song_lyricsAuthors)
 
 // RELATIONSHIPS (Song_lyricsAuthors)
@@ -12899,6 +10006,7 @@ class Song_lyricsAuthors extends TableBase {
   }
 
   // METHODS
+  @override
   Map<String, dynamic> toMap(
       {bool forQuery = false, bool forJson = false, bool forView = false}) {
     final map = <String, dynamic>{};
@@ -12908,7 +10016,7 @@ class Song_lyricsAuthors extends TableBase {
               ? song_lyricsId
               : plSongLyric!.name
           : song_lyricsId;
-    } else {
+    } else if (song_lyricsId != null || !forView) {
       map['song_lyricsId'] = null;
     }
     if (authorsId != null) {
@@ -12917,13 +10025,14 @@ class Song_lyricsAuthors extends TableBase {
               ? authorsId
               : plAuthor!.name
           : authorsId;
-    } else {
+    } else if (authorsId != null || !forView) {
       map['authorsId'] = null;
     }
 
     return map;
   }
 
+  @override
   Future<Map<String, dynamic>> toMapWithChildren(
       [bool forQuery = false,
       bool forJson = false,
@@ -12935,7 +10044,7 @@ class Song_lyricsAuthors extends TableBase {
               ? song_lyricsId
               : plSongLyric!.name
           : song_lyricsId;
-    } else {
+    } else if (song_lyricsId != null || !forView) {
       map['song_lyricsId'] = null;
     }
     if (authorsId != null) {
@@ -12944,7 +10053,7 @@ class Song_lyricsAuthors extends TableBase {
               ? authorsId
               : plAuthor!.name
           : authorsId;
-    } else {
+    } else if (authorsId != null || !forView) {
       map['authorsId'] = null;
     }
 
@@ -12952,19 +10061,23 @@ class Song_lyricsAuthors extends TableBase {
   }
 
   /// This method returns Json String [Song_lyricsAuthors]
+  @override
   String toJson() {
     return json.encode(toMap(forJson: true));
   }
 
   /// This method returns Json String [Song_lyricsAuthors]
+  @override
   Future<String> toJsonWithChilds() async {
     return json.encode(await toMapWithChildren(false, true));
   }
 
+  @override
   List<dynamic> toArgs() {
     return [song_lyricsId, authorsId];
   }
 
+  @override
   List<dynamic> toArgsWithIds() {
     return [song_lyricsId, authorsId];
   }
@@ -13016,24 +10129,17 @@ class Song_lyricsAuthors extends TableBase {
       // RELATIONSHIPS PRELOAD
       if (preload || loadParents) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedfields!.contains('song_lyrics.plSongLyric') && */ (preloadFields ==
-                null ||
+        if ((preloadFields == null ||
             loadParents ||
             preloadFields.contains('plSongLyric'))) {
-          /*_loadedfields!.add('song_lyrics.plSongLyric');*/ obj.plSongLyric =
-              obj.plSongLyric ??
-                  await obj.getSongLyric(
-                      loadParents:
-                          loadParents /*, loadedFields: _loadedFields*/);
+          obj.plSongLyric = obj.plSongLyric ??
+              await obj.getSongLyric(loadParents: loadParents);
         }
-        if (/*!_loadedfields!.contains('authors.plAuthor') && */ (preloadFields ==
-                null ||
+        if ((preloadFields == null ||
             loadParents ||
             preloadFields.contains('plAuthor'))) {
-          /*_loadedfields!.add('authors.plAuthor');*/ obj.plAuthor = obj
-                  .plAuthor ??
-              await obj.getAuthor(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+          obj.plAuthor =
+              obj.plAuthor ?? await obj.getAuthor(loadParents: loadParents);
         }
       } // END RELATIONSHIPS PRELOAD
 
@@ -13043,21 +10149,14 @@ class Song_lyricsAuthors extends TableBase {
   }
 
   /// returns Song_lyricsAuthors by ID if exist, otherwise returns null
-  ///
   /// Primary Keys: int? song_lyricsId, int? authorsId
-  ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
-  ///
   /// ex: getById(preload:true) -> Loads all related objects
-  ///
   /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
-  ///
   /// ex: getById(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
-  ///
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
-  ///
-  /// <returns>returns Song_lyricsAuthors if exist, otherwise returns null
+  /// <returns>returns [Song_lyricsAuthors] if exist, otherwise returns null
   Future<Song_lyricsAuthors?> getById(int? song_lyricsId, int? authorsId,
       {bool preload = false,
       List<String>? preloadFields,
@@ -13071,29 +10170,21 @@ class Song_lyricsAuthors extends TableBase {
         await _mnSong_lyricsAuthors.getById([song_lyricsId, authorsId]);
     if (data.length != 0) {
       obj = Song_lyricsAuthors.fromMap(data[0] as Map<String, dynamic>);
-      // final List<String> _loadedFields = loadedFields ?? [];
 
       // RELATIONSHIPS PRELOAD
       if (preload || loadParents) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedfields!.contains('song_lyrics.plSongLyric') && */ (preloadFields ==
-                null ||
+        if ((preloadFields == null ||
             loadParents ||
             preloadFields.contains('plSongLyric'))) {
-          /*_loadedfields!.add('song_lyrics.plSongLyric');*/ obj.plSongLyric =
-              obj.plSongLyric ??
-                  await obj.getSongLyric(
-                      loadParents:
-                          loadParents /*, loadedFields: _loadedFields*/);
+          obj.plSongLyric = obj.plSongLyric ??
+              await obj.getSongLyric(loadParents: loadParents);
         }
-        if (/*!_loadedfields!.contains('authors.plAuthor') && */ (preloadFields ==
-                null ||
+        if ((preloadFields == null ||
             loadParents ||
             preloadFields.contains('plAuthor'))) {
-          /*_loadedfields!.add('authors.plAuthor');*/ obj.plAuthor = obj
-                  .plAuthor ??
-              await obj.getAuthor(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+          obj.plAuthor =
+              obj.plAuthor ?? await obj.getAuthor(loadParents: loadParents);
         }
       } // END RELATIONSHIPS PRELOAD
 
@@ -13104,12 +10195,10 @@ class Song_lyricsAuthors extends TableBase {
   }
 
   /// Saves the (Song_lyricsAuthors) object. If the Primary Key (song_lyricsId) field is null, returns Error.
-  ///
   /// INSERTS (If not exist) OR REPLACES (If exist) data while Primary Key is not null.
-  ///
   /// Call the saveAs() method if you do not want to save it when there is another row with the same song_lyricsId
-  ///
   /// <returns>Returns BoolResult
+  @override
   Future<BoolResult> save({bool ignoreBatch = true}) async {
     final result = BoolResult(success: false);
     try {
@@ -13134,7 +10223,6 @@ class Song_lyricsAuthors extends TableBase {
   }
 
   /// saveAll method saves the sent List<Song_lyricsAuthors> as a bulk in one transaction
-  ///
   /// Returns a <List<BoolResult>>
   static Future<List<dynamic>> saveAll(
       List<Song_lyricsAuthors> song_lyricsauthorses) async {
@@ -13151,9 +10239,8 @@ class Song_lyricsAuthors extends TableBase {
   }
 
   /// Updates if the record exists, otherwise adds a new row
-
   /// <returns>Returns 1
-
+  @override
   Future<int?> upsert({bool ignoreBatch = true}) async {
     try {
       final result = await _mnSong_lyricsAuthors.rawInsert(
@@ -13182,10 +10269,9 @@ class Song_lyricsAuthors extends TableBase {
   }
 
   /// inserts or replaces the sent List<<Song_lyricsAuthors>> as a bulk in one transaction.
-  ///
   /// upsertAll() method is faster then saveAll() method. upsertAll() should be used when you are sure that the primary key is greater than zero
-  ///
   /// Returns a BoolCommitResult
+  @override
   Future<BoolCommitResult> upsertAll(
       List<Song_lyricsAuthors> song_lyricsauthorses) async {
     final results = await _mnSong_lyricsAuthors.rawInsertAll(
@@ -13196,8 +10282,8 @@ class Song_lyricsAuthors extends TableBase {
 
   /// Deletes Song_lyricsAuthors
 
-  /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
-
+  /// <returns>BoolResult res.success= true (Deleted), false (Could not be deleted)
+  @override
   Future<BoolResult> delete([bool hardDelete = false]) async {
     debugPrint(
         'SQFENTITIY: delete Song_lyricsAuthors invoked (song_lyricsId=$song_lyricsId)');
@@ -13214,17 +10300,25 @@ class Song_lyricsAuthors extends TableBase {
     }
   }
 
+  @override
+  Future<BoolResult> recover([bool recoverChilds = true]) {
+    // not implemented because:
+    final msg =
+        'set useSoftDeleting:true in the table definition of [Song_lyricsAuthors] to use this feature';
+    throw UnimplementedError(msg);
+  }
+
+  @override
   Song_lyricsAuthorsFilterBuilder select(
       {List<String>? columnsToSelect, bool? getIsDeleted}) {
-    return Song_lyricsAuthorsFilterBuilder(this)
-      .._getIsDeleted = getIsDeleted == true
+    return Song_lyricsAuthorsFilterBuilder(this, getIsDeleted)
       ..qparams.selectColumns = columnsToSelect;
   }
 
+  @override
   Song_lyricsAuthorsFilterBuilder distinct(
       {List<String>? columnsToSelect, bool? getIsDeleted}) {
-    return Song_lyricsAuthorsFilterBuilder(this)
-      .._getIsDeleted = getIsDeleted == true
+    return Song_lyricsAuthorsFilterBuilder(this, getIsDeleted)
       ..qparams.selectColumns = columnsToSelect
       ..qparams.distinct = true;
   }
@@ -13256,599 +10350,257 @@ class Song_lyricsAuthors extends TableBase {
 // endregion song_lyricsauthors
 
 // region Song_lyricsAuthorsField
-class Song_lyricsAuthorsField extends SearchCriteria {
-  Song_lyricsAuthorsField(this.song_lyricsauthorsFB);
-  // { param = DbParameter(); }
-  DbParameter param = DbParameter();
-  String _waitingNot = '';
-  Song_lyricsAuthorsFilterBuilder song_lyricsauthorsFB;
+class Song_lyricsAuthorsField extends FilterBase {
+  Song_lyricsAuthorsField(Song_lyricsAuthorsFilterBuilder song_lyricsauthorsFB)
+      : super(song_lyricsauthorsFB);
 
-  Song_lyricsAuthorsField get not {
-    _waitingNot = ' NOT ';
-    return this;
-  }
-
+  @override
   Song_lyricsAuthorsFilterBuilder equals(dynamic pValue) {
-    param.expression = '=';
-    song_lyricsauthorsFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, song_lyricsauthorsFB.parameters, param,
-            SqlSyntax.EQuals, song_lyricsauthorsFB._addedBlocks)
-        : setCriteria(pValue, song_lyricsauthorsFB.parameters, param,
-            SqlSyntax.NotEQuals, song_lyricsauthorsFB._addedBlocks);
-    _waitingNot = '';
-    song_lyricsauthorsFB
-            ._addedBlocks.needEndBlock![song_lyricsauthorsFB._blockIndex] =
-        song_lyricsauthorsFB._addedBlocks.retVal;
-    return song_lyricsauthorsFB;
+    return super.equals(pValue) as Song_lyricsAuthorsFilterBuilder;
   }
 
+  @override
   Song_lyricsAuthorsFilterBuilder equalsOrNull(dynamic pValue) {
-    param.expression = '=';
-    song_lyricsauthorsFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, song_lyricsauthorsFB.parameters, param,
-            SqlSyntax.EQualsOrNull, song_lyricsauthorsFB._addedBlocks)
-        : setCriteria(pValue, song_lyricsauthorsFB.parameters, param,
-            SqlSyntax.NotEQualsOrNull, song_lyricsauthorsFB._addedBlocks);
-    _waitingNot = '';
-    song_lyricsauthorsFB
-            ._addedBlocks.needEndBlock![song_lyricsauthorsFB._blockIndex] =
-        song_lyricsauthorsFB._addedBlocks.retVal;
-    return song_lyricsauthorsFB;
+    return super.equalsOrNull(pValue) as Song_lyricsAuthorsFilterBuilder;
   }
 
+  @override
   Song_lyricsAuthorsFilterBuilder isNull() {
-    song_lyricsauthorsFB._addedBlocks = setCriteria(
-        0,
-        song_lyricsauthorsFB.parameters,
-        param,
-        SqlSyntax.IsNULL.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-        song_lyricsauthorsFB._addedBlocks);
-    _waitingNot = '';
-    song_lyricsauthorsFB
-            ._addedBlocks.needEndBlock![song_lyricsauthorsFB._blockIndex] =
-        song_lyricsauthorsFB._addedBlocks.retVal;
-    return song_lyricsauthorsFB;
+    return super.isNull() as Song_lyricsAuthorsFilterBuilder;
   }
 
+  @override
   Song_lyricsAuthorsFilterBuilder contains(dynamic pValue) {
-    if (pValue != null) {
-      song_lyricsauthorsFB._addedBlocks = setCriteria(
-          '%${pValue.toString()}%',
-          song_lyricsauthorsFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          song_lyricsauthorsFB._addedBlocks);
-      _waitingNot = '';
-      song_lyricsauthorsFB
-              ._addedBlocks.needEndBlock![song_lyricsauthorsFB._blockIndex] =
-          song_lyricsauthorsFB._addedBlocks.retVal;
-    }
-    return song_lyricsauthorsFB;
+    return super.contains(pValue) as Song_lyricsAuthorsFilterBuilder;
   }
 
+  @override
   Song_lyricsAuthorsFilterBuilder startsWith(dynamic pValue) {
-    if (pValue != null) {
-      song_lyricsauthorsFB._addedBlocks = setCriteria(
-          '${pValue.toString()}%',
-          song_lyricsauthorsFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          song_lyricsauthorsFB._addedBlocks);
-      _waitingNot = '';
-      song_lyricsauthorsFB
-              ._addedBlocks.needEndBlock![song_lyricsauthorsFB._blockIndex] =
-          song_lyricsauthorsFB._addedBlocks.retVal;
-      song_lyricsauthorsFB
-              ._addedBlocks.needEndBlock![song_lyricsauthorsFB._blockIndex] =
-          song_lyricsauthorsFB._addedBlocks.retVal;
-    }
-    return song_lyricsauthorsFB;
+    return super.startsWith(pValue) as Song_lyricsAuthorsFilterBuilder;
   }
 
+  @override
   Song_lyricsAuthorsFilterBuilder endsWith(dynamic pValue) {
-    if (pValue != null) {
-      song_lyricsauthorsFB._addedBlocks = setCriteria(
-          '%${pValue.toString()}',
-          song_lyricsauthorsFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          song_lyricsauthorsFB._addedBlocks);
-      _waitingNot = '';
-      song_lyricsauthorsFB
-              ._addedBlocks.needEndBlock![song_lyricsauthorsFB._blockIndex] =
-          song_lyricsauthorsFB._addedBlocks.retVal;
-    }
-    return song_lyricsauthorsFB;
+    return super.endsWith(pValue) as Song_lyricsAuthorsFilterBuilder;
   }
 
+  @override
   Song_lyricsAuthorsFilterBuilder between(dynamic pFirst, dynamic pLast) {
-    if (pFirst != null && pLast != null) {
-      song_lyricsauthorsFB._addedBlocks = setCriteria(
-          pFirst,
-          song_lyricsauthorsFB.parameters,
-          param,
-          SqlSyntax.Between.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          song_lyricsauthorsFB._addedBlocks,
-          pLast);
-    } else if (pFirst != null) {
-      if (_waitingNot != '') {
-        song_lyricsauthorsFB._addedBlocks = setCriteria(
-            pFirst,
-            song_lyricsauthorsFB.parameters,
-            param,
-            SqlSyntax.LessThan,
-            song_lyricsauthorsFB._addedBlocks);
-      } else {
-        song_lyricsauthorsFB._addedBlocks = setCriteria(
-            pFirst,
-            song_lyricsauthorsFB.parameters,
-            param,
-            SqlSyntax.GreaterThanOrEquals,
-            song_lyricsauthorsFB._addedBlocks);
-      }
-    } else if (pLast != null) {
-      if (_waitingNot != '') {
-        song_lyricsauthorsFB._addedBlocks = setCriteria(
-            pLast,
-            song_lyricsauthorsFB.parameters,
-            param,
-            SqlSyntax.GreaterThan,
-            song_lyricsauthorsFB._addedBlocks);
-      } else {
-        song_lyricsauthorsFB._addedBlocks = setCriteria(
-            pLast,
-            song_lyricsauthorsFB.parameters,
-            param,
-            SqlSyntax.LessThanOrEquals,
-            song_lyricsauthorsFB._addedBlocks);
-      }
-    }
-    _waitingNot = '';
-    song_lyricsauthorsFB
-            ._addedBlocks.needEndBlock![song_lyricsauthorsFB._blockIndex] =
-        song_lyricsauthorsFB._addedBlocks.retVal;
-    return song_lyricsauthorsFB;
+    return super.between(pFirst, pLast) as Song_lyricsAuthorsFilterBuilder;
   }
 
+  @override
   Song_lyricsAuthorsFilterBuilder greaterThan(dynamic pValue) {
-    param.expression = '>';
-    song_lyricsauthorsFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, song_lyricsauthorsFB.parameters, param,
-            SqlSyntax.GreaterThan, song_lyricsauthorsFB._addedBlocks)
-        : setCriteria(pValue, song_lyricsauthorsFB.parameters, param,
-            SqlSyntax.LessThanOrEquals, song_lyricsauthorsFB._addedBlocks);
-    _waitingNot = '';
-    song_lyricsauthorsFB
-            ._addedBlocks.needEndBlock![song_lyricsauthorsFB._blockIndex] =
-        song_lyricsauthorsFB._addedBlocks.retVal;
-    return song_lyricsauthorsFB;
+    return super.greaterThan(pValue) as Song_lyricsAuthorsFilterBuilder;
   }
 
+  @override
   Song_lyricsAuthorsFilterBuilder lessThan(dynamic pValue) {
-    param.expression = '<';
-    song_lyricsauthorsFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, song_lyricsauthorsFB.parameters, param,
-            SqlSyntax.LessThan, song_lyricsauthorsFB._addedBlocks)
-        : setCriteria(pValue, song_lyricsauthorsFB.parameters, param,
-            SqlSyntax.GreaterThanOrEquals, song_lyricsauthorsFB._addedBlocks);
-    _waitingNot = '';
-    song_lyricsauthorsFB
-            ._addedBlocks.needEndBlock![song_lyricsauthorsFB._blockIndex] =
-        song_lyricsauthorsFB._addedBlocks.retVal;
-    return song_lyricsauthorsFB;
+    return super.lessThan(pValue) as Song_lyricsAuthorsFilterBuilder;
   }
 
+  @override
   Song_lyricsAuthorsFilterBuilder greaterThanOrEquals(dynamic pValue) {
-    param.expression = '>=';
-    song_lyricsauthorsFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, song_lyricsauthorsFB.parameters, param,
-            SqlSyntax.GreaterThanOrEquals, song_lyricsauthorsFB._addedBlocks)
-        : setCriteria(pValue, song_lyricsauthorsFB.parameters, param,
-            SqlSyntax.LessThan, song_lyricsauthorsFB._addedBlocks);
-    _waitingNot = '';
-    song_lyricsauthorsFB
-            ._addedBlocks.needEndBlock![song_lyricsauthorsFB._blockIndex] =
-        song_lyricsauthorsFB._addedBlocks.retVal;
-    return song_lyricsauthorsFB;
+    return super.greaterThanOrEquals(pValue) as Song_lyricsAuthorsFilterBuilder;
   }
 
+  @override
   Song_lyricsAuthorsFilterBuilder lessThanOrEquals(dynamic pValue) {
-    param.expression = '<=';
-    song_lyricsauthorsFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, song_lyricsauthorsFB.parameters, param,
-            SqlSyntax.LessThanOrEquals, song_lyricsauthorsFB._addedBlocks)
-        : setCriteria(pValue, song_lyricsauthorsFB.parameters, param,
-            SqlSyntax.GreaterThan, song_lyricsauthorsFB._addedBlocks);
-    _waitingNot = '';
-    song_lyricsauthorsFB
-            ._addedBlocks.needEndBlock![song_lyricsauthorsFB._blockIndex] =
-        song_lyricsauthorsFB._addedBlocks.retVal;
-    return song_lyricsauthorsFB;
+    return super.lessThanOrEquals(pValue) as Song_lyricsAuthorsFilterBuilder;
   }
 
+  @override
   Song_lyricsAuthorsFilterBuilder inValues(dynamic pValue) {
-    song_lyricsauthorsFB._addedBlocks = setCriteria(
-        pValue,
-        song_lyricsauthorsFB.parameters,
-        param,
-        SqlSyntax.IN.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-        song_lyricsauthorsFB._addedBlocks);
-    _waitingNot = '';
-    song_lyricsauthorsFB
-            ._addedBlocks.needEndBlock![song_lyricsauthorsFB._blockIndex] =
-        song_lyricsauthorsFB._addedBlocks.retVal;
-    return song_lyricsauthorsFB;
+    return super.inValues(pValue) as Song_lyricsAuthorsFilterBuilder;
+  }
+
+  @override
+  Song_lyricsAuthorsField get not {
+    return super.not as Song_lyricsAuthorsField;
   }
 }
 // endregion Song_lyricsAuthorsField
 
 // region Song_lyricsAuthorsFilterBuilder
-class Song_lyricsAuthorsFilterBuilder extends SearchCriteria {
-  Song_lyricsAuthorsFilterBuilder(Song_lyricsAuthors obj) {
-    whereString = '';
-    groupByList = <String>[];
-    _addedBlocks.needEndBlock!.add(false);
-    _addedBlocks.waitingStartBlock!.add(false);
-    _obj = obj;
+class Song_lyricsAuthorsFilterBuilder extends ConjunctionBase {
+  Song_lyricsAuthorsFilterBuilder(Song_lyricsAuthors obj, bool? getIsDeleted)
+      : super(obj, getIsDeleted) {
+    _mnSong_lyricsAuthors = obj._mnSong_lyricsAuthors;
+    _softDeleteActivated = obj.softDeleteActivated;
   }
-  AddedBlocks _addedBlocks = AddedBlocks(<bool>[], <bool>[]);
-  int _blockIndex = 0;
-  List<DbParameter> parameters = <DbParameter>[];
-  List<String> orderByList = <String>[];
-  Song_lyricsAuthors? _obj;
-  QueryParams qparams = QueryParams();
-  int _pagesize = 0;
-  int _page = 0;
+
+  bool _softDeleteActivated = false;
+  Song_lyricsAuthorsManager? _mnSong_lyricsAuthors;
 
   /// put the sql keyword 'AND'
+  @override
   Song_lyricsAuthorsFilterBuilder get and {
-    if (parameters.isNotEmpty) {
-      parameters[parameters.length - 1].wOperator = ' AND ';
-    }
+    super.and;
     return this;
   }
 
   /// put the sql keyword 'OR'
+  @override
   Song_lyricsAuthorsFilterBuilder get or {
-    if (parameters.isNotEmpty) {
-      parameters[parameters.length - 1].wOperator = ' OR ';
-    }
+    super.or;
     return this;
   }
 
   /// open parentheses
+  @override
   Song_lyricsAuthorsFilterBuilder get startBlock {
-    _addedBlocks.waitingStartBlock!.add(true);
-    _addedBlocks.needEndBlock!.add(false);
-    _blockIndex++;
-    if (_blockIndex > 1) {
-      _addedBlocks.needEndBlock![_blockIndex - 1] = true;
-    }
+    super.startBlock;
     return this;
   }
 
   /// String whereCriteria, write raw query without 'where' keyword. Like this: 'field1 like 'test%' and field2 = 3'
+  @override
   Song_lyricsAuthorsFilterBuilder where(String? whereCriteria,
       {dynamic parameterValue}) {
-    if (whereCriteria != null && whereCriteria != '') {
-      final DbParameter param = DbParameter(
-          columnName: parameterValue == null ? null : '',
-          hasParameter: parameterValue != null);
-      _addedBlocks = setCriteria(parameterValue ?? 0, parameters, param,
-          '($whereCriteria)', _addedBlocks);
-      _addedBlocks.needEndBlock![_blockIndex] = _addedBlocks.retVal;
-    }
+    super.where(whereCriteria, parameterValue: parameterValue);
     return this;
   }
 
   /// page = page number,
-  ///
   /// pagesize = row(s) per page
+  @override
   Song_lyricsAuthorsFilterBuilder page(int page, int pagesize) {
-    if (page > 0) {
-      _page = page;
-    }
-    if (pagesize > 0) {
-      _pagesize = pagesize;
-    }
+    super.page(page, pagesize);
     return this;
   }
 
   /// int count = LIMIT
+  @override
   Song_lyricsAuthorsFilterBuilder top(int count) {
-    if (count > 0) {
-      _pagesize = count;
-    }
+    super.top(count);
     return this;
   }
 
   /// close parentheses
+  @override
   Song_lyricsAuthorsFilterBuilder get endBlock {
-    if (_addedBlocks.needEndBlock![_blockIndex]) {
-      parameters[parameters.length - 1].whereString += ' ) ';
-    }
-    _addedBlocks.needEndBlock!.removeAt(_blockIndex);
-    _addedBlocks.waitingStartBlock!.removeAt(_blockIndex);
-    _blockIndex--;
+    super.endBlock;
     return this;
   }
 
   /// argFields might be String or List<String>.
-  ///
   /// Example 1: argFields='name, date'
-  ///
   /// Example 2: argFields = ['name', 'date']
+  @override
   Song_lyricsAuthorsFilterBuilder orderBy(dynamic argFields) {
-    if (argFields != null) {
-      if (argFields is String) {
-        orderByList.add(argFields);
-      } else {
-        for (String? s in argFields as List<String?>) {
-          if (s!.isNotEmpty) {
-            orderByList.add(' $s ');
-          }
-        }
-      }
-    }
+    super.orderBy(argFields);
     return this;
   }
 
   /// argFields might be String or List<String>.
-  ///
   /// Example 1: argFields='field1, field2'
-  ///
   /// Example 2: argFields = ['field1', 'field2']
+  @override
   Song_lyricsAuthorsFilterBuilder orderByDesc(dynamic argFields) {
-    if (argFields != null) {
-      if (argFields is String) {
-        orderByList.add('$argFields desc ');
-      } else {
-        for (String? s in argFields as List<String?>) {
-          if (s!.isNotEmpty) {
-            orderByList.add(' $s desc ');
-          }
-        }
-      }
-    }
+    super.orderByDesc(argFields);
     return this;
   }
 
   /// argFields might be String or List<String>.
-  ///
   /// Example 1: argFields='field1, field2'
-  ///
   /// Example 2: argFields = ['field1', 'field2']
+  @override
   Song_lyricsAuthorsFilterBuilder groupBy(dynamic argFields) {
-    if (argFields != null) {
-      if (argFields is String) {
-        groupByList.add(' $argFields ');
-      } else {
-        for (String? s in argFields as List<String?>) {
-          if (s!.isNotEmpty) {
-            groupByList.add(' $s ');
-          }
-        }
-      }
-    }
+    super.groupBy(argFields);
     return this;
   }
 
   /// argFields might be String or List<String>.
-  ///
   /// Example 1: argFields='name, date'
-  ///
   /// Example 2: argFields = ['name', 'date']
+  @override
   Song_lyricsAuthorsFilterBuilder having(dynamic argFields) {
-    if (argFields != null) {
-      if (argFields is String) {
-        havingList.add(argFields);
-      } else {
-        for (String? s in argFields as List<String?>) {
-          if (s!.isNotEmpty) {
-            havingList.add(' $s ');
-          }
-        }
-      }
-    }
+    super.having(argFields);
     return this;
   }
 
-  Song_lyricsAuthorsField setField(
+  Song_lyricsAuthorsField _setField(
       Song_lyricsAuthorsField? field, String colName, DbType dbtype) {
     return Song_lyricsAuthorsField(this)
       ..param = DbParameter(
-          dbType: dbtype,
-          columnName: colName,
-          wStartBlock: _addedBlocks.waitingStartBlock![_blockIndex]);
+          dbType: dbtype, columnName: colName, wStartBlock: openedBlock);
   }
 
   Song_lyricsAuthorsField? _song_lyricsId;
   Song_lyricsAuthorsField get song_lyricsId {
     return _song_lyricsId =
-        setField(_song_lyricsId, 'song_lyricsId', DbType.integer);
+        _setField(_song_lyricsId, 'song_lyricsId', DbType.integer);
   }
 
   Song_lyricsAuthorsField? _authorsId;
   Song_lyricsAuthorsField get authorsId {
-    return _authorsId = setField(_authorsId, 'authorsId', DbType.integer);
-  }
-
-  bool _getIsDeleted = false;
-
-  void _buildParameters() {
-    if (_page > 0 && _pagesize > 0) {
-      qparams
-        ..limit = _pagesize
-        ..offset = (_page - 1) * _pagesize;
-    } else {
-      qparams
-        ..limit = _pagesize
-        ..offset = _page;
-    }
-    for (DbParameter param in parameters) {
-      if (param.columnName != null) {
-        if (param.value is List && !param.hasParameter) {
-          param.value = param.dbType == DbType.text || param.value[0] is String
-              ? '\'${param.value.join('\',\'')}\''
-              : param.value.join(',');
-          whereString += param.whereString
-              .replaceAll('{field}', param.columnName!)
-              .replaceAll('?', param.value.toString());
-          param.value = null;
-        } else {
-          if (param.value is Map<String, dynamic> &&
-              param.value['sql'] != null) {
-            param
-              ..whereString = param.whereString
-                  .replaceAll('?', param.value['sql'].toString())
-              ..dbType = DbType.integer
-              ..value = param.value['args'];
-          }
-          whereString +=
-              param.whereString.replaceAll('{field}', param.columnName!);
-        }
-        if (!param.whereString.contains('?')) {
-        } else {
-          switch (param.dbType) {
-            case DbType.bool:
-              param.value = param.value == null
-                  ? null
-                  : param.value == true
-                      ? 1
-                      : 0;
-              param.value2 = param.value2 == null
-                  ? null
-                  : param.value2 == true
-                      ? 1
-                      : 0;
-              break;
-            case DbType.date:
-            case DbType.datetime:
-            case DbType.datetimeUtc:
-              param.value = param.value == null
-                  ? null
-                  : (param.value as DateTime).millisecondsSinceEpoch;
-              param.value2 = param.value2 == null
-                  ? null
-                  : (param.value2 as DateTime).millisecondsSinceEpoch;
-              break;
-            default:
-          }
-          if (param.value != null) {
-            if (param.value is List) {
-              for (var p in param.value) {
-                whereArguments.add(p);
-              }
-            } else {
-              whereArguments.add(param.value);
-            }
-          }
-          if (param.value2 != null) {
-            whereArguments.add(param.value2);
-          }
-        }
-      } else {
-        whereString += param.whereString;
-      }
-    }
-    if (Song_lyricsAuthors._softDeleteActivated) {
-      if (whereString != '') {
-        whereString =
-            '${!_getIsDeleted ? 'ifnull(isDeleted,0)=0 AND' : ''} ($whereString)';
-      } else if (!_getIsDeleted) {
-        whereString = 'ifnull(isDeleted,0)=0';
-      }
-    }
-
-    if (whereString != '') {
-      qparams.whereString = whereString;
-    }
-    qparams
-      ..whereArguments = whereArguments
-      ..groupBy = groupByList.join(',')
-      ..orderBy = orderByList.join(',')
-      ..having = havingList.join(',');
+    return _authorsId = _setField(_authorsId, 'authorsId', DbType.integer);
   }
 
   /// Deletes List<Song_lyricsAuthors> bulk by query
   ///
-  /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
+  /// <returns>BoolResult res.success= true (Deleted), false (Could not be deleted)
+  @override
   Future<BoolResult> delete([bool hardDelete = false]) async {
-    _buildParameters();
+    buildParameters();
     var r = BoolResult(success: false);
 
-    if (Song_lyricsAuthors._softDeleteActivated && !hardDelete) {
-      r = await _obj!._mnSong_lyricsAuthors
-          .updateBatch(qparams, {'isDeleted': 1});
+    if (_softDeleteActivated && !hardDelete) {
+      r = await _mnSong_lyricsAuthors!.updateBatch(qparams, {'isDeleted': 1});
     } else {
-      r = await _obj!._mnSong_lyricsAuthors.delete(qparams);
+      r = await _mnSong_lyricsAuthors!.delete(qparams);
     }
     return r;
   }
 
   /// using:
-  ///
   /// update({'fieldName': Value})
-  ///
   /// fieldName must be String. Value is dynamic, it can be any of the (int, bool, String.. )
+  @override
   Future<BoolResult> update(Map<String, dynamic> values) {
-    _buildParameters();
+    buildParameters();
     if (qparams.limit! > 0 || qparams.offset! > 0) {
       qparams.whereString =
           'song_lyricsId IN (SELECT song_lyricsId from song_lyricsAuthors ${qparams.whereString!.isNotEmpty ? 'WHERE ${qparams.whereString}' : ''}${qparams.limit! > 0 ? ' LIMIT ${qparams.limit}' : ''}${qparams.offset! > 0 ? ' OFFSET ${qparams.offset}' : ''})';
     }
-    return _obj!._mnSong_lyricsAuthors.updateBatch(qparams, values);
+    return _mnSong_lyricsAuthors!.updateBatch(qparams, values);
   }
 
-  /// This method always returns Song_lyricsAuthors Obj if exist, otherwise returns null
-  ///
+  /// This method always returns [Song_lyricsAuthors] Obj if exist, otherwise returns null
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
-  ///
   /// ex: toSingle(preload:true) -> Loads all related objects
-  ///
   /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
-  ///
   /// ex: toSingle(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
-  ///
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
-  ///
-  /// <returns>List<Song_lyricsAuthors>
+  /// <returns> Song_lyricsAuthors?
+  @override
   Future<Song_lyricsAuthors?> toSingle(
       {bool preload = false,
       List<String>? preloadFields,
       bool loadParents = false,
       List<String>? loadedFields}) async {
-    _pagesize = 1;
-    _buildParameters();
-    final objFuture = _obj!._mnSong_lyricsAuthors.toList(qparams);
+    buildParameters(pSize: 1);
+    final objFuture = _mnSong_lyricsAuthors!.toList(qparams);
     final data = await objFuture;
     Song_lyricsAuthors? obj;
     if (data.isNotEmpty) {
       obj = Song_lyricsAuthors.fromMap(data[0] as Map<String, dynamic>);
-      // final List<String> _loadedFields = loadedFields ?? [];
 
       // RELATIONSHIPS PRELOAD
       if (preload || loadParents) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedfields!.contains('song_lyrics.plSongLyric') && */ (preloadFields ==
-                null ||
+        if ((preloadFields == null ||
             loadParents ||
             preloadFields.contains('plSongLyric'))) {
-          /*_loadedfields!.add('song_lyrics.plSongLyric');*/ obj.plSongLyric =
-              obj.plSongLyric ??
-                  await obj.getSongLyric(
-                      loadParents:
-                          loadParents /*, loadedFields: _loadedFields*/);
+          obj.plSongLyric = obj.plSongLyric ??
+              await obj.getSongLyric(loadParents: loadParents);
         }
-        if (/*!_loadedfields!.contains('authors.plAuthor') && */ (preloadFields ==
-                null ||
+        if ((preloadFields == null ||
             loadParents ||
             preloadFields.contains('plAuthor'))) {
-          /*_loadedfields!.add('authors.plAuthor');*/ obj.plAuthor = obj
-                  .plAuthor ??
-              await obj.getAuthor(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+          obj.plAuthor =
+              obj.plAuthor ?? await obj.getAuthor(loadParents: loadParents);
         }
       } // END RELATIONSHIPS PRELOAD
 
@@ -13858,15 +10610,37 @@ class Song_lyricsAuthorsFilterBuilder extends SearchCriteria {
     return obj;
   }
 
+  /// This method always returns [Song_lyricsAuthors]
+  /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
+  /// ex: toSingle(preload:true) -> Loads all related objects
+  /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
+  /// ex: toSingle(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
+  /// bool loadParents: if true, loads all parent objects until the object has no parent
+
+  /// <returns> Song_lyricsAuthors?
+  @override
+  Future<Song_lyricsAuthors> toSingleOrDefault(
+      {bool preload = false,
+      List<String>? preloadFields,
+      bool loadParents = false,
+      List<String>? loadedFields}) async {
+    return await toSingle(
+            preload: preload,
+            preloadFields: preloadFields,
+            loadParents: loadParents,
+            loadedFields: loadedFields) ??
+        Song_lyricsAuthors();
+  }
+
   /// This method returns int. [Song_lyricsAuthors]
-  ///
   /// <returns>int
+  @override
   Future<int> toCount(
       [VoidCallback Function(int c)? song_lyricsauthorsCount]) async {
-    _buildParameters();
+    buildParameters();
     qparams.selectColumns = ['COUNT(1) AS CNT'];
     final song_lyricsauthorsesFuture =
-        await _obj!._mnSong_lyricsAuthors.toList(qparams);
+        await _mnSong_lyricsAuthors!.toList(qparams);
     final int count = song_lyricsauthorsesFuture[0]['CNT'] as int;
     if (song_lyricsauthorsCount != null) {
       song_lyricsauthorsCount(count);
@@ -13875,19 +10649,14 @@ class Song_lyricsAuthorsFilterBuilder extends SearchCriteria {
   }
 
   /// This method returns List<Song_lyricsAuthors> [Song_lyricsAuthors]
-  ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
-  ///
   /// ex: toList(preload:true) -> Loads all related objects
-  ///
   /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
-  ///
   /// ex: toList(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
-  ///
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
-  ///
   /// <returns>List<Song_lyricsAuthors>
+  @override
   Future<List<Song_lyricsAuthors>> toList(
       {bool preload = false,
       List<String>? preloadFields,
@@ -13905,6 +10674,7 @@ class Song_lyricsAuthorsFilterBuilder extends SearchCriteria {
   }
 
   /// This method returns Json String [Song_lyricsAuthors]
+  @override
   Future<String> toJson() async {
     final list = <dynamic>[];
     final data = await toList();
@@ -13915,6 +10685,7 @@ class Song_lyricsAuthorsFilterBuilder extends SearchCriteria {
   }
 
   /// This method returns Json String. [Song_lyricsAuthors]
+  @override
   Future<String> toJsonWithChilds() async {
     final list = <dynamic>[];
     final data = await toList();
@@ -13925,22 +10696,21 @@ class Song_lyricsAuthorsFilterBuilder extends SearchCriteria {
   }
 
   /// This method returns List<dynamic>. [Song_lyricsAuthors]
-  ///
   /// <returns>List<dynamic>
+  @override
   Future<List<dynamic>> toMapList() async {
-    _buildParameters();
-    return await _obj!._mnSong_lyricsAuthors.toList(qparams);
+    buildParameters();
+    return await _mnSong_lyricsAuthors!.toList(qparams);
   }
 
   /// This method returns Primary Key List SQL and Parameters retVal = Map<String,dynamic>. [Song_lyricsAuthors]
-  ///
   /// retVal['sql'] = SQL statement string, retVal['args'] = whereArguments List<dynamic>;
-  ///
   /// <returns>List<String>
-  Map<String, dynamic> toListPrimaryKeySQL([bool buildParameters = true]) {
+  @override
+  Map<String, dynamic> toListPrimaryKeySQL([bool buildParams = true]) {
     final Map<String, dynamic> _retVal = <String, dynamic>{};
-    if (buildParameters) {
-      _buildParameters();
+    if (buildParams) {
+      buildParameters();
     }
     _retVal['sql'] =
         'SELECT `song_lyricsId`authorsId` FROM song_lyricsAuthors WHERE ${qparams.whereString}';
@@ -13950,24 +10720,25 @@ class Song_lyricsAuthorsFilterBuilder extends SearchCriteria {
 
   /// This method returns Primary Key List<song_lyricsId,authorsId> [Song_lyricsAuthors]
   /// <returns>List<song_lyricsId,authorsId>
+  @override
   Future<List<Song_lyricsAuthors>> toListPrimaryKey(
-      [bool buildParameters = true]) async {
-    if (buildParameters) {
-      _buildParameters();
+      [bool buildParams = true]) async {
+    if (buildParams) {
+      buildParameters();
     }
     qparams.selectColumns = ['song_lyricsId', 'authorsId'];
     final song_lyricsauthorsFuture =
-        await _obj!._mnSong_lyricsAuthors.toList(qparams);
+        await _mnSong_lyricsAuthors!.toList(qparams);
     return await Song_lyricsAuthors.fromMapList(song_lyricsauthorsFuture);
   }
 
   /// Returns List<dynamic> for selected columns. Use this method for 'groupBy' with min,max,avg..  [Song_lyricsAuthors]
-  ///
   /// Sample usage: (see EXAMPLE 4.2 at https://github.com/hhtokpinar/sqfEntity#group-by)
+  @override
   Future<List<dynamic>> toListObject() async {
-    _buildParameters();
+    buildParameters();
 
-    final objectFuture = _obj!._mnSong_lyricsAuthors.toList(qparams);
+    final objectFuture = _mnSong_lyricsAuthors!.toList(qparams);
 
     final List<dynamic> objectsData = <dynamic>[];
     final data = await objectFuture;
@@ -13979,13 +10750,13 @@ class Song_lyricsAuthorsFilterBuilder extends SearchCriteria {
   }
 
   /// Returns List<String> for selected first column
-  ///
   /// Sample usage: await Song_lyricsAuthors.select(columnsToSelect: ['columnName']).toListString()
+  @override
   Future<List<String>> toListString(
       [VoidCallback Function(List<String> o)? listString]) async {
-    _buildParameters();
+    buildParameters();
 
-    final objectFuture = _obj!._mnSong_lyricsAuthors.toList(qparams);
+    final objectFuture = _mnSong_lyricsAuthors!.toList(qparams);
 
     final List<String> objectsData = <String>[];
     final data = await objectFuture;
@@ -14034,6 +10805,7 @@ class Song_lyricsAuthorsManager extends SqfEntityProvider {
 class Song_lyricsTags extends TableBase {
   Song_lyricsTags({this.song_lyricsId, this.tagsId}) {
     _setDefaultValues();
+    softDeleteActivated = false;
   }
   Song_lyricsTags.withFields(this.song_lyricsId, this.tagsId) {
     _setDefaultValues();
@@ -14065,7 +10837,6 @@ class Song_lyricsTags extends TableBase {
   int? song_lyricsId;
   int? tagsId;
   bool? isSaved;
-  BoolResult? saveResult;
   // end FIELDS (Song_lyricsTags)
 
 // RELATIONSHIPS (Song_lyricsTags)
@@ -14103,6 +10874,7 @@ class Song_lyricsTags extends TableBase {
   }
 
   // METHODS
+  @override
   Map<String, dynamic> toMap(
       {bool forQuery = false, bool forJson = false, bool forView = false}) {
     final map = <String, dynamic>{};
@@ -14112,7 +10884,7 @@ class Song_lyricsTags extends TableBase {
               ? song_lyricsId
               : plSongLyric!.name
           : song_lyricsId;
-    } else {
+    } else if (song_lyricsId != null || !forView) {
       map['song_lyricsId'] = null;
     }
     if (tagsId != null) {
@@ -14121,13 +10893,14 @@ class Song_lyricsTags extends TableBase {
               ? tagsId
               : plTag!.name
           : tagsId;
-    } else {
+    } else if (tagsId != null || !forView) {
       map['tagsId'] = null;
     }
 
     return map;
   }
 
+  @override
   Future<Map<String, dynamic>> toMapWithChildren(
       [bool forQuery = false,
       bool forJson = false,
@@ -14139,7 +10912,7 @@ class Song_lyricsTags extends TableBase {
               ? song_lyricsId
               : plSongLyric!.name
           : song_lyricsId;
-    } else {
+    } else if (song_lyricsId != null || !forView) {
       map['song_lyricsId'] = null;
     }
     if (tagsId != null) {
@@ -14148,7 +10921,7 @@ class Song_lyricsTags extends TableBase {
               ? tagsId
               : plTag!.name
           : tagsId;
-    } else {
+    } else if (tagsId != null || !forView) {
       map['tagsId'] = null;
     }
 
@@ -14156,19 +10929,23 @@ class Song_lyricsTags extends TableBase {
   }
 
   /// This method returns Json String [Song_lyricsTags]
+  @override
   String toJson() {
     return json.encode(toMap(forJson: true));
   }
 
   /// This method returns Json String [Song_lyricsTags]
+  @override
   Future<String> toJsonWithChilds() async {
     return json.encode(await toMapWithChildren(false, true));
   }
 
+  @override
   List<dynamic> toArgs() {
     return [song_lyricsId, tagsId];
   }
 
+  @override
   List<dynamic> toArgsWithIds() {
     return [song_lyricsId, tagsId];
   }
@@ -14220,23 +10997,16 @@ class Song_lyricsTags extends TableBase {
       // RELATIONSHIPS PRELOAD
       if (preload || loadParents) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedfields!.contains('song_lyrics.plSongLyric') && */ (preloadFields ==
-                null ||
+        if ((preloadFields == null ||
             loadParents ||
             preloadFields.contains('plSongLyric'))) {
-          /*_loadedfields!.add('song_lyrics.plSongLyric');*/ obj.plSongLyric =
-              obj.plSongLyric ??
-                  await obj.getSongLyric(
-                      loadParents:
-                          loadParents /*, loadedFields: _loadedFields*/);
+          obj.plSongLyric = obj.plSongLyric ??
+              await obj.getSongLyric(loadParents: loadParents);
         }
-        if (/*!_loadedfields!.contains('tags.plTag') && */ (preloadFields ==
-                null ||
+        if ((preloadFields == null ||
             loadParents ||
             preloadFields.contains('plTag'))) {
-          /*_loadedfields!.add('tags.plTag');*/ obj.plTag = obj.plTag ??
-              await obj.getTag(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+          obj.plTag = obj.plTag ?? await obj.getTag(loadParents: loadParents);
         }
       } // END RELATIONSHIPS PRELOAD
 
@@ -14246,21 +11016,14 @@ class Song_lyricsTags extends TableBase {
   }
 
   /// returns Song_lyricsTags by ID if exist, otherwise returns null
-  ///
   /// Primary Keys: int? song_lyricsId, int? tagsId
-  ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
-  ///
   /// ex: getById(preload:true) -> Loads all related objects
-  ///
   /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
-  ///
   /// ex: getById(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
-  ///
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
-  ///
-  /// <returns>returns Song_lyricsTags if exist, otherwise returns null
+  /// <returns>returns [Song_lyricsTags] if exist, otherwise returns null
   Future<Song_lyricsTags?> getById(int? song_lyricsId, int? tagsId,
       {bool preload = false,
       List<String>? preloadFields,
@@ -14273,28 +11036,20 @@ class Song_lyricsTags extends TableBase {
     final data = await _mnSong_lyricsTags.getById([song_lyricsId, tagsId]);
     if (data.length != 0) {
       obj = Song_lyricsTags.fromMap(data[0] as Map<String, dynamic>);
-      // final List<String> _loadedFields = loadedFields ?? [];
 
       // RELATIONSHIPS PRELOAD
       if (preload || loadParents) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedfields!.contains('song_lyrics.plSongLyric') && */ (preloadFields ==
-                null ||
+        if ((preloadFields == null ||
             loadParents ||
             preloadFields.contains('plSongLyric'))) {
-          /*_loadedfields!.add('song_lyrics.plSongLyric');*/ obj.plSongLyric =
-              obj.plSongLyric ??
-                  await obj.getSongLyric(
-                      loadParents:
-                          loadParents /*, loadedFields: _loadedFields*/);
+          obj.plSongLyric = obj.plSongLyric ??
+              await obj.getSongLyric(loadParents: loadParents);
         }
-        if (/*!_loadedfields!.contains('tags.plTag') && */ (preloadFields ==
-                null ||
+        if ((preloadFields == null ||
             loadParents ||
             preloadFields.contains('plTag'))) {
-          /*_loadedfields!.add('tags.plTag');*/ obj.plTag = obj.plTag ??
-              await obj.getTag(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+          obj.plTag = obj.plTag ?? await obj.getTag(loadParents: loadParents);
         }
       } // END RELATIONSHIPS PRELOAD
 
@@ -14305,12 +11060,10 @@ class Song_lyricsTags extends TableBase {
   }
 
   /// Saves the (Song_lyricsTags) object. If the Primary Key (song_lyricsId) field is null, returns Error.
-  ///
   /// INSERTS (If not exist) OR REPLACES (If exist) data while Primary Key is not null.
-  ///
   /// Call the saveAs() method if you do not want to save it when there is another row with the same song_lyricsId
-  ///
   /// <returns>Returns BoolResult
+  @override
   Future<BoolResult> save({bool ignoreBatch = true}) async {
     final result = BoolResult(success: false);
     try {
@@ -14335,7 +11088,6 @@ class Song_lyricsTags extends TableBase {
   }
 
   /// saveAll method saves the sent List<Song_lyricsTags> as a bulk in one transaction
-  ///
   /// Returns a <List<BoolResult>>
   static Future<List<dynamic>> saveAll(
       List<Song_lyricsTags> song_lyricstagses) async {
@@ -14352,9 +11104,8 @@ class Song_lyricsTags extends TableBase {
   }
 
   /// Updates if the record exists, otherwise adds a new row
-
   /// <returns>Returns 1
-
+  @override
   Future<int?> upsert({bool ignoreBatch = true}) async {
     try {
       final result = await _mnSong_lyricsTags.rawInsert(
@@ -14382,10 +11133,9 @@ class Song_lyricsTags extends TableBase {
   }
 
   /// inserts or replaces the sent List<<Song_lyricsTags>> as a bulk in one transaction.
-  ///
   /// upsertAll() method is faster then saveAll() method. upsertAll() should be used when you are sure that the primary key is greater than zero
-  ///
   /// Returns a BoolCommitResult
+  @override
   Future<BoolCommitResult> upsertAll(
       List<Song_lyricsTags> song_lyricstagses) async {
     final results = await _mnSong_lyricsTags.rawInsertAll(
@@ -14396,8 +11146,8 @@ class Song_lyricsTags extends TableBase {
 
   /// Deletes Song_lyricsTags
 
-  /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
-
+  /// <returns>BoolResult res.success= true (Deleted), false (Could not be deleted)
+  @override
   Future<BoolResult> delete([bool hardDelete = false]) async {
     debugPrint(
         'SQFENTITIY: delete Song_lyricsTags invoked (song_lyricsId=$song_lyricsId)');
@@ -14414,17 +11164,25 @@ class Song_lyricsTags extends TableBase {
     }
   }
 
+  @override
+  Future<BoolResult> recover([bool recoverChilds = true]) {
+    // not implemented because:
+    final msg =
+        'set useSoftDeleting:true in the table definition of [Song_lyricsTags] to use this feature';
+    throw UnimplementedError(msg);
+  }
+
+  @override
   Song_lyricsTagsFilterBuilder select(
       {List<String>? columnsToSelect, bool? getIsDeleted}) {
-    return Song_lyricsTagsFilterBuilder(this)
-      .._getIsDeleted = getIsDeleted == true
+    return Song_lyricsTagsFilterBuilder(this, getIsDeleted)
       ..qparams.selectColumns = columnsToSelect;
   }
 
+  @override
   Song_lyricsTagsFilterBuilder distinct(
       {List<String>? columnsToSelect, bool? getIsDeleted}) {
-    return Song_lyricsTagsFilterBuilder(this)
-      .._getIsDeleted = getIsDeleted == true
+    return Song_lyricsTagsFilterBuilder(this, getIsDeleted)
       ..qparams.selectColumns = columnsToSelect
       ..qparams.distinct = true;
   }
@@ -14456,597 +11214,256 @@ class Song_lyricsTags extends TableBase {
 // endregion song_lyricstags
 
 // region Song_lyricsTagsField
-class Song_lyricsTagsField extends SearchCriteria {
-  Song_lyricsTagsField(this.song_lyricstagsFB);
-  // { param = DbParameter(); }
-  DbParameter param = DbParameter();
-  String _waitingNot = '';
-  Song_lyricsTagsFilterBuilder song_lyricstagsFB;
+class Song_lyricsTagsField extends FilterBase {
+  Song_lyricsTagsField(Song_lyricsTagsFilterBuilder song_lyricstagsFB)
+      : super(song_lyricstagsFB);
 
-  Song_lyricsTagsField get not {
-    _waitingNot = ' NOT ';
-    return this;
-  }
-
+  @override
   Song_lyricsTagsFilterBuilder equals(dynamic pValue) {
-    param.expression = '=';
-    song_lyricstagsFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, song_lyricstagsFB.parameters, param,
-            SqlSyntax.EQuals, song_lyricstagsFB._addedBlocks)
-        : setCriteria(pValue, song_lyricstagsFB.parameters, param,
-            SqlSyntax.NotEQuals, song_lyricstagsFB._addedBlocks);
-    _waitingNot = '';
-    song_lyricstagsFB
-            ._addedBlocks.needEndBlock![song_lyricstagsFB._blockIndex] =
-        song_lyricstagsFB._addedBlocks.retVal;
-    return song_lyricstagsFB;
+    return super.equals(pValue) as Song_lyricsTagsFilterBuilder;
   }
 
+  @override
   Song_lyricsTagsFilterBuilder equalsOrNull(dynamic pValue) {
-    param.expression = '=';
-    song_lyricstagsFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, song_lyricstagsFB.parameters, param,
-            SqlSyntax.EQualsOrNull, song_lyricstagsFB._addedBlocks)
-        : setCriteria(pValue, song_lyricstagsFB.parameters, param,
-            SqlSyntax.NotEQualsOrNull, song_lyricstagsFB._addedBlocks);
-    _waitingNot = '';
-    song_lyricstagsFB
-            ._addedBlocks.needEndBlock![song_lyricstagsFB._blockIndex] =
-        song_lyricstagsFB._addedBlocks.retVal;
-    return song_lyricstagsFB;
+    return super.equalsOrNull(pValue) as Song_lyricsTagsFilterBuilder;
   }
 
+  @override
   Song_lyricsTagsFilterBuilder isNull() {
-    song_lyricstagsFB._addedBlocks = setCriteria(
-        0,
-        song_lyricstagsFB.parameters,
-        param,
-        SqlSyntax.IsNULL.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-        song_lyricstagsFB._addedBlocks);
-    _waitingNot = '';
-    song_lyricstagsFB
-            ._addedBlocks.needEndBlock![song_lyricstagsFB._blockIndex] =
-        song_lyricstagsFB._addedBlocks.retVal;
-    return song_lyricstagsFB;
+    return super.isNull() as Song_lyricsTagsFilterBuilder;
   }
 
+  @override
   Song_lyricsTagsFilterBuilder contains(dynamic pValue) {
-    if (pValue != null) {
-      song_lyricstagsFB._addedBlocks = setCriteria(
-          '%${pValue.toString()}%',
-          song_lyricstagsFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          song_lyricstagsFB._addedBlocks);
-      _waitingNot = '';
-      song_lyricstagsFB
-              ._addedBlocks.needEndBlock![song_lyricstagsFB._blockIndex] =
-          song_lyricstagsFB._addedBlocks.retVal;
-    }
-    return song_lyricstagsFB;
+    return super.contains(pValue) as Song_lyricsTagsFilterBuilder;
   }
 
+  @override
   Song_lyricsTagsFilterBuilder startsWith(dynamic pValue) {
-    if (pValue != null) {
-      song_lyricstagsFB._addedBlocks = setCriteria(
-          '${pValue.toString()}%',
-          song_lyricstagsFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          song_lyricstagsFB._addedBlocks);
-      _waitingNot = '';
-      song_lyricstagsFB
-              ._addedBlocks.needEndBlock![song_lyricstagsFB._blockIndex] =
-          song_lyricstagsFB._addedBlocks.retVal;
-      song_lyricstagsFB
-              ._addedBlocks.needEndBlock![song_lyricstagsFB._blockIndex] =
-          song_lyricstagsFB._addedBlocks.retVal;
-    }
-    return song_lyricstagsFB;
+    return super.startsWith(pValue) as Song_lyricsTagsFilterBuilder;
   }
 
+  @override
   Song_lyricsTagsFilterBuilder endsWith(dynamic pValue) {
-    if (pValue != null) {
-      song_lyricstagsFB._addedBlocks = setCriteria(
-          '%${pValue.toString()}',
-          song_lyricstagsFB.parameters,
-          param,
-          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          song_lyricstagsFB._addedBlocks);
-      _waitingNot = '';
-      song_lyricstagsFB
-              ._addedBlocks.needEndBlock![song_lyricstagsFB._blockIndex] =
-          song_lyricstagsFB._addedBlocks.retVal;
-    }
-    return song_lyricstagsFB;
+    return super.endsWith(pValue) as Song_lyricsTagsFilterBuilder;
   }
 
+  @override
   Song_lyricsTagsFilterBuilder between(dynamic pFirst, dynamic pLast) {
-    if (pFirst != null && pLast != null) {
-      song_lyricstagsFB._addedBlocks = setCriteria(
-          pFirst,
-          song_lyricstagsFB.parameters,
-          param,
-          SqlSyntax.Between.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-          song_lyricstagsFB._addedBlocks,
-          pLast);
-    } else if (pFirst != null) {
-      if (_waitingNot != '') {
-        song_lyricstagsFB._addedBlocks = setCriteria(
-            pFirst,
-            song_lyricstagsFB.parameters,
-            param,
-            SqlSyntax.LessThan,
-            song_lyricstagsFB._addedBlocks);
-      } else {
-        song_lyricstagsFB._addedBlocks = setCriteria(
-            pFirst,
-            song_lyricstagsFB.parameters,
-            param,
-            SqlSyntax.GreaterThanOrEquals,
-            song_lyricstagsFB._addedBlocks);
-      }
-    } else if (pLast != null) {
-      if (_waitingNot != '') {
-        song_lyricstagsFB._addedBlocks = setCriteria(
-            pLast,
-            song_lyricstagsFB.parameters,
-            param,
-            SqlSyntax.GreaterThan,
-            song_lyricstagsFB._addedBlocks);
-      } else {
-        song_lyricstagsFB._addedBlocks = setCriteria(
-            pLast,
-            song_lyricstagsFB.parameters,
-            param,
-            SqlSyntax.LessThanOrEquals,
-            song_lyricstagsFB._addedBlocks);
-      }
-    }
-    _waitingNot = '';
-    song_lyricstagsFB
-            ._addedBlocks.needEndBlock![song_lyricstagsFB._blockIndex] =
-        song_lyricstagsFB._addedBlocks.retVal;
-    return song_lyricstagsFB;
+    return super.between(pFirst, pLast) as Song_lyricsTagsFilterBuilder;
   }
 
+  @override
   Song_lyricsTagsFilterBuilder greaterThan(dynamic pValue) {
-    param.expression = '>';
-    song_lyricstagsFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, song_lyricstagsFB.parameters, param,
-            SqlSyntax.GreaterThan, song_lyricstagsFB._addedBlocks)
-        : setCriteria(pValue, song_lyricstagsFB.parameters, param,
-            SqlSyntax.LessThanOrEquals, song_lyricstagsFB._addedBlocks);
-    _waitingNot = '';
-    song_lyricstagsFB
-            ._addedBlocks.needEndBlock![song_lyricstagsFB._blockIndex] =
-        song_lyricstagsFB._addedBlocks.retVal;
-    return song_lyricstagsFB;
+    return super.greaterThan(pValue) as Song_lyricsTagsFilterBuilder;
   }
 
+  @override
   Song_lyricsTagsFilterBuilder lessThan(dynamic pValue) {
-    param.expression = '<';
-    song_lyricstagsFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, song_lyricstagsFB.parameters, param,
-            SqlSyntax.LessThan, song_lyricstagsFB._addedBlocks)
-        : setCriteria(pValue, song_lyricstagsFB.parameters, param,
-            SqlSyntax.GreaterThanOrEquals, song_lyricstagsFB._addedBlocks);
-    _waitingNot = '';
-    song_lyricstagsFB
-            ._addedBlocks.needEndBlock![song_lyricstagsFB._blockIndex] =
-        song_lyricstagsFB._addedBlocks.retVal;
-    return song_lyricstagsFB;
+    return super.lessThan(pValue) as Song_lyricsTagsFilterBuilder;
   }
 
+  @override
   Song_lyricsTagsFilterBuilder greaterThanOrEquals(dynamic pValue) {
-    param.expression = '>=';
-    song_lyricstagsFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, song_lyricstagsFB.parameters, param,
-            SqlSyntax.GreaterThanOrEquals, song_lyricstagsFB._addedBlocks)
-        : setCriteria(pValue, song_lyricstagsFB.parameters, param,
-            SqlSyntax.LessThan, song_lyricstagsFB._addedBlocks);
-    _waitingNot = '';
-    song_lyricstagsFB
-            ._addedBlocks.needEndBlock![song_lyricstagsFB._blockIndex] =
-        song_lyricstagsFB._addedBlocks.retVal;
-    return song_lyricstagsFB;
+    return super.greaterThanOrEquals(pValue) as Song_lyricsTagsFilterBuilder;
   }
 
+  @override
   Song_lyricsTagsFilterBuilder lessThanOrEquals(dynamic pValue) {
-    param.expression = '<=';
-    song_lyricstagsFB._addedBlocks = _waitingNot == ''
-        ? setCriteria(pValue, song_lyricstagsFB.parameters, param,
-            SqlSyntax.LessThanOrEquals, song_lyricstagsFB._addedBlocks)
-        : setCriteria(pValue, song_lyricstagsFB.parameters, param,
-            SqlSyntax.GreaterThan, song_lyricstagsFB._addedBlocks);
-    _waitingNot = '';
-    song_lyricstagsFB
-            ._addedBlocks.needEndBlock![song_lyricstagsFB._blockIndex] =
-        song_lyricstagsFB._addedBlocks.retVal;
-    return song_lyricstagsFB;
+    return super.lessThanOrEquals(pValue) as Song_lyricsTagsFilterBuilder;
   }
 
+  @override
   Song_lyricsTagsFilterBuilder inValues(dynamic pValue) {
-    song_lyricstagsFB._addedBlocks = setCriteria(
-        pValue,
-        song_lyricstagsFB.parameters,
-        param,
-        SqlSyntax.IN.replaceAll(SqlSyntax.notKeyword, _waitingNot),
-        song_lyricstagsFB._addedBlocks);
-    _waitingNot = '';
-    song_lyricstagsFB
-            ._addedBlocks.needEndBlock![song_lyricstagsFB._blockIndex] =
-        song_lyricstagsFB._addedBlocks.retVal;
-    return song_lyricstagsFB;
+    return super.inValues(pValue) as Song_lyricsTagsFilterBuilder;
+  }
+
+  @override
+  Song_lyricsTagsField get not {
+    return super.not as Song_lyricsTagsField;
   }
 }
 // endregion Song_lyricsTagsField
 
 // region Song_lyricsTagsFilterBuilder
-class Song_lyricsTagsFilterBuilder extends SearchCriteria {
-  Song_lyricsTagsFilterBuilder(Song_lyricsTags obj) {
-    whereString = '';
-    groupByList = <String>[];
-    _addedBlocks.needEndBlock!.add(false);
-    _addedBlocks.waitingStartBlock!.add(false);
-    _obj = obj;
+class Song_lyricsTagsFilterBuilder extends ConjunctionBase {
+  Song_lyricsTagsFilterBuilder(Song_lyricsTags obj, bool? getIsDeleted)
+      : super(obj, getIsDeleted) {
+    _mnSong_lyricsTags = obj._mnSong_lyricsTags;
+    _softDeleteActivated = obj.softDeleteActivated;
   }
-  AddedBlocks _addedBlocks = AddedBlocks(<bool>[], <bool>[]);
-  int _blockIndex = 0;
-  List<DbParameter> parameters = <DbParameter>[];
-  List<String> orderByList = <String>[];
-  Song_lyricsTags? _obj;
-  QueryParams qparams = QueryParams();
-  int _pagesize = 0;
-  int _page = 0;
+
+  bool _softDeleteActivated = false;
+  Song_lyricsTagsManager? _mnSong_lyricsTags;
 
   /// put the sql keyword 'AND'
+  @override
   Song_lyricsTagsFilterBuilder get and {
-    if (parameters.isNotEmpty) {
-      parameters[parameters.length - 1].wOperator = ' AND ';
-    }
+    super.and;
     return this;
   }
 
   /// put the sql keyword 'OR'
+  @override
   Song_lyricsTagsFilterBuilder get or {
-    if (parameters.isNotEmpty) {
-      parameters[parameters.length - 1].wOperator = ' OR ';
-    }
+    super.or;
     return this;
   }
 
   /// open parentheses
+  @override
   Song_lyricsTagsFilterBuilder get startBlock {
-    _addedBlocks.waitingStartBlock!.add(true);
-    _addedBlocks.needEndBlock!.add(false);
-    _blockIndex++;
-    if (_blockIndex > 1) {
-      _addedBlocks.needEndBlock![_blockIndex - 1] = true;
-    }
+    super.startBlock;
     return this;
   }
 
   /// String whereCriteria, write raw query without 'where' keyword. Like this: 'field1 like 'test%' and field2 = 3'
+  @override
   Song_lyricsTagsFilterBuilder where(String? whereCriteria,
       {dynamic parameterValue}) {
-    if (whereCriteria != null && whereCriteria != '') {
-      final DbParameter param = DbParameter(
-          columnName: parameterValue == null ? null : '',
-          hasParameter: parameterValue != null);
-      _addedBlocks = setCriteria(parameterValue ?? 0, parameters, param,
-          '($whereCriteria)', _addedBlocks);
-      _addedBlocks.needEndBlock![_blockIndex] = _addedBlocks.retVal;
-    }
+    super.where(whereCriteria, parameterValue: parameterValue);
     return this;
   }
 
   /// page = page number,
-  ///
   /// pagesize = row(s) per page
+  @override
   Song_lyricsTagsFilterBuilder page(int page, int pagesize) {
-    if (page > 0) {
-      _page = page;
-    }
-    if (pagesize > 0) {
-      _pagesize = pagesize;
-    }
+    super.page(page, pagesize);
     return this;
   }
 
   /// int count = LIMIT
+  @override
   Song_lyricsTagsFilterBuilder top(int count) {
-    if (count > 0) {
-      _pagesize = count;
-    }
+    super.top(count);
     return this;
   }
 
   /// close parentheses
+  @override
   Song_lyricsTagsFilterBuilder get endBlock {
-    if (_addedBlocks.needEndBlock![_blockIndex]) {
-      parameters[parameters.length - 1].whereString += ' ) ';
-    }
-    _addedBlocks.needEndBlock!.removeAt(_blockIndex);
-    _addedBlocks.waitingStartBlock!.removeAt(_blockIndex);
-    _blockIndex--;
+    super.endBlock;
     return this;
   }
 
   /// argFields might be String or List<String>.
-  ///
   /// Example 1: argFields='name, date'
-  ///
   /// Example 2: argFields = ['name', 'date']
+  @override
   Song_lyricsTagsFilterBuilder orderBy(dynamic argFields) {
-    if (argFields != null) {
-      if (argFields is String) {
-        orderByList.add(argFields);
-      } else {
-        for (String? s in argFields as List<String?>) {
-          if (s!.isNotEmpty) {
-            orderByList.add(' $s ');
-          }
-        }
-      }
-    }
+    super.orderBy(argFields);
     return this;
   }
 
   /// argFields might be String or List<String>.
-  ///
   /// Example 1: argFields='field1, field2'
-  ///
   /// Example 2: argFields = ['field1', 'field2']
+  @override
   Song_lyricsTagsFilterBuilder orderByDesc(dynamic argFields) {
-    if (argFields != null) {
-      if (argFields is String) {
-        orderByList.add('$argFields desc ');
-      } else {
-        for (String? s in argFields as List<String?>) {
-          if (s!.isNotEmpty) {
-            orderByList.add(' $s desc ');
-          }
-        }
-      }
-    }
+    super.orderByDesc(argFields);
     return this;
   }
 
   /// argFields might be String or List<String>.
-  ///
   /// Example 1: argFields='field1, field2'
-  ///
   /// Example 2: argFields = ['field1', 'field2']
+  @override
   Song_lyricsTagsFilterBuilder groupBy(dynamic argFields) {
-    if (argFields != null) {
-      if (argFields is String) {
-        groupByList.add(' $argFields ');
-      } else {
-        for (String? s in argFields as List<String?>) {
-          if (s!.isNotEmpty) {
-            groupByList.add(' $s ');
-          }
-        }
-      }
-    }
+    super.groupBy(argFields);
     return this;
   }
 
   /// argFields might be String or List<String>.
-  ///
   /// Example 1: argFields='name, date'
-  ///
   /// Example 2: argFields = ['name', 'date']
+  @override
   Song_lyricsTagsFilterBuilder having(dynamic argFields) {
-    if (argFields != null) {
-      if (argFields is String) {
-        havingList.add(argFields);
-      } else {
-        for (String? s in argFields as List<String?>) {
-          if (s!.isNotEmpty) {
-            havingList.add(' $s ');
-          }
-        }
-      }
-    }
+    super.having(argFields);
     return this;
   }
 
-  Song_lyricsTagsField setField(
+  Song_lyricsTagsField _setField(
       Song_lyricsTagsField? field, String colName, DbType dbtype) {
     return Song_lyricsTagsField(this)
       ..param = DbParameter(
-          dbType: dbtype,
-          columnName: colName,
-          wStartBlock: _addedBlocks.waitingStartBlock![_blockIndex]);
+          dbType: dbtype, columnName: colName, wStartBlock: openedBlock);
   }
 
   Song_lyricsTagsField? _song_lyricsId;
   Song_lyricsTagsField get song_lyricsId {
     return _song_lyricsId =
-        setField(_song_lyricsId, 'song_lyricsId', DbType.integer);
+        _setField(_song_lyricsId, 'song_lyricsId', DbType.integer);
   }
 
   Song_lyricsTagsField? _tagsId;
   Song_lyricsTagsField get tagsId {
-    return _tagsId = setField(_tagsId, 'tagsId', DbType.integer);
-  }
-
-  bool _getIsDeleted = false;
-
-  void _buildParameters() {
-    if (_page > 0 && _pagesize > 0) {
-      qparams
-        ..limit = _pagesize
-        ..offset = (_page - 1) * _pagesize;
-    } else {
-      qparams
-        ..limit = _pagesize
-        ..offset = _page;
-    }
-    for (DbParameter param in parameters) {
-      if (param.columnName != null) {
-        if (param.value is List && !param.hasParameter) {
-          param.value = param.dbType == DbType.text || param.value[0] is String
-              ? '\'${param.value.join('\',\'')}\''
-              : param.value.join(',');
-          whereString += param.whereString
-              .replaceAll('{field}', param.columnName!)
-              .replaceAll('?', param.value.toString());
-          param.value = null;
-        } else {
-          if (param.value is Map<String, dynamic> &&
-              param.value['sql'] != null) {
-            param
-              ..whereString = param.whereString
-                  .replaceAll('?', param.value['sql'].toString())
-              ..dbType = DbType.integer
-              ..value = param.value['args'];
-          }
-          whereString +=
-              param.whereString.replaceAll('{field}', param.columnName!);
-        }
-        if (!param.whereString.contains('?')) {
-        } else {
-          switch (param.dbType) {
-            case DbType.bool:
-              param.value = param.value == null
-                  ? null
-                  : param.value == true
-                      ? 1
-                      : 0;
-              param.value2 = param.value2 == null
-                  ? null
-                  : param.value2 == true
-                      ? 1
-                      : 0;
-              break;
-            case DbType.date:
-            case DbType.datetime:
-            case DbType.datetimeUtc:
-              param.value = param.value == null
-                  ? null
-                  : (param.value as DateTime).millisecondsSinceEpoch;
-              param.value2 = param.value2 == null
-                  ? null
-                  : (param.value2 as DateTime).millisecondsSinceEpoch;
-              break;
-            default:
-          }
-          if (param.value != null) {
-            if (param.value is List) {
-              for (var p in param.value) {
-                whereArguments.add(p);
-              }
-            } else {
-              whereArguments.add(param.value);
-            }
-          }
-          if (param.value2 != null) {
-            whereArguments.add(param.value2);
-          }
-        }
-      } else {
-        whereString += param.whereString;
-      }
-    }
-    if (Song_lyricsTags._softDeleteActivated) {
-      if (whereString != '') {
-        whereString =
-            '${!_getIsDeleted ? 'ifnull(isDeleted,0)=0 AND' : ''} ($whereString)';
-      } else if (!_getIsDeleted) {
-        whereString = 'ifnull(isDeleted,0)=0';
-      }
-    }
-
-    if (whereString != '') {
-      qparams.whereString = whereString;
-    }
-    qparams
-      ..whereArguments = whereArguments
-      ..groupBy = groupByList.join(',')
-      ..orderBy = orderByList.join(',')
-      ..having = havingList.join(',');
+    return _tagsId = _setField(_tagsId, 'tagsId', DbType.integer);
   }
 
   /// Deletes List<Song_lyricsTags> bulk by query
   ///
-  /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
+  /// <returns>BoolResult res.success= true (Deleted), false (Could not be deleted)
+  @override
   Future<BoolResult> delete([bool hardDelete = false]) async {
-    _buildParameters();
+    buildParameters();
     var r = BoolResult(success: false);
 
-    if (Song_lyricsTags._softDeleteActivated && !hardDelete) {
-      r = await _obj!._mnSong_lyricsTags.updateBatch(qparams, {'isDeleted': 1});
+    if (_softDeleteActivated && !hardDelete) {
+      r = await _mnSong_lyricsTags!.updateBatch(qparams, {'isDeleted': 1});
     } else {
-      r = await _obj!._mnSong_lyricsTags.delete(qparams);
+      r = await _mnSong_lyricsTags!.delete(qparams);
     }
     return r;
   }
 
   /// using:
-  ///
   /// update({'fieldName': Value})
-  ///
   /// fieldName must be String. Value is dynamic, it can be any of the (int, bool, String.. )
+  @override
   Future<BoolResult> update(Map<String, dynamic> values) {
-    _buildParameters();
+    buildParameters();
     if (qparams.limit! > 0 || qparams.offset! > 0) {
       qparams.whereString =
           'song_lyricsId IN (SELECT song_lyricsId from song_lyricsTags ${qparams.whereString!.isNotEmpty ? 'WHERE ${qparams.whereString}' : ''}${qparams.limit! > 0 ? ' LIMIT ${qparams.limit}' : ''}${qparams.offset! > 0 ? ' OFFSET ${qparams.offset}' : ''})';
     }
-    return _obj!._mnSong_lyricsTags.updateBatch(qparams, values);
+    return _mnSong_lyricsTags!.updateBatch(qparams, values);
   }
 
-  /// This method always returns Song_lyricsTags Obj if exist, otherwise returns null
-  ///
+  /// This method always returns [Song_lyricsTags] Obj if exist, otherwise returns null
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
-  ///
   /// ex: toSingle(preload:true) -> Loads all related objects
-  ///
   /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
-  ///
   /// ex: toSingle(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
-  ///
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
-  ///
-  /// <returns>List<Song_lyricsTags>
+  /// <returns> Song_lyricsTags?
+  @override
   Future<Song_lyricsTags?> toSingle(
       {bool preload = false,
       List<String>? preloadFields,
       bool loadParents = false,
       List<String>? loadedFields}) async {
-    _pagesize = 1;
-    _buildParameters();
-    final objFuture = _obj!._mnSong_lyricsTags.toList(qparams);
+    buildParameters(pSize: 1);
+    final objFuture = _mnSong_lyricsTags!.toList(qparams);
     final data = await objFuture;
     Song_lyricsTags? obj;
     if (data.isNotEmpty) {
       obj = Song_lyricsTags.fromMap(data[0] as Map<String, dynamic>);
-      // final List<String> _loadedFields = loadedFields ?? [];
 
       // RELATIONSHIPS PRELOAD
       if (preload || loadParents) {
         loadedFields = loadedFields ?? [];
-        if (/*!_loadedfields!.contains('song_lyrics.plSongLyric') && */ (preloadFields ==
-                null ||
+        if ((preloadFields == null ||
             loadParents ||
             preloadFields.contains('plSongLyric'))) {
-          /*_loadedfields!.add('song_lyrics.plSongLyric');*/ obj.plSongLyric =
-              obj.plSongLyric ??
-                  await obj.getSongLyric(
-                      loadParents:
-                          loadParents /*, loadedFields: _loadedFields*/);
+          obj.plSongLyric = obj.plSongLyric ??
+              await obj.getSongLyric(loadParents: loadParents);
         }
-        if (/*!_loadedfields!.contains('tags.plTag') && */ (preloadFields ==
-                null ||
+        if ((preloadFields == null ||
             loadParents ||
             preloadFields.contains('plTag'))) {
-          /*_loadedfields!.add('tags.plTag');*/ obj.plTag = obj.plTag ??
-              await obj.getTag(
-                  loadParents: loadParents /*, loadedFields: _loadedFields*/);
+          obj.plTag = obj.plTag ?? await obj.getTag(loadParents: loadParents);
         }
       } // END RELATIONSHIPS PRELOAD
 
@@ -15056,15 +11473,36 @@ class Song_lyricsTagsFilterBuilder extends SearchCriteria {
     return obj;
   }
 
+  /// This method always returns [Song_lyricsTags]
+  /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
+  /// ex: toSingle(preload:true) -> Loads all related objects
+  /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
+  /// ex: toSingle(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
+  /// bool loadParents: if true, loads all parent objects until the object has no parent
+
+  /// <returns> Song_lyricsTags?
+  @override
+  Future<Song_lyricsTags> toSingleOrDefault(
+      {bool preload = false,
+      List<String>? preloadFields,
+      bool loadParents = false,
+      List<String>? loadedFields}) async {
+    return await toSingle(
+            preload: preload,
+            preloadFields: preloadFields,
+            loadParents: loadParents,
+            loadedFields: loadedFields) ??
+        Song_lyricsTags();
+  }
+
   /// This method returns int. [Song_lyricsTags]
-  ///
   /// <returns>int
+  @override
   Future<int> toCount(
       [VoidCallback Function(int c)? song_lyricstagsCount]) async {
-    _buildParameters();
+    buildParameters();
     qparams.selectColumns = ['COUNT(1) AS CNT'];
-    final song_lyricstagsesFuture =
-        await _obj!._mnSong_lyricsTags.toList(qparams);
+    final song_lyricstagsesFuture = await _mnSong_lyricsTags!.toList(qparams);
     final int count = song_lyricstagsesFuture[0]['CNT'] as int;
     if (song_lyricstagsCount != null) {
       song_lyricstagsCount(count);
@@ -15073,19 +11511,14 @@ class Song_lyricsTagsFilterBuilder extends SearchCriteria {
   }
 
   /// This method returns List<Song_lyricsTags> [Song_lyricsTags]
-  ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
-  ///
   /// ex: toList(preload:true) -> Loads all related objects
-  ///
   /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
-  ///
   /// ex: toList(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
-  ///
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
-  ///
   /// <returns>List<Song_lyricsTags>
+  @override
   Future<List<Song_lyricsTags>> toList(
       {bool preload = false,
       List<String>? preloadFields,
@@ -15103,6 +11536,7 @@ class Song_lyricsTagsFilterBuilder extends SearchCriteria {
   }
 
   /// This method returns Json String [Song_lyricsTags]
+  @override
   Future<String> toJson() async {
     final list = <dynamic>[];
     final data = await toList();
@@ -15113,6 +11547,7 @@ class Song_lyricsTagsFilterBuilder extends SearchCriteria {
   }
 
   /// This method returns Json String. [Song_lyricsTags]
+  @override
   Future<String> toJsonWithChilds() async {
     final list = <dynamic>[];
     final data = await toList();
@@ -15123,22 +11558,21 @@ class Song_lyricsTagsFilterBuilder extends SearchCriteria {
   }
 
   /// This method returns List<dynamic>. [Song_lyricsTags]
-  ///
   /// <returns>List<dynamic>
+  @override
   Future<List<dynamic>> toMapList() async {
-    _buildParameters();
-    return await _obj!._mnSong_lyricsTags.toList(qparams);
+    buildParameters();
+    return await _mnSong_lyricsTags!.toList(qparams);
   }
 
   /// This method returns Primary Key List SQL and Parameters retVal = Map<String,dynamic>. [Song_lyricsTags]
-  ///
   /// retVal['sql'] = SQL statement string, retVal['args'] = whereArguments List<dynamic>;
-  ///
   /// <returns>List<String>
-  Map<String, dynamic> toListPrimaryKeySQL([bool buildParameters = true]) {
+  @override
+  Map<String, dynamic> toListPrimaryKeySQL([bool buildParams = true]) {
     final Map<String, dynamic> _retVal = <String, dynamic>{};
-    if (buildParameters) {
-      _buildParameters();
+    if (buildParams) {
+      buildParameters();
     }
     _retVal['sql'] =
         'SELECT `song_lyricsId`tagsId` FROM song_lyricsTags WHERE ${qparams.whereString}';
@@ -15148,24 +11582,24 @@ class Song_lyricsTagsFilterBuilder extends SearchCriteria {
 
   /// This method returns Primary Key List<song_lyricsId,tagsId> [Song_lyricsTags]
   /// <returns>List<song_lyricsId,tagsId>
+  @override
   Future<List<Song_lyricsTags>> toListPrimaryKey(
-      [bool buildParameters = true]) async {
-    if (buildParameters) {
-      _buildParameters();
+      [bool buildParams = true]) async {
+    if (buildParams) {
+      buildParameters();
     }
     qparams.selectColumns = ['song_lyricsId', 'tagsId'];
-    final song_lyricstagsFuture =
-        await _obj!._mnSong_lyricsTags.toList(qparams);
+    final song_lyricstagsFuture = await _mnSong_lyricsTags!.toList(qparams);
     return await Song_lyricsTags.fromMapList(song_lyricstagsFuture);
   }
 
   /// Returns List<dynamic> for selected columns. Use this method for 'groupBy' with min,max,avg..  [Song_lyricsTags]
-  ///
   /// Sample usage: (see EXAMPLE 4.2 at https://github.com/hhtokpinar/sqfEntity#group-by)
+  @override
   Future<List<dynamic>> toListObject() async {
-    _buildParameters();
+    buildParameters();
 
-    final objectFuture = _obj!._mnSong_lyricsTags.toList(qparams);
+    final objectFuture = _mnSong_lyricsTags!.toList(qparams);
 
     final List<dynamic> objectsData = <dynamic>[];
     final data = await objectFuture;
@@ -15177,13 +11611,13 @@ class Song_lyricsTagsFilterBuilder extends SearchCriteria {
   }
 
   /// Returns List<String> for selected first column
-  ///
   /// Sample usage: await Song_lyricsTags.select(columnsToSelect: ['columnName']).toListString()
+  @override
   Future<List<String>> toListString(
       [VoidCallback Function(List<String> o)? listString]) async {
-    _buildParameters();
+    buildParameters();
 
-    final objectFuture = _obj!._mnSong_lyricsTags.toList(qparams);
+    final objectFuture = _mnSong_lyricsTags!.toList(qparams);
 
     final List<String> objectsData = <String>[];
     final data = await objectFuture;

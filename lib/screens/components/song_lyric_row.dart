@@ -67,6 +67,9 @@ class _SongLyricRowState extends State<SongLyricRow> {
         ),
         if (songbook != null) Expanded(child: _songLyricNumber(songbook.shortcut), flex: songbook.shortcut.length),
         Expanded(child: _songLyricNumber(songLyric.number(songbook)), flex: 3),
+
+        // TODO: show only sometimes
+        const SizedBox(width: kDefaultPadding),
       ],
     );
 

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:miniplayer/miniplayer.dart';
 import 'package:provider/provider.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/platform/components/scaffold.dart';
@@ -7,6 +9,7 @@ import 'package:zpevnik/platform/utils/bottom_sheet.dart';
 import 'package:zpevnik/platform/utils/route_builder.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/fullscreen.dart';
+import 'package:zpevnik/providers/player.dart';
 import 'package:zpevnik/providers/settings.dart';
 import 'package:zpevnik/screens/components/highlightable.dart';
 import 'package:zpevnik/screens/song_lyric/components/bottom_menu.dart';
@@ -54,6 +57,12 @@ class _SongLyricPageViewState extends State<SongLyricPageView> {
   void initState() {
     super.initState();
 
+    Future.delayed(
+      Duration(milliseconds: 10),
+      () => context.read<PlayerProvider>().builder = (height, percentage) =>
+          ExternalsWidget(songLyric: widget.songLyrics[widget.initialSongLyricIndex], percentage: percentage),
+    );
+
     // adding songlyrics length multiple times to initial page, so we can swipe through songlyrics cyclically
     final initialPage = widget.songLyrics.length == 1 ? 0 : widget.initialSongLyricIndex + 5 * widget.songLyrics.length;
     controller = PageController(initialPage: initialPage)..addListener(_pageUpdate);
@@ -72,7 +81,12 @@ class _SongLyricPageViewState extends State<SongLyricPageView> {
     final fullScreenProvider = context.watch<FullScreenProvider>();
 
     return WillPopScope(
-      onWillPop: fullScreenProvider.isFullScreen ? () async => !Navigator.of(context).userGestureInProgress : null,
+      onWillPop: () async {
+        context.read<PlayerProvider>().activePlayerController = null;
+        context.read<PlayerProvider>().miniplayerController.animateToHeight(state: PanelState.DISMISS);
+
+        return !fullScreenProvider.isFullScreen || !Navigator.of(context).userGestureInProgress;
+      },
       child: PlatformScaffold(
         title: _currentSongLyric.id.toString(),
         canBeFullscreen: true,
@@ -129,17 +143,21 @@ class _SongLyricPageViewState extends State<SongLyricPageView> {
   }
 
   void _showExternals() {
-    showPlatformBottomSheet(
-      context: context,
-      builder: (_) => ExternalsWidget(externals: _currentSongLyric.youtubes),
-      height: 0.67 * MediaQuery.of(context).size.height,
-    );
+    context.read<PlayerProvider>().miniplayerController.animateToHeight(state: PanelState.MAX);
   }
 
   void _pageUpdate() {
     final index = (controller.page ?? 0).round() % widget.songLyrics.length;
 
-    if (_currentIndex != index) setState(() => _currentIndex = index);
+    if (_currentIndex != index) {
+      context.read<PlayerProvider>().builder =
+          (height, percentage) => ExternalsWidget(songLyric: widget.songLyrics[index], percentage: percentage);
+
+      context.read<PlayerProvider>().activePlayerController = null;
+      context.read<PlayerProvider>().miniplayerController.animateToHeight(state: PanelState.DISMISS);
+
+      setState(() => _currentIndex = index);
+    }
   }
 
   Widget _actions(BuildContext context) {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_reorderable_list/flutter_reorderable_list.dart' as reorderable;
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/platform/components/scaffold.dart';
 import 'package:zpevnik/platform/utils/bottom_sheet.dart';
@@ -66,7 +67,7 @@ class _SearchableListViewState extends State<SearchableListView> with Updateable
   void initState() {
     super.initState();
 
-    scrollController = ScrollController();
+    scrollController = AutoScrollController(suggestedRowHeight: 30);
 
     _isShowingSearchField = widget.navigationBarTitle == null;
   }
@@ -143,7 +144,11 @@ class _SearchableListViewState extends State<SearchableListView> with Updateable
         ? ListView.builder(
             controller: scrollController,
             itemCount: items.length,
-            itemBuilder: (context, index) => widget.itemBuilder(items[index]),
+            itemBuilder: (context, index) => AutoScrollTag(
+                key: ValueKey(index),
+                controller: scrollController,
+                index: index,
+                child: widget.itemBuilder(items[index])),
           )
         : StaggeredGridView.countBuilder(
             controller: scrollController,
@@ -196,7 +201,7 @@ class _SearchableListViewState extends State<SearchableListView> with Updateable
       final dataProvider = context.read<DataProvider>();
       final tagsProvider = _tagsProvider ??= TagsProvider(dataProvider.tags);
 
-      return showPlatformBottomSheet(
+      showPlatformBottomSheet(
         context: context,
         builder: (_) => ChangeNotifierProvider.value(
           value: provider,

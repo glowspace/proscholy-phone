@@ -116,7 +116,7 @@ class _UserScreenState extends State<UserScreen> {
       ));
 
   void _showUserMenu(BuildContext context) {
-    return showPlatformBottomSheet(
+    showPlatformBottomSheet(
       context: context,
       builder: (_) => MultiProvider(providers: [ProviderType.data.provider(context)], builder: (_, __) => UserMenu()),
       height: 300,

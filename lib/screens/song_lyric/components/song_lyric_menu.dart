@@ -83,7 +83,7 @@ class SongLyricMenu extends StatelessWidget {
   void _showPlaylists(BuildContext context) {
     final playlistsProvider = context.read<PlaylistsProvider>();
 
-    return showPlatformBottomSheet(
+    showPlatformBottomSheet(
       context: context,
       builder: (_) => ChangeNotifierProvider.value(
         value: playlistsProvider,
