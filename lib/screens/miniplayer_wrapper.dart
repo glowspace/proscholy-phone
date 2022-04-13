@@ -4,6 +4,9 @@ import 'package:provider/provider.dart';
 import 'package:zpevnik/providers/player.dart';
 import 'package:zpevnik/screens/content.dart';
 
+const double _miniPlayerMaxHeight = 500;
+const double _miniPlayerMinHeight = 64;
+
 class MiniPlayerWrapper extends StatelessWidget {
   MiniPlayerWrapper({Key? key}) : super(key: key);
 
@@ -21,15 +24,15 @@ class MiniPlayerWrapper extends StatelessWidget {
           children: <Widget>[
             Navigator(
               key: _navigatorKey,
-              onGenerateRoute: (RouteSettings settings) => MaterialPageRoute(
+              onGenerateRoute: (settings) => MaterialPageRoute(
                 settings: settings,
-                builder: (BuildContext context) => ContentScreen(),
+                builder: (_) => const ContentScreen(),
               ),
             ),
             Consumer<PlayerProvider>(
               builder: (_, playerProvider, __) => Miniplayer(
-                minHeight: playerProvider.hasActivePlayer ? 64 : 0,
-                maxHeight: 500,
+                minHeight: playerProvider.hasActivePlayer ? _miniPlayerMinHeight : 0,
+                maxHeight: _miniPlayerMaxHeight,
                 builder: playerProvider.builder,
                 controller: _miniPlayerController,
                 valueNotifier: _playerExpandProgress,

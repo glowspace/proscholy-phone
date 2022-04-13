@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -5,9 +7,8 @@ import 'package:zpevnik/providers/settings.dart';
 
 class AppTheme extends StatefulWidget {
   final Widget child;
-  final TargetPlatform platform;
 
-  const AppTheme({Key? key, required this.child, required this.platform}) : super(key: key);
+  const AppTheme({Key? key, required this.child}) : super(key: key);
 
   @override
   _AppThemeState createState() => _AppThemeState();
@@ -38,7 +39,6 @@ class _AppThemeState extends State<AppTheme> with WidgetsBindingObserver {
     if (isDarkMode != null) brightness = isDarkMode ? Brightness.dark : Brightness.light;
 
     return AppThemeData(
-      platform: widget.platform,
       brightness: brightness,
       child: widget.child,
     );
@@ -54,9 +54,8 @@ class _AppThemeState extends State<AppTheme> with WidgetsBindingObserver {
 
 class AppThemeData extends InheritedWidget {
   final Brightness brightness;
-  final TargetPlatform platform;
 
-  AppThemeData({required Widget child, required this.brightness, required this.platform}) : super(child: child);
+  AppThemeData({required Widget child, required this.brightness}) : super(child: child);
 
   CupertinoThemeData get cupertinoTheme {
     return CupertinoThemeData(brightness: brightness, textTheme: CupertinoTextThemeData(primaryColor: iconColor));
@@ -107,7 +106,7 @@ class AppThemeData extends InheritedWidget {
   Color get filtersSectionSeparatorColor => isLight ? Color(0xffe8e8e8) : Color(0xff272727);
 
   bool get isLight => brightness == Brightness.light;
-  bool get isIOS => platform == TargetPlatform.iOS;
+  bool get isIOS => Platform.isIOS;
 
   @override
   bool updateShouldNotify(AppThemeData oldWidget) => brightness != oldWidget.brightness;

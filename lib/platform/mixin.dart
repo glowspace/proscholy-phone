@@ -1,14 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 mixin PlatformMixin {
   Widget build(BuildContext context) {
-    switch (Theme.of(context).platform) {
-      case TargetPlatform.android:
-        return buildWrapper(context, buildAndroid);
-      case TargetPlatform.iOS:
-        return buildWrapper(context, buildIos);
-      default:
-        return Container();
+    if (Platform.isAndroid) {
+      return buildWrapper(context, buildAndroid);
+    } else if (Platform.isIOS) {
+      return buildWrapper(context, buildIos);
+    } else {
+      throw UnsupportedError('Platform not supported');
     }
   }
 

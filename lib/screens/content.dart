@@ -86,15 +86,16 @@ class _ContentScreenState extends State<ContentScreen> with PlatformMixin, Updat
     return FutureBuilder(
       future: _updateFuture,
       builder: (context, snapshot) {
-        if (snapshot.connectionState != ConnectionState.done) return LoadingScreen();
+        if (snapshot.connectionState != ConnectionState.done) return const LoadingScreen();
 
-        if (snapshot.hasError)
+        if (snapshot.hasError) {
           return PlatformScaffold(
             body: Container(
-              padding: EdgeInsets.all(kDefaultPadding),
+              padding: const EdgeInsets.all(kDefaultPadding),
               child: Text(snapshot.error.toString()),
             ),
           );
+        }
 
         return MultiProvider(
           providers: [
@@ -114,9 +115,9 @@ class _ContentScreenState extends State<ContentScreen> with PlatformMixin, Updat
 
   List<BottomNavigationBarItem> get _tabBarItems {
     return [
-      BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Vyhledávání'),
-      BottomNavigationBarItem(icon: Icon(Icons.import_contacts), label: 'Zpěvníky'),
-      BottomNavigationBarItem(icon: Icon(Icons.person_outline), activeIcon: Icon(Icons.person), label: 'Já'),
+      const BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Vyhledávání'),
+      const BottomNavigationBarItem(icon: Icon(Icons.import_contacts), label: 'Zpěvníky'),
+      const BottomNavigationBarItem(icon: Icon(Icons.person_outline), activeIcon: Icon(Icons.person), label: 'Já'),
     ];
   }
 
@@ -124,10 +125,11 @@ class _ContentScreenState extends State<ContentScreen> with PlatformMixin, Updat
 
   void _indexChanged(int index) {
     // TODO: pop and reset state for android
-    if (_currentIndex == index)
+    if (_currentIndex == index) {
       _navigatorKeys[index].currentState?.popUntil((route) => route.isFirst);
-    else
+    } else {
       setState(() => _currentIndex = index);
+    }
   }
 
   void _handleUri(Uri? uri) {

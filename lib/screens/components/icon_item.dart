@@ -9,23 +9,27 @@ class IconItem extends StatelessWidget {
   final IconData? trailingIcon;
   final Function() onPressed;
 
-  const IconItem({Key? key, this.title = '', this.icon, this.trailingIcon, required this.onPressed}) : super(key: key);
+  const IconItem({
+    Key? key,
+    required this.title,
+    this.icon,
+    this.trailingIcon,
+    required this.onPressed,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final appTheme = AppTheme.of(context);
-
     final iconColor = appTheme.iconColor;
 
     return Highlightable(
       onPressed: onPressed,
       child: Row(children: [
         if (icon != null)
-          Container(padding: EdgeInsets.only(right: kDefaultPadding), child: Icon(icon, color: iconColor)),
-        Text(title, style: appTheme.bodyTextStyle),
-        Spacer(),
+          Container(padding: const EdgeInsets.only(right: kDefaultPadding), child: Icon(icon, color: iconColor)),
+        Expanded(child: Text(title, style: appTheme.bodyTextStyle)),
         if (trailingIcon != null)
-          Container(padding: EdgeInsets.only(left: kDefaultPadding), child: Icon(trailingIcon, color: iconColor)),
+          Container(padding: const EdgeInsets.only(left: kDefaultPadding), child: Icon(trailingIcon, color: iconColor)),
       ]),
     );
   }

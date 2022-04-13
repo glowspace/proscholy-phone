@@ -379,6 +379,7 @@ class Model extends SqfEntityModelProvider {
 
     bundledDatabasePath = model
         .bundledDatabasePath; //'assets/sample.db'; // This value is optional. When bundledDatabasePath is empty then EntityBase creats a new database when initializing the database
+    databasePath = model.databasePath;
   }
   Map<String, dynamic> getControllers() {
     final controllers = <String, dynamic>{};
@@ -679,12 +680,6 @@ class Author extends TableBase {
     return id;
   }
 
-  void rollbackId() {
-    if (isInsert == true) {
-      id = null;
-    }
-  }
-
   /// saveAll method saves the sent List<Author> as a bulk in one transaction
   /// Returns a <List<BoolResult>>
   static Future<List<dynamic>> saveAll(List<Author> authors) async {
@@ -778,6 +773,14 @@ class Author extends TableBase {
   void _setDefaultValues() {
     isSaved = false;
   }
+
+  @override
+  void rollbackPk() {
+    if (isInsert == true) {
+      id = null;
+    }
+  }
+
   // END METHODS
   // BEGIN CUSTOM CODE
   /*
@@ -1596,12 +1599,6 @@ class External extends TableBase {
     return id;
   }
 
-  void rollbackId() {
-    if (isInsert == true) {
-      id = null;
-    }
-  }
-
   /// saveAll method saves the sent List<External> as a bulk in one transaction
   /// Returns a <List<BoolResult>>
   static Future<List<dynamic>> saveAll(List<External> externals) async {
@@ -1696,6 +1693,14 @@ class External extends TableBase {
   void _setDefaultValues() {
     isSaved = false;
   }
+
+  @override
+  void rollbackPk() {
+    if (isInsert == true) {
+      id = null;
+    }
+  }
+
   // END METHODS
   // BEGIN CUSTOM CODE
   /*
@@ -2493,12 +2498,6 @@ class Playlist extends TableBase {
     return save(ignoreBatch: ignoreBatch);
   }
 
-  void rollbackId() {
-    if (isInsert == true) {
-      id = null;
-    }
-  }
-
   /// saveAll method saves the sent List<Playlist> as a bulk in one transaction
   /// Returns a <List<BoolResult>>
   static Future<List<dynamic>> saveAll(List<Playlist> playlists) async {
@@ -2610,6 +2609,14 @@ class Playlist extends TableBase {
   void _setDefaultValues() {
     is_archived = is_archived ?? false;
   }
+
+  @override
+  void rollbackPk() {
+    if (isInsert == true) {
+      id = null;
+    }
+  }
+
   // END METHODS
   // BEGIN CUSTOM CODE
   /*
@@ -3424,12 +3431,6 @@ class PlaylistRecord extends TableBase {
     return save(ignoreBatch: ignoreBatch);
   }
 
-  void rollbackId() {
-    if (isInsert == true) {
-      id = null;
-    }
-  }
-
   /// saveAll method saves the sent List<PlaylistRecord> as a bulk in one transaction
   /// Returns a <List<BoolResult>>
   static Future<List<dynamic>> saveAll(
@@ -3530,6 +3531,14 @@ class PlaylistRecord extends TableBase {
   }
 
   void _setDefaultValues() {}
+
+  @override
+  void rollbackPk() {
+    if (isInsert == true) {
+      id = null;
+    }
+  }
+
   // END METHODS
   // BEGIN CUSTOM CODE
   /*
@@ -4284,12 +4293,6 @@ class Song extends TableBase {
     return id;
   }
 
-  void rollbackId() {
-    if (isInsert == true) {
-      id = null;
-    }
-  }
-
   /// saveAll method saves the sent List<Song> as a bulk in one transaction
   /// Returns a <List<BoolResult>>
   static Future<List<dynamic>> saveAll(List<Song> songs) async {
@@ -4390,6 +4393,14 @@ class Song extends TableBase {
   void _setDefaultValues() {
     isSaved = false;
   }
+
+  @override
+  void rollbackPk() {
+    if (isInsert == true) {
+      id = null;
+    }
+  }
+
   // END METHODS
   // BEGIN CUSTOM CODE
   /*
@@ -5191,12 +5202,6 @@ class Songbook extends TableBase {
     return id;
   }
 
-  void rollbackId() {
-    if (isInsert == true) {
-      id = null;
-    }
-  }
-
   /// saveAll method saves the sent List<Songbook> as a bulk in one transaction
   /// Returns a <List<BoolResult>>
   static Future<List<dynamic>> saveAll(List<Songbook> songbooks) async {
@@ -5304,6 +5309,14 @@ class Songbook extends TableBase {
     isSaved = false;
     is_pinned = is_pinned ?? false;
   }
+
+  @override
+  void rollbackPk() {
+    if (isInsert == true) {
+      id = null;
+    }
+  }
+
   // END METHODS
   // BEGIN CUSTOM CODE
   /*
@@ -6149,12 +6162,6 @@ class SongbookRecord extends TableBase {
     return id;
   }
 
-  void rollbackId() {
-    if (isInsert == true) {
-      id = null;
-    }
-  }
-
   /// saveAll method saves the sent List<SongbookRecord> as a bulk in one transaction
   /// Returns a <List<BoolResult>>
   static Future<List<dynamic>> saveAll(
@@ -6252,6 +6259,14 @@ class SongbookRecord extends TableBase {
   void _setDefaultValues() {
     isSaved = false;
   }
+
+  @override
+  void rollbackPk() {
+    if (isInsert == true) {
+      id = null;
+    }
+  }
+
   // END METHODS
   // BEGIN CUSTOM CODE
   /*
@@ -7401,12 +7416,6 @@ class SongLyric extends TableBase {
     return id;
   }
 
-  void rollbackId() {
-    if (isInsert == true) {
-      id = null;
-    }
-  }
-
   /// saveAll method saves the sent List<SongLyric> as a bulk in one transaction
   /// Returns a <List<BoolResult>>
   static Future<List<dynamic>> saveAll(List<SongLyric> songlyrics) async {
@@ -7550,6 +7559,14 @@ class SongLyric extends TableBase {
     isSaved = false;
     transposition = transposition ?? 0;
   }
+
+  @override
+  void rollbackPk() {
+    if (isInsert == true) {
+      id = null;
+    }
+  }
+
   // END METHODS
   // BEGIN CUSTOM CODE
   /*
@@ -8492,12 +8509,6 @@ class Tag extends TableBase {
     return id;
   }
 
-  void rollbackId() {
-    if (isInsert == true) {
-      id = null;
-    }
-  }
-
   /// saveAll method saves the sent List<Tag> as a bulk in one transaction
   /// Returns a <List<BoolResult>>
   static Future<List<dynamic>> saveAll(List<Tag> tags) async {
@@ -8590,6 +8601,14 @@ class Tag extends TableBase {
   void _setDefaultValues() {
     isSaved = false;
   }
+
+  @override
+  void rollbackPk() {
+    if (isInsert == true) {
+      id = null;
+    }
+  }
+
   // END METHODS
   // BEGIN CUSTOM CODE
   /*
@@ -9350,12 +9369,6 @@ class ExternalsAuthors extends TableBase {
     return result;
   }
 
-  void rollbackId() {
-    if (isInsert == true) {
-      externalsId = null;
-    }
-  }
-
   /// saveAll method saves the sent List<ExternalsAuthors> as a bulk in one transaction
   /// Returns a <List<BoolResult>>
   static Future<List<dynamic>> saveAll(
@@ -9459,6 +9472,15 @@ class ExternalsAuthors extends TableBase {
   void _setDefaultValues() {
     isSaved = false;
   }
+
+  @override
+  void rollbackPk() {
+    if (isInsert == true) {
+      externalsId = null;
+      authorsId = null;
+    }
+  }
+
   // END METHODS
   // BEGIN CUSTOM CODE
   /*
@@ -10216,12 +10238,6 @@ class Song_lyricsAuthors extends TableBase {
     return result;
   }
 
-  void rollbackId() {
-    if (isInsert == true) {
-      song_lyricsId = null;
-    }
-  }
-
   /// saveAll method saves the sent List<Song_lyricsAuthors> as a bulk in one transaction
   /// Returns a <List<BoolResult>>
   static Future<List<dynamic>> saveAll(
@@ -10326,6 +10342,15 @@ class Song_lyricsAuthors extends TableBase {
   void _setDefaultValues() {
     isSaved = false;
   }
+
+  @override
+  void rollbackPk() {
+    if (isInsert == true) {
+      song_lyricsId = null;
+      authorsId = null;
+    }
+  }
+
   // END METHODS
   // BEGIN CUSTOM CODE
   /*
@@ -11081,12 +11106,6 @@ class Song_lyricsTags extends TableBase {
     return result;
   }
 
-  void rollbackId() {
-    if (isInsert == true) {
-      song_lyricsId = null;
-    }
-  }
-
   /// saveAll method saves the sent List<Song_lyricsTags> as a bulk in one transaction
   /// Returns a <List<BoolResult>>
   static Future<List<dynamic>> saveAll(
@@ -11190,6 +11209,15 @@ class Song_lyricsTags extends TableBase {
   void _setDefaultValues() {
     isSaved = false;
   }
+
+  @override
+  void rollbackPk() {
+    if (isInsert == true) {
+      song_lyricsId = null;
+      tagsId = null;
+    }
+  }
+
   // END METHODS
   // BEGIN CUSTOM CODE
   /*

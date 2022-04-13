@@ -9,12 +9,16 @@ mixin Updateable<T extends StatefulWidget> on State<T> {
 
     _listenables = listenables;
 
-    for (final listenable in _listenables) listenable.addListener(update);
+    for (final listenable in _listenables) {
+      listenable.addListener(update);
+    }
   }
 
   @override
   void dispose() {
-    for (final listenable in _listenables) listenable.removeListener(update);
+    for (final listenable in _listenables) {
+      listenable.removeListener(update);
+    }
 
     super.dispose();
   }

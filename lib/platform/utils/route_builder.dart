@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -34,12 +36,11 @@ Route<dynamic> platformRouteBuilder(
   bool fullscreen = false,
 }) {
   final providers = types.map((type) => type.provider(context)).toList();
-  final builder = types.isEmpty ? (_) => child : (_) => MultiProvider(providers: providers, builder: (_, __) => child);
+  final builder = types.isEmpty ? (_) => child : (_) => MultiProvider(providers: providers, child: child);
 
-  switch (Theme.of(context).platform) {
-    case TargetPlatform.iOS:
-      return CupertinoPageRoute(fullscreenDialog: fullscreen, builder: builder);
-    default:
-      return MaterialPageRoute(fullscreenDialog: fullscreen, builder: builder);
+  if (Platform.isIOS) {
+    return CupertinoPageRoute(fullscreenDialog: fullscreen, builder: builder);
+  } else {
+    return MaterialPageRoute(fullscreenDialog: fullscreen, builder: builder);
   }
 }

@@ -10,7 +10,7 @@ class BottomFormSheet extends StatelessWidget {
 
   const BottomFormSheet({
     Key? key,
-    this.title = '',
+    required this.title,
     this.items = const [],
     this.bottomAction,
     this.contentPadding = const EdgeInsets.symmetric(horizontal: kDefaultPadding),
@@ -19,16 +19,17 @@ class BottomFormSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: kDefaultPadding),
+      padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // TODO: check if it can actually be empty
           if (title.isNotEmpty)
             Container(
-              padding: EdgeInsets.symmetric(horizontal: kDefaultPadding),
-              margin: EdgeInsets.only(bottom: kDefaultPadding),
+              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
               child: Text(title, style: AppTheme.of(context).titleTextStyle),
             ),
+          const SizedBox(height: kDefaultPadding),
           Expanded(
             child: SingleChildScrollView(
               child: Container(

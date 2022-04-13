@@ -5,9 +5,10 @@ import 'package:flutter/material.dart';
 class InvisibleCupertinoTabBar extends CupertinoTabBar {
   static const dummyIcon = Icon(Icons.select_all);
 
-  InvisibleCupertinoTabBar()
+  const InvisibleCupertinoTabBar({Key? key})
       : super(
-          items: [
+          key: key,
+          items: const [
             BottomNavigationBarItem(icon: dummyIcon),
             BottomNavigationBarItem(icon: dummyIcon),
             BottomNavigationBarItem(icon: dummyIcon),
@@ -18,8 +19,9 @@ class InvisibleCupertinoTabBar extends CupertinoTabBar {
   Size get preferredSize => const Size.square(0);
 
   @override
-  Widget build(BuildContext context) => SizedBox();
+  Widget build(BuildContext context) => const SizedBox();
 
+  @override
   InvisibleCupertinoTabBar copyWith({
     Key? key,
     List<BottomNavigationBarItem>? items,

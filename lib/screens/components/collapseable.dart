@@ -28,7 +28,7 @@ class _CollapseableWidgetState extends State<CollapseableWidget> with SingleTick
   void initState() {
     super.initState();
 
-    _controller = AnimationController(duration: const Duration(milliseconds: kDefaultAnimationTime), vsync: this);
+    _controller = AnimationController(duration: kDefaultAnimationDuration, vsync: this);
     _animation = Tween<double>(begin: 0, end: 1).animate(_controller)..addListener(() => setState(() {}));
 
     _controller.value = collapsed ? 0 : 1;

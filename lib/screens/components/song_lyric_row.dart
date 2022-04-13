@@ -1,11 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/platform/utils/route_builder.dart';
-import 'package:zpevnik/providers/selection.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
 import 'package:zpevnik/screens/components/circular_checkbox.dart';
 import 'package:zpevnik/screens/components/highlightable.dart';
@@ -43,16 +41,16 @@ class _SongLyricRowState extends State<SongLyricRow> {
     final songLyric = widget.songLyric;
     final songbook = widget.songbook;
 
-    final selectionProvider = context.watch<SelectionProvider?>();
-    final isSelectionEnabled = selectionProvider?.isSelectionEnabled ?? false;
+    final selectionProvider = context.watch<SongLyricsProvider?>();
+    final selectionEnabled = selectionProvider?.selectionEnabled ?? false;
     final isSelected = selectionProvider?.isSelected(songLyric) ?? false;
 
     final child = Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        if (isSelectionEnabled)
+        if (selectionEnabled)
           Container(
-            padding: EdgeInsets.only(right: kDefaultPadding),
+            padding: const EdgeInsets.only(right: kDefaultPadding),
             child: CircularCheckbox(selected: isSelected),
           ),
         Expanded(
@@ -69,17 +67,18 @@ class _SongLyricRowState extends State<SongLyricRow> {
         Expanded(child: _songLyricNumber(songLyric.number(songbook)), flex: 3),
 
         // TODO: show only sometimes
-        const SizedBox(width: kDefaultPadding),
+        // const SizedBox(width: kDefaultPadding),
       ],
     );
 
-    if (!isSelectionEnabled && widget.isReorderable)
+    if (!selectionEnabled && widget.isReorderable) {
       return ReorderableRow(
         key: widget.songLyric.key,
         child: child,
         onPressed: _pushSongLyric,
         onLongPressed: _enableSelection,
       );
+    }
 
     return Highlightable(
       onPressed: _pushSongLyric,
@@ -96,18 +95,18 @@ class _SongLyricRowState extends State<SongLyricRow> {
   }
 
   void _pushSongLyric() async {
-    final selectionProvider = context.read<SelectionProvider?>();
-    final isSelectionEnabled = selectionProvider?.isSelectionEnabled ?? false;
+    final selectionProvider = context.read<SongLyricsProvider?>();
+    final selectionEnabled = selectionProvider?.selectionEnabled ?? false;
 
-    if (isSelectionEnabled) {
+    if (selectionEnabled) {
       selectionProvider?.toggleSelected(widget.songLyric);
       return;
     }
 
-    if (widget.translationSongLyric?.id == widget.songLyric.id)
+    if (widget.translationSongLyric?.id == widget.songLyric.id) {
       Navigator.of(context).pop();
-    else {
-      final songLyrics = widget.songLyrics ?? context.read<SongLyricsProvider>().items;
+    } else {
+      final songLyrics = widget.songLyrics ?? context.read<SongLyricsProvider>().songLyrics;
 
       Navigator.of(context).push(platformRouteBuilder(
         context,
@@ -121,13 +120,13 @@ class _SongLyricRowState extends State<SongLyricRow> {
   }
 
   void _enableSelection() {
-    final selectionProvider = context.read<SelectionProvider?>();
+    final selectionProvider = context.read<SongLyricsProvider?>();
 
-    final isSelectionEnabled = selectionProvider?.isSelectionEnabled ?? false;
+    final selectionEnabled = selectionProvider?.selectionEnabled ?? false;
 
-    if (isSelectionEnabled) return;
+    if (selectionEnabled) return;
 
-    selectionProvider?.isSelectionEnabled = true;
+    selectionProvider?.selectionEnabled = true;
     selectionProvider?.toggleSelected(widget.songLyric);
   }
 }

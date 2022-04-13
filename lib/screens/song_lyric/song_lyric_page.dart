@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:miniplayer/miniplayer.dart';
 import 'package:provider/provider.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/platform/components/scaffold.dart';
@@ -30,7 +29,7 @@ class SongLyricPageView extends StatefulWidget {
   const SongLyricPageView({
     Key? key,
     required this.songLyrics,
-    required this.initialSongLyricIndex,
+    this.initialSongLyricIndex = 0,
     this.fromTranslations = false,
   }) : super(key: key);
 

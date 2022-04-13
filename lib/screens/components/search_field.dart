@@ -6,10 +6,12 @@ import 'package:zpevnik/screens/components/highlightable.dart';
 import 'package:zpevnik/screens/song_lyric/utils/utils.dart';
 import 'package:zpevnik/theme.dart';
 
+const double _searchFieldHeight = 44;
+
 class SearchField extends StatefulWidget {
-  final String placeholder;
+  final String? placeholder;
   final FocusNode? focusNode;
-  final Function(String) onSearch;
+  final Function(String) onSearchTextChanged;
   final Function(String)? onSubmitted;
 
   final Widget? prefix;
@@ -17,9 +19,9 @@ class SearchField extends StatefulWidget {
 
   const SearchField({
     Key? key,
-    this.placeholder = '',
+    this.placeholder,
     this.focusNode,
-    required this.onSearch,
+    required this.onSearchTextChanged,
     this.onSubmitted,
     this.prefix,
     this.suffix,
@@ -36,14 +38,16 @@ class _SearchFieldState extends State<SearchField> with PlatformMixin {
   initState() {
     super.initState();
 
-    _textController.text = PageStorage.of(context)?.readState(context) as String? ?? '';
+    final searchText = PageStorage.of(context)?.readState(context) as String?;
+
+    if (searchText != null) _textController.text = searchText;
   }
 
   @override
   Widget buildAndroid(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) => TextField(
-        key: PageStorageKey(widget.key.toString() + '_text_field'),
+        key: PageStorageKey('${widget.key}_text_field'),
         decoration: InputDecoration(
           border: InputBorder.none,
           hintText: widget.placeholder,
@@ -56,10 +60,10 @@ class _SearchFieldState extends State<SearchField> with PlatformMixin {
 
                     _searchTextChanged('');
                   },
-                  child: Icon(Icons.clear, size: kDefaultPadding),
+                  child: const Icon(Icons.clear, size: kDefaultPadding),
                   padding: EdgeInsets.zero,
                 ),
-          suffixIconConstraints: BoxConstraints(),
+          suffixIconConstraints: const BoxConstraints(),
         ),
         focusNode: widget.focusNode,
         controller: _textController,
@@ -73,16 +77,16 @@ class _SearchFieldState extends State<SearchField> with PlatformMixin {
   Widget buildIos(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) => CupertinoTextField(
-        key: PageStorageKey(widget.key.toString() + '_text_field'),
+        key: PageStorageKey('${widget.key}_text_field'),
         controller: _textController,
-        decoration: BoxDecoration(color: Colors.transparent),
+        decoration: const BoxDecoration(color: Colors.transparent),
         focusNode: widget.focusNode,
         placeholder: widget.placeholder,
         placeholderStyle: _placeholderStyle(context, constraints.maxWidth),
         onChanged: _searchTextChanged,
         onSubmitted: widget.onSubmitted,
         clearButtonMode: OverlayVisibilityMode.editing,
-        padding: EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
+        padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
       ),
     );
   }
@@ -92,7 +96,7 @@ class _SearchFieldState extends State<SearchField> with PlatformMixin {
     final appTheme = AppTheme.of(context);
 
     return Container(
-      height: 44,
+      height: _searchFieldHeight,
       padding: EdgeInsets.only(
         left: widget.prefix == null ? kDefaultPadding : 0,
         right: widget.suffix == null ? kDefaultPadding : 0,
@@ -100,7 +104,7 @@ class _SearchFieldState extends State<SearchField> with PlatformMixin {
       decoration: BoxDecoration(
         color: appTheme.backgroundColor,
         border: Border.all(color: appTheme.borderColor),
-        borderRadius: BorderRadius.all(Radius.circular(10)),
+        borderRadius: BorderRadius.circular(kDefaultRadius),
       ),
       child: Row(children: [
         if (widget.prefix != null) widget.prefix!,
@@ -114,7 +118,7 @@ class _SearchFieldState extends State<SearchField> with PlatformMixin {
     // store current searchText to keep it persistent between tab changes
     PageStorage.of(context)?.writeState(context, searchText);
 
-    widget.onSearch(searchText);
+    widget.onSearchTextChanged(searchText);
   }
 
   TextStyle? _placeholderStyle(BuildContext context, double width) {

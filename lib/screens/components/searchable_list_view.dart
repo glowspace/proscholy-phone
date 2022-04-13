@@ -7,19 +7,18 @@ import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/platform/components/scaffold.dart';
 import 'package:zpevnik/platform/utils/bottom_sheet.dart';
 import 'package:zpevnik/providers/data.dart';
-import 'package:zpevnik/providers/selection.dart';
+import 'package:zpevnik/providers/playlists.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
 import 'package:zpevnik/providers/tags.dart';
 import 'package:zpevnik/providers/utils/searchable.dart';
 import 'package:zpevnik/screens/components/highlightable.dart';
+import 'package:zpevnik/screens/components/playlists_sheet.dart';
 import 'package:zpevnik/screens/components/search_field.dart';
 import 'package:zpevnik/screens/filters/active_filters_row.dart';
 import 'package:zpevnik/screens/filters/filters.dart';
-import 'package:zpevnik/screens/utils/updateable.dart';
 import 'package:zpevnik/theme.dart';
 
-class SearchableListView<T> extends StatefulWidget {
-  final Searchable<T> itemsProvider;
+class SearchableListView<T, U extends Searchable<T>> extends StatefulWidget {
   final Widget Function(T) itemBuilder;
   final String searchPlaceholder;
   final String noItemsPlaceholder;
@@ -34,11 +33,8 @@ class SearchableListView<T> extends StatefulWidget {
   final Color? navigationBarColor;
   final Color? navigationBarTextColor;
 
-  final Widget? trailingActions;
-
   const SearchableListView({
     Key? key,
-    required this.itemsProvider,
     required this.itemBuilder,
     this.noItemsPlaceholder = 'Seznam neobsahuje žádné položky.',
     this.searchPlaceholder = '',
@@ -48,16 +44,15 @@ class SearchableListView<T> extends StatefulWidget {
     this.navigationBarTitle,
     this.navigationBarColor,
     this.navigationBarTextColor,
-    this.trailingActions,
   }) : super(key: key);
 
   @override
-  _SearchableListViewState createState() => _SearchableListViewState();
+  _SearchableListViewState<T, U> createState() => _SearchableListViewState<T, U>();
 }
 
-class _SearchableListViewState extends State<SearchableListView> with Updateable {
+class _SearchableListViewState<T, U extends Searchable<T>> extends State<SearchableListView<T, U>> {
   final searchFieldFocusNode = FocusNode();
-  late final scrollController;
+  late final AutoScrollController scrollController;
 
   late bool _isShowingSearchField;
 
@@ -83,18 +78,16 @@ class _SearchableListViewState extends State<SearchableListView> with Updateable
       },
     );
 
-    final provider = widget.itemsProvider;
+    final provider = context.watch<U>();
 
-    final selectionProvider = context.read<SelectionProvider?>();
-    final isSelectionEnabled = selectionProvider?.isSelectionEnabled ?? false;
+    final selectionProvider = context.watch<SongLyricsProvider?>();
+    final selectionEnabled = selectionProvider?.selectionEnabled ?? false;
 
-    final title = isSelectionEnabled ? selectionProvider?.title : widget.navigationBarTitle;
-    final leading = isSelectionEnabled ? _cancelSelectionAction : null;
-    final middle =
-        _shouldShowNavigationBar && _isShowingSearchField && !isSelectionEnabled ? _buildSearchField() : null;
-    final trailing = _shouldShowNavigationBar && _isShowingSearchField
-        ? null
-        : (isSelectionEnabled ? widget.trailingActions : searchButton);
+    final title = selectionEnabled ? selectionProvider?.title : widget.navigationBarTitle;
+    final leading = selectionEnabled ? _cancelSelectionAction : null;
+    final middle = _shouldShowNavigationBar && _isShowingSearchField && !selectionEnabled ? _buildSearchField() : null;
+    final trailing =
+        _shouldShowNavigationBar && _isShowingSearchField ? null : (selectionEnabled ? Container() : searchButton);
 
     return PlatformScaffold(
       title: title,
@@ -105,38 +98,47 @@ class _SearchableListViewState extends State<SearchableListView> with Updateable
       navigationBarTextColor: widget.navigationBarTextColor,
       body: Column(
         children: [
-          if (!(_shouldShowNavigationBar || isSelectionEnabled)) _buildSearchField(),
-          if (provider is SongLyricsProvider) ActiveFiltersRow(selectedTags: provider.selectedTags),
-          Expanded(child: widget.itemsProvider.items.isNotEmpty ? _buildList() : _buildNoItemWidget()),
+          if (!(_shouldShowNavigationBar || selectionEnabled)) _buildSearchField(),
+          Expanded(child: provider.items.isNotEmpty ? _buildList() : _buildNoItemWidget()),
         ],
       ),
     );
   }
 
   Widget _buildSearchField() {
-    final isFilterable = widget.itemsProvider is SongLyricsProvider;
-    final prefix = Highlightable(child: Icon(Icons.arrow_back), onPressed: _hideSearchField);
-    final suffix = Highlightable(child: Icon(Icons.filter_list), onPressed: () => _showFilters(context));
+    final provider = context.read<U>();
+
+    Widget? prefix;
+    Widget? suffix;
+
+    if (_shouldShowNavigationBar) {
+      prefix = Highlightable(child: const Icon(Icons.arrow_back), onPressed: () => _hideSearchField(context));
+    }
+    if (provider is SongLyricsProvider) {
+      suffix = Highlightable(child: const Icon(Icons.filter_list), onPressed: () => _showFilters(context));
+    }
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: kDefaultPadding).copyWith(bottom: kDefaultPadding / 2),
+      padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
       child: SearchField(
-        key: PageStorageKey(widget.key.toString() + '_search_field'),
+        key: PageStorageKey('${widget.key}_search_field'),
         placeholder: widget.searchPlaceholder,
-        onSearch: (searchText) {
-          scrollController.animateTo(0.0, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
-          widget.itemsProvider.searchText = searchText;
+        onSearchTextChanged: (searchText) {
+          scrollController.animateTo(0.0, duration: kDefaultAnimationDuration, curve: Curves.easeInOut);
+          provider.searchText = searchText;
         },
         focusNode: searchFieldFocusNode,
-        prefix: _shouldShowNavigationBar ? prefix : null,
-        suffix: isFilterable ? suffix : null,
-        onSubmitted: (_) => widget.itemsProvider.onSubmitted(context),
+        prefix: prefix,
+        suffix: suffix,
+        onSubmitted: (_) => provider.onSubmitted(context),
       ),
     );
   }
 
   Widget _buildList() {
-    final items = widget.itemsProvider.items;
+    final provider = context.watch<U>();
+
+    final items = provider.items;
 
     final isReorderable = widget.onReorder != null && widget.onReorderDone != null;
 
@@ -150,54 +152,56 @@ class _SearchableListViewState extends State<SearchableListView> with Updateable
                 index: index,
                 child: widget.itemBuilder(items[index])),
           )
-        : StaggeredGridView.countBuilder(
+        : MasonryGridView.count(
             controller: scrollController,
             crossAxisCount: widget.crossAxisCount,
             itemCount: items.length,
             itemBuilder: (context, index) => widget.itemBuilder(items[index]),
-            staggeredTileBuilder: (index) => StaggeredTile.fit(1),
           );
 
-    if (isReorderable)
+    if (isReorderable) {
       child = reorderable.ReorderableList(
         onReorder: widget.onReorder!,
         onReorderDone: widget.onReorderDone!,
         child: child,
       );
+    }
 
     return Scrollbar(child: child, controller: scrollController);
   }
 
   Widget _buildNoItemWidget() {
-    final searchText = widget.itemsProvider.searchText;
+    final provider = context.watch<U>();
+
+    final searchText = provider.searchText;
 
     final text = searchText.isNotEmpty
         ? 'Nebyl nalezen žádný výsledek pro${unbreakableSpace}hledaný výraz: "$searchText"'
         : widget.noItemsPlaceholder;
 
     return Container(
-      padding: EdgeInsets.all(kDefaultPadding),
+      padding: const EdgeInsets.all(kDefaultPadding),
       child: Center(child: Text(text, style: AppTheme.of(context).bodyTextStyle, textAlign: TextAlign.center)),
     );
   }
 
   Widget get _cancelSelectionAction {
-    final selectionProvider = context.read<SelectionProvider>();
+    final selectionProvider = context.read<SongLyricsProvider>();
 
     return Highlightable(
-      child: Icon(Icons.close),
+      child: const Icon(Icons.close),
       color: AppTheme.of(context).chordColor,
       padding: EdgeInsets.zero,
-      onPressed: () => selectionProvider.isSelectionEnabled = false,
+      onPressed: () => selectionProvider.selectionEnabled = false,
     );
   }
 
   bool get _shouldShowNavigationBar => widget.navigationBarTitle != null;
 
   void _showFilters(BuildContext context) {
-    final provider = widget.itemsProvider;
+    final provider = context.read<SongLyricsProvider?>();
 
-    if (provider is SongLyricsProvider) {
+    if (provider != null) {
       final dataProvider = context.read<DataProvider>();
       final tagsProvider = _tagsProvider ??= TagsProvider(dataProvider.tags);
 
@@ -212,26 +216,12 @@ class _SearchableListViewState extends State<SearchableListView> with Updateable
     }
   }
 
-  void _hideSearchField() {
-    final provider = widget.itemsProvider;
-
-    provider.searchText = '';
-
-    if (provider is SongLyricsProvider) provider.clearTags();
+  void _hideSearchField(BuildContext context) {
+    context.read<U>().searchText = '';
+    context.read<SongLyricsProvider?>()?.clearTags();
 
     setState(() => _isShowingSearchField = false);
 
     searchFieldFocusNode.unfocus();
-  }
-
-  @override
-  List<Listenable> get listenables {
-    final listenables = List<Listenable>.empty(growable: true);
-    listenables.add(widget.itemsProvider);
-
-    final selectionProvider = context.read<SelectionProvider?>();
-    if (selectionProvider != null) listenables.add(selectionProvider);
-
-    return listenables;
   }
 }

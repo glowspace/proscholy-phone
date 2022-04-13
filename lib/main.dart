@@ -16,11 +16,11 @@ void main() async {
 
   _prefs = await SharedPreferences.getInstance();
 
-  runApp(MainWidget());
+  runApp(const MainWidget());
 }
 
 class MainWidget extends StatelessWidget with PlatformMixin {
-  MainWidget({Key? key}) : super(key: key);
+  const MainWidget({Key? key}) : super(key: key);
 
   @override
   Widget buildAndroid(BuildContext context) {
@@ -40,7 +40,7 @@ class MainWidget extends StatelessWidget with PlatformMixin {
       theme: AppTheme.of(context).cupertinoTheme,
       home: MiniPlayerWrapper(),
       // needed by youtube player
-      localizationsDelegates: [DefaultMaterialLocalizations.delegate],
+      localizationsDelegates: const [DefaultMaterialLocalizations.delegate],
     );
   }
 
@@ -48,10 +48,7 @@ class MainWidget extends StatelessWidget with PlatformMixin {
   Widget buildWrapper(BuildContext context, Widget Function(BuildContext) builder) {
     return ChangeNotifierProvider(
       create: (_) => SettingsProvider(_prefs),
-      builder: (_, __) => AppTheme(
-        child: Builder(builder: builder),
-        platform: Theme.of(context).platform,
-      ),
+      builder: (_, __) => AppTheme(child: Builder(builder: builder)),
     );
   }
 }

@@ -2,99 +2,36 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/platform/components/progress_indicator.dart';
+import 'package:zpevnik/custom/future_builder.dart';
 import 'package:zpevnik/platform/components/scaffold.dart';
 import 'package:zpevnik/platform/components/switch.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/settings.dart';
 import 'package:zpevnik/screens/components/font_size_slider.dart';
-import 'package:zpevnik/screens/components/highlightable.dart';
 import 'package:zpevnik/screens/components/selector_widget.dart';
-import 'package:zpevnik/screens/user/components/menu_row.dart';
 import 'package:zpevnik/screens/user/components/menu_section.dart';
 import 'package:zpevnik/theme.dart';
 
-class SettingsScreen extends StatefulWidget {
+const double kSelectorWidgetWidth = 96;
+
+class SettingsScreen extends StatelessWidget {
   const SettingsScreen({Key? key}) : super(key: key);
 
   @override
-  _SettingsScreenState createState() => _SettingsScreenState();
-}
-
-class _SettingsScreenState extends State<SettingsScreen> {
-  late Future<void> _updateFuture = Future.value();
-
-  @override
   Widget build(BuildContext context) {
-    final appTheme = AppTheme.of(context);
-    final accidentalsStyle = appTheme.bodyTextStyle?.copyWith(fontSize: 20, fontFamily: 'KaiseiHarunoUmi');
-    final settingsProvider = context.watch<SettingsProvider>();
-
     return PlatformScaffold(
       title: 'Nastavení',
       body: SingleChildScrollView(
         child: Container(
-          padding: EdgeInsets.symmetric(vertical: kDefaultPadding),
+          padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              MenuSection(
-                title: 'Nastavení zobrazení',
-                children: [
-                  MenuRow(
-                    title: 'Blokovat zhasínání displeje',
-                    child: PlatformSwitch(
-                      value: settingsProvider.blockDisplayOff,
-                      onChanged: settingsProvider.changeBlockDisplayOff,
-                    ),
-                  ),
-                  MenuRow(
-                    title: 'Tmavý mód',
-                    child: PlatformSwitch(
-                      value: settingsProvider.isDarkMode ?? (appTheme.brightness == Brightness.dark),
-                      onChanged: settingsProvider.changeIsDarkMode,
-                    ),
-                  ),
-                ],
-              ),
-              MenuSection(
-                title: 'Nastavení písní',
-                children: [
-                  MenuRow(
-                    title: 'Posuvky',
-                    child: SelectorWidget(
-                      onSelected: (index) => settingsProvider.accidentals = index,
-                      options: [
-                        Text('#', style: accidentalsStyle, textAlign: TextAlign.center),
-                        Text('♭', style: accidentalsStyle, textAlign: TextAlign.center)
-                      ],
-                      selected: settingsProvider.accidentals,
-                      width: 96,
-                    ),
-                  ),
-                  MenuRow(
-                    title: 'Akordy',
-                    child: SelectorWidget(
-                      onSelected: (index) => settingsProvider.showChords = index == 1,
-                      options: [
-                        Icon(Icons.visibility_off, color: appTheme.iconColor),
-                        Icon(Icons.visibility, color: appTheme.iconColor),
-                      ],
-                      selected: settingsProvider.showChords ? 1 : 0,
-                      width: 96,
-                    ),
-                  ),
-                  MenuRow(child: FontSizeSlider()),
-                  MenuRow(
-                    title: 'Zobrazit spodní nabídku',
-                    child: PlatformSwitch(
-                      value: settingsProvider.showBottomOptions,
-                      onChanged: settingsProvider.changeShowBottomOptions,
-                    ),
-                  ),
-                ],
-              ),
-              _buildLastUpdateInfo(),
+              _buildDisplaySettings(context),
+              const SizedBox(height: kDefaultPadding),
+              _buildSongSettings(context),
+              const SizedBox(height: kDefaultPadding),
+              _buildLastUpdateInfo(context),
             ],
           ),
         ),
@@ -102,47 +39,125 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  Widget _buildLastUpdateInfo() {
-    final settingsProvider = context.watch<SettingsProvider>();
+  Widget _buildDisplaySettings(BuildContext context) {
+    final appTheme = AppTheme.of(context);
 
-    return FutureBuilder(
-        future: _updateFuture,
-        builder: (context, snapshot) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (snapshot.connectionState == ConnectionState.done)
-                Highlightable(
-                  padding: EdgeInsets.all(kDefaultPadding),
-                  onPressed: _forceUpdate,
-                  child: Text('Aktualizovat databázi'),
-                )
-              else
-                Container(padding: EdgeInsets.all(kDefaultPadding), child: PlatformProgressIndicator()),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: kDefaultPadding),
-                child: Text(
-                  'Datum poslední aktualizace: ${settingsProvider.lastUpdate}',
-                  style: AppTheme.of(context).captionTextStyle,
-                ),
-              ),
-            ],
-          );
-        });
+    return Consumer<SettingsProvider>(
+      builder: (_, provider, __) => MenuSection(
+        title: 'Nastavení zobrazení',
+        children: [
+          Row(children: [
+            const Expanded(child: Text('Blokovat zhasínání displeje')),
+            PlatformSwitch(
+              value: provider.blockDisplayOff,
+              onChanged: provider.changeBlockDisplayOff,
+            ),
+          ]),
+          Row(children: [
+            const Expanded(child: Text('Tmavý mód')),
+            PlatformSwitch(
+              value: provider.isDarkMode ?? (appTheme.brightness == Brightness.dark),
+              onChanged: provider.changeIsDarkMode,
+            ),
+          ]),
+        ],
+      ),
+    );
   }
 
-  void _forceUpdate() async {
-    setState(() {
-      _updateFuture = () async {
-        if (await context.read<DataProvider>().update(forceUpdate: true))
-          Fluttertoast.showToast(
-            msg: 'Aktualizace písní proběhla úspěšně.',
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            backgroundColor: Colors.green,
-            textColor: Colors.white,
-          );
-      }();
-    });
+  Widget _buildSongSettings(BuildContext context) {
+    final appTheme = AppTheme.of(context);
+    final accidentalsStyle = appTheme.bodyTextStyle?.copyWith(fontSize: 20, fontFamily: 'KaiseiHarunoUmi');
+
+    return Consumer<SettingsProvider>(
+      builder: (_, provider, __) => MenuSection(
+        title: 'Nastavení písní',
+        children: [
+          Row(children: [
+            const Expanded(child: Text('Posuvky')),
+            SelectorWidget(
+              onSelected: (index) => provider.accidentals = index,
+              options: [
+                Text('#', style: accidentalsStyle, textAlign: TextAlign.center),
+                Text('♭', style: accidentalsStyle, textAlign: TextAlign.center)
+              ],
+              selected: provider.accidentals,
+              width: kSelectorWidgetWidth,
+            ),
+          ]),
+          Row(children: [
+            const Expanded(child: Text('Akordy')),
+            SelectorWidget(
+              onSelected: (index) => provider.showChords = index == 1,
+              options: [
+                Icon(Icons.visibility_off, color: appTheme.iconColor),
+                Icon(Icons.visibility, color: appTheme.iconColor),
+              ],
+              selected: provider.showChords ? 1 : 0,
+              width: kSelectorWidgetWidth,
+            ),
+          ]),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: const [
+              Text('Velikost písma'),
+              FontSizeSlider(),
+            ],
+          ),
+          Row(children: [
+            const Expanded(child: Text('Zobrazit spodní nabídku')),
+            PlatformSwitch(
+              value: provider.showBottomOptions,
+              onChanged: provider.changeShowBottomOptions,
+            ),
+          ]),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLastUpdateInfo(BuildContext context) {
+    final settingsProvider = context.read<SettingsProvider>();
+
+    Future<void> _updateFuture = Future.value();
+
+    return StatefulBuilder(
+      builder: (context, setState) => CustomFutureBuilder<void>(
+        future: _updateFuture,
+        wrapperBuilder: (_, child) => Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            child,
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
+              child: Text(
+                'Datum poslední aktualizace: ${settingsProvider.lastUpdate}',
+                style: AppTheme.of(context).captionTextStyle,
+              ),
+            ),
+          ],
+        ),
+        builder: (_, __) => TextButton(
+          onPressed: () => setState(() {
+            _updateFuture = _forceUpdate(context);
+          }),
+          child: const Text('Aktualizovat databázi'),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _forceUpdate(BuildContext context) async {
+    final updated = await context.read<DataProvider>().update(forceUpdate: true);
+
+    if (updated) {
+      Fluttertoast.showToast(
+        msg: 'Aktualizace písní proběhla úspěšně.',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+      );
+    }
   }
 }

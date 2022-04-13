@@ -47,6 +47,9 @@ class _HighlightableState extends State<Highlightable> {
     return GestureDetector(
       onTapDown: (details) => _setHightlight(!_containsChild(details)),
       onTapCancel: () => _setHightlight(false),
+      // FIXME: this can call setState() after dispose() was called
+      // delay, so the highlight is visible when fast tap happens
+      // onTapUp: (_) => Future.delayed(const Duration(milliseconds: 100), () => _setHightlight(false)),
       onTapUp: (_) => _setHightlight(false),
       onTap: widget.onPressed,
       onLongPress: widget.onLongPressed,

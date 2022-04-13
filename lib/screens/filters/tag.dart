@@ -20,12 +20,12 @@ class FilterTag extends StatelessWidget {
     final provider = context.watch<SongLyricsProvider>();
 
     return GestureDetector(
-      onTap: () => provider.toggleSelected(tag),
+      onTap: () => provider.toggleSelectedTag(tag),
       child: Container(
         decoration: BoxDecoration(
           color: (tag.isSelected && !isPartOfActiveTags) ? _selectedColor(tag) : Colors.transparent,
           border: Border.all(color: appTheme.borderColor),
-          borderRadius: BorderRadius.all(Radius.circular(100)),
+          borderRadius: BorderRadius.circular(100),
         ),
         padding: EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
         child: Row(
@@ -36,7 +36,7 @@ class FilterTag extends StatelessWidget {
               Highlightable(
                 padding: EdgeInsets.only(left: kDefaultPadding / 2),
                 child: Icon(Icons.close, size: 14),
-                onPressed: () => provider.toggleSelected(tag),
+                onPressed: () => provider.toggleSelectedTag(tag),
               ),
           ],
         ),

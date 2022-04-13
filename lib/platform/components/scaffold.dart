@@ -103,21 +103,6 @@ class PlatformScaffold extends StatelessWidget with PlatformMixin {
     );
   }
 
-  // @override
-  // Widget buildWrapper(BuildContext context, Widget Function(BuildContext) builder) {
-  //   final appTheme = AppTheme.of(context);
-
-  //   return AnnotatedRegion<SystemUiOverlayStyle>(
-  //     value: SystemUiOverlayStyle(
-  //       statusBarColor: navigationBarColor ?? appTheme.backgroundColor,
-  //       systemNavigationBarColor: appTheme.backgroundColor,
-  //       statusBarBrightness: appTheme.brightness,
-  //       statusBarIconBrightness: appTheme.brightness == Brightness.light ? Brightness.dark : Brightness.light,
-  //     ),
-  //     child: builder(context),
-  //   );
-  // }
-
   Widget? get _wrappedLeading {
     if (leading == null) return null;
 

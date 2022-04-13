@@ -1,14 +1,11 @@
 import 'package:diacritic/diacritic.dart';
 import 'package:flutter/material.dart';
 import 'package:zpevnik/models/songbook.dart';
+import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/utils/searchable.dart';
 
 class SongbooksProvider extends ChangeNotifier with Searchable<Songbook> {
-  List<Songbook> _allSongbooks;
-
-  SongbooksProvider(this._allSongbooks) {
-    _sort();
-  }
+  List<Songbook> _allSongbooks = [];
 
   List<Songbook>? _songbooks;
 
@@ -20,6 +17,12 @@ class SongbooksProvider extends ChangeNotifier with Searchable<Songbook> {
     _sort();
 
     notifyListeners();
+  }
+
+  void update(DataProvider provider) {
+    _allSongbooks = provider.songbooks;
+
+    _sort();
   }
 
   @override

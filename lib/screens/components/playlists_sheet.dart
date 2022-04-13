@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/models/song_lyric.dart';
@@ -19,34 +18,36 @@ class PlaylistsSheet extends StatefulWidget {
 class _PlaylistsSheetState extends State<PlaylistsSheet> {
   @override
   Widget build(BuildContext context) {
-    final playlistsProvider = context.watch<PlaylistsProvider>();
-
     return BottomFormSheet(
       title: 'Playlisty',
       contentPadding: EdgeInsets.zero,
       items: [
         IconItem(title: 'Nový playlist', icon: Icons.add, onPressed: showPlaylistDialog),
-        for (final playlist in playlistsProvider.allPlaylists)
-          IconItem(
-            title: playlist.name,
-            onPressed: () {
-              playlist.addSongLyrics(widget.selectedSongLyrics);
+        Consumer<PlaylistsProvider>(
+          builder: (_, provider, __) => ListView.builder(
+            itemBuilder: (context, index) => IconItem(
+              title: provider.playlists[index].name,
+              onPressed: () {
+                provider.playlists[index].addSongLyrics(widget.selectedSongLyrics);
 
-              Navigator.pop(context);
-            },
+                Navigator.pop(context);
+              },
+            ),
+            itemCount: provider.playlists.length,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
           ),
+        ),
       ],
     );
   }
 
-  void showPlaylistDialog() {
-    final playlistsProvider = context.read<PlaylistsProvider>();
-
-    showPlatformDialog<String>(
+  void showPlaylistDialog() async {
+    final name = await showPlatformDialog<String>(
       context,
       (context) => PlatformDialog(title: 'Vytvořit playlist', submitText: 'Vytvořit'),
-    ).then((text) {
-      if (text != null) playlistsProvider.addPlaylist(text);
-    });
+    );
+
+    if (name != null) context.read<PlaylistsProvider>().addPlaylist(name);
   }
 }
