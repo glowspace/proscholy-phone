@@ -1,196 +1,243 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/settings.dart';
-import 'package:zpevnik/screens/song_lyric/utils/lyrics_controller.dart';
 import 'package:zpevnik/screens/song_lyric/utils/parser.dart';
-import 'package:zpevnik/screens/song_lyric/utils/utils.dart';
-import 'package:zpevnik/screens/utils/updateable.dart';
 import 'package:zpevnik/theme.dart';
+import 'package:zpevnik/utils/hex_color.dart';
 
-class LyricsWidget extends StatefulWidget {
-  final LyricsController controller;
-  final ScrollController? scrollController;
+class LyricsWidget extends StatelessWidget {
+  final SongLyricsParser parser;
 
-  const LyricsWidget({Key? key, required this.controller, this.scrollController}) : super(key: key);
+  const LyricsWidget({Key? key, required this.parser}) : super(key: key);
 
-  @override
-  _LyricsWidgetState createState() => _LyricsWidgetState();
-}
-
-class _LyricsWidgetState extends State<LyricsWidget> with Updateable {
   @override
   Widget build(BuildContext context) {
-    final controller = widget.controller;
-
-    Widget lyrics = Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        _buildTitle(),
-        if (controller.hasLilypond && !widget.controller.isProjectionEnabled)
-          SvgPicture.string(
-            controller.prepareLilypond(AppTheme.of(context).textColor),
-            width: MediaQuery.of(context).size.width,
-            fit: BoxFit.fill,
-          ),
-        if (widget.controller.isProjectionEnabled) Expanded(child: _buildLyrics()) else _buildLyrics(),
-      ],
-    );
-
-    if (!widget.controller.isProjectionEnabled)
-      lyrics = Scrollbar(
-        controller: widget.scrollController,
-        child: SingleChildScrollView(controller: widget.scrollController, child: lyrics),
-      );
-
-    return Container(child: lyrics);
-  }
-
-  Widget _buildTitle() {
+    final appTheme = AppTheme.of(context);
     final settingsProvider = context.watch<SettingsProvider>();
 
-    return Container(
-      padding: EdgeInsets.all(kDefaultPadding),
-      child: RichText(
-        text: TextSpan(
-          text: widget.controller.title,
-          style: AppTheme.of(context).titleTextStyle,
+    final width = MediaQuery.of(context).size.width;
+
+    return SingleChildScrollView(
+      child: Container(
+        padding: const EdgeInsets.all(kDefaultPadding),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              parser.songLyric.name,
+              style: appTheme.titleTextStyle,
+              textScaleFactor: settingsProvider.fontSizeScale,
+            ),
+            SizedBox(height: kDefaultPadding * settingsProvider.fontSizeScale),
+            if (parser.hasLilypond)
+              SvgPicture.string(
+                parser.lilypond(appTheme.textColor.hex),
+                width: min(width - 2 * kDefaultPadding, parser.lilypondWidth),
+              ),
+            if (parser.hasLilypond) SizedBox(height: kDefaultPadding * settingsProvider.fontSizeScale / 2),
+            _buildLyrics(context),
+            SizedBox(height: kDefaultPadding * settingsProvider.fontSizeScale),
+            _buildAuthors(context),
+          ],
         ),
-        textScaleFactor: settingsProvider.fontSizeScale,
       ),
     );
   }
 
-  Widget _buildLyrics() {
-    final verses = widget.controller.preparedLyrics;
-    final isProjectionEnabled = widget.controller.isProjectionEnabled;
+  Widget _buildLyrics(BuildContext context) {
+    final appTheme = AppTheme.of(context);
+    final settingsProvider = context.read<SettingsProvider>();
 
-    final children = List<Widget>.empty(growable: true);
+    final List<Widget> children = [];
 
-    if (isProjectionEnabled)
-      children.add(_buildVerse(verses[widget.controller.currentlyProjectedVerse]));
-    else
-      children.addAll(verses.map((verse) => _buildVerse(verse)));
+    Token? currentToken = parser.nextToken;
+    while (currentToken != null) {
+      if (currentToken is Comment) {
+        children.add(Text(
+          currentToken.value,
+          style: appTheme.commentTextStyle,
+          textScaleFactor: settingsProvider.fontSizeScale,
+        ));
+      } else if (currentToken is Interlude) {
+        children.add(_buildInterlude(context, currentToken));
+      } else if (currentToken is VerseNumber) {
+        children.add(_buildVerse(context, currentToken));
+      }
 
-    if (!isProjectionEnabled) children.add(_buildAuthors());
+      currentToken = parser.nextToken;
+    }
 
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: kDefaultPadding),
-      margin: EdgeInsets.only(bottom: 2 * kDefaultPadding),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: children,
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: children,
     );
   }
 
-  Widget _buildAuthors() {
+  Widget _buildInterlude(BuildContext context, Interlude interlude) {
+    final settingsProvider = context.read<SettingsProvider>();
+
+    final List<Widget> children = [];
+    Token? currentToken = parser.nextToken;
+    while (currentToken != null && currentToken is! InterludeEnd) {
+      if (currentToken is Chord) {
+        children.add(_buildLine(context, currentToken, isInterlude: true));
+      } else if (currentToken is NewLine) {
+        children.add(SizedBox(height: kDefaultPadding * settingsProvider.fontSizeScale));
+      }
+
+      currentToken = parser.nextToken;
+    }
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(right: kDefaultPadding / 2),
+          child: Text(
+            interlude.value,
+            style: _textStyle(context),
+            textScaleFactor: settingsProvider.fontSizeScale,
+          ),
+        ),
+        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: children)),
+      ],
+    );
+  }
+
+  Widget _buildVerse(BuildContext context, VerseNumber number) {
+    final settingsProvider = context.read<SettingsProvider>();
+
+    final List<Widget> children = [];
+    Token? currentToken = parser.nextToken;
+    while (currentToken != null && currentToken is! VerseEnd) {
+      if (currentToken is VersePart || currentToken is Chord) {
+        children.add(_buildLine(context, currentToken));
+      } else if (currentToken is NewLine) {
+        children.add(SizedBox(height: kDefaultPadding * settingsProvider.fontSizeScale));
+      }
+
+      currentToken = parser.nextToken;
+    }
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (number.value.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(right: kDefaultPadding / 2),
+            child: Text(
+              number.value,
+              style: _textStyle(context),
+              textScaleFactor: settingsProvider.fontSizeScale,
+            ),
+          ),
+        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: children)),
+      ],
+    );
+  }
+
+  Widget _buildLine(BuildContext context, Token token, {bool isInterlude = false}) {
+    final settingsProvider = context.read<SettingsProvider>();
+
+    final List<InlineSpan> children = [];
+
+    Token? currentToken = token;
+    Chord? currentChord;
+    while (currentToken != null && currentToken is! NewLine) {
+      if (currentToken is VersePart) {
+        if (currentChord == null) {
+          children.add(TextSpan(text: currentToken.value));
+        } else {
+          children.add(_buildChord(context, currentChord, versePart: currentToken));
+          currentChord = null;
+        }
+      } else if (currentToken is Chord) {
+        if (isInterlude) {
+          children.add(_buildChord(context, currentToken, isInterlude: true));
+        } else if (currentChord != null) {
+          children.add(_buildChord(context, currentChord));
+        }
+
+        currentChord = currentToken;
+      }
+
+      currentToken = parser.nextToken;
+    }
+
+    if (!isInterlude && currentChord != null) {
+      children.add(_buildChord(context, currentChord));
+    }
+
+    return RichText(
+      text: TextSpan(text: '', style: _textStyle(context), children: children),
+      textScaleFactor: settingsProvider.fontSizeScale,
+    );
+  }
+
+  WidgetSpan _buildChord(BuildContext context, Chord chord, {VersePart? versePart, bool isInterlude = false}) {
+    final appTheme = AppTheme.of(context);
+    final settingsProvider = context.read<SettingsProvider>();
+
+    final textStyle = _textStyle(context);
+
+    final chordOffset = isInterlude ? 0.0 : -(textStyle?.fontSize ?? 0);
+
+    int? chordNumberIndex;
+    for (int i = 0; i < chord.value.length; i++) {
+      if (int.tryParse(chord.value[i]) != null) {
+        chordNumberIndex = i;
+        break;
+      }
+    }
+
+    return WidgetSpan(
+      child: Stack(children: [
+        Container(
+          transform: Matrix4.translationValues(0, chordOffset, 0),
+          padding: EdgeInsets.only(right: settingsProvider.fontSizeScale * kDefaultPadding / 2),
+          child: chordNumberIndex == null
+              ? Text(chord.value, style: textStyle?.copyWith(color: appTheme.chordColor))
+              : Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      chord.value.substring(0, chordNumberIndex),
+                      style: textStyle?.copyWith(color: appTheme.chordColor),
+                    ),
+                    Text(
+                      chord.value.substring(chordNumberIndex),
+                      style: textStyle?.copyWith(
+                        color: appTheme.chordColor,
+                        fontSize: (textStyle.fontSize ?? 17) * 0.6,
+                      ),
+                    ),
+                  ],
+                ),
+        ),
+        if (versePart != null) Text(versePart.value, style: textStyle),
+      ]),
+    );
+  }
+
+  Widget _buildAuthors(BuildContext context) {
     final appTheme = AppTheme.of(context);
     final dataProvider = context.watch<DataProvider>();
     final settingsProvider = context.watch<SettingsProvider>();
 
-    return RichText(
-      text: TextSpan(
-        text: widget.controller.songLyric.authorsText(dataProvider),
-        style: appTheme.captionTextStyle,
-      ),
+    return Text(
+      parser.songLyric.authorsText(dataProvider),
+      style: appTheme.captionTextStyle,
       textScaleFactor: settingsProvider.fontSizeScale,
     );
   }
 
-  Widget _buildVerse(Verse verse) {
-    final verseNumber = verse.number;
-    final settingsProvider = context.watch<SettingsProvider>();
-
-    final verseNumberWidth = computeTextWidth(verseNumber,
-        textStyle: _textStyle(verse.hasChords), scaleFactor: settingsProvider.fontSizeScale);
-
-    if (verse.lines.any((line) => line.blocks.any((block) => block.isComment))) print(verseNumber);
-
-    return Container(
-      padding: EdgeInsets.only(
-        bottom: verse.lines.any((line) => line.blocks.any((block) => block.isComment)) ? 0 : kDefaultPadding,
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (verseNumber != null)
-            SizedBox(
-              width: verseNumberWidth + kDefaultPadding / 2,
-              child: RichText(
-                text: TextSpan(text: verseNumber, style: _textStyle(verse.hasChords)),
-                textScaleFactor: settingsProvider.fontSizeScale,
-              ),
-            ),
-          Flexible(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: verse.lines.map((line) => _buildLine(line, verse.hasChords)).toList(),
-            ),
-          )
-        ],
-      ),
-    );
+  TextStyle? _textStyle(BuildContext context) {
+    // TODO: hasChords check should be done for every single line independently
+    return AppTheme.of(context).bodyTextStyle?.copyWith(height: parser.hasChords ? 2.5 : 1.5);
   }
-
-  Widget _buildLine(Line line, bool hasChords) {
-    final settingsProvider = context.watch<SettingsProvider>();
-
-    return RichText(
-      text: TextSpan(
-        text: '',
-        children: _buildBlocks(line.blocks, hasChords),
-      ),
-      textScaleFactor: settingsProvider.fontSizeScale,
-    );
-  }
-
-  List<InlineSpan> _buildBlocks(List<Block> blocks, bool hasChords) {
-    final spans = List<InlineSpan>.empty(growable: true);
-
-    List<Widget> groupedBlocks = [];
-    for (final block in blocks) {
-      groupedBlocks.add(_buildBlock(block, hasChords));
-
-      if (!block.endsInWordMiddle) {
-        spans.add(WidgetSpan(child: Wrap(children: groupedBlocks)));
-
-        groupedBlocks = [];
-      }
-    }
-
-    return spans;
-  }
-
-  Widget _buildBlock(Block block, bool hasChords) {
-    final textStyle = _textStyle(hasChords, isComment: block.isComment);
-    final chordColor = AppTheme.of(context).chordColor;
-
-    final chordOffset = block.isInterlude ? 0.0 : -(textStyle?.fontSize ?? 0);
-
-    return Stack(
-      children: [
-        if (block.chord != null)
-          Container(
-            transform: Matrix4.translationValues(0, chordOffset, 0),
-            padding: EdgeInsets.only(right: 0.5 * kDefaultPadding),
-            child: RichText(text: TextSpan(text: block.updatedChord, style: textStyle?.copyWith(color: chordColor))),
-          ),
-        RichText(text: TextSpan(text: block.lyricsPart, style: textStyle)),
-      ],
-    );
-  }
-
-  TextStyle? _textStyle(bool hasChords, {bool isComment = false}) {
-    final appTheme = AppTheme.of(context);
-    final textStyle = isComment ? appTheme.commentTextStyle : appTheme.bodyTextStyle;
-
-    return textStyle?.copyWith(height: hasChords ? 2.5 : 1.5);
-  }
-
-  @override
-  List<Listenable> get listenables => [widget.controller];
 }

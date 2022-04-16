@@ -60,12 +60,7 @@ class SongLyric {
 
   SongLyric(this.entity) {
     _nextFavoriteOrder = max(_nextFavoriteOrder, favoriteRank + 1);
-
-    _isFavoriteNotifier = ValueNotifier(isFavorite);
   }
-
-  // nofier for favorites list screen so it knows when to update showing list
-  late ValueNotifier<bool> _isFavoriteNotifier;
 
   static Future<List<SongLyric>> get songLyrics async {
     final entities =
@@ -74,6 +69,8 @@ class SongLyric {
     return entities.map((entity) => SongLyric(entity)).toList();
   }
 
+  final Map<int, SongbookRecord> songbookRecords = {};
+
   int get id => entity.id ?? 0;
   String get name => entity.name ?? '';
   String get lyrics => entity.lyrics ?? '';
@@ -81,22 +78,34 @@ class SongLyric {
   String get language => entity.lang_string ?? '';
   SongLyricType get type => SongLyricTypeExtension.fromString(entity.type_enum ?? '');
   int? get songId => entity.songsId;
+
   int get favoriteRank => entity.favorite_rank ?? -1;
+  bool get isFavorite => entity.favorite_rank != null;
 
   bool? get showChords => entity.show_chords;
   int get transposition => entity.transposition ?? 0;
   int? get accidentals => entity.accidentals;
 
+  // TODO: this should not be here
   Key get key => Key(id.toString());
+
+  String? get secondaryName {
+    String? name;
+
+    if (entity.secondary_name_1 != null) name = '${entity.secondary_name_1}';
+    if (entity.secondary_name_2 != null) name = '$name\n${entity.secondary_name_2}';
+
+    return name;
+  }
 
   set favoriteRank(int value) {
     entity.favorite_rank = value;
-    entity.upsert();
+    entity.save();
   }
 
   set showChords(bool? newValue) {
     entity.show_chords = newValue;
-    entity.upsert();
+    entity.save();
   }
 
   set transposition(int newValue) {
@@ -108,22 +117,18 @@ class SongLyric {
 
   set accidentals(int? newValue) {
     entity.accidentals = newValue;
-    entity.upsert();
+    entity.save();
   }
 
-  bool get isFavorite => entity.favorite_rank != null;
-  ValueNotifier<bool> get isFavoriteNotifier => _isFavoriteNotifier;
+  void toggleFavorite() {
+    if (isFavorite) {
+      entity.favorite_rank = null;
+    } else {
+      entity.favorite_rank = _nextFavoriteOrder++;
+    }
 
-  String? get secondaryName {
-    String? name;
-
-    if (entity.secondary_name_1 != null) name = '${entity.secondary_name_1}';
-    if (entity.secondary_name_2 != null) name = '${name == null ? '' : '$name\n'}${entity.secondary_name_2}';
-
-    return name;
+    entity.save();
   }
-
-  final songbookRecords = Map<int, SongbookRecord>.from({});
 
   String number(Songbook? songbook) {
     if (songbook != null) return songbookRecords[songbook.id]?.number ?? '0';
@@ -131,11 +136,8 @@ class SongLyric {
     return entity.id.toString();
   }
 
-  final tagIds = List<int>.empty(growable: true);
-  // List<int> get tagIds => _tagIds ?? [];
-
-  final authors = List<Author>.empty(growable: true);
-  // List<model.Author> get authors => _authors;
+  final List<int> tagIds = [];
+  final List<Author> authors = [];
 
   String? _authorsText;
   String authorsText(DataProvider provider) {
@@ -177,17 +179,6 @@ class SongLyric {
 
   bool get hasExternals => youtubes.isNotEmpty;
 
-  final externals = List<External>.empty(growable: true);
-  List<External> get youtubes => externals.where((external) => external.isYoutube).toList();
-
-  void toggleFavorite() {
-    if (isFavorite)
-      entity.favorite_rank = null;
-    else
-      entity.favorite_rank = _nextFavoriteOrder++;
-
-    _isFavoriteNotifier.value = isFavorite;
-
-    entity.upsert();
-  }
+  final List<External> externals = [];
+  List<External> get youtubes => externals.where((external) => external.isYoutubeVideo).toList();
 }

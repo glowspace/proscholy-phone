@@ -65,27 +65,49 @@ mixin _Searchable on _SongLyricsProvider {
 }
 
 mixin _Filterable on _SongLyricsProvider {
-  final Map<TagType, List<Tag>> _selectedSongLyricsTags = {};
+  final Map<TagType, List<Tag>> _selectedTags = {};
 
-  List<Tag> get selectedSongLyricsTags {
+  List<TagsSection> _tagsSections = [];
+
+  List<Tag> get selectedTags {
     final List<Tag> tags = [];
 
-    for (final _tags in _selectedSongLyricsTags.values) {
+    for (final _tags in _selectedTags.values) {
       tags.addAll(_tags);
     }
 
     return tags;
   }
 
+  List<TagsSection> get tagsSections => _tagsSections;
+
+  void _updateTags(DataProvider dataProvider) {
+    final Map<String, List<Tag>> tagsMap = {};
+
+    for (final tag in dataProvider.tags) {
+      if (!tag.type.supported) continue;
+
+      final description = tag.type.description;
+
+      if (tagsMap[description] == null) tagsMap[description] = List<Tag>.empty(growable: true);
+
+      tagsMap[description]?.add(Tag.clone(tag));
+    }
+
+    _tagsSections = tagsMap.entries.map((entry) => TagsSection(entry.key, entry.value)).toList();
+
+    _tagsSections.sort((first, second) => first.tags[0].type.rawValue.compareTo(second.tags[0].type.rawValue));
+  }
+
   List<SongLyric> _filter(List<SongLyric> songLyrics) {
-    if (selectedSongLyricsTags.isEmpty) return songLyrics;
+    if (selectedTags.isEmpty) return songLyrics;
 
     final List<SongLyric> filtered = [];
 
     for (final songLyric in songLyrics) {
       bool shouldAdd = true;
 
-      for (final entry in _selectedSongLyricsTags.entries) {
+      for (final entry in _selectedTags.entries) {
         if (entry.key == TagType.language) {
           shouldAdd &= entry.value.map((tag) => tag.name).contains(songLyric.language);
         } else {
@@ -103,22 +125,22 @@ mixin _Filterable on _SongLyricsProvider {
     tag.toggleIsSelected();
 
     if (tag.isSelected) {
-      if (!_selectedSongLyricsTags.containsKey(tag.type)) _selectedSongLyricsTags[tag.type] = [];
+      if (!_selectedTags.containsKey(tag.type)) _selectedTags[tag.type] = [];
 
-      _selectedSongLyricsTags[tag.type]!.add(tag);
+      _selectedTags[tag.type]!.add(tag);
     } else {
-      _selectedSongLyricsTags[tag.type]!.remove(tag);
+      _selectedTags[tag.type]!.remove(tag);
     }
 
     notifyListeners();
   }
 
   void clearTags() {
-    for (final tag in selectedSongLyricsTags) {
+    for (final tag in selectedTags) {
       tag.toggleIsSelected();
     }
 
-    _selectedSongLyricsTags.clear();
+    _selectedTags.clear();
 
     notifyListeners();
   }
@@ -242,6 +264,8 @@ class SongLyricsProvider extends _SongLyricsProvider with _Filterable, _Searchab
     super.update(dataProvider, songbook: songbook, playlist: playlist);
 
     _initializeSearch();
+
+    _updateTags(dataProvider);
   }
 }
 

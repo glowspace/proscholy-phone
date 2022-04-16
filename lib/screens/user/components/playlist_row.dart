@@ -125,7 +125,9 @@ class _PlaylistRowState extends State<PlaylistRow> {
         initialValue: playlist.name,
         submitText: 'Přejmenovat',
       ),
-    ).then((text) => setState(() => playlist.name = text));
+    ).then((text) => setState(() {
+          if (text != null) playlist.name = text;
+        }));
   }
 
   void _removePlaylist(BuildContext context) {

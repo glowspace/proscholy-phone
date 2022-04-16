@@ -30,12 +30,14 @@ extension SongLyricsSearch on Model {
     }
 
     final existing = {};
-    for (final map in (await execDataTable('SELECT id from song_lyrics_search'))) existing[map['id']] = true;
+    for (final map in (await execDataTable('SELECT id from song_lyrics_search'))) {
+      existing[map['id']] = true;
+    }
 
     await batchStart();
 
     for (final songLyric in songLyrics) {
-      if (existing[songLyric.id] ?? false)
+      if (existing[songLyric.id] ?? false) {
         await execSQL(
             'UPDATE song_lyrics_search SET name = ?, secondary_name_1 = ?, secondary_name_2 = ?, lyrics = ?, numbers = ? WHERE id = ?;',
             [
@@ -46,7 +48,7 @@ extension SongLyricsSearch on Model {
               songbookNumbersMap[songLyric.id].toString(),
               songLyric.id,
             ]);
-      else
+      } else {
         await execSQL(
             'INSERT INTO song_lyrics_search(id, name, secondary_name_1, secondary_name_2, lyrics, numbers) VALUES(?, ?, ?, ?, ?, ?);',
             [
@@ -57,6 +59,7 @@ extension SongLyricsSearch on Model {
               songLyric.lyrics,
               songbookNumbersMap[songLyric.id].toString(),
             ]);
+      }
     }
 
     await batchCommit();

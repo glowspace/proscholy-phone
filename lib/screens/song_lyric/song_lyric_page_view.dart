@@ -18,15 +18,47 @@ import 'package:zpevnik/screens/song_lyric/components/song_lyric_settings.dart';
 import 'package:zpevnik/screens/song_lyric/lyrics.dart';
 import 'package:zpevnik/screens/song_lyric/translations.dart';
 import 'package:zpevnik/screens/song_lyric/utils/lyrics_controller.dart';
+import 'package:zpevnik/screens/song_lyric/utils/parser.dart';
+
+class SongLyricPageView extends StatefulWidget {
+  final List<SongLyric> songLyrics;
+
+  const SongLyricPageView({Key? key, required this.songLyrics}) : super(key: key);
+
+  @override
+  State<SongLyricPageView> createState() => _SongLyricPageViewState();
+}
+
+class _SongLyricPageViewState extends State<SongLyricPageView> {
+  final pageController = PageController();
+
+  @override
+  Widget build(BuildContext context) {
+    final songLyric = widget.songLyrics[0]; // widget.songLyrics[(pageController.page ?? 0).round()];
+
+    return PlatformScaffold(
+      title: songLyric.id.toString(),
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          PageView.builder(
+            controller: pageController,
+            itemBuilder: (_, index) => LyricsWidget(parser: SongLyricsParser(widget.songLyrics[index])),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
 enum SwipeDirection { left, right }
 
-class SongLyricPageView extends StatefulWidget {
+class SSongLyricPageView extends StatefulWidget {
   final List<SongLyric> songLyrics;
   final int initialSongLyricIndex;
   final bool fromTranslations;
 
-  const SongLyricPageView({
+  const SSongLyricPageView({
     Key? key,
     required this.songLyrics,
     this.initialSongLyricIndex = 0,
@@ -37,7 +69,7 @@ class SongLyricPageView extends StatefulWidget {
   _SongLyricPageViewState createState() => _SongLyricPageViewState();
 }
 
-class _SongLyricPageViewState extends State<SongLyricPageView> {
+class _SSongLyricPageViewState extends State<SSongLyricPageView> {
   late PageController controller;
 
   late ValueNotifier<bool> _menuCollapsed;
@@ -125,11 +157,12 @@ class _SongLyricPageViewState extends State<SongLyricPageView> {
       onScaleEnd: _onScaleEnd,
       onTap: _onTap,
       behavior: HitTestBehavior.translucent,
-      child: LyricsWidget(
-        key: lyricsController.lyricsGlobalKey,
-        controller: lyricsController,
-        scrollController: lyricsController.scrollProvider.controller,
-      ),
+      child: Container(),
+      //  LyricsWidget(
+      //   key: lyricsController.lyricsGlobalKey,
+      // controller: lyricsController,
+      // scrollController: lyricsController.scrollProvider.controller,
+      // ),
     );
   }
 

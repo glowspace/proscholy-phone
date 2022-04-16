@@ -5,7 +5,7 @@ import 'package:zpevnik/models/songbook_record.dart';
 const prioritized = {'K': 0, 'Kan': 1, 'H1': 2, 'H2': 3};
 
 // wrapper around Songbook db model for easier field access
-class Songbook extends Comparable {
+class Songbook extends Comparable<Songbook> {
   final model.Songbook entity;
 
   Songbook(this.entity);
@@ -16,14 +16,14 @@ class Songbook extends Comparable {
     return entities.map((entity) => Songbook(entity)).toList();
   }
 
+  final List<SongbookRecord> records = [];
+
   int get id => entity.id ?? 0;
   String get name => entity.name ?? '';
   String get shortcut => entity.shortcut ?? '';
   bool get isPinned => entity.is_pinned ?? false;
   String? get color => entity.color;
   String? get colorText => entity.color_text;
-
-  final records = List<SongbookRecord>.empty(growable: true);
 
   void toggleIsPinned() {
     entity.is_pinned = !isPinned;
@@ -32,9 +32,7 @@ class Songbook extends Comparable {
   }
 
   @override
-  int compareTo(_other) {
-    Songbook other = _other;
-
+  int compareTo(Songbook other) {
     if (isPinned && !other.isPinned) return -1;
     if (!isPinned && other.isPinned) return 1;
 

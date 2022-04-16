@@ -10,4 +10,8 @@ extension HexColor on Color {
 
     return Color(int.parse(hexColor, radix: 16));
   }
+
+  String get hex {
+    return '#${red.toRadixString(16)}${green.toRadixString(16)}${blue.toRadixString(16)}';
+  }
 }

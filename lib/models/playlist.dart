@@ -23,6 +23,8 @@ class Playlist {
     return entities.map((entity) => Playlist(entity)).toList();
   }
 
+  final Map<int, PlaylistRecord> records = {};
+
   int get id => entity.id ?? 0;
   String get name => entity.name ?? '';
   int get rank => entity.rank ?? 0;
@@ -30,13 +32,9 @@ class Playlist {
 
   Key get key => Key(id.toString());
 
-  final records = Map<int, PlaylistRecord>.from({});
-
-  set name(String? value) {
-    if (value != null) {
-      entity.name = value;
-      entity.save();
-    }
+  set name(String value) {
+    entity.name = value;
+    entity.save();
   }
 
   set rank(int value) {
@@ -53,13 +51,15 @@ class Playlist {
     for (final songLyric in songLyricsToAdd) {
       final int songLyricId;
 
-      if (songLyric is SongLyric)
+      if (songLyric is SongLyric) {
         songLyricId = songLyric.id;
-      else
+      } else {
         songLyricId = songLyric;
+      }
 
-      if (!records.containsKey(songLyricId))
+      if (!records.containsKey(songLyricId)) {
         records[songLyricId] = await PlaylistRecord.create(songLyricId, id, records.length);
+      }
     }
   }
 
@@ -73,6 +73,9 @@ class Playlist {
   void reorderSongLyrics(List<SongLyric> orderedSongLyrics) {
     int rank = 0;
 
-    for (final songLyric in orderedSongLyrics) records[songLyric.id]?.rank = rank++;
+    // TODO: check if this can be done in batch, also in other places where multiple db changes happen
+    for (final songLyric in orderedSongLyrics) {
+      records[songLyric.id]?.rank = rank++;
+    }
   }
 }

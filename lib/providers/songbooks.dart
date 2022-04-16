@@ -2,62 +2,33 @@ import 'package:diacritic/diacritic.dart';
 import 'package:flutter/material.dart';
 import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/providers/data.dart';
-import 'package:zpevnik/providers/utils/searchable.dart';
 
-class SongbooksProvider extends ChangeNotifier with Searchable<Songbook> {
-  List<Songbook> _allSongbooks = [];
+mixin _Searchable on _SongbooksProvider {
+  String _searchText = '';
+  List<Songbook>? _searchResults;
 
-  List<Songbook>? _songbooks;
+  String get searchText => _searchText;
 
-  List<Songbook> get allSongbooks => _allSongbooks;
-
-  set allSongbooks(List<Songbook> songbooks) {
-    _allSongbooks = songbooks;
-
-    _sort();
-
-    notifyListeners();
-  }
-
-  void update(DataProvider provider) {
-    _allSongbooks = provider.songbooks;
-
-    _sort();
-  }
-
-  @override
-  List<Songbook> get items => _songbooks ?? allSongbooks;
-
-  @override
   set searchText(String newValue) {
-    super.searchText = newValue;
+    _searchText = newValue;
 
-    _search();
-  }
-
-  void toggleIsPinned(Songbook songbook) {
-    songbook.toggleIsPinned();
-
-    _sort();
-
-    notifyListeners();
-  }
-
-  void _search() {
     if (searchText.isEmpty) {
-      _songbooks = null;
+      _searchResults = null;
 
       notifyListeners();
 
       return;
     }
 
-    final songbooks = Set<Songbook>.identity();
+    final Set<Songbook> songbooks = {};
 
-    for (final predicate in _predicates)
-      for (final songbook in allSongbooks) if (predicate(songbook, searchText.toLowerCase())) songbooks.add(songbook);
+    for (final predicate in _predicates) {
+      for (final songbook in _allSongbooks) {
+        if (predicate(songbook, searchText.toLowerCase())) songbooks.add(songbook);
+      }
+    }
 
-    _songbooks = songbooks.toList();
+    _searchResults = songbooks.toList();
 
     notifyListeners();
   }
@@ -68,6 +39,31 @@ class SongbooksProvider extends ChangeNotifier with Searchable<Songbook> {
         (songbook, searchText) => songbook.name.toLowerCase().contains(searchText),
         (songbook, searchText) => removeDiacritics(songbook.name.toLowerCase()).contains(searchText),
       ];
+}
 
-  void _sort() => allSongbooks.sort((first, second) => first.compareTo(second));
+class _SongbooksProvider extends ChangeNotifier {
+  List<Songbook> _allSongbooks = [];
+
+  List<Songbook> get songbooks => _allSongbooks;
+
+  void update(DataProvider provider) {
+    _allSongbooks = provider.songbooks;
+
+    _sort();
+  }
+
+  void toggleIsPinned(Songbook songbook) {
+    songbook.toggleIsPinned();
+
+    _sort();
+
+    notifyListeners();
+  }
+
+  void _sort() => _allSongbooks.sort((first, second) => first.compareTo(second));
+}
+
+class SongbooksProvider extends _SongbooksProvider with _Searchable {
+  @override
+  List<Songbook> get songbooks => _searchResults ?? super.songbooks;
 }

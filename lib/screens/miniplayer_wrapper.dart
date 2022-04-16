@@ -23,7 +23,8 @@ class MiniPlayerWrapper extends StatelessWidget {
           fit: StackFit.expand,
           children: <Widget>[
             Navigator(
-              key: _navigatorKey,
+              // TODO: check if this key is needed, it forces ContentScreen to initState after hot reload
+              // key: _navigatorKey,
               onGenerateRoute: (settings) => MaterialPageRoute(
                 settings: settings,
                 builder: (_) => const ContentScreen(),

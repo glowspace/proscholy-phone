@@ -8,7 +8,8 @@ class External {
 
   External(this.entity);
 
-  External.clone(External external) : entity = external.entity;
+  // TODO: check if this is needed
+  // External.clone(External external) : entity = external.entity;
 
   static Future<List<External>> get externals async {
     final entities = await model.External().select().toList();
@@ -21,7 +22,7 @@ class External {
   String get name {
     String name = entity.public_name ?? '';
 
-    if (isYoutube) name = _youtubeNameRE.firstMatch(name)?.group(2) ?? name;
+    if (isYoutubeVideo) name = _youtubeNameRE.firstMatch(name)?.group(2) ?? name;
 
     return name;
   }
@@ -29,5 +30,5 @@ class External {
   String get mediaType => entity.media_type ?? '';
   String get mediaId => entity.media_id ?? '';
 
-  bool get isYoutube => mediaType == 'youtube';
+  bool get isYoutubeVideo => mediaType == 'youtube';
 }

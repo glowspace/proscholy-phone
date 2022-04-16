@@ -27,6 +27,6 @@ class PlaylistRecord {
 
   set rank(int value) {
     entity.rank = value;
-    entity.upsert();
+    entity.save();
   }
 }

@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_reorderable_list/flutter_reorderable_list.dart' as reorderable;
 import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/platform/components/dialog.dart';
 import 'package:zpevnik/platform/components/scaffold.dart';
 import 'package:zpevnik/platform/utils/bottom_sheet.dart';
-import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/playlists.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
-import 'package:zpevnik/providers/tags.dart';
 import 'package:zpevnik/screens/components/highlightable.dart';
 import 'package:zpevnik/screens/components/playlists_sheet.dart';
 import 'package:zpevnik/screens/components/search_field.dart';
 import 'package:zpevnik/screens/components/song_lyric_row.dart';
+import 'package:zpevnik/screens/filters/active_filters_row.dart';
 import 'package:zpevnik/screens/filters/filters.dart';
-import 'package:zpevnik/screens/song_lyric/song_lyric_page.dart';
+import 'package:zpevnik/screens/song_lyric/song_lyric_page_view.dart';
 import 'package:zpevnik/theme.dart';
 
 class SongLyricsListView extends StatefulWidget {
@@ -56,8 +56,8 @@ class _SongLyricsListViewState extends State<SongLyricsListView> {
   Widget build(BuildContext context) {
     final selectionEnabled = context.select<SongLyricsProvider, bool>((provider) => provider.selectionEnabled);
 
-    // FIXME: title won't update on selection change, but it should not rebuild whole widget
-    final title = selectionEnabled ? context.read<SongLyricsProvider>().title : widget.title;
+    final title =
+        selectionEnabled ? context.select<SongLyricsProvider, String>((provider) => provider.title) : widget.title;
     final leading = selectionEnabled ? _buildCancelSelectionButton(context) : null;
     final middle =
         _shouldShowNavigationBar && _isShowingSearchField && !selectionEnabled ? _buildSearchField(context) : null;
@@ -74,7 +74,10 @@ class _SongLyricsListViewState extends State<SongLyricsListView> {
       navigationBarTextColor: widget.navigationBarTextColor,
       body: Column(children: [
         if (!(_shouldShowNavigationBar || selectionEnabled)) _buildSearchField(context),
-        // TODO: show active filters here
+        Selector<SongLyricsProvider, List<Tag>>(
+          builder: (_, selectedTags, __) => ActiveFiltersRow(selectedTags: selectedTags),
+          selector: (_, provider) => provider.selectedTags,
+        ),
         Expanded(
           child: Consumer<SongLyricsProvider>(builder: (_, provider, __) {
             if (provider.songLyrics.isEmpty) {
@@ -231,14 +234,11 @@ class _SongLyricsListViewState extends State<SongLyricsListView> {
   }
 
   void _showFilters(BuildContext context) {
-    // TODO: keep state of tags provider
-    final tagsProvider = TagsProvider(context.read<DataProvider>().tags);
-
     showPlatformBottomSheet(
       context: context,
       builder: (_) => ChangeNotifierProvider.value(
         value: context.read<SongLyricsProvider>(),
-        builder: (context, _) => FiltersWidget(provider: tagsProvider),
+        builder: (context, _) => FiltersWidget(),
       ),
       height: 0.67 * MediaQuery.of(context).size.height,
     );

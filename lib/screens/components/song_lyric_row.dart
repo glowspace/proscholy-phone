@@ -8,7 +8,7 @@ import 'package:zpevnik/providers/song_lyrics.dart';
 import 'package:zpevnik/screens/components/circular_checkbox.dart';
 import 'package:zpevnik/screens/components/highlightable.dart';
 import 'package:zpevnik/screens/components/reorderable_row.dart';
-import 'package:zpevnik/screens/song_lyric/song_lyric_page.dart';
+import 'package:zpevnik/screens/song_lyric/song_lyric_page_view.dart';
 import 'package:zpevnik/theme.dart';
 
 class SongLyricRow extends StatefulWidget {
@@ -111,9 +111,10 @@ class _SongLyricRowState extends State<SongLyricRow> {
       Navigator.of(context).push(platformRouteBuilder(
         context,
         SongLyricPageView(
-            songLyrics: songLyrics,
-            initialSongLyricIndex: songLyrics.indexOf(widget.songLyric),
-            fromTranslations: widget.translationSongLyric != null),
+          songLyrics: songLyrics,
+          // initialSongLyricIndex: songLyrics.indexOf(widget.songLyric),
+          // fromTranslations: widget.translationSongLyric != null,
+        ),
         types: [ProviderType.data, ProviderType.fullScreen, ProviderType.playlist, ProviderType.songLyric],
       ));
     }

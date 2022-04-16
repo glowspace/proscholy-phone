@@ -2,34 +2,52 @@ import 'package:diacritic/diacritic.dart';
 import 'package:flutter/material.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/platform/components/dialog.dart';
-import 'package:zpevnik/providers/utils/searchable.dart';
 
-class PlaylistsProvider extends ChangeNotifier with Searchable<Playlist> {
-  final List<Playlist> allPlaylists;
+mixin _Searchable on _PlaylistsProvider {
+  String _searchText = '';
+  List<Playlist>? _searchResults;
 
-  PlaylistsProvider(this.allPlaylists);
+  String get searchText => _searchText;
 
-  List<Playlist>? _playlists;
+  set searchText(String newValue) {
+    _searchText = newValue;
 
-  @override
-  List<Playlist> get items => _playlists ?? allPlaylists;
+    if (searchText.isEmpty) {
+      _searchResults = null;
 
-  @override
-  set searchText(newValue) {
-    super.searchText = newValue;
+      notifyListeners();
 
-    _search();
+      return;
+    }
+
+    final playlists = Set<Playlist>.identity();
+
+    for (final predicate in _predicates) {
+      for (final playlist in _allPlaylists) {
+        if (predicate(playlist, searchText.toLowerCase())) playlists.add(playlist);
+      }
+    }
+
+    _searchResults = playlists.toList();
+
+    notifyListeners();
   }
 
-  List<Playlist> get playlists => items.where((playlist) => !playlist.isArchived).toList();
-  List<Playlist> get archivedPlaylists => items.where((playlist) => playlist.isArchived).toList();
+  List<bool Function(Playlist, String)> get _predicates => [
+        (playlist, searchText) => playlist.name.toLowerCase().startsWith(searchText),
+        (playlist, searchText) => removeDiacritics(playlist.name.toLowerCase()).startsWith(searchText),
+        (playlist, searchText) => playlist.name.toLowerCase().contains(searchText),
+        (playlist, searchText) => removeDiacritics(playlist.name.toLowerCase()).contains(searchText),
+      ];
+}
 
+mixin _Reorderable on _PlaylistsProvider {
   bool onReorder(Key key, Key other) {
-    int index = allPlaylists.indexWhere((playlist) => playlist.key == key);
-    int otherIndex = allPlaylists.indexWhere((playlist) => playlist.key == other);
+    int index = _allPlaylists.indexWhere((playlist) => playlist.key == key);
+    int otherIndex = _allPlaylists.indexWhere((playlist) => playlist.key == other);
 
-    final playlist = allPlaylists.removeAt(index);
-    allPlaylists.insert(otherIndex, playlist);
+    final playlist = _allPlaylists.removeAt(index);
+    _allPlaylists.insert(otherIndex, playlist);
 
     notifyListeners();
 
@@ -37,19 +55,30 @@ class PlaylistsProvider extends ChangeNotifier with Searchable<Playlist> {
   }
 
   void onReorderDone(Key _) {
-    for (var i = 0; i < allPlaylists.length; i++) allPlaylists[i].rank = i;
+    for (var i = 0; i < _allPlaylists.length; i++) {
+      _allPlaylists[i].rank = i;
+    }
   }
+}
+
+class _PlaylistsProvider extends ChangeNotifier {
+  final List<Playlist> _allPlaylists;
+
+  List<Playlist> get playlists => _allPlaylists;
+
+  _PlaylistsProvider(this._allPlaylists);
 
   void addPlaylist(String name, {List<int> songLyrics = const [], int rank = 0}) async {
     final playlist = await Playlist.create(name, rank, songLyrics: songLyrics);
 
-    allPlaylists.insert(rank, playlist);
+    _allPlaylists.insert(rank, playlist);
 
-    for (int i = rank; i < allPlaylists.length; i++) allPlaylists[i].rank = i;
+    for (int i = rank; i < _allPlaylists.length; i++) _allPlaylists[i].rank = i;
 
     notifyListeners();
   }
 
+  // TODO: move context out of this file
   void addSharedPlaylist(BuildContext context, String playlistName, List<int> songLyrics) {
     showDialog<String>(
       context: context,
@@ -75,7 +104,7 @@ class PlaylistsProvider extends ChangeNotifier with Searchable<Playlist> {
   }
 
   void remove(Playlist playlist) {
-    allPlaylists.remove(playlist);
+    _allPlaylists.remove(playlist);
 
     playlist.entity.delete(true);
 
@@ -87,30 +116,13 @@ class PlaylistsProvider extends ChangeNotifier with Searchable<Playlist> {
 
     notifyListeners();
   }
+}
 
-  void _search() {
-    if (searchText.isEmpty) {
-      _playlists = null;
+class PlaylistsProvider extends _PlaylistsProvider with _Reorderable, _Searchable {
+  PlaylistsProvider(List<Playlist> allPlaylists) : super(allPlaylists);
 
-      notifyListeners();
-
-      return;
-    }
-
-    final playlists = Set<Playlist>.identity();
-
-    for (final predicate in _predicates)
-      for (final playlist in allPlaylists) if (predicate(playlist, searchText.toLowerCase())) playlists.add(playlist);
-
-    _playlists = playlists.toList();
-
-    notifyListeners();
-  }
-
-  List<bool Function(Playlist, String)> get _predicates => [
-        (playlist, searchText) => playlist.name.toLowerCase().startsWith(searchText),
-        (playlist, searchText) => removeDiacritics(playlist.name.toLowerCase()).startsWith(searchText),
-        (playlist, searchText) => playlist.name.toLowerCase().contains(searchText),
-        (playlist, searchText) => removeDiacritics(playlist.name.toLowerCase()).contains(searchText),
-      ];
+  @override
+  List<Playlist> get playlists => (_searchResults ?? _allPlaylists).where((playlist) => !playlist.isArchived).toList();
+  List<Playlist> get archivedPlaylists =>
+      (_searchResults ?? _allPlaylists).where((playlist) => playlist.isArchived).toList();
 }

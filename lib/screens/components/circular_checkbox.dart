@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/theme.dart';
 
 class CircularCheckbox extends StatelessWidget {
@@ -8,10 +9,13 @@ class CircularCheckbox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: selected
-          ? Icon(Icons.check_circle, color: AppTheme.of(context).chordColor)
-          : Icon(Icons.radio_button_off, color: Colors.grey),
+    final appTheme = AppTheme.of(context);
+
+    return AnimatedCrossFade(
+      firstChild: Icon(Icons.check_circle, color: appTheme.chordColor),
+      secondChild: Icon(Icons.radio_button_off, color: appTheme.disabledColor),
+      crossFadeState: selected ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+      duration: kDefaultAnimationDuration,
     );
   }
 }

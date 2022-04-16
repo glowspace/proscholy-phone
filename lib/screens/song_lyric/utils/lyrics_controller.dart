@@ -32,21 +32,6 @@ class LyricsController extends ChangeNotifier {
     return lilypond.replaceAll(_styleRE, '').replaceAll('currentColor', color);
   }
 
-  List<Verse>? _preparedLyrics;
-  List<Verse>? _preparedLyricsNoChords;
-
-  List<Verse> get preparedLyrics {
-    if (_preparedLyrics == null) {
-      _preparedLyrics ??= parseLyrics(songLyric.lyrics);
-
-      _convertChords();
-    }
-
-    _preparedLyricsNoChords ??= parseLyrics(songLyric.lyrics, showChords: false);
-
-    return showChords ? _preparedLyrics! : _preparedLyricsNoChords!;
-  }
-
   bool _isProjectionEnabled;
   int _currentlyProjectedVerse;
   bool get isProjectionEnabled => _isProjectionEnabled;
@@ -61,7 +46,7 @@ class LyricsController extends ChangeNotifier {
   }
 
   void nextVerse() {
-    if (_currentlyProjectedVerse + 1 < (_preparedLyrics?.length ?? 0)) _currentlyProjectedVerse += 1;
+    // if (_currentlyProjectedVerse + 1 < (_preparedLyrics?.length ?? 0)) _currentlyProjectedVerse += 1;
 
     notifyListeners();
   }
@@ -110,9 +95,9 @@ class LyricsController extends ChangeNotifier {
   }
 
   void _convertChords() {
-    for (final verse in _preparedLyrics ?? [])
-      for (final line in verse.lines)
-        for (final block in line.blocks)
-          block.updatedChord = convertAccidentals(transpose(block.chord ?? '', songLyric.transposition), accidentals);
+    // for (final verse in _preparedLyrics ?? [])
+    //   for (final line in verse.lines)
+    //     for (final block in line.blocks)
+    //       block.updatedChord = convertAccidentals(transpose(block.chord ?? '', songLyric.transposition), accidentals);
   }
 }

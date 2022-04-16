@@ -11,22 +11,23 @@ class FontSizeSlider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final appTheme = AppTheme.of(context);
-    final settingsProvider = context.watch<SettingsProvider>();
+    final settingsProvider = context.read<SettingsProvider>();
+    final fontSizeScale = context.select<SettingsProvider, double>((provider) => provider.fontSizeScale);
 
     return Row(
       children: [
-        RichText(text: TextSpan(text: 'A', style: appTheme.bodyTextStyle), textScaleFactor: kMinimumFontSizeScale),
+        Text('A', style: appTheme.bodyTextStyle, textScaleFactor: kMinimumFontSizeScale),
         Expanded(
           child: PlatformSlider(
             min: kMinimumFontSizeScale,
             max: kMaximumFontSizeScale,
-            value: settingsProvider.fontSizeScale,
+            value: fontSizeScale,
             onChanged: (value) => settingsProvider.fontSizeScale = value,
             activeColor: appTheme.chordColor,
             inactiveColor: appTheme.disabledColor,
           ),
         ),
-        RichText(text: TextSpan(text: 'A', style: appTheme.bodyTextStyle), textScaleFactor: kMaximumFontSizeScale),
+        Text('A', style: appTheme.bodyTextStyle, textScaleFactor: kMaximumFontSizeScale),
       ],
     );
   }

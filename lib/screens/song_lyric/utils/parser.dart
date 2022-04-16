@@ -1,186 +1,439 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
-import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/models/song_lyric.dart';
 
-class Verse {
-  final String? number;
-  final List<Line> lines;
-  final bool hasChords;
+final _styleRE = RegExp(r'\<style[^\<]*\<\/style\>');
+final _heightRE = RegExp(r'height="([\d\.]+)mm"');
+final _widthRE = RegExp(r'width="([\d\.]+)"');
 
-  Verse({this.number, required this.lines, this.hasChords = false});
+abstract class Token {}
 
-  bool get isInterlude => number?.startsWith('@') ?? false;
+class Comment extends Token {
+  final String value;
+
+  Comment(String value) : value = value.trim();
+
+  @override
+  String toString() => 'Comment($value)';
 }
 
-class Line {
-  final List<Block> blocks;
+class Chord extends Token {
+  final String value;
 
-  Line(this.blocks);
+  Chord(this.value);
+
+  @override
+  String toString() => 'Chord($value)';
 }
 
-class Block {
-  final String? chord;
-  final String lyricsPart;
-  final bool endsInWordMiddle;
-  final bool isComment;
-  final bool isInterlude;
+class ChordSubstitute extends Token {
+  final int index;
 
-  String? updatedChord;
+  ChordSubstitute(this.index);
 
-  Block({
-    this.chord,
-    required this.lyricsPart,
-    this.endsInWordMiddle = false,
-    this.isComment = false,
-    this.isInterlude = false,
-  }) : updatedChord = chord;
+  @override
+  String toString() => 'ChordSubstitute($index)';
 }
 
-final _verseRE = RegExp(
-    r'\s*\(?(\d+\.|[BCR]\d?[:.]|@mezihra:|@dohra:|@předehra:|#(?!.*\]))?\)?\s*((?:=\s*(\d\.)|.|\n)*?)\n*(?=$|(?<=\n)[^=]?\d\.|\(?[BCR]\d?[:.]\)?|@mezihra:|@dohra:|@předehra:|[^a-zA-Z]#(?!.*\]))');
+class Interlude extends Token {
+  late final String value;
 
-final _chordRE = RegExp(r'\[[^\]]+\]');
-final _placeholderRE = RegExp(r'\[%\]');
-final _firstVerseRE = RegExp(r'1\.(?:.|\n)+?(?=\n+\d\.|\n+\(?[BCR][:.]\)?)', multiLine: true);
+  Interlude(String value) {
+    value = value.trim();
 
-final _multipleSpacesRE = RegExp(r' +');
-
-List<Verse> parseLyrics(String lyrics, {bool showChords = true}) {
-  lyrics = lyrics.replaceAll('\r', '');
-
-  final preparedLyrics = showChords ? _substituteChordsPlaceholders(lyrics) : _removeChords(lyrics);
-
-  final verses = List<Verse>.empty(growable: true);
-  final versesMap = Map<String, Verse>.from({});
-
-  for (final match in _verseRE.allMatches(preparedLyrics)) {
-    String? number = match.group(1);
-    final text = match.group(2);
-
-    final isComment = number == '#';
-    final isInterlude = number?.startsWith('@') ?? false;
-
-    if (number == '#') number = null;
-
-    if (number == '@mezihra:')
-      number = 'M:';
-    else if (number == '@dohra:')
-      number = 'Z:';
-    else if (number == '@předehra:') number = 'P:';
-
-    Verse? verse;
-
-    if (text != null && text.isNotEmpty) {
-      verse = Verse(
-        number: number,
-        lines: _lines('$text\n', isComment: isComment, isInterlude: isInterlude),
-        hasChords: text.contains(_chordRE),
-      );
-    } else if (number != null) verse = versesMap[number];
-
-    if (verse != null) {
-      verses.add(verse);
-
-      if (number != null) versesMap[number] = verse;
+    switch (value) {
+      case 'mezihra:':
+        this.value = 'M:';
+        break;
+      case 'dohra:':
+        this.value = 'Z:';
+        break;
+      case 'předehra:':
+        this.value = 'P:';
+        break;
     }
   }
 
-  if (verses.isEmpty) return [Verse(lines: _lines(preparedLyrics), hasChords: preparedLyrics.contains(_chordRE))];
-
-  return verses;
+  @override
+  String toString() => 'Interlude($value)';
 }
 
-// replaces all placeholder chords with chords from first verse
-String _substituteChordsPlaceholders(String lyrics) {
-  final firstVerse = _firstVerseRE.stringMatch(lyrics);
-
-  if (firstVerse == null) return lyrics;
-
-  final chords = _chordRE.allMatches(firstVerse).map((match) => firstVerse.substring(match.start, match.end)).toList();
-
-  int index = 0;
-
-  return lyrics.replaceAllMapped(_placeholderRE, (match) => chords[index++ % chords.length]);
+class InterludeEnd extends Token {
+  @override
+  String toString() => 'InterludeEnd()';
 }
 
-String _removeChords(String lyrics) => lyrics.replaceAll(_chordRE, '');
-
-List<Line> _lines(String verse, {bool isComment = false, bool isInterlude = false}) {
-  int index = 0;
-
-  return verse
-      .split('\n')
-      .where((chars) => chars.length > 0)
-      .map((line) => Line(_blocks(line.trim(), isComment && (index++ == 0), isInterlude)))
-      .toList();
+class NewLine extends Token {
+  @override
+  String toString() => 'NewLine()';
 }
 
-List<Block> _blocks(String line, bool isComment, bool isInterlude) {
-  final blocks = List<Block>.empty(growable: true);
+class VerseNumber extends Token {
+  final String value;
 
-  String previousChord = '';
-  int index = 0;
+  VerseNumber(this.value);
 
-  for (final match in _chordRE.allMatches(line)) {
-    final text = line.substring(index, match.start);
+  @override
+  String toString() => 'VerseNumber($value)';
+}
 
-    if (previousChord.isNotEmpty || text.isNotEmpty) {
-      final endsInWordMiddle = line[match.start - 1] != ' ';
+class VerseSubstitute extends Token {
+  final String id;
 
-      blocks.addAll(_splitToWords(previousChord, text, endsInWordMiddle, isComment, isInterlude));
-    }
+  VerseSubstitute(this.id);
 
-    index = match.end;
-    previousChord = line.substring(match.start + 1, match.end - 1).replaceFirst('is', '#');
+  @override
+  String toString() => 'VerseSubstitute($id)';
+}
+
+class VersePart extends Token {
+  final String value;
+
+  VersePart(this.value);
+
+  @override
+  String toString() => 'Text($value)';
+}
+
+class VerseEnd extends Token {
+  @override
+  String toString() => 'VerseEnd()';
+}
+
+enum _ParserState { chord, comment, lineStart, interlude, possibleVerseNumber, verseNumber, verseSubstitute, verseLine }
+
+class SongLyricsParser {
+  final SongLyric songLyric;
+  late final List<Token> _parsedSongLyrics;
+
+  SongLyricsParser(this.songLyric) {
+    final tokens = _parseTokens();
+
+    _parsedSongLyrics = _fillSubstitutes(tokens);
+
+    log(_parsedSongLyrics.toString());
   }
 
-  blocks.addAll(_splitToWords(previousChord, line.substring(index), false, isComment, isInterlude));
+  int _currentTokenIndex = 0;
+  bool _hasChords = false;
 
-  return blocks;
-}
+  double? _lilypondWidth;
+  String? _lilypond;
 
-List<Block> _splitToWords(String chord, String text, bool endsInWordMiddle, bool isComment, bool isInterlude) {
-  final blocks = List<Block>.empty(growable: true);
-
-  final words = text.trimRight().split(_multipleSpacesRE);
-
-  String previousPart = '';
-
-  for (int i = 0; i < words.length; i++) {
-    final _endsInWordMiddle = endsInWordMiddle && i == words.length - 1;
-
-    final lyricsPart = !_endsInWordMiddle ? '${words[i]} ' : words[i];
-
-    if (i == 0) {
-      if (words.length == 1 || _textWidth(chord) + 0.5 * kDefaultPadding < _textWidth(lyricsPart))
-        blocks.add(Block(
-          chord: chord,
-          lyricsPart: lyricsPart,
-          endsInWordMiddle: _endsInWordMiddle,
-          isComment: isComment,
-          isInterlude: isInterlude,
-        ));
-      else
-        previousPart = lyricsPart;
-    } else {
-      blocks.add(Block(
-        chord: previousPart.isNotEmpty ? chord : null,
-        lyricsPart: '$previousPart$lyricsPart',
-        endsInWordMiddle: _endsInWordMiddle,
-        isComment: isComment,
-        isInterlude: isInterlude,
-      ));
-
-      previousPart = '';
+  Token? get nextToken {
+    if (_currentTokenIndex == _parsedSongLyrics.length) {
+      _currentTokenIndex = 0;
+      return null;
     }
+
+    return _parsedSongLyrics[_currentTokenIndex++];
   }
 
-  return blocks;
-}
+  bool get hasChords => _hasChords;
+  bool get hasLilypond => songLyric.lilypond != null;
 
-double _textWidth(String text) {
-  final textPainter = TextPainter(text: TextSpan(text: text), textDirection: TextDirection.ltr);
+  double get lilypondWidth => _lilypondWidth ?? 0;
 
-  textPainter.layout(maxWidth: double.infinity);
+  String lilypond(String hexColor) {
+    if (_lilypond != null) return _lilypond!;
 
-  return textPainter.width;
+    _lilypond = (songLyric.lilypond ?? '')
+        .replaceAll(_styleRE, '')
+        .replaceAll('currentColor', hexColor)
+        .replaceFirst(_heightRE, '')
+        .replaceFirstMapped(_widthRE, (match) {
+      _lilypondWidth = double.tryParse(match.group(1) ?? '');
+
+      return '';
+    });
+
+    return _lilypond!;
+  }
+
+  List<Token> _parseTokens() {
+    final lyrics = songLyric.lyrics;
+    final List<Token> tokens = [];
+
+    _ParserState state = _ParserState.lineStart;
+
+    String currentString = '';
+    int chordSubstituteIndex = 0;
+
+    bool isInsideVerse = false;
+    bool isInsideInterlude = false;
+
+    for (final c in lyrics.characters) {
+      // handles verse number start (digits)
+      if (state == _ParserState.lineStart && int.tryParse(c) != null) {
+        chordSubstituteIndex = 0;
+
+        state = _ParserState.verseNumber;
+        currentString += c;
+
+        continue;
+      }
+
+      switch (c) {
+        // handles verse number start
+        case 'B':
+        case 'C':
+        case 'R':
+          if (state == _ParserState.lineStart) {
+            chordSubstituteIndex = 0;
+
+            state = _ParserState.possibleVerseNumber;
+          }
+
+          currentString += c;
+          break;
+        // handles verse number end
+        case ':':
+        case '.':
+          currentString += c;
+
+          if (state == _ParserState.verseNumber || state == _ParserState.possibleVerseNumber) {
+            if (isInsideVerse) tokens.add(VerseEnd());
+            if (isInsideInterlude) tokens.add(InterludeEnd());
+
+            tokens.add(VerseNumber(currentString));
+
+            currentString = '';
+            state = _ParserState.verseLine;
+
+            isInsideVerse = true;
+            isInsideInterlude = false;
+          }
+
+          break;
+        // handles verse substitute start
+        case '(':
+          if (state == _ParserState.lineStart) {
+            currentString = '';
+            state = _ParserState.verseSubstitute;
+          }
+          break;
+        // handles verse substitute end
+        case ')':
+          if (state == _ParserState.verseSubstitute) {
+            if (isInsideVerse) tokens.add(VerseEnd());
+            if (isInsideInterlude) tokens.add(InterludeEnd());
+
+            tokens.add(VerseSubstitute(currentString));
+
+            currentString = '';
+            state = _ParserState.verseLine;
+
+            isInsideVerse = true;
+            isInsideInterlude = false;
+          }
+          break;
+        // handles interlude
+        case '@':
+          if (state == _ParserState.lineStart) {
+            if (isInsideVerse) tokens.add(VerseEnd());
+
+            currentString = '';
+            state = _ParserState.interlude;
+
+            isInsideVerse = false;
+            isInsideInterlude = true;
+          } else {
+            currentString += c;
+          }
+          break;
+        // handles start of chord
+        case '[':
+          if (currentString.isNotEmpty) {
+            if (state == _ParserState.interlude) {
+              tokens.add(Interlude(currentString));
+            } else {
+              tokens.add(VersePart(currentString));
+            }
+          }
+
+          currentString = '';
+          state = _ParserState.chord;
+          break;
+        // handles end of chord
+        case ']':
+          if (currentString == '%') {
+            tokens.add(ChordSubstitute(chordSubstituteIndex++));
+          } else if (currentString.isNotEmpty) {
+            tokens.add(Chord(currentString));
+          }
+
+          _hasChords = true;
+
+          currentString = '';
+          state = _ParserState.verseLine;
+          break;
+        // handles comments
+        case '#':
+          if (state == _ParserState.lineStart) {
+            if (isInsideVerse) tokens.add(VerseEnd());
+            if (isInsideInterlude) tokens.add(InterludeEnd());
+
+            currentString = '';
+            state = _ParserState.comment;
+
+            isInsideVerse = false;
+            isInsideInterlude = false;
+          } else {
+            currentString += c;
+          }
+          break;
+        // handles end of line
+        case '\r\n':
+        case '\n':
+          if (state == _ParserState.comment) {
+            tokens.add(Comment(currentString));
+          } else if (currentString.isNotEmpty) {
+            tokens.add(VersePart(currentString));
+          }
+
+          tokens.add(NewLine());
+
+          currentString = '';
+          state = _ParserState.lineStart;
+          break;
+        default:
+          if (state == _ParserState.lineStart) {
+            state = _ParserState.verseLine;
+          } else if (state == _ParserState.possibleVerseNumber && int.tryParse(c) == null) {
+            state = _ParserState.verseLine;
+          }
+
+          currentString += c;
+      }
+    }
+
+    if (state == _ParserState.comment) {
+      tokens.add(Comment(currentString));
+    } else if (currentString.isNotEmpty) {
+      tokens.add(VersePart(currentString));
+    }
+
+    if (isInsideVerse) tokens.add(VerseEnd());
+    if (isInsideInterlude) tokens.add(InterludeEnd());
+
+    return tokens;
+  }
+
+  List<Token> _fillSubstitutes(List<Token> tokens) {
+    if (tokens.isEmpty) return [];
+
+    // log(songLyric.lyrics);
+    // log(tokens.toString());
+
+    final List<Token> filledTokens = [];
+
+    final Map<String, List<Token>> verseSubstitutes = {};
+    final List<Token> chordSubstitutes = [];
+
+    String currentVerseNumber = '';
+    for (int i = 0; i < tokens.length; i++) {
+      final token = tokens[i];
+
+      if (token is VerseNumber) {
+        // substitute empty verses
+        final emptyVerseEnd = _emptyVerseEnd(i + 1, tokens);
+
+        if (emptyVerseEnd != null) {
+          final substitutes =
+              verseSubstitutes[token.value] ?? verseSubstitutes[token.value.replaceFirst('.', ':')] ?? [];
+
+          filledTokens.addAll(substitutes);
+          i = emptyVerseEnd;
+        } else {
+          currentVerseNumber = token.value;
+          verseSubstitutes[currentVerseNumber] = [token];
+
+          filledTokens.add(token);
+        }
+      } else if (token is VerseSubstitute) {
+        // substitute empty verses
+        final emptyVerseEnd = _emptyVerseEnd(i + 1, tokens);
+
+        if (emptyVerseEnd != null) {
+          final substitutes = verseSubstitutes[token.id] ?? verseSubstitutes[token.id.replaceFirst('.', ':')] ?? [];
+
+          filledTokens.addAll(substitutes);
+          i = emptyVerseEnd;
+        } else {
+          currentVerseNumber = token.id;
+          verseSubstitutes[currentVerseNumber] = [VerseNumber(token.id)];
+
+          filledTokens.add(VerseNumber(token.id));
+        }
+      } else if (token is Chord) {
+        verseSubstitutes[currentVerseNumber]?.add(token);
+        chordSubstitutes.add(token);
+        filledTokens.add(token);
+      } else if (token is ChordSubstitute) {
+        verseSubstitutes[currentVerseNumber]?.add(chordSubstitutes[token.index]);
+        filledTokens.add(chordSubstitutes[token.index]);
+      } else if (token is VerseEnd) {
+        // make sure that before verse end there is a new line
+        if (filledTokens.last is! NewLine) filledTokens.add(NewLine());
+
+        verseSubstitutes[currentVerseNumber]?.add(token);
+        filledTokens.add(token);
+      } else if (token is NewLine) {
+        // remove unintentional empty lines at the start and after verse numbers
+        if (filledTokens.isNotEmpty && filledTokens.last is! VerseNumber) {
+          verseSubstitutes[currentVerseNumber]?.add(token);
+          filledTokens.add(token);
+        }
+      } else {
+        // remove leading space from first string after verse number
+        if (filledTokens.isNotEmpty && filledTokens.last is VerseNumber && token is VersePart) {
+          final trimmedValue = token.value.trimLeft();
+
+          if (trimmedValue.isNotEmpty) {
+            final trimmedToken = VersePart(trimmedValue);
+
+            verseSubstitutes[currentVerseNumber]?.add(trimmedToken);
+            filledTokens.add(trimmedToken);
+          }
+        } else {
+          verseSubstitutes[currentVerseNumber]?.add(token);
+          filledTokens.add(token);
+        }
+      }
+    }
+
+    // make sure that verse start is indicated by verse number even when there is no number
+    if (filledTokens.first is Chord || filledTokens.first is VersePart) {
+      // and make sure that end of that verse is also indicated
+      final nextVerseStartIndex = filledTokens.indexWhere((token) => token is VerseNumber);
+      if (nextVerseStartIndex == -1) {
+        if (filledTokens.last is! NewLine) filledTokens.add(NewLine());
+
+        filledTokens.add(VerseEnd());
+      } else {
+        filledTokens.insert(nextVerseStartIndex, VerseEnd());
+
+        if (filledTokens[nextVerseStartIndex - 1] is! NewLine) {
+          filledTokens.add(NewLine());
+        }
+      }
+
+      filledTokens.insert(0, VerseNumber(''));
+    }
+
+    return filledTokens;
+  }
+
+  int? _emptyVerseEnd(int i, List<Token> tokens) {
+    while (true) {
+      if (tokens[i] is Chord || tokens[i] is VersePart) {
+        return null;
+      } else if (tokens[i] is VerseEnd) {
+        return i;
+      }
+
+      i++;
+    }
+  }
 }

@@ -96,8 +96,16 @@ class Tag {
   String get name => entity.name ?? '';
   TagType get type => TagTypeExtension.fromString(entity.type_enum ?? '');
 
+  // TODO: remove isSelected and use it from songlyricsprovider
   bool _isSelected = false;
   bool get isSelected => _isSelected;
 
   void toggleIsSelected() => _isSelected = !_isSelected;
+}
+
+class TagsSection {
+  final String title;
+  final List<Tag> tags;
+
+  TagsSection(this.title, this.tags);
 }

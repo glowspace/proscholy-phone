@@ -21,8 +21,8 @@ Future<T?> showPlatformBottomSheet<T>({
       shape: shape,
       builder: (context) => Container(
         height: height,
-        child: builder(context),
         color: appTheme.fillColor,
+        child: builder(context),
       ),
       useRootNavigator: true,
     );
@@ -30,7 +30,11 @@ Future<T?> showPlatformBottomSheet<T>({
     return showMaterialModalBottomSheet(
       context: context,
       shape: shape,
-      builder: (context) => SizedBox(height: height, child: builder(context)),
+      builder: (context) => Container(
+        height: height,
+        color: appTheme.fillColor,
+        child: builder(context),
+      ),
       useRootNavigator: true,
     );
   }
