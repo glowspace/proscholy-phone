@@ -88,7 +88,8 @@ class AppThemeData extends InheritedWidget {
   TextStyle? get navBarTitleTextStyle =>
       isIOS ? bodyTextStyle?.copyWith(fontWeight: FontWeight.bold, fontSize: 17) : bodyTextStyle;
 
-  Color get backgroundColor => isLight ? Color(0xffffffff) : Color(0xff000000);
+  Color get backgroundColor => isLight ? CupertinoColors.lightBackgroundGray : CupertinoColors.darkBackgroundGray;
+  Color get containerColor => isLight ? Color(0xffffffff) : Color(0xff000000);
   Color get fillColor => isIOS ? CupertinoColors.systemFill : (isLight ? Color(0xffffffff) : Color(0xff252525));
   Color get borderColor => isLight ? Color(0xffd1d1d1) : Color(0xff2e2e2e);
 
