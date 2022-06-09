@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
-import 'package:zpevnik/screens/components/song_lyrics_list_view.dart';
+import 'package:zpevnik/components/song_lyrics_list_view.dart';
 
 const _noFavoriteSongLyricsPlaceholder =
     'Nemáte vybrané žádné oblíbené písně.\nPíseň si můžete přidat do oblíbených v${unbreakableSpace}náhledu písně.';

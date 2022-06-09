@@ -10,9 +10,9 @@ import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/platform/components/dialog.dart';
 import 'package:zpevnik/platform/utils/route_builder.dart';
 import 'package:zpevnik/providers/playlists.dart';
-import 'package:zpevnik/screens/components/highlightable.dart';
-import 'package:zpevnik/screens/components/reorderable_row.dart';
-import 'package:zpevnik/screens/components/popup_menu_button.dart' as custom;
+import 'package:zpevnik/components/highlightable.dart';
+import 'package:zpevnik/components/reorderable_row.dart';
+import 'package:zpevnik/components/popup_menu_button.dart' as custom;
 import 'package:zpevnik/screens/user/playlist.dart';
 import 'package:zpevnik/theme.dart';
 

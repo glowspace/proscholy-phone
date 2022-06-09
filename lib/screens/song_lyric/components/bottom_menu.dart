@@ -3,7 +3,7 @@ import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/platform/utils/bottom_sheet.dart';
 import 'package:zpevnik/providers/scroll.dart';
 import 'package:zpevnik/providers/settings.dart';
-import 'package:zpevnik/screens/components/highlightable.dart';
+import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/screens/song_lyric/components/song_lyric_settings.dart';
 import 'package:zpevnik/screens/song_lyric/utils/lyrics_controller.dart';
 import 'package:zpevnik/theme.dart';

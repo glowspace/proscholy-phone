@@ -4,8 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/platform/components/scaffold.dart';
 import 'package:zpevnik/providers/songbooks.dart';
-import 'package:zpevnik/screens/components/search_field.dart';
-import 'package:zpevnik/screens/components/songbook_tile.dart';
+import 'package:zpevnik/components/search_field.dart';
+import 'package:zpevnik/components/songbook_tile.dart';
 import 'package:zpevnik/theme.dart';
 
 class SongbooksGridView extends StatefulWidget {

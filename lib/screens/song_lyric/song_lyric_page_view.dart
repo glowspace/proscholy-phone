@@ -7,7 +7,7 @@ import 'package:zpevnik/platform/components/navigation_bar.dart';
 import 'package:zpevnik/platform/components/scaffold.dart';
 import 'package:zpevnik/platform/utils/route_builder.dart';
 import 'package:zpevnik/providers/data.dart';
-import 'package:zpevnik/screens/components/highlightable.dart';
+import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/screens/song_lyric/components/bottom_menu.dart';
 import 'package:zpevnik/screens/song_lyric/components/song_lyric_menu.dart';
 import 'package:zpevnik/screens/song_lyric/lyrics.dart';

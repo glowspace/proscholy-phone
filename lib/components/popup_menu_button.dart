@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:zpevnik/screens/components/highlightable.dart';
+import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/theme.dart';
 
 class PopupMenuButton<T> extends StatelessWidget {

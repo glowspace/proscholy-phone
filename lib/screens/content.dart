@@ -10,7 +10,7 @@ import 'package:zpevnik/platform/mixin.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/fullscreen.dart';
 import 'package:zpevnik/providers/playlists.dart';
-import 'package:zpevnik/screens/components/invisible_tab_bar.dart';
+import 'package:zpevnik/components/invisible_tab_bar.dart';
 import 'package:zpevnik/screens/home.dart';
 import 'package:zpevnik/screens/loading.dart';
 import 'package:zpevnik/screens/songbooks.dart';

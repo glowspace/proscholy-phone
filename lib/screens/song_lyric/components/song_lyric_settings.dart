@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/screens/components/bottom_form_sheet.dart';
-import 'package:zpevnik/screens/components/font_size_slider.dart';
-import 'package:zpevnik/screens/components/highlightable.dart';
-import 'package:zpevnik/screens/components/selector_widget.dart';
+import 'package:zpevnik/components/bottom_form_sheet.dart';
+import 'package:zpevnik/components/font_size_slider.dart';
+import 'package:zpevnik/components/highlightable.dart';
+import 'package:zpevnik/components/selector_widget.dart';
 import 'package:zpevnik/screens/song_lyric/utils/lyrics_controller.dart';
 import 'package:zpevnik/theme.dart';
 

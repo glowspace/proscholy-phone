@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:zpevnik/links.dart';
 import 'package:zpevnik/platform/utils/route_builder.dart';
-import 'package:zpevnik/screens/components/bottom_form_sheet.dart';
-import 'package:zpevnik/screens/components/icon_item.dart';
+import 'package:zpevnik/components/bottom_form_sheet.dart';
+import 'package:zpevnik/components/icon_item.dart';
 import 'package:zpevnik/screens/user/about.dart';
 import 'package:zpevnik/screens/user/settings.dart';
 

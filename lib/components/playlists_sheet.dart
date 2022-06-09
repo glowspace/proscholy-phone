@@ -3,8 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/platform/components/dialog.dart';
 import 'package:zpevnik/providers/playlists.dart';
-import 'package:zpevnik/screens/components/bottom_form_sheet.dart';
-import 'package:zpevnik/screens/components/icon_item.dart';
+import 'package:zpevnik/components/bottom_form_sheet.dart';
+import 'package:zpevnik/components/icon_item.dart';
 
 class PlaylistsSheet extends StatefulWidget {
   final List<SongLyric> selectedSongLyrics;

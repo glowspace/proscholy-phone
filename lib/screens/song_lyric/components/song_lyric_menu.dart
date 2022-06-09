@@ -9,9 +9,9 @@ import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/links.dart';
 import 'package:zpevnik/platform/utils/bottom_sheet.dart';
 import 'package:zpevnik/providers/playlists.dart';
-import 'package:zpevnik/screens/components/icon_item.dart';
-import 'package:zpevnik/screens/components/playlists_sheet.dart';
-import 'package:zpevnik/screens/components/popup_menu.dart';
+import 'package:zpevnik/components/icon_item.dart';
+import 'package:zpevnik/components/playlists_sheet.dart';
+import 'package:zpevnik/components/popup_menu.dart';
 import 'package:zpevnik/screens/song_lyric/utils/lyrics_controller.dart';
 import 'package:zpevnik/theme.dart';
 

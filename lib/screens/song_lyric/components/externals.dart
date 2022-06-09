@@ -7,7 +7,7 @@ import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/player.dart';
-import 'package:zpevnik/screens/components/highlightable.dart';
+import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/theme.dart';
 
 class ExternalsWidget extends StatefulWidget {

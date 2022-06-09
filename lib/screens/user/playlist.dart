@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
-import 'package:zpevnik/screens/components/song_lyrics_list_view.dart';
+import 'package:zpevnik/components/song_lyrics_list_view.dart';
 
 class PlaylistScreen extends StatelessWidget {
   final Playlist playlist;

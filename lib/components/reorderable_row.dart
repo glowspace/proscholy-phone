@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_reorderable_list/flutter_reorderable_list.dart';
 import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/screens/components/highlightable.dart';
+import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/theme.dart';
 
 class ReorderableRow extends StatelessWidget {

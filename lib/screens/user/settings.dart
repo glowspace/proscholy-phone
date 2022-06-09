@@ -8,8 +8,8 @@ import 'package:zpevnik/platform/components/scaffold.dart';
 import 'package:zpevnik/platform/components/switch.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/settings.dart';
-import 'package:zpevnik/screens/components/font_size_slider.dart';
-import 'package:zpevnik/screens/components/selector_widget.dart';
+import 'package:zpevnik/components/font_size_slider.dart';
+import 'package:zpevnik/components/selector_widget.dart';
 import 'package:zpevnik/screens/user/components/menu_section.dart';
 import 'package:zpevnik/theme.dart';
 

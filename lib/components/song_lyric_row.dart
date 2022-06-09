@@ -5,9 +5,9 @@ import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/platform/utils/route_builder.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
-import 'package:zpevnik/screens/components/circular_checkbox.dart';
-import 'package:zpevnik/screens/components/highlightable.dart';
-import 'package:zpevnik/screens/components/reorderable_row.dart';
+import 'package:zpevnik/components/circular_checkbox.dart';
+import 'package:zpevnik/components/highlightable.dart';
+import 'package:zpevnik/components/reorderable_row.dart';
 import 'package:zpevnik/screens/song_lyric/song_lyric_page_view.dart';
 import 'package:zpevnik/theme.dart';
 
