@@ -7,14 +7,14 @@ class IconItem extends StatelessWidget {
   final String title;
   final IconData? icon;
   final IconData? trailingIcon;
-  final Function() onPressed;
+  final Function()? onTap;
 
   const IconItem({
     Key? key,
     required this.title,
     this.icon,
     this.trailingIcon,
-    required this.onPressed,
+    this.onTap,
   }) : super(key: key);
 
   @override
@@ -23,7 +23,7 @@ class IconItem extends StatelessWidget {
     final iconColor = appTheme.iconColor;
 
     return Highlightable(
-      onPressed: onPressed,
+      onTap: onTap,
       child: Row(children: [
         if (icon != null)
           Container(padding: const EdgeInsets.only(right: kDefaultPadding), child: Icon(icon, color: iconColor)),

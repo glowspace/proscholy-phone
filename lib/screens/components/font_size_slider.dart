@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/platform/components/slider.dart';
 import 'package:zpevnik/providers/settings.dart';
 import 'package:zpevnik/theme.dart';
 
@@ -18,13 +17,16 @@ class FontSizeSlider extends StatelessWidget {
       children: [
         Text('A', style: appTheme.bodyTextStyle, textScaleFactor: kMinimumFontSizeScale),
         Expanded(
-          child: PlatformSlider(
-            min: kMinimumFontSizeScale,
-            max: kMaximumFontSizeScale,
-            value: fontSizeScale,
-            onChanged: (value) => settingsProvider.fontSizeScale = value,
-            activeColor: appTheme.chordColor,
-            inactiveColor: appTheme.disabledColor,
+          child: Material(
+            color: Colors.transparent,
+            child: Slider.adaptive(
+              min: kMinimumFontSizeScale,
+              max: kMaximumFontSizeScale,
+              value: fontSizeScale,
+              onChanged: (value) => settingsProvider.fontSizeScale = value,
+              activeColor: appTheme.chordColor,
+              inactiveColor: appTheme.disabledColor,
+            ),
           ),
         ),
         Text('A', style: appTheme.bodyTextStyle, textScaleFactor: kMaximumFontSizeScale),

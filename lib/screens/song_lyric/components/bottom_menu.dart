@@ -1,44 +1,36 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/platform/utils/bottom_sheet.dart';
 import 'package:zpevnik/providers/scroll.dart';
 import 'package:zpevnik/providers/settings.dart';
-import 'package:zpevnik/screens/components/collapseable.dart';
 import 'package:zpevnik/screens/components/highlightable.dart';
-import 'package:zpevnik/screens/components/rotateable.dart';
-import 'package:zpevnik/screens/utils/updateable.dart';
+import 'package:zpevnik/screens/song_lyric/components/song_lyric_settings.dart';
+import 'package:zpevnik/screens/song_lyric/utils/lyrics_controller.dart';
 import 'package:zpevnik/theme.dart';
 
 class BottomMenu extends StatefulWidget {
-  final Function() showSettings;
-  final Function() showExternals;
-  final bool hasExternals;
+  final LyricsController lyricsController;
+  final ScrollProvider? scrollProvider;
 
-  final ScrollProvider scrollProvider;
-
-  BottomMenu({
-    Key? key,
-    required this.showSettings,
-    required this.showExternals,
-    required this.hasExternals,
-    required this.scrollProvider,
-  }) : super(key: key);
+  const BottomMenu({Key? key, required this.lyricsController, this.scrollProvider}) : super(key: key);
 
   @override
   State<BottomMenu> createState() => _BottomMenuState();
 }
 
-class _BottomMenuState extends State<BottomMenu> with Updateable {
-  late ValueNotifier<bool> _collapsed;
+class _BottomMenuState extends State<BottomMenu> {
+  late bool _collapsed;
 
   @override
   void initState() {
     super.initState();
 
-    final settingsProvider = context.read<SettingsProvider>();
+    _collapsed = false;
 
-    _collapsed = ValueNotifier(settingsProvider.bottomOptionsCollapsed);
-    _collapsed.addListener(settingsProvider.toggleBottomOptionsCollapsed);
+    // final settingsProvider = context.read<SettingsProvider>();
+
+    // _collapsed = ValueNotifier(settingsProvider.bottomOptionsCollapsed);
+    // _collapsed.addListener(settingsProvider.toggleBottomOptionsCollapsed);
   }
 
   @override
@@ -47,58 +39,81 @@ class _BottomMenuState extends State<BottomMenu> with Updateable {
 
     return Container(
       transform: Matrix4.translationValues(1, 0, 0), // just to hide right border
-      padding: EdgeInsets.only(left: kDefaultPadding),
+      padding: const EdgeInsets.only(left: kDefaultPadding / 2),
       decoration: BoxDecoration(
         color: appTheme.backgroundColor,
         border: Border.all(color: appTheme.borderColor),
-        borderRadius: BorderRadius.horizontal(left: Radius.circular(100)),
+        borderRadius: const BorderRadius.horizontal(left: Radius.circular(100)),
       ),
       child: Row(children: _options(context)),
     );
   }
 
   List<Widget> _options(BuildContext context) {
-    final padding = EdgeInsets.symmetric(horizontal: kDefaultPadding / 2, vertical: kDefaultPadding);
+    const padding = EdgeInsets.symmetric(horizontal: kDefaultPadding / 2, vertical: kDefaultPadding / 2);
 
     return [
-      CollapseableWidget(
-        collapsed: _collapsed,
-        collapseAxis: Axis.horizontal,
-        child: Row(children: [
-          Highlightable(child: Icon(Icons.tune), padding: padding, onPressed: widget.showSettings),
-          if (widget.hasExternals)
-            Highlightable(child: Icon(Icons.headset), padding: padding, onPressed: widget.showExternals),
-          CollapseableWidget(
-            collapsed: widget.scrollProvider.isScrolling,
-            collapseAxis: Axis.horizontal,
-            inverted: true,
-            child: Row(children: [
-              Highlightable(child: Icon(Icons.add), padding: padding, onPressed: widget.scrollProvider.faster),
-              Highlightable(child: Icon(Icons.remove), padding: padding, onPressed: widget.scrollProvider.slower),
-            ]),
-          ),
-          Highlightable(
-            child: Icon(widget.scrollProvider.isScrolling.value ? Icons.stop : Icons.arrow_downward),
-            padding: padding,
-            onPressed: widget.scrollProvider.canScroll ? widget.scrollProvider.toggleScroll : null,
-          ),
-        ]),
-      ),
-      RotateableWidget(
-        rotated: _collapsed,
-        child: Highlightable(
-          child: Icon(Icons.arrow_back),
-          padding: padding,
-          onPressed: _toggleCollapsed,
+      AnimatedSize(
+        duration: kDefaultAnimationDuration,
+        child: SizedBox(
+          width: _collapsed ? 0 : null,
+          child: Row(children: [
+            Highlightable(child: const Icon(Icons.tune), padding: padding, onTap: () => _showSettings(context)),
+            if (widget.lyricsController.songLyric.hasExternals)
+              Highlightable(
+                child: const Icon(Icons.headset),
+                padding: padding,
+                onTap: () => _showExternals(context),
+              ),
+            AnimatedSize(
+              duration: kDefaultAnimationDuration,
+              child: SizedBox(
+                width: widget.scrollProvider?.isScrolling.value ?? false ? null : 0,
+                child: Row(children: [
+                  Highlightable(
+                    child: const Icon(Icons.add),
+                    padding: padding,
+                    onTap: widget.scrollProvider?.faster,
+                  ),
+                  Highlightable(
+                    child: const Icon(Icons.remove),
+                    padding: padding,
+                    onTap: widget.scrollProvider?.slower,
+                  ),
+                ]),
+              ),
+            ),
+            Highlightable(
+              child: Icon(widget.scrollProvider?.isScrolling.value ?? false ? Icons.stop : Icons.arrow_downward),
+              padding: padding,
+              onTap: widget.scrollProvider?.canScroll ?? false ? widget.scrollProvider?.toggleScroll : null,
+            ),
+          ]),
         ),
       ),
+      AnimatedRotation(
+        turns: _collapsed ? 0 : 0.5,
+        duration: kDefaultAnimationDuration,
+        child: Highlightable(
+          child: const Icon(Icons.arrow_back),
+          padding: padding,
+          onTap: _toggleCollapsed,
+        ),
+      )
     ];
   }
 
-  void _toggleCollapsed() {
-    _collapsed.value = !_collapsed.value;
+  void _toggleCollapsed() => setState(() => _collapsed = !_collapsed);
+
+  void _showSettings(BuildContext context) {
+    showPlatformBottomSheet(
+      context: context,
+      builder: (_) => SongLyricSettingsWidget(lyricsController: widget.lyricsController),
+      height: 0.5 * MediaQuery.of(context).size.height,
+    );
   }
 
-  @override
-  List<Listenable> get listenables => [widget.scrollProvider.isScrolling, widget.scrollProvider.controller];
+  void _showExternals(BuildContext context) {
+    // context.read<PlayerProvider>().miniplayerController.animateToHeight(state: PanelState.MAX);
+  }
 }

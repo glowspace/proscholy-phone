@@ -21,27 +21,27 @@ class UserMenu extends StatelessWidget {
         IconItem(
           title: 'Nastavení',
           icon: Icons.settings,
-          onPressed: () => _doAndHide(context, () => _pushSettings(context)),
+          onTap: () => _doAndHide(context, () => _pushSettings(context)),
         ),
         IconItem(
           title: 'Webová verze',
           icon: Icons.language,
-          onPressed: () => _doAndHide(context, () => launch(proscholyUrl)),
+          onTap: () => _doAndHide(context, () => launch(proscholyUrl)),
         ),
         IconItem(
           title: 'Zpětná vazba',
           icon: Icons.feedback,
-          onPressed: () => _doAndHide(context, () => launch(isIos ? feedbackIOSUrl : feedbackAndroidUrl)),
+          onTap: () => _doAndHide(context, () => launch(isIos ? feedbackIOSUrl : feedbackAndroidUrl)),
         ),
         IconItem(
           title: 'Přidat píseň',
           icon: Icons.add,
-          onPressed: () => _doAndHide(context, () => launch(addSongUrl)),
+          onTap: () => _doAndHide(context, () => launch(addSongUrl)),
         ),
         IconItem(
           title: 'O projektu',
           icon: Icons.info,
-          onPressed: () => _doAndHide(context, () => _pushAbout(context)),
+          onTap: () => _doAndHide(context, () => _pushAbout(context)),
         ),
       ],
     );

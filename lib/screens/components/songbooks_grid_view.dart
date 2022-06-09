@@ -60,7 +60,7 @@ class _SongbooksGridViewState extends State<SongbooksGridView> {
   Widget _buildListView(BuildContext context, SongbooksProvider provider) {
     return Scrollbar(
       controller: scrollController,
-      child: MasonryGridView.count(
+      child: AlignedGridView.count(
         controller: scrollController,
         crossAxisCount: 2,
         itemCount: provider.songbooks.length,

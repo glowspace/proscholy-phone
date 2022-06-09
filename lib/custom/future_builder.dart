@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:zpevnik/platform/components/progress_indicator.dart';
 
 class CustomFutureBuilder<T> extends StatelessWidget {
   final Future<T>? future;
@@ -23,7 +22,7 @@ class CustomFutureBuilder<T> extends StatelessWidget {
             return wrapperBuilder(context, builder(context, snapshot.data));
           }
         } else {
-          return wrapperBuilder(context, const Center(child: PlatformProgressIndicator()));
+          return wrapperBuilder(context, const Center(child: CircularProgressIndicator.adaptive()));
         }
       },
     );

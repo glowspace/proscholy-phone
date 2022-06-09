@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zpevnik/platform/mixin.dart';
@@ -12,6 +13,8 @@ const _title = 'Zpěvník';
 late SharedPreferences _prefs;
 
 void main() async {
+  // debugRepaintRainbowEnabled = true;
+
   WidgetsFlutterBinding.ensureInitialized();
 
   _prefs = await SharedPreferences.getInstance();

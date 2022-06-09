@@ -55,7 +55,7 @@ class _SearchFieldState extends State<SearchField> with PlatformMixin {
           suffixIcon: _textController.text.isEmpty
               ? null
               : Highlightable(
-                  onPressed: () {
+                  onTap: () {
                     setState(() => _textController.clear());
 
                     _searchTextChanged('');

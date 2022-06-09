@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/platform/components/dialog.dart';
+import 'package:zpevnik/platform/components/navigation_bar.dart';
 import 'package:zpevnik/platform/components/scaffold.dart';
 import 'package:zpevnik/platform/utils/bottom_sheet.dart';
 import 'package:zpevnik/providers/playlists.dart';
@@ -66,12 +67,14 @@ class _SongLyricsListViewState extends State<SongLyricsListView> {
         : (selectionEnabled ? _buildSelectableActions(context) : _buildSearchButton(context));
 
     return PlatformScaffold(
-      title: title,
-      leading: leading,
-      middle: middle,
-      trailing: trailing,
-      navigationBarColor: widget.navigationBarColor,
-      navigationBarTextColor: widget.navigationBarTextColor,
+      navigationBar: PlatformNavigationBar(
+        title: title,
+        leading: leading,
+        middle: middle,
+        trailing: trailing,
+        backgroundColor: widget.navigationBarColor,
+        textColor: widget.navigationBarTextColor,
+      ),
       body: Column(children: [
         if (!(_shouldShowNavigationBar || selectionEnabled)) _buildSearchField(context),
         Selector<SongLyricsProvider, List<Tag>>(
@@ -97,7 +100,7 @@ class _SongLyricsListViewState extends State<SongLyricsListView> {
     Widget? prefix;
 
     if (_shouldShowNavigationBar) {
-      prefix = Highlightable(child: const Icon(Icons.arrow_back), onPressed: () => _hideSearchField(context));
+      prefix = Highlightable(child: const Icon(Icons.arrow_back), onTap: () => _hideSearchField(context));
     }
 
     return Container(
@@ -114,7 +117,7 @@ class _SongLyricsListViewState extends State<SongLyricsListView> {
         },
         focusNode: searchFieldFocusNode,
         prefix: prefix,
-        suffix: Highlightable(child: const Icon(Icons.filter_list), onPressed: () => _showFilters(context)),
+        suffix: Highlightable(child: const Icon(Icons.filter_list), onTap: () => _showFilters(context)),
         onSubmitted: (_) => _pushMatchedSongLyric(context),
       ),
     );
@@ -172,27 +175,27 @@ class _SongLyricsListViewState extends State<SongLyricsListView> {
             Highlightable(
               child: Icon(provider.allFavorite ? Icons.star : Icons.star_outline),
               color: iconColor,
-              onPressed: hasSelection ? () => provider.toggleFavorite() : null,
+              onTap: hasSelection ? () => provider.toggleFavorite() : null,
             ),
             if (provider is PlaylistSongLyricsProvider)
               Highlightable(
                 child: const Icon(Icons.delete),
                 padding: const EdgeInsets.all(kDefaultPadding / 2),
                 color: iconColor,
-                onPressed: hasSelection ? () => _removeSongLyrics(context) : null,
+                onTap: hasSelection ? () => _removeSongLyrics(context) : null,
               )
             else
               Highlightable(
                 child: const Icon(Icons.playlist_add),
                 padding: const EdgeInsets.all(kDefaultPadding / 2),
                 color: iconColor,
-                onPressed: hasSelection ? () => _showPlaylists(context) : null,
+                onTap: hasSelection ? () => _showPlaylists(context) : null,
               ),
             Highlightable(
               child: const Icon(Icons.select_all),
               padding: const EdgeInsets.all(kDefaultPadding / 2),
               color: iconColor,
-              onPressed: () => provider.toggleAll(),
+              onTap: () => provider.toggleAll(),
             )
           ],
         );
@@ -205,14 +208,14 @@ class _SongLyricsListViewState extends State<SongLyricsListView> {
       child: const Icon(Icons.close),
       color: widget.navigationBarTextColor ?? AppTheme.of(context).chordColor,
       padding: EdgeInsets.zero,
-      onPressed: () => context.read<SongLyricsProvider>().selectionEnabled = false,
+      onTap: () => context.read<SongLyricsProvider>().selectionEnabled = false,
     );
   }
 
   Widget _buildSearchButton(BuildContext context) {
     return Highlightable(
       child: Icon(Icons.search, color: widget.navigationBarTextColor),
-      onPressed: () {
+      onTap: () {
         searchFieldFocusNode.requestFocus();
 
         setState(() => _isShowingSearchField = true);

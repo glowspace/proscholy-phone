@@ -58,6 +58,8 @@ class DataProvider extends ChangeNotifier {
 
   SongLyric? songLyric(int songLyricId) => _songLyrics[songLyricId];
 
+  bool hasTranslations(SongLyric songLyric) => (_songsSongLyrics[songLyric.songId ?? -1]?.length ?? 1) > 1;
+
   Future<bool> update({bool forceUpdate = false}) async {
     bool updated;
 

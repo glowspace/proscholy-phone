@@ -149,7 +149,7 @@ class _ExternalsWidgetState extends State<ExternalsWidget> {
               Highlightable(
                 child: Icon(Icons.fast_rewind),
                 padding: EdgeInsets.symmetric(horizontal: kDefaultPadding),
-                onPressed: youtubePlayerController == null
+                onTap: youtubePlayerController == null
                     ? null
                     : () =>
                         youtubePlayerController.seekTo(youtubePlayerController.value.position - Duration(seconds: 5)),
@@ -157,12 +157,12 @@ class _ExternalsWidgetState extends State<ExternalsWidget> {
               Highlightable(
                 child: Icon(playerProvider.isPlaying ? Icons.pause : Icons.play_arrow),
                 padding: EdgeInsets.symmetric(horizontal: kDefaultPadding),
-                onPressed: playerProvider.isPlaying ? youtubePlayerController?.pause : youtubePlayerController?.play,
+                onTap: playerProvider.isPlaying ? youtubePlayerController?.pause : youtubePlayerController?.play,
               ),
               Highlightable(
                 child: Icon(Icons.fast_forward),
                 padding: EdgeInsets.symmetric(horizontal: kDefaultPadding),
-                onPressed: youtubePlayerController == null
+                onTap: youtubePlayerController == null
                     ? null
                     : () =>
                         youtubePlayerController.seekTo(youtubePlayerController.value.position + Duration(seconds: 5)),
@@ -171,7 +171,7 @@ class _ExternalsWidgetState extends State<ExternalsWidget> {
               Highlightable(
                 child: Icon(Icons.close),
                 padding: EdgeInsets.symmetric(horizontal: kDefaultPadding),
-                onPressed: () {
+                onTap: () {
                   context.read<PlayerProvider>().miniplayerController.animateToHeight(state: PanelState.DISMISS);
                   youtubePlayerController?.reset();
                 },

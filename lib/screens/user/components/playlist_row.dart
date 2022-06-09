@@ -36,9 +36,9 @@ class _PlaylistRowState extends State<PlaylistRow> {
     final child = Row(children: [Expanded(child: Text(playlist.name)), _buildActionsButton(context)]);
 
     if (widget.isReorderable)
-      return ReorderableRow(key: playlist.key, child: child, onPressed: () => _pushPlaylist(context));
+      return ReorderableRow(key: playlist.key, child: child, onTap: () => _pushPlaylist(context));
 
-    return Highlightable(onPressed: () => _pushPlaylist(context), child: child);
+    return Highlightable(onTap: () => _pushPlaylist(context), child: child);
   }
 
   Widget _buildActionsButton(BuildContext context) {

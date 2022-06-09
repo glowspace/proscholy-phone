@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
+import 'package:zpevnik/platform/components/navigation_bar.dart';
 import 'package:zpevnik/platform/components/scaffold.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/screens/components/song_lyric_row.dart';
@@ -24,7 +25,7 @@ class TranslationsScreen extends StatelessWidget {
     final translations = songLyrics?.where((songLyric) => songLyric.type == SongLyricType.translation);
 
     return PlatformScaffold(
-      title: 'Překlady',
+      navigationBar: const PlatformNavigationBar(title: 'Překlady'),
       body: Container(
         padding: EdgeInsets.only(top: kDefaultPadding),
         child: SingleChildScrollView(

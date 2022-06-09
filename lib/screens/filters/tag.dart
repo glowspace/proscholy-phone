@@ -36,7 +36,7 @@ class FilterTag extends StatelessWidget {
               Highlightable(
                 padding: EdgeInsets.only(left: kDefaultPadding / 2),
                 child: Icon(Icons.close, size: 14),
-                onPressed: () => provider.toggleSelectedTag(tag),
+                onTap: () => provider.toggleSelectedTag(tag),
               ),
           ],
         ),

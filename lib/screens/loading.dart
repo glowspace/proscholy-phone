@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/platform/components/progress_indicator.dart';
 import 'package:zpevnik/theme.dart';
 
 class LoadingScreen extends StatelessWidget {
@@ -38,8 +37,8 @@ class LoadingScreen extends StatelessWidget {
     final textStyle = AppTheme.of(context).bodyTextStyle;
 
     return Column(children: [
-      PlatformProgressIndicator(),
-      SizedBox(height: kDefaultPadding / 2),
+      const CircularProgressIndicator.adaptive(),
+      const SizedBox(height: kDefaultPadding / 2),
       Text('Probíhá příprava písní.', style: textStyle),
     ]);
   }

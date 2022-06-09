@@ -22,12 +22,12 @@ class _PlaylistsSheetState extends State<PlaylistsSheet> {
       title: 'Playlisty',
       contentPadding: EdgeInsets.zero,
       items: [
-        IconItem(title: 'Nový playlist', icon: Icons.add, onPressed: showPlaylistDialog),
+        IconItem(title: 'Nový playlist', icon: Icons.add, onTap: showPlaylistDialog),
         Consumer<PlaylistsProvider>(
           builder: (_, provider, __) => ListView.builder(
             itemBuilder: (context, index) => IconItem(
               title: provider.playlists[index].name,
-              onPressed: () {
+              onTap: () {
                 provider.playlists[index].addSongLyrics(widget.selectedSongLyrics);
 
                 Navigator.pop(context);

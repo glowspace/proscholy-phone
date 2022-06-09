@@ -3,6 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/custom/future_builder.dart';
+import 'package:zpevnik/platform/components/navigation_bar.dart';
 import 'package:zpevnik/platform/components/scaffold.dart';
 import 'package:zpevnik/platform/components/switch.dart';
 import 'package:zpevnik/providers/data.dart';
@@ -20,7 +21,7 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PlatformScaffold(
-      title: 'Nastavení',
+      navigationBar: const PlatformNavigationBar(title: 'Nastavení'),
       body: SingleChildScrollView(
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),

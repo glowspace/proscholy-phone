@@ -6,14 +6,16 @@ import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/settings.dart';
+import 'package:zpevnik/screens/song_lyric/utils/converter.dart';
+import 'package:zpevnik/screens/song_lyric/utils/lyrics_controller.dart';
 import 'package:zpevnik/screens/song_lyric/utils/parser.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/hex_color.dart';
 
 class LyricsWidget extends StatelessWidget {
-  final SongLyricsParser parser;
+  final LyricsController lyricsController;
 
-  const LyricsWidget({Key? key, required this.parser}) : super(key: key);
+  const LyricsWidget({Key? key, required this.lyricsController}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,25 +26,34 @@ class LyricsWidget extends StatelessWidget {
 
     return SingleChildScrollView(
       child: Container(
-        padding: const EdgeInsets.all(kDefaultPadding),
+        padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(
-              parser.songLyric.name,
-              style: appTheme.titleTextStyle,
-              textScaleFactor: settingsProvider.fontSizeScale,
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+              child: Text(
+                lyricsController.songLyric.name,
+                style: appTheme.titleTextStyle,
+                textScaleFactor: settingsProvider.fontSizeScale,
+              ),
             ),
             SizedBox(height: kDefaultPadding * settingsProvider.fontSizeScale),
-            if (parser.hasLilypond)
+            if (lyricsController.hasLilypond)
               SvgPicture.string(
-                parser.lilypond(appTheme.textColor.hex),
-                width: min(width - 2 * kDefaultPadding, parser.lilypondWidth),
+                lyricsController.lilypond(appTheme.textColor.hex),
+                width: min(width, lyricsController.lilypondWidth),
               ),
-            if (parser.hasLilypond) SizedBox(height: kDefaultPadding * settingsProvider.fontSizeScale / 2),
-            _buildLyrics(context),
+            if (lyricsController.hasLilypond) SizedBox(height: kDefaultPadding * settingsProvider.fontSizeScale / 2),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+              child: _buildLyrics(context),
+            ),
             SizedBox(height: kDefaultPadding * settingsProvider.fontSizeScale),
-            _buildAuthors(context),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+              child: _buildAuthors(context),
+            ),
           ],
         ),
       ),
@@ -50,26 +61,29 @@ class LyricsWidget extends StatelessWidget {
   }
 
   Widget _buildLyrics(BuildContext context) {
-    final appTheme = AppTheme.of(context);
-    final settingsProvider = context.read<SettingsProvider>();
+    final settingsProvider = context.watch<SettingsProvider>();
 
     final List<Widget> children = [];
 
-    Token? currentToken = parser.nextToken;
+    Token? currentToken = lyricsController.parser.nextToken;
     while (currentToken != null) {
       if (currentToken is Comment) {
-        children.add(Text(
-          currentToken.value,
-          style: appTheme.commentTextStyle,
-          textScaleFactor: settingsProvider.fontSizeScale,
-        ));
+        children.add(_buildComment(context, currentToken, false));
       } else if (currentToken is Interlude) {
-        children.add(_buildInterlude(context, currentToken));
+        if (lyricsController.showChords) {
+          children.add(_buildInterlude(context, currentToken));
+        } else {
+          while (currentToken is! InterludeEnd) {
+            currentToken = lyricsController.parser.nextToken;
+          }
+        }
       } else if (currentToken is VerseNumber) {
         children.add(_buildVerse(context, currentToken));
+      } else if (currentToken is NewLine) {
+        children.add(SizedBox(height: kDefaultPadding * settingsProvider.fontSizeScale));
       }
 
-      currentToken = parser.nextToken;
+      currentToken = lyricsController.parser.nextToken;
     }
 
     return Column(
@@ -79,18 +93,18 @@ class LyricsWidget extends StatelessWidget {
   }
 
   Widget _buildInterlude(BuildContext context, Interlude interlude) {
-    final settingsProvider = context.read<SettingsProvider>();
+    final settingsProvider = context.watch<SettingsProvider>();
 
     final List<Widget> children = [];
-    Token? currentToken = parser.nextToken;
+    Token? currentToken = lyricsController.parser.nextToken;
     while (currentToken != null && currentToken is! InterludeEnd) {
       if (currentToken is Chord) {
-        children.add(_buildLine(context, currentToken, isInterlude: true));
+        children.add(_buildLine(context, currentToken, _textStyle(context, false), isInterlude: true));
       } else if (currentToken is NewLine) {
         children.add(SizedBox(height: kDefaultPadding * settingsProvider.fontSizeScale));
       }
 
-      currentToken = parser.nextToken;
+      currentToken = lyricsController.parser.nextToken;
     }
 
     return Row(
@@ -100,7 +114,7 @@ class LyricsWidget extends StatelessWidget {
           padding: const EdgeInsets.only(right: kDefaultPadding / 2),
           child: Text(
             interlude.value,
-            style: _textStyle(context),
+            style: _textStyle(context, false),
             textScaleFactor: settingsProvider.fontSizeScale,
           ),
         ),
@@ -110,18 +124,22 @@ class LyricsWidget extends StatelessWidget {
   }
 
   Widget _buildVerse(BuildContext context, VerseNumber number) {
-    final settingsProvider = context.read<SettingsProvider>();
+    final settingsProvider = context.watch<SettingsProvider>();
+
+    final textStyle = _textStyle(context, number.verseHasChord);
 
     final List<Widget> children = [];
-    Token? currentToken = parser.nextToken;
+    Token? currentToken = lyricsController.parser.nextToken;
     while (currentToken != null && currentToken is! VerseEnd) {
       if (currentToken is VersePart || currentToken is Chord) {
-        children.add(_buildLine(context, currentToken));
+        children.add(_buildLine(context, currentToken, textStyle));
+      } else if (currentToken is Comment) {
+        children.add(_buildComment(context, currentToken, number.verseHasChord));
       } else if (currentToken is NewLine) {
         children.add(SizedBox(height: kDefaultPadding * settingsProvider.fontSizeScale));
       }
 
-      currentToken = parser.nextToken;
+      currentToken = lyricsController.parser.nextToken;
     }
 
     return Row(
@@ -130,19 +148,15 @@ class LyricsWidget extends StatelessWidget {
         if (number.value.isNotEmpty)
           Padding(
             padding: const EdgeInsets.only(right: kDefaultPadding / 2),
-            child: Text(
-              number.value,
-              style: _textStyle(context),
-              textScaleFactor: settingsProvider.fontSizeScale,
-            ),
+            child: Text(number.value, style: textStyle, textScaleFactor: settingsProvider.fontSizeScale),
           ),
         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: children)),
       ],
     );
   }
 
-  Widget _buildLine(BuildContext context, Token token, {bool isInterlude = false}) {
-    final settingsProvider = context.read<SettingsProvider>();
+  Widget _buildLine(BuildContext context, Token token, TextStyle? textStyle, {bool isInterlude = false}) {
+    final settingsProvider = context.watch<SettingsProvider>();
 
     final List<InlineSpan> children = [];
 
@@ -150,46 +164,57 @@ class LyricsWidget extends StatelessWidget {
     Chord? currentChord;
     while (currentToken != null && currentToken is! NewLine) {
       if (currentToken is VersePart) {
-        if (currentChord == null) {
+        if (currentChord == null || !lyricsController.showChords) {
           children.add(TextSpan(text: currentToken.value));
         } else {
-          children.add(_buildChord(context, currentChord, versePart: currentToken));
+          children.add(_buildChord(context, currentChord, textStyle, versePart: currentToken));
           currentChord = null;
         }
-      } else if (currentToken is Chord) {
+      } else if (currentToken is Chord && lyricsController.showChords) {
         if (isInterlude) {
-          children.add(_buildChord(context, currentToken, isInterlude: true));
+          children.add(_buildChord(context, currentToken, textStyle, isInterlude: true));
         } else if (currentChord != null) {
-          children.add(_buildChord(context, currentChord));
+          children.add(_buildChord(context, currentChord, textStyle));
         }
 
         currentChord = currentToken;
       }
 
-      currentToken = parser.nextToken;
+      currentToken = lyricsController.parser.nextToken;
     }
 
-    if (!isInterlude && currentChord != null) {
-      children.add(_buildChord(context, currentChord));
+    if (!isInterlude && currentChord != null && lyricsController.showChords) {
+      children.add(_buildChord(context, currentChord, textStyle));
     }
 
     return RichText(
-      text: TextSpan(text: '', style: _textStyle(context), children: children),
+      text: TextSpan(text: '', style: textStyle, children: children),
       textScaleFactor: settingsProvider.fontSizeScale,
     );
   }
 
-  WidgetSpan _buildChord(BuildContext context, Chord chord, {VersePart? versePart, bool isInterlude = false}) {
-    final appTheme = AppTheme.of(context);
-    final settingsProvider = context.read<SettingsProvider>();
+  Widget _buildComment(BuildContext context, Comment comment, bool hasChords) {
+    final settingsProvider = context.watch<SettingsProvider>();
 
-    final textStyle = _textStyle(context);
+    final showChords = hasChords && lyricsController.showChords;
+    final textStyle = AppTheme.of(context).commentTextStyle?.copyWith(height: showChords ? 2.5 : 1.5);
+
+    return Text(comment.value, style: textStyle, textScaleFactor: settingsProvider.fontSizeScale);
+  }
+
+  WidgetSpan _buildChord(BuildContext context, Chord chord, TextStyle? textStyle,
+      {VersePart? versePart, bool isInterlude = false}) {
+    final appTheme = AppTheme.of(context);
+    final settingsProvider = context.watch<SettingsProvider>();
 
     final chordOffset = isInterlude ? 0.0 : -(textStyle?.fontSize ?? 0);
 
+    String chordText = convertAccidentals(
+        transpose(chord.value, lyricsController.songLyric.transposition), lyricsController.accidentals);
+
     int? chordNumberIndex;
-    for (int i = 0; i < chord.value.length; i++) {
-      if (int.tryParse(chord.value[i]) != null) {
+    for (int i = 0; i < chordText.length; i++) {
+      if (int.tryParse(chordText[i]) != null) {
         chordNumberIndex = i;
         break;
       }
@@ -201,16 +226,16 @@ class LyricsWidget extends StatelessWidget {
           transform: Matrix4.translationValues(0, chordOffset, 0),
           padding: EdgeInsets.only(right: settingsProvider.fontSizeScale * kDefaultPadding / 2),
           child: chordNumberIndex == null
-              ? Text(chord.value, style: textStyle?.copyWith(color: appTheme.chordColor))
+              ? Text(chordText, style: textStyle?.copyWith(color: appTheme.chordColor))
               : Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      chord.value.substring(0, chordNumberIndex),
+                      chordText.substring(0, chordNumberIndex),
                       style: textStyle?.copyWith(color: appTheme.chordColor),
                     ),
                     Text(
-                      chord.value.substring(chordNumberIndex),
+                      chordText.substring(chordNumberIndex),
                       style: textStyle?.copyWith(
                         color: appTheme.chordColor,
                         fontSize: (textStyle.fontSize ?? 17) * 0.6,
@@ -230,14 +255,15 @@ class LyricsWidget extends StatelessWidget {
     final settingsProvider = context.watch<SettingsProvider>();
 
     return Text(
-      parser.songLyric.authorsText(dataProvider),
+      lyricsController.songLyric.authorsText(dataProvider),
       style: appTheme.captionTextStyle,
       textScaleFactor: settingsProvider.fontSizeScale,
     );
   }
 
-  TextStyle? _textStyle(BuildContext context) {
-    // TODO: hasChords check should be done for every single line independently
-    return AppTheme.of(context).bodyTextStyle?.copyWith(height: parser.hasChords ? 2.5 : 1.5);
+  TextStyle? _textStyle(BuildContext context, bool hasChords) {
+    final showChords = hasChords && lyricsController.showChords;
+
+    return AppTheme.of(context).bodyTextStyle?.copyWith(height: showChords ? 2.5 : 1.5);
   }
 }

@@ -4,13 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/links.dart';
+import 'package:zpevnik/platform/components/navigation_bar.dart';
 import 'package:zpevnik/platform/components/scaffold.dart';
 import 'package:zpevnik/theme.dart';
 
 class AboutScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return PlatformScaffold(title: 'O projektu', body: _body(context));
+    return PlatformScaffold(navigationBar: const PlatformNavigationBar(title: 'O projektu'), body: _body(context));
   }
 
   Widget _body(BuildContext context) {

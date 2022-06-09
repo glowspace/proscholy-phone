@@ -23,12 +23,10 @@ class BottomFormSheet extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // TODO: check if it can actually be empty
-          if (title.isNotEmpty)
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-              child: Text(title, style: AppTheme.of(context).titleTextStyle),
-            ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+            child: Text(title, style: AppTheme.of(context).titleTextStyle),
+          ),
           const SizedBox(height: kDefaultPadding),
           Expanded(
             child: SingleChildScrollView(

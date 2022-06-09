@@ -15,9 +15,9 @@ class PopupMenuButton<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Highlightable(
-      onPressed: () => _showButtonMenu(context),
+      onTap: () => _showButtonMenu(context),
       padding: EdgeInsets.zero,
-      child: Icon(Icons.more_vert),
+      child: const Icon(Icons.more_vert),
     );
   }
 

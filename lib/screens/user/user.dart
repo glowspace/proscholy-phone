@@ -60,14 +60,14 @@ class _UserScreenState extends State<UserScreen> {
           builder: (_, provider, __) => StatefulBuilder(
             builder: (_, setState) => Column(children: [
               if (provider.searchText.isEmpty)
-                IconItem(onPressed: () => _pushFavorites(context), title: 'Písně s hvězdičkou', icon: Icons.star),
+                IconItem(onTap: () => _pushFavorites(context), title: 'Písně s hvězdičkou', icon: Icons.star),
               PlaylistsList(
                 playlists: provider.playlists,
                 isReorderable: provider.searchText.isEmpty,
               ),
               if (provider.archivedPlaylists.isNotEmpty)
                 IconItem(
-                  onPressed: () => setState(() => showingArchived = !showingArchived),
+                  onTap: () => setState(() => showingArchived = !showingArchived),
                   title: 'Archiv',
                   icon: Icons.archive_outlined,
                   trailingIcon: showingArchived ? Icons.arrow_upward : Icons.arrow_downward,
@@ -89,12 +89,12 @@ class _UserScreenState extends State<UserScreen> {
         Expanded(child: Text('Ostatní', style: appTheme.bodyTextStyle)),
         Highlightable(
           child: const Icon(Icons.settings),
-          onPressed: () => _pushSettings(context),
+          onTap: () => _pushSettings(context),
           padding: const EdgeInsets.all(kDefaultPadding / 4),
         ),
         Highlightable(
           child: const Icon(Icons.menu),
-          onPressed: () => _showUserMenu(context),
+          onTap: () => _showUserMenu(context),
           padding: const EdgeInsets.all(kDefaultPadding / 4),
         ),
       ]),

@@ -75,14 +75,14 @@ class _SongLyricRowState extends State<SongLyricRow> {
       return ReorderableRow(
         key: widget.songLyric.key,
         child: child,
-        onPressed: _pushSongLyric,
-        onLongPressed: _enableSelection,
+        onTap: _pushSongLyric,
+        onLongPress: _enableSelection,
       );
     }
 
     return Highlightable(
-      onPressed: _pushSongLyric,
-      onLongPressed: _enableSelection,
+      onTap: _pushSongLyric,
+      onLongPress: _enableSelection,
       color: isSelected ? appTheme.selectedRowColor : Colors.transparent,
       child: child,
     );
@@ -112,7 +112,7 @@ class _SongLyricRowState extends State<SongLyricRow> {
         context,
         SongLyricPageView(
           songLyrics: songLyrics,
-          // initialSongLyricIndex: songLyrics.indexOf(widget.songLyric),
+          initialSongLyricIndex: songLyrics.indexOf(widget.songLyric),
           // fromTranslations: widget.translationSongLyric != null,
         ),
         types: [ProviderType.data, ProviderType.fullScreen, ProviderType.playlist, ProviderType.songLyric],

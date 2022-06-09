@@ -2,10 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:zpevnik/models/song_lyric.dart';
-
-final _styleRE = RegExp(r'\<style[^\<]*\<\/style\>');
-final _heightRE = RegExp(r'height="([\d\.]+)mm"');
-final _widthRE = RegExp(r'width="([\d\.]+)"');
+import 'package:zpevnik/screens/song_lyric/utils/converter.dart';
 
 abstract class Token {}
 
@@ -21,7 +18,7 @@ class Comment extends Token {
 class Chord extends Token {
   final String value;
 
-  Chord(this.value);
+  Chord(String value) : value = convertAccidentals(value, 0);
 
   @override
   String toString() => 'Chord($value)';
@@ -40,7 +37,7 @@ class Interlude extends Token {
   late final String value;
 
   Interlude(String value) {
-    value = value.trim();
+    value = value.trim().toLowerCase();
 
     switch (value) {
       case 'mezihra:':
@@ -52,6 +49,8 @@ class Interlude extends Token {
       case 'předehra:':
         this.value = 'P:';
         break;
+      default:
+        this.value = value;
     }
   }
 
@@ -73,6 +72,10 @@ class VerseNumber extends Token {
   final String value;
 
   VerseNumber(this.value);
+
+  bool _verseHasChord = false;
+
+  bool get verseHasChord => _verseHasChord;
 
   @override
   String toString() => 'VerseNumber($value)';
@@ -103,53 +106,188 @@ class VerseEnd extends Token {
 
 enum _ParserState { chord, comment, lineStart, interlude, possibleVerseNumber, verseNumber, verseSubstitute, verseLine }
 
+class _FilledTokensBuilder {
+  final List<Token> filledTokens = [];
+
+  final Map<String, List<Token>> verseSubstitutes = {};
+  final List<Token> chordSubstitutes = [];
+
+  VerseNumber? currentVerseNumber;
+
+  List<Token> _fillSubstitutes(List<Token> tokens) {
+    if (tokens.isEmpty) return [];
+
+    // log(songLyric.lyrics);
+    // log(tokens.toString());
+
+    bool isInsideInterlude = false;
+
+    for (int i = 0; i < tokens.length; i++) {
+      final token = tokens[i];
+
+      if (token is VerseNumber) {
+        _fillVerseEnd();
+
+        // substitute empty verses
+        final emptyVerseEnd = _substituteEmptyVerse(i + 1, token.value, tokens);
+
+        if (emptyVerseEnd != null) {
+          i = emptyVerseEnd;
+        } else {
+          currentVerseNumber = token;
+
+          _fillToken(token);
+        }
+      } else if (token is VerseSubstitute) {
+        _fillVerseEnd();
+
+        // substitute empty verses
+        final emptyVerseEnd = _substituteEmptyVerse(i + 1, token.id, tokens);
+
+        if (emptyVerseEnd != null) {
+          i = emptyVerseEnd;
+        } else {
+          currentVerseNumber = VerseNumber(token.id);
+
+          _fillToken(currentVerseNumber!);
+        }
+      } else if (token is VerseEnd) {
+        _fillVerseEnd();
+      } else if (token is NewLine) {
+        // remove unintentional empty lines at the start and after verse numbers
+        if (filledTokens.isNotEmpty && filledTokens.last is! VerseNumber) {
+          _fillToken(token);
+        }
+      } else if (token is Chord) {
+        if (!isInsideInterlude) _fillEmptyVerseNumber();
+
+        currentVerseNumber?._verseHasChord = true;
+        chordSubstitutes.add(token);
+
+        _fillToken(token);
+      } else if (token is ChordSubstitute) {
+        _fillEmptyVerseNumber();
+
+        currentVerseNumber!._verseHasChord = true;
+
+        _fillToken(chordSubstitutes[token.index]);
+      } else if (token is Comment) {
+        // checks if comment is last part of verse, if so, it will first end the verse and then start the comment
+        final index = _commentIsInVerseEnd(i, tokens);
+
+        if (index == null) {
+          _fillToken(token);
+        } else {
+          _fillVerseEnd();
+
+          while (i < index) {
+            _fillToken(tokens[i++]);
+          }
+        }
+      } else if (token is Interlude) {
+        isInsideInterlude = true;
+        _fillToken(token);
+      } else if (token is InterludeEnd) {
+        isInsideInterlude = false;
+        _fillToken(token);
+      } else {
+        _fillEmptyVerseNumber();
+
+        // remove leading space from first string after verse number
+        if (filledTokens.isNotEmpty && filledTokens.last is VerseNumber && token is VersePart) {
+          final trimmedValue = token.value.trimLeft();
+
+          if (trimmedValue.isNotEmpty) {
+            final trimmedToken = VersePart(trimmedValue);
+
+            _fillToken(trimmedToken);
+          }
+        } else {
+          _fillToken(token);
+        }
+      }
+    }
+
+    _fillVerseEnd();
+
+    return filledTokens;
+  }
+
+  void _fillToken(Token token) {
+    if (currentVerseNumber != null) verseSubstitutes.putIfAbsent(currentVerseNumber!.value, () => []).add(token);
+    filledTokens.add(token);
+  }
+
+  void _fillEmptyVerseNumber() {
+    if (currentVerseNumber == null) {
+      currentVerseNumber = VerseNumber('');
+      _fillToken(currentVerseNumber!);
+    }
+  }
+
+  void _fillVerseEnd() {
+    if (currentVerseNumber != null) {
+      // make sure that before verse end there is a new line
+      if (filledTokens.last is! NewLine) _fillToken(NewLine());
+
+      _fillToken(VerseEnd());
+    }
+
+    currentVerseNumber = null;
+  }
+
+  int? _commentIsInVerseEnd(int i, List<Token> tokens) {
+    while (true) {
+      if (tokens[i] is VerseEnd) {
+        return i;
+      } else if (tokens[i] is! Comment && tokens[i] is! NewLine) {
+        return null;
+      }
+      i++;
+    }
+  }
+
+  int? _substituteEmptyVerse(int i, String verseNumber, List<Token> tokens) {
+    while (true) {
+      if (tokens[i] is Chord || tokens[i] is VersePart) {
+        return null;
+      } else if (tokens[i] is VerseEnd) {
+        final substitutes = verseSubstitutes[verseNumber] ?? verseSubstitutes[verseNumber.replaceFirst('.', ':')] ?? [];
+
+        filledTokens.addAll(substitutes);
+
+        return i;
+      }
+
+      i++;
+    }
+  }
+}
+
 class SongLyricsParser {
   final SongLyric songLyric;
-  late final List<Token> _parsedSongLyrics;
 
-  SongLyricsParser(this.songLyric) {
-    final tokens = _parseTokens();
+  SongLyricsParser(this.songLyric);
 
-    _parsedSongLyrics = _fillSubstitutes(tokens);
-
-    log(_parsedSongLyrics.toString());
-  }
+  List<Token>? _parsedSongLyrics;
 
   int _currentTokenIndex = 0;
   bool _hasChords = false;
 
-  double? _lilypondWidth;
-  String? _lilypond;
-
   Token? get nextToken {
-    if (_currentTokenIndex == _parsedSongLyrics.length) {
+    _parsedSongLyrics ??= _FilledTokensBuilder()._fillSubstitutes(_parseTokens());
+
+    // log(_parsedSongLyrics.toString());
+
+    if (_currentTokenIndex == _parsedSongLyrics!.length) {
       _currentTokenIndex = 0;
       return null;
     }
 
-    return _parsedSongLyrics[_currentTokenIndex++];
+    return _parsedSongLyrics![_currentTokenIndex++];
   }
 
   bool get hasChords => _hasChords;
-  bool get hasLilypond => songLyric.lilypond != null;
-
-  double get lilypondWidth => _lilypondWidth ?? 0;
-
-  String lilypond(String hexColor) {
-    if (_lilypond != null) return _lilypond!;
-
-    _lilypond = (songLyric.lilypond ?? '')
-        .replaceAll(_styleRE, '')
-        .replaceAll('currentColor', hexColor)
-        .replaceFirst(_heightRE, '')
-        .replaceFirstMapped(_widthRE, (match) {
-      _lilypondWidth = double.tryParse(match.group(1) ?? '');
-
-      return '';
-    });
-
-    return _lilypond!;
-  }
 
   List<Token> _parseTokens() {
     final lyrics = songLyric.lyrics;
@@ -271,13 +409,11 @@ class SongLyricsParser {
         // handles comments
         case '#':
           if (state == _ParserState.lineStart) {
-            if (isInsideVerse) tokens.add(VerseEnd());
             if (isInsideInterlude) tokens.add(InterludeEnd());
 
             currentString = '';
             state = _ParserState.comment;
 
-            isInsideVerse = false;
             isInsideInterlude = false;
           } else {
             currentString += c;
@@ -290,9 +426,10 @@ class SongLyricsParser {
             tokens.add(Comment(currentString));
           } else if (currentString.isNotEmpty) {
             tokens.add(VersePart(currentString));
+            tokens.add(NewLine());
+          } else {
+            tokens.add(NewLine());
           }
-
-          tokens.add(NewLine());
 
           currentString = '';
           state = _ParserState.lineStart;
@@ -318,122 +455,5 @@ class SongLyricsParser {
     if (isInsideInterlude) tokens.add(InterludeEnd());
 
     return tokens;
-  }
-
-  List<Token> _fillSubstitutes(List<Token> tokens) {
-    if (tokens.isEmpty) return [];
-
-    // log(songLyric.lyrics);
-    // log(tokens.toString());
-
-    final List<Token> filledTokens = [];
-
-    final Map<String, List<Token>> verseSubstitutes = {};
-    final List<Token> chordSubstitutes = [];
-
-    String currentVerseNumber = '';
-    for (int i = 0; i < tokens.length; i++) {
-      final token = tokens[i];
-
-      if (token is VerseNumber) {
-        // substitute empty verses
-        final emptyVerseEnd = _emptyVerseEnd(i + 1, tokens);
-
-        if (emptyVerseEnd != null) {
-          final substitutes =
-              verseSubstitutes[token.value] ?? verseSubstitutes[token.value.replaceFirst('.', ':')] ?? [];
-
-          filledTokens.addAll(substitutes);
-          i = emptyVerseEnd;
-        } else {
-          currentVerseNumber = token.value;
-          verseSubstitutes[currentVerseNumber] = [token];
-
-          filledTokens.add(token);
-        }
-      } else if (token is VerseSubstitute) {
-        // substitute empty verses
-        final emptyVerseEnd = _emptyVerseEnd(i + 1, tokens);
-
-        if (emptyVerseEnd != null) {
-          final substitutes = verseSubstitutes[token.id] ?? verseSubstitutes[token.id.replaceFirst('.', ':')] ?? [];
-
-          filledTokens.addAll(substitutes);
-          i = emptyVerseEnd;
-        } else {
-          currentVerseNumber = token.id;
-          verseSubstitutes[currentVerseNumber] = [VerseNumber(token.id)];
-
-          filledTokens.add(VerseNumber(token.id));
-        }
-      } else if (token is Chord) {
-        verseSubstitutes[currentVerseNumber]?.add(token);
-        chordSubstitutes.add(token);
-        filledTokens.add(token);
-      } else if (token is ChordSubstitute) {
-        verseSubstitutes[currentVerseNumber]?.add(chordSubstitutes[token.index]);
-        filledTokens.add(chordSubstitutes[token.index]);
-      } else if (token is VerseEnd) {
-        // make sure that before verse end there is a new line
-        if (filledTokens.last is! NewLine) filledTokens.add(NewLine());
-
-        verseSubstitutes[currentVerseNumber]?.add(token);
-        filledTokens.add(token);
-      } else if (token is NewLine) {
-        // remove unintentional empty lines at the start and after verse numbers
-        if (filledTokens.isNotEmpty && filledTokens.last is! VerseNumber) {
-          verseSubstitutes[currentVerseNumber]?.add(token);
-          filledTokens.add(token);
-        }
-      } else {
-        // remove leading space from first string after verse number
-        if (filledTokens.isNotEmpty && filledTokens.last is VerseNumber && token is VersePart) {
-          final trimmedValue = token.value.trimLeft();
-
-          if (trimmedValue.isNotEmpty) {
-            final trimmedToken = VersePart(trimmedValue);
-
-            verseSubstitutes[currentVerseNumber]?.add(trimmedToken);
-            filledTokens.add(trimmedToken);
-          }
-        } else {
-          verseSubstitutes[currentVerseNumber]?.add(token);
-          filledTokens.add(token);
-        }
-      }
-    }
-
-    // make sure that verse start is indicated by verse number even when there is no number
-    if (filledTokens.first is Chord || filledTokens.first is VersePart) {
-      // and make sure that end of that verse is also indicated
-      final nextVerseStartIndex = filledTokens.indexWhere((token) => token is VerseNumber);
-      if (nextVerseStartIndex == -1) {
-        if (filledTokens.last is! NewLine) filledTokens.add(NewLine());
-
-        filledTokens.add(VerseEnd());
-      } else {
-        filledTokens.insert(nextVerseStartIndex, VerseEnd());
-
-        if (filledTokens[nextVerseStartIndex - 1] is! NewLine) {
-          filledTokens.add(NewLine());
-        }
-      }
-
-      filledTokens.insert(0, VerseNumber(''));
-    }
-
-    return filledTokens;
-  }
-
-  int? _emptyVerseEnd(int i, List<Token> tokens) {
-    while (true) {
-      if (tokens[i] is Chord || tokens[i] is VersePart) {
-        return null;
-      } else if (tokens[i] is VerseEnd) {
-        return i;
-      }
-
-      i++;
-    }
   }
 }

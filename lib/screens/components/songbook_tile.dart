@@ -1,6 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songbook.dart';
@@ -36,29 +35,25 @@ const _existingLogos = [
   'h2'
 ];
 
-class SongbookTile extends StatefulWidget {
+class SongbookTile extends StatelessWidget {
   final Songbook songbook;
 
-  const SongbookTile({Key? key, required this.songbook}) : super(key: key);
+  SongbookTile({Key? key, required this.songbook}) : super(key: key);
 
-  @override
-  _SongbookTileState createState() => _SongbookTileState();
-}
-
-class _SongbookTileState extends State<SongbookTile> {
   final pinHighlightablKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
     return Highlightable(
-      onPressed: _pushSongbook,
-      child: Column(children: [_songbookLogo(context), _songbookInfo(context)]),
+      onTap: () => _pushSongbook(context),
+      child: Column(children: [_buildSongbookLogo(context), _buildSongbookInfo(context)]),
       highlightableChildKey: pinHighlightablKey,
+      padding: const EdgeInsets.all(kDefaultPadding / 2),
     );
   }
 
-  Widget _songbookLogo(BuildContext context) {
-    final shortcut = widget.songbook.shortcut.toLowerCase();
+  Widget _buildSongbookLogo(BuildContext context) {
+    final shortcut = songbook.shortcut.toLowerCase();
     final imagePath = _existingLogos.contains(shortcut) ? '$_logosPath/$shortcut.png' : '$_logosPath/default.png';
 
     return ClipRRect(
@@ -70,14 +65,13 @@ class _SongbookTileState extends State<SongbookTile> {
     );
   }
 
-  Widget _songbookInfo(BuildContext context) {
+  Widget _buildSongbookInfo(BuildContext context) {
     final textStyle = AppTheme.of(context).bodyTextStyle;
-    final songbook = widget.songbook;
 
     final songbooksProvider = context.read<SongbooksProvider>();
 
     return Container(
-      padding: EdgeInsets.only(top: kDefaultPadding / 2),
+      padding: const EdgeInsets.only(top: kDefaultPadding / 2),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -86,8 +80,9 @@ class _SongbookTileState extends State<SongbookTile> {
             scale: 0.75,
             child: Highlightable(
               key: pinHighlightablKey,
-              onPressed: () => setState(() => songbooksProvider.toggleIsPinned(songbook)),
+              onTap: () => songbooksProvider.toggleIsPinned(songbook),
               child: Icon(songbook.isPinned ? Icons.push_pin : Icons.push_pin_outlined),
+              padding: EdgeInsets.zero,
             ),
           ),
         ],
@@ -95,17 +90,17 @@ class _SongbookTileState extends State<SongbookTile> {
     );
   }
 
-  void _pushSongbook() {
+  void _pushSongbook(BuildContext context) {
+    // TODO: this checks could be move somewhere else
     final isLightMode = AppTheme.of(context).brightness == Brightness.light;
-    final navigationBarColor = isLightMode ? HexColor.fromHex(widget.songbook.color) : null;
-    final navigationBarTextColor = (widget.songbook.colorText == null || !AppTheme.of(context).isLight)
-        ? null
-        : HexColor.fromHex(widget.songbook.colorText);
+    final navigationBarColor = isLightMode ? HexColor.fromHex(songbook.color) : null;
+    final navigationBarTextColor =
+        (songbook.colorText == null || !AppTheme.of(context).isLight) ? null : HexColor.fromHex(songbook.colorText);
 
     Navigator.of(context).push(platformRouteBuilder(
       context,
       SongbookScreen(
-        songbook: widget.songbook,
+        songbook: songbook,
         navigationBarColor: navigationBarColor,
         navigationBarTextColor: navigationBarTextColor,
       ),

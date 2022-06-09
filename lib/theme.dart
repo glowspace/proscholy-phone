@@ -58,7 +58,10 @@ class AppThemeData extends InheritedWidget {
   AppThemeData({required Widget child, required this.brightness}) : super(child: child);
 
   CupertinoThemeData get cupertinoTheme {
-    return CupertinoThemeData(brightness: brightness, textTheme: CupertinoTextThemeData(primaryColor: iconColor));
+    return CupertinoThemeData(
+      brightness: brightness,
+      textTheme: CupertinoTextThemeData(primaryColor: iconColor),
+    );
   }
 
   ThemeData get materialTheme {
@@ -81,7 +84,7 @@ class AppThemeData extends InheritedWidget {
 
   TextStyle? get captionTextStyle => bodyTextStyle?.copyWith(color: captionColor, fontSize: 14);
   TextStyle? get placeholderTextStyle => bodyTextStyle?.copyWith(color: placeholderColor);
-  TextStyle? get commentTextStyle => captionTextStyle?.copyWith(fontStyle: FontStyle.italic);
+  TextStyle? get commentTextStyle => captionTextStyle?.copyWith(fontStyle: FontStyle.italic, height: 1.5);
   TextStyle? get navBarTitleTextStyle =>
       isIOS ? bodyTextStyle?.copyWith(fontWeight: FontWeight.bold, fontSize: 17) : bodyTextStyle;
 
