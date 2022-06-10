@@ -26,7 +26,7 @@ class TranslationsScreen extends StatelessWidget {
 
     return PlatformScaffold(
       navigationBar: const PlatformNavigationBar(title: 'Překlady'),
-      body: Container(
+      child: Container(
         padding: EdgeInsets.only(top: kDefaultPadding),
         child: SingleChildScrollView(
           child: Column(

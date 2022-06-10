@@ -55,7 +55,7 @@ class _SongLyricPageViewState extends State<SongLyricPageView> {
         title: lyricsController.songLyric.id.toString(),
         trailing: _buildActions(context, lyricsController.songLyric),
       ),
-      body: Stack(fit: StackFit.expand, children: [
+      child: Stack(fit: StackFit.expand, children: [
         PageView.builder(
           controller: _pageController,
           itemCount: widget.songLyrics.length == 1 ? 1 : null,

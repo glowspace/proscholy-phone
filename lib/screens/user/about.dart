@@ -11,7 +11,7 @@ import 'package:zpevnik/theme.dart';
 class AboutScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return PlatformScaffold(navigationBar: const PlatformNavigationBar(title: 'O projektu'), body: _body(context));
+    return PlatformScaffold(navigationBar: const PlatformNavigationBar(title: 'O projektu'), child: _body(context));
   }
 
   Widget _body(BuildContext context) {

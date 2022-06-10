@@ -8,7 +8,7 @@ import 'package:zpevnik/platform/components/scaffold.dart';
 const _welcomeText = '''
 Ahoj. Vítej ve Zpěvníku!
 
-Nyní se můžeš přihlásit do${unbreakableSpace}svého uživatelského účtu. To ti zajistí automatickou synchronizaci seznamu písní a${unbreakableSpace}spoustu dalších výhod.''';
+Nyní se můžeš přihlásit do${unbreakableSpace}svého uživatelského účtu. To ti zajistí automatickou synchronizaci seznamů písní a${unbreakableSpace}spoustu dalších výhod.''';
 
 const _projectTitle = 'Projekt komunity Glow Space';
 const _projectDescription = 'Projekt ProScholy.cz tvoří s${unbreakableSpace}láskou dobrovolníci z komunity Glow Space.';
@@ -19,44 +19,44 @@ class InitialScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    final mediaQuery = MediaQuery.of(context);
 
-    final height = MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top;
-    final width = MediaQuery.of(context).size.width;
+    final height = mediaQuery.size.height - mediaQuery.padding.top;
+    final width = mediaQuery.size.width;
 
-    return PlatformScaffold(
-      body: SingleChildScrollView(
-        child: SizedBox(
-          height: height,
+    return Scaffold(
+      body: Container(
+        height: height,
+        alignment: Alignment.bottomCenter,
+        child: SingleChildScrollView(
           child: Column(children: [
-            const Spacer(),
+            const SizedBox(height: 2 * kDefaultPadding),
             Image.asset('assets/images/title.png', width: width / 2),
-            const SizedBox(height: kDefaultMargin),
             Section(
-              margin: const EdgeInsets.symmetric(horizontal: kDefaultMargin),
-              padding: const EdgeInsets.all(kDefaultMargin),
+              margin: const EdgeInsets.all(2 * kDefaultPadding).copyWith(bottom: kDefaultPadding),
+              padding: const EdgeInsets.all(2 * kDefaultPadding),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(_welcomeText, style: textTheme.bodyMedium),
-                  const SizedBox(height: kDefaultMargin / 2),
+                  const SizedBox(height: 2 * kDefaultPadding),
                   const SignInButton(type: SignInButtonType.google),
-                  const SizedBox(height: kDefaultMargin / 2),
+                  const SizedBox(height: kDefaultPadding),
                   const SignInButton(type: SignInButtonType.apple),
-                  const SizedBox(height: kDefaultMargin / 2),
-                  const SignInButton(type: SignInButtonType.noSignIn),
+                  const SizedBox(height: kDefaultPadding),
+                  SignInButton(type: SignInButtonType.noSignIn, onSignedIn: () => _pushHomeScreen(context)),
                 ],
               ),
             ),
-            const SizedBox(height: kDefaultMargin),
             Section(
-              margin: const EdgeInsets.symmetric(horizontal: kDefaultMargin),
+              margin: const EdgeInsets.all(2 * kDefaultPadding).copyWith(top: kDefaultPadding),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(_projectTitle, style: textTheme.titleMedium),
-                  const SizedBox(height: kDefaultMargin / 2),
+                  const SizedBox(height: kDefaultPadding),
                   Text(_projectDescription, style: textTheme.bodyMedium),
-                  const SizedBox(height: kDefaultMargin / 2),
+                  const SizedBox(height: kDefaultPadding),
                   CupertinoButton(
                     child: Text('Dozvědět se více', style: textTheme.bodyLarge?.copyWith(color: blue)),
                     onPressed: () => _learnMore(context),
@@ -66,11 +66,15 @@ class InitialScreen extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(height: kDefaultMargin),
+            const SizedBox(height: kDefaultPadding),
           ]),
         ),
       ),
     );
+  }
+
+  void _pushHomeScreen(BuildContext context) {
+    Navigator.of(context).pushReplacementNamed('/home');
   }
 
   void _learnMore(BuildContext context) {}

@@ -22,7 +22,7 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return PlatformScaffold(
       navigationBar: const PlatformNavigationBar(title: 'Nastavení'),
-      body: SingleChildScrollView(
+      child: SingleChildScrollView(
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
           child: Column(

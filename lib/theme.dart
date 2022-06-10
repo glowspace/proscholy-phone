@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/src/foundation/diagnostics.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/providers/settings.dart';
 
@@ -35,7 +36,7 @@ class _AppThemeState extends State<AppTheme> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     Brightness brightness = WidgetsBinding.instance?.window.platformBrightness ?? Brightness.light;
 
-    final isDarkMode = context.select<SettingsProvider, bool?>((provider) => provider.isDarkMode);
+    final isDarkMode = false; // context.select<SettingsProvider, bool?>((provider) => provider.isDarkMode);
     if (isDarkMode != null) brightness = isDarkMode ? Brightness.dark : Brightness.light;
 
     return AppThemeData(
@@ -61,6 +62,7 @@ class AppThemeData extends InheritedWidget {
     return CupertinoThemeData(
       brightness: brightness,
       textTheme: CupertinoTextThemeData(primaryColor: iconColor),
+      scaffoldBackgroundColor: isLight ? CupertinoColors.lightBackgroundGray : CupertinoColors.darkBackgroundGray,
     );
   }
 
@@ -88,8 +90,7 @@ class AppThemeData extends InheritedWidget {
   TextStyle? get navBarTitleTextStyle =>
       isIOS ? bodyTextStyle?.copyWith(fontWeight: FontWeight.bold, fontSize: 17) : bodyTextStyle;
 
-  Color get backgroundColor => isLight ? CupertinoColors.lightBackgroundGray : CupertinoColors.darkBackgroundGray;
-  Color get containerColor => isLight ? Color(0xffffffff) : Color(0xff000000);
+  Color get backgroundColor => isLight ? Color(0xffffffff) : Color(0xff000000);
   Color get fillColor => isIOS ? CupertinoColors.systemFill : (isLight ? Color(0xffffffff) : Color(0xff252525));
   Color get borderColor => isLight ? Color(0xffd1d1d1) : Color(0xff2e2e2e);
 

@@ -72,8 +72,9 @@ extension _SignInButtonTypeExtension on SignInButtonType {
 
 class SignInButton extends StatefulWidget {
   final SignInButtonType type;
+  final Function()? onSignedIn;
 
-  const SignInButton({Key? key, required this.type}) : super(key: key);
+  const SignInButton({Key? key, required this.type, this.onSignedIn}) : super(key: key);
 
   @override
   State<SignInButton> createState() => _SignInButtonState();
@@ -82,20 +83,25 @@ class SignInButton extends StatefulWidget {
 class _SignInButtonState extends State<SignInButton> {
   @override
   Widget build(BuildContext context) {
-    return Highlightable(
-      child: Container(
-        padding: const EdgeInsets.all(kDefaultPadding / 2),
-        decoration: BoxDecoration(
-          color: widget.type.backgroundColor,
-          borderRadius: BorderRadius.circular(kDefaultRadius),
-          border: widget.type.border,
-        ),
-        child: Row(
-          children: [
-            widget.type.logo,
-            const SizedBox(width: kDefaultPadding / 2),
-            Text(widget.type.text, style: widget.type.style, textAlign: TextAlign.center),
-          ],
+    return Container(
+      decoration: BoxDecoration(
+        color: widget.type.backgroundColor,
+        borderRadius: BorderRadius.circular(kDefaultRadius),
+        border: widget.type.border,
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Highlightable(
+        onTap: widget.onSignedIn,
+        padding: EdgeInsets.zero,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2, vertical: kDefaultPadding / 3),
+          child: Row(
+            children: [
+              widget.type.logo,
+              const SizedBox(width: kDefaultPadding / 2),
+              Text(widget.type.text, style: widget.type.style, textAlign: TextAlign.center),
+            ],
+          ),
         ),
       ),
     );

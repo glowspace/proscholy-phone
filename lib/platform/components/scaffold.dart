@@ -4,9 +4,10 @@ import 'package:provider/provider.dart';
 import 'package:zpevnik/platform/components/navigation_bar.dart';
 import 'package:zpevnik/platform/mixin.dart';
 import 'package:zpevnik/providers/fullscreen.dart';
+import 'package:zpevnik/theme.dart';
 
 class PlatformScaffold extends StatelessWidget with PlatformMixin {
-  final Widget body;
+  final Widget child;
 
   final PlatformNavigationBar? navigationBar;
 
@@ -14,7 +15,7 @@ class PlatformScaffold extends StatelessWidget with PlatformMixin {
 
   const PlatformScaffold({
     Key? key,
-    required this.body,
+    required this.child,
     this.navigationBar,
     this.canBeFullscreen = false,
   }) : super(key: key);
@@ -22,7 +23,7 @@ class PlatformScaffold extends StatelessWidget with PlatformMixin {
   @override
   Widget buildAndroid(BuildContext context) {
     return Scaffold(
-      body: SafeArea(child: body),
+      body: SafeArea(child: child),
       appBar: _showNavBar(context) ? navigationBar : null, //InvisibleAppBar(systemOverlayStyle: systemOverlayStyle),
     );
   }
@@ -30,7 +31,7 @@ class PlatformScaffold extends StatelessWidget with PlatformMixin {
   @override
   Widget buildIos(BuildContext context) {
     return CupertinoPageScaffold(
-      child: SafeArea(child: body),
+      child: SafeArea(child: child),
       navigationBar: _showNavBar(context) ? navigationBar : null,
     );
   }

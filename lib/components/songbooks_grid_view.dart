@@ -22,7 +22,7 @@ class _SongbooksGridViewState extends State<SongbooksGridView> {
   @override
   Widget build(BuildContext context) {
     return PlatformScaffold(
-      body: Column(children: [
+      child: Column(children: [
         _buildSearchField(context),
         Expanded(
           child: Consumer<SongbooksProvider>(builder: (_, provider, __) {

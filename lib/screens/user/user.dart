@@ -27,7 +27,7 @@ class _UserScreenState extends State<UserScreen> {
   @override
   Widget build(BuildContext context) {
     return PlatformScaffold(
-      body: Column(
+      child: Column(
         children: [
           _buildSearchField(context),
           Expanded(child: _buildContent(context)),

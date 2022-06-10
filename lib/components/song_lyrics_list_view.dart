@@ -75,7 +75,7 @@ class _SongLyricsListViewState extends State<SongLyricsListView> {
         backgroundColor: widget.navigationBarColor,
         textColor: widget.navigationBarTextColor,
       ),
-      body: Column(children: [
+      child: Column(children: [
         if (!(_shouldShowNavigationBar || selectionEnabled)) _buildSearchField(context),
         Selector<SongLyricsProvider, List<Tag>>(
           builder: (_, selectedTags, __) => ActiveFiltersRow(selectedTags: selectedTags),
