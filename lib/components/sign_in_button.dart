@@ -92,7 +92,6 @@ class _SignInButtonState extends State<SignInButton> {
       clipBehavior: Clip.antiAlias,
       child: Highlightable(
         onTap: widget.onSignedIn,
-        padding: EdgeInsets.zero,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2, vertical: kDefaultPadding / 3),
           child: Row(

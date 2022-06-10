@@ -17,7 +17,7 @@ class _ContentScreenState extends State<ContentScreen> {
       body: const SafeArea(child: HomeScreen()),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _currentIndex,
-        onDestinationSelected: (index) => setState(() => _currentIndex = index),
+        onDestinationSelected: _onDestinationSelected,
         destinations: const [
           NavigationDestination(
             selectedIcon: Icon(Icons.home),
@@ -35,5 +35,13 @@ class _ContentScreenState extends State<ContentScreen> {
         ],
       ),
     );
+  }
+
+  void _onDestinationSelected(int index) {
+    if (index == 1) {
+      Navigator.of(context).pushNamed('/search');
+    } else {
+      setState(() => _currentIndex = index);
+    }
   }
 }

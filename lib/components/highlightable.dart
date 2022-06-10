@@ -106,7 +106,6 @@ class Highlightable extends StatefulWidget {
   final Function()? onLongPress;
 
   final Color? color;
-  final EdgeInsets padding;
 
   // to ignore highlight when highlightable child should be highlighted
   final GlobalKey? highlightableChildKey;
@@ -117,7 +116,6 @@ class Highlightable extends StatefulWidget {
     this.onTap,
     this.onLongPress,
     this.color,
-    this.padding = const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
     this.highlightableChildKey,
   }) : super(key: key);
 
@@ -150,10 +148,7 @@ class _HighlightableState extends State<Highlightable> {
       behavior: HitTestBehavior.translucent,
       child: ColorFiltered(
         colorFilter: ColorFilter.mode(Colors.white.withOpacity(_isHighlighted ? 0.5 : 1), BlendMode.modulate),
-        child: Container(
-          padding: widget.padding,
-          child: widget.child,
-        ),
+        child: widget.child,
       ),
     );
   }

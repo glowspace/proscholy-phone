@@ -16,6 +16,9 @@ dependencies:
   sqfentity_gen: ^2.0.0
   path: ^1.8.0
 
+  objectbox: ^1.5.0
+  objectbox_flutter_libs: any
+
   shared_preferences: ^2.0.6
   intl: ^0.17.0
   connectivity: ^3.0.6
@@ -57,6 +60,7 @@ dependencies:
 
 dev_dependencies:
   build_runner: ^2.0.4
+  objectbox_generator: any
 
   flutter_lints: ^1.0.0
 
@@ -86,3 +90,6 @@ flutter:
     - assets/images/logos/
     - assets/images/songbooks/
     - assets/
+
+objectbox:
+  output_dir: models

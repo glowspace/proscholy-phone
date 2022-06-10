@@ -1,5 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/route_generator.dart';
 
 const _title = 'Zpěvník';
@@ -16,33 +19,26 @@ class MainWidget extends StatelessWidget {
     final lightTheme = ThemeData.light().copyWith(
       scaffoldBackgroundColor: CupertinoColors.lightBackgroundGray,
       backgroundColor: Colors.white,
-      navigationBarTheme: NavigationBarThemeData(
-        indicatorColor: Colors.purple.shade700.withAlpha(0x30),
-        iconTheme: MaterialStateProperty.resolveWith(
-          (states) => states.contains(MaterialState.selected) ? IconThemeData(color: Colors.purple.shade900) : null,
-        ),
-      ),
+      colorScheme: ColorScheme.fromSeed(seedColor: blue),
       useMaterial3: true,
     );
 
     final darkTheme = ThemeData.dark().copyWith(
       scaffoldBackgroundColor: CupertinoColors.darkBackgroundGray,
       backgroundColor: Colors.black,
-      navigationBarTheme: NavigationBarThemeData(
-        indicatorColor: Colors.purple.shade700.withAlpha(0x30),
-        iconTheme: MaterialStateProperty.resolveWith(
-          (states) => states.contains(MaterialState.selected) ? IconThemeData(color: Colors.purple.shade900) : null,
-        ),
-      ),
+      colorScheme: ColorScheme.fromSeed(seedColor: blue, brightness: Brightness.dark),
       useMaterial3: true,
     );
 
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: _title,
-      theme: lightTheme,
-      darkTheme: darkTheme,
-      onGenerateRoute: RouteGenerator.generateRoute,
+    return ChangeNotifierProvider(
+      create: (_) => DataProvider(),
+      builder: (_, __) => MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: _title,
+        theme: lightTheme,
+        darkTheme: darkTheme,
+        onGenerateRoute: RouteGenerator.generateRoute,
+      ),
     );
   }
 }
