@@ -15,6 +15,7 @@ class SongLyricRow extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return Highlightable(
+      onTap: () => _pushSongLyric(context),
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
         child: Column(
@@ -34,5 +35,9 @@ class SongLyricRow extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _pushSongLyric(BuildContext context) {
+    Navigator.pushNamed(context, '/song_lyric', arguments: songLyric);
   }
 }

@@ -45,7 +45,13 @@ class DataProvider extends ChangeNotifier {
       .build()
       .find();
 
-  List<SongLyric> get songLyrics => store.box<SongLyric>().query(SongLyric_.lyrics.notNull()).build().find();
+  List<SongLyric> get songLyrics {
+    final query = store.box<SongLyric>().query(SongLyric_.lyrics.notNull());
+
+    query.order(SongLyric_.name);
+
+    return query.build().find();
+  }
 
   List<Tag> get tags => store.box<Tag>().getAll();
 

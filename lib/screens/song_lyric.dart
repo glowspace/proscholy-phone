@@ -1,131 +1,213 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/custom/listenable_builder.dart';
-import 'package:zpevnik/models/song_lyric.dart';
-import 'package:zpevnik/platform/components/navigation_bar.dart';
-import 'package:zpevnik/platform/components/scaffold.dart';
-import 'package:zpevnik/platform/utils/route_builder.dart';
-import 'package:zpevnik/providers/data.dart';
+import 'package:zpevnik/components/custom/back_button.dart';
 import 'package:zpevnik/components/highlightable.dart';
-import 'package:zpevnik/screens/song_lyric/components/bottom_menu.dart';
-import 'package:zpevnik/screens/song_lyric/components/song_lyric_menu.dart';
-import 'package:zpevnik/screens/song_lyric/lyrics.dart';
-import 'package:zpevnik/screens/song_lyric/translations.dart';
+import 'package:zpevnik/components/song_lyric/lyrics.dart';
+import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/screens/song_lyric/utils/lyrics_controller.dart';
-import 'package:zpevnik/theme.dart';
 
-class SongLyricPageView extends StatefulWidget {
-  final List<SongLyric> songLyrics;
-  final int initialSongLyricIndex;
+const double _navigationBarHeight = 48;
 
-  const SongLyricPageView({Key? key, required this.songLyrics, this.initialSongLyricIndex = 0}) : super(key: key);
+class SongLyricScreen extends StatefulWidget {
+  final SongLyric songLyric;
+  const SongLyricScreen({Key? key, required this.songLyric}) : super(key: key);
 
   @override
-  State<SongLyricPageView> createState() => _SongLyricPageViewState();
+  State<SongLyricScreen> createState() => _SongLyricScreenState();
 }
 
-class _SongLyricPageViewState extends State<SongLyricPageView> {
-  late final PageController _pageController;
+class _SongLyricScreenState extends State<SongLyricScreen> {
+  late final LyricsController _controller;
 
-  final Map<int, LyricsController> _lyricsControllers = {};
-
-  late int _currentIndex;
-
-  bool _isShowingMenu = false;
+  bool _fullscreen = false;
 
   @override
   void initState() {
     super.initState();
 
-    _currentIndex = widget.initialSongLyricIndex;
-
-    // adding songlyrics length multiple times to initial page, so we can swipe through songlyrics cyclically
-    final initialPage = widget.songLyrics.length == 1 ? 0 : widget.initialSongLyricIndex + 5 * widget.songLyrics.length;
-    _pageController = PageController(initialPage: initialPage);
+    _controller = LyricsController(widget.songLyric);
   }
 
   @override
   Widget build(BuildContext context) {
-    final lyricsController =
-        _lyricsControllers.putIfAbsent(_currentIndex, () => LyricsController(widget.songLyrics[_currentIndex]));
+    final theme = Theme.of(context);
 
-    return PlatformScaffold(
-      navigationBar: PlatformNavigationBar(
-        title: lyricsController.songLyric.id.toString(),
-        trailing: _buildActions(context, lyricsController.songLyric),
+    AppBar? appBar;
+    NavigationBar? navigationBar;
+
+    if (!_fullscreen) {
+      appBar = AppBar(
+        title: Text('${widget.songLyric.id}', style: theme.textTheme.titleMedium),
+        centerTitle: false,
+        leading: const CustomBackButton(),
+      );
+
+      navigationBar = NavigationBar(
+        height: _navigationBarHeight,
+        labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+        destinations: [
+          _buildDestination(context, Icons.headphones_rounded),
+          _buildDestination(context, Icons.insert_drive_file),
+          _buildDestination(context, Icons.tune),
+          _buildDestination(context, Icons.search),
+        ],
+      );
+    }
+
+    return Theme(
+      data: theme.copyWith(
+        navigationBarTheme: theme.navigationBarTheme.copyWith(indicatorColor: Colors.transparent),
       ),
-      child: Stack(fit: StackFit.expand, children: [
-        PageView.builder(
-          controller: _pageController,
-          itemCount: widget.songLyrics.length == 1 ? 1 : null,
-          physics: widget.songLyrics.length == 1 ? const NeverScrollableScrollPhysics() : null,
-          itemBuilder: (_, __) => LyricsWidget(lyricsController: lyricsController),
-          onPageChanged: _pageChanged,
+      child: Scaffold(
+        appBar: appBar,
+        body: SafeArea(
+          child: GestureDetector(
+            onTap: () => setState(() => _fullscreen = !_fullscreen),
+            child: LyricsWidget(controller: _controller),
+          ),
         ),
-        Positioned(
-          right: 0,
-          bottom: kDefaultPadding,
-          child: RepaintBoundary(child: BottomMenu(lyricsController: lyricsController)),
-        ),
-        Positioned(
-          right: 0,
-          top: 0,
-          child: SongLyricMenu(lyricsController: lyricsController, isShowing: _isShowingMenu),
-        ),
-      ]),
+        bottomNavigationBar: navigationBar,
+      ),
     );
   }
 
-  Widget _buildActions(BuildContext context, SongLyric songLyric) {
-    final dataProvider = context.read<DataProvider>();
-
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (dataProvider.hasTranslations(songLyric))
-          Highlightable(
-            padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
-            child: const Icon(Icons.translate),
-            onTap: () => _pushTranslations(context, songLyric),
-          ),
-        StatefulBuilder(
-          builder: (_, setState) => Highlightable(
-            padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
-            child: Icon(songLyric.isFavorite ? Icons.star : Icons.star_border),
-            onTap: () => setState(() => songLyric.toggleFavorite()),
-          ),
-        ),
-        Highlightable(
-          padding: const EdgeInsets.only(left: kDefaultPadding / 2),
-          child: const Icon(Icons.more_vert),
-          onTap: () => setState(() => _isShowingMenu = !_isShowingMenu),
-        ),
-      ],
+  Widget _buildDestination(BuildContext context, IconData icon) {
+    return Highlightable(
+      child: NavigationDestination(
+        label: '',
+        icon: Icon(icon),
+      ),
     );
-  }
-
-  void _pageChanged(int index) {
-    setState(() {
-      _isShowingMenu = false;
-      _currentIndex = index % widget.songLyrics.length;
-    });
-  }
-
-  void _pushTranslations(BuildContext context, SongLyric songLyric) {
-    // if (widget.fromTranslations)
-    //   Navigator.of(context).pop();
-    // else
-
-    Navigator.of(context).push(platformRouteBuilder(
-      context,
-      TranslationsScreen(songLyric: songLyric),
-      types: [ProviderType.data, ProviderType.fullScreen, ProviderType.playlist, ProviderType.songLyric],
-    ));
   }
 }
 
-enum SwipeDirection { left, right }
+// import 'package:flutter/material.dart';
+// import 'package:provider/provider.dart';
+// import 'package:zpevnik/constants.dart';
+// import 'package:zpevnik/custom/listenable_builder.dart';
+// import 'package:zpevnik/models/song_lyric.dart';
+// import 'package:zpevnik/platform/components/navigation_bar.dart';
+// import 'package:zpevnik/platform/components/scaffold.dart';
+// import 'package:zpevnik/platform/utils/route_builder.dart';
+// import 'package:zpevnik/providers/data.dart';
+// import 'package:zpevnik/components/highlightable.dart';
+// import 'package:zpevnik/screens/song_lyric/components/bottom_menu.dart';
+// import 'package:zpevnik/screens/song_lyric/components/song_lyric_menu.dart';
+// import 'package:zpevnik/screens/song_lyric/lyrics.dart';
+// import 'package:zpevnik/screens/song_lyric/translations.dart';
+// import 'package:zpevnik/screens/song_lyric/utils/lyrics_controller.dart';
+// import 'package:zpevnik/theme.dart';
+
+// class SongLyricPageView extends StatefulWidget {
+//   final List<SongLyric> songLyrics;
+//   final int initialSongLyricIndex;
+
+//   const SongLyricPageView({Key? key, required this.songLyrics, this.initialSongLyricIndex = 0}) : super(key: key);
+
+//   @override
+//   State<SongLyricPageView> createState() => _SongLyricPageViewState();
+// }
+
+// class _SongLyricPageViewState extends State<SongLyricPageView> {
+//   late final PageController _pageController;
+
+//   final Map<int, LyricsController> _lyricsControllers = {};
+
+//   late int _currentIndex;
+
+//   bool _isShowingMenu = false;
+
+//   @override
+//   void initState() {
+//     super.initState();
+
+//     _currentIndex = widget.initialSongLyricIndex;
+
+//     // adding songlyrics length multiple times to initial page, so we can swipe through songlyrics cyclically
+//     final initialPage = widget.songLyrics.length == 1 ? 0 : widget.initialSongLyricIndex + 5 * widget.songLyrics.length;
+//     _pageController = PageController(initialPage: initialPage);
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     final lyricsController =
+//         _lyricsControllers.putIfAbsent(_currentIndex, () => LyricsController(widget.songLyrics[_currentIndex]));
+
+//     return PlatformScaffold(
+//       navigationBar: PlatformNavigationBar(
+//         title: lyricsController.songLyric.id.toString(),
+//         trailing: _buildActions(context, lyricsController.songLyric),
+//       ),
+//       child: Stack(fit: StackFit.expand, children: [
+//         PageView.builder(
+//           controller: _pageController,
+//           itemCount: widget.songLyrics.length == 1 ? 1 : null,
+//           physics: widget.songLyrics.length == 1 ? const NeverScrollableScrollPhysics() : null,
+//           itemBuilder: (_, __) => LyricsWidget(lyricsController: lyricsController),
+//           onPageChanged: _pageChanged,
+//         ),
+//         Positioned(
+//           right: 0,
+//           bottom: kDefaultPadding,
+//           child: RepaintBoundary(child: BottomMenu(lyricsController: lyricsController)),
+//         ),
+//         Positioned(
+//           right: 0,
+//           top: 0,
+//           child: SongLyricMenu(lyricsController: lyricsController, isShowing: _isShowingMenu),
+//         ),
+//       ]),
+//     );
+//   }
+
+//   Widget _buildActions(BuildContext context, SongLyric songLyric) {
+//     final dataProvider = context.read<DataProvider>();
+
+//     return Row(
+//       mainAxisSize: MainAxisSize.min,
+//       children: [
+//         if (dataProvider.hasTranslations(songLyric))
+//           Highlightable(
+//             padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
+//             child: const Icon(Icons.translate),
+//             onTap: () => _pushTranslations(context, songLyric),
+//           ),
+//         StatefulBuilder(
+//           builder: (_, setState) => Highlightable(
+//             padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
+//             child: Icon(songLyric.isFavorite ? Icons.star : Icons.star_border),
+//             onTap: () => setState(() => songLyric.toggleFavorite()),
+//           ),
+//         ),
+//         Highlightable(
+//           padding: const EdgeInsets.only(left: kDefaultPadding / 2),
+//           child: const Icon(Icons.more_vert),
+//           onTap: () => setState(() => _isShowingMenu = !_isShowingMenu),
+//         ),
+//       ],
+//     );
+//   }
+
+//   void _pageChanged(int index) {
+//     setState(() {
+//       _isShowingMenu = false;
+//       _currentIndex = index % widget.songLyrics.length;
+//     });
+//   }
+
+//   void _pushTranslations(BuildContext context, SongLyric songLyric) {
+//     // if (widget.fromTranslations)
+//     //   Navigator.of(context).pop();
+//     // else
+
+//     Navigator.of(context).push(platformRouteBuilder(
+//       context,
+//       TranslationsScreen(songLyric: songLyric),
+//       types: [ProviderType.data, ProviderType.fullScreen, ProviderType.playlist, ProviderType.songLyric],
+//     ));
+//   }
+// }
+
+// enum SwipeDirection { left, right }
 
 // class SSongLyricPageView extends StatefulWidget {
 //   final List<SongLyric> songLyrics;

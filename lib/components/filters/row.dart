@@ -36,7 +36,8 @@ class FiltersRow extends StatelessWidget {
                     radius: const Radius.circular(10),
                     padding: const EdgeInsets.all(kDefaultPadding / 2),
                     child: Row(children: [
-                      Icon(Icons.add, size: 16, color: theme.hintColor),
+                      Icon(Icons.add, size: 12, color: theme.hintColor),
+                      const SizedBox(width: kDefaultPadding / 4),
                       Text('Přidat filtr', style: theme.textTheme.caption),
                     ]),
                   ),

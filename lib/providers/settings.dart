@@ -13,7 +13,7 @@ const String _bottomOptionsCollapsedKey = 'bottom_options_collapsed';
 const String _isDarkModeKey = 'dark_mode';
 
 class SettingsProvider extends ChangeNotifier {
-  final SharedPreferences _prefs;
+  late final SharedPreferences _prefs;
 
   late double _fontSizeScale;
   late double _fontSizeScaleBeforeScale;
@@ -24,7 +24,9 @@ class SettingsProvider extends ChangeNotifier {
   late bool _bottomOptionsCollapsed;
   late bool? _isDarkMode;
 
-  SettingsProvider(this._prefs) {
+  Future<void> init() async {
+    _prefs = await SharedPreferences.getInstance();
+
     _fontSizeScale = _prefs.getDouble(_fontSizeScaleScaleKey) ?? 1;
     _showChords = _prefs.getBool(_showChordsKey) ?? true;
     _accidentals = _prefs.getInt(_accidentalsKey) ?? 0;

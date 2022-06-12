@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:zpevnik/screens/content.dart';
 import 'package:zpevnik/screens/initial.dart';
 import 'package:zpevnik/screens/search.dart';
+import 'package:zpevnik/screens/song_lyric.dart';
+
+import 'models/song_lyric.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -12,6 +15,10 @@ class RouteGenerator {
         return CustomPageRoute(builder: (_) => const ContentScreen());
       case '/search':
         return CustomPageRoute(builder: (_) => const SearchScreen(), fullscreenDialog: true);
+      case '/song_lyric':
+        final songLyric = settings.arguments as SongLyric;
+
+        return CustomPageRoute(builder: (_) => SongLyricScreen(songLyric: songLyric));
       default:
         throw 'Unknown route: ${settings.name}';
     }

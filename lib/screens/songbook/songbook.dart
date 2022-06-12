@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
-import 'package:zpevnik/components/song_lyrics_list_view.dart';
+import 'package:zpevnik/components/song_lyrics/song_lyrics_list_view.dart';
 
 class SongbookScreen extends StatelessWidget {
   final Songbook songbook;

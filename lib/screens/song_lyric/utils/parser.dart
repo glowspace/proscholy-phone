@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/screens/song_lyric/utils/converter.dart';
@@ -290,7 +288,7 @@ class SongLyricsParser {
   bool get hasChords => _hasChords;
 
   List<Token> _parseTokens() {
-    final lyrics = songLyric.lyrics;
+    final lyrics = songLyric.lyrics ?? '';
     final List<Token> tokens = [];
 
     _ParserState state = _ParserState.lineStart;

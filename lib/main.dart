@@ -4,6 +4,7 @@ import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/data.dart';
+import 'package:zpevnik/providers/settings.dart';
 import 'package:zpevnik/route_generator.dart';
 
 const _title = 'Zpěvník';
@@ -33,8 +34,11 @@ class MainWidget extends StatelessWidget {
       useMaterial3: true,
     );
 
-    return ChangeNotifierProvider(
-      create: (_) => DataProvider(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => DataProvider()),
+        ChangeNotifierProvider(create: (_) => SettingsProvider()),
+      ],
       builder: (_, __) => MaterialApp(
         debugShowCheckedModeBanner: false,
         title: _title,

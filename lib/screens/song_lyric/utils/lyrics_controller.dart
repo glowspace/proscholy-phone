@@ -62,31 +62,31 @@ class LyricsController extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool get showChords => songLyric.showChords ?? true; // ?? settingsProvider.showChords;
-  int get accidentals => songLyric.accidentals ?? 0; // ?? settingsProvider.accidentals;
+  bool get showChords => true; // songLyric.showChords ?? true; // ?? settingsProvider.showChords;
+  int get accidentals => 0; // songLyric.accidentals ?? 0; // ?? settingsProvider.accidentals;
 
   void changeTransposition(int byValue) {
-    songLyric.transposition += byValue;
+    // songLyric.transposition += byValue;
 
     notifyListeners();
   }
 
   void accidentalsChanged(int accidentals) {
-    songLyric.accidentals = accidentals;
+    // songLyric.accidentals = accidentals;
 
     notifyListeners();
   }
 
   void showChordsChanged(bool showChords) {
-    songLyric.showChords = showChords;
+    // songLyric.showChords = showChords;
 
     notifyListeners();
   }
 
   void resetSettings() {
-    songLyric.showChords = null;
-    songLyric.accidentals = null;
-    songLyric.transposition = 0;
+    // songLyric.showChords = null;
+    // songLyric.accidentals = null;
+    // songLyric.transposition = 0;
 
     // settingsProvider.fontSizeScale = 1;
 

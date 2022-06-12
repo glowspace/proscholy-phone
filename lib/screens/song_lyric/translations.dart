@@ -5,7 +5,7 @@ import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/platform/components/navigation_bar.dart';
 import 'package:zpevnik/platform/components/scaffold.dart';
 import 'package:zpevnik/providers/data.dart';
-import 'package:zpevnik/components/song_lyric_row.dart';
+import 'package:zpevnik/components/song_lyrics/song_lyric_row.dart';
 import 'package:zpevnik/theme.dart';
 
 class TranslationsScreen extends StatelessWidget {

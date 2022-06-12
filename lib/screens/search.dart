@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/components/filters/row.dart';
 import 'package:zpevnik/components/search_field.dart';
-import 'package:zpevnik/components/song_lyrics_list_view.dart';
+import 'package:zpevnik/components/song_lyric/song_lyrics_list_view.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/data.dart';
 

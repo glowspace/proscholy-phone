@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:zpevnik/components/song_lyric_row.dart';
+import 'package:zpevnik/components/song_lyric/song_lyric_row.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 
 class SongLyricsListView extends StatelessWidget {
