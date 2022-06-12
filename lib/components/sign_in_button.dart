@@ -2,6 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/utils/extensions.dart';
+
+const _logosPath = 'assets/images/logos/';
 
 enum SignInButtonType {
   google,
@@ -21,25 +24,29 @@ extension _SignInButtonTypeExtension on SignInButtonType {
     }
   }
 
-  TextStyle get style {
+  TextStyle style(ThemeData theme) {
     switch (this) {
       case SignInButtonType.google:
-        return const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.black);
+        return const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Colors.black);
       case SignInButtonType.apple:
-        return const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.white);
+        return TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 13,
+          color: theme.brightness.isLight ? Colors.white : Colors.black,
+        );
       case SignInButtonType.noSignIn:
-        return TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.grey.shade800);
+        return TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: theme.colorScheme.onBackground);
     }
   }
 
-  Color get backgroundColor {
+  Color backgroundColor(Brightness brightness) {
     switch (this) {
       case SignInButtonType.google:
         return Colors.white;
       case SignInButtonType.apple:
-        return Colors.black;
+        return brightness.isLight ? Colors.black : Colors.white;
       case SignInButtonType.noSignIn:
-        return Colors.white;
+        return Colors.transparent;
     }
   }
 
@@ -54,17 +61,20 @@ extension _SignInButtonTypeExtension on SignInButtonType {
     }
   }
 
-  Widget get logo {
+  Widget logo(ThemeData theme) {
     switch (this) {
       case SignInButtonType.google:
-        return Image.asset('assets/images/logos/google.png', height: 32);
+        return Image.asset('$_logosPath/google.png', height: 32);
       case SignInButtonType.apple:
-        return Image.asset('assets/images/logos/apple_light.png', height: 32);
+        return Image.asset(
+          theme.brightness.isLight ? '$_logosPath/apple_light.png' : '$_logosPath/apple_dark.png',
+          height: 32,
+        );
       case SignInButtonType.noSignIn:
         return SizedBox(
           width: 32,
           height: 32,
-          child: Icon(CupertinoIcons.person_crop_circle, color: Colors.grey.shade800, size: 20),
+          child: Icon(CupertinoIcons.person_crop_circle, color: theme.colorScheme.onBackground, size: 20),
         );
     }
   }
@@ -72,9 +82,9 @@ extension _SignInButtonTypeExtension on SignInButtonType {
 
 class SignInButton extends StatefulWidget {
   final SignInButtonType type;
-  final Function()? onSignedIn;
+  final Function()? onSignIn;
 
-  const SignInButton({Key? key, required this.type, this.onSignedIn}) : super(key: key);
+  const SignInButton({Key? key, required this.type, this.onSignIn}) : super(key: key);
 
   @override
   State<SignInButton> createState() => _SignInButtonState();
@@ -83,22 +93,30 @@ class SignInButton extends StatefulWidget {
 class _SignInButtonState extends State<SignInButton> {
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Container(
       decoration: BoxDecoration(
-        color: widget.type.backgroundColor,
+        color: widget.type.backgroundColor(theme.brightness),
         borderRadius: BorderRadius.circular(kDefaultRadius),
         border: widget.type.border,
       ),
       clipBehavior: Clip.antiAlias,
       child: Highlightable(
-        onTap: widget.onSignedIn,
+        onTap: widget.onSignIn,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2, vertical: kDefaultPadding / 3),
           child: Row(
             children: [
-              widget.type.logo,
+              widget.type.logo(theme),
               const SizedBox(width: kDefaultPadding / 2),
-              Text(widget.type.text, style: widget.type.style, textAlign: TextAlign.center),
+              Expanded(
+                child: Text(
+                  widget.type.text,
+                  style: widget.type.style(theme),
+                  maxLines: 2,
+                ),
+              )
             ],
           ),
         ),

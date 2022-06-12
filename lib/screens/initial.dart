@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:zpevnik/components/section.dart';
 import 'package:zpevnik/components/sign_in_button.dart';
 import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/custom/future_builder.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
@@ -70,16 +72,22 @@ class InitialScreen extends StatelessWidget {
           const SizedBox(height: 2 * kDefaultPadding),
           const SignInButton(type: SignInButtonType.google),
           const SizedBox(height: kDefaultPadding),
-          const SignInButton(type: SignInButtonType.apple),
+          CustomFutureBuilder<bool>(
+            future: SignInWithApple.isAvailable(),
+            builder: (_, isAvailable) =>
+                isAvailable ? SignInButton(type: SignInButtonType.apple, onSignIn: _signInWithApple) : Container(),
+          ),
           const SizedBox(height: kDefaultPadding),
-          SignInButton(type: SignInButtonType.noSignIn, onSignedIn: () => _pushHomeScreen(context)),
+          SignInButton(type: SignInButtonType.noSignIn, onSignIn: () => _pushHomeScreen(context)),
         ],
       ),
     );
   }
 
   Widget _buildProjectSection(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
 
     return Section(
       margin: const EdgeInsets.all(2 * kDefaultPadding).copyWith(top: kDefaultPadding),
@@ -96,13 +104,24 @@ class InitialScreen extends StatelessWidget {
             style: ButtonStyle(
               padding: MaterialStateProperty.all(EdgeInsets.zero),
               overlayColor: MaterialStateProperty.all(Colors.transparent),
-              foregroundColor: MaterialStateProperty.resolveWith(
-                  (states) => states.contains(MaterialState.pressed) ? blue.withAlpha(0x80) : blue),
+              foregroundColor: MaterialStateProperty.resolveWith((states) =>
+                  states.contains(MaterialState.pressed) ? colorScheme.primary.withAlpha(0x80) : colorScheme.primary),
             ),
           ),
         ],
       ),
     );
+  }
+
+  void _signInWithApple() async {
+    final credential = await SignInWithApple.getAppleIDCredential(
+      scopes: [
+        AppleIDAuthorizationScopes.email,
+        AppleIDAuthorizationScopes.fullName,
+      ],
+    );
+
+    print(credential);
   }
 
   void _pushHomeScreen(BuildContext context) {

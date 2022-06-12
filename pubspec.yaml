@@ -42,6 +42,7 @@ dependencies:
   scroll_to_index: ^2.1.1
 
   # firebase_analytics: ^9.0.4
+  sign_in_with_apple: ^4.0.0
 
   uni_links: ^0.5.1
 
