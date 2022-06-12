@@ -22,19 +22,19 @@ class _AppThemeState extends State<AppTheme> with WidgetsBindingObserver {
   initState() {
     super.initState();
 
-    WidgetsBinding.instance?.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance?.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
 
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    Brightness brightness = WidgetsBinding.instance?.window.platformBrightness ?? Brightness.light;
+    Brightness brightness = WidgetsBinding.instance.window.platformBrightness;
 
     final isDarkMode = false; // context.select<SettingsProvider, bool?>((provider) => provider.isDarkMode);
     if (isDarkMode != null) brightness = isDarkMode ? Brightness.dark : Brightness.light;

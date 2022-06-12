@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/data.dart';
@@ -9,6 +10,8 @@ const _title = 'Zpěvník';
 
 void main() {
   runApp(const MainWidget());
+
+  // debugRepaintRainbowEnabled = true;
 }
 
 class MainWidget extends StatelessWidget {
@@ -20,13 +23,15 @@ class MainWidget extends StatelessWidget {
       scaffoldBackgroundColor: CupertinoColors.lightBackgroundGray,
       backgroundColor: Colors.white,
       colorScheme: ColorScheme.fromSeed(seedColor: blue),
+      splashFactory: NoSplash.splashFactory,
       useMaterial3: true,
     );
 
     final darkTheme = ThemeData.dark().copyWith(
-      scaffoldBackgroundColor: CupertinoColors.darkBackgroundGray,
-      backgroundColor: Colors.black,
+      scaffoldBackgroundColor: Colors.black,
+      backgroundColor: CupertinoColors.darkBackgroundGray,
       colorScheme: ColorScheme.fromSeed(seedColor: blue, brightness: Brightness.dark),
+      splashFactory: NoSplash.splashFactory,
       useMaterial3: true,
     );
 

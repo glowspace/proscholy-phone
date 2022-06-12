@@ -29,5 +29,5 @@ class NewsItem {
   }
 
   @override
-  toString() => 'NewsItem(id: $id, text: $text, link: $link, expiresAt: $expiresAt)';
+  String toString() => 'NewsItem(id: $id, text: $text, link: $link, expiresAt: $expiresAt)';
 }

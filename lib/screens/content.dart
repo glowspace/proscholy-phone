@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:zpevnik/screens/home.dart';
 
+const double _navigationBarHeight = 64;
+
 class ContentScreen extends StatefulWidget {
   const ContentScreen({Key? key}) : super(key: key);
 
@@ -18,6 +20,7 @@ class _ContentScreenState extends State<ContentScreen> {
       bottomNavigationBar: NavigationBar(
         selectedIndex: _currentIndex,
         onDestinationSelected: _onDestinationSelected,
+        height: _navigationBarHeight,
         destinations: const [
           NavigationDestination(
             selectedIcon: Icon(Icons.home),

@@ -33,9 +33,33 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "2:3997966892313177785",
+      "lastPropertyId": "3:57379581087889430",
+      "name": "SongLyric",
+      "properties": [
+        {
+          "id": "1:2769258185308251592",
+          "name": "id",
+          "type": 6,
+          "flags": 129
+        },
+        {
+          "id": "2:2750485277817544042",
+          "name": "name",
+          "type": 9
+        },
+        {
+          "id": "3:57379581087889430",
+          "name": "lyrics",
+          "type": 9
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "1:4828503391288265608",
+  "lastEntityId": "2:3997966892313177785",
   "lastIndexId": "1:6571528058855447311",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",

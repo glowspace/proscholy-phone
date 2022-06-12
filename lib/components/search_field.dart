@@ -2,25 +2,44 @@ import 'package:flutter/material.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
 
-class SearchField extends StatelessWidget {
+class SearchField extends StatefulWidget {
   final bool isInsideSearchScreen;
 
-  SearchField({Key? key, this.isInsideSearchScreen = false}) : super(key: key);
+  const SearchField({Key? key, this.isInsideSearchScreen = false}) : super(key: key);
 
-  final TextEditingController _controller = TextEditingController();
+  @override
+  State<SearchField> createState() => _SearchFieldState();
+}
+
+class _SearchFieldState extends State<SearchField> {
+  late final TextEditingController _controller;
+  late final FocusNode _focusNode;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = TextEditingController();
+    _focusNode = FocusNode();
+
+    // autofocus on search screen
+    if (widget.isInsideSearchScreen) {
+      Future.delayed(const Duration(milliseconds: 10), () => _requestFocusAfterTransition());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     Widget? suffixIcon;
-    if (isInsideSearchScreen) {
+    if (widget.isInsideSearchScreen) {
       suffixIcon = Highlightable(
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
           child: const Icon(Icons.clear),
         ),
-        onTap: () => _clearOrPop(context),
+        onTap: _clearOrPop,
       );
     }
 
@@ -47,15 +66,17 @@ class SearchField extends StatelessWidget {
             suffixIconConstraints: const BoxConstraints(),
             contentPadding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
           ),
-          onTap: () => _showSearchScreen(context),
+          onTap: _showSearchScreen,
+          onSubmitted: _onSubmitted,
           controller: _controller,
+          focusNode: _focusNode,
         ),
       ),
     );
   }
 
-  void _showSearchScreen(BuildContext context) {
-    if (isInsideSearchScreen) return;
+  void _showSearchScreen() {
+    if (widget.isInsideSearchScreen) return;
 
     // prevent keyboard from showing up
     FocusScope.of(context).requestFocus(FocusNode());
@@ -63,11 +84,32 @@ class SearchField extends StatelessWidget {
     Navigator.of(context).pushNamed('/search');
   }
 
-  void _clearOrPop(BuildContext context) {
+  void _clearOrPop() {
     if (_controller.text.isEmpty) {
       Navigator.of(context).pop();
     } else {
       _controller.clear();
     }
+  }
+
+  void _onSubmitted(String text) {
+    if (_controller.text.isEmpty) {
+      Navigator.of(context).pop();
+    } else {}
+  }
+
+  // requests focus after route transition ends, needed becuse of the hero transition of searchfield
+  void _requestFocusAfterTransition() {
+    final animation = ModalRoute.of(context)?.animation;
+
+    void handler(status) {
+      if (status == AnimationStatus.completed) {
+        Future.delayed(const Duration(milliseconds: 10), () => FocusScope.of(context).requestFocus(_focusNode));
+
+        animation?.removeStatusListener(handler);
+      }
+    }
+
+    animation?.addStatusListener(handler);
   }
 }

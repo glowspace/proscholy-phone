@@ -23,7 +23,7 @@ class HomeScreen extends StatelessWidget {
             const SizedBox(height: 2 * kDefaultPadding),
             _buildTopSection(context),
             const SizedBox(height: 2 * kDefaultPadding),
-            SearchField(),
+            const SearchField(key: Key('searchfield')),
             const SizedBox(height: 2 * kDefaultPadding),
             _buildNewsSection(context),
             const SizedBox(height: 2 * kDefaultPadding),

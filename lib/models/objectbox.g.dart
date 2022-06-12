@@ -14,6 +14,7 @@ import 'package:objectbox/objectbox.dart';
 import 'package:objectbox_flutter_libs/objectbox_flutter_libs.dart';
 
 import '../models/news_item.dart';
+import '../models/song_lyric.dart';
 
 export 'package:objectbox/objectbox.dart'; // so that callers only have to import this file
 
@@ -47,6 +48,30 @@ final _entities = <ModelEntity>[
             flags: 0)
       ],
       relations: <ModelRelation>[],
+      backlinks: <ModelBacklink>[]),
+  ModelEntity(
+      id: const IdUid(2, 3997966892313177785),
+      name: 'SongLyric',
+      lastPropertyId: const IdUid(3, 57379581087889430),
+      flags: 0,
+      properties: <ModelProperty>[
+        ModelProperty(
+            id: const IdUid(1, 2769258185308251592),
+            name: 'id',
+            type: 6,
+            flags: 129),
+        ModelProperty(
+            id: const IdUid(2, 2750485277817544042),
+            name: 'name',
+            type: 9,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(3, 57379581087889430),
+            name: 'lyrics',
+            type: 9,
+            flags: 0)
+      ],
+      relations: <ModelRelation>[],
       backlinks: <ModelBacklink>[])
 ];
 
@@ -70,7 +95,7 @@ Future<Store> openStore(
 ModelDefinition getObjectBoxModel() {
   final model = ModelInfo(
       entities: _entities,
-      lastEntityId: const IdUid(1, 4828503391288265608),
+      lastEntityId: const IdUid(2, 3997966892313177785),
       lastIndexId: const IdUid(1, 6571528058855447311),
       lastRelationId: const IdUid(0, 0),
       lastSequenceId: const IdUid(0, 0),
@@ -124,6 +149,44 @@ ModelDefinition getObjectBoxModel() {
                   : DateTime.fromMillisecondsSinceEpoch(expiresAtValue));
 
           return object;
+        }),
+    SongLyric: EntityDefinition<SongLyric>(
+        model: _entities[1],
+        toOneRelations: (SongLyric object) => [],
+        toManyRelations: (SongLyric object) => {},
+        getId: (SongLyric object) => object.id,
+        setId: (SongLyric object, int id) {
+          if (object.id != id) {
+            throw ArgumentError('Field SongLyric.id is read-only '
+                '(final or getter-only) and it was declared to be self-assigned. '
+                'However, the currently inserted object (.id=${object.id}) '
+                "doesn't match the inserted ID (ID $id). "
+                'You must assign an ID before calling [box.put()].');
+          }
+        },
+        objectToFB: (SongLyric object, fb.Builder fbb) {
+          final nameOffset = fbb.writeString(object.name);
+          final lyricsOffset =
+              object.lyrics == null ? null : fbb.writeString(object.lyrics!);
+          fbb.startTable(4);
+          fbb.addInt64(0, object.id);
+          fbb.addOffset(1, nameOffset);
+          fbb.addOffset(2, lyricsOffset);
+          fbb.finish(fbb.endTable());
+          return object.id;
+        },
+        objectFromFB: (Store store, ByteData fbData) {
+          final buffer = fb.BufferContext(fbData);
+          final rootOffset = buffer.derefObject(0);
+
+          final object = SongLyric(
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0),
+              const fb.StringReader(asciiOptimization: true)
+                  .vTableGet(buffer, rootOffset, 6, ''),
+              const fb.StringReader(asciiOptimization: true)
+                  .vTableGetNullable(buffer, rootOffset, 8));
+
+          return object;
         })
   };
 
@@ -144,4 +207,18 @@ class NewsItem_ {
   /// see [NewsItem.expiresAt]
   static final expiresAt =
       QueryIntegerProperty<NewsItem>(_entities[0].properties[3]);
+}
+
+/// [SongLyric] entity fields to define ObjectBox queries.
+class SongLyric_ {
+  /// see [SongLyric.id]
+  static final id = QueryIntegerProperty<SongLyric>(_entities[1].properties[0]);
+
+  /// see [SongLyric.name]
+  static final name =
+      QueryStringProperty<SongLyric>(_entities[1].properties[1]);
+
+  /// see [SongLyric.lyrics]
+  static final lyrics =
+      QueryStringProperty<SongLyric>(_entities[1].properties[2]);
 }

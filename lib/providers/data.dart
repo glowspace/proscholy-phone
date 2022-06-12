@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zpevnik/models/news_item.dart';
 import 'package:zpevnik/models/objectbox.g.dart';
+import 'package:zpevnik/models/song_lyric.dart';
 
 class DataProvider extends ChangeNotifier {
   late final Store store;
@@ -14,6 +15,8 @@ class DataProvider extends ChangeNotifier {
       .query(NewsItem_.expiresAt.greaterOrEqual(DateTime.now().millisecondsSinceEpoch))
       .build()
       .find();
+
+  List<SongLyric> get songLyrics => store.box<SongLyric>().query(SongLyric_.lyrics.notNull()).build().find();
 
   @override
   void dispose() {
