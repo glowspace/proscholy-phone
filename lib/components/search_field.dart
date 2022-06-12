@@ -51,7 +51,7 @@ class _SearchFieldState extends State<SearchField> {
           decoration: InputDecoration(
             hintText: 'Hledat název, číslo nebo část textu',
             filled: true,
-            fillColor: theme.backgroundColor,
+            fillColor: theme.colorScheme.surface,
             isDense: true,
             border: OutlineInputBorder(
               borderSide: BorderSide.none,

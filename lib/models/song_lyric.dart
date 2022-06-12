@@ -1,4 +1,37 @@
 import 'package:objectbox/objectbox.dart';
+import 'package:zpevnik/models/tag.dart';
+
+enum SongLyricType {
+  original,
+  translation,
+  authorizedTranslation,
+}
+
+extension SongLyricTypeExtension on SongLyricType {
+  static SongLyricType fromString(String string) {
+    switch (string) {
+      case "ORIGINAL":
+        return SongLyricType.original;
+      case "AUTHORIZED_TRANSLATION":
+        return SongLyricType.authorizedTranslation;
+      default:
+        return SongLyricType.translation;
+    }
+  }
+
+  int get rawValue => SongLyricType.values.indexOf(this);
+
+  String get description {
+    switch (this) {
+      case SongLyricType.original:
+        return "Originál";
+      case SongLyricType.authorizedTranslation:
+        return "Autorizovaný překlad";
+      default:
+        return "Překlad";
+    }
+  }
+}
 
 @Entity()
 class SongLyric {
@@ -6,19 +39,40 @@ class SongLyric {
   final int id;
 
   final String name;
+  final String? secondaryName1;
+  final String? secondaryName2;
+
   final String? lyrics;
+  final String? lilypond;
+
+  final String? lang;
+  final String? langDescription;
+
+  // final SongLyricType type;
 
   SongLyric(
     this.id,
     this.name,
+    this.secondaryName1,
+    this.secondaryName2,
     this.lyrics,
+    this.lilypond,
+    this.lang,
+    this.langDescription,
+    // this.type,
   );
 
   factory SongLyric.fromJson(Map<String, dynamic> json) {
     return SongLyric(
       int.parse(json['id'] as String),
       json['name'] as String,
+      json['secondary_name1'] as String?,
+      json['secondary_name2'] as String?,
       json['lyrics'] as String?,
+      json['lilypond_svg'] as String?,
+      json['lang'] as String,
+      json['lang_string'] as String,
+      // SongLyricTypeExtension.fromString(json['type'] as String),
     );
   }
 

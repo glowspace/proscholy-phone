@@ -36,7 +36,7 @@
     },
     {
       "id": "2:3997966892313177785",
-      "lastPropertyId": "3:57379581087889430",
+      "lastPropertyId": "8:2487210589202474752",
       "name": "SongLyric",
       "properties": [
         {
@@ -54,20 +54,69 @@
           "id": "3:57379581087889430",
           "name": "lyrics",
           "type": 9
+        },
+        {
+          "id": "4:2303092288825628002",
+          "name": "secondaryName1",
+          "type": 9
+        },
+        {
+          "id": "5:5181839766778648572",
+          "name": "secondaryName2",
+          "type": 9
+        },
+        {
+          "id": "6:1535607057038781256",
+          "name": "lilypond",
+          "type": 9
+        },
+        {
+          "id": "7:7214825174623022750",
+          "name": "lang",
+          "type": 9
+        },
+        {
+          "id": "8:2487210589202474752",
+          "name": "langDescription",
+          "type": 9
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "3:6628950258912287707",
+      "lastPropertyId": "3:1286404604582147955",
+      "name": "Tag",
+      "properties": [
+        {
+          "id": "1:2045942571545498429",
+          "name": "id",
+          "type": 6,
+          "flags": 129
+        },
+        {
+          "id": "2:4156807171975174171",
+          "name": "name",
+          "type": 9
         }
       ],
       "relations": []
     }
   ],
-  "lastEntityId": "2:3997966892313177785",
+  "lastEntityId": "3:6628950258912287707",
   "lastIndexId": "1:6571528058855447311",
-  "lastRelationId": "0:0",
+  "lastRelationId": "2:8475939472281092043",
   "lastSequenceId": "0:0",
   "modelVersion": 5,
   "modelVersionParserMinimum": 5,
   "retiredEntityUids": [],
   "retiredIndexUids": [],
-  "retiredPropertyUids": [],
-  "retiredRelationUids": [],
+  "retiredPropertyUids": [
+    1286404604582147955
+  ],
+  "retiredRelationUids": [
+    7916874752771113838,
+    8475939472281092043
+  ],
   "version": 1
 }

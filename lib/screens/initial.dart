@@ -33,7 +33,7 @@ class InitialScreen extends StatelessWidget {
         child: SizedBox(
           height: height,
           child: FutureBuilder(
-            future: context.read<DataProvider>().init(),
+            future: _init(context),
             builder: (_, snapshot) => AnimatedAlign(
               duration: _animationDuration,
               alignment: snapshot.isDone ? Alignment.bottomCenter : Alignment.center,
@@ -41,14 +41,20 @@ class InitialScreen extends StatelessWidget {
                 child: Column(children: [
                   const SizedBox(height: 2 * kDefaultPadding),
                   Image.asset('assets/images/title.png', width: width / 2),
-                  AnimatedCrossFade(
+                  AnimatedAlign(
                     duration: _animationDuration,
-                    crossFadeState: snapshot.isDone ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-                    firstChild: Container(),
-                    secondChild: Column(children: [
-                      _buildSignInSection(context),
-                      _buildProjectSection(context),
-                    ]),
+                    alignment: Alignment.topCenter,
+                    heightFactor: snapshot.isDone ? 1 : 0,
+                    child: AnimatedOpacity(
+                      duration: _animationDuration,
+                      opacity: snapshot.isDone ? 1 : 0,
+                      child: Column(
+                        children: [
+                          _buildSignInSection(context),
+                          _buildProjectSection(context),
+                        ],
+                      ),
+                    ),
                   ),
                 ]),
               ),
@@ -111,6 +117,12 @@ class InitialScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Future<void> _init(BuildContext context) async {
+    await context.read<DataProvider>().init();
+
+    _pushHomeScreen(context);
   }
 
   void _signInWithApple() async {

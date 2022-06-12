@@ -15,6 +15,7 @@ import 'package:objectbox_flutter_libs/objectbox_flutter_libs.dart';
 
 import '../models/news_item.dart';
 import '../models/song_lyric.dart';
+import '../models/tag.dart';
 
 export 'package:objectbox/objectbox.dart'; // so that callers only have to import this file
 
@@ -52,7 +53,7 @@ final _entities = <ModelEntity>[
   ModelEntity(
       id: const IdUid(2, 3997966892313177785),
       name: 'SongLyric',
-      lastPropertyId: const IdUid(3, 57379581087889430),
+      lastPropertyId: const IdUid(8, 2487210589202474752),
       flags: 0,
       properties: <ModelProperty>[
         ModelProperty(
@@ -68,6 +69,50 @@ final _entities = <ModelEntity>[
         ModelProperty(
             id: const IdUid(3, 57379581087889430),
             name: 'lyrics',
+            type: 9,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(4, 2303092288825628002),
+            name: 'secondaryName1',
+            type: 9,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(5, 5181839766778648572),
+            name: 'secondaryName2',
+            type: 9,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(6, 1535607057038781256),
+            name: 'lilypond',
+            type: 9,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(7, 7214825174623022750),
+            name: 'lang',
+            type: 9,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(8, 2487210589202474752),
+            name: 'langDescription',
+            type: 9,
+            flags: 0)
+      ],
+      relations: <ModelRelation>[],
+      backlinks: <ModelBacklink>[]),
+  ModelEntity(
+      id: const IdUid(3, 6628950258912287707),
+      name: 'Tag',
+      lastPropertyId: const IdUid(3, 1286404604582147955),
+      flags: 0,
+      properties: <ModelProperty>[
+        ModelProperty(
+            id: const IdUid(1, 2045942571545498429),
+            name: 'id',
+            type: 6,
+            flags: 129),
+        ModelProperty(
+            id: const IdUid(2, 4156807171975174171),
+            name: 'name',
             type: 9,
             flags: 0)
       ],
@@ -95,14 +140,14 @@ Future<Store> openStore(
 ModelDefinition getObjectBoxModel() {
   final model = ModelInfo(
       entities: _entities,
-      lastEntityId: const IdUid(2, 3997966892313177785),
+      lastEntityId: const IdUid(3, 6628950258912287707),
       lastIndexId: const IdUid(1, 6571528058855447311),
-      lastRelationId: const IdUid(0, 0),
+      lastRelationId: const IdUid(2, 8475939472281092043),
       lastSequenceId: const IdUid(0, 0),
       retiredEntityUids: const [],
       retiredIndexUids: const [],
-      retiredPropertyUids: const [],
-      retiredRelationUids: const [],
+      retiredPropertyUids: const [1286404604582147955],
+      retiredRelationUids: const [7916874752771113838, 8475939472281092043],
       modelVersion: 5,
       modelVersionParserMinimum: 5,
       version: 1);
@@ -168,10 +213,29 @@ ModelDefinition getObjectBoxModel() {
           final nameOffset = fbb.writeString(object.name);
           final lyricsOffset =
               object.lyrics == null ? null : fbb.writeString(object.lyrics!);
-          fbb.startTable(4);
+          final secondaryName1Offset = object.secondaryName1 == null
+              ? null
+              : fbb.writeString(object.secondaryName1!);
+          final secondaryName2Offset = object.secondaryName2 == null
+              ? null
+              : fbb.writeString(object.secondaryName2!);
+          final lilypondOffset = object.lilypond == null
+              ? null
+              : fbb.writeString(object.lilypond!);
+          final langOffset =
+              object.lang == null ? null : fbb.writeString(object.lang!);
+          final langDescriptionOffset = object.langDescription == null
+              ? null
+              : fbb.writeString(object.langDescription!);
+          fbb.startTable(9);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, nameOffset);
           fbb.addOffset(2, lyricsOffset);
+          fbb.addOffset(3, secondaryName1Offset);
+          fbb.addOffset(4, secondaryName2Offset);
+          fbb.addOffset(5, lilypondOffset);
+          fbb.addOffset(6, langOffset);
+          fbb.addOffset(7, langDescriptionOffset);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -184,7 +248,50 @@ ModelDefinition getObjectBoxModel() {
               const fb.StringReader(asciiOptimization: true)
                   .vTableGet(buffer, rootOffset, 6, ''),
               const fb.StringReader(asciiOptimization: true)
-                  .vTableGetNullable(buffer, rootOffset, 8));
+                  .vTableGetNullable(buffer, rootOffset, 10),
+              const fb.StringReader(asciiOptimization: true)
+                  .vTableGetNullable(buffer, rootOffset, 12),
+              const fb.StringReader(asciiOptimization: true)
+                  .vTableGetNullable(buffer, rootOffset, 8),
+              const fb.StringReader(asciiOptimization: true)
+                  .vTableGetNullable(buffer, rootOffset, 14),
+              const fb.StringReader(asciiOptimization: true)
+                  .vTableGetNullable(buffer, rootOffset, 16),
+              const fb.StringReader(asciiOptimization: true)
+                  .vTableGetNullable(buffer, rootOffset, 18));
+
+          return object;
+        }),
+    Tag: EntityDefinition<Tag>(
+        model: _entities[2],
+        toOneRelations: (Tag object) => [],
+        toManyRelations: (Tag object) => {},
+        getId: (Tag object) => object.id,
+        setId: (Tag object, int id) {
+          if (object.id != id) {
+            throw ArgumentError('Field Tag.id is read-only '
+                '(final or getter-only) and it was declared to be self-assigned. '
+                'However, the currently inserted object (.id=${object.id}) '
+                "doesn't match the inserted ID (ID $id). "
+                'You must assign an ID before calling [box.put()].');
+          }
+        },
+        objectToFB: (Tag object, fb.Builder fbb) {
+          final nameOffset = fbb.writeString(object.name);
+          fbb.startTable(4);
+          fbb.addInt64(0, object.id);
+          fbb.addOffset(1, nameOffset);
+          fbb.finish(fbb.endTable());
+          return object.id;
+        },
+        objectFromFB: (Store store, ByteData fbData) {
+          final buffer = fb.BufferContext(fbData);
+          final rootOffset = buffer.derefObject(0);
+
+          final object = Tag(
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0),
+              const fb.StringReader(asciiOptimization: true)
+                  .vTableGet(buffer, rootOffset, 6, ''));
 
           return object;
         })
@@ -221,4 +328,33 @@ class SongLyric_ {
   /// see [SongLyric.lyrics]
   static final lyrics =
       QueryStringProperty<SongLyric>(_entities[1].properties[2]);
+
+  /// see [SongLyric.secondaryName1]
+  static final secondaryName1 =
+      QueryStringProperty<SongLyric>(_entities[1].properties[3]);
+
+  /// see [SongLyric.secondaryName2]
+  static final secondaryName2 =
+      QueryStringProperty<SongLyric>(_entities[1].properties[4]);
+
+  /// see [SongLyric.lilypond]
+  static final lilypond =
+      QueryStringProperty<SongLyric>(_entities[1].properties[5]);
+
+  /// see [SongLyric.lang]
+  static final lang =
+      QueryStringProperty<SongLyric>(_entities[1].properties[6]);
+
+  /// see [SongLyric.langDescription]
+  static final langDescription =
+      QueryStringProperty<SongLyric>(_entities[1].properties[7]);
+}
+
+/// [Tag] entity fields to define ObjectBox queries.
+class Tag_ {
+  /// see [Tag.id]
+  static final id = QueryIntegerProperty<Tag>(_entities[2].properties[0]);
+
+  /// see [Tag.name]
+  static final name = QueryStringProperty<Tag>(_entities[2].properties[1]);
 }

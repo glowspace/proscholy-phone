@@ -21,7 +21,6 @@ class MainWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final lightTheme = ThemeData.light().copyWith(
       scaffoldBackgroundColor: CupertinoColors.lightBackgroundGray,
-      backgroundColor: Colors.white,
       colorScheme: ColorScheme.fromSeed(seedColor: blue),
       splashFactory: NoSplash.splashFactory,
       useMaterial3: true,
@@ -29,7 +28,6 @@ class MainWidget extends StatelessWidget {
 
     final darkTheme = ThemeData.dark().copyWith(
       scaffoldBackgroundColor: Colors.black,
-      backgroundColor: CupertinoColors.darkBackgroundGray,
       colorScheme: ColorScheme.fromSeed(seedColor: blue, brightness: Brightness.dark),
       splashFactory: NoSplash.splashFactory,
       useMaterial3: true,

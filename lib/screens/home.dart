@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:zpevnik/components/highlightable.dart';
+import 'package:zpevnik/components/home/news_section.dart';
 import 'package:zpevnik/components/search_field.dart';
 import 'package:zpevnik/components/section.dart';
 import 'package:zpevnik/constants.dart';
@@ -14,6 +13,9 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final dataProvider = context.read<DataProvider>();
+
     return SingleChildScrollView(
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
@@ -25,7 +27,11 @@ class HomeScreen extends StatelessWidget {
             const SizedBox(height: 2 * kDefaultPadding),
             const SearchField(key: Key('searchfield')),
             const SizedBox(height: 2 * kDefaultPadding),
-            _buildNewsSection(context),
+            Text('Dobré ráno', style: textTheme.titleLarge),
+            const SizedBox(height: kDefaultPadding / 2),
+            if (dataProvider.isUpdating) _buildUpdateSection(context),
+            if (dataProvider.isUpdating) const SizedBox(height: 2 * kDefaultPadding),
+            const NewsSection(),
             const SizedBox(height: 2 * kDefaultPadding),
             _buildSongListsSection(context),
             const SizedBox(height: 2 * kDefaultPadding),
@@ -49,31 +55,20 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildNewsSection(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
-    final newsItems = context.watch<DataProvider>().newsItems;
+  Widget _buildUpdateSection(BuildContext context) {
+    final dataProvider = context.read<DataProvider>();
 
     return Section(
-      title: 'Dobré ráno',
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              const Icon(Icons.info_outline, color: yellow),
-              const SizedBox(width: kDefaultPadding),
-              Text('Novinky', style: textTheme.titleMedium),
-            ],
-          ),
-          const SizedBox(height: kDefaultPadding),
-          ...newsItems.map(
-            (newsItem) => Highlightable(
-              onTap: () => launch(newsItem.link),
-              child: Text(newsItem.text, style: textTheme.bodyMedium),
-            ),
-          ),
-        ],
+      child: ValueListenableBuilder<int>(
+        valueListenable: dataProvider.updateProgress,
+        builder: (_, value, __) => Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Probíhá stahování písní ($value/${dataProvider.updatingSongLyricsCount})'),
+            const SizedBox(height: kDefaultPadding / 2),
+            LinearProgressIndicator(value: value / dataProvider.updatingSongLyricsCount)
+          ],
+        ),
       ),
     );
   }

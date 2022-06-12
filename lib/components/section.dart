@@ -25,7 +25,7 @@ class Section extends StatelessWidget {
       margin: margin,
       padding: padding,
       decoration: BoxDecoration(
-        color: theme.backgroundColor,
+        color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(kDefaultRadius),
       ),
       child: child,
