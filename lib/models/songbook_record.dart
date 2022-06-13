@@ -1,19 +1,32 @@
-import 'package:zpevnik/models/model.dart' as model;
+import 'package:objectbox/objectbox.dart';
+import 'package:zpevnik/models/song_lyric.dart';
+import 'package:zpevnik/models/songbook.dart';
 
-// wrapper around SongbookRecord db model for easier field access
+@Entity()
 class SongbookRecord {
-  final model.SongbookRecord entity;
+  @Id(assignable: true)
+  final int id;
 
-  SongbookRecord(this.entity);
+  final String number;
 
-  static Future<List<SongbookRecord>> get songbookRecords async {
-    final entities = await model.SongbookRecord().select().toList();
+  final songLyric = ToOne<SongLyric>();
+  final songbook = ToOne<Songbook>();
 
-    return entities.map((entity) => SongbookRecord(entity)).toList();
+  SongbookRecord(this.id, this.number);
+
+  factory SongbookRecord.fromJson(Map<String, dynamic> json, int songLyricId) {
+    return SongbookRecord(
+      int.parse(json['id'] as String),
+      json['number'] as String,
+    )
+      ..songLyric.targetId = songLyricId
+      ..songbook.targetId = int.parse(json['songbook']['id'] as String);
   }
 
-  int get id => entity.id ?? 0;
-  int get songLyricId => entity.song_lyricsId ?? 0;
-  int get songbookId => entity.songbooksId ?? 0;
-  String get number => entity.number ?? '';
+  static List<SongbookRecord> fromMapList(Map<String, dynamic> json, int songLyricId) {
+    return (json['songbook_records'] as List).map((json) => SongbookRecord.fromJson(json, songLyricId)).toList();
+  }
+
+  @override
+  String toString() => 'SongbookRecord(id: $id, name: $number)';
 }

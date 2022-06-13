@@ -1,34 +1,32 @@
-import 'package:zpevnik/models/model.dart' as model;
+import 'package:objectbox/objectbox.dart';
+import 'package:zpevnik/models/song_lyric.dart';
 
 final RegExp _youtubeNameRE = RegExp(r'youtube \(([^|]+\|\s?)?(.+)\)');
 
-// wrapper around External db model for easier field access
+@Entity()
 class External {
-  final model.External entity;
+  @Id(assignable: true)
+  final int id;
 
-  External(this.entity);
+  final String? name;
+  final String? mediaId;
 
-  // TODO: check if this is needed
-  // External.clone(External external) : entity = external.entity;
+  final songLyric = ToOne<SongLyric>();
 
-  static Future<List<External>> get externals async {
-    final entities = await model.External().select().toList();
+  External(this.id, this.name, this.mediaId);
 
-    return entities.map((entity) => External(entity)).toList();
+  factory External.fromJson(Map<String, dynamic> json, int songLyricId) {
+    return External(
+      int.parse(json['id'] as String),
+      json['name'] as String?,
+      json['media_id'] as String?,
+    );
   }
 
-  int get id => entity.id ?? 0;
-  int get songLyricId => entity.song_lyricsId ?? 0;
-  String get name {
-    String name = entity.public_name ?? '';
-
-    if (isYoutubeVideo) name = _youtubeNameRE.firstMatch(name)?.group(2) ?? name;
-
-    return name;
+  static List<External> fromMapList(Map<String, dynamic> json, int songLyricId) {
+    return (json['externals'] as List).map((json) => External.fromJson(json, songLyricId)).toList();
   }
 
-  String get mediaType => entity.media_type ?? '';
-  String get mediaId => entity.media_id ?? '';
-
-  bool get isYoutubeVideo => mediaType == 'youtube';
+  @override
+  String toString() => 'External(id: $id, name: $name)';
 }

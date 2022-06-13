@@ -1,5 +1,10 @@
 import 'package:objectbox/objectbox.dart';
+import 'package:zpevnik/models/external.dart';
+import 'package:zpevnik/models/song.dart';
+import 'package:zpevnik/models/songbook_record.dart';
 import 'package:zpevnik/models/tag.dart';
+
+import 'author.dart';
 
 enum SongLyricType {
   original,
@@ -50,6 +55,16 @@ class SongLyric {
 
   // final SongLyricType type;
 
+  final authors = ToMany<Author>();
+  final song = ToOne<Song>();
+  final tags = ToMany<Tag>();
+
+  @Backlink()
+  final externals = ToMany<External>();
+
+  @Backlink()
+  final songbookRecords = ToMany<SongbookRecord>();
+
   SongLyric(
     this.id,
     this.name,
@@ -62,9 +77,19 @@ class SongLyric {
     // this.type,
   );
 
-  factory SongLyric.fromJson(Map<String, dynamic> json) {
+  factory SongLyric.fromJson(Map<String, dynamic> json, Store store) {
+    final id = int.parse(json['id'] as String);
+
+    final authors = List<Author>.from(store.box<Author>().getMany(
+        (json['authors_pivot'] as List).map((json) => int.parse(json['pivot']['author']['id'] as String)).toList()));
+    final tags = List<Tag>.from(
+        store.box<Tag>().getMany((json['tags'] as List).map((json) => int.parse(json['id'] as String)).toList()));
+
+    final songbookRecords = SongbookRecord.fromMapList(json, id);
+    final externals = External.fromMapList(json, id);
+
     return SongLyric(
-      int.parse(json['id'] as String),
+      id,
       json['name'] as String,
       json['secondary_name1'] as String?,
       json['secondary_name2'] as String?,
@@ -73,7 +98,16 @@ class SongLyric {
       json['lang'] as String,
       json['lang_string'] as String,
       // SongLyricTypeExtension.fromString(json['type'] as String),
-    );
+    )
+      ..authors.addAll(authors)
+      ..song.targetId = json['song'] == null ? null : int.parse(json['song']['id'] as String)
+      ..tags.addAll(tags)
+      ..externals.addAll(externals)
+      ..songbookRecords.addAll(songbookRecords);
+  }
+
+  static List<SongLyric> fromMapList(Map<String, dynamic> json, Store store) {
+    return (json['song_lyrics'] as List).map((json) => SongLyric.fromJson(json, store)).toList();
   }
 
   @override

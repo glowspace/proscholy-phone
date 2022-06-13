@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:zpevnik/components/home/news_section.dart';
+import 'package:zpevnik/components/home/update_section.dart';
 import 'package:zpevnik/components/search_field.dart';
 import 'package:zpevnik/components/section.dart';
 import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/providers/data.dart';
 
 const double _avatarSize = 19;
 
@@ -14,7 +13,6 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    final dataProvider = context.read<DataProvider>();
 
     return SingleChildScrollView(
       child: Container(
@@ -29,8 +27,7 @@ class HomeScreen extends StatelessWidget {
             const SizedBox(height: 2 * kDefaultPadding),
             Text('Dobré ráno', style: textTheme.titleLarge),
             const SizedBox(height: kDefaultPadding / 2),
-            if (dataProvider.isUpdating) _buildUpdateSection(context),
-            if (dataProvider.isUpdating) const SizedBox(height: 2 * kDefaultPadding),
+            const UpdateSection(),
             const NewsSection(),
             const SizedBox(height: 2 * kDefaultPadding),
             _buildSongListsSection(context),
@@ -52,24 +49,6 @@ class HomeScreen extends StatelessWidget {
           radius: _avatarSize,
         ),
       ],
-    );
-  }
-
-  Widget _buildUpdateSection(BuildContext context) {
-    final dataProvider = context.read<DataProvider>();
-
-    return Section(
-      child: ValueListenableBuilder<int>(
-        valueListenable: dataProvider.updateProgress,
-        builder: (_, value, __) => Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Probíhá stahování písní ($value/${dataProvider.updatingSongLyricsCount})'),
-            const SizedBox(height: kDefaultPadding / 2),
-            LinearProgressIndicator(value: value / dataProvider.updatingSongLyricsCount)
-          ],
-        ),
-      ),
     );
   }
 

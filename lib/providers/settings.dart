@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wakelock/wakelock.dart';
 import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/providers/utils/updater.dart';
 
 const String _fontSizeScaleScaleKey = 'font_size_scale';
 const String _showChordsKey = 'show_chords';
@@ -52,7 +51,7 @@ class SettingsProvider extends ChangeNotifier {
 
   bool? get isDarkMode => _isDarkMode;
 
-  String get lastUpdate => _prefs.getString(lastUpdateKey) ?? 'neznámé';
+  // String get lastUpdate => _prefs.getString(lastUpdateKey) ?? 'neznámé';
 
   set fontSizeScale(double value) {
     if (value < kMinimumFontSizeScale)

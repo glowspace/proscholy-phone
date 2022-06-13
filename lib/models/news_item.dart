@@ -28,6 +28,10 @@ class NewsItem {
     );
   }
 
+  static List<NewsItem> fromMapList(Map<String, dynamic> json) {
+    return (json['news_items'] as List).map((json) => NewsItem.fromJson(json)).toList();
+  }
+
   @override
   String toString() => 'NewsItem(id: $id, text: $text, link: $link, expiresAt: $expiresAt)';
 }
