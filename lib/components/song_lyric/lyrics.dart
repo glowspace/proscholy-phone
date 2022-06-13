@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/settings.dart';
 import 'package:zpevnik/screens/song_lyric/utils/converter.dart';
 import 'package:zpevnik/screens/song_lyric/utils/lyrics_controller.dart';
@@ -165,7 +164,7 @@ class LyricsWidget extends StatelessWidget {
     while (currentToken != null && currentToken is! NewLine) {
       if (currentToken is VersePart) {
         if (currentChord == null || !controller.showChords) {
-          children.add(TextSpan(text: currentToken.value));
+          children.add(WidgetSpan(child: Text(currentToken.value, style: textStyle)));
         } else {
           children.add(_buildChord(context, currentChord, textStyle, versePart: currentToken));
           currentChord = null;
@@ -255,7 +254,6 @@ class LyricsWidget extends StatelessWidget {
   }
 
   Widget _buildAuthors(BuildContext context) {
-    final dataProvider = context.watch<DataProvider>();
     final settingsProvider = context.watch<SettingsProvider>();
 
     return Text(
