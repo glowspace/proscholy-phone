@@ -1,19 +1,23 @@
+// ignore: unnecessary_import
 import 'package:objectbox/objectbox.dart';
+import 'package:zpevnik/models/author.dart';
 import 'package:zpevnik/models/external.dart';
+import 'package:zpevnik/models/objectbox.g.dart';
 import 'package:zpevnik/models/song.dart';
 import 'package:zpevnik/models/songbook_record.dart';
 import 'package:zpevnik/models/tag.dart';
-
-import 'author.dart';
 
 enum SongLyricType {
   original,
   translation,
   authorizedTranslation,
+  unknown,
 }
 
 extension SongLyricTypeExtension on SongLyricType {
-  static SongLyricType fromString(String string) {
+  static SongLyricType fromString(String? string) {
+    if (string == null) return SongLyricType.unknown;
+
     switch (string) {
       case "ORIGINAL":
         return SongLyricType.original;
@@ -24,7 +28,31 @@ extension SongLyricTypeExtension on SongLyricType {
     }
   }
 
-  int get rawValue => SongLyricType.values.indexOf(this);
+  static SongLyricType fromIndex(int index) {
+    switch (index) {
+      case 0:
+        return SongLyricType.original;
+      case 1:
+        return SongLyricType.authorizedTranslation;
+      case 2:
+        return SongLyricType.translation;
+      default:
+        return SongLyricType.unknown;
+    }
+  }
+
+  int get index {
+    switch (this) {
+      case SongLyricType.original:
+        return 0;
+      case SongLyricType.authorizedTranslation:
+        return 1;
+      case SongLyricType.translation:
+        return 2;
+      default:
+        return 3;
+    }
+  }
 
   String get description {
     switch (this) {
@@ -53,7 +81,7 @@ class SongLyric {
   final String? lang;
   final String? langDescription;
 
-  // final SongLyricType type;
+  final int dbType;
 
   final authors = ToMany<Author>();
   final song = ToOne<Song>();
@@ -74,16 +102,16 @@ class SongLyric {
     this.lilypond,
     this.lang,
     this.langDescription,
-    // this.type,
+    this.dbType,
   );
 
   factory SongLyric.fromJson(Map<String, dynamic> json, Store store) {
     final id = int.parse(json['id'] as String);
 
-    final authors = List<Author>.from(store.box<Author>().getMany(
-        (json['authors_pivot'] as List).map((json) => int.parse(json['pivot']['author']['id'] as String)).toList()));
-    final tags = List<Tag>.from(
-        store.box<Tag>().getMany((json['tags'] as List).map((json) => int.parse(json['id'] as String)).toList()));
+    final authors = store.box<Author>().getMany(
+        (json['authors_pivot'] as List).map((json) => int.parse(json['pivot']['author']['id'] as String)).toList());
+    final tags =
+        store.box<Tag>().getMany((json['tags'] as List).map((json) => int.parse(json['id'] as String)).toList());
 
     final songbookRecords = SongbookRecord.fromMapList(json, id);
     final externals = External.fromMapList(json, id);
@@ -91,23 +119,64 @@ class SongLyric {
     return SongLyric(
       id,
       json['name'] as String,
-      json['secondary_name1'] as String?,
-      json['secondary_name2'] as String?,
+      json['secondary_name_1'] as String?,
+      json['secondary_name_2'] as String?,
       json['lyrics'] as String?,
       json['lilypond_svg'] as String?,
       json['lang'] as String,
       json['lang_string'] as String,
-      // SongLyricTypeExtension.fromString(json['type'] as String),
+      SongLyricTypeExtension.fromString(json['type_enum'] as String?).index,
     )
-      ..authors.addAll(authors)
+      ..authors.addAll(authors.cast())
       ..song.targetId = json['song'] == null ? null : int.parse(json['song']['id'] as String)
-      ..tags.addAll(tags)
+      ..tags.addAll(tags.cast())
       ..externals.addAll(externals)
       ..songbookRecords.addAll(songbookRecords);
   }
 
   static List<SongLyric> fromMapList(Map<String, dynamic> json, Store store) {
     return (json['song_lyrics'] as List).map((json) => SongLyric.fromJson(json, store)).toList();
+  }
+
+  static List<SongLyric> load(Store store) {
+    final query = store.box<SongLyric>().query(SongLyric_.lyrics.notNull());
+    query.order(SongLyric_.name);
+
+    return query.build().find();
+  }
+
+  SongLyricType get type => SongLyricTypeExtension.fromIndex(dbType);
+
+  String get authorsText {
+    if (type == SongLyricType.original) {
+      if (authors.isEmpty) {
+        return 'Autor neznámý';
+      } else if (authors.length == 1) {
+        return 'Autor: ${authors[0].name}';
+      } else {
+        return 'Autoři: ${authors.map((author) => author.name).toList().join(", ")}';
+      }
+    } else {
+      String originalText = '';
+
+      final original = song.target?.songLyrics
+          .cast()
+          .firstWhere((songLyric) => songLyric.type == SongLyricType.original, orElse: () => null);
+
+      if (original != null) {
+        originalText = 'Originál: ${original.name}\n';
+
+        originalText += '${original.authorsText}\n';
+      }
+
+      if (authors.isEmpty) {
+        return '${originalText}Autor překladu neznámý';
+      } else if (authors.length == 1) {
+        return '${originalText}Autor překladu: ${authors[0].name}';
+      } else {
+        return '${originalText}Autoři překladu: ${authors.map((author) => author.name).toList().join(", ")}';
+      }
+    }
   }
 
   @override

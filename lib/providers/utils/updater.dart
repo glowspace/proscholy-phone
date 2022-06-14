@@ -23,7 +23,7 @@ class Updater {
   Future<void> loadInitial() async {
     final json = jsonDecode(await rootBundle.loadString('assets/data.json'));
 
-    _parse(json['data']);
+    await _parse(json['data']);
   }
 
   Future<void> update() async {
@@ -46,20 +46,43 @@ class Updater {
     client.dispose();
   }
 
-  void _parse(Map<String, dynamic> json) async {
+  Future<void> _parse(Map<String, dynamic> json) async {
     final authors = Author.fromMapList(json);
     final songs = Song.fromMapList(json);
     final songbooks = Songbook.fromMapList(json);
     final tags = Tag.fromMapList(json);
 
-    store.box<Author>().putMany(authors);
-    store.box<Song>().putMany(songs);
-    store.box<Songbook>().putMany(songbooks);
-    store.box<Tag>().putMany(tags);
+    await Future.wait([
+      store.runInTransactionAsync<List<int>, List<Author>>(
+        TxMode.write,
+        (store, params) => store.box<Author>().putMany(params),
+        authors,
+      ),
+      store.runInTransactionAsync<List<int>, List<Song>>(
+        TxMode.write,
+        (store, params) => store.box<Song>().putMany(params),
+        songs,
+      ),
+      store.runInTransactionAsync<List<int>, List<Songbook>>(
+        TxMode.write,
+        (store, params) => store.box<Songbook>().putMany(params),
+        songbooks,
+      ),
+      store.runInTransactionAsync<List<int>, List<Tag>>(
+        TxMode.write,
+        (store, params) => store.box<Tag>().putMany(params),
+        tags,
+      ),
+    ]);
 
-    final songLyrics = SongLyric.fromMapList(json, store);
+    final songLyrics = await store.runInTransactionAsync<List<SongLyric>, Map<String, dynamic>>(
+        TxMode.read, (store, params) => SongLyric.fromMapList(params, store), json);
 
-    store.box<SongLyric>().putMany(songLyrics);
+    await store.runInTransactionAsync<List<int>, List<SongLyric>>(
+      TxMode.write,
+      (store, params) => store.box<SongLyric>().putMany(params),
+      songLyrics,
+    );
   }
 }
 

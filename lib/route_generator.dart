@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:zpevnik/providers/data.dart';
+import 'package:zpevnik/providers/song_lyrics.dart';
 import 'package:zpevnik/screens/content.dart';
 import 'package:zpevnik/screens/initial.dart';
 import 'package:zpevnik/screens/search.dart';
@@ -14,7 +17,13 @@ class RouteGenerator {
       case '/home':
         return CustomPageRoute(builder: (_) => const ContentScreen());
       case '/search':
-        return CustomPageRoute(builder: (_) => const SearchScreen(), fullscreenDialog: true);
+        return CustomPageRoute(
+            builder: (context) => ChangeNotifierProxyProvider<DataProvider, SongLyricsProvider>(
+                  create: (context) => SongLyricsProvider(context.read<DataProvider>()),
+                  update: (_, dataProvider, songLyricsProvider) => songLyricsProvider!..update(),
+                  builder: (_, __) => const SearchScreen(),
+                ),
+            fullscreenDialog: true);
       case '/song_lyric':
         final songLyric = settings.arguments as SongLyric;
 

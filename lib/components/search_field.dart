@@ -4,8 +4,10 @@ import 'package:zpevnik/constants.dart';
 
 class SearchField extends StatefulWidget {
   final bool isInsideSearchScreen;
+  final Function(String)? onChanged;
+  final Function(String)? onSubmitted;
 
-  const SearchField({Key? key, this.isInsideSearchScreen = false}) : super(key: key);
+  const SearchField({Key? key, this.isInsideSearchScreen = false, this.onChanged, this.onSubmitted}) : super(key: key);
 
   @override
   State<SearchField> createState() => _SearchFieldState();
@@ -67,7 +69,8 @@ class _SearchFieldState extends State<SearchField> {
             contentPadding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
           ),
           onTap: _showSearchScreen,
-          onSubmitted: _onSubmitted,
+          onChanged: widget.onChanged,
+          onSubmitted: widget.onSubmitted,
           controller: _controller,
           focusNode: _focusNode,
         ),
@@ -89,13 +92,8 @@ class _SearchFieldState extends State<SearchField> {
       Navigator.of(context).pop();
     } else {
       _controller.clear();
+      widget.onChanged?.call('');
     }
-  }
-
-  void _onSubmitted(String text) {
-    if (_controller.text.isEmpty) {
-      Navigator.of(context).pop();
-    } else {}
   }
 
   // requests focus after route transition ends, needed becuse of the hero transition of searchfield

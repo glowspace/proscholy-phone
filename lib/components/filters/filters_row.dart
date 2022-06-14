@@ -4,7 +4,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/tag.dart';
-import 'package:zpevnik/components/filters/tag.dart';
+import 'package:zpevnik/components/filters/fitler_tag.dart';
 
 class FiltersRow extends StatelessWidget {
   final List<Tag> selectedTags;
@@ -19,7 +19,7 @@ class FiltersRow extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const Icon(Icons.filter_alt),
-        const SizedBox(width: kDefaultPadding),
+        const SizedBox(width: kDefaultPadding / 2),
         Expanded(
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,

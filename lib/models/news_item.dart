@@ -1,4 +1,6 @@
+// ignore: unnecessary_import
 import 'package:objectbox/objectbox.dart';
+import 'package:zpevnik/models/objectbox.g.dart';
 
 @Entity()
 class NewsItem {
@@ -30,6 +32,14 @@ class NewsItem {
 
   static List<NewsItem> fromMapList(Map<String, dynamic> json) {
     return (json['news_items'] as List).map((json) => NewsItem.fromJson(json)).toList();
+  }
+
+  static List<NewsItem> load(Store store, _) {
+    return store
+        .box<NewsItem>()
+        .query(NewsItem_.expiresAt.greaterOrEqual(DateTime.now().millisecondsSinceEpoch))
+        .build()
+        .find();
   }
 
   @override

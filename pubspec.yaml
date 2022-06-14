@@ -11,9 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  sqflite: ^2.0.0+3
-  sqfentity: ^2.1.2+1
-  sqfentity_gen: ^2.0.0
+  sqflite: ^2.0.2+1
   path: ^1.8.0
 
   objectbox: ^1.5.0
@@ -58,6 +56,8 @@ dependencies:
   flutter_slidable: ^1.1.0
 
   dotted_border: ^2.0.0+2
+
+  font_awesome_flutter: ^10.1.0
 
   cupertino_icons: ^1.0.3
 

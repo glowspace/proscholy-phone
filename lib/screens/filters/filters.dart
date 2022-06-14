@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
-import 'package:zpevnik/components/filters/section.dart';
+import 'package:zpevnik/components/filters/filters_section.dart';
 
 class FiltersWidget extends StatelessWidget {
   const FiltersWidget({Key? key}) : super(key: key);

@@ -257,7 +257,7 @@ class LyricsWidget extends StatelessWidget {
     final settingsProvider = context.watch<SettingsProvider>();
 
     return Text(
-      'Autor', //controller.songLyric.authorsText(dataProvider),
+      controller.songLyric.authorsText,
       style: Theme.of(context).textTheme.caption,
       textScaleFactor: settingsProvider.fontSizeScale,
     );

@@ -98,6 +98,10 @@ class Tag {
     return (json['tags_enum'] as List).map((json) => Tag.fromJson(json)).toList();
   }
 
+  static List<Tag> load(Store store, _) {
+    return store.box<Tag>().getAll();
+  }
+
   @override
   String toString() => 'Tag(id: $id, name: $name)';
 }

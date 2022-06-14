@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/tag.dart';
-import 'package:zpevnik/components/filters/tag.dart';
+import 'package:zpevnik/components/filters/fitler_tag.dart';
 import 'package:zpevnik/theme.dart';
 
 class FiltersSection extends StatelessWidget {

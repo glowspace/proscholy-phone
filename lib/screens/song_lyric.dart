@@ -39,6 +39,7 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
         title: Text('${widget.songLyric.id}', style: theme.textTheme.titleMedium),
         centerTitle: false,
         leading: const CustomBackButton(),
+        elevation: 1,
       );
 
       navigationBar = NavigationBar(
