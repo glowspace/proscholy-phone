@@ -417,13 +417,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.2"
-  miniplayer:
-    dependency: "direct main"
-    description:
-      name: miniplayer
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.1"
   modal_bottom_sheet:
     dependency: "direct main"
     description:

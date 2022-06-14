@@ -57,7 +57,7 @@ class FiltersRow extends StatelessWidget {
       context: context,
       shape: shape,
       builder: (context) => SizedBox(
-        height: 0.67 * MediaQuery.of(context).size.height,
+        height: 2 / 3 * MediaQuery.of(context).size.height,
         // child: FiltersWidget(),
       ),
       useRootNavigator: true,

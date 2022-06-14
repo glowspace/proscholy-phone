@@ -162,7 +162,7 @@ final _entities = <ModelEntity>[
   ModelEntity(
       id: const IdUid(10, 3974850738104585390),
       name: 'External',
-      lastPropertyId: const IdUid(4, 1676604361532699457),
+      lastPropertyId: const IdUid(6, 4796868076728380816),
       flags: 0,
       properties: <ModelProperty>[
         ModelProperty(
@@ -170,11 +170,6 @@ final _entities = <ModelEntity>[
             name: 'id',
             type: 6,
             flags: 129),
-        ModelProperty(
-            id: const IdUid(2, 3242483719965434956),
-            name: 'name',
-            type: 9,
-            flags: 0),
         ModelProperty(
             id: const IdUid(3, 1606944041271966875),
             name: 'mediaId',
@@ -186,7 +181,17 @@ final _entities = <ModelEntity>[
             type: 11,
             flags: 520,
             indexId: const IdUid(5, 2362390301723731104),
-            relationTarget: 'SongLyric')
+            relationTarget: 'SongLyric'),
+        ModelProperty(
+            id: const IdUid(5, 3755295400121515026),
+            name: 'dbMediaType',
+            type: 6,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(6, 4796868076728380816),
+            name: 'publicName',
+            type: 9,
+            flags: 0)
       ],
       relations: <ModelRelation>[],
       backlinks: <ModelBacklink>[]),
@@ -357,7 +362,8 @@ ModelDefinition getObjectBoxModel() {
         2411306619182484870,
         1231181773716438848,
         7671315634081304656,
-        3009414053170717053
+        3009414053170717053,
+        3242483719965434956
       ],
       retiredRelationUids: const [
         7916874752771113838,
@@ -592,15 +598,17 @@ ModelDefinition getObjectBoxModel() {
           }
         },
         objectToFB: (External object, fb.Builder fbb) {
-          final nameOffset =
-              object.name == null ? null : fbb.writeString(object.name!);
           final mediaIdOffset =
               object.mediaId == null ? null : fbb.writeString(object.mediaId!);
-          fbb.startTable(5);
+          final publicNameOffset = object.publicName == null
+              ? null
+              : fbb.writeString(object.publicName!);
+          fbb.startTable(7);
           fbb.addInt64(0, object.id);
-          fbb.addOffset(1, nameOffset);
           fbb.addOffset(2, mediaIdOffset);
           fbb.addInt64(3, object.songLyric.targetId);
+          fbb.addInt64(4, object.dbMediaType);
+          fbb.addOffset(5, publicNameOffset);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -611,9 +619,10 @@ ModelDefinition getObjectBoxModel() {
           final object = External(
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0),
               const fb.StringReader(asciiOptimization: true)
-                  .vTableGetNullable(buffer, rootOffset, 6),
+                  .vTableGetNullable(buffer, rootOffset, 14),
               const fb.StringReader(asciiOptimization: true)
-                  .vTableGetNullable(buffer, rootOffset, 8));
+                  .vTableGetNullable(buffer, rootOffset, 8),
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 12, 0));
           object.songLyric.targetId =
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 10, 0);
           object.songLyric.attach(store);
@@ -839,16 +848,21 @@ class External_ {
   /// see [External.id]
   static final id = QueryIntegerProperty<External>(_entities[5].properties[0]);
 
-  /// see [External.name]
-  static final name = QueryStringProperty<External>(_entities[5].properties[1]);
-
   /// see [External.mediaId]
   static final mediaId =
-      QueryStringProperty<External>(_entities[5].properties[2]);
+      QueryStringProperty<External>(_entities[5].properties[1]);
 
   /// see [External.songLyric]
   static final songLyric =
-      QueryRelationToOne<External, SongLyric>(_entities[5].properties[3]);
+      QueryRelationToOne<External, SongLyric>(_entities[5].properties[2]);
+
+  /// see [External.dbMediaType]
+  static final dbMediaType =
+      QueryIntegerProperty<External>(_entities[5].properties[3]);
+
+  /// see [External.publicName]
+  static final publicName =
+      QueryStringProperty<External>(_entities[5].properties[4]);
 }
 
 /// [SongLyric] entity fields to define ObjectBox queries.

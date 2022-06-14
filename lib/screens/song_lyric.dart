@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:zpevnik/components/custom/back_button.dart';
 import 'package:zpevnik/components/highlightable.dart';
+import 'package:zpevnik/components/song_lyric/externals_player_wrapper.dart';
 import 'package:zpevnik/components/song_lyric/lyrics.dart';
+import 'package:zpevnik/components/song_lyric/utils/active_player_controller.dart';
+import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/screens/song_lyric/utils/lyrics_controller.dart';
 
 const double _navigationBarHeight = 48;
+
+const double _miniPlayerHeight = 64;
 
 class SongLyricScreen extends StatefulWidget {
   final SongLyric songLyric;
@@ -16,7 +21,9 @@ class SongLyricScreen extends StatefulWidget {
 }
 
 class _SongLyricScreenState extends State<SongLyricScreen> {
-  late final LyricsController _controller;
+  late final LyricsController _lyricsController;
+
+  late final ValueNotifier<bool> _showingExternals;
 
   bool _fullscreen = false;
 
@@ -24,12 +31,16 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
   void initState() {
     super.initState();
 
-    _controller = LyricsController(widget.songLyric);
+    _lyricsController = LyricsController(widget.songLyric);
+
+    _showingExternals = ValueNotifier(false);
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+    final height = MediaQuery.of(context).size.height;
 
     AppBar? appBar;
     NavigationBar? navigationBar;
@@ -45,6 +56,7 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
       navigationBar = NavigationBar(
         height: _navigationBarHeight,
         labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+        onDestinationSelected: (destination) => _destinationSelected(context, destination),
         destinations: [
           _buildDestination(context, Icons.headphones_rounded),
           _buildDestination(context, Icons.insert_drive_file),
@@ -58,16 +70,28 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
       data: theme.copyWith(
         navigationBarTheme: theme.navigationBarTheme.copyWith(indicatorColor: Colors.transparent),
       ),
-      child: Scaffold(
-        appBar: appBar,
-        body: SafeArea(
-          child: GestureDetector(
-            onTap: () => setState(() => _fullscreen = !_fullscreen),
-            child: LyricsWidget(controller: _controller),
+      child: Stack(
+        children: [
+          Scaffold(
+            appBar: appBar,
+            body: SafeArea(child: _buildLyrics(context)),
+            bottomNavigationBar: navigationBar,
           ),
-        ),
-        bottomNavigationBar: navigationBar,
+          ExternalsPlayerWrapper(
+            songLyric: widget.songLyric,
+            maxHeight: 2 / 3 * height,
+            minHeight: _miniPlayerHeight,
+            isShowing: _showingExternals,
+          ),
+        ],
       ),
+    );
+  }
+
+  Widget _buildLyrics(BuildContext context) {
+    return GestureDetector(
+      onTap: () => setState(() => _fullscreen = !_fullscreen),
+      child: LyricsWidget(controller: _lyricsController),
     );
   }
 
@@ -78,6 +102,21 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
         icon: Icon(icon),
       ),
     );
+  }
+
+  void _destinationSelected(BuildContext context, int destination) {
+    switch (destination) {
+      case 0:
+        // _miniplayerController.animateToHeight(state: PanelState.MAX);
+        _showingExternals.value = true;
+        break;
+      case 1:
+        break;
+      case 2:
+        break;
+      case 3:
+        break;
+    }
   }
 }
 
@@ -95,7 +134,7 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
 // import 'package:zpevnik/screens/song_lyric/components/song_lyric_menu.dart';
 // import 'package:zpevnik/screens/song_lyric/lyrics.dart';
 // import 'package:zpevnik/screens/song_lyric/translations.dart';
-// import 'package:zpevnik/screens/song_lyric/utils/lyrics_controller.dart';
+// import 'package:zpevnik/screens/song_lyric/utils/lyrics_lyricsController.dart';
 // import 'package:zpevnik/theme.dart';
 
 // class SongLyricPageView extends StatefulWidget {

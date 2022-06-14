@@ -11,13 +11,10 @@ enum SongLyricType {
   original,
   translation,
   authorizedTranslation,
-  unknown,
 }
 
 extension SongLyricTypeExtension on SongLyricType {
   static SongLyricType fromString(String? string) {
-    if (string == null) return SongLyricType.unknown;
-
     switch (string) {
       case "ORIGINAL":
         return SongLyricType.original;
@@ -34,10 +31,8 @@ extension SongLyricTypeExtension on SongLyricType {
         return SongLyricType.original;
       case 1:
         return SongLyricType.authorizedTranslation;
-      case 2:
-        return SongLyricType.translation;
       default:
-        return SongLyricType.unknown;
+        return SongLyricType.translation;
     }
   }
 
@@ -47,10 +42,8 @@ extension SongLyricTypeExtension on SongLyricType {
         return 0;
       case SongLyricType.authorizedTranslation:
         return 1;
-      case SongLyricType.translation:
-        return 2;
       default:
-        return 3;
+        return 2;
     }
   }
 

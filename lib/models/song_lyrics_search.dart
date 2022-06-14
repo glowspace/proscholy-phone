@@ -44,7 +44,8 @@ class SongLyricsSearch {
   }
 
   Future<List<dynamic>> search(String searchText) {
-    if (!_numberRE.hasMatch(searchText)) searchText = searchText.replaceAll(' ', '* ');
+    searchText.trim();
+    if (!_numberRE.hasMatch(searchText)) searchText = '${searchText.replaceAll(' ', '* ')}*';
 
     return _db.rawQuery(_selectQuery, [searchText]);
   }
