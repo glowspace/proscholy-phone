@@ -1,12 +1,14 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/components/bottom_form_sheet.dart';
 import 'package:zpevnik/components/font_size_slider.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/selector_widget.dart';
 import 'package:zpevnik/screens/song_lyric/utils/lyrics_controller.dart';
 
 const double _settingsOptionsWidth = 100;
+const double _settingsMaxHeight = 300;
 
 class SongLyricSettingsWidget extends StatefulWidget {
   final LyricsController controller;
@@ -39,45 +41,56 @@ class _SongLyricSettingsWidget extends State<SongLyricSettingsWidget> {
 
     final hasChords = widget.controller.songLyric.hasChords;
 
-    return BottomFormSheet(
-      title: 'Nastavení zobrazení',
-      items: [
-        if (hasChords) Row(children: [const Expanded(child: Text('Transpozice')), _buildTranspositionStepper(context)]),
-        if (hasChords) const SizedBox(height: kDefaultPadding / 2),
-        if (hasChords)
-          Row(children: [
-            const Expanded(child: Text('Posuvky')),
-            SelectorWidget(
-              onSelected: widget.controller.accidentalsChanged,
-              options: [
-                Text('#', style: accidentalsStyle, textAlign: TextAlign.center),
-                Text('♭', style: accidentalsStyle, textAlign: TextAlign.center)
-              ],
-              selected: widget.controller.accidentals,
-              width: _settingsOptionsWidth,
-            ),
-          ]),
-        if (hasChords) const SizedBox(height: kDefaultPadding / 2),
-        if (hasChords)
-          Row(children: [
-            const Expanded(child: Text('Akordy')),
-            SelectorWidget(
-              onSelected: (index) => widget.controller.showChordsChanged(index == 1),
-              options: const [Icon(Icons.visibility_off), Icon(Icons.visibility)],
-              selected: widget.controller.showChords ? 1 : 0,
-              width: _settingsOptionsWidth,
-            ),
-          ]),
-        if (hasChords) const SizedBox(height: kDefaultPadding / 2),
-        const FontSizeSlider(),
-      ],
-      bottomAction: Highlightable(
-        child: Container(
+    return Wrap(
+      children: [
+        Container(
           padding: const EdgeInsets.all(kDefaultPadding),
-          child: Text('Resetovat nastavení', style: theme.textTheme.caption),
+          child: Text('Nastavení zobrazení', style: Theme.of(context).textTheme.titleLarge),
         ),
-        onTap: widget.controller.resetSettings,
-      ),
+        SingleChildScrollView(
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+            child: Column(children: [
+              if (hasChords)
+                Row(children: [const Expanded(child: Text('Transpozice')), _buildTranspositionStepper(context)]),
+              if (hasChords) const SizedBox(height: kDefaultPadding / 2),
+              if (hasChords)
+                Row(children: [
+                  const Expanded(child: Text('Posuvky')),
+                  SelectorWidget(
+                    onSelected: widget.controller.accidentalsChanged,
+                    options: [
+                      Text('#', style: accidentalsStyle, textAlign: TextAlign.center),
+                      Text('♭', style: accidentalsStyle, textAlign: TextAlign.center)
+                    ],
+                    selected: widget.controller.accidentals,
+                    width: _settingsOptionsWidth,
+                  ),
+                ]),
+              if (hasChords) const SizedBox(height: kDefaultPadding / 2),
+              if (hasChords)
+                Row(children: [
+                  const Expanded(child: Text('Akordy')),
+                  SelectorWidget(
+                    onSelected: (index) => widget.controller.showChordsChanged(index == 1),
+                    options: const [Icon(Icons.visibility_off), Icon(Icons.visibility)],
+                    selected: widget.controller.showChords ? 1 : 0,
+                    width: _settingsOptionsWidth,
+                  ),
+                ]),
+              if (hasChords) const SizedBox(height: kDefaultPadding / 2),
+              const FontSizeSlider(),
+            ]),
+          ),
+        ),
+        Highlightable(
+          child: Container(
+            padding: const EdgeInsets.all(kDefaultPadding),
+            child: Text('Resetovat nastavení', style: theme.textTheme.caption),
+          ),
+          onTap: widget.controller.resetSettings,
+        ),
+      ],
     );
   }
 

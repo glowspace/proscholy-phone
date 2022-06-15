@@ -172,11 +172,9 @@ class _ExternalsWidgetState extends State<ExternalsWidget> {
   }
 
   void _prepareYoutubeControllers() {
-    final youtubes = widget.songLyric.externals.where((external) => external.type == MediaType.youtube);
-
     _controllers = [];
 
-    for (final youtube in youtubes) {
+    for (final youtube in widget.songLyric.youtubes) {
       if (youtube.mediaId == null) continue;
 
       final controller = YoutubePlayerController(

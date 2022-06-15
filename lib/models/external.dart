@@ -1,7 +1,7 @@
 import 'package:objectbox/objectbox.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 
-final RegExp _youtubeNameRE = RegExp(r'youtube \(([^|]+\|\s?)?(.+)\)');
+final RegExp _nameAuthorRE = RegExp(r'\(([^|]+\|\s?)?(.+)\)');
 
 enum MediaType {
   soundcloud,
@@ -73,17 +73,26 @@ class External {
   final String? publicName;
   final String? mediaId;
 
+  final String? url;
+
   final int dbMediaType;
 
   final songLyric = ToOne<SongLyric>();
 
-  External(this.id, this.publicName, this.mediaId, this.dbMediaType);
+  External(
+    this.id,
+    this.publicName,
+    this.mediaId,
+    this.url,
+    this.dbMediaType,
+  );
 
   factory External.fromJson(Map<String, dynamic> json, int songLyricId) {
     return External(
       int.parse(json['id'] as String),
       json['public_name'] as String?,
       json['media_id'] as String?,
+      json['url'] as String?,
       MediaTypeExtension.fromString(json['media_type'] as String?).rawValue,
     );
   }
@@ -93,11 +102,15 @@ class External {
   }
 
   String get name {
+    final name = publicName ?? '';
+
     switch (type) {
       case MediaType.youtube:
-        return _youtubeNameRE.firstMatch(publicName!)?.group(2) ?? publicName!;
+        return _nameAuthorRE.firstMatch(name)?.group(2) ?? name;
+      case MediaType.pdf:
+        return mediaId ?? _nameAuthorRE.firstMatch(name)?.group(2) ?? name;
       default:
-        return publicName ?? '';
+        return name;
     }
   }
 

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:zpevnik/models/external.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
 import 'package:zpevnik/screens/content.dart';
 import 'package:zpevnik/screens/initial.dart';
+import 'package:zpevnik/screens/pdf.dart';
 import 'package:zpevnik/screens/search.dart';
 import 'package:zpevnik/screens/song_lyric.dart';
 
@@ -28,6 +30,10 @@ class RouteGenerator {
         final songLyric = settings.arguments as SongLyric;
 
         return CustomPageRoute(builder: (_) => SongLyricScreen(songLyric: songLyric));
+      case '/pdf':
+        final pdf = settings.arguments as External;
+
+        return CustomPageRoute(builder: (_) => PdfScreen(pdf: pdf));
       default:
         throw 'Unknown route: ${settings.name}';
     }

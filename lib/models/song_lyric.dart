@@ -183,6 +183,9 @@ class SongLyric {
     }
   }
 
+  List<External> get pdfs => externals.where((external) => external.type == MediaType.pdf).toList();
+  List<External> get youtubes => externals.where((external) => external.type == MediaType.youtube).toList();
+
   @override
   String toString() => 'SongLyric(id: $id, name: $name)';
 
