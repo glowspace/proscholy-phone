@@ -1,9 +1,13 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:zpevnik/components/custom/back_button.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/song_lyric/externals_player_wrapper.dart';
 import 'package:zpevnik/components/song_lyric/lyrics.dart';
-import 'package:zpevnik/components/song_lyric/utils/active_player_controller.dart';
+import 'package:zpevnik/components/song_lyric/song_lyric_settings.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/screens/song_lyric/utils/lyrics_controller.dart';
@@ -11,6 +15,8 @@ import 'package:zpevnik/screens/song_lyric/utils/lyrics_controller.dart';
 const double _navigationBarHeight = 48;
 
 const double _miniPlayerHeight = 64;
+
+const double _settingsMaxHeight = 300;
 
 class SongLyricScreen extends StatefulWidget {
   final SongLyric songLyric;
@@ -31,7 +37,7 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
   void initState() {
     super.initState();
 
-    _lyricsController = LyricsController(widget.songLyric);
+    _lyricsController = LyricsController(widget.songLyric, context);
 
     _showingExternals = ValueNotifier(false);
   }
@@ -58,7 +64,7 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
         labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
         onDestinationSelected: (destination) => _destinationSelected(context, destination),
         destinations: [
-          _buildDestination(context, Icons.headphones_rounded),
+          _buildDestination(context, FontAwesomeIcons.headphones),
           _buildDestination(context, Icons.insert_drive_file),
           _buildDestination(context, Icons.tune),
           _buildDestination(context, Icons.search),
@@ -107,16 +113,28 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
   void _destinationSelected(BuildContext context, int destination) {
     switch (destination) {
       case 0:
-        // _miniplayerController.animateToHeight(state: PanelState.MAX);
         _showingExternals.value = true;
         break;
       case 1:
         break;
       case 2:
+        _showSettings(context);
         break;
       case 3:
         break;
     }
+  }
+
+  void _showSettings(BuildContext context) {
+    showMaterialModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(kDefaultRadius))),
+      builder: (context) => SizedBox(
+        height: min(2 / 3 * MediaQuery.of(context).size.height, _settingsMaxHeight),
+        child: SongLyricSettingsWidget(controller: _lyricsController),
+      ),
+      useRootNavigator: true,
+    );
   }
 }
 

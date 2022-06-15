@@ -4,10 +4,10 @@ import 'package:provider/provider.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
-import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
 
 const double _iconSize = 16;
+const _disabledAlpha = 0x20;
 
 class SongLyricRow extends StatelessWidget {
   final SongLyric songLyric;
@@ -38,19 +38,19 @@ class SongLyricRow extends StatelessWidget {
                 FaIcon(
                   songLyric.hasChords ? FontAwesomeIcons.guitar : FontAwesomeIcons.alignLeft,
                   size: _iconSize,
-                  color: blueScheme.primary.withAlpha(songLyric.hasLyrics ? 0xFF : 0x40),
+                  color: blueScheme.primary.withAlpha(songLyric.hasLyrics ? 0xFF : _disabledAlpha),
                 ),
                 const SizedBox(width: kDefaultPadding),
                 FaIcon(
                   FontAwesomeIcons.solidFileLines,
                   size: _iconSize,
-                  color: redScheme.primary.withAlpha(songLyric.hasFiles ? 0xFF : 0x40),
+                  color: redScheme.primary.withAlpha(songLyric.hasFiles ? 0xFF : _disabledAlpha),
                 ),
                 const SizedBox(width: kDefaultPadding),
                 FaIcon(
                   FontAwesomeIcons.headphones,
                   size: _iconSize,
-                  color: greenScheme.primary.withAlpha(songLyric.hasRecordings ? 0xFF : 0x40),
+                  color: greenScheme.primary.withAlpha(songLyric.hasRecordings ? 0xFF : _disabledAlpha),
                 ),
               ],
             ),

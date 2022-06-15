@@ -203,7 +203,7 @@ final _entities = <ModelEntity>[
   ModelEntity(
       id: const IdUid(11, 6447883453535376640),
       name: 'SongLyric',
-      lastPropertyId: const IdUid(12, 4793601887131442231),
+      lastPropertyId: const IdUid(15, 9195031951480790049),
       flags: 0,
       properties: <ModelProperty>[
         ModelProperty(
@@ -262,6 +262,21 @@ final _entities = <ModelEntity>[
             id: const IdUid(12, 4793601887131442231),
             name: 'hasChords',
             type: 1,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(13, 8296175755256605743),
+            name: 'accidentals',
+            type: 6,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(14, 1715249534898951602),
+            name: 'showChords',
+            type: 1,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(15, 9195031951480790049),
+            name: 'transposition',
+            type: 6,
             flags: 0)
       ],
       relations: <ModelRelation>[
@@ -681,7 +696,7 @@ ModelDefinition getObjectBoxModel() {
           final langDescriptionOffset = object.langDescription == null
               ? null
               : fbb.writeString(object.langDescription!);
-          fbb.startTable(13);
+          fbb.startTable(16);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, nameOffset);
           fbb.addOffset(2, secondaryName1Offset);
@@ -693,6 +708,9 @@ ModelDefinition getObjectBoxModel() {
           fbb.addInt64(8, object.song.targetId);
           fbb.addInt64(10, object.dbType);
           fbb.addBool(11, object.hasChords);
+          fbb.addInt64(12, object.accidentals);
+          fbb.addBool(13, object.showChords);
+          fbb.addInt64(14, object.transposition);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -717,7 +735,13 @@ ModelDefinition getObjectBoxModel() {
               const fb.StringReader(asciiOptimization: true)
                   .vTableGetNullable(buffer, rootOffset, 18),
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 24, 0),
-              const fb.BoolReader().vTableGet(buffer, rootOffset, 26, false));
+              const fb.BoolReader().vTableGet(buffer, rootOffset, 26, false))
+            ..accidentals =
+                const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 28)
+            ..showChords =
+                const fb.BoolReader().vTableGetNullable(buffer, rootOffset, 30)
+            ..transposition =
+                const fb.Int64Reader().vTableGet(buffer, rootOffset, 32, 0);
           object.song.targetId =
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 20, 0);
           object.song.attach(store);
@@ -926,6 +950,18 @@ class SongLyric_ {
   /// see [SongLyric.hasChords]
   static final hasChords =
       QueryBooleanProperty<SongLyric>(_entities[6].properties[10]);
+
+  /// see [SongLyric.accidentals]
+  static final accidentals =
+      QueryIntegerProperty<SongLyric>(_entities[6].properties[11]);
+
+  /// see [SongLyric.showChords]
+  static final showChords =
+      QueryBooleanProperty<SongLyric>(_entities[6].properties[12]);
+
+  /// see [SongLyric.transposition]
+  static final transposition =
+      QueryIntegerProperty<SongLyric>(_entities[6].properties[13]);
 
   /// see [SongLyric.authors]
   static final authors =

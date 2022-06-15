@@ -54,9 +54,11 @@ class SettingsProvider extends ChangeNotifier {
   // String get lastUpdate => _prefs.getString(lastUpdateKey) ?? 'neznámé';
 
   set fontSizeScale(double value) {
-    if (value < kMinimumFontSizeScale)
+    if (value < kMinimumFontSizeScale) {
       value = kMinimumFontSizeScale;
-    else if (value > kMaximumFontSizeScale) value = kMaximumFontSizeScale;
+    } else if (value > kMaximumFontSizeScale) {
+      value = kMaximumFontSizeScale;
+    }
 
     _fontSizeScale = value;
 

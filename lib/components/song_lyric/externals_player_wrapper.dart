@@ -71,14 +71,10 @@ class _ExternalsPlayerWrapperState extends State<ExternalsPlayerWrapper> with Si
       valueListenable: _height,
       builder: (_, height, __) => Stack(
         children: [
-          if (height > 0 && !(height == widget.minHeight && _isCollapsed))
+          if (height > widget.minHeight)
             GestureDetector(
               onTap: _collapseOrHide,
-              child: Opacity(
-                opacity: height / widget.maxHeight,
-                child: Container(color: Colors.black.withAlpha(0x80)),
-              ),
-              behavior: HitTestBehavior.deferToChild,
+              child: Opacity(opacity: height / widget.maxHeight, child: Container(color: Colors.black.withAlpha(0x60))),
             ),
           Align(
             alignment: Alignment.bottomCenter,

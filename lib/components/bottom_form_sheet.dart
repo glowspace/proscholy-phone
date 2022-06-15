@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/theme.dart';
 
 class BottomFormSheet extends StatelessWidget {
   final String title;
@@ -18,27 +17,23 @@ class BottomFormSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-            child: Text(title, style: AppTheme.of(context).titleTextStyle),
-          ),
-          const SizedBox(height: kDefaultPadding),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Container(
-                padding: contentPadding,
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: items),
-              ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          padding: const EdgeInsets.all(kDefaultPadding),
+          child: Text(title, style: Theme.of(context).textTheme.titleLarge),
+        ),
+        Expanded(
+          child: SingleChildScrollView(
+            child: Container(
+              padding: contentPadding,
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: items),
             ),
           ),
-          if (bottomAction != null) bottomAction!,
-        ],
-      ),
+        ),
+        if (bottomAction != null) bottomAction!,
+      ],
     );
   }
 }

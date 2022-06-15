@@ -178,7 +178,7 @@
     },
     {
       "id": "11:6447883453535376640",
-      "lastPropertyId": "12:4793601887131442231",
+      "lastPropertyId": "15:9195031951480790049",
       "name": "SongLyric",
       "properties": [
         {
@@ -239,6 +239,21 @@
           "id": "12:4793601887131442231",
           "name": "hasChords",
           "type": 1
+        },
+        {
+          "id": "13:8296175755256605743",
+          "name": "accidentals",
+          "type": 6
+        },
+        {
+          "id": "14:1715249534898951602",
+          "name": "showChords",
+          "type": 1
+        },
+        {
+          "id": "15:9195031951480790049",
+          "name": "transposition",
+          "type": 6
         }
       ],
       "relations": [

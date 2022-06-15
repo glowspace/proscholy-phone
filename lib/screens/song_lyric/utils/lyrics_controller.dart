@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:zpevnik/models/song_lyric.dart';
+import 'package:zpevnik/providers/data.dart';
+import 'package:zpevnik/providers/settings.dart';
 import 'package:zpevnik/screens/song_lyric/utils/parser.dart';
 
 final _styleRE = RegExp(r'\<style[^\<]*\<\/style\>');
@@ -10,7 +13,9 @@ class LyricsController extends ChangeNotifier {
   final SongLyric songLyric;
   final SongLyricsParser parser;
 
-  LyricsController(this.songLyric) : parser = SongLyricsParser(songLyric);
+  final BuildContext context;
+
+  LyricsController(this.songLyric, this.context) : parser = SongLyricsParser(songLyric);
 
   double? _lilypondWidth;
   String? _lilypond;
@@ -57,38 +62,44 @@ class LyricsController extends ChangeNotifier {
   }
 
   void previousVerse() {
-    if (_currentlyProjectedVerse > 0) _currentlyProjectedVerse -= 1;
+    // if (_currentlyProjectedVerse > 0) _currentlyProjectedVerse -= 1;
 
     notifyListeners();
   }
 
-  bool get showChords => true; // songLyric.showChords ?? true; // ?? settingsProvider.showChords;
-  int get accidentals => 0; // songLyric.accidentals ?? 0; // ?? settingsProvider.accidentals;
+  bool get showChords => songLyric.showChords ?? context.read<SettingsProvider>().showChords;
+  int get accidentals => songLyric.accidentals ?? context.read<SettingsProvider>().accidentals;
 
   void changeTransposition(int byValue) {
-    // songLyric.transposition += byValue;
+    songLyric.transposition += byValue;
 
-    notifyListeners();
+    _songLyricUpdated();
   }
 
   void accidentalsChanged(int accidentals) {
-    // songLyric.accidentals = accidentals;
+    songLyric.accidentals = accidentals;
 
-    notifyListeners();
+    _songLyricUpdated();
   }
 
   void showChordsChanged(bool showChords) {
-    // songLyric.showChords = showChords;
+    songLyric.showChords = showChords;
 
-    notifyListeners();
+    _songLyricUpdated();
   }
 
   void resetSettings() {
-    // songLyric.showChords = null;
-    // songLyric.accidentals = null;
-    // songLyric.transposition = 0;
+    songLyric.showChords = null;
+    songLyric.accidentals = null;
+    songLyric.transposition = 0;
 
-    // settingsProvider.fontSizeScale = 1;
+    context.read<SettingsProvider>().fontSizeScale = 1;
+
+    _songLyricUpdated();
+  }
+
+  void _songLyricUpdated() {
+    context.read<DataProvider>().store.box<SongLyric>().put(songLyric);
 
     notifyListeners();
   }

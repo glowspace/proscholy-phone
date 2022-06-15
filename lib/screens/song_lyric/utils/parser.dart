@@ -270,7 +270,6 @@ class SongLyricsParser {
   List<Token>? _parsedSongLyrics;
 
   int _currentTokenIndex = 0;
-  bool _hasChords = false;
 
   Token? get nextToken {
     _parsedSongLyrics ??= _FilledTokensBuilder()._fillSubstitutes(_parseTokens());
@@ -284,8 +283,6 @@ class SongLyricsParser {
 
     return _parsedSongLyrics![_currentTokenIndex++];
   }
-
-  bool get hasChords => _hasChords;
 
   List<Token> _parseTokens() {
     final lyrics = songLyric.lyrics ?? '';
@@ -398,8 +395,6 @@ class SongLyricsParser {
           } else if (currentString.isNotEmpty) {
             tokens.add(Chord(currentString));
           }
-
-          _hasChords = true;
 
           currentString = '';
           state = _ParserState.verseLine;

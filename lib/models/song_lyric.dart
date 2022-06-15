@@ -77,6 +77,10 @@ class SongLyric {
   final int dbType;
   final bool hasChords;
 
+  int? accidentals;
+  bool? showChords;
+  int transposition = 0;
+
   final authors = ToMany<Author>();
   final song = ToOne<Song>();
   final tags = ToMany<Tag>();

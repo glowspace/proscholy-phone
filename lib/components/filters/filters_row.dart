@@ -55,11 +55,9 @@ class FiltersRow extends StatelessWidget {
   void _showFilters(BuildContext context) {
     final songLyricsProvider = context.read<SongLyricsProvider>();
 
-    const shape = RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(kDefaultRadius)));
-
     showMaterialModalBottomSheet(
       context: context,
-      shape: shape,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(kDefaultRadius))),
       builder: (context) => SizedBox(
         height: 2 / 3 * MediaQuery.of(context).size.height,
         child: ChangeNotifierProvider.value(

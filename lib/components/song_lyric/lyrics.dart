@@ -11,10 +11,29 @@ import 'package:zpevnik/screens/song_lyric/utils/parser.dart';
 import 'package:zpevnik/utils/extensions.dart';
 import 'package:zpevnik/utils/hex_color.dart';
 
-class LyricsWidget extends StatelessWidget {
+class LyricsWidget extends StatefulWidget {
   final LyricsController controller;
 
   const LyricsWidget({Key? key, required this.controller}) : super(key: key);
+
+  @override
+  State<LyricsWidget> createState() => _LyricsWidgetState();
+}
+
+class _LyricsWidgetState extends State<LyricsWidget> {
+  @override
+  void initState() {
+    super.initState();
+
+    widget.controller.addListener(_update);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    widget.controller.removeListener(_update);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,18 +51,18 @@ class LyricsWidget extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
               child: Text(
-                controller.songLyric.name,
+                widget.controller.songLyric.name,
                 style: theme.textTheme.titleLarge,
                 textScaleFactor: settingsProvider.fontSizeScale,
               ),
             ),
             SizedBox(height: kDefaultPadding * settingsProvider.fontSizeScale),
-            if (controller.hasLilypond)
+            if (widget.controller.hasLilypond)
               SvgPicture.string(
-                controller.lilypond(theme.colorScheme.onBackground.hex),
-                width: min(width, controller.lilypondWidth),
+                widget.controller.lilypond(theme.colorScheme.onBackground.hex),
+                width: min(width, widget.controller.lilypondWidth),
               ),
-            if (controller.hasLilypond) SizedBox(height: kDefaultPadding * settingsProvider.fontSizeScale / 2),
+            if (widget.controller.hasLilypond) SizedBox(height: kDefaultPadding * settingsProvider.fontSizeScale / 2),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
               child: _buildLyrics(context),
@@ -64,16 +83,16 @@ class LyricsWidget extends StatelessWidget {
 
     final List<Widget> children = [];
 
-    Token? currentToken = controller.parser.nextToken;
+    Token? currentToken = widget.controller.parser.nextToken;
     while (currentToken != null) {
       if (currentToken is Comment) {
         children.add(_buildComment(context, currentToken, false));
       } else if (currentToken is Interlude) {
-        if (controller.showChords) {
+        if (widget.controller.showChords) {
           children.add(_buildInterlude(context, currentToken));
         } else {
           while (currentToken is! InterludeEnd) {
-            currentToken = controller.parser.nextToken;
+            currentToken = widget.controller.parser.nextToken;
           }
         }
       } else if (currentToken is VerseNumber) {
@@ -82,7 +101,7 @@ class LyricsWidget extends StatelessWidget {
         children.add(SizedBox(height: kDefaultPadding * settingsProvider.fontSizeScale));
       }
 
-      currentToken = controller.parser.nextToken;
+      currentToken = widget.controller.parser.nextToken;
     }
 
     return Column(
@@ -95,7 +114,7 @@ class LyricsWidget extends StatelessWidget {
     final settingsProvider = context.watch<SettingsProvider>();
 
     final List<Widget> children = [];
-    Token? currentToken = controller.parser.nextToken;
+    Token? currentToken = widget.controller.parser.nextToken;
     while (currentToken != null && currentToken is! InterludeEnd) {
       if (currentToken is Chord) {
         children.add(_buildLine(context, currentToken, _textStyle(context, false), isInterlude: true));
@@ -103,7 +122,7 @@ class LyricsWidget extends StatelessWidget {
         children.add(SizedBox(height: kDefaultPadding * settingsProvider.fontSizeScale));
       }
 
-      currentToken = controller.parser.nextToken;
+      currentToken = widget.controller.parser.nextToken;
     }
 
     return Row(
@@ -128,7 +147,7 @@ class LyricsWidget extends StatelessWidget {
     final textStyle = _textStyle(context, number.verseHasChord);
 
     final List<Widget> children = [];
-    Token? currentToken = controller.parser.nextToken;
+    Token? currentToken = widget.controller.parser.nextToken;
     while (currentToken != null && currentToken is! VerseEnd) {
       if (currentToken is VersePart || currentToken is Chord) {
         children.add(_buildLine(context, currentToken, textStyle));
@@ -138,7 +157,7 @@ class LyricsWidget extends StatelessWidget {
         children.add(SizedBox(height: kDefaultPadding * settingsProvider.fontSizeScale));
       }
 
-      currentToken = controller.parser.nextToken;
+      currentToken = widget.controller.parser.nextToken;
     }
 
     return Row(
@@ -163,13 +182,13 @@ class LyricsWidget extends StatelessWidget {
     Chord? currentChord;
     while (currentToken != null && currentToken is! NewLine) {
       if (currentToken is VersePart) {
-        if (currentChord == null || !controller.showChords) {
+        if (currentChord == null || !widget.controller.showChords) {
           children.add(WidgetSpan(child: Text(currentToken.value, style: textStyle)));
         } else {
           children.add(_buildChord(context, currentChord, textStyle, versePart: currentToken));
           currentChord = null;
         }
-      } else if (currentToken is Chord && controller.showChords) {
+      } else if (currentToken is Chord && widget.controller.showChords) {
         if (isInterlude) {
           children.add(_buildChord(context, currentToken, textStyle, isInterlude: true));
         } else if (currentChord != null) {
@@ -179,10 +198,10 @@ class LyricsWidget extends StatelessWidget {
         currentChord = currentToken;
       }
 
-      currentToken = controller.parser.nextToken;
+      currentToken = widget.controller.parser.nextToken;
     }
 
-    if (!isInterlude && currentChord != null && controller.showChords) {
+    if (!isInterlude && currentChord != null && widget.controller.showChords) {
       children.add(_buildChord(context, currentChord, textStyle));
     }
 
@@ -195,7 +214,7 @@ class LyricsWidget extends StatelessWidget {
   Widget _buildComment(BuildContext context, Comment comment, bool hasChords) {
     final settingsProvider = context.watch<SettingsProvider>();
 
-    final showChords = hasChords && controller.showChords;
+    final showChords = hasChords && widget.controller.showChords;
     final textStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
           fontStyle: FontStyle.italic,
           height: showChords ? 2.5 : 1.5,
@@ -210,9 +229,8 @@ class LyricsWidget extends StatelessWidget {
 
     final chordOffset = isInterlude ? 0.0 : -(textStyle?.fontSize ?? 0);
 
-    // String chordText = convertAccidentals(
-    //     transpose(chord.value, controller.songLyric.transposition), controller.accidentals);
-    String chordText = chord.value;
+    String chordText = convertAccidentals(
+        transpose(chord.value, widget.controller.songLyric.transposition), widget.controller.accidentals);
 
     int? chordNumberIndex;
     for (int i = 0; i < chordText.length; i++) {
@@ -257,15 +275,17 @@ class LyricsWidget extends StatelessWidget {
     final settingsProvider = context.watch<SettingsProvider>();
 
     return Text(
-      controller.songLyric.authorsText,
+      widget.controller.songLyric.authorsText,
       style: Theme.of(context).textTheme.caption,
       textScaleFactor: settingsProvider.fontSizeScale,
     );
   }
 
   TextStyle? _textStyle(BuildContext context, bool hasChords) {
-    final showChords = hasChords && controller.showChords;
+    final showChords = hasChords && widget.controller.showChords;
 
     return Theme.of(context).textTheme.bodyMedium?.copyWith(height: showChords ? 2.5 : 1.5);
   }
+
+  void _update() => setState(() {});
 }
