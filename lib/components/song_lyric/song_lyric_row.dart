@@ -5,6 +5,7 @@ import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/data.dart';
+import 'package:zpevnik/providers/song_lyrics.dart';
 
 const double _iconSize = 16;
 
@@ -62,7 +63,7 @@ class SongLyricRow extends StatelessWidget {
   }
 
   void _pushSongLyric(BuildContext context) {
-    context.read<DataProvider>().addRecentSongLyric(songLyric);
+    context.read<SongLyricsProvider?>()?.addRecentSongLyric(songLyric);
 
     Navigator.pushNamed(context, '/song_lyric', arguments: songLyric);
   }

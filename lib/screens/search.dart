@@ -5,7 +5,6 @@ import 'package:zpevnik/components/search_field.dart';
 import 'package:zpevnik/components/song_lyric/song_lyrics_list_view.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/tag.dart';
-import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
 
 class SearchScreen extends StatelessWidget {
@@ -16,7 +15,6 @@ class SearchScreen extends StatelessWidget {
     final theme = Theme.of(context);
 
     final songLyricsProvider = context.read<SongLyricsProvider>();
-    final List<Tag> tags = [];
 
     return Scaffold(
       body: SafeArea(
@@ -36,7 +34,7 @@ class SearchScreen extends StatelessWidget {
                 onSubmitted: (_) => _maybePushMatchedSonglyric(context),
               ),
               const SizedBox(height: kDefaultPadding),
-              FiltersRow(selectedTags: tags),
+              const FiltersRow(),
               const SizedBox(height: kDefaultPadding),
               const Expanded(child: SongLyricsListView()),
             ],
@@ -50,7 +48,7 @@ class SearchScreen extends StatelessWidget {
     final songLyricsProvider = context.read<SongLyricsProvider>();
 
     if (songLyricsProvider.matchedById != null) {
-      context.read<DataProvider>().addRecentSongLyric(songLyricsProvider.matchedById!);
+      songLyricsProvider.addRecentSongLyric(songLyricsProvider.matchedById!);
 
       Navigator.pushNamed(context, '/song_lyric', arguments: songLyricsProvider.matchedById);
     }

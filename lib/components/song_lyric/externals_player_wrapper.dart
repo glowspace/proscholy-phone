@@ -88,6 +88,7 @@ class _ExternalsPlayerWrapperState extends State<ExternalsPlayerWrapper> with Si
                 child: ClipRRect(
                   borderRadius: const BorderRadius.vertical(top: Radius.circular(kDefaultRadius)),
                   child: Material(
+                    color: Theme.of(context).canvasColor,
                     child: ExternalsWidget(
                       songLyric: widget.songLyric,
                       percentage: (_height.value - widget.minHeight) / (widget.maxHeight - widget.minHeight),

@@ -25,8 +25,8 @@ extension SongLyricTypeExtension on SongLyricType {
     }
   }
 
-  static SongLyricType fromIndex(int index) {
-    switch (index) {
+  static SongLyricType fromRawValue(int rawValue) {
+    switch (rawValue) {
       case 0:
         return SongLyricType.original;
       case 1:
@@ -36,7 +36,7 @@ extension SongLyricTypeExtension on SongLyricType {
     }
   }
 
-  int get index {
+  int get rawValue {
     switch (this) {
       case SongLyricType.original:
         return 0;
@@ -120,7 +120,7 @@ class SongLyric {
       json['lilypond_svg'] as String?,
       json['lang'] as String,
       json['lang_string'] as String,
-      SongLyricTypeExtension.fromString(json['type_enum'] as String?).index,
+      SongLyricTypeExtension.fromString(json['type_enum'] as String?).rawValue,
       json['has_chords'] as bool,
     )
       ..authors.addAll(authors.cast())
@@ -141,7 +141,7 @@ class SongLyric {
     return query.build().find();
   }
 
-  SongLyricType get type => SongLyricTypeExtension.fromIndex(dbType);
+  SongLyricType get type => SongLyricTypeExtension.fromRawValue(dbType);
 
   bool get hasLyrics => lyrics != null && lyrics!.isNotEmpty;
   bool get hasFiles => externals.any((external) => external.type == MediaType.pdf);
@@ -181,6 +181,12 @@ class SongLyric {
 
   @override
   String toString() => 'SongLyric(id: $id, name: $name)';
+
+  @override
+  bool operator ==(Object other) => other is SongLyric && id == other.id;
+
+  @override
+  int get hashCode => id;
 }
 
 // import 'dart:math';

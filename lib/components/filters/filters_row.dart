@@ -1,19 +1,21 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:provider/provider.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/models/tag.dart';
-import 'package:zpevnik/components/filters/fitler_tag.dart';
+import 'package:zpevnik/components/filters/filter_tag.dart';
+import 'package:zpevnik/providers/song_lyrics.dart';
+import 'package:zpevnik/components/filters/filters.dart';
 
 class FiltersRow extends StatelessWidget {
-  final List<Tag> selectedTags;
-
-  const FiltersRow({Key? key, required this.selectedTags}) : super(key: key);
+  const FiltersRow({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+    final selectedTags = context.watch<SongLyricsProvider>().selectedTags;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -51,6 +53,8 @@ class FiltersRow extends StatelessWidget {
   }
 
   void _showFilters(BuildContext context) {
+    final songLyricsProvider = context.read<SongLyricsProvider>();
+
     const shape = RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(kDefaultRadius)));
 
     showMaterialModalBottomSheet(
@@ -58,7 +62,10 @@ class FiltersRow extends StatelessWidget {
       shape: shape,
       builder: (context) => SizedBox(
         height: 2 / 3 * MediaQuery.of(context).size.height,
-        // child: FiltersWidget(),
+        child: ChangeNotifierProvider.value(
+          value: songLyricsProvider,
+          builder: (_, __) => FiltersWidget(tagsSections: songLyricsProvider.tagsSections),
+        ),
       ),
       useRootNavigator: true,
     );

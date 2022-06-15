@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "4:6296825599350518621",
-      "lastPropertyId": "2:5611127642092193137",
+      "lastPropertyId": "3:4931525366191811462",
       "name": "Tag",
       "properties": [
         {
@@ -18,6 +18,11 @@
           "id": "2:5611127642092193137",
           "name": "name",
           "type": 9
+        },
+        {
+          "id": "3:4931525366191811462",
+          "name": "dbType",
+          "type": 6
         }
       ],
       "relations": []

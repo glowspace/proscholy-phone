@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/tag.dart';
-import 'package:zpevnik/components/filters/fitler_tag.dart';
-import 'package:zpevnik/theme.dart';
+import 'package:zpevnik/components/filters/filter_tag.dart';
 
 class FiltersSection extends StatelessWidget {
   final String title;
@@ -18,28 +17,27 @@ class FiltersSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final appTheme = AppTheme.of(context);
-    final textStyle = appTheme.titleTextStyle?.copyWith(color: appTheme.filtersTextColor);
+    final theme = Theme.of(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          padding: EdgeInsets.symmetric(vertical: kDefaultPadding),
+          padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(title, style: textStyle),
-              SizedBox(height: kDefaultPadding),
+              Text(title, style: theme.textTheme.titleLarge),
+              const SizedBox(height: kDefaultPadding),
               Wrap(
                 spacing: kDefaultPadding / 2,
                 runSpacing: kDefaultPadding / 4,
-                children: List.generate(tags.length, (index) => FilterTag(tag: tags[index])),
+                children: tags.map((tag) => FilterTag(tag: tag, isToggable: true)).toList(),
               ),
             ],
           ),
         ),
-        if (!isLast) Divider(thickness: 1, color: appTheme.filtersSectionSeparatorColor),
+        if (!isLast) Divider(thickness: 1, color: theme.dividerColor),
       ],
     );
   }

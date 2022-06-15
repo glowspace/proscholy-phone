@@ -18,12 +18,12 @@ class RouteGenerator {
         return CustomPageRoute(builder: (_) => const ContentScreen());
       case '/search':
         return CustomPageRoute(
-            builder: (context) => ChangeNotifierProxyProvider<DataProvider, SongLyricsProvider>(
-                  create: (context) => SongLyricsProvider(context.read<DataProvider>()),
-                  update: (_, dataProvider, songLyricsProvider) => songLyricsProvider!..update(),
-                  builder: (_, __) => const SearchScreen(),
-                ),
-            fullscreenDialog: true);
+          builder: (context) => ChangeNotifierProvider(
+            create: (context) => SongLyricsProvider(context.read<DataProvider>()),
+            builder: (_, __) => const SearchScreen(),
+          ),
+          fullscreenDialog: true,
+        );
       case '/song_lyric':
         final songLyric = settings.arguments as SongLyric;
 

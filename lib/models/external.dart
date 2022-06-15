@@ -30,8 +30,8 @@ extension MediaTypeExtension on MediaType {
     }
   }
 
-  static MediaType fromIndex(int index) {
-    switch (index) {
+  static MediaType fromRawValue(int rawValue) {
+    switch (rawValue) {
       case 0:
         return MediaType.spotify;
       case 1:
@@ -47,7 +47,7 @@ extension MediaTypeExtension on MediaType {
     }
   }
 
-  int get index {
+  int get rawValue {
     switch (this) {
       case MediaType.spotify:
         return 0;
@@ -84,7 +84,7 @@ class External {
       int.parse(json['id'] as String),
       json['public_name'] as String?,
       json['media_id'] as String?,
-      MediaTypeExtension.fromString(json['media_type'] as String?).index,
+      MediaTypeExtension.fromString(json['media_type'] as String?).rawValue,
     );
   }
 
@@ -101,7 +101,7 @@ class External {
     }
   }
 
-  MediaType get type => MediaTypeExtension.fromIndex(dbMediaType);
+  MediaType get type => MediaTypeExtension.fromRawValue(dbMediaType);
 
   @override
   String toString() => 'External(id: $id, name: $name)';

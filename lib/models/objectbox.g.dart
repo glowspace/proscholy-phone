@@ -28,7 +28,7 @@ final _entities = <ModelEntity>[
   ModelEntity(
       id: const IdUid(4, 6296825599350518621),
       name: 'Tag',
-      lastPropertyId: const IdUid(2, 5611127642092193137),
+      lastPropertyId: const IdUid(3, 4931525366191811462),
       flags: 0,
       properties: <ModelProperty>[
         ModelProperty(
@@ -40,6 +40,11 @@ final _entities = <ModelEntity>[
             id: const IdUid(2, 5611127642092193137),
             name: 'name',
             type: 9,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(3, 4931525366191811462),
+            name: 'dbType',
+            type: 6,
             flags: 0)
       ],
       relations: <ModelRelation>[],
@@ -396,9 +401,10 @@ ModelDefinition getObjectBoxModel() {
         },
         objectToFB: (Tag object, fb.Builder fbb) {
           final nameOffset = fbb.writeString(object.name);
-          fbb.startTable(3);
+          fbb.startTable(4);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, nameOffset);
+          fbb.addInt64(2, object.dbType);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -409,7 +415,8 @@ ModelDefinition getObjectBoxModel() {
           final object = Tag(
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0),
               const fb.StringReader(asciiOptimization: true)
-                  .vTableGet(buffer, rootOffset, 6, ''));
+                  .vTableGet(buffer, rootOffset, 6, ''),
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 8, 0));
 
           return object;
         }),
@@ -786,6 +793,9 @@ class Tag_ {
 
   /// see [Tag.name]
   static final name = QueryStringProperty<Tag>(_entities[0].properties[1]);
+
+  /// see [Tag.dbType]
+  static final dbType = QueryIntegerProperty<Tag>(_entities[0].properties[2]);
 }
 
 /// [Song] entity fields to define ObjectBox queries.

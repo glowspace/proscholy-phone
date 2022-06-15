@@ -7,9 +7,6 @@ import 'package:zpevnik/models/song_lyrics_search.dart';
 import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/providers/utils/updater.dart';
 
-const _recentSongLyricsKey = 'recent_song_lyrics';
-const _maxRecentSongLyrics = 5;
-
 class DataProvider extends ChangeNotifier {
   late final SharedPreferences prefs;
 
@@ -28,13 +25,6 @@ class DataProvider extends ChangeNotifier {
   List<SongLyric> get songLyrics => _songLyrics;
   List<Tag> get tags => _tags;
 
-  List<SongLyric>? get recentSongLyrics => prefs
-      .getStringList(_recentSongLyricsKey)
-      ?.map((songLyricId) => getSongLyric(int.parse(songLyricId)))
-      .where((songLyric) => songLyric != null)
-      .toList()
-      .cast();
-
   SongLyric? getSongLyric(int id) => _songLyricsMap[id];
 
   Future<void> init() async {
@@ -50,18 +40,6 @@ class DataProvider extends ChangeNotifier {
     songLyricsSearch = SongLyricsSearch();
 
     await songLyricsSearch.init();
-  }
-
-  void addRecentSongLyric(SongLyric songLyric) {
-    final recentSongLyricsIds = prefs.getStringList(_recentSongLyricsKey) ?? [];
-
-    recentSongLyricsIds.remove('${songLyric.id}');
-    recentSongLyricsIds.insert(0, '${songLyric.id}');
-
-    if (recentSongLyricsIds.length > _maxRecentSongLyrics) recentSongLyricsIds.removeLast();
-    prefs.setStringList(_recentSongLyricsKey, recentSongLyricsIds);
-
-    Future.delayed(const Duration(milliseconds: 500), () => notifyListeners());
   }
 
   Future<void> _load() async {
@@ -82,7 +60,34 @@ class DataProvider extends ChangeNotifier {
     // TODO: do this only for updated songlyrics
     await songLyricsSearch.update(_songLyrics);
 
+    _addLanguagesToTags();
     notifyListeners();
+  }
+
+  void _addLanguagesToTags() {
+    final Map<String, int> languages = {};
+
+    for (final songLyric in songLyrics) {
+      if (songLyric.lang == null) continue;
+
+      if (!languages.containsKey(songLyric.langDescription)) languages[songLyric.langDescription!] = 0;
+
+      languages[songLyric.langDescription!] = languages[songLyric.langDescription!]! + 1;
+    }
+
+    final List<Tag> languageTags = [];
+
+    // using negative ids to distinguish from other tags
+    int id = -1;
+    for (final language in languages.keys) {
+      final tag = Tag(id--, language, TagType.language.rawValue);
+
+      languageTags.add(tag);
+    }
+
+    languageTags.sort((first, second) => languages[second.name]!.compareTo(languages[first.name]!));
+
+    _tags.addAll(languageTags);
   }
 
   @override

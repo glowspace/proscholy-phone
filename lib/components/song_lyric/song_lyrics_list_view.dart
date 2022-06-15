@@ -14,7 +14,7 @@ class SongLyricsListView extends StatelessWidget {
     final songLyricsProvider = context.watch<SongLyricsProvider>();
 
     final List<ListItemBuilder> listItems = [];
-    if (songLyricsProvider.searchText.isEmpty && songLyricsProvider.recentSongLyrics.isNotEmpty) {
+    if (songLyricsProvider.recentSongLyrics.isNotEmpty) {
       listItems.add((context) => _buildHeader(context, "POSLEDNÍ PÍSNĚ"));
 
       listItems
