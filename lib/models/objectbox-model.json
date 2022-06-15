@@ -173,7 +173,7 @@
     },
     {
       "id": "11:6447883453535376640",
-      "lastPropertyId": "11:7728117412880047888",
+      "lastPropertyId": "12:4793601887131442231",
       "name": "SongLyric",
       "properties": [
         {
@@ -229,6 +229,11 @@
           "id": "11:7728117412880047888",
           "name": "dbType",
           "type": 6
+        },
+        {
+          "id": "12:4793601887131442231",
+          "name": "hasChords",
+          "type": 1
         }
       ],
       "relations": [

@@ -15,7 +15,12 @@ class SongLyricRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+
+    final blueScheme = theme.colorScheme;
+    final redScheme = ColorScheme.fromSeed(seedColor: red, brightness: theme.brightness);
+    final greenScheme = ColorScheme.fromSeed(seedColor: green, brightness: theme.brightness);
 
     return Highlightable(
       onTap: () => _pushSongLyric(context),
@@ -29,11 +34,23 @@ class SongLyricRow extends StatelessWidget {
               children: [
                 Expanded(child: Text(songLyric.name, style: textTheme.bodyMedium)),
                 const SizedBox(width: kDefaultPadding),
-                const FaIcon(FontAwesomeIcons.guitar, size: _iconSize, color: blue),
+                FaIcon(
+                  songLyric.hasChords ? FontAwesomeIcons.guitar : FontAwesomeIcons.alignLeft,
+                  size: _iconSize,
+                  color: blueScheme.primary.withAlpha(songLyric.hasLyrics ? 0xFF : 0x40),
+                ),
                 const SizedBox(width: kDefaultPadding),
-                const FaIcon(FontAwesomeIcons.solidFileLines, size: _iconSize, color: red),
+                FaIcon(
+                  FontAwesomeIcons.solidFileLines,
+                  size: _iconSize,
+                  color: redScheme.primary.withAlpha(songLyric.hasFiles ? 0xFF : 0x40),
+                ),
                 const SizedBox(width: kDefaultPadding),
-                const FaIcon(FontAwesomeIcons.headphones, size: _iconSize, color: green),
+                FaIcon(
+                  FontAwesomeIcons.headphones,
+                  size: _iconSize,
+                  color: greenScheme.primary.withAlpha(songLyric.hasRecordings ? 0xFF : 0x40),
+                ),
               ],
             ),
             if (songLyric.secondaryName1 != null) Text(songLyric.secondaryName1!, style: textTheme.caption),

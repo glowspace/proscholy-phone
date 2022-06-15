@@ -75,6 +75,7 @@ class SongLyric {
   final String? langDescription;
 
   final int dbType;
+  final bool hasChords;
 
   final authors = ToMany<Author>();
   final song = ToOne<Song>();
@@ -96,6 +97,7 @@ class SongLyric {
     this.lang,
     this.langDescription,
     this.dbType,
+    this.hasChords,
   );
 
   factory SongLyric.fromJson(Map<String, dynamic> json, Store store) {
@@ -119,6 +121,7 @@ class SongLyric {
       json['lang'] as String,
       json['lang_string'] as String,
       SongLyricTypeExtension.fromString(json['type_enum'] as String?).index,
+      json['has_chords'] as bool,
     )
       ..authors.addAll(authors.cast())
       ..song.targetId = json['song'] == null ? null : int.parse(json['song']['id'] as String)
@@ -132,13 +135,17 @@ class SongLyric {
   }
 
   static List<SongLyric> load(Store store) {
-    final query = store.box<SongLyric>().query(SongLyric_.lyrics.notNull());
+    final query = store.box<SongLyric>().query(SongLyric_.lyrics.notNull().or(SongLyric_.lilypond.notNull()));
     query.order(SongLyric_.name);
 
     return query.build().find();
   }
 
   SongLyricType get type => SongLyricTypeExtension.fromIndex(dbType);
+
+  bool get hasLyrics => lyrics != null && lyrics!.isNotEmpty;
+  bool get hasFiles => externals.any((external) => external.type == MediaType.pdf);
+  bool get hasRecordings => externals.any((external) => external.type == MediaType.youtube);
 
   String get authorsText {
     if (type == SongLyricType.original) {

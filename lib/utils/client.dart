@@ -58,6 +58,7 @@ query {
     lang
     lang_string
     type_enum
+    has_chords
     song {
       id
     }
