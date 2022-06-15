@@ -84,9 +84,9 @@ mixin _Filterable on _SongLyricsProvider {
 }
 
 mixin RecentlySearched on _SongLyricsProvider {
-  late List<SongLyric> _recentSongLyrics;
+  late List<SongLyric> _recentSongLyrics = [];
 
-  void _initRecentlySearched() {
+  void _updateRecentlySearched() {
     final songLyrics = dataProvider.prefs
         .getStringList(_recentSongLyricsKey)
         ?.map((songLyricId) => dataProvider.getSongLyric(int.parse(songLyricId)))
@@ -184,9 +184,7 @@ class _SongLyricsProvider extends ChangeNotifier {
 }
 
 class SongLyricsProvider extends _SongLyricsProvider with _Filterable, RecentlySearched, Searchable {
-  SongLyricsProvider(DataProvider dataProvider) : super(dataProvider) {
-    _initRecentlySearched();
-  }
+  SongLyricsProvider(DataProvider dataProvider) : super(dataProvider);
 
   SongLyric? get matchedById {
     if (_matchedById == null) return null;
@@ -204,6 +202,8 @@ class SongLyricsProvider extends _SongLyricsProvider with _Filterable, RecentlyS
 
   @override
   void _update() {
+    _updateRecentlySearched();
+
     _updateTags();
 
     super._update();
