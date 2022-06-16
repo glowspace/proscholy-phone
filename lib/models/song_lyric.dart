@@ -147,6 +147,8 @@ class SongLyric {
 
   SongLyricType get type => SongLyricTypeExtension.fromRawValue(dbType);
 
+  bool get hasTranslations => (song.target?.songLyrics.length ?? 1) > 1;
+
   bool get hasLyrics => lyrics != null && lyrics!.isNotEmpty;
   bool get hasFiles => externals.any((external) => external.type == MediaType.pdf);
   bool get hasRecordings => externals.any((external) => external.type == MediaType.youtube);

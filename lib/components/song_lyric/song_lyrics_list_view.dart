@@ -49,7 +49,7 @@ class SongLyricsListView extends StatelessWidget {
     listItems.add((_) => const SizedBox(height: 2 * kDefaultPadding));
 
     return ListView.builder(
-      key: Key(songLyricsProvider.searchText),
+      key: Key('${songLyricsProvider.searchText}_${songLyricsProvider.selectedTags.length}'),
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       itemCount: listItems.length,
       itemBuilder: (context, index) => listItems[index](context),

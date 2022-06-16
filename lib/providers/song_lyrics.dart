@@ -184,7 +184,11 @@ class _SongLyricsProvider extends ChangeNotifier {
 }
 
 class SongLyricsProvider extends _SongLyricsProvider with _Filterable, RecentlySearched, Searchable {
-  SongLyricsProvider(DataProvider dataProvider) : super(dataProvider);
+  SongLyricsProvider(DataProvider dataProvider) : super(dataProvider) {
+    _updateRecentlySearched();
+
+    _updateTags();
+  }
 
   SongLyric? get matchedById {
     if (_matchedById == null) return null;

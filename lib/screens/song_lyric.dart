@@ -9,6 +9,7 @@ import 'package:zpevnik/components/song_lyric/song_lyric_files.dart';
 import 'package:zpevnik/components/song_lyric/song_lyric_settings.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
+import 'package:zpevnik/screens/song_lyric/translations.dart';
 import 'package:zpevnik/screens/song_lyric/utils/lyrics_controller.dart';
 
 const double _navigationBarHeight = 48;
@@ -53,6 +54,30 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
         title: Text('${widget.songLyric.id}', style: theme.textTheme.titleMedium),
         centerTitle: false,
         leading: const CustomBackButton(),
+        actions: [
+          if (widget.songLyric.hasTranslations)
+            Highlightable(
+              onTap: () => _pushTranslations(context),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+                child: const Icon(Icons.translate),
+              ),
+            ),
+          Highlightable(
+            onTap: _toggleFavorite,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+              child: const Icon(Icons.star_outline),
+            ),
+          ),
+          Highlightable(
+            onTap: _showMenu,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+              child: const Icon(Icons.more_vert),
+            ),
+          ),
+        ],
         elevation: 1,
       );
 
@@ -119,6 +144,8 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
         _showSettings(context);
         break;
       case 3:
+        // TODO: check if it is from search screen
+        Navigator.of(context).pop();
         break;
     }
   }
@@ -140,6 +167,14 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
       useRootNavigator: true,
     );
   }
+
+  void _pushTranslations(BuildContext context) {
+    Navigator.of(context).pushNamed('/song_lyric/translations', arguments: widget.songLyric);
+  }
+
+  void _toggleFavorite() {}
+
+  void _showMenu() {}
 }
 
 // import 'package:flutter/material.dart';

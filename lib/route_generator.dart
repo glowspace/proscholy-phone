@@ -8,6 +8,7 @@ import 'package:zpevnik/screens/initial.dart';
 import 'package:zpevnik/screens/pdf.dart';
 import 'package:zpevnik/screens/search.dart';
 import 'package:zpevnik/screens/song_lyric.dart';
+import 'package:zpevnik/screens/song_lyric/translations.dart';
 
 import 'models/song_lyric.dart';
 
@@ -30,6 +31,10 @@ class RouteGenerator {
         final songLyric = settings.arguments as SongLyric;
 
         return CustomPageRoute(builder: (_) => SongLyricScreen(songLyric: songLyric));
+      case '/song_lyric/translations':
+        final songLyric = settings.arguments as SongLyric;
+
+        return CustomPageRoute(builder: (_) => TranslationsScreen(songLyric: songLyric));
       case '/pdf':
         final pdf = settings.arguments as External;
 
