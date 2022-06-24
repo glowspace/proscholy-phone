@@ -84,10 +84,8 @@ class _SongLyricSettingsWidget extends State<SongLyricSettingsWidget> {
           ),
         ),
         Highlightable(
-          child: Container(
-            padding: const EdgeInsets.all(kDefaultPadding),
-            child: Text('Resetovat nastavení', style: theme.textTheme.caption),
-          ),
+          padding: const EdgeInsets.all(kDefaultPadding),
+          child: Text('Resetovat nastavení', style: theme.textTheme.caption),
           onTap: widget.controller.resetSettings,
         ),
       ],
@@ -99,18 +97,14 @@ class _SongLyricSettingsWidget extends State<SongLyricSettingsWidget> {
       width: _settingsOptionsWidth,
       child: Row(children: [
         Highlightable(
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 4),
-            child: const Icon(Icons.remove),
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 4),
+          child: const Icon(Icons.remove),
           onTap: () => widget.controller.changeTransposition(-1),
         ),
         Expanded(child: Text('${widget.controller.songLyric.transposition}', textAlign: TextAlign.center)),
         Highlightable(
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 4),
-            child: const Icon(Icons.add),
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 4),
+          child: const Icon(Icons.add),
           onTap: () => widget.controller.changeTransposition(1),
         ),
       ]),

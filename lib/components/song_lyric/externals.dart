@@ -136,32 +136,24 @@ class _ExternalsWidgetState extends State<ExternalsWidget> {
             ),
             Highlightable(
               onTap: playerController.rewind,
-              child: Container(
-                child: const Icon(Icons.fast_rewind),
-                padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-              ),
+              child: const Icon(Icons.fast_rewind),
+              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
             ),
             Highlightable(
               onTap: playerController.isPlaying ? playerController.pause : playerController.play,
-              child: Container(
-                child: Icon(playerController.isPlaying ? Icons.pause : Icons.play_arrow),
-                padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-              ),
+              child: Icon(playerController.isPlaying ? Icons.pause : Icons.play_arrow),
+              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
             ),
             Highlightable(
               onTap: playerController.forward,
-              child: Container(
-                child: const Icon(Icons.fast_forward),
-                padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-              ),
+              child: const Icon(Icons.fast_forward),
+              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
             ),
             const Spacer(),
             Highlightable(
               onTap: _dismiss,
-              child: Container(
-                child: const Icon(Icons.close),
-                padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-              ),
+              child: const Icon(Icons.close),
+              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
             )
           ],
         ),

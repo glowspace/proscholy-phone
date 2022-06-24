@@ -44,11 +44,9 @@ class FilterTag extends StatelessWidget {
           if (isRemovable)
             Highlightable(
               onTap: () => songLyricsProvider.toggleSelectedTag(tag),
-              child: Container(
-                padding: const EdgeInsets.all(kDefaultPadding / 2).copyWith(left: kDefaultPadding / 4),
-                color: theme.colorScheme.primary.withAlpha(0x30),
-                child: const Icon(Icons.close, size: 14),
-              ),
+              padding: const EdgeInsets.all(kDefaultPadding / 2).copyWith(left: kDefaultPadding / 4),
+              color: theme.colorScheme.primary.withAlpha(0x30),
+              child: const Icon(Icons.close, size: 14),
             ),
         ],
       ),

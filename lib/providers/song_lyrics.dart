@@ -167,6 +167,20 @@ mixin _Searchable on SongLyricsProvider {
   }
 }
 
+// TODO: save reordering to db
+mixin Reorderable on SongLyricsProvider {
+  void onReorder(int oldIndex, int newIndex) {
+    if (oldIndex < newIndex) {
+      newIndex -= 1;
+    }
+
+    final songLyric = _songLyrics.removeAt(oldIndex);
+    _songLyrics.insert(newIndex, songLyric);
+
+    notifyListeners();
+  }
+}
+
 abstract class SongLyricsProvider extends ChangeNotifier {
   final DataProvider dataProvider;
 
@@ -236,7 +250,7 @@ class AllSongLyricsProvider extends SongLyricsProvider with _Filterable, _Recent
   }
 }
 
-class PlaylistSongLyricsProvider extends SongLyricsProvider with _Searchable {
+class PlaylistSongLyricsProvider extends SongLyricsProvider with _Searchable, Reorderable {
   final Playlist playlist;
 
   PlaylistSongLyricsProvider(DataProvider dataProvider, this.playlist) : super(dataProvider) {

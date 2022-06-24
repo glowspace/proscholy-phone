@@ -14,6 +14,7 @@ class PlaylistRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Highlightable(
       onTap: () => _pushPlaylist(context),
+      padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
       child: Row(
         children: [
           Icon(playlist.isFavorites ? Icons.star : Icons.playlist_play_rounded, size: _iconSize),

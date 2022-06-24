@@ -104,21 +104,19 @@ class _SignInButtonState extends State<SignInButton> {
       clipBehavior: Clip.antiAlias,
       child: Highlightable(
         onTap: widget.onSignIn,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2, vertical: kDefaultPadding / 3),
-          child: Row(
-            children: [
-              widget.type.logo(theme),
-              const SizedBox(width: kDefaultPadding / 2),
-              Expanded(
-                child: Text(
-                  widget.type.text,
-                  style: widget.type.style(theme),
-                  maxLines: 2,
-                ),
-              )
-            ],
-          ),
+        padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2, vertical: kDefaultPadding / 3),
+        child: Row(
+          children: [
+            widget.type.logo(theme),
+            const SizedBox(width: kDefaultPadding / 2),
+            Expanded(
+              child: Text(
+                widget.type.text,
+                style: widget.type.style(theme),
+                maxLines: 2,
+              ),
+            )
+          ],
         ),
       ),
     );

@@ -58,12 +58,28 @@ class SongLyricsListView<T extends SongLyricsProvider> extends StatelessWidget {
       listViewKey = Key(songLyricsProvider.searchText);
     }
 
-    listItems.addAll(songLyricsProvider.songLyrics.map((songLyric) => (_) => SongLyricRow(songLyric: songLyric)));
+    listItems.addAll(songLyricsProvider.songLyrics.map(
+      (songLyric) => (_) => SongLyricRow(
+            key: Key('${songLyric.id}'),
+            songLyric: songLyric,
+            isReorderable: songLyricsProvider is Reorderable,
+          ),
+    ));
 
-    listItems.add((_) => const SizedBox(height: 2 * kDefaultPadding));
+    if (songLyricsProvider is Reorderable) {
+      return ReorderableListView.builder(
+        key: listViewKey,
+        padding: const EdgeInsets.only(top: kDefaultPadding, bottom: 2 * kDefaultPadding),
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        itemCount: listItems.length,
+        itemBuilder: (context, index) => listItems[index](context),
+        onReorder: songLyricsProvider.onReorder,
+      );
+    }
 
     return ListView.builder(
       key: listViewKey,
+      padding: const EdgeInsets.only(top: kDefaultPadding, bottom: 2 * kDefaultPadding),
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       itemCount: listItems.length,
       itemBuilder: (context, index) => listItems[index](context),

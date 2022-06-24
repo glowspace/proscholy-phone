@@ -41,14 +41,12 @@ class SongLyricFilesWidget extends StatelessWidget {
   Widget _buildFileTile(BuildContext context, External pdf) {
     return Highlightable(
       onTap: () => _pushPdf(context, pdf),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
-        child: Row(children: [
-          const FaIcon(FontAwesomeIcons.filePdf),
-          const SizedBox(width: kDefaultPadding),
-          Expanded(child: Text(pdf.name)),
-        ]),
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
+      child: Row(children: [
+        const FaIcon(FontAwesomeIcons.filePdf),
+        const SizedBox(width: kDefaultPadding),
+        Expanded(child: Text(pdf.name)),
+      ]),
     );
   }
 

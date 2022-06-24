@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:zpevnik/components/custom/back_button.dart';
+import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/search_field.dart';
 import 'package:zpevnik/components/song_lyric/song_lyrics_list_view.dart';
 import 'package:zpevnik/constants.dart';
@@ -13,25 +15,37 @@ class PlaylistScreen extends StatelessWidget {
     final songLyricsProvider = context.read<PlaylistSongLyricsProvider>();
 
     return Scaffold(
+      appBar: AppBar(
+        leading: const CustomBackButton(),
+        title: Text(songLyricsProvider.playlist.name),
+      ),
+      floatingActionButton: _buildFloatingActionButton(context),
       body: SafeArea(
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const SizedBox(height: kDefaultPadding),
-              SearchField(
-                key: const Key('searchfield'),
-                isInsideSearchScreen: true,
-                onChanged: songLyricsProvider.search,
-                onSubmitted: (_) => _maybePushMatchedSonglyric(context),
-              ),
-              const SizedBox(height: kDefaultPadding),
-              const Expanded(child: SongLyricsListView<PlaylistSongLyricsProvider>()),
-            ],
-          ),
+          child: const SongLyricsListView<PlaylistSongLyricsProvider>(),
         ),
+      ),
+    );
+  }
+
+  Widget _buildFloatingActionButton(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(kDefaultRadius),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 1,
+            blurRadius: 4,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: const Highlightable(
+        padding: EdgeInsets.all(kDefaultPadding),
+        child: Icon(Icons.playlist_add),
       ),
     );
   }

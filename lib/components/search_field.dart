@@ -37,10 +37,8 @@ class _SearchFieldState extends State<SearchField> {
     Widget? suffixIcon;
     if (widget.isInsideSearchScreen) {
       suffixIcon = Highlightable(
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-          child: const Icon(Icons.clear),
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+        child: const Icon(Icons.clear),
         onTap: _clearOrPop,
       );
     }

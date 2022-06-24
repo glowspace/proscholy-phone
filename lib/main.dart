@@ -23,13 +23,27 @@ class MainWidget extends StatelessWidget {
     final lightTheme = ThemeData.light().copyWith(
       scaffoldBackgroundColor: CupertinoColors.lightBackgroundGray,
       colorScheme: ColorScheme.fromSeed(seedColor: blue),
+      appBarTheme: ThemeData.light().appBarTheme.copyWith(
+            backgroundColor: CupertinoColors.lightBackgroundGray,
+            shadowColor: Colors.grey,
+            elevation: 1,
+          ),
+      // used for ReorderableListView background color while dragging
+      canvasColor: Colors.transparent,
       splashFactory: NoSplash.splashFactory,
       useMaterial3: true,
     );
 
     final darkTheme = ThemeData.dark().copyWith(
       scaffoldBackgroundColor: Colors.black,
+      appBarTheme: ThemeData.dark().appBarTheme.copyWith(
+            backgroundColor: Colors.black,
+            shadowColor: Colors.grey,
+            elevation: 1,
+          ),
       colorScheme: ColorScheme.fromSeed(seedColor: blue, brightness: Brightness.dark),
+      // used for ReorderableListView background color while dragging
+      canvasColor: Colors.transparent,
       splashFactory: NoSplash.splashFactory,
       useMaterial3: true,
     );
