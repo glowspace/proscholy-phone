@@ -24,8 +24,9 @@ class SongLyricRow extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return Highlightable(
+      highlightBackground: true,
       onTap: () => _pushSongLyric(context),
-      padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
+      padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2, horizontal: kDefaultPadding),
       child: Row(
         children: [
           if (isReorderable)

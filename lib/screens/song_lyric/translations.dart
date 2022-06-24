@@ -61,12 +61,14 @@ class TranslationsScreen extends StatelessWidget {
         ?.copyWith(color: ColorScheme.fromSeed(seedColor: color, brightness: theme.brightness).primary);
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
       padding: const EdgeInsets.only(bottom: kDefaultPadding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(songLyricType.description, style: textStyle),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+            child: Text(songLyricType.description, style: textStyle),
+          ),
           ...songLyrics.map((songLyric) => SongLyricRow(songLyric: songLyric)),
         ],
       ),

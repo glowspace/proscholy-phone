@@ -28,8 +28,6 @@ class MainWidget extends StatelessWidget {
             shadowColor: Colors.grey,
             elevation: 1,
           ),
-      // used for ReorderableListView background color while dragging
-      canvasColor: Colors.transparent,
       splashFactory: NoSplash.splashFactory,
       useMaterial3: true,
     );
@@ -42,8 +40,6 @@ class MainWidget extends StatelessWidget {
             elevation: 1,
           ),
       colorScheme: ColorScheme.fromSeed(seedColor: blue, brightness: Brightness.dark),
-      // used for ReorderableListView background color while dragging
-      canvasColor: Colors.transparent,
       splashFactory: NoSplash.splashFactory,
       useMaterial3: true,
     );

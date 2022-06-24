@@ -66,6 +66,7 @@ class DataProvider extends ChangeNotifier {
 
     // TODO: find out how to load this asynchronously
     // once https://github.com/objectbox/objectbox-dart/issues/340 is fixed it can be run with runInTransactionAsync
+
     _songLyrics = SongLyric.load(store);
 
     _playlists = Playlist.load(store);

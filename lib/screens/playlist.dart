@@ -20,32 +20,22 @@ class PlaylistScreen extends StatelessWidget {
         title: Text(songLyricsProvider.playlist.name),
       ),
       floatingActionButton: _buildFloatingActionButton(context),
-      body: SafeArea(
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-          child: const SongLyricsListView<PlaylistSongLyricsProvider>(),
-        ),
-      ),
+      body: const SafeArea(child: SongLyricsListView<PlaylistSongLyricsProvider>()),
     );
   }
 
   Widget _buildFloatingActionButton(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(kDefaultRadius),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 1,
-            blurRadius: 4,
-            offset: const Offset(0, 3),
-          ),
-        ],
+        boxShadow: const [BoxShadow(color: Colors.grey, blurRadius: 4, offset: Offset(0, 3))],
       ),
-      child: const Highlightable(
-        padding: EdgeInsets.all(kDefaultPadding),
-        child: Icon(Icons.playlist_add),
+      clipBehavior: Clip.antiAlias,
+      child: Highlightable(
+        padding: const EdgeInsets.all(kDefaultPadding),
+        highlightBackground: true,
+        color: Theme.of(context).colorScheme.surface,
+        child: const Icon(Icons.playlist_add),
       ),
     );
   }

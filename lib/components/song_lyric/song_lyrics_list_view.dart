@@ -67,13 +67,16 @@ class SongLyricsListView<T extends SongLyricsProvider> extends StatelessWidget {
     ));
 
     if (songLyricsProvider is Reorderable) {
-      return ReorderableListView.builder(
-        key: listViewKey,
-        padding: const EdgeInsets.only(top: kDefaultPadding, bottom: 2 * kDefaultPadding),
-        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-        itemCount: listItems.length,
-        itemBuilder: (context, index) => listItems[index](context),
-        onReorder: songLyricsProvider.onReorder,
+      return Theme(
+        data: Theme.of(context).copyWith(canvasColor: Colors.transparent),
+        child: ReorderableListView.builder(
+          key: listViewKey,
+          padding: const EdgeInsets.only(top: kDefaultPadding, bottom: 2 * kDefaultPadding),
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          itemCount: listItems.length,
+          itemBuilder: (context, index) => listItems[index](context),
+          onReorder: songLyricsProvider.onReorder,
+        ),
       );
     }
 
@@ -89,6 +92,9 @@ class SongLyricsListView<T extends SongLyricsProvider> extends StatelessWidget {
   Widget _buildHeader(BuildContext context, String title) {
     final theme = Theme.of(context);
 
-    return Text(title, style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.primary));
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+      child: Text(title, style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.primary)),
+    );
   }
 }

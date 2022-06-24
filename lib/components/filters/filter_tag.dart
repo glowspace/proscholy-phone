@@ -27,35 +27,43 @@ class FilterTag extends StatelessWidget {
 
     final songLyricsProvider = context.watch<AllSongLyricsProvider>();
 
-    final child = Container(
-      margin: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 4),
-      padding: padding,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(32),
-        border: isToggable ? Border.all(color: theme.hintColor, width: 0.5) : null,
-        color: (isRemovable || songLyricsProvider.isSelected(tag)) ? theme.colorScheme.primary.withAlpha(0x20) : null,
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(tag.name),
-          if (isRemovable) const SizedBox(width: kDefaultPadding / 2),
-          if (isRemovable)
-            Highlightable(
-              onTap: () => songLyricsProvider.toggleSelectedTag(tag),
-              padding: const EdgeInsets.all(kDefaultPadding / 2).copyWith(left: kDefaultPadding / 4),
-              color: theme.colorScheme.primary.withAlpha(0x30),
-              child: const Icon(Icons.close, size: 14),
-            ),
-        ],
-      ),
+    Widget child = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(tag.name),
+        if (isRemovable) const SizedBox(width: kDefaultPadding / 2),
+        if (isRemovable)
+          Highlightable(
+            highlightBackground: true,
+            onTap: () => songLyricsProvider.toggleSelectedTag(tag),
+            padding: const EdgeInsets.all(kDefaultPadding / 2).copyWith(left: kDefaultPadding / 4),
+            color: theme.colorScheme.primary.withAlpha(0x30),
+            highlightColor: theme.colorScheme.primary.withAlpha(0x30),
+            child: const Icon(Icons.close, size: 14),
+          ),
+      ],
     );
 
     if (isToggable) {
-      return Highlightable(onTap: () => songLyricsProvider.toggleSelectedTag(tag), child: child);
+      child = Highlightable(
+        highlightBackground: true,
+        highlightColor: theme.colorScheme.primary.withAlpha(0x20),
+        onTap: () => songLyricsProvider.toggleSelectedTag(tag),
+        padding: padding,
+        child: child,
+      );
     }
 
-    return child;
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 4),
+      padding: isToggable ? null : padding,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(32),
+        border: isToggable ? Border.all(color: theme.hintColor, width: 0.5) : null,
+        color: (isRemovable || songLyricsProvider.isSelected(tag)) ? theme.colorScheme.primary.withAlpha(0x40) : null,
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: child,
+    );
   }
 }

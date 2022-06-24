@@ -10,7 +10,7 @@ import 'package:zpevnik/components/section.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/data.dart';
 
-const double _avatarSize = 19;
+const double _avatarRadius = 19;
 
 const _maxShowingPlaylists = 3;
 
@@ -49,11 +49,11 @@ class HomeScreen extends StatelessWidget {
   Widget _buildTopSection(BuildContext context) {
     return Row(
       children: [
-        Image.asset('assets/images/title.png', height: 2 * _avatarSize),
+        Image.asset('assets/images/title.png', height: 2 * _avatarRadius),
         const Spacer(),
         const CircleAvatar(
           backgroundImage: AssetImage('assets/images/logos/apple_dark.png'),
-          radius: _avatarSize,
+          radius: _avatarRadius,
         ),
       ],
     );

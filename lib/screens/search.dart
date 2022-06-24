@@ -17,27 +17,33 @@ class SearchScreen extends StatelessWidget {
 
     return Scaffold(
       body: SafeArea(
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const SizedBox(height: kDefaultPadding),
-              Text('Vyhledávání', style: theme.textTheme.titleLarge),
-              const SizedBox(height: kDefaultPadding / 2),
-              SearchField(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: kDefaultPadding),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+              child: Text('Vyhledávání', style: theme.textTheme.titleLarge),
+            ),
+            const SizedBox(height: kDefaultPadding / 2),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+              child: SearchField(
                 key: const Key('searchfield'),
                 isInsideSearchScreen: true,
                 onChanged: songLyricsProvider.search,
                 onSubmitted: (_) => _maybePushMatchedSonglyric(context),
               ),
-              const SizedBox(height: kDefaultPadding),
-              const FiltersRow(),
-              const SizedBox(height: kDefaultPadding / 2),
-              const Expanded(child: SongLyricsListView<AllSongLyricsProvider>()),
-            ],
-          ),
+            ),
+            const SizedBox(height: kDefaultPadding),
+            Container(
+              padding: const EdgeInsets.only(left: kDefaultPadding),
+              child: const FiltersRow(),
+            ),
+            const SizedBox(height: kDefaultPadding / 2),
+            const Expanded(child: SongLyricsListView<AllSongLyricsProvider>()),
+          ],
         ),
       ),
     );
