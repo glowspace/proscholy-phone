@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:zpevnik/custom/sqlite-bm25/bm25.dart';
+import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/providers/data.dart';
@@ -7,7 +10,7 @@ import 'package:zpevnik/providers/data.dart';
 const _recentSongLyricsKey = 'recent_song_lyrics';
 const _maxRecentSongLyrics = 5;
 
-mixin _Filterable on _SongLyricsProvider {
+mixin _Filterable on SongLyricsProvider {
   final Map<TagType, List<Tag>> _selectedTagsByType = {};
   final Map<int, Tag> _selectedTags = {};
 
@@ -40,10 +43,10 @@ mixin _Filterable on _SongLyricsProvider {
     notifyListeners();
   }
 
-  void _updateTags() {
+  void _updateTags(List<Tag> tags) {
     final Map<TagType, List<Tag>> tagsMap = {};
 
-    for (final tag in dataProvider.tags) {
+    for (final tag in tags) {
       if (!tag.type.supported) continue;
 
       final type = tag.type;
@@ -83,13 +86,13 @@ mixin _Filterable on _SongLyricsProvider {
   }
 }
 
-mixin RecentlySearched on _SongLyricsProvider {
+mixin _RecentlySearched on SongLyricsProvider {
   late List<SongLyric> _recentSongLyrics = [];
 
   void _updateRecentlySearched() {
     final songLyrics = dataProvider.prefs
         .getStringList(_recentSongLyricsKey)
-        ?.map((songLyricId) => dataProvider.getSongLyric(int.parse(songLyricId)))
+        ?.map((songLyricId) => _songLyricsMap[int.parse(songLyricId)])
         .where((songLyric) => songLyric != null)
         .toList()
         .cast<SongLyric>();
@@ -110,7 +113,7 @@ mixin RecentlySearched on _SongLyricsProvider {
   }
 }
 
-mixin Searchable on _SongLyricsProvider {
+mixin _Searchable on SongLyricsProvider {
   String _searchText = '';
 
   SongLyric? _matchedById;
@@ -141,7 +144,7 @@ mixin Searchable on _SongLyricsProvider {
     final List<SongLyric> searchResults = [];
 
     for (final value in result) {
-      final songLyric = dataProvider.getSongLyric(value['id']);
+      final songLyric = _songLyricsMap[value['id']];
 
       if (songLyric != null) {
         if (searchText == '${songLyric.id}') {
@@ -164,11 +167,25 @@ mixin Searchable on _SongLyricsProvider {
   }
 }
 
-class _SongLyricsProvider extends ChangeNotifier {
+abstract class SongLyricsProvider extends ChangeNotifier {
   final DataProvider dataProvider;
 
-  _SongLyricsProvider(this.dataProvider) {
+  SongLyricsProvider(this.dataProvider) {
     dataProvider.addListener(_update);
+  }
+
+  late List<SongLyric> _songLyrics;
+  late Map<int, SongLyric> _songLyricsMap;
+
+  List<SongLyric> get songLyrics => _songLyrics;
+
+  void _updateSongLyrics(List<SongLyric> songLyrics) {
+    _songLyrics = songLyrics;
+
+    _songLyricsMap = {};
+    for (final songLyric in songLyrics) {
+      _songLyricsMap[songLyric.id] = songLyric;
+    }
   }
 
   void _update() {
@@ -183,11 +200,13 @@ class _SongLyricsProvider extends ChangeNotifier {
   }
 }
 
-class SongLyricsProvider extends _SongLyricsProvider with _Filterable, RecentlySearched, Searchable {
-  SongLyricsProvider(DataProvider dataProvider) : super(dataProvider) {
+class AllSongLyricsProvider extends SongLyricsProvider with _Filterable, _RecentlySearched, _Searchable {
+  AllSongLyricsProvider(DataProvider dataProvider) : super(dataProvider) {
+    _updateSongLyrics(dataProvider.songLyrics);
+
     _updateRecentlySearched();
 
-    _updateTags();
+    _updateTags(dataProvider.tags);
   }
 
   SongLyric? get matchedById {
@@ -200,15 +219,38 @@ class SongLyricsProvider extends _SongLyricsProvider with _Filterable, RecentlyS
 
   List<SongLyric> get recentSongLyrics => _searchText.isEmpty && _selectedTags.isEmpty ? _recentSongLyrics : [];
 
-  List<SongLyric> get songLyrics => _filter(_searchResults ?? dataProvider.songLyrics);
+  @override
+  List<SongLyric> get songLyrics => _filter(_searchResults ?? super.songLyrics);
 
   List<SongLyric> get songLyricsMatchedBySongbookNumber => _filter(_songLyricsMatchedBySongbookNumber);
 
   @override
   void _update() {
+    _updateSongLyrics(dataProvider.songLyrics);
+
     _updateRecentlySearched();
 
-    _updateTags();
+    _updateTags(dataProvider.tags);
+
+    super._update();
+  }
+}
+
+class PlaylistSongLyricsProvider extends SongLyricsProvider with _Searchable {
+  final Playlist playlist;
+
+  PlaylistSongLyricsProvider(DataProvider dataProvider, this.playlist) : super(dataProvider) {
+    _updateSongLyrics(playlist.songLyrics);
+  }
+
+  SongLyric? get matchedById => _matchedById;
+
+  @override
+  List<SongLyric> get songLyrics => _searchResults ?? super.songLyrics;
+
+  @override
+  void _update() {
+    _updateSongLyrics(playlist.songLyrics);
 
     super._update();
   }

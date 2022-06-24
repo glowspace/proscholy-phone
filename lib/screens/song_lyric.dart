@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:provider/provider.dart';
 import 'package:zpevnik/components/custom/back_button.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/song_lyric/externals_player_wrapper.dart';
@@ -9,7 +10,7 @@ import 'package:zpevnik/components/song_lyric/song_lyric_files.dart';
 import 'package:zpevnik/components/song_lyric/song_lyric_settings.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
-import 'package:zpevnik/screens/song_lyric/translations.dart';
+import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/screens/song_lyric/utils/lyrics_controller.dart';
 
 const double _navigationBarHeight = 48;
@@ -63,11 +64,13 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
                 child: const Icon(Icons.translate),
               ),
             ),
-          Highlightable(
-            onTap: _toggleFavorite,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-              child: const Icon(Icons.star_outline),
+          StatefulBuilder(
+            builder: (context, setState) => Highlightable(
+              onTap: () => setState(() => _toggleFavorite(context)),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+                child: Icon(widget.songLyric.isFavorite ? Icons.star : Icons.star_outline),
+              ),
             ),
           ),
           Highlightable(
@@ -172,7 +175,9 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
     Navigator.of(context).pushNamed('/song_lyric/translations', arguments: widget.songLyric);
   }
 
-  void _toggleFavorite() {}
+  void _toggleFavorite(BuildContext context) {
+    context.read<DataProvider>().toggleFavorite(widget.songLyric);
+  }
 
   void _showMenu() {}
 }

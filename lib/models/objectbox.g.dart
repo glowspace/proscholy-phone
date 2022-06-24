@@ -16,6 +16,8 @@ import 'package:objectbox_flutter_libs/objectbox_flutter_libs.dart';
 import '../models/author.dart';
 import '../models/external.dart';
 import '../models/news_item.dart';
+import '../models/playlist.dart';
+import '../models/playlist_record.dart';
 import '../models/song.dart';
 import '../models/song_lyric.dart';
 import '../models/songbook.dart';
@@ -167,7 +169,7 @@ final _entities = <ModelEntity>[
   ModelEntity(
       id: const IdUid(11, 6447883453535376640),
       name: 'SongLyric',
-      lastPropertyId: const IdUid(15, 9195031951480790049),
+      lastPropertyId: const IdUid(16, 8676940974206202217),
       flags: 0,
       properties: <ModelProperty>[
         ModelProperty(
@@ -256,7 +258,9 @@ final _entities = <ModelEntity>[
       backlinks: <ModelBacklink>[
         ModelBacklink(name: 'externals', srcEntity: 'External', srcField: ''),
         ModelBacklink(
-            name: 'songbookRecords', srcEntity: 'SongbookRecord', srcField: '')
+            name: 'songbookRecords', srcEntity: 'SongbookRecord', srcField: ''),
+        ModelBacklink(
+            name: 'playlistRecords', srcEntity: 'PlaylistRecord', srcField: '')
       ]),
   ModelEntity(
       id: const IdUid(12, 4858060119845349265),
@@ -328,6 +332,61 @@ final _entities = <ModelEntity>[
             flags: 0)
       ],
       relations: <ModelRelation>[],
+      backlinks: <ModelBacklink>[]),
+  ModelEntity(
+      id: const IdUid(16, 2711299414835728808),
+      name: 'Playlist',
+      lastPropertyId: const IdUid(2, 4205856836876740672),
+      flags: 0,
+      properties: <ModelProperty>[
+        ModelProperty(
+            id: const IdUid(1, 5853961398002098718),
+            name: 'id',
+            type: 6,
+            flags: 1),
+        ModelProperty(
+            id: const IdUid(2, 4205856836876740672),
+            name: 'name',
+            type: 9,
+            flags: 0)
+      ],
+      relations: <ModelRelation>[],
+      backlinks: <ModelBacklink>[
+        ModelBacklink(
+            name: 'playlistRecords', srcEntity: 'PlaylistRecord', srcField: '')
+      ]),
+  ModelEntity(
+      id: const IdUid(17, 7654860777539205773),
+      name: 'PlaylistRecord',
+      lastPropertyId: const IdUid(5, 287030318006723005),
+      flags: 0,
+      properties: <ModelProperty>[
+        ModelProperty(
+            id: const IdUid(1, 2084793810234461107),
+            name: 'id',
+            type: 6,
+            flags: 1),
+        ModelProperty(
+            id: const IdUid(3, 3680925814327867808),
+            name: 'songLyricId',
+            type: 11,
+            flags: 520,
+            indexId: const IdUid(12, 1014505544754464940),
+            relationTarget: 'SongLyric'),
+        ModelProperty(
+            id: const IdUid(4, 2837928487534816535),
+            name: 'playlistId',
+            type: 11,
+            flags: 520,
+            indexId: const IdUid(13, 5091625997565988014),
+            relationTarget: 'Playlist'),
+        ModelProperty(
+            id: const IdUid(5, 287030318006723005),
+            name: 'rank',
+            type: 6,
+            flags: 0)
+      ],
+      relations: <ModelRelation>[],
       backlinks: <ModelBacklink>[])
 ];
 
@@ -351,8 +410,8 @@ Future<Store> openStore(
 ModelDefinition getObjectBoxModel() {
   final model = ModelInfo(
       entities: _entities,
-      lastEntityId: const IdUid(13, 34413049226011067),
-      lastIndexId: const IdUid(8, 6416834576335019143),
+      lastEntityId: const IdUid(17, 7654860777539205773),
+      lastIndexId: const IdUid(13, 5091625997565988014),
       lastRelationId: const IdUid(7, 8890618311243611972),
       lastSequenceId: const IdUid(0, 0),
       retiredEntityUids: const [
@@ -360,9 +419,11 @@ ModelDefinition getObjectBoxModel() {
         3997966892313177785,
         4828503391288265608,
         5722656750256100534,
-        3974850738104585390
+        3974850738104585390,
+        7087359921340693986,
+        3574257195436151857
       ],
-      retiredIndexUids: const [],
+      retiredIndexUids: const [9023521533068155021],
       retiredPropertyUids: const [
         1286404604582147955,
         2045942571545498429,
@@ -399,7 +460,21 @@ ModelDefinition getObjectBoxModel() {
         1606944041271966875,
         1676604361532699457,
         3755295400121515026,
-        4796868076728380816
+        4796868076728380816,
+        8676940974206202217,
+        5223295552211929436,
+        4602093041782453470,
+        7304637183893981401,
+        7146339985499275782,
+        5949607464601688600,
+        5480375422880047425,
+        5734157863054487677,
+        8389179145585346838,
+        2057466685170398215,
+        2245087066225826105,
+        5458802551295315336,
+        299538624348525419,
+        7917435652412581048
       ],
       retiredRelationUids: const [
         7916874752771113838,
@@ -632,7 +707,10 @@ ModelDefinition getObjectBoxModel() {
                   object.externals,
               RelInfo<SongbookRecord>.toOneBacklink(7, object.id,
                       (SongbookRecord srcObject) => srcObject.songLyric):
-                  object.songbookRecords
+                  object.songbookRecords,
+              RelInfo<PlaylistRecord>.toOneBacklink(3, object.id,
+                      (PlaylistRecord srcObject) => srcObject.songLyric):
+                  object.playlistRecords
             },
         getId: (SongLyric object) => object.id,
         setId: (SongLyric object, int id) {
@@ -662,7 +740,7 @@ ModelDefinition getObjectBoxModel() {
           final langDescriptionOffset = object.langDescription == null
               ? null
               : fbb.writeString(object.langDescription!);
-          fbb.startTable(16);
+          fbb.startTable(17);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, nameOffset);
           fbb.addOffset(2, secondaryName1Offset);
@@ -726,6 +804,12 @@ ModelDefinition getObjectBoxModel() {
               store,
               RelInfo<SongbookRecord>.toOneBacklink(7, object.id,
                   (SongbookRecord srcObject) => srcObject.songLyric),
+              store.box<SongLyric>());
+          InternalToManyAccess.setRelInfo(
+              object.playlistRecords,
+              store,
+              RelInfo<PlaylistRecord>.toOneBacklink(3, object.id,
+                  (PlaylistRecord srcObject) => srcObject.songLyric),
               store.box<SongLyric>());
           return object;
         }),
@@ -819,6 +903,74 @@ ModelDefinition getObjectBoxModel() {
           object.songLyric.targetId =
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 12, 0);
           object.songLyric.attach(store);
+          return object;
+        }),
+    Playlist: EntityDefinition<Playlist>(
+        model: _entities[8],
+        toOneRelations: (Playlist object) => [],
+        toManyRelations: (Playlist object) => {
+              RelInfo<PlaylistRecord>.toOneBacklink(4, object.id,
+                      (PlaylistRecord srcObject) => srcObject.playlist):
+                  object.playlistRecords
+            },
+        getId: (Playlist object) => object.id,
+        setId: (Playlist object, int id) {
+          object.id = id;
+        },
+        objectToFB: (Playlist object, fb.Builder fbb) {
+          final nameOffset = fbb.writeString(object.name);
+          fbb.startTable(3);
+          fbb.addInt64(0, object.id);
+          fbb.addOffset(1, nameOffset);
+          fbb.finish(fbb.endTable());
+          return object.id;
+        },
+        objectFromFB: (Store store, ByteData fbData) {
+          final buffer = fb.BufferContext(fbData);
+          final rootOffset = buffer.derefObject(0);
+
+          final object = Playlist(const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 6, ''))
+            ..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          InternalToManyAccess.setRelInfo(
+              object.playlistRecords,
+              store,
+              RelInfo<PlaylistRecord>.toOneBacklink(4, object.id,
+                  (PlaylistRecord srcObject) => srcObject.playlist),
+              store.box<Playlist>());
+          return object;
+        }),
+    PlaylistRecord: EntityDefinition<PlaylistRecord>(
+        model: _entities[9],
+        toOneRelations: (PlaylistRecord object) =>
+            [object.songLyric, object.playlist],
+        toManyRelations: (PlaylistRecord object) => {},
+        getId: (PlaylistRecord object) => object.id,
+        setId: (PlaylistRecord object, int id) {
+          object.id = id;
+        },
+        objectToFB: (PlaylistRecord object, fb.Builder fbb) {
+          fbb.startTable(6);
+          fbb.addInt64(0, object.id);
+          fbb.addInt64(2, object.songLyric.targetId);
+          fbb.addInt64(3, object.playlist.targetId);
+          fbb.addInt64(4, object.rank);
+          fbb.finish(fbb.endTable());
+          return object.id;
+        },
+        objectFromFB: (Store store, ByteData fbData) {
+          final buffer = fb.BufferContext(fbData);
+          final rootOffset = buffer.derefObject(0);
+
+          final object = PlaylistRecord(
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 12, 0))
+            ..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          object.songLyric.targetId =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 8, 0);
+          object.songLyric.attach(store);
+          object.playlist.targetId =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 10, 0);
+          object.playlist.attach(store);
           return object;
         })
   };
@@ -1005,4 +1157,32 @@ class External_ {
 
   /// see [External.url]
   static final url = QueryStringProperty<External>(_entities[7].properties[5]);
+}
+
+/// [Playlist] entity fields to define ObjectBox queries.
+class Playlist_ {
+  /// see [Playlist.id]
+  static final id = QueryIntegerProperty<Playlist>(_entities[8].properties[0]);
+
+  /// see [Playlist.name]
+  static final name = QueryStringProperty<Playlist>(_entities[8].properties[1]);
+}
+
+/// [PlaylistRecord] entity fields to define ObjectBox queries.
+class PlaylistRecord_ {
+  /// see [PlaylistRecord.id]
+  static final id =
+      QueryIntegerProperty<PlaylistRecord>(_entities[9].properties[0]);
+
+  /// see [PlaylistRecord.songLyric]
+  static final songLyric =
+      QueryRelationToOne<PlaylistRecord, SongLyric>(_entities[9].properties[1]);
+
+  /// see [PlaylistRecord.playlist]
+  static final playlist =
+      QueryRelationToOne<PlaylistRecord, Playlist>(_entities[9].properties[2]);
+
+  /// see [PlaylistRecord.rank]
+  static final rank =
+      QueryIntegerProperty<PlaylistRecord>(_entities[9].properties[3]);
 }

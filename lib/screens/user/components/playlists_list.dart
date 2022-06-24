@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/providers/playlists.dart';
-import 'package:zpevnik/screens/user/components/playlist_row.dart';
+import 'package:zpevnik/components/playlist/playlist_row.dart';
 
 const _notFoundText = 'Nenalezeny žádné seznamy písní';
 const _noPlaylistText = 'Zatím nemáte vytvořeny žádné seznamy písní';

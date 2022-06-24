@@ -25,7 +25,7 @@ class FilterTag extends StatelessWidget {
         ? const EdgeInsets.only(left: kDefaultPadding)
         : const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2);
 
-    final songLyricsProvider = context.watch<SongLyricsProvider>();
+    final songLyricsProvider = context.watch<AllSongLyricsProvider>();
 
     final child = Container(
       margin: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 4),
@@ -47,7 +47,7 @@ class FilterTag extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.all(kDefaultPadding / 2).copyWith(left: kDefaultPadding / 4),
                 color: theme.colorScheme.primary.withAlpha(0x30),
-                child: const Icon(Icons.close, size: 16),
+                child: const Icon(Icons.close, size: 14),
               ),
             ),
         ],

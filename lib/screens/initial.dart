@@ -134,8 +134,6 @@ class InitialScreen extends StatelessWidget {
         AppleIDAuthorizationScopes.fullName,
       ],
     );
-
-    print(credential);
   }
 
   void _pushHomeScreen(BuildContext context) {

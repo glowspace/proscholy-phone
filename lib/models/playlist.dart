@@ -1,81 +1,58 @@
-import 'package:flutter/material.dart';
-import 'package:zpevnik/models/model.dart' as model;
+import 'package:objectbox/objectbox.dart';
+import 'package:zpevnik/models/objectbox.g.dart';
 import 'package:zpevnik/models/playlist_record.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 
-// wrapper around Playlist db model for easier field access
+const favoritesPlaylistId = 1;
+const _favoritesName = 'Písně s hvězdičkou';
+
+@Entity()
 class Playlist {
-  final model.Playlist entity;
+  int id = 0;
 
-  Playlist(this.entity);
+  final String name;
 
-  static Future<Playlist> create(String name, int rank, {List<int> songLyrics = const []}) async {
-    final entity = model.Playlist(name: name, rank: rank, is_archived: false);
+  @Backlink()
+  final playlistRecords = ToMany<PlaylistRecord>();
 
-    entity.id = await entity.save();
+  Playlist(this.name);
 
-    return Playlist(entity)..addSongLyrics(songLyrics);
+  Playlist.favorite()
+      : id = favoritesPlaylistId,
+        name = _favoritesName;
+
+  static List<Playlist> load(Store store) {
+    return store.box<Playlist>().query(Playlist_.id.notEquals(favoritesPlaylistId)).build().find();
   }
 
-  static Future<List<Playlist>> get playlists async {
-    final entities = await model.Playlist().select().orderBy('rank').toList();
-
-    return entities.map((entity) => Playlist(entity)).toList();
+  static Playlist loadFavorites(Store store) {
+    return store.box<Playlist>().get(favoritesPlaylistId)!;
   }
 
-  final Map<int, PlaylistRecord> records = {};
+  bool get isFavorites => id == favoritesPlaylistId;
 
-  int get id => entity.id ?? 0;
-  String get name => entity.name ?? '';
-  int get rank => entity.rank ?? 0;
-  bool get isArchived => entity.is_archived ?? false;
+  List<SongLyric> get songLyrics => playlistRecords.map((playlistRecord) => playlistRecord.songLyric.target!).toList();
 
-  Key get key => Key(id.toString());
+  void addSongLyric(SongLyric songLyric, int rank) {
+    if (playlistRecords.any((playlistRecord) => playlistRecord.songLyric.target == songLyric)) return;
 
-  set name(String value) {
-    entity.name = value;
-    entity.save();
+    final playlistRecord = PlaylistRecord(rank)
+      ..playlist.target = this
+      ..songLyric.target = songLyric;
+
+    playlistRecords.add(playlistRecord);
+    playlistRecords.applyToDb();
+
+    songLyric.playlistRecords.add(playlistRecord);
   }
 
-  set rank(int value) {
-    entity.rank = value;
-    entity.save();
+  void removeSongLyric(SongLyric songLyric) {
+    playlistRecords.removeWhere((playlistRecord) => playlistRecord.songLyric.target == songLyric);
+    playlistRecords.applyToDb();
+
+    songLyric.playlistRecords.removeWhere((playlistRecord) => playlistRecord.songLyric.target == songLyric);
   }
 
-  set isArchived(bool value) {
-    entity.is_archived = value;
-    entity.save();
-  }
-
-  void addSongLyrics(List<dynamic> songLyricsToAdd) async {
-    for (final songLyric in songLyricsToAdd) {
-      final int songLyricId;
-
-      if (songLyric is SongLyric) {
-        songLyricId = songLyric.id;
-      } else {
-        songLyricId = songLyric;
-      }
-
-      if (!records.containsKey(songLyricId)) {
-        records[songLyricId] = await PlaylistRecord.create(songLyricId, id, records.length);
-      }
-    }
-  }
-
-  void removeSongLyrics(List<SongLyric> songLyrics) {
-    for (final songLyric in songLyrics) {
-      records[songLyric.id]?.entity.delete(true);
-      records.remove(songLyric.id);
-    }
-  }
-
-  void reorderSongLyrics(List<SongLyric> orderedSongLyrics) {
-    int rank = 0;
-
-    // TODO: check if this can be done in batch, also in other places where multiple db changes happen
-    for (final songLyric in orderedSongLyrics) {
-      records[songLyric.id]?.rank = rank++;
-    }
-  }
+  @override
+  String toString() => 'Playlist(id: $id, name: $name)';
 }

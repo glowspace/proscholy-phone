@@ -15,7 +15,7 @@ class FiltersRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final selectedTags = context.watch<SongLyricsProvider>().selectedTags;
+    final selectedTags = context.watch<AllSongLyricsProvider>().selectedTags;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -53,7 +53,9 @@ class FiltersRow extends StatelessWidget {
   }
 
   void _showFilters(BuildContext context) {
-    final songLyricsProvider = context.read<SongLyricsProvider>();
+    final songLyricsProvider = context.read<AllSongLyricsProvider>();
+
+    FocusScope.of(context).unfocus();
 
     showMaterialModalBottomSheet(
       context: context,

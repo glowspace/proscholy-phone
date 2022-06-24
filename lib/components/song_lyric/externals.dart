@@ -75,14 +75,12 @@ class _ExternalsWidgetState extends State<ExternalsWidget> {
                   Expanded(
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-                      child: SingleChildScrollView(
-                        child: ListView.separated(
-                          itemCount: _controllers.length,
-                          itemBuilder: (context, index) => _buildSection(context, _controllers[index]),
-                          separatorBuilder: (context, index) => const SizedBox(height: kDefaultPadding),
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                        ),
+                      child: ListView.separated(
+                        padding: EdgeInsets.zero,
+                        itemCount: _controllers.length,
+                        itemBuilder: (context, index) => _buildSection(context, _controllers[index]),
+                        separatorBuilder: (context, index) => const SizedBox(height: kDefaultPadding),
+                        primary: false,
                       ),
                     ),
                   ),

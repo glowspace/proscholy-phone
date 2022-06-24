@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:zpevnik/components/filters/filters_row.dart';
 import 'package:zpevnik/components/search_field.dart';
 import 'package:zpevnik/components/song_lyric/song_lyrics_list_view.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
 
-class SearchScreen extends StatelessWidget {
-  const SearchScreen({Key? key}) : super(key: key);
+class PlaylistScreen extends StatelessWidget {
+  const PlaylistScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    final songLyricsProvider = context.read<AllSongLyricsProvider>();
+    final songLyricsProvider = context.read<PlaylistSongLyricsProvider>();
 
     return Scaffold(
       body: SafeArea(
@@ -24,8 +21,6 @@ class SearchScreen extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               const SizedBox(height: kDefaultPadding),
-              Text('Vyhledávání', style: theme.textTheme.titleLarge),
-              const SizedBox(height: kDefaultPadding / 2),
               SearchField(
                 key: const Key('searchfield'),
                 isInsideSearchScreen: true,
@@ -33,9 +28,7 @@ class SearchScreen extends StatelessWidget {
                 onSubmitted: (_) => _maybePushMatchedSonglyric(context),
               ),
               const SizedBox(height: kDefaultPadding),
-              const FiltersRow(),
-              const SizedBox(height: kDefaultPadding / 2),
-              const Expanded(child: SongLyricsListView<AllSongLyricsProvider>()),
+              const Expanded(child: SongLyricsListView<PlaylistSongLyricsProvider>()),
             ],
           ),
         ),
@@ -44,11 +37,9 @@ class SearchScreen extends StatelessWidget {
   }
 
   void _maybePushMatchedSonglyric(BuildContext context) {
-    final songLyricsProvider = context.read<AllSongLyricsProvider>();
+    final songLyricsProvider = context.read<PlaylistSongLyricsProvider>();
 
     if (songLyricsProvider.matchedById != null) {
-      songLyricsProvider.addRecentSongLyric(songLyricsProvider.matchedById!);
-
       Navigator.pushNamed(context, '/song_lyric', arguments: songLyricsProvider.matchedById);
     }
   }

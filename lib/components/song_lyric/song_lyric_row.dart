@@ -65,7 +65,7 @@ class SongLyricRow extends StatelessWidget {
   void _pushSongLyric(BuildContext context) {
     FocusScope.of(context).unfocus();
 
-    context.read<SongLyricsProvider?>()?.addRecentSongLyric(songLyric);
+    context.read<AllSongLyricsProvider?>()?.addRecentSongLyric(songLyric);
 
     Navigator.pushNamed(context, '/song_lyric', arguments: songLyric);
   }

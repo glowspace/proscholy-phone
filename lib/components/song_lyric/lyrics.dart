@@ -45,6 +45,7 @@ class _LyricsWidgetState extends State<LyricsWidget> {
     return SingleChildScrollView(
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
+        color: theme.colorScheme.surface,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [

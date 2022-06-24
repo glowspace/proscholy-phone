@@ -28,5 +28,5 @@ class SongbookRecord {
   }
 
   @override
-  String toString() => 'SongbookRecord(id: $id, name: $number)';
+  String toString() => 'SongbookRecord(id: $id, number: $number)';
 }

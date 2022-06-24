@@ -6,50 +6,64 @@ import 'package:zpevnik/providers/song_lyrics.dart';
 
 typedef ListItemBuilder = Widget Function(BuildContext);
 
-class SongLyricsListView extends StatelessWidget {
+class SongLyricsListView<T extends SongLyricsProvider> extends StatelessWidget {
   const SongLyricsListView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final songLyricsProvider = context.watch<SongLyricsProvider>();
+    final songLyricsProvider = context.watch<T>();
 
+    Key? listViewKey;
     final List<ListItemBuilder> listItems = [];
-    if (songLyricsProvider.recentSongLyrics.isNotEmpty) {
-      listItems.add((context) => _buildHeader(context, "POSLEDNÍ PÍSNĚ"));
 
-      listItems
-          .addAll(songLyricsProvider.recentSongLyrics.map((songLyric) => (_) => SongLyricRow(songLyric: songLyric)));
+    if (songLyricsProvider is AllSongLyricsProvider) {
+      listViewKey = Key('${songLyricsProvider.searchText}_${songLyricsProvider.selectedTags.length}');
 
-      listItems.add((_) => const SizedBox(height: 2 * kDefaultPadding));
-    }
+      if (songLyricsProvider.recentSongLyrics.isNotEmpty) {
+        listItems.add((_) => const SizedBox(height: kDefaultPadding / 2));
+        listItems.add((context) => _buildHeader(context, "POSLEDNÍ PÍSNĚ"));
 
-    if (songLyricsProvider.matchedById != null) {
-      listItems.add((_) => SongLyricRow(songLyric: songLyricsProvider.matchedById!));
-      listItems.add((_) => const SizedBox(height: 2 * kDefaultPadding));
-    }
+        listItems
+            .addAll(songLyricsProvider.recentSongLyrics.map((songLyric) => (_) => SongLyricRow(songLyric: songLyric)));
 
-    if (songLyricsProvider.songLyricsMatchedBySongbookNumber.isNotEmpty) {
-      listItems.add((context) => _buildHeader(context, "ČÍSLO ${songLyricsProvider.searchText} VE ZPĚVNÍCÍCH"));
+        listItems.add((_) => const SizedBox(height: 2 * kDefaultPadding));
+      }
 
-      listItems.addAll(songLyricsProvider.songLyricsMatchedBySongbookNumber
-          .map((songLyric) => (_) => SongLyricRow(songLyric: songLyric)));
+      if (songLyricsProvider.matchedById != null) {
+        listItems.add((_) => SongLyricRow(songLyric: songLyricsProvider.matchedById!));
+        listItems.add((_) => const SizedBox(height: 2 * kDefaultPadding));
+      }
 
-      listItems.add((_) => const SizedBox(height: 2 * kDefaultPadding));
-    }
+      if (songLyricsProvider.songLyricsMatchedBySongbookNumber.isNotEmpty) {
+        if (listItems.isEmpty) listItems.add((_) => const SizedBox(height: kDefaultPadding / 2));
+        listItems.add((context) => _buildHeader(context, "ČÍSLO ${songLyricsProvider.searchText} VE ZPĚVNÍCÍCH"));
 
-    if (listItems.isNotEmpty && songLyricsProvider.songLyrics.isNotEmpty) {
-      if (songLyricsProvider.searchText.isEmpty) {
-        listItems.add((context) => _buildHeader(context, "VŠECHNY PÍSNĚ"));
-      } else {
-        listItems.add((context) => _buildHeader(context, "OSTATNÍ VÝSLEDKY"));
+        listItems.addAll(songLyricsProvider.songLyricsMatchedBySongbookNumber
+            .map((songLyric) => (_) => SongLyricRow(songLyric: songLyric)));
+
+        listItems.add((_) => const SizedBox(height: 2 * kDefaultPadding));
+      }
+
+      if (listItems.isNotEmpty && songLyricsProvider.songLyrics.isNotEmpty) {
+        if (listItems.isEmpty) listItems.add((_) => const SizedBox(height: kDefaultPadding / 2));
+        if (songLyricsProvider.searchText.isEmpty) {
+          listItems.add((context) => _buildHeader(context, "VŠECHNY PÍSNĚ"));
+        } else {
+          listItems.add((context) => _buildHeader(context, "OSTATNÍ VÝSLEDKY"));
+        }
       }
     }
 
+    if (songLyricsProvider is PlaylistSongLyricsProvider) {
+      listViewKey = Key(songLyricsProvider.searchText);
+    }
+
     listItems.addAll(songLyricsProvider.songLyrics.map((songLyric) => (_) => SongLyricRow(songLyric: songLyric)));
+
     listItems.add((_) => const SizedBox(height: 2 * kDefaultPadding));
 
     return ListView.builder(
-      key: Key('${songLyricsProvider.searchText}_${songLyricsProvider.selectedTags.length}'),
+      key: listViewKey,
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       itemCount: listItems.length,
       itemBuilder: (context, index) => listItems[index](context),
