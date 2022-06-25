@@ -25,16 +25,18 @@ class PlaylistScreen extends StatelessWidget {
   }
 
   Widget _buildFloatingActionButton(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(kDefaultRadius),
-        boxShadow: const [BoxShadow(color: Colors.grey, blurRadius: 4, offset: Offset(0, 3))],
+        boxShadow: [BoxShadow(color: theme.shadowColor, blurRadius: 4, offset: const Offset(0, 3))],
       ),
       clipBehavior: Clip.antiAlias,
       child: Highlightable(
         padding: const EdgeInsets.all(kDefaultPadding),
         highlightBackground: true,
-        color: Theme.of(context).colorScheme.surface,
+        color: theme.colorScheme.surface,
         child: const Icon(Icons.playlist_add),
       ),
     );

@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/home/news_section.dart';
 import 'package:zpevnik/components/home/update_section.dart';
 import 'package:zpevnik/components/playlist/playlist_row.dart';
@@ -71,6 +72,12 @@ class HomeScreen extends StatelessWidget {
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
       ),
+      action: Highlightable(
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: const [Text('Moje playlisty'), Icon(Icons.navigate_next)],
+        ),
+      ),
     );
   }
 
@@ -79,6 +86,12 @@ class HomeScreen extends StatelessWidget {
       title: 'Sdíleno se mnou',
       child: Row(
         children: [],
+      ),
+      action: Highlightable(
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: const [Text('Všechny sdílené'), Icon(Icons.navigate_next)],
+        ),
       ),
     );
   }

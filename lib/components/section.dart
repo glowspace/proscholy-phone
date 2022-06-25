@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/theme.dart';
 
 class Section extends StatelessWidget {
-  final Widget child;
   final String? title;
+
+  final Widget child;
+  final Widget? action;
 
   final EdgeInsets? margin;
   final EdgeInsets? padding;
 
   const Section({
     Key? key,
-    required this.child,
     this.title,
+    required this.child,
+    this.action,
     this.margin,
     this.padding = const EdgeInsets.all(kDefaultPadding),
   }) : super(key: key);
@@ -35,7 +37,10 @@ class Section extends StatelessWidget {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title!, style: theme.textTheme.titleLarge),
+          Row(children: [
+            Expanded(child: Text(title!, style: theme.textTheme.titleLarge)),
+            if (action != null) action!,
+          ]),
           const SizedBox(height: kDefaultPadding / 2),
           section,
         ],

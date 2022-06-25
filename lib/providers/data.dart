@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zpevnik/models/news_item.dart';
 import 'package:zpevnik/models/objectbox.g.dart';
@@ -8,6 +9,8 @@ import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/models/song_lyrics_search.dart';
 import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/providers/utils/updater.dart';
+
+const _versionKey = 'current_version';
 
 class DataProvider extends ChangeNotifier {
   late final SharedPreferences prefs;
@@ -40,12 +43,7 @@ class DataProvider extends ChangeNotifier {
 
     await songLyricsSearch.init();
 
-    // TODO: only on first run
-    {
-      updater.loadInitial().then((_) => _load());
-
-      store.box<Playlist>().put(Playlist.favorite());
-    }
+    await _load();
   }
 
   void toggleFavorite(SongLyric songLyric) {
@@ -59,6 +57,17 @@ class DataProvider extends ChangeNotifier {
   }
 
   Future<void> _load() async {
+    final currentVersion = prefs.getString(_versionKey);
+    final buildVersion = (await PackageInfo.fromPlatform()).version;
+
+    if (currentVersion != buildVersion) {
+      await updater.loadInitial();
+
+      store.box<Playlist>().put(Playlist.favorite());
+
+      prefs.setString(_versionKey, buildVersion);
+    }
+
     await Future.wait([
       store.runInTransactionAsync(TxMode.read, NewsItem.load, null).then((newsItems) => _newsItems = newsItems),
       store.runInTransactionAsync(TxMode.read, Tag.load, null).then((tags) => _tags = tags),
@@ -78,7 +87,6 @@ class DataProvider extends ChangeNotifier {
     await songLyricsSearch.update(_songLyrics);
 
     _addLanguagesToTags();
-    notifyListeners();
   }
 
   void _addLanguagesToTags() {

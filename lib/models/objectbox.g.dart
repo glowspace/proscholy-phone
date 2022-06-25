@@ -412,7 +412,7 @@ ModelDefinition getObjectBoxModel() {
       entities: _entities,
       lastEntityId: const IdUid(17, 7654860777539205773),
       lastIndexId: const IdUid(13, 5091625997565988014),
-      lastRelationId: const IdUid(7, 8890618311243611972),
+      lastRelationId: const IdUid(8, 1345337331648128811),
       lastSequenceId: const IdUid(0, 0),
       retiredEntityUids: const [
         6628950258912287707,
@@ -479,7 +479,8 @@ ModelDefinition getObjectBoxModel() {
       retiredRelationUids: const [
         7916874752771113838,
         8475939472281092043,
-        908885689419134235
+        908885689419134235,
+        1345337331648128811
       ],
       modelVersion: 5,
       modelVersionParserMinimum: 5,

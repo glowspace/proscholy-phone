@@ -77,6 +77,8 @@ mixin _Filterable on SongLyricsProvider {
         } else {
           shouldAdd &= entry.value.any((tag) => songLyric.tags.contains(tag));
         }
+
+        if (!shouldAdd) break;
       }
 
       if (shouldAdd) filtered.add(songLyric);

@@ -1,3 +1,4 @@
+// ignore: unnecessary_import
 import 'package:objectbox/objectbox.dart';
 import 'package:zpevnik/models/objectbox.g.dart';
 import 'package:zpevnik/models/playlist_record.dart';
