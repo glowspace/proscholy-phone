@@ -4,7 +4,7 @@ import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:zpevnik/components/section.dart';
 import 'package:zpevnik/components/sign_in_button.dart';
 import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/custom/future_builder.dart';
+import 'package:zpevnik/components/custom/future_builder.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/settings.dart';
 import 'package:zpevnik/utils/extensions.dart';

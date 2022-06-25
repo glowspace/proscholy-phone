@@ -5,9 +5,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/settings.dart';
-import 'package:zpevnik/screens/song_lyric/utils/converter.dart';
-import 'package:zpevnik/screens/song_lyric/utils/lyrics_controller.dart';
-import 'package:zpevnik/screens/song_lyric/utils/parser.dart';
+import 'package:zpevnik/components/song_lyric/utils/converter.dart';
+import 'package:zpevnik/components/song_lyric/utils/lyrics_controller.dart';
+import 'package:zpevnik/components/song_lyric/utils/parser.dart';
 import 'package:zpevnik/utils/extensions.dart';
 import 'package:zpevnik/utils/hex_color.dart';
 
@@ -73,6 +73,7 @@ class _LyricsWidgetState extends State<LyricsWidget> {
               padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
               child: _buildAuthors(context),
             ),
+            SizedBox(height: kDefaultPadding * settingsProvider.fontSizeScale),
           ],
         ),
       ),

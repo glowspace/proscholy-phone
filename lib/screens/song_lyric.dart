@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide PopupMenuEntry, PopupMenuItem;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
@@ -7,11 +7,12 @@ import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/song_lyric/externals_player_wrapper.dart';
 import 'package:zpevnik/components/song_lyric/lyrics.dart';
 import 'package:zpevnik/components/song_lyric/song_lyric_files.dart';
+import 'package:zpevnik/components/song_lyric/song_lyric_menu_button.dart';
 import 'package:zpevnik/components/song_lyric/song_lyric_settings.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/data.dart';
-import 'package:zpevnik/screens/song_lyric/utils/lyrics_controller.dart';
+import 'package:zpevnik/components/song_lyric/utils/lyrics_controller.dart';
 
 const double _navigationBarHeight = 48;
 
@@ -69,11 +70,7 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
               child: Icon(widget.songLyric.isFavorite ? Icons.star : Icons.star_outline),
             ),
           ),
-          Highlightable(
-            onTap: _showMenu,
-            padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-            child: const Icon(Icons.more_vert),
-          ),
+          SongLyricMenuButton(songLyric: widget.songLyric),
         ],
       );
 
@@ -98,7 +95,18 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
         children: [
           Scaffold(
             appBar: appBar,
-            body: SafeArea(child: _buildLyrics(context)),
+            body: SafeArea(
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  _buildLyrics(context),
+                  // Positioned(
+                  //   right: 0,
+                  //   child: SongLyricMenu(lyricsController: _lyricsController, isShowing: true),
+                  // ),
+                ],
+              ),
+            ),
             bottomNavigationBar: navigationBar,
           ),
           ExternalsPlayerWrapper(
@@ -171,6 +179,4 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
   void _toggleFavorite(BuildContext context) {
     context.read<DataProvider>().toggleFavorite(widget.songLyric);
   }
-
-  void _showMenu() {}
 }

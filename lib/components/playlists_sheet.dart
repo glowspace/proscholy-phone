@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:zpevnik/models/song_lyric.dart';
-import 'package:zpevnik/platform/components/dialog.dart';
-import 'package:zpevnik/providers/playlists.dart';
-import 'package:zpevnik/components/bottom_form_sheet.dart';
+import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/icon_item.dart';
+import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/models/song_lyric.dart';
 
 class PlaylistsSheet extends StatefulWidget {
   final List<SongLyric> selectedSongLyrics;
@@ -18,36 +16,32 @@ class PlaylistsSheet extends StatefulWidget {
 class _PlaylistsSheetState extends State<PlaylistsSheet> {
   @override
   Widget build(BuildContext context) {
-    return BottomFormSheet(
-      title: 'Playlisty',
-      contentPadding: EdgeInsets.zero,
-      items: [
-        IconItem(title: 'Nový playlist', icon: Icons.add, onTap: showPlaylistDialog),
-        Consumer<PlaylistsProvider>(
-          builder: (_, provider, __) => ListView.builder(
-            itemBuilder: (context, index) => IconItem(
-              title: provider.playlists[index].name,
-              onTap: () {
-                provider.playlists[index].addSongLyrics(widget.selectedSongLyrics);
-
-                Navigator.pop(context);
-              },
+    return Wrap(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(kDefaultPadding).copyWith(bottom: kDefaultPadding / 2),
+          child: Text('Playlisty', style: Theme.of(context).textTheme.titleLarge),
+        ),
+        SingleChildScrollView(
+          child: Column(children: [
+            Highlightable(
+              onTap: showPlaylistDialog,
+              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
+              child: const IconItem(text: 'Nový playlist', icon: Icons.add),
             ),
-            itemCount: provider.playlists.length,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-          ),
+            const SizedBox(height: kDefaultPadding),
+          ]),
         ),
       ],
     );
   }
 
   void showPlaylistDialog() async {
-    final name = await showPlatformDialog<String>(
-      context,
-      (context) => PlatformDialog(title: 'Vytvořit playlist', submitText: 'Vytvořit'),
-    );
+    // final name = await showPlatformDialog<String>(
+    //   context,
+    //   (context) => PlatformDialog(title: 'Vytvořit playlist', submitText: 'Vytvořit'),
+    // );
 
-    if (name != null) context.read<PlaylistsProvider>().addPlaylist(name);
+    // if (name != null) context.read<PlaylistsProvider>().addPlaylist(name);
   }
 }

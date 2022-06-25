@@ -1,14 +1,11 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/components/font_size_slider.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/selector_widget.dart';
-import 'package:zpevnik/screens/song_lyric/utils/lyrics_controller.dart';
+import 'package:zpevnik/components/song_lyric/utils/lyrics_controller.dart';
 
 const double _settingsOptionsWidth = 100;
-const double _settingsMaxHeight = 300;
 
 class SongLyricSettingsWidget extends StatefulWidget {
   final LyricsController controller;

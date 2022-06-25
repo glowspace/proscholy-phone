@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zpevnik/models/song_lyric.dart';
-import 'package:zpevnik/screens/song_lyric/utils/converter.dart';
+import 'package:zpevnik/components/song_lyric/utils/converter.dart';
 
 abstract class Token {}
 

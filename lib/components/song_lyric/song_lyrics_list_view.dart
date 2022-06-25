@@ -71,6 +71,7 @@ class SongLyricsListView<T extends SongLyricsProvider> extends StatelessWidget {
         data: Theme.of(context).copyWith(canvasColor: Colors.transparent),
         child: ReorderableListView.builder(
           key: listViewKey,
+          primary: false,
           padding: const EdgeInsets.only(top: kDefaultPadding, bottom: 2 * kDefaultPadding),
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           itemCount: listItems.length,
@@ -82,6 +83,7 @@ class SongLyricsListView<T extends SongLyricsProvider> extends StatelessWidget {
 
     return ListView.builder(
       key: listViewKey,
+      primary: false,
       padding: const EdgeInsets.only(top: kDefaultPadding, bottom: 2 * kDefaultPadding),
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       itemCount: listItems.length,

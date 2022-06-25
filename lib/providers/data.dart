@@ -14,6 +14,7 @@ const _versionKey = 'current_version';
 
 class DataProvider extends ChangeNotifier {
   late final SharedPreferences prefs;
+  late final PackageInfo packageInfo;
 
   late final Store store;
 
@@ -34,6 +35,7 @@ class DataProvider extends ChangeNotifier {
 
   Future<void> init() async {
     prefs = await SharedPreferences.getInstance();
+    packageInfo = await PackageInfo.fromPlatform();
 
     store = await openStore();
 
@@ -58,7 +60,7 @@ class DataProvider extends ChangeNotifier {
 
   Future<void> _load() async {
     final currentVersion = prefs.getString(_versionKey);
-    final buildVersion = (await PackageInfo.fromPlatform()).version;
+    final buildVersion = packageInfo.version;
 
     if (currentVersion != buildVersion) {
       await updater.loadInitial();

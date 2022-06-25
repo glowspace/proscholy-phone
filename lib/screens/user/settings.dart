@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/custom/future_builder.dart';
+import 'package:zpevnik/components/custom/future_builder.dart';
 import 'package:zpevnik/platform/components/navigation_bar.dart';
 import 'package:zpevnik/platform/components/scaffold.dart';
 import 'package:zpevnik/platform/components/switch.dart';
