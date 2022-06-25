@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart' hide PopupMenuEntry, PopupMenuItem;
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
@@ -59,7 +57,7 @@ class SongLyricMenuButton extends StatelessWidget {
     if (action == null) return;
 
     final version = context.read<DataProvider>().packageInfo.version;
-    final platform = Platform.isIOS ? 'iOS' : 'android';
+    final platform = Theme.of(context).platform == TargetPlatform.iOS ? 'iOS' : 'android';
 
     switch (action) {
       case SongLyricMenuAction.addToPlaylist:
@@ -81,7 +79,7 @@ class SongLyricMenuButton extends StatelessWidget {
     showMaterialModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(kDefaultRadius))),
-      builder: (context) => PlaylistsSheet(selectedSongLyrics: [songLyric]),
+      builder: (context) => PlaylistsSheet(selectedSongLyric: songLyric),
       useRootNavigator: true,
     );
   }

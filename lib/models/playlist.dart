@@ -13,14 +13,17 @@ class Playlist {
 
   final String name;
 
+  int rank;
+
   @Backlink()
   final playlistRecords = ToMany<PlaylistRecord>();
 
-  Playlist(this.name);
+  Playlist(this.name, this.rank);
 
   Playlist.favorite()
       : id = favoritesPlaylistId,
-        name = _favoritesName;
+        name = _favoritesName,
+        rank = 0;
 
   static List<Playlist> load(Store store) {
     return store.box<Playlist>().query(Playlist_.id.notEquals(favoritesPlaylistId)).build().find();
@@ -28,6 +31,15 @@ class Playlist {
 
   static Playlist loadFavorites(Store store) {
     return store.box<Playlist>().get(favoritesPlaylistId)!;
+  }
+
+  static int nextRank(Store store) {
+    final query = store.box<Playlist>().query();
+    query.order(Playlist_.rank);
+
+    final rank = query.build().findFirst()?.rank ?? 0;
+
+    return rank + 1;
   }
 
   bool get isFavorites => id == favoritesPlaylistId;

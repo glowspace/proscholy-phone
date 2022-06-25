@@ -8,7 +8,7 @@ import 'package:zpevnik/models/playlist.dart';
 class PlaylistRecord {
   int id = 0;
 
-  final int rank;
+  int rank;
 
   final songLyric = ToOne<SongLyric>();
   final playlist = ToOne<Playlist>();

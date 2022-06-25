@@ -33,6 +33,8 @@ class DataProvider extends ChangeNotifier {
   List<Tag> get tags => _tags;
   List<Playlist> get playlists => _playlists;
 
+  Playlist get favorites => _favorites;
+
   Future<void> init() async {
     prefs = await SharedPreferences.getInstance();
     packageInfo = await PackageInfo.fromPlatform();
@@ -56,6 +58,21 @@ class DataProvider extends ChangeNotifier {
 
       _favorites.addSongLyric(songLyric, rank);
     }
+  }
+
+  void createPlaylist(String name) {
+    final playlist = Playlist(name, Playlist.nextRank(store));
+
+    store.box<Playlist>().put(playlist);
+    _playlists.add(playlist);
+
+    notifyListeners();
+  }
+
+  void addToPlaylist(SongLyric songLyric, Playlist playlist) {
+    final rank = PlaylistRecord.nextRank(store, playlist);
+
+    playlist.addSongLyric(songLyric, rank);
   }
 
   Future<void> _load() async {
@@ -82,8 +99,6 @@ class DataProvider extends ChangeNotifier {
 
     _playlists = Playlist.load(store);
     _favorites = Playlist.loadFavorites(store);
-
-    _playlists.insert(0, _favorites);
 
     // TODO: do this only for updated songlyrics
     await songLyricsSearch.update(_songLyrics);

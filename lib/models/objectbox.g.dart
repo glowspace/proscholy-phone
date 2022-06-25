@@ -336,7 +336,7 @@ final _entities = <ModelEntity>[
   ModelEntity(
       id: const IdUid(16, 2711299414835728808),
       name: 'Playlist',
-      lastPropertyId: const IdUid(2, 4205856836876740672),
+      lastPropertyId: const IdUid(3, 8873413204595320183),
       flags: 0,
       properties: <ModelProperty>[
         ModelProperty(
@@ -348,6 +348,11 @@ final _entities = <ModelEntity>[
             id: const IdUid(2, 4205856836876740672),
             name: 'name',
             type: 9,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(3, 8873413204595320183),
+            name: 'rank',
+            type: 6,
             flags: 0)
       ],
       relations: <ModelRelation>[],
@@ -920,9 +925,10 @@ ModelDefinition getObjectBoxModel() {
         },
         objectToFB: (Playlist object, fb.Builder fbb) {
           final nameOffset = fbb.writeString(object.name);
-          fbb.startTable(3);
+          fbb.startTable(4);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, nameOffset);
+          fbb.addInt64(2, object.rank);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -930,8 +936,10 @@ ModelDefinition getObjectBoxModel() {
           final buffer = fb.BufferContext(fbData);
           final rootOffset = buffer.derefObject(0);
 
-          final object = Playlist(const fb.StringReader(asciiOptimization: true)
-              .vTableGet(buffer, rootOffset, 6, ''))
+          final object = Playlist(
+              const fb.StringReader(asciiOptimization: true)
+                  .vTableGet(buffer, rootOffset, 6, ''),
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 8, 0))
             ..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
           InternalToManyAccess.setRelInfo(
               object.playlistRecords,
@@ -1167,6 +1175,10 @@ class Playlist_ {
 
   /// see [Playlist.name]
   static final name = QueryStringProperty<Playlist>(_entities[8].properties[1]);
+
+  /// see [Playlist.rank]
+  static final rank =
+      QueryIntegerProperty<Playlist>(_entities[8].properties[2]);
 }
 
 /// [PlaylistRecord] entity fields to define ObjectBox queries.

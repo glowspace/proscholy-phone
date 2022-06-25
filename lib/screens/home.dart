@@ -61,14 +61,15 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _buildSongListsSection(BuildContext context) {
-    final playlists = context.watch<DataProvider>().playlists;
+    final dataProvider = context.watch<DataProvider>();
+    final playlists = [dataProvider.favorites] + dataProvider.playlists;
 
     return Section(
       title: 'Moje seznamy',
       child: ListView.separated(
         itemCount: min(_maxShowingPlaylists, playlists.length),
         itemBuilder: (_, index) => PlaylistRow(playlist: playlists[index]),
-        separatorBuilder: (_, __) => const Divider(),
+        separatorBuilder: (_, __) => const Divider(height: kDefaultPadding / 2),
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
       ),
