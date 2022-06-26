@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart' hide showMenu, PopupMenuItem, PopupMenuEntry;
+import 'package:flutter/material.dart' hide showMenu, PopupMenuItem, PopupMenuEntry, PopupMenuPosition;
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/custom/popup_menu.dart';
@@ -6,28 +6,39 @@ import 'package:zpevnik/custom/popup_menu.dart';
 class CustomPopupMenuButton<T> extends StatelessWidget {
   final List<PopupMenuEntry<T>> items;
   final Function(BuildContext, T?) onSelected;
+  final PopupMenuPosition menuPosition;
+  final ShapeBorder? shape;
 
   const CustomPopupMenuButton({
     Key? key,
     required this.items,
     required this.onSelected,
+    this.menuPosition = PopupMenuPosition.under,
+    this.shape,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Highlightable(
       onTap: () => _showMenu(context),
-      padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+      padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2, horizontal: kDefaultPadding),
       child: const Icon(Icons.more_vert),
     );
   }
 
   void _showMenu(BuildContext context) {
-    final theme = Theme.of(context);
-
     final button = context.findRenderObject()! as RenderBox;
     final overlay = Navigator.of(context).overlay!.context.findRenderObject()! as RenderBox;
-    final offset = Offset(0.0, button.size.height);
+
+    final Offset offset;
+    switch (menuPosition) {
+      case PopupMenuPosition.over:
+        offset = const Offset(0, 0);
+        break;
+      case PopupMenuPosition.under:
+        offset = Offset(0.0, button.size.height);
+        break;
+    }
 
     final position = RelativeRect.fromRect(
       Rect.fromPoints(
@@ -37,13 +48,7 @@ class CustomPopupMenuButton<T> extends StatelessWidget {
       Offset.zero & overlay.size,
     );
 
-    final borderSide = BorderSide(color: theme.dividerColor);
-
-    showMenu(
-      context: context,
-      items: items,
-      shape: Border(bottom: borderSide, left: borderSide),
-      position: position,
-    ).then((value) => onSelected(context, value));
+    showMenu(context: context, items: items, shape: shape, position: position)
+        .then((value) => onSelected(context, value));
   }
 }

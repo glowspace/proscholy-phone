@@ -9,7 +9,6 @@ import 'package:zpevnik/components/song_lyric/utils/converter.dart';
 import 'package:zpevnik/components/song_lyric/utils/lyrics_controller.dart';
 import 'package:zpevnik/components/song_lyric/utils/parser.dart';
 import 'package:zpevnik/utils/extensions.dart';
-import 'package:zpevnik/utils/hex_color.dart';
 
 class LyricsWidget extends StatefulWidget {
   final LyricsController controller;

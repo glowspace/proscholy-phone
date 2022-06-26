@@ -23,16 +23,21 @@ class SongLyricRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
 
+    final dragIndicatorKey = GlobalKey();
+
     return Highlightable(
       highlightBackground: true,
+      highlightableChildKeys: [dragIndicatorKey],
       onTap: () => _pushSongLyric(context),
-      padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2, horizontal: kDefaultPadding),
+      padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2, horizontal: kDefaultPadding)
+          .copyWith(left: isReorderable ? 0 : kDefaultPadding),
       child: Row(
         children: [
           if (isReorderable)
             ReorderableDragStartListener(
+              key: dragIndicatorKey,
               child: Container(
-                padding: const EdgeInsets.only(right: kDefaultPadding),
+                padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
                 child: const Icon(Icons.drag_indicator),
               ),
               index: 0,

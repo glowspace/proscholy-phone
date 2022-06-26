@@ -25,5 +25,6 @@ class PlaylistRecord {
   }
 
   @override
-  String toString() => 'PlaylistRecord(id: $id, rank: $rank)';
+  String toString() =>
+      'PlaylistRecord(id: $id, rank: $rank, songLyric: ${songLyric.targetId}, playlist: ${playlist.targetId})';
 }

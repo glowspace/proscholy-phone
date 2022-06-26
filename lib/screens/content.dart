@@ -43,6 +43,8 @@ class _ContentScreenState extends State<ContentScreen> {
   void _onDestinationSelected(int index) {
     if (index == 1) {
       Navigator.of(context).pushNamed('/search');
+    } else if (index == 2) {
+      Navigator.of(context).pushNamed('/playlists');
     } else {
       setState(() => _currentIndex = index);
     }

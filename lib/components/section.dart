@@ -26,10 +26,8 @@ class Section extends StatelessWidget {
     final section = Container(
       margin: margin,
       padding: padding,
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(kDefaultRadius),
-      ),
+      decoration: BoxDecoration(color: theme.colorScheme.surface, borderRadius: BorderRadius.circular(kDefaultRadius)),
+      clipBehavior: Clip.antiAlias,
       child: child,
     );
 

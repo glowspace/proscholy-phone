@@ -3,8 +3,6 @@ import 'package:zpevnik/components/custom/back_button.dart';
 import 'package:zpevnik/components/song_lyric/song_lyric_row.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
-import 'package:zpevnik/platform/components/navigation_bar.dart';
-import 'package:zpevnik/platform/components/scaffold.dart';
 
 class TranslationsScreen extends StatelessWidget {
   final SongLyric songLyric;

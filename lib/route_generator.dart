@@ -2,17 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/models/external.dart';
 import 'package:zpevnik/models/playlist.dart';
+import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/data.dart';
+import 'package:zpevnik/providers/playlists.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
 import 'package:zpevnik/screens/content.dart';
 import 'package:zpevnik/screens/initial.dart';
 import 'package:zpevnik/screens/pdf.dart';
 import 'package:zpevnik/screens/playlist.dart';
+import 'package:zpevnik/screens/playlists.dart';
 import 'package:zpevnik/screens/search.dart';
 import 'package:zpevnik/screens/song_lyric.dart';
 import 'package:zpevnik/screens/song_lyric/translations.dart';
-
-import 'models/song_lyric.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -28,10 +29,12 @@ class RouteGenerator {
       case '/playlist':
         final playlist = settings.arguments as Playlist;
 
+        return CustomPageRoute(builder: (_) => PlaylistScreen(playlist: playlist));
+      case '/playlists':
         return CustomPageRoute(
           builder: (_) => ChangeNotifierProvider(
-            create: (context) => PlaylistSongLyricsProvider(context.read<DataProvider>(), playlist),
-            builder: (_, __) => const PlaylistScreen(),
+            create: (context) => PlaylistsProvider(context.read<DataProvider>().playlists),
+            builder: (_, __) => const PlaylistsScreen(),
           ),
         );
       case '/search':

@@ -72,7 +72,7 @@ class SongLyricsListView<T extends SongLyricsProvider> extends StatelessWidget {
         child: ReorderableListView.builder(
           key: listViewKey,
           primary: false,
-          padding: const EdgeInsets.only(top: kDefaultPadding, bottom: 2 * kDefaultPadding),
+          padding: const EdgeInsets.only(top: kDefaultPadding / 2, bottom: 2 * kDefaultPadding),
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           itemCount: listItems.length,
           itemBuilder: (context, index) => listItems[index](context),
@@ -84,7 +84,7 @@ class SongLyricsListView<T extends SongLyricsProvider> extends StatelessWidget {
     return ListView.builder(
       key: listViewKey,
       primary: false,
-      padding: const EdgeInsets.only(top: kDefaultPadding, bottom: 2 * kDefaultPadding),
+      padding: const EdgeInsets.only(top: kDefaultPadding / 2, bottom: 2 * kDefaultPadding),
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       itemCount: listItems.length,
       itemBuilder: (context, index) => listItems[index](context),

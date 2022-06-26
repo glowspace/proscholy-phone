@@ -336,14 +336,14 @@ final _entities = <ModelEntity>[
   ModelEntity(
       id: const IdUid(16, 2711299414835728808),
       name: 'Playlist',
-      lastPropertyId: const IdUid(3, 8873413204595320183),
+      lastPropertyId: const IdUid(4, 344917746087617944),
       flags: 0,
       properties: <ModelProperty>[
         ModelProperty(
             id: const IdUid(1, 5853961398002098718),
             name: 'id',
             type: 6,
-            flags: 1),
+            flags: 129),
         ModelProperty(
             id: const IdUid(2, 4205856836876740672),
             name: 'name',
@@ -353,6 +353,11 @@ final _entities = <ModelEntity>[
             id: const IdUid(3, 8873413204595320183),
             name: 'rank',
             type: 6,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(4, 344917746087617944),
+            name: 'isArchived',
+            type: 1,
             flags: 0)
       ],
       relations: <ModelRelation>[],
@@ -925,10 +930,11 @@ ModelDefinition getObjectBoxModel() {
         },
         objectToFB: (Playlist object, fb.Builder fbb) {
           final nameOffset = fbb.writeString(object.name);
-          fbb.startTable(4);
+          fbb.startTable(5);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, nameOffset);
           fbb.addInt64(2, object.rank);
+          fbb.addBool(3, object.isArchived);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -940,7 +946,9 @@ ModelDefinition getObjectBoxModel() {
               const fb.StringReader(asciiOptimization: true)
                   .vTableGet(buffer, rootOffset, 6, ''),
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 8, 0))
-            ..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+            ..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0)
+            ..isArchived =
+                const fb.BoolReader().vTableGet(buffer, rootOffset, 10, false);
           InternalToManyAccess.setRelInfo(
               object.playlistRecords,
               store,
@@ -1179,6 +1187,10 @@ class Playlist_ {
   /// see [Playlist.rank]
   static final rank =
       QueryIntegerProperty<Playlist>(_entities[8].properties[2]);
+
+  /// see [Playlist.isArchived]
+  static final isArchived =
+      QueryBooleanProperty<Playlist>(_entities[8].properties[3]);
 }
 
 /// [PlaylistRecord] entity fields to define ObjectBox queries.

@@ -12,6 +12,7 @@ import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/data.dart';
 
 const double _avatarRadius = 19;
+const double _navigateNextIconSize = 20;
 
 const _maxShowingPlaylists = 3;
 
@@ -69,14 +70,18 @@ class HomeScreen extends StatelessWidget {
       child: ListView.separated(
         itemCount: min(_maxShowingPlaylists, playlists.length),
         itemBuilder: (_, index) => PlaylistRow(playlist: playlists[index]),
-        separatorBuilder: (_, __) => const Divider(height: kDefaultPadding / 2),
+        separatorBuilder: (_, __) => const Divider(height: 0),
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
       ),
       action: Highlightable(
+        onTap: () => _pushPlaylistsScreen(context),
         child: Row(
           mainAxisSize: MainAxisSize.min,
-          children: const [Text('Moje playlisty'), Icon(Icons.navigate_next)],
+          children: [
+            Text('Všechny seznamy', style: Theme.of(context).textTheme.bodySmall),
+            const Icon(Icons.navigate_next, size: _navigateNextIconSize),
+          ],
         ),
       ),
     );
@@ -91,9 +96,16 @@ class HomeScreen extends StatelessWidget {
       action: Highlightable(
         child: Row(
           mainAxisSize: MainAxisSize.min,
-          children: const [Text('Všechny sdílené'), Icon(Icons.navigate_next)],
+          children: [
+            Text('Všechny sdílené', style: Theme.of(context).textTheme.bodySmall),
+            const Icon(Icons.navigate_next, size: _navigateNextIconSize),
+          ],
         ),
       ),
     );
+  }
+
+  void _pushPlaylistsScreen(BuildContext context) {
+    Navigator.pushNamed(context, '/playlists');
   }
 }

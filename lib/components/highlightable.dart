@@ -14,7 +14,7 @@ class Highlightable extends StatefulWidget {
   final bool highlightBackground;
 
   // to ignore highlight when highlightable child should be highlighted
-  final GlobalKey? highlightableChildKey;
+  final List<GlobalKey>? highlightableChildKeys;
 
   const Highlightable({
     Key? key,
@@ -25,7 +25,7 @@ class Highlightable extends StatefulWidget {
     this.highlightColor,
     this.padding,
     this.highlightBackground = false,
-    this.highlightableChildKey,
+    this.highlightableChildKeys,
   }) : super(key: key);
 
   @override
@@ -70,12 +70,16 @@ class _HighlightableState extends State<Highlightable> {
   }
 
   bool _containsChild(DragDownDetails details) {
-    final RenderBox? renderBox = widget.highlightableChildKey?.currentContext?.findRenderObject() as RenderBox?;
+    if (widget.highlightableChildKeys == null) return false;
 
-    if (renderBox != null) {
-      final rectangle = renderBox.localToGlobal(Offset.zero) & renderBox.size;
+    for (final key in widget.highlightableChildKeys!) {
+      final renderBox = key.currentContext?.findRenderObject() as RenderBox?;
 
-      return rectangle.contains(details.globalPosition);
+      if (renderBox != null) {
+        final rectangle = renderBox.localToGlobal(Offset.zero) & renderBox.size;
+
+        if (rectangle.contains(details.globalPosition)) return true;
+      }
     }
 
     return false;

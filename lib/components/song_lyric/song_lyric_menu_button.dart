@@ -5,7 +5,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:zpevnik/components/custom/popup_menu_button.dart';
 import 'package:zpevnik/components/icon_item.dart';
-import 'package:zpevnik/components/playlists_sheet.dart';
+import 'package:zpevnik/components/playlist/playlists_sheet.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/custom/popup_menu.dart';
 import 'package:zpevnik/links.dart';
@@ -26,7 +26,13 @@ class SongLyricMenuButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPopupMenuButton(items: _buildPopupMenuItems(context), onSelected: _selectedAction);
+    final borderSide = BorderSide(color: Theme.of(context).dividerColor);
+
+    return CustomPopupMenuButton(
+      items: _buildPopupMenuItems(context),
+      onSelected: _selectedAction,
+      shape: Border(bottom: borderSide, left: borderSide),
+    );
   }
 
   List<PopupMenuEntry<SongLyricMenuAction>> _buildPopupMenuItems(BuildContext context) {

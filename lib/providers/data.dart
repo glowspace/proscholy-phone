@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:path/path.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:zpevnik/models/news_item.dart';
 import 'package:zpevnik/models/objectbox.g.dart';
 import 'package:zpevnik/models/playlist.dart';
@@ -104,6 +106,13 @@ class DataProvider extends ChangeNotifier {
     await songLyricsSearch.update(_songLyrics);
 
     _addLanguagesToTags();
+
+    if (currentVersion == null) {
+      try {
+        await _migrateOldDB();
+        // ignore: empty_catches
+      } catch (e) {}
+    }
   }
 
   void _addLanguagesToTags() {
@@ -130,6 +139,48 @@ class DataProvider extends ChangeNotifier {
     languageTags.sort((first, second) => languages[second.name]!.compareTo(languages[first.name]!));
 
     _tags.addAll(languageTags);
+  }
+
+  Future<void> _migrateOldDB() async {
+    final db = await openDatabase(join(await getDatabasesPath(), 'zpevnik_proscholy.db'));
+
+    final oldFavorites =
+        await db.query('song_lyrics', columns: ['id', 'favorite_rank'], where: 'favorite_rank IS NOT NULL');
+    final oldPlaylists = await db.query('playlists', columns: ['id', 'name', 'rank', 'is_archived'], orderBy: 'rank');
+    final oldPlaylistRecords =
+        await db.query('playlist_records', columns: ['rank', 'playlistsId', 'song_lyricsId'], orderBy: 'rank');
+
+    final List<Playlist> playlists = [];
+    final List<PlaylistRecord> playlistRecords = [];
+
+    for (final oldFavorite in oldFavorites) {
+      final playlistRecord = PlaylistRecord(oldFavorite['favorite_rank'] as int)
+        ..songLyric.targetId = oldFavorite['id'] as int
+        ..playlist.target = _favorites;
+
+      playlistRecords.add(playlistRecord);
+    }
+
+    for (final oldPlaylist in oldPlaylists) {
+      final playlist = Playlist(oldPlaylist['name'] as String, oldPlaylist['rank'] as int)
+        ..id = (oldPlaylist['id'] as int) + 1
+        ..isArchived = oldPlaylist['is_archived'] as int == 1;
+
+      playlists.add(playlist);
+    }
+
+    for (final oldPlaylistRecord in oldPlaylistRecords) {
+      final playlistRecord = PlaylistRecord(oldPlaylistRecord['rank'] as int)
+        ..songLyric.targetId = oldPlaylistRecord['song_lyricsId'] as int
+        ..playlist.targetId = (oldPlaylistRecord['playlistsId'] as int) + 1;
+
+      playlistRecords.add(playlistRecord);
+    }
+
+    store.box<Playlist>().putMany(playlists);
+    store.box<PlaylistRecord>().putMany(playlistRecords);
+
+    _playlists.addAll(playlists);
   }
 
   @override

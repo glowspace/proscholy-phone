@@ -9,11 +9,13 @@ const _favoritesName = 'Písně s hvězdičkou';
 
 @Entity()
 class Playlist {
+  @Id(assignable: true)
   int id = 0;
 
-  final String name;
-
+  String name;
   int rank;
+
+  bool isArchived = false;
 
   @Backlink()
   final playlistRecords = ToMany<PlaylistRecord>();
@@ -26,7 +28,10 @@ class Playlist {
         rank = 0;
 
   static List<Playlist> load(Store store) {
-    return store.box<Playlist>().query(Playlist_.id.notEquals(favoritesPlaylistId)).build().find();
+    final query = store.box<Playlist>().query(Playlist_.id.notEquals(favoritesPlaylistId));
+    query.order(Playlist_.rank);
+
+    return query.build().find();
   }
 
   static Playlist loadFavorites(Store store) {
