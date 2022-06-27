@@ -7,14 +7,12 @@ class CustomPopupMenuButton<T> extends StatelessWidget {
   final List<PopupMenuEntry<T>> items;
   final Function(BuildContext, T?) onSelected;
   final PopupMenuPosition menuPosition;
-  final ShapeBorder? shape;
 
   const CustomPopupMenuButton({
     Key? key,
     required this.items,
     required this.onSelected,
     this.menuPosition = PopupMenuPosition.under,
-    this.shape,
   }) : super(key: key);
 
   @override
@@ -48,7 +46,11 @@ class CustomPopupMenuButton<T> extends StatelessWidget {
       Offset.zero & overlay.size,
     );
 
-    showMenu(context: context, items: items, shape: shape, position: position)
-        .then((value) => onSelected(context, value));
+    showMenu(
+      context: context,
+      items: items,
+      shape: Border.all(color: Theme.of(context).dividerColor),
+      position: position,
+    ).then((value) => onSelected(context, value));
   }
 }

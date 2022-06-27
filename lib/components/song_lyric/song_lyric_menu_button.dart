@@ -26,13 +26,7 @@ class SongLyricMenuButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final borderSide = BorderSide(color: Theme.of(context).dividerColor);
-
-    return CustomPopupMenuButton(
-      items: _buildPopupMenuItems(context),
-      onSelected: _selectedAction,
-      shape: Border(bottom: borderSide, left: borderSide),
-    );
+    return CustomPopupMenuButton(items: _buildPopupMenuItems(context), onSelected: _selectedAction);
   }
 
   List<PopupMenuEntry<SongLyricMenuAction>> _buildPopupMenuItems(BuildContext context) {

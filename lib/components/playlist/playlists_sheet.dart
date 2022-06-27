@@ -62,15 +62,20 @@ class PlaylistsSheet extends StatelessWidget {
     );
 
     if (results != null) {
-      final playlistName = results[0];
+      final dataProvider = context.read<DataProvider>();
 
-      context.read<DataProvider>().createPlaylist(playlistName);
+      final playlistName = results[0];
+      final playlist = dataProvider.createPlaylist(playlistName);
+
+      dataProvider.addToPlaylist(selectedSongLyric, playlist);
+
+      Navigator.of(context).popAndPushNamed('/playlist', arguments: playlist);
     }
   }
 
   void _addToPlaylist(BuildContext context, Playlist playlist) {
     context.read<DataProvider>().addToPlaylist(selectedSongLyric, playlist);
 
-    Navigator.of(context).pop();
+    Navigator.of(context).popAndPushNamed('/playlist', arguments: playlist);
   }
 }

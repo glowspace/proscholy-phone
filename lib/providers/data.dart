@@ -62,13 +62,15 @@ class DataProvider extends ChangeNotifier {
     }
   }
 
-  void createPlaylist(String name) {
+  Playlist createPlaylist(String name) {
     final playlist = Playlist(name, Playlist.nextRank(store));
 
     store.box<Playlist>().put(playlist);
     _playlists.add(playlist);
 
     notifyListeners();
+
+    return playlist;
   }
 
   void addToPlaylist(SongLyric songLyric, Playlist playlist) {

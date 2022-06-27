@@ -26,7 +26,6 @@ class PlaylistButton extends StatelessWidget {
       items: _buildPopupMenuItems(context),
       onSelected: _selectedAction,
       menuPosition: isInAppBar ? PopupMenuPosition.under : PopupMenuPosition.over,
-      shape: Border.all(color: Theme.of(context).dividerColor),
     );
   }
 
