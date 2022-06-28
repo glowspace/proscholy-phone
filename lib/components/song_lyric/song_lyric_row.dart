@@ -97,6 +97,6 @@ class SongLyricRow extends StatelessWidget {
 
     context.read<AllSongLyricsProvider?>()?.addRecentSongLyric(songLyric);
 
-    Navigator.pushNamed(context, '/song_lyric', arguments: songLyric);
+    Navigator.of(context).pushNamed('/song_lyric', arguments: songLyric);
   }
 }

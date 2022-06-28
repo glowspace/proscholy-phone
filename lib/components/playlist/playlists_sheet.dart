@@ -1,14 +1,12 @@
-import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/icon_item.dart';
+import 'package:zpevnik/components/playlist/dialogs.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/data.dart';
-
-const _emptyPlaylistNameMessage = 'Název playlistu je prázdný';
 
 class PlaylistsSheet extends StatelessWidget {
   final SongLyric selectedSongLyric;
@@ -28,7 +26,7 @@ class PlaylistsSheet extends StatelessWidget {
         SingleChildScrollView(
           child: Column(children: [
             Highlightable(
-              onTap: () => _showPlaylistDialog(context),
+              onTap: () => showPlaylistDialog(context),
               padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
               child: const IconItem(text: 'Nový playlist', icon: Icons.add, iconSize: 20),
             ),
@@ -45,32 +43,6 @@ class PlaylistsSheet extends StatelessWidget {
         ),
       ],
     );
-  }
-
-  void _showPlaylistDialog(BuildContext context) async {
-    final results = await showTextInputDialog(
-      context: context,
-      title: 'Nový playlist',
-      okLabel: 'Vytvořit',
-      cancelLabel: 'Zrušit',
-      textFields: [
-        DialogTextField(
-          hintText: 'Název',
-          validator: (text) => (text?.isEmpty ?? true) ? _emptyPlaylistNameMessage : null,
-        ),
-      ],
-    );
-
-    if (results != null) {
-      final dataProvider = context.read<DataProvider>();
-
-      final playlistName = results[0];
-      final playlist = dataProvider.createPlaylist(playlistName);
-
-      dataProvider.addToPlaylist(selectedSongLyric, playlist);
-
-      Navigator.of(context).popAndPushNamed('/playlist', arguments: playlist);
-    }
   }
 
   void _addToPlaylist(BuildContext context, Playlist playlist) {

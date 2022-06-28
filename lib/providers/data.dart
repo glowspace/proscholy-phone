@@ -73,6 +73,28 @@ class DataProvider extends ChangeNotifier {
     return playlist;
   }
 
+  Playlist duplicatePlaylist(Playlist playlist, String name) {
+    final duplicatedPlaylist = Playlist(name, Playlist.nextRank(store));
+
+    duplicatedPlaylist.playlistRecords.addAll(
+        playlist.playlistRecords.map((playlistRecord) => playlistRecord.copyWith(playlist: duplicatedPlaylist)));
+
+    store.box<Playlist>().put(duplicatedPlaylist);
+    _playlists.add(duplicatedPlaylist);
+
+    notifyListeners();
+
+    return duplicatedPlaylist;
+  }
+
+  void renamePlaylist(Playlist playlist, String name) {
+    playlist.name = name;
+
+    store.box<Playlist>().put(playlist);
+
+    notifyListeners();
+  }
+
   void addToPlaylist(SongLyric songLyric, Playlist playlist) {
     final rank = PlaylistRecord.nextRank(store, playlist);
 

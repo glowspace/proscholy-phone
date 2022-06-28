@@ -25,7 +25,7 @@ class Playlist {
   Playlist.favorite()
       : id = favoritesPlaylistId,
         name = _favoritesName,
-        rank = 0;
+        rank = -1;
 
   static List<Playlist> load(Store store) {
     final query = store.box<Playlist>().query(Playlist_.id.notEquals(favoritesPlaylistId));
@@ -42,7 +42,7 @@ class Playlist {
     final query = store.box<Playlist>().query();
     query.order(Playlist_.rank);
 
-    final rank = query.build().findFirst()?.rank ?? 0;
+    final rank = query.build().findFirst()?.rank ?? -1;
 
     return rank + 1;
   }

@@ -32,8 +32,9 @@ class RouteGenerator {
         return CustomPageRoute(builder: (_) => PlaylistScreen(playlist: playlist));
       case '/playlists':
         return CustomPageRoute(
-          builder: (_) => ChangeNotifierProvider(
-            create: (context) => PlaylistsProvider(context.read<DataProvider>().playlists),
+          builder: (_) => ChangeNotifierProxyProvider<DataProvider, PlaylistsProvider>(
+            create: (context) => PlaylistsProvider(),
+            update: (context, dataProvider, playlistsProvider) => playlistsProvider!..update(dataProvider.playlists),
             builder: (_, __) => const PlaylistsScreen(),
           ),
         );

@@ -24,6 +24,14 @@ class PlaylistRecord {
     return rank + 1;
   }
 
+  PlaylistRecord copyWith({Playlist? playlist}) {
+    final playlistRecord = PlaylistRecord(rank)
+      ..playlist.target = playlist
+      ..songLyric.target = songLyric.target;
+
+    return playlistRecord;
+  }
+
   @override
   String toString() =>
       'PlaylistRecord(id: $id, rank: $rank, songLyric: ${songLyric.targetId}, playlist: ${playlist.targetId})';

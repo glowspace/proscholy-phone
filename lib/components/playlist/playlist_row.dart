@@ -26,12 +26,13 @@ class PlaylistRow extends StatelessWidget {
         children: [
           if (isReorderable)
             ReorderableDragStartListener(
-                key: dragIndicatorKey,
-                child: Container(
-                  child: const Icon(Icons.drag_indicator),
-                  padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-                ),
-                index: 0)
+              key: dragIndicatorKey,
+              child: Container(
+                child: const Icon(Icons.drag_indicator),
+                padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+              ),
+              index: playlist.rank,
+            )
           else
             Container(
               child: Icon(playlist.isFavorites ? Icons.star : Icons.playlist_play_rounded, size: _iconSize),

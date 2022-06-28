@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart' hide PopupMenuEntry, PopupMenuItem, PopupMenuPosition;
 import 'package:zpevnik/components/custom/popup_menu_button.dart';
 import 'package:zpevnik/components/icon_item.dart';
+import 'package:zpevnik/components/playlist/dialogs.dart';
 import 'package:zpevnik/custom/custom_icon_icons.dart';
 import 'package:zpevnik/custom/popup_menu.dart';
 import 'package:zpevnik/models/playlist.dart';
-import 'package:zpevnik/providers/data.dart';
 
 enum PlaylistAction {
   rename,
@@ -60,10 +60,12 @@ class PlaylistButton extends StatelessWidget {
 
     switch (action) {
       case PlaylistAction.rename:
+        showRenamePlaylistDialog(context, playlist);
         break;
       case PlaylistAction.share:
         break;
       case PlaylistAction.duplicate:
+        showDuplicatePlaylistDialog(context, playlist);
         break;
       case PlaylistAction.archive:
         break;

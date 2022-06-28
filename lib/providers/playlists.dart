@@ -49,68 +49,25 @@ mixin _Reorderable on _PlaylistsProvider {
     final playlist = _playlists.removeAt(oldIndex);
     _playlists.insert(newIndex, playlist);
 
+    for (int i = 0; i < _playlists.length; i++) {
+      _playlists[i].rank = i;
+    }
+
     notifyListeners();
   }
 }
 
 class _PlaylistsProvider extends ChangeNotifier {
-  final List<Playlist> _playlists;
+  late List<Playlist> _playlists;
 
-  _PlaylistsProvider(this._playlists);
+  void update(List<Playlist> playlists) {
+    _playlists = playlists;
 
-  // void addPlaylist(String name, {List<int> songLyrics = const [], int rank = 0}) async {
-  //   final playlist = await Playlist.create(name, rank, songLyrics: songLyrics);
-
-  //   _playlists.insert(rank, playlist);
-
-  //   for (int i = rank; i < _playlists.length; i++) _playlists[i].rank = i;
-
-  //   notifyListeners();
-  // }
-
-  // // TODO: move context out of this file
-  // void addSharedPlaylist(BuildContext context, String playlistName, List<int> songLyrics) {
-  //   showDialog<String>(
-  //     context: context,
-  //     barrierDismissible: false,
-  //     builder: (context) => PlatformDialog(
-  //       title: 'Přidat playlist',
-  //       initialValue: playlistName,
-  //       submitText: 'Přidat',
-  //     ),
-  //   ).then((text) {
-  //     if (text != null) {
-  //       addPlaylist(text, songLyrics: songLyrics);
-  //     }
-  //   });
-  // }
-
-  // void duplicate(Playlist playlist) {
-  //   final songLyrics = playlist.records.keys.toList();
-
-  //   songLyrics.sort((first, second) => playlist.records[first]!.rank.compareTo(playlist.records[second]!.rank));
-
-  //   addPlaylist('${playlist.name} (kopie)', songLyrics: songLyrics, rank: playlist.rank + 1);
-  // }
-
-  // void remove(Playlist playlist) {
-  //   _playlists.remove(playlist);
-
-  //   playlist.entity.delete(true);
-
-  //   notifyListeners();
-  // }
-
-  // void toggleArchive(Playlist playlist) {
-  //   playlist.isArchived = !playlist.isArchived;
-
-  //   notifyListeners();
-  // }
+    notifyListeners();
+  }
 }
 
 class PlaylistsProvider extends _PlaylistsProvider with _Reorderable, _Searchable {
-  PlaylistsProvider(List<Playlist> allPlaylists) : super(allPlaylists);
-
   List<Playlist> get playlists => (_searchResults ?? _playlists).where((playlist) => !playlist.isArchived).toList();
   List<Playlist> get archivedPlaylists =>
       (_searchResults ?? _playlists).where((playlist) => playlist.isArchived).toList();
