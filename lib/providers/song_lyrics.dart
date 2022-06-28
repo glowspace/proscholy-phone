@@ -1,8 +1,9 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
+import 'package:objectbox/objectbox.dart';
+import 'package:provider/provider.dart';
 import 'package:zpevnik/custom/sqlite-bm25/bm25.dart';
 import 'package:zpevnik/models/playlist.dart';
+import 'package:zpevnik/models/playlist_record.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/providers/data.dart';
@@ -169,20 +170,6 @@ mixin _Searchable on SongLyricsProvider {
   }
 }
 
-// TODO: save reordering to db
-mixin Reorderable on SongLyricsProvider {
-  void onReorder(int oldIndex, int newIndex) {
-    if (oldIndex < newIndex) {
-      newIndex -= 1;
-    }
-
-    final songLyric = _songLyrics.removeAt(oldIndex);
-    _songLyrics.insert(newIndex, songLyric);
-
-    notifyListeners();
-  }
-}
-
 abstract class SongLyricsProvider extends ChangeNotifier {
   final DataProvider dataProvider;
 
@@ -252,7 +239,7 @@ class AllSongLyricsProvider extends SongLyricsProvider with _Filterable, _Recent
   }
 }
 
-class PlaylistSongLyricsProvider extends SongLyricsProvider with _Searchable, Reorderable {
+class PlaylistSongLyricsProvider extends SongLyricsProvider with _Searchable {
   final Playlist playlist;
 
   PlaylistSongLyricsProvider(DataProvider dataProvider, this.playlist) : super(dataProvider) {
@@ -269,5 +256,25 @@ class PlaylistSongLyricsProvider extends SongLyricsProvider with _Searchable, Re
     _updateSongLyrics(playlist.songLyrics);
 
     super._update();
+  }
+
+  void onReorder(BuildContext context, int oldIndex, int newIndex) {
+    if (oldIndex < newIndex) {
+      newIndex -= 1;
+    }
+
+    final playlistRecord = playlist.playlistRecords.removeAt(oldIndex);
+    playlist.playlistRecords.insert(newIndex, playlistRecord);
+
+    final songLyric = _songLyrics.removeAt(oldIndex);
+    _songLyrics.insert(newIndex, songLyric);
+
+    for (int i = 0; i < playlist.playlistRecords.length; i++) {
+      playlist.playlistRecords[i].rank = i;
+    }
+
+    context.read<DataProvider>().store.box<PlaylistRecord>().putMany(playlist.playlistRecords);
+
+    notifyListeners();
   }
 }

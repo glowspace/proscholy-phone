@@ -8,7 +8,7 @@ const favoritesPlaylistId = 1;
 const _favoritesName = 'Písně s hvězdičkou';
 
 @Entity()
-class Playlist {
+class Playlist implements Comparable<Playlist> {
   @Id(assignable: true)
   int id = 0;
 
@@ -49,7 +49,8 @@ class Playlist {
 
   bool get isFavorites => id == favoritesPlaylistId;
 
-  List<SongLyric> get songLyrics => playlistRecords.map((playlistRecord) => playlistRecord.songLyric.target!).toList();
+  List<SongLyric> get songLyrics =>
+      (playlistRecords..sort()).map((playlistRecord) => playlistRecord.songLyric.target!).toList();
 
   void addSongLyric(SongLyric songLyric, int rank) {
     if (playlistRecords.any((playlistRecord) => playlistRecord.songLyric.target == songLyric)) return;
@@ -73,4 +74,7 @@ class Playlist {
 
   @override
   String toString() => 'Playlist(id: $id, name: $name)';
+
+  @override
+  int compareTo(Playlist other) => rank.compareTo(other.rank);
 }

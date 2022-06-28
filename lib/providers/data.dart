@@ -101,6 +101,14 @@ class DataProvider extends ChangeNotifier {
     playlist.addSongLyric(songLyric, rank);
   }
 
+  void reorderedPlaylists() {
+    _playlists.sort();
+
+    store.box<Playlist>().putMany(_playlists);
+
+    notifyListeners();
+  }
+
   Future<void> _load() async {
     final currentVersion = prefs.getString(_versionKey);
     final buildVersion = packageInfo.version;

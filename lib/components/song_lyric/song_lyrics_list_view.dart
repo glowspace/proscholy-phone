@@ -62,11 +62,11 @@ class SongLyricsListView<T extends SongLyricsProvider> extends StatelessWidget {
       (songLyric) => (_) => SongLyricRow(
             key: Key('${songLyric.id}'),
             songLyric: songLyric,
-            isReorderable: songLyricsProvider is Reorderable,
+            isReorderable: songLyricsProvider is PlaylistSongLyricsProvider,
           ),
     ));
 
-    if (songLyricsProvider is Reorderable) {
+    if (songLyricsProvider is PlaylistSongLyricsProvider) {
       return Theme(
         data: Theme.of(context).copyWith(canvasColor: Colors.transparent),
         child: ReorderableListView.builder(
@@ -76,7 +76,7 @@ class SongLyricsListView<T extends SongLyricsProvider> extends StatelessWidget {
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           itemCount: listItems.length,
           itemBuilder: (context, index) => listItems[index](context),
-          onReorder: songLyricsProvider.onReorder,
+          onReorder: (newIndex, oldIndex) => songLyricsProvider.onReorder(context, newIndex, oldIndex),
         ),
       );
     }

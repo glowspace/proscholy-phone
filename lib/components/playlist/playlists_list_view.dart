@@ -25,7 +25,7 @@ class PlaylistsListView extends StatelessWidget {
 
           return PlaylistRow(key: Key('${playlist.id}'), playlist: playlist, isReorderable: true);
         },
-        onReorder: playlistsProvider.onReorder,
+        onReorder: (newIndex, oldIndex) => playlistsProvider.onReorder(context, newIndex, oldIndex),
       ),
     );
   }

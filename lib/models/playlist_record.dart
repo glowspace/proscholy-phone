@@ -5,7 +5,7 @@ import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/models/playlist.dart';
 
 @Entity()
-class PlaylistRecord {
+class PlaylistRecord implements Comparable<PlaylistRecord> {
   int id = 0;
 
   int rank;
@@ -19,7 +19,7 @@ class PlaylistRecord {
     final query = store.box<PlaylistRecord>().query(PlaylistRecord_.playlist.equals(playlist.id));
     query.order(PlaylistRecord_.rank);
 
-    final rank = query.build().findFirst()?.rank ?? 0;
+    final rank = query.build().findFirst()?.rank ?? -1;
 
     return rank + 1;
   }
@@ -35,4 +35,7 @@ class PlaylistRecord {
   @override
   String toString() =>
       'PlaylistRecord(id: $id, rank: $rank, songLyric: ${songLyric.targetId}, playlist: ${playlist.targetId})';
+
+  @override
+  int compareTo(PlaylistRecord other) => rank.compareTo(other.rank);
 }

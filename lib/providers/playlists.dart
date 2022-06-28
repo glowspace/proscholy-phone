@@ -1,6 +1,8 @@
 import 'package:diacritic/diacritic.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:zpevnik/models/playlist.dart';
+import 'package:zpevnik/providers/data.dart';
 
 mixin _Searchable on _PlaylistsProvider {
   String _searchText = '';
@@ -41,7 +43,7 @@ mixin _Searchable on _PlaylistsProvider {
 }
 
 mixin _Reorderable on _PlaylistsProvider {
-  void onReorder(int oldIndex, int newIndex) {
+  void onReorder(BuildContext context, int oldIndex, int newIndex) {
     if (oldIndex < newIndex) {
       newIndex -= 1;
     }
@@ -53,7 +55,7 @@ mixin _Reorderable on _PlaylistsProvider {
       _playlists[i].rank = i;
     }
 
-    notifyListeners();
+    context.read<DataProvider>().reorderedPlaylists();
   }
 }
 
