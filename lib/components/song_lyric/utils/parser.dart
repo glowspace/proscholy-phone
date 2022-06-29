@@ -248,13 +248,20 @@ class _FilledTokensBuilder {
   }
 
   int? _substituteEmptyVerse(int i, String verseNumber, List<Token> tokens) {
+    final List<Comment> comments = [];
+
     while (true) {
-      if (tokens[i] is Chord || (tokens[i] is VersePart && (tokens[i] as VersePart).value.trim().isNotEmpty)) {
+      final token = tokens[i];
+
+      if (token is Chord || (token is VersePart && token.value.trim().isNotEmpty)) {
         return null;
-      } else if (tokens[i] is VerseEnd) {
+      } else if (token is Comment) {
+        comments.add(token);
+      } else if (token is VerseEnd) {
         final substitutes = verseSubstitutes[verseNumber] ?? verseSubstitutes[verseNumber.replaceFirst('.', ':')] ?? [];
 
         filledTokens.addAll(substitutes);
+        filledTokens.addAll(comments);
 
         return i;
       }
@@ -276,6 +283,7 @@ class SongLyricsParser {
   Token? get nextToken {
     _parsedSongLyrics ??= _FilledTokensBuilder()._fillSubstitutes(_parseTokens());
 
+    // log(_parsedSongLyrics.toString());
     // log(songLyric.lyrics.toString());
 
     if (_currentTokenIndex == _parsedSongLyrics!.length) {
