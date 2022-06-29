@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/components/song_lyric/utils/converter.dart';
@@ -94,7 +96,7 @@ class VersePart extends Token {
   VersePart(this.value);
 
   @override
-  String toString() => 'Text($value)';
+  String toString() => 'VersePart($value)';
 }
 
 class VerseEnd extends Token {
@@ -247,7 +249,7 @@ class _FilledTokensBuilder {
 
   int? _substituteEmptyVerse(int i, String verseNumber, List<Token> tokens) {
     while (true) {
-      if (tokens[i] is Chord || tokens[i] is VersePart) {
+      if (tokens[i] is Chord || (tokens[i] is VersePart && (tokens[i] as VersePart).value.trim().isNotEmpty)) {
         return null;
       } else if (tokens[i] is VerseEnd) {
         final substitutes = verseSubstitutes[verseNumber] ?? verseSubstitutes[verseNumber.replaceFirst('.', ':')] ?? [];
@@ -274,7 +276,7 @@ class SongLyricsParser {
   Token? get nextToken {
     _parsedSongLyrics ??= _FilledTokensBuilder()._fillSubstitutes(_parseTokens());
 
-    // log(_parsedSongLyrics.toString());
+    // log(songLyric.lyrics.toString());
 
     if (_currentTokenIndex == _parsedSongLyrics!.length) {
       _currentTokenIndex = 0;
