@@ -7,7 +7,6 @@ import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/components/custom/future_builder.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/settings.dart';
-import 'package:zpevnik/utils/extensions.dart';
 
 const _welcomeText = '''
 Ahoj. Vítej ve Zpěvníku!
@@ -19,8 +18,26 @@ const _projectDescription = 'Projekt ProScholy.cz tvoří s${unbreakableSpace}l�
 
 const _animationDuration = Duration(milliseconds: 800);
 
-class InitialScreen extends StatelessWidget {
+const _loggedInKey = 'loggedIn';
+
+class InitialScreen extends StatefulWidget {
   const InitialScreen({Key? key}) : super(key: key);
+
+  @override
+  State<InitialScreen> createState() => _InitialScreenState();
+}
+
+class _InitialScreenState extends State<InitialScreen> {
+  late final Future<void> _initFuture;
+
+  bool _showSignInButtons = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _initFuture = _init(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,10 +51,10 @@ class InitialScreen extends StatelessWidget {
         child: SizedBox(
           height: height,
           child: FutureBuilder(
-            future: _init(context),
-            builder: (_, snapshot) => AnimatedAlign(
+            future: _initFuture,
+            builder: (_, __) => AnimatedAlign(
               duration: _animationDuration,
-              alignment: snapshot.isDone ? Alignment.bottomCenter : Alignment.center,
+              alignment: _showSignInButtons ? Alignment.bottomCenter : Alignment.center,
               child: SingleChildScrollView(
                 child: Column(children: [
                   const SizedBox(height: 2 * kDefaultPadding),
@@ -45,10 +62,10 @@ class InitialScreen extends StatelessWidget {
                   AnimatedAlign(
                     duration: _animationDuration,
                     alignment: Alignment.topCenter,
-                    heightFactor: snapshot.isDone ? 1 : 0,
+                    heightFactor: _showSignInButtons ? 1 : 0,
                     child: AnimatedOpacity(
                       duration: _animationDuration,
-                      opacity: snapshot.isDone ? 1 : 0,
+                      opacity: _showSignInButtons ? 1 : 0,
                       child: Column(
                         children: [
                           _buildSignInSection(context),
@@ -81,8 +98,9 @@ class InitialScreen extends StatelessWidget {
           const SizedBox(height: kDefaultPadding),
           CustomFutureBuilder<bool>(
             future: SignInWithApple.isAvailable(),
-            builder: (_, isAvailable) =>
-                isAvailable ? SignInButton(type: SignInButtonType.apple, onSignIn: _signInWithApple) : Container(),
+            builder: (_, isAvailable) => isAvailable
+                ? SignInButton(type: SignInButtonType.apple, onSignIn: () => _signInWithApple(context))
+                : Container(),
           ),
           const SizedBox(height: kDefaultPadding),
           SignInButton(type: SignInButtonType.noSignIn, onSignIn: () => _pushHomeScreen(context)),
@@ -124,19 +142,27 @@ class InitialScreen extends StatelessWidget {
     await context.read<DataProvider>().init();
     await context.read<SettingsProvider>().init();
 
-    _pushHomeScreen(context);
+    if (context.read<DataProvider>().prefs.containsKey(_loggedInKey)) {
+      _pushHomeScreen(context);
+    } else {
+      _showSignInButtons = true;
+    }
   }
 
-  void _signInWithApple() async {
+  void _signInWithApple(BuildContext context) async {
     final credential = await SignInWithApple.getAppleIDCredential(
       scopes: [
         AppleIDAuthorizationScopes.email,
         AppleIDAuthorizationScopes.fullName,
       ],
     );
+
+    _pushHomeScreen(context);
   }
 
   void _pushHomeScreen(BuildContext context) {
+    context.read<DataProvider>().prefs.setBool(_loggedInKey, true);
+
     Navigator.of(context).pushReplacementNamed('/home');
   }
 
