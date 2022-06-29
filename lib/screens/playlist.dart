@@ -19,7 +19,7 @@ class PlaylistScreen extends StatelessWidget {
       appBar: AppBar(
         leading: const CustomBackButton(),
         title: Text(playlist.name),
-        actions: [PlaylistButton(playlist: playlist, isInAppBar: true)],
+        actions: [if (!playlist.isFavorites) PlaylistButton(playlist: playlist, isInAppBar: true)],
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Theme.of(context).canvasColor,

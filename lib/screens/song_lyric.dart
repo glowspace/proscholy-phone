@@ -49,7 +49,7 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
     final height = MediaQuery.of(context).size.height;
 
     AppBar? appBar;
-    NavigationBar? navigationBar;
+    Widget? bottomBar;
 
     if (!_fullscreen) {
       appBar = AppBar(
@@ -74,49 +74,52 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
         ],
       );
 
-      navigationBar = NavigationBar(
-        height: _navigationBarHeight,
-        labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
-        onDestinationSelected: (destination) => _destinationSelected(context, destination),
-        destinations: [
-          _buildDestination(context, FontAwesomeIcons.headphones),
-          _buildDestination(context, Icons.insert_drive_file),
-          _buildDestination(context, Icons.tune),
-          _buildDestination(context, Icons.search),
-        ],
+      bottomBar = BottomAppBar(
+        color: theme.bottomNavigationBarTheme.backgroundColor,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            if (widget.songLyric.hasRecordings)
+              Highlightable(
+                padding: const EdgeInsets.all(kDefaultPadding),
+                onTap: () => _showingExternals.value = true,
+                child: const Icon(FontAwesomeIcons.headphones),
+              ),
+            if (widget.songLyric.hasFiles)
+              Highlightable(
+                padding: const EdgeInsets.all(kDefaultPadding),
+                onTap: () => _showFiles(context),
+                child: const Icon(Icons.insert_drive_file),
+              ),
+            Highlightable(
+              padding: const EdgeInsets.all(kDefaultPadding),
+              onTap: () => _showSettings(context),
+              child: const Icon(Icons.tune),
+            ),
+            Highlightable(
+              padding: const EdgeInsets.all(kDefaultPadding),
+              onTap: () => Navigator.of(context).pop(), // TODO: check if it is from search screen
+              child: const Icon(Icons.search),
+            ),
+          ],
+        ),
       );
     }
 
-    return Theme(
-      data: theme.copyWith(
-        navigationBarTheme: theme.navigationBarTheme.copyWith(indicatorColor: Colors.transparent),
-      ),
-      child: Stack(
-        children: [
-          Scaffold(
-            appBar: appBar,
-            body: SafeArea(
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  _buildLyrics(context),
-                  // Positioned(
-                  //   right: 0,
-                  //   child: SongLyricMenu(lyricsController: _lyricsController, isShowing: true),
-                  // ),
-                ],
-              ),
-            ),
-            bottomNavigationBar: navigationBar,
-          ),
-          ExternalsPlayerWrapper(
-            songLyric: widget.songLyric,
-            maxHeight: 2 / 3 * height,
-            minHeight: _miniPlayerHeight,
-            isShowing: _showingExternals,
-          ),
-        ],
-      ),
+    return Stack(
+      children: [
+        Scaffold(
+          appBar: appBar,
+          body: SafeArea(child: _buildLyrics(context)),
+          bottomNavigationBar: bottomBar,
+        ),
+        ExternalsPlayerWrapper(
+          songLyric: widget.songLyric,
+          maxHeight: 2 / 3 * height,
+          minHeight: _miniPlayerHeight,
+          isShowing: _showingExternals,
+        ),
+      ],
     );
   }
 
@@ -125,33 +128,6 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
       onTap: () => setState(() => _fullscreen = !_fullscreen),
       child: LyricsWidget(controller: _lyricsController),
     );
-  }
-
-  Widget _buildDestination(BuildContext context, IconData icon) {
-    return Highlightable(
-      child: NavigationDestination(
-        label: '',
-        icon: Icon(icon),
-      ),
-    );
-  }
-
-  void _destinationSelected(BuildContext context, int destination) {
-    switch (destination) {
-      case 0:
-        _showingExternals.value = true;
-        break;
-      case 1:
-        _showFiles(context);
-        break;
-      case 2:
-        _showSettings(context);
-        break;
-      case 3:
-        // TODO: check if it is from search screen
-        Navigator.of(context).pop();
-        break;
-    }
   }
 
   void _showFiles(BuildContext context) {
