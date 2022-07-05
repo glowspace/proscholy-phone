@@ -51,6 +51,6 @@ class SongLyricFilesWidget extends StatelessWidget {
   }
 
   void _pushPdf(BuildContext context, External pdf) {
-    Navigator.pushNamed(context, '/pdf', arguments: pdf);
+    Navigator.popAndPushNamed(context, '/pdf', arguments: pdf);
   }
 }

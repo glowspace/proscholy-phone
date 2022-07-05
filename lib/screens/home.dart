@@ -53,9 +53,12 @@ class HomeScreen extends StatelessWidget {
       children: [
         Image.asset('assets/images/title.png', height: 2 * _avatarRadius),
         const Spacer(),
-        const CircleAvatar(
-          backgroundImage: AssetImage('assets/images/logos/apple_dark.png'),
-          radius: _avatarRadius,
+        Highlightable(
+          onTap: () => Navigator.of(context).pushNamed('/user'),
+          child: const CircleAvatar(
+            backgroundImage: AssetImage('assets/images/logos/apple_dark.png'),
+            radius: _avatarRadius,
+          ),
         ),
       ],
     );
@@ -66,7 +69,7 @@ class HomeScreen extends StatelessWidget {
     final playlists = [dataProvider.favorites] + dataProvider.playlists;
 
     return Section(
-      title: 'Moje seznamy',
+      title: Text('Moje seznamy', style: Theme.of(context).textTheme.titleLarge),
       child: ListView.separated(
         itemCount: min(_maxShowingPlaylists, playlists.length),
         itemBuilder: (_, index) => PlaylistRow(playlist: playlists[index]),
@@ -75,7 +78,7 @@ class HomeScreen extends StatelessWidget {
         physics: const NeverScrollableScrollPhysics(),
       ),
       action: Highlightable(
-        onTap: () => _pushPlaylistsScreen(context),
+        onTap: () => Navigator.pushNamed(context, '/playlists'),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -89,7 +92,7 @@ class HomeScreen extends StatelessWidget {
 
   Widget _buildSharedWithMeSection(BuildContext context) {
     return Section(
-      title: 'Sdíleno se mnou',
+      title: Text('Sdíleno se mnou', style: Theme.of(context).textTheme.titleLarge),
       child: Row(
         children: [],
       ),
@@ -103,9 +106,5 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  void _pushPlaylistsScreen(BuildContext context) {
-    Navigator.pushNamed(context, '/playlists');
   }
 }

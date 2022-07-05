@@ -14,6 +14,7 @@ import 'package:zpevnik/screens/playlists.dart';
 import 'package:zpevnik/screens/search.dart';
 import 'package:zpevnik/screens/song_lyric.dart';
 import 'package:zpevnik/screens/song_lyric/translations.dart';
+import 'package:zpevnik/screens/user.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -54,6 +55,8 @@ class RouteGenerator {
         final songLyric = settings.arguments as SongLyric;
 
         return CustomPageRoute(builder: (_) => TranslationsScreen(songLyric: songLyric));
+      case '/user':
+        return CustomPageRoute(builder: (_) => const UserScreen(), fullscreenDialog: true);
       default:
         throw 'Unknown route: ${settings.name}';
     }

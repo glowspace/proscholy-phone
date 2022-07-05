@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:zpevnik/constants.dart';
 
 class Section extends StatelessWidget {
-  final String? title;
+  final Widget? title;
 
   final Widget child;
   final Widget? action;
@@ -24,7 +24,6 @@ class Section extends StatelessWidget {
     final theme = Theme.of(context);
 
     final section = Container(
-      margin: margin,
       padding: padding,
       decoration: BoxDecoration(color: theme.colorScheme.surface, borderRadius: BorderRadius.circular(kDefaultRadius)),
       clipBehavior: Clip.antiAlias,
@@ -32,19 +31,22 @@ class Section extends StatelessWidget {
     );
 
     if (title != null) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(children: [
-            Expanded(child: Text(title!, style: theme.textTheme.titleLarge)),
-            if (action != null) action!,
-          ]),
-          const SizedBox(height: kDefaultPadding / 2),
-          section,
-        ],
+      return Container(
+        margin: margin,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(children: [
+              Expanded(child: title!),
+              if (action != null) action!,
+            ]),
+            const SizedBox(height: kDefaultPadding / 2),
+            section,
+          ],
+        ),
       );
     }
 
-    return section;
+    return Container(margin: margin, child: section);
   }
 }
