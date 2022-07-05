@@ -39,7 +39,7 @@ class _LyricsWidgetState extends State<LyricsWidget> {
     final theme = Theme.of(context);
     final width = MediaQuery.of(context).size.width;
 
-    final settingsProvider = context.watch<SettingsProvider>();
+    final fontSizeScale = context.select<SettingsProvider, double>((provider) => provider.fontSizeScale);
 
     return SingleChildScrollView(
       child: Container(
@@ -53,26 +53,26 @@ class _LyricsWidgetState extends State<LyricsWidget> {
               child: Text(
                 widget.controller.songLyric.name,
                 style: theme.textTheme.titleLarge,
-                textScaleFactor: settingsProvider.fontSizeScale,
+                textScaleFactor: fontSizeScale,
               ),
             ),
-            SizedBox(height: kDefaultPadding * settingsProvider.fontSizeScale),
+            SizedBox(height: kDefaultPadding * fontSizeScale),
             if (widget.controller.hasLilypond)
               SvgPicture.string(
                 widget.controller.lilypond(theme.colorScheme.onBackground.hex),
                 width: min(width, widget.controller.lilypondWidth),
               ),
-            if (widget.controller.hasLilypond) SizedBox(height: kDefaultPadding * settingsProvider.fontSizeScale / 2),
+            if (widget.controller.hasLilypond) SizedBox(height: kDefaultPadding * fontSizeScale / 2),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
               child: _buildLyrics(context),
             ),
-            SizedBox(height: kDefaultPadding * settingsProvider.fontSizeScale),
+            SizedBox(height: kDefaultPadding * fontSizeScale),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
               child: _buildAuthors(context),
             ),
-            SizedBox(height: kDefaultPadding * settingsProvider.fontSizeScale),
+            SizedBox(height: kDefaultPadding * fontSizeScale),
           ],
         ),
       ),
@@ -80,7 +80,7 @@ class _LyricsWidgetState extends State<LyricsWidget> {
   }
 
   Widget _buildLyrics(BuildContext context) {
-    final settingsProvider = context.watch<SettingsProvider>();
+    final fontSizeScale = context.select<SettingsProvider, double>((provider) => provider.fontSizeScale);
 
     final List<Widget> children = [];
 
@@ -99,7 +99,7 @@ class _LyricsWidgetState extends State<LyricsWidget> {
       } else if (currentToken is VerseNumber) {
         children.add(_buildVerse(context, currentToken));
       } else if (currentToken is NewLine) {
-        children.add(SizedBox(height: kDefaultPadding * settingsProvider.fontSizeScale));
+        children.add(SizedBox(height: kDefaultPadding * fontSizeScale));
       }
 
       currentToken = widget.controller.parser.nextToken;
@@ -112,7 +112,7 @@ class _LyricsWidgetState extends State<LyricsWidget> {
   }
 
   Widget _buildInterlude(BuildContext context, Interlude interlude) {
-    final settingsProvider = context.watch<SettingsProvider>();
+    final fontSizeScale = context.select<SettingsProvider, double>((provider) => provider.fontSizeScale);
 
     final List<Widget> children = [];
     Token? currentToken = widget.controller.parser.nextToken;
@@ -120,7 +120,7 @@ class _LyricsWidgetState extends State<LyricsWidget> {
       if (currentToken is Chord) {
         children.add(_buildLine(context, currentToken, _textStyle(context, false), isInterlude: true));
       } else if (currentToken is NewLine) {
-        children.add(SizedBox(height: kDefaultPadding * settingsProvider.fontSizeScale));
+        children.add(SizedBox(height: kDefaultPadding * fontSizeScale));
       }
 
       currentToken = widget.controller.parser.nextToken;
@@ -134,7 +134,7 @@ class _LyricsWidgetState extends State<LyricsWidget> {
           child: Text(
             interlude.value,
             style: _textStyle(context, false),
-            textScaleFactor: settingsProvider.fontSizeScale,
+            textScaleFactor: fontSizeScale,
           ),
         ),
         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: children)),
@@ -143,7 +143,7 @@ class _LyricsWidgetState extends State<LyricsWidget> {
   }
 
   Widget _buildVerse(BuildContext context, VerseNumber number) {
-    final settingsProvider = context.watch<SettingsProvider>();
+    final fontSizeScale = context.select<SettingsProvider, double>((provider) => provider.fontSizeScale);
 
     final textStyle = _textStyle(context, number.verseHasChord);
 
@@ -155,7 +155,7 @@ class _LyricsWidgetState extends State<LyricsWidget> {
       } else if (currentToken is Comment) {
         children.add(_buildComment(context, currentToken, number.verseHasChord));
       } else if (currentToken is NewLine) {
-        children.add(SizedBox(height: kDefaultPadding * settingsProvider.fontSizeScale));
+        children.add(SizedBox(height: kDefaultPadding * fontSizeScale));
       }
 
       currentToken = widget.controller.parser.nextToken;
@@ -167,7 +167,7 @@ class _LyricsWidgetState extends State<LyricsWidget> {
         if (number.value.isNotEmpty)
           Padding(
             padding: const EdgeInsets.only(right: kDefaultPadding / 2),
-            child: Text(number.value, style: textStyle, textScaleFactor: settingsProvider.fontSizeScale),
+            child: Text(number.value, style: textStyle, textScaleFactor: fontSizeScale),
           ),
         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: children)),
       ],
@@ -175,7 +175,7 @@ class _LyricsWidgetState extends State<LyricsWidget> {
   }
 
   Widget _buildLine(BuildContext context, Token token, TextStyle? textStyle, {bool isInterlude = false}) {
-    final settingsProvider = context.watch<SettingsProvider>();
+    final fontSizeScale = context.select<SettingsProvider, double>((provider) => provider.fontSizeScale);
 
     final List<InlineSpan> children = [];
 
@@ -208,12 +208,12 @@ class _LyricsWidgetState extends State<LyricsWidget> {
 
     return RichText(
       text: TextSpan(text: '', style: textStyle, children: children),
-      textScaleFactor: settingsProvider.fontSizeScale,
+      textScaleFactor: fontSizeScale,
     );
   }
 
   Widget _buildComment(BuildContext context, Comment comment, bool hasChords) {
-    final settingsProvider = context.watch<SettingsProvider>();
+    final fontSizeScale = context.select<SettingsProvider, double>((provider) => provider.fontSizeScale);
 
     final showChords = hasChords && widget.controller.showChords;
     final textStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -221,12 +221,12 @@ class _LyricsWidgetState extends State<LyricsWidget> {
           height: showChords ? 2.5 : 1.5,
         );
 
-    return Text(comment.value, style: textStyle, textScaleFactor: settingsProvider.fontSizeScale);
+    return Text(comment.value, style: textStyle, textScaleFactor: fontSizeScale);
   }
 
   WidgetSpan _buildChord(BuildContext context, Chord chord, TextStyle? textStyle,
       {VersePart? versePart, bool isInterlude = false}) {
-    final settingsProvider = context.watch<SettingsProvider>();
+    final fontSizeScale = context.select<SettingsProvider, double>((provider) => provider.fontSizeScale);
 
     final chordOffset = isInterlude ? 0.0 : -(textStyle?.fontSize ?? 0);
 
@@ -247,7 +247,7 @@ class _LyricsWidgetState extends State<LyricsWidget> {
       child: Stack(children: [
         Container(
           transform: Matrix4.translationValues(0, chordOffset, 0),
-          padding: EdgeInsets.only(right: settingsProvider.fontSizeScale * kDefaultPadding / 2),
+          padding: EdgeInsets.only(right: fontSizeScale * kDefaultPadding / 2),
           child: chordNumberIndex == null
               ? Text(chordText, style: textStyle?.copyWith(color: chordColor))
               : Row(
@@ -273,12 +273,12 @@ class _LyricsWidgetState extends State<LyricsWidget> {
   }
 
   Widget _buildAuthors(BuildContext context) {
-    final settingsProvider = context.watch<SettingsProvider>();
+    final fontSizeScale = context.select<SettingsProvider, double>((provider) => provider.fontSizeScale);
 
     return Text(
       widget.controller.songLyric.authorsText,
       style: Theme.of(context).textTheme.caption,
-      textScaleFactor: settingsProvider.fontSizeScale,
+      textScaleFactor: fontSizeScale,
     );
   }
 

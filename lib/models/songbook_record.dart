@@ -24,7 +24,9 @@ class SongbookRecord {
   }
 
   static List<SongbookRecord> fromMapList(Map<String, dynamic> json, int songLyricId) {
-    return (json['songbook_records'] as List).map((json) => SongbookRecord.fromJson(json, songLyricId)).toList();
+    return (json['songbook_records'] as List)
+        .map((json) => SongbookRecord.fromJson(json['pivot'], songLyricId))
+        .toList();
   }
 
   @override

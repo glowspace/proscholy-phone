@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher_string.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/section.dart';
 import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/models/news_item.dart';
 import 'package:zpevnik/providers/data.dart';
 
 class NewsSection extends StatelessWidget {
@@ -13,9 +14,10 @@ class NewsSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
 
-    final newsItems = context.watch<DataProvider>().newsItems;
+    final newsItems = context.select<DataProvider, List<NewsItem>>((provider) => provider.newsItems);
 
     return Section(
+      padding: const EdgeInsets.all(kDefaultPadding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

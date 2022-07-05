@@ -15,7 +15,7 @@ class PlaylistsSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final playlists = context.watch<DataProvider>().playlists;
+    final playlists = context.select<DataProvider, List<Playlist>>((provider) => provider.playlists);
 
     return Wrap(
       children: [

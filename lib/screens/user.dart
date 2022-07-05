@@ -54,7 +54,6 @@ class _UserScreenState extends State<UserScreen> {
                   _buildLinksSection(context),
                   Highlightable(
                     onTap: () => Navigator.of(context).pushNamed('/about'),
-                    padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
                     child: Text('O projektu', style: textTheme.caption),
                   ),
                   const SizedBox(height: kDefaultPadding),

@@ -50,6 +50,8 @@ class DataProvider extends ChangeNotifier {
     await songLyricsSearch.init();
 
     await _load();
+
+    updater.update().then((_) => _load());
   }
 
   void toggleFavorite(SongLyric songLyric) {

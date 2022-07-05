@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:pool/pool.dart';
 
-const _poolSize = 50;
+const _poolSize = 5;
 
 final _url = Uri.https('zpevnik.proscholy.cz', 'graphql');
 
@@ -37,6 +37,7 @@ query {
   }
   song_lyrics {
     id
+    updated_at
   }
   tags_enum {
     id
@@ -63,10 +64,12 @@ query {
       id
     }
     songbook_records {
-      id
-      number
-      songbook {
+      pivot {
         id
+        number
+        songbook {
+          id
+        }
       }
     }
     externals {
