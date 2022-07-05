@@ -6,6 +6,7 @@ import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/playlists.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
+import 'package:zpevnik/screens/about.dart';
 import 'package:zpevnik/screens/content.dart';
 import 'package:zpevnik/screens/initial.dart';
 import 'package:zpevnik/screens/pdf.dart';
@@ -21,6 +22,8 @@ class RouteGenerator {
     switch (settings.name) {
       case '/':
         return CustomPageRoute(builder: (_) => const InitialScreen());
+      case '/about':
+        return CustomPageRoute(builder: (_) => const AboutScreen());
       case '/home':
         return CustomPageRoute(builder: (_) => const ContentScreen());
       case '/pdf':

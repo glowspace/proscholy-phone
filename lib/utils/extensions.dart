@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+extension PlatformExtension on TargetPlatform {
+  bool get isIos => this == TargetPlatform.iOS;
+}
+
 extension BrightnessExtension on Brightness {
   bool get isLight => this == Brightness.light;
 }

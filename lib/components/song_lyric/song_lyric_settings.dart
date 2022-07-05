@@ -70,7 +70,7 @@ class _SongLyricSettingsWidget extends State<SongLyricSettingsWidget> {
                   const Expanded(child: Text('Akordy')),
                   SelectorWidget(
                     onSelected: (index) => widget.controller.showChordsChanged(index == 1),
-                    options: const [Icon(Icons.visibility_off), Icon(Icons.visibility)],
+                    options: const [Icon(Icons.visibility_off, size: 20), Icon(Icons.visibility, size: 20)],
                     selected: widget.controller.showChords ? 1 : 0,
                     width: _settingsOptionsWidth,
                   ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/section.dart';
 import 'package:zpevnik/constants.dart';
@@ -29,7 +29,7 @@ class NewsSection extends StatelessWidget {
           const SizedBox(height: kDefaultPadding),
           ...newsItems.map(
             (newsItem) => Highlightable(
-              onTap: () => launch(newsItem.link),
+              onTap: () => launchUrlString(newsItem.link),
               child: Text(newsItem.text, style: textTheme.bodyMedium),
             ),
           ),
