@@ -3,9 +3,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+// ignore: unnecessary_import
 import 'package:objectbox/objectbox.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zpevnik/models/author.dart';
+import 'package:zpevnik/models/news_item.dart';
+import 'package:zpevnik/models/objectbox.g.dart';
 import 'package:zpevnik/models/song.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/models/songbook.dart';
@@ -65,30 +68,57 @@ class Updater {
 
     SharedPreferences.getInstance().then((prefs) => prefs.remove(_lastUpdateKey));
 
-    await _parse(json['data']);
+    await _parse(json['data'], isSongLyricsFull: true);
   }
 
   Future<void> update() async {
+    // check if update should happen
     final prefs = await SharedPreferences.getInstance();
     final lastUpdateString = prefs.getString(_lastUpdateKey) ?? _initialLastUpdate;
     final lastUpdate = _dateFormat.parseUtc(lastUpdateString);
 
     final now = DateTime.now().toUtc();
 
-    if (now.isBefore(lastUpdate.add(_updatePeriod))) return;
+    final client = Client();
+
+    final newsItems = await client.getNews().then((json) => NewsItem.fromMapList(json));
+    store.box<NewsItem>().putMany(newsItems);
+
+    if (now.isBefore(lastUpdate.add(_updatePeriod))) {
+      client.dispose();
+
+      return;
+    }
 
     state.value = UpdaterStateLoading();
 
-    final client = Client();
-
+    // load updated data from server
     final data = await client.getData();
-    final List<int> songLyricIds = (data['song_lyrics'] as List<dynamic>)
-        .where((json) => _dateFormat.parse(json['updated_at']).isAfter(lastUpdate))
-        .map((json) => int.parse(json['id']))
-        .cast<int>()
-        .toList();
 
-    if (songLyricIds.isEmpty) {
+    await _parse(data);
+
+    // query existing song lyrics to check song lyrics that are missing in local db or that were removed on server
+    final box = store.box<SongLyric>();
+    final query = box.query().build();
+    final existingSongLyricsIds = query.property(SongLyric_.id).find().toSet();
+    query.close();
+
+    final List<int> songLyricsIds = [];
+
+    for (final songLyric in data['song_lyrics']) {
+      final id = int.parse(songLyric['id']);
+
+      if (!existingSongLyricsIds.contains(id) || _dateFormat.parse(songLyric['updated_at']).isAfter(lastUpdate)) {
+        songLyricsIds.add(id);
+      }
+
+      existingSongLyricsIds.remove(id);
+    }
+
+    // remove song lyrics that were removed on server
+    box.removeMany(existingSongLyricsIds.toList());
+
+    if (songLyricsIds.isEmpty) {
       state.value = UpdaterStateIdle();
 
       client.dispose();
@@ -98,27 +128,33 @@ class Updater {
       return;
     }
 
-    state.value = UpdaterStateUpdating(0, songLyricIds.length);
+    state.value = UpdaterStateUpdating(0, songLyricsIds.length);
 
-    final List<Future> futures = [];
+    // fetch updated song lyrics asynchronously
+    final List<Future<SongLyric>> futures = [];
 
-    for (final songLyricId in songLyricIds) {
-      futures.add(
-          client.getSongLyric(songLyricId).then((json) => state.value = (state.value as UpdaterStateUpdating).next));
+    for (final songLyricId in songLyricsIds) {
+      futures.add(client.getSongLyric(songLyricId).then((json) {
+        state.value = (state.value as UpdaterStateUpdating).next;
+
+        return SongLyric.fromJson(json, store);
+      }));
     }
 
     try {
-      await Future.wait(futures);
+      final songLyrics = await Future.wait(futures);
+
+      box.putMany(songLyrics);
+
+      prefs.setString(_lastUpdateKey, _dateFormat.format(now));
     } catch (error) {
       state.value = UpdaterStateError('$error');
+    } finally {
+      client.dispose();
     }
-
-    client.dispose();
-
-    prefs.setString(_lastUpdateKey, _dateFormat.format(now));
   }
 
-  Future<void> _parse(Map<String, dynamic> json) async {
+  Future<void> _parse(Map<String, dynamic> json, {bool isSongLyricsFull = false}) async {
     final authors = Author.fromMapList(json);
     final songs = Song.fromMapList(json);
     final songbooks = Songbook.fromMapList(json);
@@ -147,13 +183,15 @@ class Updater {
       ),
     ]);
 
-    final songLyrics = await store.runInTransactionAsync<List<SongLyric>, Map<String, dynamic>>(
-        TxMode.read, (store, params) => SongLyric.fromMapList(params, store), json);
+    if (isSongLyricsFull) {
+      final songLyrics = await store.runInTransactionAsync<List<SongLyric>, Map<String, dynamic>>(
+          TxMode.read, (store, params) => SongLyric.fromMapList(params, store), json);
 
-    await store.runInTransactionAsync<List<int>, List<SongLyric>>(
-      TxMode.write,
-      (store, params) => store.box<SongLyric>().putMany(params),
-      songLyrics,
-    );
+      await store.runInTransactionAsync<List<int>, List<SongLyric>>(
+        TxMode.write,
+        (store, params) => store.box<SongLyric>().putMany(params),
+        songLyrics,
+      );
+    }
   }
 }

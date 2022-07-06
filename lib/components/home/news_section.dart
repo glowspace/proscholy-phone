@@ -29,12 +29,15 @@ class NewsSection extends StatelessWidget {
             ],
           ),
           const SizedBox(height: kDefaultPadding),
-          ...newsItems.map(
-            (newsItem) => Highlightable(
-              onTap: () => launchUrlString(newsItem.link),
-              child: Text(newsItem.text, style: textTheme.bodyMedium),
+          if (newsItems.isEmpty)
+            Text('Žádné novinky', style: textTheme.bodyMedium)
+          else
+            ...newsItems.map(
+              (newsItem) => Highlightable(
+                onTap: () => launchUrlString(newsItem.link),
+                child: Text(newsItem.text, style: textTheme.bodyMedium),
+              ),
             ),
-          ),
         ],
       ),
     );

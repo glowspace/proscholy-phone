@@ -13,6 +13,7 @@ import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/components/song_lyric/utils/lyrics_controller.dart';
+import 'package:zpevnik/providers/navigation.dart';
 
 const double _navigationBarHeight = 48;
 
@@ -59,7 +60,7 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
         actions: [
           if (widget.songLyric.hasTranslations)
             Highlightable(
-              onTap: () => _pushTranslations(context),
+              onTap: () => _popOrPushTranslations(context),
               padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
               child: const Icon(Icons.translate),
             ),
@@ -98,7 +99,7 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
             ),
             Highlightable(
               padding: const EdgeInsets.all(kDefaultPadding),
-              onTap: () => Navigator.of(context).pop(), // TODO: check if it is from search screen
+              onTap: () => _popOrPushSearch(context),
               child: const Icon(Icons.search),
             ),
           ],
@@ -148,8 +149,24 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
     );
   }
 
-  void _pushTranslations(BuildContext context) {
-    Navigator.of(context).pushNamed('/song_lyric/translations', arguments: widget.songLyric);
+  void _popOrPushTranslations(BuildContext context) {
+    final navigationProvider = context.read<NavigationProvider>();
+
+    if (navigationProvider.hasTranslationsScreenRoute) {
+      Navigator.of(context).popUntil((route) => route == navigationProvider.translationsScreenRoute);
+    } else {
+      Navigator.of(context).pushNamed('/songLyrics/translations', arguments: widget.songLyric);
+    }
+  }
+
+  void _popOrPushSearch(BuildContext context) {
+    final navigationProvider = context.read<NavigationProvider>();
+
+    if (navigationProvider.hasSearchScreenRoute) {
+      Navigator.of(context).popUntil((route) => route == navigationProvider.searchScreenRoute);
+    } else {
+      Navigator.of(context).pushNamed('/search', arguments: widget.songLyric);
+    }
   }
 
   void _toggleFavorite(BuildContext context) {

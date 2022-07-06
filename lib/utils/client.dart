@@ -51,6 +51,7 @@ const _idPlaceholder = '[ID]';
 const _songLyricQuery = '''
 query {
   song_lyric(id: $_idPlaceholder) {
+    id
     name
     secondary_name_1
     secondary_name_2

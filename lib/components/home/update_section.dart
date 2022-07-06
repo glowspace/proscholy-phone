@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/section.dart';
 import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/links.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/utils/updater.dart';
 
@@ -29,7 +31,9 @@ class UpdateSection extends StatelessWidget {
     } else if (state is UpdaterStateUpdating) {
       text = Text('Probíhá stahování písní ($state)', style: textTheme.bodyMedium);
     } else if (state is UpdaterStateDone) {
-      text = Text('Bylo aktualizováno ${state.updatedCount} písní', style: textTheme.bodyMedium);
+      text = Text('Počet aktualizovaných písní: ${state.updatedCount}', style: textTheme.bodyMedium);
+    } else if (state is UpdaterStateError) {
+      text = Text('Nastala chyba při aktualizaci', style: textTheme.bodyMedium);
     } else {
       text = Text('', style: textTheme.bodyMedium);
     }
@@ -42,8 +46,22 @@ class UpdateSection extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(children: [
-              Expanded(child: text),
-              if (state is UpdaterStateDone)
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    text,
+                    if (state is UpdaterStateError) const SizedBox(height: kDefaultPadding / 2),
+                    if (state is UpdaterStateError)
+                      Highlightable(
+                        onTap: () => launchUrl(
+                            Uri.parse('$reportUrl?summary=Chyba při aktualizaci písní&description=${state.error}')),
+                        child: Text('Nahlásit chybu', style: textTheme.bodyMedium?.copyWith(color: red)),
+                      ),
+                  ],
+                ),
+              ),
+              if (state is UpdaterStateDone || state is UpdaterStateError)
                 Highlightable(
                   onTap: () => context.read<DataProvider>().updater.state.value = UpdaterStateIdle(),
                   child: const Icon(Icons.close),

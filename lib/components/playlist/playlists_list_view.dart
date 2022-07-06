@@ -4,12 +4,22 @@ import 'package:zpevnik/components/playlist/playlist_row.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/playlists.dart';
 
+const _noPlaylistsText =
+    'Nemáte vytvořený žádný seznam písní. Klikněte na${unbreakableSpace}tlačítko níže pro vytvoření nového seznamu.';
+
 class PlaylistsListView extends StatelessWidget {
   const PlaylistsListView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final playlistsProvider = context.watch<PlaylistsProvider>();
+
+    if (playlistsProvider.playlists.isEmpty) {
+      return Container(
+        padding: const EdgeInsets.all(kDefaultPadding),
+        child: const Center(child: Text(_noPlaylistsText, textAlign: TextAlign.center)),
+      );
+    }
 
     return Theme(
       data: Theme.of(context).copyWith(canvasColor: Colors.transparent),

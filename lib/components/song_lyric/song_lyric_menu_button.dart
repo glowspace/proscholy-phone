@@ -70,7 +70,7 @@ class SongLyricMenuButton extends StatelessWidget {
         launchUrlString('$songUrl/${songLyric.id}/');
         break;
       case SongLyricMenuAction.report:
-        launchUrlString('$reportUrl?customfield_10056=${songLyric.id}+$version+$platform');
+        launchUrlString('$reportSongLyricUrl?customfield_10056=${songLyric.id}+$version+$platform');
         break;
     }
   }

@@ -21,21 +21,22 @@ class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case '/':
-        return CustomPageRoute(builder: (_) => const InitialScreen());
+        return MaterialPageRoute(settings: settings, builder: (_) => const InitialScreen());
       case '/about':
-        return CustomPageRoute(builder: (_) => const AboutScreen());
+        return MaterialPageRoute(settings: settings, builder: (_) => const AboutScreen());
       case '/home':
-        return CustomPageRoute(builder: (_) => const ContentScreen());
+        return MaterialPageRoute(settings: settings, builder: (_) => const ContentScreen());
       case '/pdf':
         final pdf = settings.arguments as External;
 
-        return CustomPageRoute(builder: (_) => PdfScreen(pdf: pdf));
+        return MaterialPageRoute(settings: settings, builder: (_) => PdfScreen(pdf: pdf));
       case '/playlist':
         final playlist = settings.arguments as Playlist;
 
-        return CustomPageRoute(builder: (_) => PlaylistScreen(playlist: playlist));
+        return MaterialPageRoute(settings: settings, builder: (_) => PlaylistScreen(playlist: playlist));
       case '/playlists':
-        return CustomPageRoute(
+        return MaterialPageRoute(
+          settings: settings,
           builder: (_) => ChangeNotifierProxyProvider<DataProvider, PlaylistsProvider>(
             create: (context) => PlaylistsProvider(),
             update: (context, dataProvider, playlistsProvider) => playlistsProvider!..update(dataProvider.playlists),
@@ -43,7 +44,8 @@ class RouteGenerator {
           ),
         );
       case '/search':
-        return CustomPageRoute(
+        return MaterialPageRoute(
+          settings: settings,
           builder: (_) => ChangeNotifierProvider(
             create: (context) => AllSongLyricsProvider(context.read<DataProvider>()),
             builder: (_, __) => const SearchScreen(),
@@ -53,23 +55,15 @@ class RouteGenerator {
       case '/song_lyric':
         final songLyric = settings.arguments as SongLyric;
 
-        return CustomPageRoute(builder: (_) => SongLyricScreen(songLyric: songLyric));
-      case '/song_lyric/translations':
+        return MaterialPageRoute(settings: settings, builder: (_) => SongLyricScreen(songLyric: songLyric));
+      case '/songLyrics/translations':
         final songLyric = settings.arguments as SongLyric;
 
-        return CustomPageRoute(builder: (_) => TranslationsScreen(songLyric: songLyric));
+        return MaterialPageRoute(settings: settings, builder: (_) => TranslationsScreen(songLyric: songLyric));
       case '/user':
-        return CustomPageRoute(builder: (_) => const UserScreen(), fullscreenDialog: true);
+        return MaterialPageRoute(settings: settings, builder: (_) => const UserScreen(), fullscreenDialog: true);
       default:
         throw 'Unknown route: ${settings.name}';
     }
   }
-}
-
-class CustomPageRoute extends MaterialPageRoute {
-  // @override
-  // Duration get transitionDuration => const Duration(milliseconds: 5000);
-
-  CustomPageRoute({required WidgetBuilder builder, bool fullscreenDialog = false})
-      : super(builder: builder, fullscreenDialog: fullscreenDialog);
 }

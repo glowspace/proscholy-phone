@@ -4,6 +4,9 @@ import 'package:zpevnik/components/song_lyric/song_lyric_row.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
 
+const _noSongLyricsText =
+    'V tomto seznamu nemáte žádné písně. Klikněte na${unbreakableSpace}tlačítko níže pro přidání nové písně.';
+
 typedef ListItemBuilder = Widget Function(BuildContext);
 
 class SongLyricsListView<T extends SongLyricsProvider> extends StatelessWidget {
@@ -65,6 +68,29 @@ class SongLyricsListView<T extends SongLyricsProvider> extends StatelessWidget {
             isReorderable: songLyricsProvider is PlaylistSongLyricsProvider,
           ),
     ));
+
+    if (listItems.isEmpty) {
+      String text = '';
+
+      if (songLyricsProvider is AllSongLyricsProvider) {
+        if (songLyricsProvider.selectedTags.isEmpty) {
+          text = 'Nebyly nalezeny žádné písně pro hledaný výraz: "${songLyricsProvider.searchText}".';
+        } else {
+          text = 'Nebyly nalezeny žádné písně pro zvolenou kombinaci filtrů.';
+        }
+      } else if (songLyricsProvider is PlaylistSongLyricsProvider) {
+        if (songLyricsProvider.searchText.isEmpty) {
+          text = _noSongLyricsText;
+        } else {
+          text = 'Nebyly nalezeny žádné písně pro hledaný výraz: "${songLyricsProvider.searchText}".';
+        }
+      }
+
+      return Container(
+        padding: const EdgeInsets.all(kDefaultPadding),
+        child: Center(child: Text(text, textAlign: TextAlign.center)),
+      );
+    }
 
     if (songLyricsProvider is PlaylistSongLyricsProvider) {
       return Theme(
