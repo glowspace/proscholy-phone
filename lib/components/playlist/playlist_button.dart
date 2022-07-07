@@ -10,8 +10,7 @@ enum PlaylistAction {
   rename,
   share,
   duplicate,
-  archive,
-  delete,
+  remove,
 }
 
 class PlaylistButton extends StatelessWidget {
@@ -43,15 +42,10 @@ class PlaylistButton extends StatelessWidget {
         value: PlaylistAction.duplicate,
         child: IconItem(icon: CustomIcon.content_duplicate, text: 'Duplikovat'),
       ),
-      PopupMenuItem(
-        value: PlaylistAction.archive,
-        child: IconItem(icon: Icons.archive, text: playlist.isArchived ? 'Zrušit archivaci' : 'Archivovat'),
+      const PopupMenuItem(
+        value: PlaylistAction.remove,
+        child: IconItem(icon: Icons.delete, text: 'Odstranit'),
       ),
-      if (playlist.isArchived)
-        const PopupMenuItem(
-          value: PlaylistAction.delete,
-          child: IconItem(icon: Icons.delete, text: 'Odstranit'),
-        ),
     ];
   }
 
@@ -67,9 +61,8 @@ class PlaylistButton extends StatelessWidget {
       case PlaylistAction.duplicate:
         showDuplicatePlaylistDialog(context, playlist);
         break;
-      case PlaylistAction.archive:
-        break;
-      case PlaylistAction.delete:
+      case PlaylistAction.remove:
+        showremovePlaylistDialog(context, playlist);
         break;
     }
   }

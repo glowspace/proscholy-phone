@@ -353,11 +353,6 @@ final _entities = <ModelEntity>[
             id: const IdUid(3, 8873413204595320183),
             name: 'rank',
             type: 6,
-            flags: 0),
-        ModelProperty(
-            id: const IdUid(4, 344917746087617944),
-            name: 'isArchived',
-            type: 1,
             flags: 0)
       ],
       relations: <ModelRelation>[],
@@ -484,7 +479,8 @@ ModelDefinition getObjectBoxModel() {
         2245087066225826105,
         5458802551295315336,
         299538624348525419,
-        7917435652412581048
+        7917435652412581048,
+        344917746087617944
       ],
       retiredRelationUids: const [
         7916874752771113838,
@@ -934,7 +930,6 @@ ModelDefinition getObjectBoxModel() {
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, nameOffset);
           fbb.addInt64(2, object.rank);
-          fbb.addBool(3, object.isArchived);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -946,9 +941,7 @@ ModelDefinition getObjectBoxModel() {
               const fb.StringReader(asciiOptimization: true)
                   .vTableGet(buffer, rootOffset, 6, ''),
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 8, 0))
-            ..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0)
-            ..isArchived =
-                const fb.BoolReader().vTableGet(buffer, rootOffset, 10, false);
+            ..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
           InternalToManyAccess.setRelInfo(
               object.playlistRecords,
               store,
@@ -1187,10 +1180,6 @@ class Playlist_ {
   /// see [Playlist.rank]
   static final rank =
       QueryIntegerProperty<Playlist>(_entities[8].properties[2]);
-
-  /// see [Playlist.isArchived]
-  static final isArchived =
-      QueryBooleanProperty<Playlist>(_entities[8].properties[3]);
 }
 
 /// [PlaylistRecord] entity fields to define ObjectBox queries.

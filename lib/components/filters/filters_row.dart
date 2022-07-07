@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/components/filters/filter_tag.dart';
-import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
 import 'package:zpevnik/components/filters/filters.dart';
 
@@ -18,7 +17,7 @@ class FiltersRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final selectedTags = context.select<AllSongLyricsProvider, List<Tag>>((provider) => provider.selectedTags);
+    final selectedTags = context.watch<AllSongLyricsProvider>().selectedTags;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,

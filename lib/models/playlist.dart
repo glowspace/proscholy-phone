@@ -15,8 +15,6 @@ class Playlist implements Comparable<Playlist> {
   String name;
   int rank;
 
-  bool isArchived = false;
-
   @Backlink()
   final playlistRecords = ToMany<PlaylistRecord>();
 

@@ -76,7 +76,6 @@ class _SongLyricSettingsWidget extends State<SongLyricSettingsWidget> {
                   ),
                 ]),
               if (hasChords) const SizedBox(height: kDefaultPadding / 2),
-              const FontSizeSlider(),
             ]),
           ),
         ),

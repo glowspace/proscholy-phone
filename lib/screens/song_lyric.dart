@@ -14,8 +14,7 @@ import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/components/song_lyric/utils/lyrics_controller.dart';
 import 'package:zpevnik/providers/navigation.dart';
-
-const double _navigationBarHeight = 48;
+import 'package:zpevnik/providers/settings.dart';
 
 const double _miniPlayerHeight = 64;
 
@@ -29,6 +28,7 @@ class SongLyricScreen extends StatefulWidget {
 
 class _SongLyricScreenState extends State<SongLyricScreen> {
   late final LyricsController _lyricsController;
+  late final ScrollController _scrollController;
 
   late final ValueNotifier<bool> _showingExternals;
 
@@ -39,6 +39,7 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
     super.initState();
 
     _lyricsController = LyricsController(widget.songLyric, context);
+    _scrollController = ScrollController();
 
     _showingExternals = ValueNotifier(false);
   }
@@ -46,6 +47,7 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final settingsProvider = context.read<SettingsProvider>();
 
     final height = MediaQuery.of(context).size.height;
 
@@ -107,11 +109,21 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
       );
     }
 
+    ;
+
     return Stack(
       children: [
         Scaffold(
           appBar: appBar,
-          body: SafeArea(child: _buildLyrics(context)),
+          body: SafeArea(
+            child: GestureDetector(
+              onScaleStart: settingsProvider.fontScaleStarted,
+              onScaleUpdate: settingsProvider.fontScaleUpdated,
+              onTap: () => setState(() => _fullscreen = !_fullscreen),
+              behavior: HitTestBehavior.translucent,
+              child: LyricsWidget(controller: _lyricsController, scrollController: _scrollController),
+            ),
+          ),
           bottomNavigationBar: bottomBar,
         ),
         ExternalsPlayerWrapper(
@@ -121,13 +133,6 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
           isShowing: _showingExternals,
         ),
       ],
-    );
-  }
-
-  Widget _buildLyrics(BuildContext context) {
-    return GestureDetector(
-      onTap: () => setState(() => _fullscreen = !_fullscreen),
-      child: LyricsWidget(controller: _lyricsController),
     );
   }
 

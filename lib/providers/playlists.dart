@@ -70,7 +70,5 @@ class _PlaylistsProvider extends ChangeNotifier {
 }
 
 class PlaylistsProvider extends _PlaylistsProvider with _Reorderable, _Searchable {
-  List<Playlist> get playlists => (_searchResults ?? _playlists).where((playlist) => !playlist.isArchived).toList();
-  List<Playlist> get archivedPlaylists =>
-      (_searchResults ?? _playlists).where((playlist) => playlist.isArchived).toList();
+  List<Playlist> get playlists => _searchResults ?? _playlists;
 }

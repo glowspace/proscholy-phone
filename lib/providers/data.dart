@@ -62,6 +62,8 @@ class DataProvider extends ChangeNotifier {
 
       _favorites.addSongLyric(songLyric, rank);
     }
+
+    notifyListeners();
   }
 
   Playlist createPlaylist(String name) {
@@ -107,6 +109,13 @@ class DataProvider extends ChangeNotifier {
     _playlists.sort();
 
     store.box<Playlist>().putMany(_playlists);
+
+    notifyListeners();
+  }
+
+  void removePlaylist(Playlist playlist) {
+    store.box<Playlist>().remove(playlist.id);
+    _playlists.remove(playlist);
 
     notifyListeners();
   }
@@ -197,8 +206,7 @@ class DataProvider extends ChangeNotifier {
 
     for (final oldPlaylist in oldPlaylists) {
       final playlist = Playlist(oldPlaylist['name'] as String, oldPlaylist['rank'] as int)
-        ..id = (oldPlaylist['id'] as int) + 1
-        ..isArchived = oldPlaylist['is_archived'] as int == 1;
+        ..id = (oldPlaylist['id'] as int) + 1;
 
       playlists.add(playlist);
     }

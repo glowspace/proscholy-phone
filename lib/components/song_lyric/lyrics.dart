@@ -12,8 +12,9 @@ import 'package:zpevnik/utils/extensions.dart';
 
 class LyricsWidget extends StatefulWidget {
   final LyricsController controller;
+  final ScrollController? scrollController;
 
-  const LyricsWidget({Key? key, required this.controller}) : super(key: key);
+  const LyricsWidget({Key? key, required this.controller, this.scrollController}) : super(key: key);
 
   @override
   State<LyricsWidget> createState() => _LyricsWidgetState();
@@ -42,6 +43,7 @@ class _LyricsWidgetState extends State<LyricsWidget> {
     final fontSizeScale = context.select<SettingsProvider, double>((provider) => provider.fontSizeScale);
 
     return SingleChildScrollView(
+      controller: widget.scrollController,
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
         color: theme.colorScheme.surface,

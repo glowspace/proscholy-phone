@@ -118,7 +118,7 @@ class SettingsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void fontScaleStarted() => _fontSizeScaleBeforeScale = fontSizeScale;
+  void fontScaleStarted(ScaleStartDetails _) => _fontSizeScaleBeforeScale = fontSizeScale;
 
   void fontScaleUpdated(ScaleUpdateDetails details) => fontSizeScale = _fontSizeScaleBeforeScale * details.scale;
 }

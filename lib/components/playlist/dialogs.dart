@@ -67,3 +67,15 @@ void showDuplicatePlaylistDialog(BuildContext context, Playlist playlist) async 
 
   if (results != null) context.read<DataProvider>().duplicatePlaylist(playlist, results[0]);
 }
+
+void showremovePlaylistDialog(BuildContext context, Playlist playlist) async {
+  final result = await showOkCancelAlertDialog(
+    context: context,
+    title: 'Smazat playlist',
+    okLabel: 'Smazat',
+    isDestructiveAction: true,
+    cancelLabel: 'Zrušit',
+  );
+
+  if (result == OkCancelResult.ok) context.read<DataProvider>().removePlaylist(playlist);
+}
