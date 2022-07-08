@@ -47,9 +47,6 @@ class Playlist implements Comparable<Playlist> {
 
   bool get isFavorites => id == favoritesPlaylistId;
 
-  List<SongLyric> get songLyrics =>
-      (playlistRecords..sort()).map((playlistRecord) => playlistRecord.songLyric.target!).toList();
-
   void addSongLyric(SongLyric songLyric, int rank) {
     if (playlistRecords.any((playlistRecord) => playlistRecord.songLyric.target == songLyric)) return;
 

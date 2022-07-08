@@ -30,12 +30,16 @@ class DataProvider extends ChangeNotifier {
 
   late Playlist _favorites;
 
+  Map<int, SongLyric> _songLyricsById = {};
+
   List<NewsItem> get newsItems => _newsItems;
   List<SongLyric> get songLyrics => _songLyrics;
   List<Tag> get tags => _tags;
   List<Playlist> get playlists => _playlists;
 
   Playlist get favorites => _favorites;
+
+  SongLyric? getSongLyricById(int id) => _songLyricsById[id];
 
   Future<void> init() async {
     prefs = await SharedPreferences.getInstance();
@@ -103,6 +107,8 @@ class DataProvider extends ChangeNotifier {
     final rank = PlaylistRecord.nextRank(store, playlist);
 
     playlist.addSongLyric(songLyric, rank);
+
+    notifyListeners();
   }
 
   void reorderedPlaylists() {
@@ -147,6 +153,8 @@ class DataProvider extends ChangeNotifier {
 
     // TODO: do this only for updated songlyrics
     await songLyricsSearch.update(_songLyrics);
+
+    _songLyricsById = Map.fromIterable(_songLyrics, key: (songLyric) => songLyric.id);
 
     _addLanguagesToTags();
 

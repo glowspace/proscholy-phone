@@ -2,7 +2,7 @@ name: zpevnik
 
 publish_to: 'none'
 
-version: 3.0.0+33
+version: 3.0.0+102
 
 environment:
   sdk: ">=2.17.0 <3.0.0"
@@ -40,6 +40,8 @@ dependencies:
   flutter_staggered_grid_view: ^0.6.1
 
   adaptive_dialog: ^1.6.4
+
+  flutter_speed_dial: ^6.0.0
 
   # firebase_analytics: ^9.0.4
   sign_in_with_apple: ^4.0.0

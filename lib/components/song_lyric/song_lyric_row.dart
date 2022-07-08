@@ -5,6 +5,7 @@ import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
+import 'package:zpevnik/utils/search.dart';
 
 const double _iconSize = 16;
 const _disabledAlpha = 0x20;
@@ -95,8 +96,14 @@ class SongLyricRow extends StatelessWidget {
   void _pushSongLyric(BuildContext context) {
     FocusScope.of(context).unfocus();
 
-    context.read<AllSongLyricsProvider?>()?.addRecentSongLyric(songLyric);
+    final arguments = ModalRoute.of(context)?.settings.arguments;
 
-    Navigator.of(context).pushNamed('/song_lyric', arguments: songLyric);
+    if (arguments is SearchScreenArguments && arguments.shouldReturnSongLyric) {
+      Navigator.of(context).pop(songLyric);
+    } else {
+      context.read<AllSongLyricsProvider?>()?.addRecentSongLyric(songLyric);
+
+      Navigator.of(context).pushNamed('/song_lyric', arguments: songLyric);
+    }
   }
 }

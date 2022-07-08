@@ -12,6 +12,17 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final String text;
+    final now = DateTime.now();
+
+    if (now.hour < 12) {
+      text = 'Dobré ráno';
+    } else if (now.hour < 18) {
+      text = 'Dobré odpoledne';
+    } else {
+      text = 'Dobrý večer';
+    }
+
     return SingleChildScrollView(
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
@@ -23,7 +34,7 @@ class HomeScreen extends StatelessWidget {
             const SizedBox(height: 2 * kDefaultPadding),
             const SearchField(key: Key('searchfield')),
             const SizedBox(height: 2 * kDefaultPadding),
-            Text('Dobré ráno', style: Theme.of(context).textTheme.titleLarge),
+            Text(text, style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: kDefaultPadding / 2),
             const UpdateSection(),
             const NewsSection(),

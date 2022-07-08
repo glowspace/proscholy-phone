@@ -185,10 +185,7 @@ abstract class SongLyricsProvider extends ChangeNotifier {
   void _updateSongLyrics(List<SongLyric> songLyrics) {
     _songLyrics = songLyrics;
 
-    _songLyricsMap = {};
-    for (final songLyric in songLyrics) {
-      _songLyricsMap[songLyric.id] = songLyric;
-    }
+    _songLyricsMap = Map.fromIterable(songLyrics, key: (songLyric) => songLyric.id);
   }
 
   void _update() {
@@ -243,7 +240,11 @@ class PlaylistSongLyricsProvider extends SongLyricsProvider with _Searchable {
   final Playlist playlist;
 
   PlaylistSongLyricsProvider(DataProvider dataProvider, this.playlist) : super(dataProvider) {
-    _updateSongLyrics(playlist.songLyrics);
+    final songLyrics = (playlist.playlistRecords..sort())
+        .map((playlistRecord) => dataProvider.getSongLyricById(playlistRecord.songLyric.targetId))
+        .toList()
+        .cast<SongLyric>();
+    _updateSongLyrics(songLyrics);
   }
 
   SongLyric? get matchedById => _matchedById;
@@ -253,7 +254,11 @@ class PlaylistSongLyricsProvider extends SongLyricsProvider with _Searchable {
 
   @override
   void _update() {
-    _updateSongLyrics(playlist.songLyrics);
+    final songLyrics = (playlist.playlistRecords..sort())
+        .map((playlistRecord) => dataProvider.getSongLyricById(playlistRecord.songLyric.targetId))
+        .toList()
+        .cast<SongLyric>();
+    _updateSongLyrics(songLyrics);
 
     super._update();
   }
