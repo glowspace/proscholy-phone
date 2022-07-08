@@ -14,8 +14,9 @@ class TopSection extends StatelessWidget {
         const Spacer(),
         Highlightable(
           onTap: () => Navigator.of(context).pushNamed('/user'),
-          child: const CircleAvatar(
-            backgroundImage: AssetImage('assets/images/logos/apple_dark.png'),
+          child: CircleAvatar(
+            backgroundImage: const AssetImage('assets/images/songbooks/default.png'),
+            backgroundColor: Theme.of(context).colorScheme.surface,
             radius: _avatarRadius,
           ),
         ),

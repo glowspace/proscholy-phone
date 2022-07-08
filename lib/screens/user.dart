@@ -27,6 +27,8 @@ class _UserScreenState extends State<UserScreen> {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
 
+    final width = MediaQuery.of(context).size.width;
+
     return Scaffold(
       body: SafeArea(
         child: Stack(
@@ -34,22 +36,24 @@ class _UserScreenState extends State<UserScreen> {
             SingleChildScrollView(
               child: Column(
                 children: [
-                  Center(
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
-                      child: const CircleAvatar(
-                        backgroundImage: AssetImage('assets/images/logos/apple_dark.png'),
-                        radius: _avatarRadius,
-                      ),
-                    ),
-                  ),
-                  Center(child: Text('Patrik Dobiáš', style: textTheme.titleLarge)),
-                  const SizedBox(height: kDefaultPadding),
-                  Highlightable(
-                    onTap: () {},
-                    child: Text('Odhlásit se', style: textTheme.bodyMedium?.copyWith(color: red)),
-                  ),
-                  const SizedBox(height: kDefaultPadding),
+                  Image.asset('assets/images/title.png', width: width / 2),
+                  // Center(
+                  //   child: Container(
+                  //     padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
+                  //     child: const CircleAvatar(
+                  //       backgroundImage: AssetImage('assets/images/songbooks/default.png'),
+                  //       backgroundColor: Colors.transparent,
+                  //       radius: _avatarRadius,
+                  //     ),
+                  //   ),
+                  // ),
+                  // Center(child: Text('Patrik Dobiáš', style: textTheme.titleLarge)),
+                  // const SizedBox(height: kDefaultPadding),
+                  // Highlightable(
+                  //   onTap: () {},
+                  //   child: Text('Odhlásit se', style: textTheme.bodyMedium?.copyWith(color: red)),
+                  // ),
+                  // const SizedBox(height: kDefaultPadding),
                   _buildSongSettings(context),
                   _buildLinksSection(context),
                   Highlightable(

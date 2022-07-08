@@ -142,11 +142,7 @@ class _InitialScreenState extends State<InitialScreen> {
     await context.read<DataProvider>().init();
     await context.read<SettingsProvider>().init();
 
-    if (context.read<DataProvider>().prefs.containsKey(_loggedInKey)) {
-      _pushHomeScreen(context);
-    } else {
-      _showSignInButtons = true;
-    }
+    _pushHomeScreen(context);
   }
 
   void _signInWithApple(BuildContext context) async {

@@ -38,7 +38,8 @@ class _HighlightableState extends State<Highlightable> {
   @override
   Widget build(BuildContext context) {
     Color? color = widget.color ?? Colors.transparent;
-    Color? highlightColor = widget.highlightColor ?? Theme.of(context).highlightColor;
+    Color? highlightColor =
+        widget.highlightColor ?? (widget.highlightBackground ? Theme.of(context).highlightColor : Colors.white);
 
     if (widget.highlightBackground && _isHighlighted) {
       color = Color.alphaBlend(highlightColor, color);

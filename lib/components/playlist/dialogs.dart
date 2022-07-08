@@ -65,7 +65,13 @@ void showDuplicatePlaylistDialog(BuildContext context, Playlist playlist) async 
     ],
   );
 
-  if (results != null) context.read<DataProvider>().duplicatePlaylist(playlist, results[0]);
+  if (results != null) {
+    final duplicatedPlaylist = context.read<DataProvider>().duplicatePlaylist(playlist, results[0]);
+
+    if (ModalRoute.of(context)?.settings.name != '/playlists') {
+      Navigator.of(context).pushNamed('/playlist', arguments: duplicatedPlaylist);
+    }
+  }
 }
 
 void showremovePlaylistDialog(BuildContext context, Playlist playlist) async {
@@ -77,5 +83,9 @@ void showremovePlaylistDialog(BuildContext context, Playlist playlist) async {
     cancelLabel: 'Zrušit',
   );
 
-  if (result == OkCancelResult.ok) context.read<DataProvider>().removePlaylist(playlist);
+  if (result == OkCancelResult.ok) {
+    context.read<DataProvider>().removePlaylist(playlist);
+
+    if (ModalRoute.of(context)?.settings.name == '/playlist') Navigator.of(context).pop();
+  }
 }
