@@ -28,6 +28,8 @@ class DataProvider extends ChangeNotifier {
   List<Tag> _tags = [];
   List<Playlist> _playlists = [];
 
+  List<SongLyric> _updatedSongLyrics = [];
+
   late Playlist _favorites;
 
   Map<int, SongLyric> _songLyricsById = {};
@@ -36,6 +38,8 @@ class DataProvider extends ChangeNotifier {
   List<SongLyric> get songLyrics => _songLyrics;
   List<Tag> get tags => _tags;
   List<Playlist> get playlists => _playlists;
+
+  List<SongLyric> get updatedSongLyrics => _updatedSongLyrics;
 
   Playlist get favorites => _favorites;
 
@@ -55,7 +59,11 @@ class DataProvider extends ChangeNotifier {
 
     await _load();
 
-    updater.update().then((_) => _load());
+    updater.update().then((songLyrics) {
+      _updatedSongLyrics = songLyrics;
+
+      _load();
+    });
   }
 
   void toggleFavorite(SongLyric songLyric) {

@@ -15,6 +15,7 @@ import 'package:zpevnik/screens/playlists.dart';
 import 'package:zpevnik/screens/search.dart';
 import 'package:zpevnik/screens/song_lyric.dart';
 import 'package:zpevnik/screens/song_lyric/translations.dart';
+import 'package:zpevnik/screens/updated_song_lyrics.dart';
 import 'package:zpevnik/screens/user.dart';
 
 class RouteGenerator {
@@ -60,6 +61,8 @@ class RouteGenerator {
         final songLyric = settings.arguments as SongLyric;
 
         return MaterialPageRoute(settings: settings, builder: (_) => TranslationsScreen(songLyric: songLyric));
+      case '/updated_song_lyrics':
+        return MaterialPageRoute(settings: settings, builder: (_) => const UpdatedSongLyricsScreen());
       case '/user':
         return MaterialPageRoute(settings: settings, builder: (_) => const UserScreen(), fullscreenDialog: true);
       default:

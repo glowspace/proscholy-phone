@@ -3,5 +3,7 @@ class SearchScreenArguments {
   // indicates that selected song lyric should not be displayed but returned while poping to previous screen
   final bool shouldReturnSongLyric;
 
-  SearchScreenArguments({this.shouldReturnSongLyric = false});
+  final bool showSearchTitle;
+
+  SearchScreenArguments({this.shouldReturnSongLyric = false, this.showSearchTitle = false});
 }

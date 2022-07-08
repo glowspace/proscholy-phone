@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/components/font_size_slider.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/selector_widget.dart';
 import 'package:zpevnik/components/song_lyric/utils/lyrics_controller.dart';
@@ -36,8 +35,6 @@ class _SongLyricSettingsWidget extends State<SongLyricSettingsWidget> {
     final theme = Theme.of(context);
     final accidentalsStyle = theme.textTheme.bodyMedium?.copyWith(fontSize: 20, fontFamily: 'Hiragino Sans');
 
-    final hasChords = widget.controller.songLyric.hasChords;
-
     return Wrap(
       children: [
         Container(
@@ -48,34 +45,31 @@ class _SongLyricSettingsWidget extends State<SongLyricSettingsWidget> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
             child: Column(children: [
-              if (hasChords)
-                Row(children: [const Expanded(child: Text('Transpozice')), _buildTranspositionStepper(context)]),
-              if (hasChords) const SizedBox(height: kDefaultPadding / 2),
-              if (hasChords)
-                Row(children: [
-                  const Expanded(child: Text('Posuvky')),
-                  SelectorWidget(
-                    onSelected: widget.controller.accidentalsChanged,
-                    options: [
-                      Text('#', style: accidentalsStyle, textAlign: TextAlign.center),
-                      Text('♭', style: accidentalsStyle, textAlign: TextAlign.center)
-                    ],
-                    selected: widget.controller.accidentals,
-                    width: _settingsOptionsWidth,
-                  ),
-                ]),
-              if (hasChords) const SizedBox(height: kDefaultPadding / 2),
-              if (hasChords)
-                Row(children: [
-                  const Expanded(child: Text('Akordy')),
-                  SelectorWidget(
-                    onSelected: (index) => widget.controller.showChordsChanged(index == 1),
-                    options: const [Icon(Icons.visibility_off, size: 20), Icon(Icons.visibility, size: 20)],
-                    selected: widget.controller.showChords ? 1 : 0,
-                    width: _settingsOptionsWidth,
-                  ),
-                ]),
-              if (hasChords) const SizedBox(height: kDefaultPadding / 2),
+              Row(children: [const Expanded(child: Text('Transpozice')), _buildTranspositionStepper(context)]),
+              const SizedBox(height: kDefaultPadding / 2),
+              Row(children: [
+                const Expanded(child: Text('Posuvky')),
+                SelectorWidget(
+                  onSelected: widget.controller.accidentalsChanged,
+                  options: [
+                    Text('#', style: accidentalsStyle, textAlign: TextAlign.center),
+                    Text('♭', style: accidentalsStyle, textAlign: TextAlign.center)
+                  ],
+                  selected: widget.controller.accidentals,
+                  width: _settingsOptionsWidth,
+                ),
+              ]),
+              const SizedBox(height: kDefaultPadding / 2),
+              Row(children: [
+                const Expanded(child: Text('Akordy')),
+                SelectorWidget(
+                  onSelected: (index) => widget.controller.showChordsChanged(index == 1),
+                  options: const [Icon(Icons.visibility_off, size: 20), Icon(Icons.visibility, size: 20)],
+                  selected: widget.controller.showChords ? 1 : 0,
+                  width: _settingsOptionsWidth,
+                ),
+              ]),
+              const SizedBox(height: kDefaultPadding / 2),
             ]),
           ),
         ),

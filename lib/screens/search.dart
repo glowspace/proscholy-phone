@@ -5,6 +5,7 @@ import 'package:zpevnik/components/search_field.dart';
 import 'package:zpevnik/components/song_lyric/song_lyrics_list_view.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
+import 'package:zpevnik/utils/search.dart';
 
 class SearchScreen extends StatelessWidget {
   const SearchScreen({Key? key}) : super(key: key);
@@ -14,6 +15,7 @@ class SearchScreen extends StatelessWidget {
     final theme = Theme.of(context);
 
     final songLyricsProvider = context.read<AllSongLyricsProvider>();
+    final searchScreenArguments = ModalRoute.of(context)?.settings.arguments as SearchScreenArguments?;
 
     return Scaffold(
       body: SafeArea(
@@ -22,11 +24,11 @@ class SearchScreen extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             const SizedBox(height: kDefaultPadding),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-              child: Text('Vyhledávání', style: theme.textTheme.titleLarge),
-            ),
-            const SizedBox(height: kDefaultPadding / 2),
+            if (searchScreenArguments?.showSearchTitle ?? true)
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding).copyWith(bottom: kDefaultPadding / 2),
+                child: Text('Vyhledávání', style: theme.textTheme.titleLarge),
+              ),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
               child: SearchField(
@@ -41,7 +43,6 @@ class SearchScreen extends StatelessWidget {
               padding: const EdgeInsets.only(left: kDefaultPadding),
               child: const FiltersRow(),
             ),
-            const SizedBox(height: kDefaultPadding / 2),
             const Expanded(child: SongLyricsListView<AllSongLyricsProvider>()),
           ],
         ),

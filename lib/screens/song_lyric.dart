@@ -99,11 +99,12 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
                 onTap: () => _showFiles(context),
                 child: const Icon(Icons.insert_drive_file),
               ),
-            Highlightable(
-              padding: const EdgeInsets.all(kDefaultPadding),
-              onTap: () => _showSettings(context),
-              child: const Icon(Icons.tune),
-            ),
+            if (widget.songLyric.hasChords)
+              Highlightable(
+                padding: const EdgeInsets.all(kDefaultPadding),
+                onTap: () => _showSettings(context),
+                child: const Icon(Icons.tune),
+              ),
             Highlightable(
               padding: const EdgeInsets.all(kDefaultPadding),
               onTap: () => _popOrPushSearch(context),
@@ -176,7 +177,7 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
     if (navigationProvider.hasSearchScreenRoute) {
       Navigator.of(context).popUntil((route) => route == navigationProvider.searchScreenRoute);
     } else {
-      Navigator.of(context).pushNamed('/search', arguments: widget.songLyric);
+      Navigator.of(context).pushNamed('/search');
     }
   }
 

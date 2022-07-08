@@ -127,6 +127,8 @@ mixin _Searchable on SongLyricsProvider {
 
   String get searchText => _searchText;
 
+  SongLyric? get matchedById => _matchedById;
+
   void search(String searchText) async {
     _searchText = searchText;
 
@@ -171,6 +173,7 @@ mixin _Searchable on SongLyricsProvider {
 }
 
 abstract class SongLyricsProvider extends ChangeNotifier {
+  // TODO: should not store DataProvider, should use ChangeNotifierProxyProvider to get udpated data
   final DataProvider dataProvider;
 
   SongLyricsProvider(this.dataProvider) {
@@ -209,10 +212,11 @@ class AllSongLyricsProvider extends SongLyricsProvider with _Filterable, _Recent
     _updateTags(dataProvider.tags);
   }
 
+  @override
   SongLyric? get matchedById {
-    if (_matchedById == null) return null;
+    if (super.matchedById == null) return null;
 
-    final filtered = _filter([_matchedById!]);
+    final filtered = _filter([super.matchedById!]);
 
     return filtered.isEmpty ? null : filtered.first;
   }
@@ -246,8 +250,6 @@ class PlaylistSongLyricsProvider extends SongLyricsProvider with _Searchable {
         .cast<SongLyric>();
     _updateSongLyrics(songLyrics);
   }
-
-  SongLyric? get matchedById => _matchedById;
 
   @override
   List<SongLyric> get songLyrics => _searchResults ?? super.songLyrics;
@@ -287,5 +289,13 @@ class PlaylistSongLyricsProvider extends SongLyricsProvider with _Searchable {
     playlist.removeSongLyric(songLyric);
 
     _update();
+  }
+}
+
+class UpdatedSongLyricsProvider extends SongLyricsProvider {
+  UpdatedSongLyricsProvider(DataProvider dataProvider) : super(dataProvider) {
+    _updateSongLyrics(dataProvider.updatedSongLyrics);
+
+    super._update();
   }
 }

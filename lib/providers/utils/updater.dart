@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 // ignore: unnecessary_import
 import 'package:objectbox/objectbox.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/author.dart';
 import 'package:zpevnik/models/news_item.dart';
 import 'package:zpevnik/models/objectbox.g.dart';
@@ -22,6 +23,8 @@ const _initialLastUpdate = '2022-07-05 00:00:00';
 
 const _updatePeriod = Duration(hours: 1);
 
+const updateAnimationDuration = Duration(milliseconds: 1200);
+
 abstract class UpdaterState {}
 
 class UpdaterStateLoading extends UpdaterState {}
@@ -32,7 +35,7 @@ class UpdaterStateUpdating extends UpdaterState {
 
   UpdaterStateUpdating(this.current, this.count);
 
-  UpdaterState get next => current + 1 == count ? UpdaterStateDone(count) : UpdaterStateUpdating(current + 1, count);
+  UpdaterState get next => UpdaterStateUpdating(current + 1, count);
 
   @override
   String toString() => '$current/$count';
@@ -71,7 +74,7 @@ class Updater {
     await _parse(json['data'], isSongLyricsFull: true);
   }
 
-  Future<void> update() async {
+  Future<List<SongLyric>> update() async {
     // check if update should happen
     final prefs = await SharedPreferences.getInstance();
     final lastUpdateString = prefs.getString(_lastUpdateKey) ?? _initialLastUpdate;
@@ -87,7 +90,7 @@ class Updater {
     if (now.isBefore(lastUpdate.add(_updatePeriod))) {
       client.dispose();
 
-      return;
+      return [];
     }
 
     state.value = UpdaterStateLoading();
@@ -125,7 +128,7 @@ class Updater {
 
       prefs.setString(_lastUpdateKey, _dateFormat.format(now));
 
-      return;
+      return [];
     }
 
     state.value = UpdaterStateUpdating(0, songLyricsIds.length);
@@ -144,14 +147,22 @@ class Updater {
     try {
       final songLyrics = await Future.wait(futures);
 
+      await Future.delayed(updateAnimationDuration + const Duration(milliseconds: 100));
+
+      state.value = UpdaterStateDone(songLyrics.length);
+
       box.putMany(songLyrics);
 
       prefs.setString(_lastUpdateKey, _dateFormat.format(now));
+
+      return songLyrics;
     } catch (error) {
       state.value = UpdaterStateError('$error');
     } finally {
       client.dispose();
     }
+
+    return [];
   }
 
   Future<void> _parse(Map<String, dynamic> json, {bool isSongLyricsFull = false}) async {

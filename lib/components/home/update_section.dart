@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/section.dart';
+import 'package:zpevnik/components/song_lyric/song_lyric_row.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/links.dart';
 import 'package:zpevnik/providers/data.dart';
@@ -22,7 +23,8 @@ class UpdateSection extends StatelessWidget {
   }
 
   Widget _buildUpdateInfo(BuildContext context, UpdaterState state) {
-    final textTheme = Theme.of(context).textTheme;
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
 
     final Text text;
 
@@ -71,8 +73,26 @@ class UpdateSection extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.only(top: kDefaultPadding / 2),
                 decoration: BoxDecoration(borderRadius: BorderRadius.circular(kDefaultRadius)),
-                child: LinearProgressIndicator(value: state.current / state.count),
-              )
+                child: AnimatedSize(
+                  alignment: Alignment.centerLeft,
+                  curve: Curves.easeInOut,
+                  duration: updateAnimationDuration,
+                  child: Container(
+                    width: state.current / state.count * (MediaQuery.of(context).size.width - 4 * kDefaultPadding),
+                    height: 4,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(kDefaultRadius),
+                      color: theme.colorScheme.primary,
+                    ),
+                  ),
+                ),
+              ),
+            const SizedBox(height: kDefaultPadding),
+            if (state is UpdaterStateDone)
+              Highlightable(
+                onTap: () => Navigator.of(context).pushNamed('/updated_song_lyrics'),
+                child: Text('Zobrazit', style: textTheme.bodyMedium?.copyWith(color: theme.colorScheme.primary)),
+              ),
           ],
         ),
       ),
