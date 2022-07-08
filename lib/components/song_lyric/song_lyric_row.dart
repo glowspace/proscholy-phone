@@ -26,7 +26,7 @@ class SongLyricRow extends StatelessWidget {
 
     final dragIndicatorKey = GlobalKey();
 
-    return Highlightable(
+    final row = Highlightable(
       highlightBackground: true,
       highlightableChildKeys: [dragIndicatorKey],
       onTap: () => _pushSongLyric(context),
@@ -62,6 +62,20 @@ class SongLyricRow extends StatelessWidget {
         ],
       ),
     );
+
+    final songLyricsProvider = context.read<PlaylistSongLyricsProvider?>();
+
+    if (songLyricsProvider != null && !songLyricsProvider.playlist.isFavorites) {
+      return Dismissible(
+        key: Key('${songLyric.id}'),
+        onDismissed: (_) => songLyricsProvider.removeSongLyric(songLyric),
+        direction: DismissDirection.endToStart,
+        background: Container(color: red),
+        child: row,
+      );
+    }
+
+    return row;
   }
 
   List<Widget> _buildIndicators(BuildContext context) {

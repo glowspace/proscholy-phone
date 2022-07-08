@@ -54,8 +54,6 @@ dependencies:
 
   fluttertoast: ^8.0.8
 
-  flutter_slidable: ^1.1.0
-
   dotted_border: ^2.0.0+2
 
   font_awesome_flutter: ^10.1.0

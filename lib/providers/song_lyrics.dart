@@ -282,4 +282,10 @@ class PlaylistSongLyricsProvider extends SongLyricsProvider with _Searchable {
 
     notifyListeners();
   }
+
+  void removeSongLyric(SongLyric songLyric) {
+    playlist.removeSongLyric(songLyric);
+
+    _update();
+  }
 }
