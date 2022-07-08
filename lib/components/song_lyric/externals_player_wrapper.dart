@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:zpevnik/components/song_lyric/externals.dart';
 import 'package:zpevnik/constants.dart';
@@ -40,7 +38,6 @@ class _ExternalsPlayerWrapperState extends State<ExternalsPlayerWrapper> with Si
     super.initState();
 
     _animationController = AnimationController(duration: kDefaultAnimationDuration, vsync: this);
-    // _animationController = AnimationController(duration: const Duration(seconds: 5), vsync: this);
 
     widget.isShowing.addListener(_updateHeight);
     _isPlaying.addListener(_isPlayingChanged);

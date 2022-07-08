@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart' hide PopupMenuEntry, PopupMenuItem;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -16,6 +18,8 @@ import 'package:zpevnik/components/song_lyric/utils/lyrics_controller.dart';
 import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/providers/settings.dart';
 
+const double _externalsTitleHeight = 2 * kDefaultPadding + 21;
+const double _externalsNameHeight = 2 * kDefaultPadding + 18;
 const double _miniPlayerHeight = 64;
 
 class SongLyricScreen extends StatefulWidget {
@@ -49,6 +53,7 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
     final theme = Theme.of(context);
     final settingsProvider = context.read<SettingsProvider>();
 
+    final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
 
     AppBar? appBar;
@@ -109,8 +114,6 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
       );
     }
 
-    ;
-
     return Stack(
       children: [
         Scaffold(
@@ -128,7 +131,10 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
         ),
         ExternalsPlayerWrapper(
           songLyric: widget.songLyric,
-          maxHeight: 2 / 3 * height,
+          maxHeight: min(
+            2 / 3 * height,
+            _externalsTitleHeight + widget.songLyric.youtubes.length * (width / 16 * 9 + _externalsNameHeight),
+          ),
           minHeight: _miniPlayerHeight,
           isShowing: _showingExternals,
         ),
