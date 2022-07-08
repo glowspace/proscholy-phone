@@ -41,7 +41,7 @@ class HomeScreen extends StatelessWidget {
             const SizedBox(height: 2 * kDefaultPadding),
             const SongListsSection(),
             const SizedBox(height: 2 * kDefaultPadding),
-            const SharedWithMeSection(),
+            // const SharedWithMeSection(),
           ],
         ),
       ),

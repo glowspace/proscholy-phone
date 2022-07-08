@@ -1,12 +1,14 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:zpevnik/components/song_lyric/utils/active_player_controller.dart';
 import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/models/external.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/components/highlightable.dart';
+
+const _youtubePlayerMaxWidth = 300;
 
 class ExternalsWidget extends StatefulWidget {
   final SongLyric songLyric;
@@ -53,6 +55,8 @@ class _ExternalsWidgetState extends State<ExternalsWidget> {
   Widget build(BuildContext context) {
     if (widget.percentage < 0) return Container();
 
+    final width = MediaQuery.of(context).size.width;
+
     return Stack(
       fit: StackFit.expand,
       children: [
@@ -63,7 +67,7 @@ class _ExternalsWidgetState extends State<ExternalsWidget> {
             // because opacity can't be zero, translate it out of screen, so it won't be visible
             offset: Offset(0, widget.percentage == 0 ? 100 : 0),
             child: Container(
-              padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
+              padding: const EdgeInsets.only(top: kDefaultPadding),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -75,11 +79,13 @@ class _ExternalsWidgetState extends State<ExternalsWidget> {
                   Expanded(
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-                      child: ListView.separated(
-                        padding: EdgeInsets.zero,
+                      child: AlignedGridView.count(
+                        crossAxisCount: (width / _youtubePlayerMaxWidth).floor(),
+                        crossAxisSpacing: kDefaultPadding,
+                        mainAxisSpacing: kDefaultPadding,
+                        padding: const EdgeInsets.only(bottom: kDefaultPadding),
                         itemCount: _controllers.length,
                         itemBuilder: (context, index) => _buildSection(context, _controllers[index]),
-                        separatorBuilder: (context, index) => const SizedBox(height: kDefaultPadding),
                         primary: false,
                       ),
                     ),
@@ -106,7 +112,6 @@ class _ExternalsWidgetState extends State<ExternalsWidget> {
             const SizedBox(width: 8.0),
             ProgressBar(isExpanded: true),
             RemainingDuration(),
-            const PlaybackSpeedButton(),
             const SizedBox(width: 14.0),
           ],
         ),
