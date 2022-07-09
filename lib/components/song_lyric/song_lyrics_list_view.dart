@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/components/song_lyric/song_lyric_row.dart';
 import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
+import 'package:zpevnik/routes/arguments/song_lyric.dart';
 
 const _noSongLyricsText =
     'V tomto seznamu nemáte žádné písně. Klikněte na${unbreakableSpace}tlačítko níže pro přidání nové písně.';
@@ -26,8 +28,7 @@ class SongLyricsListView<T extends SongLyricsProvider> extends StatelessWidget {
         listItems.add((_) => const SizedBox(height: kDefaultPadding / 2));
         listItems.add((context) => _buildHeader(context, "POSLEDNÍ PÍSNĚ"));
 
-        listItems
-            .addAll(songLyricsProvider.recentSongLyrics.map((songLyric) => (_) => SongLyricRow(songLyric: songLyric)));
+        listItems.addAll(_songLyricRowBuilders(songLyricsProvider.recentSongLyrics));
 
         listItems.add((_) => const SizedBox(height: 2 * kDefaultPadding));
       }
@@ -41,8 +42,7 @@ class SongLyricsListView<T extends SongLyricsProvider> extends StatelessWidget {
         if (listItems.isEmpty) listItems.add((_) => const SizedBox(height: kDefaultPadding / 2));
         listItems.add((context) => _buildHeader(context, "ČÍSLO ${songLyricsProvider.searchText} VE ZPĚVNÍCÍCH"));
 
-        listItems.addAll(songLyricsProvider.songLyricsMatchedBySongbookNumber
-            .map((songLyric) => (_) => SongLyricRow(songLyric: songLyric)));
+        listItems.addAll(_songLyricRowBuilders(songLyricsProvider.songLyricsMatchedBySongbookNumber));
 
         listItems.add((_) => const SizedBox(height: 2 * kDefaultPadding));
       }
@@ -61,13 +61,8 @@ class SongLyricsListView<T extends SongLyricsProvider> extends StatelessWidget {
       listViewKey = Key(songLyricsProvider.searchText);
     }
 
-    listItems.addAll(songLyricsProvider.songLyrics.map(
-      (songLyric) => (_) => SongLyricRow(
-            key: Key('${songLyric.id}'),
-            songLyric: songLyric,
-            isReorderable: songLyricsProvider is PlaylistSongLyricsProvider,
-          ),
-    ));
+    listItems.addAll(_songLyricRowBuilders(songLyricsProvider.songLyrics,
+        isReorderable: songLyricsProvider is PlaylistSongLyricsProvider));
 
     if (listItems.isEmpty) {
       String text = '';
@@ -124,5 +119,22 @@ class SongLyricsListView<T extends SongLyricsProvider> extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
       child: Text(title, style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.primary)),
     );
+  }
+
+  List<ListItemBuilder> _songLyricRowBuilders(List<SongLyric> songLyrics, {bool isReorderable = false}) {
+    final List<ListItemBuilder> listItems = [];
+
+    for (var i = 0; i < songLyrics.length; i++) {
+      listItems.add(
+        (_) => SongLyricRow(
+          key: Key('${songLyrics[i].id}'),
+          songLyric: songLyrics[i],
+          isReorderable: isReorderable,
+          songLyricScreenArguments: SongLyricScreenArguments(songLyrics, i),
+        ),
+      );
+    }
+
+    return listItems;
   }
 }

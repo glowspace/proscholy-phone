@@ -5,7 +5,8 @@ import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
-import 'package:zpevnik/utils/search.dart';
+import 'package:zpevnik/routes/arguments/search.dart';
+import 'package:zpevnik/routes/arguments/song_lyric.dart';
 
 const double _iconSize = 16;
 const _disabledAlpha = 0x20;
@@ -14,10 +15,14 @@ class SongLyricRow extends StatelessWidget {
   final SongLyric songLyric;
   final bool isReorderable;
 
+  // arguments that hold song lyrics that are accessible through swiping on song lyrics screen
+  final SongLyricScreenArguments? songLyricScreenArguments;
+
   const SongLyricRow({
     Key? key,
     required this.songLyric,
     this.isReorderable = false,
+    this.songLyricScreenArguments,
   }) : super(key: key);
 
   @override
@@ -117,7 +122,9 @@ class SongLyricRow extends StatelessWidget {
     } else {
       context.read<AllSongLyricsProvider?>()?.addRecentSongLyric(songLyric);
 
-      Navigator.of(context).pushNamed('/song_lyric', arguments: songLyric);
+      final arguments = songLyricScreenArguments ?? SongLyricScreenArguments([songLyric], 0);
+
+      Navigator.of(context).pushNamed('/song_lyric', arguments: arguments);
     }
   }
 }

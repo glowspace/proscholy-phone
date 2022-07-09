@@ -23,28 +23,41 @@ const double _externalsNameHeight = 2 * kDefaultPadding + 18;
 const double _miniPlayerHeight = 64;
 
 class SongLyricScreen extends StatefulWidget {
-  final SongLyric songLyric;
-  const SongLyricScreen({Key? key, required this.songLyric}) : super(key: key);
+  final List<SongLyric> songLyrics;
+  final int initialIndex;
+
+  const SongLyricScreen({
+    Key? key,
+    required this.songLyrics,
+    required this.initialIndex,
+  }) : super(key: key);
 
   @override
   State<SongLyricScreen> createState() => _SongLyricScreenState();
 }
 
 class _SongLyricScreenState extends State<SongLyricScreen> {
-  late final LyricsController _lyricsController;
-  late final ScrollController _scrollController;
-
+  late final PageController _pageController;
   late final ValueNotifier<bool> _showingExternals;
 
+  late final List<LyricsController> _lyricsControllers;
+
+  late int _currentIndex;
+
   bool _fullscreen = false;
+
+  SongLyric get _songLyric => widget.songLyrics[_currentIndex % widget.songLyrics.length];
+  LyricsController get _lyricsController => _lyricsControllers[_currentIndex % _lyricsControllers.length];
 
   @override
   void initState() {
     super.initState();
 
-    _lyricsController = LyricsController(widget.songLyric, context);
-    _scrollController = ScrollController();
+    // make sure it is possible to swipe to previous song lyric
+    _currentIndex = widget.initialIndex + 10 * widget.songLyrics.length;
+    _lyricsControllers = widget.songLyrics.map((songLyric) => LyricsController(songLyric, context)).toList();
 
+    _pageController = PageController(initialPage: _currentIndex);
     _showingExternals = ValueNotifier(false);
   }
 
@@ -61,11 +74,11 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
 
     if (!_fullscreen) {
       appBar = AppBar(
-        title: Text('${widget.songLyric.id}', style: theme.textTheme.titleMedium),
+        title: Text('${_songLyric.id}', style: theme.textTheme.titleMedium),
         centerTitle: false,
         leading: const CustomBackButton(),
         actions: [
-          if (widget.songLyric.hasTranslations)
+          if (_songLyric.hasTranslations)
             Highlightable(
               onTap: () => _popOrPushTranslations(context),
               padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
@@ -75,10 +88,10 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
             builder: (context, setState) => Highlightable(
               onTap: () => setState(() => _toggleFavorite(context)),
               padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-              child: Icon(widget.songLyric.isFavorite ? Icons.star : Icons.star_outline),
+              child: Icon(_songLyric.isFavorite ? Icons.star : Icons.star_outline),
             ),
           ),
-          SongLyricMenuButton(songLyric: widget.songLyric),
+          SongLyricMenuButton(songLyric: _songLyric),
         ],
       );
 
@@ -87,19 +100,19 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            if (widget.songLyric.hasRecordings)
+            if (_songLyric.hasRecordings)
               Highlightable(
                 padding: const EdgeInsets.all(kDefaultPadding),
                 onTap: () => _showingExternals.value = true,
                 child: const Icon(FontAwesomeIcons.headphones),
               ),
-            if (widget.songLyric.hasFiles)
+            if (_songLyric.hasFiles)
               Highlightable(
                 padding: const EdgeInsets.all(kDefaultPadding),
                 onTap: () => _showFiles(context),
                 child: const Icon(Icons.insert_drive_file),
               ),
-            if (widget.songLyric.hasChords)
+            if (_songLyric.hasChords)
               Highlightable(
                 padding: const EdgeInsets.all(kDefaultPadding),
                 onTap: () => _showSettings(context),
@@ -125,16 +138,22 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
               onScaleUpdate: settingsProvider.fontScaleUpdated,
               onTap: () => setState(() => _fullscreen = !_fullscreen),
               behavior: HitTestBehavior.translucent,
-              child: LyricsWidget(controller: _lyricsController, scrollController: _scrollController),
+              child: PageView.builder(
+                controller: _pageController,
+                onPageChanged: (value) => setState(() => _currentIndex = value),
+                itemBuilder: (_, index) => LyricsWidget(
+                  controller: _lyricsControllers[index % _lyricsControllers.length],
+                ),
+              ),
             ),
           ),
           bottomNavigationBar: bottomBar,
         ),
         ExternalsPlayerWrapper(
-          songLyric: widget.songLyric,
+          songLyric: _songLyric,
           maxHeight: min(
             2 / 3 * height,
-            _externalsTitleHeight + widget.songLyric.youtubes.length * (width / 16 * 9 + _externalsNameHeight),
+            _externalsTitleHeight + _songLyric.youtubes.length * (width / 16 * 9 + _externalsNameHeight),
           ),
           minHeight: _miniPlayerHeight,
           isShowing: _showingExternals,
@@ -147,7 +166,7 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
     showMaterialModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(kDefaultRadius))),
-      builder: (context) => SongLyricFilesWidget(songLyric: widget.songLyric),
+      builder: (context) => SongLyricFilesWidget(songLyric: _songLyric),
       useRootNavigator: true,
     );
   }
@@ -167,7 +186,7 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
     if (navigationProvider.hasTranslationsScreenRoute) {
       Navigator.of(context).popUntil((route) => route == navigationProvider.translationsScreenRoute);
     } else {
-      Navigator.of(context).pushNamed('/songLyrics/translations', arguments: widget.songLyric);
+      Navigator.of(context).pushNamed('/songLyrics/translations', arguments: _songLyric);
     }
   }
 
@@ -182,6 +201,6 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
   }
 
   void _toggleFavorite(BuildContext context) {
-    context.read<DataProvider>().toggleFavorite(widget.songLyric);
+    context.read<DataProvider>().toggleFavorite(_songLyric);
   }
 }

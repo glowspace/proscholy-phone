@@ -6,7 +6,7 @@ import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/providers/settings.dart';
-import 'package:zpevnik/route_generator.dart';
+import 'package:zpevnik/routes/route_generator.dart';
 
 const _title = 'Zpěvník';
 

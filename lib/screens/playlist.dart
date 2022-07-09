@@ -13,7 +13,7 @@ import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
-import 'package:zpevnik/utils/search.dart';
+import 'package:zpevnik/routes/arguments/search.dart';
 
 class PlaylistScreen extends StatelessWidget {
   final Playlist playlist;

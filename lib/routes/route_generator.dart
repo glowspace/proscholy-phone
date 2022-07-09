@@ -6,6 +6,7 @@ import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/playlists.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
+import 'package:zpevnik/routes/arguments/song_lyric.dart';
 import 'package:zpevnik/screens/about.dart';
 import 'package:zpevnik/screens/content.dart';
 import 'package:zpevnik/screens/initial.dart';
@@ -54,9 +55,12 @@ class RouteGenerator {
           fullscreenDialog: true,
         );
       case '/song_lyric':
-        final songLyric = settings.arguments as SongLyric;
+        final arguments = settings.arguments as SongLyricScreenArguments;
 
-        return MaterialPageRoute(settings: settings, builder: (_) => SongLyricScreen(songLyric: songLyric));
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => SongLyricScreen(songLyrics: arguments.songLyrics, initialIndex: arguments.index),
+        );
       case '/songLyrics/translations':
         final songLyric = settings.arguments as SongLyric;
 
