@@ -29,7 +29,7 @@ class SongListsSection extends StatelessWidget {
         physics: const NeverScrollableScrollPhysics(),
       ),
       action: Highlightable(
-        onTap: () => Navigator.pushNamed(context, '/playlists'),
+        onTap: () => Navigator.of(context).pushNamed('/playlists'),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [

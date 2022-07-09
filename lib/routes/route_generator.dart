@@ -61,7 +61,7 @@ class RouteGenerator {
           settings: settings,
           builder: (_) => SongLyricScreen(songLyrics: arguments.songLyrics, initialIndex: arguments.index),
         );
-      case '/songLyrics/translations':
+      case '/song_lyrics/translations':
         final songLyric = settings.arguments as SongLyric;
 
         return MaterialPageRoute(settings: settings, builder: (_) => TranslationsScreen(songLyric: songLyric));

@@ -16,7 +16,7 @@ class NavigationProvider extends NavigatorObserver {
 
     if (route.settings.name == '/search') {
       _searchScreenRoute = route;
-    } else if (route.settings.name == '/songLyrics/translations') {
+    } else if (route.settings.name == '/song_lyrics/translations') {
       _translationsScreenRoute = route;
     }
   }

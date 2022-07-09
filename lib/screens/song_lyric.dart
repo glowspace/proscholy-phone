@@ -54,7 +54,7 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
     super.initState();
 
     // make sure it is possible to swipe to previous song lyric
-    _currentIndex = widget.initialIndex + 10 * widget.songLyrics.length;
+    _currentIndex = widget.initialIndex + (widget.songLyrics.length == 1 ? 0 : 10 * widget.songLyrics.length);
     _lyricsControllers = widget.songLyrics.map((songLyric) => LyricsController(songLyric, context)).toList();
 
     _pageController = PageController(initialPage: _currentIndex);
@@ -140,6 +140,7 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
               behavior: HitTestBehavior.translucent,
               child: PageView.builder(
                 controller: _pageController,
+                itemCount: widget.songLyrics.length == 1 ? 1 : null,
                 onPageChanged: (value) => setState(() => _currentIndex = value),
                 itemBuilder: (_, index) => LyricsWidget(
                   controller: _lyricsControllers[index % _lyricsControllers.length],
@@ -186,7 +187,7 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
     if (navigationProvider.hasTranslationsScreenRoute) {
       Navigator.of(context).popUntil((route) => route == navigationProvider.translationsScreenRoute);
     } else {
-      Navigator.of(context).pushNamed('/songLyrics/translations', arguments: _songLyric);
+      Navigator.of(context).pushNamed('/song_lyrics/translations', arguments: _songLyric);
     }
   }
 

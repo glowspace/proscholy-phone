@@ -6,6 +6,7 @@ import 'package:zpevnik/components/song_lyric/song_lyrics_list_view.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
 import 'package:zpevnik/routes/arguments/search.dart';
+import 'package:zpevnik/routes/arguments/song_lyric.dart';
 
 class SearchScreen extends StatelessWidget {
   const SearchScreen({Key? key}) : super(key: key);
@@ -56,7 +57,8 @@ class SearchScreen extends StatelessWidget {
     if (songLyricsProvider.matchedById != null) {
       songLyricsProvider.addRecentSongLyric(songLyricsProvider.matchedById!);
 
-      Navigator.pushNamed(context, '/song_lyric', arguments: songLyricsProvider.matchedById);
+      Navigator.of(context)
+          .pushNamed('/song_lyric', arguments: SongLyricScreenArguments([songLyricsProvider.matchedById!], 0));
     }
   }
 }
