@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zpevnik/components/highlightable.dart';
+import 'package:zpevnik/constants.dart';
 
 const double _avatarRadius = 19;
 
@@ -14,11 +15,13 @@ class TopSection extends StatelessWidget {
         const Spacer(),
         Highlightable(
           onTap: () => Navigator.of(context).pushNamed('/user'),
-          child: CircleAvatar(
-            backgroundImage: const AssetImage('assets/images/songbooks/default.png'),
-            backgroundColor: Theme.of(context).colorScheme.surface,
-            radius: _avatarRadius,
-          ),
+          padding: const EdgeInsets.all(kDefaultPadding / 2),
+          child: const Icon(Icons.settings, size: 28),
+          // CircleAvatar(
+          //   backgroundImage: const AssetImage('assets/images/songbooks/default.png'),
+          //   backgroundColor: Theme.of(context).colorScheme.surface,
+          //   radius: _avatarRadius,
+          // ),
         ),
       ],
     );
