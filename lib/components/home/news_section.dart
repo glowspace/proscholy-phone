@@ -6,8 +6,17 @@ import 'package:zpevnik/components/section.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/data.dart';
 
-class NewsSection extends StatelessWidget {
+const double _newsItemHeight = 18;
+
+class NewsSection extends StatefulWidget {
   const NewsSection({Key? key}) : super(key: key);
+
+  @override
+  State<NewsSection> createState() => _NewsSectionState();
+}
+
+class _NewsSectionState extends State<NewsSection> {
+  int _currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -31,10 +40,30 @@ class NewsSection extends StatelessWidget {
           if (newsItems.isEmpty)
             Text('Žádné novinky', style: textTheme.bodyMedium)
           else
-            ...newsItems.map(
-              (newsItem) => Highlightable(
-                onTap: () => launchUrlString(newsItem.link),
-                child: Text(newsItem.text, style: textTheme.bodyMedium),
+            SizedBox(
+              height: _newsItemHeight,
+              child: PageView.builder(
+                onPageChanged: (index) => setState(() => _currentIndex = index),
+                itemCount: newsItems.length,
+                itemBuilder: (_, index) => Highlightable(
+                  onTap: () => launchUrlString(newsItems[index].link),
+                  child: Text(newsItems[index].text, style: textTheme.bodyMedium),
+                ),
+              ),
+            ),
+          if (newsItems.isNotEmpty)
+            Container(
+              padding: const EdgeInsets.only(top: kDefaultPadding / 2),
+              child: Row(
+                children: List.generate(
+                  newsItems.length,
+                  (index) => Container(
+                    margin: const EdgeInsets.only(right: 4),
+                    width: 24,
+                    height: 2,
+                    color: yellow.withAlpha(_currentIndex == index ? 0xff : 0x40),
+                  ),
+                ),
               ),
             ),
         ],

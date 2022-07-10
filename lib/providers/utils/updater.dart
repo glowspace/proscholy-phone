@@ -6,7 +6,6 @@ import 'package:intl/intl.dart';
 // ignore: unnecessary_import
 import 'package:objectbox/objectbox.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/author.dart';
 import 'package:zpevnik/models/news_item.dart';
 import 'package:zpevnik/models/objectbox.g.dart';
