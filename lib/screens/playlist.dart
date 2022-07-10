@@ -45,6 +45,7 @@ class PlaylistScreen extends StatelessWidget {
           PlaylistActionButton(
             label: 'vlastní text',
             icon: Icons.format_align_justify,
+            onTap: () => _addText(context),
           ),
           PlaylistActionButton(
             label: 'biblický úryvek',
@@ -73,6 +74,10 @@ class PlaylistScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _addText(BuildContext context) async {
+    Navigator.of(context).pushNamed('/playlist/custom_text');
   }
 
   void _addSongLyric(BuildContext context) async {

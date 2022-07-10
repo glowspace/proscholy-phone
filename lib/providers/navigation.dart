@@ -7,17 +7,20 @@ class NavigationProvider extends NavigatorObserver {
   Route? get searchScreenRoute => _searchScreenRoute;
   Route? get translationsScreenRoute => _translationsScreenRoute;
 
-  bool get hasSearchScreenRoute => _searchScreenRoute != null;
-  bool get hasTranslationsScreenRoute => _translationsScreenRoute != null;
+  bool get isPreviousSearchScreenRoute => _searchScreenRoute != null;
+  bool get isPreviousTranslationsScreenRoute => _translationsScreenRoute != null;
 
   @override
   void didPush(Route route, Route? previousRoute) {
     super.didPush(route, previousRoute);
 
-    if (route.settings.name == '/search') {
-      _searchScreenRoute = route;
-    } else if (route.settings.name == '/song_lyrics/translations') {
-      _translationsScreenRoute = route;
+    _searchScreenRoute = null;
+    _translationsScreenRoute = null;
+
+    if (previousRoute?.settings.name == '/search') {
+      _searchScreenRoute = previousRoute;
+    } else if (previousRoute?.settings.name == '/song_lyrics/translations') {
+      _translationsScreenRoute = previousRoute;
     }
   }
 
@@ -25,21 +28,15 @@ class NavigationProvider extends NavigatorObserver {
   void didPop(Route route, Route? previousRoute) {
     super.didPop(route, previousRoute);
 
-    if (route == _searchScreenRoute) {
-      _searchScreenRoute = null;
-    } else if (route == _translationsScreenRoute) {
-      _translationsScreenRoute = null;
-    }
+    _searchScreenRoute = null;
+    _translationsScreenRoute = null;
   }
 
   @override
   void didRemove(Route route, Route? previousRoute) {
     super.didRemove(route, previousRoute);
 
-    if (route == _searchScreenRoute) {
-      _searchScreenRoute = null;
-    } else if (route == _translationsScreenRoute) {
-      _translationsScreenRoute = null;
-    }
+    _searchScreenRoute = null;
+    _translationsScreenRoute = null;
   }
 }

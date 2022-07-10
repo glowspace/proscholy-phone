@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:zpevnik/components/filters/filter_tag.dart';
+import 'package:zpevnik/components/filters/lyrics_tag.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/settings.dart';
 import 'package:zpevnik/components/song_lyric/utils/converter.dart';
@@ -58,7 +60,26 @@ class _LyricsWidgetState extends State<LyricsWidget> {
                 textScaleFactor: fontSizeScale,
               ),
             ),
-            SizedBox(height: kDefaultPadding * fontSizeScale),
+            Container(
+                padding: EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding * fontSizeScale),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Wrap(
+                      spacing: kDefaultPadding / 2,
+                      runSpacing: kDefaultPadding / 2,
+                      children: widget.controller.songLyric.tags.map((tag) => LyricsTag(tag: tag)).toList(),
+                    ),
+                    const SizedBox(height: kDefaultPadding / 2),
+                    Wrap(
+                      spacing: kDefaultPadding / 2,
+                      runSpacing: kDefaultPadding / 2,
+                      children: widget.controller.songLyric.songbookRecords
+                          .map((songbookRecord) => LyricsTag(songbookRecord: songbookRecord))
+                          .toList(),
+                    ),
+                  ],
+                )),
             if (widget.controller.hasLilypond)
               SvgPicture.string(
                 widget.controller.lilypond(theme.colorScheme.onBackground.hex),

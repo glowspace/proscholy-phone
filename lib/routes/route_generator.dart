@@ -3,19 +3,23 @@ import 'package:provider/provider.dart';
 import 'package:zpevnik/models/external.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
+import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/playlists.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
+import 'package:zpevnik/routes/arguments/search.dart';
 import 'package:zpevnik/routes/arguments/song_lyric.dart';
 import 'package:zpevnik/screens/about.dart';
 import 'package:zpevnik/screens/content.dart';
 import 'package:zpevnik/screens/initial.dart';
 import 'package:zpevnik/screens/pdf.dart';
 import 'package:zpevnik/screens/playlist.dart';
+import 'package:zpevnik/screens/playlist/custom_text.dart';
 import 'package:zpevnik/screens/playlists.dart';
 import 'package:zpevnik/screens/search.dart';
 import 'package:zpevnik/screens/song_lyric.dart';
 import 'package:zpevnik/screens/song_lyric/translations.dart';
+import 'package:zpevnik/screens/songbook.dart';
 import 'package:zpevnik/screens/updated_song_lyrics.dart';
 import 'package:zpevnik/screens/user.dart';
 
@@ -36,6 +40,8 @@ class RouteGenerator {
         final playlist = settings.arguments as Playlist;
 
         return MaterialPageRoute(settings: settings, builder: (_) => PlaylistScreen(playlist: playlist));
+      case '/playlist/custom_text':
+        return MaterialPageRoute(settings: settings, builder: (_) => const CustomTextScreen(), fullscreenDialog: true);
       case '/playlists':
         return MaterialPageRoute(
           settings: settings,
@@ -46,10 +52,12 @@ class RouteGenerator {
           ),
         );
       case '/search':
+        final arguments = settings.arguments as SearchScreenArguments?;
+
         return MaterialPageRoute(
           settings: settings,
           builder: (_) => ChangeNotifierProvider(
-            create: (context) => AllSongLyricsProvider(context.read<DataProvider>()),
+            create: (context) => AllSongLyricsProvider(context.read<DataProvider>(), initialTag: arguments?.initialTag),
             builder: (_, __) => const SearchScreen(),
           ),
           fullscreenDialog: true,
@@ -65,6 +73,10 @@ class RouteGenerator {
         final songLyric = settings.arguments as SongLyric;
 
         return MaterialPageRoute(settings: settings, builder: (_) => TranslationsScreen(songLyric: songLyric));
+      case '/songbook':
+        final songbook = settings.arguments as Songbook;
+
+        return MaterialPageRoute(settings: settings, builder: (_) => SongbookScreen(songbook: songbook));
       case '/updated_song_lyrics':
         return MaterialPageRoute(settings: settings, builder: (_) => const UpdatedSongLyricsScreen());
       case '/user':

@@ -5,6 +5,7 @@ import 'package:zpevnik/custom/sqlite-bm25/bm25.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/playlist_record.dart';
 import 'package:zpevnik/models/song_lyric.dart';
+import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/providers/data.dart';
 
@@ -204,12 +205,14 @@ abstract class SongLyricsProvider extends ChangeNotifier {
 }
 
 class AllSongLyricsProvider extends SongLyricsProvider with _Filterable, _RecentlySearched, _Searchable {
-  AllSongLyricsProvider(DataProvider dataProvider) : super(dataProvider) {
+  AllSongLyricsProvider(DataProvider dataProvider, {Tag? initialTag}) : super(dataProvider) {
     _updateSongLyrics(dataProvider.songLyrics);
 
     _updateRecentlySearched();
 
     _updateTags(dataProvider.tags);
+
+    if (initialTag != null) toggleSelectedTag(initialTag);
   }
 
   @override
@@ -289,6 +292,34 @@ class PlaylistSongLyricsProvider extends SongLyricsProvider with _Searchable {
     playlist.removeSongLyric(songLyric);
 
     _update();
+  }
+}
+
+class SongbookSongLyricsProvider extends SongLyricsProvider with _Searchable {
+  final Songbook songbook;
+
+  SongbookSongLyricsProvider(DataProvider dataProvider, this.songbook) : super(dataProvider) {
+    final songLyrics = (songbook.songbookRecords..sort())
+        .map((songbookRecord) => dataProvider.getSongLyricById(songbookRecord.songLyric.targetId))
+        .where((songLyric) => songLyric != null)
+        .toList()
+        .cast<SongLyric>();
+    _updateSongLyrics(songLyrics);
+  }
+
+  @override
+  List<SongLyric> get songLyrics => _searchResults ?? super.songLyrics;
+
+  @override
+  void _update() {
+    final songLyrics = (songbook.songbookRecords..sort())
+        .map((songbookRecord) => dataProvider.getSongLyricById(songbookRecord.songLyric.targetId))
+        .where((songLyric) => songLyric != null)
+        .toList()
+        .cast<SongLyric>();
+    _updateSongLyrics(songLyrics);
+
+    super._update();
   }
 }
 

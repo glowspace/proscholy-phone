@@ -1,9 +1,10 @@
+import 'package:collection/collection.dart';
 import 'package:objectbox/objectbox.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/models/songbook.dart';
 
 @Entity()
-class SongbookRecord {
+class SongbookRecord implements Comparable<SongbookRecord> {
   @Id(assignable: true)
   final int id;
 
@@ -31,4 +32,7 @@ class SongbookRecord {
 
   @override
   String toString() => 'SongbookRecord(id: $id, number: $number)';
+
+  @override
+  int compareTo(SongbookRecord other) => compareNatural(number, other.number);
 }

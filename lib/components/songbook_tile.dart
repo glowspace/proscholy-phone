@@ -6,7 +6,7 @@ import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/platform/utils/route_builder.dart';
 import 'package:zpevnik/providers/songbooks.dart';
 import 'package:zpevnik/components/highlightable.dart';
-import 'package:zpevnik/screens/songbook/songbook.dart';
+import 'package:zpevnik/screens/songbook.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/hex_color.dart';
 

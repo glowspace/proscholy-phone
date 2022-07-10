@@ -184,8 +184,8 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
   void _popOrPushTranslations(BuildContext context) {
     final navigationProvider = context.read<NavigationProvider>();
 
-    if (navigationProvider.hasTranslationsScreenRoute) {
-      Navigator.of(context).popUntil((route) => route == navigationProvider.translationsScreenRoute);
+    if (navigationProvider.isPreviousTranslationsScreenRoute) {
+      Navigator.of(context).pop();
     } else {
       Navigator.of(context).pushNamed('/song_lyrics/translations', arguments: _songLyric);
     }
@@ -194,8 +194,8 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
   void _popOrPushSearch(BuildContext context) {
     final navigationProvider = context.read<NavigationProvider>();
 
-    if (navigationProvider.hasSearchScreenRoute) {
-      Navigator.of(context).popUntil((route) => route == navigationProvider.searchScreenRoute);
+    if (navigationProvider.isPreviousSearchScreenRoute) {
+      Navigator.of(context).pop();
     } else {
       Navigator.of(context).pushNamed('/search');
     }
