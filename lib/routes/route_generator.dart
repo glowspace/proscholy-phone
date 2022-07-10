@@ -57,7 +57,28 @@ class RouteGenerator {
         return MaterialPageRoute(
           settings: settings,
           builder: (_) => ChangeNotifierProvider(
-            create: (context) => AllSongLyricsProvider(context.read<DataProvider>(), initialTag: arguments?.initialTag),
+            create: (context) {
+              final dataProvider = context.read<DataProvider>();
+              final List<SongLyric> songLyrics;
+
+              if (arguments?.playlist != null) {
+                songLyrics = (arguments!.playlist!.playlistRecords..sort())
+                    .map((songbookRecord) => dataProvider.getSongLyricById(songbookRecord.songLyric.targetId))
+                    .where((songLyric) => songLyric != null)
+                    .toList()
+                    .cast<SongLyric>();
+              } else if (arguments?.songbook != null) {
+                songLyrics = (arguments!.songbook!.songbookRecords..sort())
+                    .map((songbookRecord) => dataProvider.getSongLyricById(songbookRecord.songLyric.targetId))
+                    .where((songLyric) => songLyric != null)
+                    .toList()
+                    .cast<SongLyric>();
+              } else {
+                songLyrics = dataProvider.songLyrics;
+              }
+
+              return AllSongLyricsProvider(dataProvider, songLyrics, initialTag: arguments?.initialTag);
+            },
             builder: (_, __) => const SearchScreen(),
           ),
           fullscreenDialog: true,

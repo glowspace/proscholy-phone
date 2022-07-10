@@ -205,8 +205,9 @@ abstract class SongLyricsProvider extends ChangeNotifier {
 }
 
 class AllSongLyricsProvider extends SongLyricsProvider with _Filterable, _RecentlySearched, _Searchable {
-  AllSongLyricsProvider(DataProvider dataProvider, {Tag? initialTag}) : super(dataProvider) {
-    _updateSongLyrics(dataProvider.songLyrics);
+  AllSongLyricsProvider(DataProvider dataProvider, List<SongLyric> songLyrics, {Tag? initialTag})
+      : super(dataProvider) {
+    _updateSongLyrics(songLyrics);
 
     _updateRecentlySearched();
 

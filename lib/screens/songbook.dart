@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/components/custom/back_button.dart';
+import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/search_field.dart';
 import 'package:zpevnik/components/song_lyric/song_lyrics_list_view.dart';
+import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
+import 'package:zpevnik/routes/arguments/search.dart';
 import 'package:zpevnik/routes/arguments/song_lyric.dart';
 
 class SongbookScreen extends StatelessWidget {
@@ -18,7 +21,20 @@ class SongbookScreen extends StatelessWidget {
     final dataProvider = context.watch<DataProvider>();
 
     return Scaffold(
-      appBar: AppBar(leading: const CustomBackButton(), title: Text(songbook.name)),
+      appBar: AppBar(
+        leading: const CustomBackButton(),
+        title: Text(songbook.name),
+        actions: [
+          Highlightable(
+            onTap: () => Navigator.of(context).pushNamed(
+              '/search',
+              arguments: SearchScreenArguments(songbook: songbook),
+            ),
+            padding: const EdgeInsets.all(kDefaultPadding),
+            child: const Icon(Icons.search),
+          ),
+        ],
+      ),
       body: SafeArea(
         child: ChangeNotifierProvider(
           create: (context) => SongbookSongLyricsProvider(dataProvider, songbook),

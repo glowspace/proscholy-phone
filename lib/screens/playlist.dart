@@ -6,7 +6,6 @@ import 'package:zpevnik/components/custom/back_button.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/playlist/action_button.dart';
 import 'package:zpevnik/components/playlist/playlist_button.dart';
-import 'package:zpevnik/components/search_field.dart';
 import 'package:zpevnik/components/song_lyric/song_lyrics_list_view.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/playlist.dart';
@@ -14,7 +13,6 @@ import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
 import 'package:zpevnik/routes/arguments/search.dart';
-import 'package:zpevnik/routes/arguments/song_lyric.dart';
 
 class PlaylistScreen extends StatelessWidget {
   final Playlist playlist;
@@ -23,8 +21,6 @@ class PlaylistScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     final dataProvider = context.watch<DataProvider>();
 
     final Widget floatingActionButton;
@@ -64,7 +60,17 @@ class PlaylistScreen extends StatelessWidget {
       appBar: AppBar(
         leading: const CustomBackButton(),
         title: Text(playlist.name),
-        actions: [if (!playlist.isFavorites) PlaylistButton(playlist: playlist, isInAppBar: true)],
+        actions: [
+          Highlightable(
+            onTap: () => Navigator.of(context).pushNamed(
+              '/search',
+              arguments: SearchScreenArguments(playlist: playlist),
+            ),
+            padding: const EdgeInsets.all(kDefaultPadding),
+            child: const Icon(Icons.search),
+          ),
+          if (!playlist.isFavorites) PlaylistButton(playlist: playlist, isInAppBar: true),
+        ],
       ),
       floatingActionButton: floatingActionButton,
       body: SafeArea(
@@ -87,14 +93,5 @@ class PlaylistScreen extends StatelessWidget {
     );
 
     if (songLyric != null && songLyric is SongLyric) context.read<DataProvider>().addToPlaylist(songLyric, playlist);
-  }
-
-  void _maybePushMatchedSonglyric(BuildContext context) {
-    final songLyricsProvider = context.read<PlaylistSongLyricsProvider>();
-
-    if (songLyricsProvider.matchedById != null) {
-      Navigator.of(context)
-          .pushNamed('/song_lyric', arguments: SongLyricScreenArguments([songLyricsProvider.matchedById!], 0));
-    }
   }
 }
