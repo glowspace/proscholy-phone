@@ -44,6 +44,7 @@ class SearchScreen extends StatelessWidget {
               padding: const EdgeInsets.only(left: kDefaultPadding),
               child: const FiltersRow(),
             ),
+            const SizedBox(height: kDefaultPadding),
             const Expanded(child: SongLyricsListView<AllSongLyricsProvider>()),
           ],
         ),
