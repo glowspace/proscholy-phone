@@ -28,7 +28,7 @@ class SongLyricsListView<T extends SongLyricsProvider> extends StatelessWidget {
         listItems.add((_) => const SizedBox(height: kDefaultPadding / 2));
         listItems.add((context) => _buildHeader(context, "POSLEDNÍ PÍSNĚ"));
 
-        listItems.addAll(_songLyricRowBuilders(songLyricsProvider.recentSongLyrics));
+        listItems.addAll(_songLyricRowBuilders(List.from(songLyricsProvider.recentSongLyrics)));
 
         listItems.add((_) => const SizedBox(height: 2 * kDefaultPadding));
       }
