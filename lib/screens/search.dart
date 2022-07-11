@@ -18,6 +18,16 @@ class SearchScreen extends StatelessWidget {
     final songLyricsProvider = context.read<AllSongLyricsProvider>();
     final searchScreenArguments = ModalRoute.of(context)?.settings.arguments as SearchScreenArguments?;
 
+    final String title;
+
+    if (searchScreenArguments?.songbook != null) {
+      title = searchScreenArguments!.songbook!.name;
+    } else if (searchScreenArguments?.playlist != null) {
+      title = searchScreenArguments!.playlist!.name;
+    } else {
+      title = 'Vyhledávání';
+    }
+
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -28,14 +38,15 @@ class SearchScreen extends StatelessWidget {
             if (searchScreenArguments?.showSearchTitle ?? true)
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding).copyWith(bottom: kDefaultPadding / 2),
-                child: Text('Vyhledávání', style: theme.textTheme.titleLarge),
+                child: Text(title, style: theme.textTheme.titleLarge),
               ),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
               child: SearchField(
                 key: const Key('searchfield'),
                 isInsideSearchScreen: true,
-                onChanged: songLyricsProvider.search,
+                onChanged: (searchText) =>
+                    songLyricsProvider.search(searchText, songbook: searchScreenArguments?.songbook),
                 onSubmitted: (_) => _maybePushMatchedSonglyric(context),
               ),
             ),

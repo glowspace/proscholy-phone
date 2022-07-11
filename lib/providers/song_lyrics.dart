@@ -141,7 +141,7 @@ mixin _Searchable on SongLyricsProvider {
 
   SongLyric? get matchedById => _matchedById;
 
-  void search(String searchText) async {
+  void search(String searchText, {Songbook? songbook}) async {
     _searchText = searchText;
 
     _matchedById = null;
@@ -167,7 +167,9 @@ mixin _Searchable on SongLyricsProvider {
       final songLyric = _songLyricsMap[value['id']];
 
       if (songLyric != null) {
-        if (searchText == '${songLyric.id}') {
+        if ((songbook == null && searchText == '${songLyric.id}') ||
+            songLyric.songbookRecords.any((songbookRecord) =>
+                songbookRecord.songbook.targetId == songbook!.id && searchText == songbookRecord.number)) {
           _matchedById = songLyric;
         } else if (songLyric.songbookRecords.any((songbookRecord) => searchText == songbookRecord.number)) {
           _songLyricsMatchedBySongbookNumber.add(songLyric);
