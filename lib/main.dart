@@ -7,6 +7,7 @@ import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/providers/settings.dart';
 import 'package:zpevnik/routes/route_generator.dart';
+import 'package:zpevnik/utils/uni_links.dart';
 
 const _title = 'Zpěvník';
 
@@ -60,6 +61,7 @@ class MainWidget extends StatelessWidget {
         darkTheme: darkTheme,
         onGenerateRoute: RouteGenerator.generateRoute,
         navigatorObservers: [navigationProvider],
+        builder: (context, widget) => UniLinksHandlerWrapper(child: widget),
       ),
     );
   }

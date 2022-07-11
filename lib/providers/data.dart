@@ -9,6 +9,7 @@ import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/playlist_record.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/models/song_lyrics_search.dart';
+import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/providers/utils/updater.dart';
 
@@ -25,6 +26,7 @@ class DataProvider extends ChangeNotifier {
 
   List<NewsItem> _newsItems = [];
   List<SongLyric> _songLyrics = [];
+  List<Songbook> _songbooks = [];
   List<Tag> _tags = [];
   List<Playlist> _playlists = [];
 
@@ -33,9 +35,11 @@ class DataProvider extends ChangeNotifier {
   late Playlist _favorites;
 
   Map<int, SongLyric> _songLyricsById = {};
+  Map<int, Songbook> _songbooksById = {};
 
   List<NewsItem> get newsItems => _newsItems;
   List<SongLyric> get songLyrics => _songLyrics;
+  List<Songbook> get songbooks => _songbooks;
   List<Tag> get tags => _tags;
   List<Playlist> get playlists => _playlists;
 
@@ -44,6 +48,7 @@ class DataProvider extends ChangeNotifier {
   Playlist get favorites => _favorites;
 
   SongLyric? getSongLyricById(int id) => _songLyricsById[id];
+  Songbook? getSongbookById(int id) => _songbooksById[id];
 
   Future<void> init() async {
     prefs = await SharedPreferences.getInstance();
@@ -155,6 +160,7 @@ class DataProvider extends ChangeNotifier {
     // once https://github.com/objectbox/objectbox-dart/issues/340 is fixed it can be run with runInTransactionAsync
 
     _songLyrics = SongLyric.load(store);
+    _songbooks = Songbook.load(store);
 
     _playlists = Playlist.load(store);
     _favorites = Playlist.loadFavorites(store);
@@ -163,6 +169,7 @@ class DataProvider extends ChangeNotifier {
     await songLyricsSearch.update(_songLyrics);
 
     _songLyricsById = Map.fromIterable(_songLyrics, key: (songLyric) => songLyric.id);
+    _songbooksById = Map.fromIterable(_songbooks, key: (songbook) => songbook.id);
 
     _addLanguagesToTags();
 
