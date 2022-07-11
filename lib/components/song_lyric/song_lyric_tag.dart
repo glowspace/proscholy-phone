@@ -5,11 +5,11 @@ import 'package:zpevnik/models/songbook_record.dart';
 import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/routes/arguments/search.dart';
 
-class LyricsTag extends StatelessWidget {
+class SongLyricTag extends StatelessWidget {
   final SongbookRecord? songbookRecord;
   final Tag? tag;
 
-  const LyricsTag({Key? key, this.songbookRecord, this.tag})
+  const SongLyricTag({Key? key, this.songbookRecord, this.tag})
       : assert(songbookRecord != null || tag != null),
         super(key: key);
 
@@ -34,8 +34,8 @@ class LyricsTag extends StatelessWidget {
         color: theme.colorScheme.primary.withAlpha(0x20),
         highlightColor: theme.colorScheme.primary.withAlpha(0x40),
         onTap: () => songbookRecord != null
-            ? Navigator.of(context).pushNamed('/songbook', arguments: songbookRecord!.songbook.target)
-            : Navigator.of(context).pushNamed('/search', arguments: SearchScreenArguments(initialTag: tag)),
+            ? Navigator.of(context).popAndPushNamed('/songbook', arguments: songbookRecord!.songbook.target)
+            : Navigator.of(context).popAndPushNamed('/search', arguments: SearchScreenArguments(initialTag: tag)),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [

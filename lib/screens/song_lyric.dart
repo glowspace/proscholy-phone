@@ -11,6 +11,7 @@ import 'package:zpevnik/components/song_lyric/lyrics.dart';
 import 'package:zpevnik/components/song_lyric/song_lyric_files.dart';
 import 'package:zpevnik/components/song_lyric/song_lyric_menu_button.dart';
 import 'package:zpevnik/components/song_lyric/song_lyric_settings.dart';
+import 'package:zpevnik/components/song_lyric/song_lyric_tags.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/data.dart';
@@ -118,6 +119,12 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
                 onTap: () => _showSettings(context),
                 child: const Icon(Icons.tune),
               ),
+            if (_songLyric.tags.isNotEmpty || _songLyric.songbookRecords.isNotEmpty)
+              Highlightable(
+                padding: const EdgeInsets.all(kDefaultPadding),
+                onTap: () => _showTags(context),
+                child: const FaIcon(FontAwesomeIcons.tag),
+              ),
             Highlightable(
               padding: const EdgeInsets.all(kDefaultPadding),
               onTap: () => _popOrPushSearch(context),
@@ -177,6 +184,15 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
       context: context,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(kDefaultRadius))),
       builder: (context) => SongLyricSettingsWidget(controller: _lyricsController),
+      useRootNavigator: true,
+    );
+  }
+
+  void _showTags(BuildContext context) {
+    showMaterialModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(kDefaultRadius))),
+      builder: (context) => SongLyricTags(songLyric: _songLyric),
       useRootNavigator: true,
     );
   }
