@@ -112,8 +112,17 @@ mixin _RecentlySearched on SongLyricsProvider {
 
     if (_recentSongLyrics.length > _maxRecentSongLyrics) _recentSongLyrics.removeLast();
 
-    final recentSongLyricsIds = _recentSongLyrics.map((songLyric) => '${songLyric.id}').toList();
-    SharedPreferences.getInstance().then((prefs) => prefs.setStringList(_recentSongLyricsKey, recentSongLyricsIds));
+    SharedPreferences.getInstance().then((prefs) {
+      List<int> recentSongLyricsIds =
+          prefs.getStringList(_recentSongLyricsKey)?.map((id) => int.parse(id)).toList() ?? [];
+
+      recentSongLyricsIds.remove(songLyric.id);
+      recentSongLyricsIds.insert(0, songLyric.id);
+
+      if (recentSongLyricsIds.length > _maxRecentSongLyrics) recentSongLyricsIds.removeLast();
+
+      prefs.setStringList(_recentSongLyricsKey, recentSongLyricsIds.map((id) => '$id').toList());
+    });
 
     Future.delayed(const Duration(milliseconds: 500), () => notifyListeners());
   }
