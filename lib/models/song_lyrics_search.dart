@@ -16,8 +16,12 @@ final _numberRE = RegExp(r'^\d+$');
 class SongLyricsSearch {
   late final Database _db;
 
-  Future<void> init() async {
+  Future<void> open() async {
     _db = await openDatabase(join(await getDatabasesPath(), 'zpevnik.db'));
+  }
+
+  Future<void> init() async {
+    await open();
 
     await _db.execute(_createTableQuery);
   }
@@ -48,5 +52,9 @@ class SongLyricsSearch {
     if (!_numberRE.hasMatch(searchText)) searchText = '${searchText.replaceAll(' ', '* ')}*';
 
     return _db.rawQuery(_selectQuery, [searchText]);
+  }
+
+  Future<void> close() async {
+    await _db.close();
   }
 }

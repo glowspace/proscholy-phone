@@ -56,29 +56,21 @@ class RouteGenerator {
 
         return MaterialPageRoute(
           settings: settings,
-          builder: (_) => ChangeNotifierProvider(
+          builder: (_) => ChangeNotifierProxyProvider<DataProvider, AllSongLyricsProvider>(
             create: (context) {
               final dataProvider = context.read<DataProvider>();
-              final List<SongLyric> songLyrics;
 
-              if (arguments?.playlist != null) {
-                songLyrics = (arguments!.playlist!.playlistRecords..sort())
-                    .map((songbookRecord) => dataProvider.getSongLyricById(songbookRecord.songLyric.targetId))
-                    .where((songLyric) => songLyric != null)
-                    .toList()
-                    .cast<SongLyric>();
-              } else if (arguments?.songbook != null) {
-                songLyrics = (arguments!.songbook!.songbookRecords..sort())
-                    .map((songbookRecord) => dataProvider.getSongLyricById(songbookRecord.songLyric.targetId))
-                    .where((songLyric) => songLyric != null)
-                    .toList()
-                    .cast<SongLyric>();
-              } else {
-                songLyrics = dataProvider.songLyrics;
-              }
-
-              return AllSongLyricsProvider(dataProvider, songLyrics, initialTag: arguments?.initialTag);
+              return AllSongLyricsProvider(
+                dataProvider,
+                songLyrics: getSongLyrics(arguments, dataProvider),
+                initialTag: arguments?.initialTag,
+              );
             },
+            update: (_, dataProvider, allSongLyricsProvider) => allSongLyricsProvider!
+              ..update(
+                dataProvider,
+                songLyrics: getSongLyrics(arguments, dataProvider),
+              ),
             builder: (_, __) => const SearchScreen(),
           ),
           fullscreenDialog: true,
@@ -105,5 +97,23 @@ class RouteGenerator {
       default:
         throw 'Unknown route: ${settings.name}';
     }
+  }
+
+  static List<SongLyric> getSongLyrics(SearchScreenArguments? arguments, DataProvider dataProvider) {
+    if (arguments?.playlist != null) {
+      return (arguments!.playlist!.playlistRecords..sort())
+          .map((songbookRecord) => dataProvider.getSongLyricById(songbookRecord.songLyric.targetId))
+          .where((songLyric) => songLyric != null)
+          .toList()
+          .cast<SongLyric>();
+    } else if (arguments?.songbook != null) {
+      return (arguments!.songbook!.songbookRecords..sort())
+          .map((songbookRecord) => dataProvider.getSongLyricById(songbookRecord.songLyric.targetId))
+          .where((songLyric) => songLyric != null)
+          .toList()
+          .cast<SongLyric>();
+    }
+
+    return dataProvider.songLyrics;
   }
 }

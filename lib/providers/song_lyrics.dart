@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:objectbox/objectbox.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zpevnik/custom/sqlite-bm25/bm25.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/playlist_record.dart';
 import 'package:zpevnik/models/song_lyric.dart';
+import 'package:zpevnik/models/song_lyrics_search.dart';
 import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/providers/data.dart';
@@ -93,8 +95,8 @@ mixin _Filterable on SongLyricsProvider {
 mixin _RecentlySearched on SongLyricsProvider {
   late List<SongLyric> _recentSongLyrics = [];
 
-  void _updateRecentlySearched() {
-    final songLyrics = dataProvider.prefs
+  void _updateRecentlySearched(SharedPreferences prefs) {
+    final songLyrics = prefs
         .getStringList(_recentSongLyricsKey)
         ?.map((songLyricId) => _songLyricsMap[int.parse(songLyricId)])
         .where((songLyric) => songLyric != null)
@@ -111,7 +113,7 @@ mixin _RecentlySearched on SongLyricsProvider {
     if (_recentSongLyrics.length > _maxRecentSongLyrics) _recentSongLyrics.removeLast();
 
     final recentSongLyricsIds = _recentSongLyrics.map((songLyric) => '${songLyric.id}').toList();
-    dataProvider.prefs.setStringList(_recentSongLyricsKey, recentSongLyricsIds);
+    SharedPreferences.getInstance().then((prefs) => prefs.setStringList(_recentSongLyricsKey, recentSongLyricsIds));
 
     Future.delayed(const Duration(milliseconds: 500), () => notifyListeners());
   }
@@ -144,7 +146,10 @@ mixin _Searchable on SongLyricsProvider {
       return;
     }
 
-    final result = await dataProvider.songLyricsSearch.search(searchText);
+    final songLyricsSearch = SongLyricsSearch();
+    await songLyricsSearch.init();
+
+    final result = await songLyricsSearch.search(searchText);
 
     final Map<int, double> ranks = {};
     final List<SongLyric> searchResults = [];
@@ -169,18 +174,13 @@ mixin _Searchable on SongLyricsProvider {
     _searchResults = searchResults;
     _searchResults?.sort((a, b) => ranks[a.id]!.compareTo(ranks[b.id]!));
 
+    songLyricsSearch.close();
+
     notifyListeners();
   }
 }
 
 abstract class SongLyricsProvider extends ChangeNotifier {
-  // TODO: should not store DataProvider, should use ChangeNotifierProxyProvider to get udpated data
-  final DataProvider dataProvider;
-
-  SongLyricsProvider(this.dataProvider) {
-    dataProvider.addListener(_update);
-  }
-
   late List<SongLyric> _songLyrics;
   late Map<int, SongLyric> _songLyricsMap;
 
@@ -191,25 +191,13 @@ abstract class SongLyricsProvider extends ChangeNotifier {
 
     _songLyricsMap = Map.fromIterable(songLyrics, key: (songLyric) => songLyric.id);
   }
-
-  void _update() {
-    notifyListeners();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-
-    dataProvider.removeListener(_update);
-  }
 }
 
 class AllSongLyricsProvider extends SongLyricsProvider with _Filterable, _RecentlySearched, _Searchable {
-  AllSongLyricsProvider(DataProvider dataProvider, List<SongLyric> songLyrics, {Tag? initialTag})
-      : super(dataProvider) {
-    _updateSongLyrics(songLyrics);
+  AllSongLyricsProvider(DataProvider dataProvider, {List<SongLyric>? songLyrics, Tag? initialTag}) {
+    _updateSongLyrics(songLyrics ?? dataProvider.songLyrics);
 
-    _updateRecentlySearched();
+    _updateRecentlySearched(dataProvider.prefs);
 
     _updateTags(dataProvider.tags);
 
@@ -232,22 +220,19 @@ class AllSongLyricsProvider extends SongLyricsProvider with _Filterable, _Recent
 
   List<SongLyric> get songLyricsMatchedBySongbookNumber => _filter(_songLyricsMatchedBySongbookNumber);
 
-  @override
-  void _update() {
-    _updateSongLyrics(dataProvider.songLyrics);
-
-    _updateRecentlySearched();
+  void update(DataProvider dataProvider, {List<SongLyric>? songLyrics}) {
+    _updateSongLyrics(songLyrics ?? dataProvider.songLyrics);
 
     _updateTags(dataProvider.tags);
 
-    super._update();
+    notifyListeners();
   }
 }
 
 class PlaylistSongLyricsProvider extends SongLyricsProvider with _Searchable {
   final Playlist playlist;
 
-  PlaylistSongLyricsProvider(DataProvider dataProvider, this.playlist) : super(dataProvider) {
+  PlaylistSongLyricsProvider(DataProvider dataProvider, this.playlist) {
     final songLyrics = (playlist.playlistRecords..sort())
         .map((playlistRecord) => dataProvider.getSongLyricById(playlistRecord.songLyric.targetId))
         .toList()
@@ -258,15 +243,14 @@ class PlaylistSongLyricsProvider extends SongLyricsProvider with _Searchable {
   @override
   List<SongLyric> get songLyrics => _searchResults ?? super.songLyrics;
 
-  @override
-  void _update() {
+  void update(DataProvider dataProvider) {
     final songLyrics = (playlist.playlistRecords..sort())
         .map((playlistRecord) => dataProvider.getSongLyricById(playlistRecord.songLyric.targetId))
         .toList()
         .cast<SongLyric>();
     _updateSongLyrics(songLyrics);
 
-    super._update();
+    notifyListeners();
   }
 
   void onReorder(BuildContext context, int oldIndex, int newIndex) {
@@ -292,14 +276,17 @@ class PlaylistSongLyricsProvider extends SongLyricsProvider with _Searchable {
   void removeSongLyric(SongLyric songLyric) {
     playlist.removeSongLyric(songLyric);
 
-    _update();
+    _songLyrics.remove(songLyric);
+    _songLyricsMap.remove(songLyric.id);
+
+    notifyListeners();
   }
 }
 
 class SongbookSongLyricsProvider extends SongLyricsProvider with _Searchable {
   final Songbook songbook;
 
-  SongbookSongLyricsProvider(DataProvider dataProvider, this.songbook) : super(dataProvider) {
+  SongbookSongLyricsProvider(DataProvider dataProvider, this.songbook) {
     final songLyrics = (songbook.songbookRecords..sort())
         .map((songbookRecord) => dataProvider.getSongLyricById(songbookRecord.songLyric.targetId))
         .where((songLyric) => songLyric != null)
@@ -311,8 +298,7 @@ class SongbookSongLyricsProvider extends SongLyricsProvider with _Searchable {
   @override
   List<SongLyric> get songLyrics => _searchResults ?? super.songLyrics;
 
-  @override
-  void _update() {
+  void update(DataProvider dataProvider) {
     final songLyrics = (songbook.songbookRecords..sort())
         .map((songbookRecord) => dataProvider.getSongLyricById(songbookRecord.songLyric.targetId))
         .where((songLyric) => songLyric != null)
@@ -320,14 +306,12 @@ class SongbookSongLyricsProvider extends SongLyricsProvider with _Searchable {
         .cast<SongLyric>();
     _updateSongLyrics(songLyrics);
 
-    super._update();
+    notifyListeners();
   }
 }
 
 class UpdatedSongLyricsProvider extends SongLyricsProvider {
-  UpdatedSongLyricsProvider(DataProvider dataProvider) : super(dataProvider) {
+  UpdatedSongLyricsProvider(DataProvider dataProvider) {
     _updateSongLyrics(dataProvider.updatedSongLyrics);
-
-    super._update();
   }
 }

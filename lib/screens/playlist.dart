@@ -74,8 +74,9 @@ class PlaylistScreen extends StatelessWidget {
       ),
       floatingActionButton: floatingActionButton,
       body: SafeArea(
-        child: ChangeNotifierProvider(
+        child: ChangeNotifierProxyProvider<DataProvider, PlaylistSongLyricsProvider>(
           create: (context) => PlaylistSongLyricsProvider(dataProvider, playlist),
+          update: (_, dataProvider, playlistSongLyricsProvider) => playlistSongLyricsProvider!..update(dataProvider),
           builder: (_, __) => const SongLyricsListView<PlaylistSongLyricsProvider>(),
         ),
       ),
