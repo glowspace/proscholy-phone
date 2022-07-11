@@ -10,7 +10,14 @@ class PlaylistRow extends StatelessWidget {
   final Playlist playlist;
   final bool isReorderable;
 
-  const PlaylistRow({Key? key, required this.playlist, this.isReorderable = false}) : super(key: key);
+  final VisualDensity visualDensity;
+
+  const PlaylistRow({
+    Key? key,
+    required this.playlist,
+    this.isReorderable = false,
+    this.visualDensity = VisualDensity.standard,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +26,9 @@ class PlaylistRow extends StatelessWidget {
 
     return Highlightable(
       onTap: () => _pushPlaylist(context),
-      padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
+      padding: visualDensity == VisualDensity.comfortable
+          ? const EdgeInsets.symmetric(vertical: kDefaultPadding / 2)
+          : EdgeInsets.zero,
       highlightBackground: true,
       highlightableChildKeys: [dragIndicatorKey, playlistButtonKey],
       child: Row(

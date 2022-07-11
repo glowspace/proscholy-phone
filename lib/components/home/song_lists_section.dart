@@ -23,7 +23,7 @@ class SongListsSection extends StatelessWidget {
       title: Text('Moje seznamy', style: Theme.of(context).textTheme.titleLarge),
       child: ListView.separated(
         itemCount: min(_maxShowingPlaylists, playlists.length),
-        itemBuilder: (_, index) => PlaylistRow(playlist: playlists[index]),
+        itemBuilder: (_, index) => PlaylistRow(playlist: playlists[index], visualDensity: VisualDensity.comfortable),
         separatorBuilder: (_, __) => const Divider(height: 0),
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
