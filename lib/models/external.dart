@@ -109,6 +109,8 @@ class External {
         return _nameAuthorRE.firstMatch(name)?.group(2) ?? name;
       case MediaType.pdf:
         return mediaId ?? _nameAuthorRE.firstMatch(name)?.group(2) ?? name;
+      case MediaType.mp3:
+        return _nameAuthorRE.firstMatch(name)?.group(2) ?? name;
       default:
         return name;
     }

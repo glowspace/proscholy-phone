@@ -2,7 +2,9 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:just_audio/just_audio.dart' hide PlayerState;
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:zpevnik/components/song_lyric/externals/audio_player.dart';
 import 'package:zpevnik/components/song_lyric/utils/active_player_controller.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
@@ -29,7 +31,7 @@ class ExternalsWidget extends StatefulWidget {
 }
 
 class _ExternalsWidgetState extends State<ExternalsWidget> {
-  late final List<ActivePlayerController> _controllers;
+  final List<ActivePlayerController> _controllers = [];
 
   ActivePlayerController? _activePlayerController;
 
@@ -40,12 +42,13 @@ class _ExternalsWidgetState extends State<ExternalsWidget> {
     super.initState();
 
     _prepareYoutubeControllers();
+    _prepareMp3Controllers();
   }
 
   @override
   void dispose() {
     for (var controller in _controllers) {
-      controller.youtubePlayerController?.dispose();
+      controller.dispose();
     }
 
     super.dispose();
@@ -104,22 +107,24 @@ class _ExternalsWidgetState extends State<ExternalsWidget> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        YoutubePlayer(
-          controller: controller.youtubePlayerController!,
-          bottomActions: [
-            const SizedBox(width: 14.0),
-            CurrentPosition(),
-            const SizedBox(width: 8.0),
-            ProgressBar(isExpanded: true),
-            RemainingDuration(),
-            const SizedBox(width: 14.0),
-          ],
-        ),
+        if (controller.youtubePlayerController != null)
+          YoutubePlayer(
+            controller: controller.youtubePlayerController!,
+            bottomActions: [
+              const SizedBox(width: 14.0),
+              CurrentPosition(),
+              const SizedBox(width: 8.0),
+              ProgressBar(isExpanded: true),
+              RemainingDuration(),
+              const SizedBox(width: 14.0),
+            ],
+          ),
         Container(
           padding: const EdgeInsets.all(kDefaultPadding),
           color: Theme.of(context).scaffoldBackgroundColor,
           child: Text(controller.external.name),
         ),
+        if (controller.audioPlayer != null) AudioPlayerWidget(controller: controller),
       ],
     );
   }
@@ -167,8 +172,6 @@ class _ExternalsWidgetState extends State<ExternalsWidget> {
   }
 
   void _prepareYoutubeControllers() {
-    _controllers = [];
-
     for (final youtube in widget.songLyric.youtubes) {
       if (youtube.mediaId == null) continue;
 
@@ -177,26 +180,54 @@ class _ExternalsWidgetState extends State<ExternalsWidget> {
         flags: const YoutubePlayerFlags(autoPlay: false, mute: false, loop: true, showLiveFullscreenButton: false),
       );
 
-      final activePlayerController = ActivePlayerController(youtube, controller);
+      final activePlayerController = ActivePlayerController(youtube, youtubePlayerController: controller);
       _controllers.add(activePlayerController);
 
-      controller.addListener(() {
-        if (widget.percentage > 0.2) {
-          if (controller.value.isPlaying) {
-            _activePlayerController = activePlayerController;
-            widget.isPlaying.value = true;
-          } else {
-            _activePlayerController = null;
-            widget.isPlaying.value = false;
-          }
-        } else if (controller.value.isPlaying != _isPlaying) {
-          setState(() => _isPlaying = controller.value.isPlaying);
-        }
-      });
+      controller.addListener(() => _handlePlayingChange(activePlayerController));
+    }
+  }
+
+  void _prepareMp3Controllers() {
+    for (final mp3 in widget.songLyric.mp3s) {
+      if (mp3.url == null) continue;
+
+      final player = AudioPlayer();
+      player.setUrl(mp3.url!);
+
+      final activePlayerController = ActivePlayerController(mp3, audioPlayer: player);
+      _controllers.add(activePlayerController);
+
+      player.playingStream.listen((isPlaying) => _handlePlayingChange(activePlayerController));
+    }
+  }
+
+  void _handlePlayingChange(ActivePlayerController activePlayerController) {
+    if (activePlayerController.isPlaying == _isPlaying && _activePlayerController == activePlayerController) return;
+
+    if (!activePlayerController.isPlaying && _activePlayerController != activePlayerController) return;
+
+    if (widget.percentage > 0.2) {
+      // print(activePlayerController.isPlaying);
+      // print(activePlayerController.youtubePlayerController?.value.playerState);
+
+      if (activePlayerController.isPlaying) {
+        _activePlayerController?.pause();
+
+        _activePlayerController = activePlayerController;
+        widget.isPlaying.value = true;
+      } else {
+        _activePlayerController = null;
+        widget.isPlaying.value = false;
+      }
+
+      _isPlaying = activePlayerController.isPlaying;
+    } else {
+      setState(() => _isPlaying = activePlayerController.isPlaying);
     }
   }
 
   void _dismiss() {
+    _activePlayerController?.pause();
     _activePlayerController = null;
     widget.isPlaying.value = false;
   }

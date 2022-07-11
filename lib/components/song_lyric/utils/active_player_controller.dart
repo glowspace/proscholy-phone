@@ -1,3 +1,4 @@
+import 'package:just_audio/just_audio.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:zpevnik/models/external.dart';
 
@@ -5,32 +6,38 @@ class ActivePlayerController {
   final External external;
 
   final YoutubePlayerController? youtubePlayerController;
+  final AudioPlayer? audioPlayer;
 
-  const ActivePlayerController(this.external, this.youtubePlayerController);
+  const ActivePlayerController(
+    this.external, {
+    this.youtubePlayerController,
+    this.audioPlayer,
+  });
 
-  bool get isPlaying => youtubePlayerController?.value.isPlaying ?? false;
+  bool get isPlaying => youtubePlayerController?.value.isPlaying ?? audioPlayer?.playing ?? false;
 
   void rewind() {
-    if (youtubePlayerController != null) {
-      youtubePlayerController!.seekTo(youtubePlayerController!.value.position - const Duration(seconds: 5));
-    }
+    youtubePlayerController?.seekTo(youtubePlayerController!.value.position - const Duration(seconds: 5));
+    audioPlayer?.seek(audioPlayer == null ? null : audioPlayer!.position - const Duration(seconds: 5));
   }
 
   void play() {
-    if (youtubePlayerController != null) {
-      youtubePlayerController!.play();
-    }
+    youtubePlayerController?.play();
+    audioPlayer?.play();
   }
 
   void pause() {
-    if (youtubePlayerController != null) {
-      youtubePlayerController!.pause();
-    }
+    youtubePlayerController?.pause();
+    audioPlayer?.pause();
   }
 
   void forward() {
-    if (youtubePlayerController != null) {
-      youtubePlayerController!.seekTo(youtubePlayerController!.value.position + const Duration(seconds: 5));
-    }
+    youtubePlayerController?.seekTo(youtubePlayerController!.value.position + const Duration(seconds: 5));
+    audioPlayer?.seek(audioPlayer == null ? null : audioPlayer!.position + const Duration(seconds: 5));
+  }
+
+  void dispose() {
+    youtubePlayerController?.dispose();
+    audioPlayer?.dispose();
   }
 }

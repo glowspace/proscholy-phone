@@ -33,6 +33,7 @@ dependencies:
   share_plus: ^4.0.3
 
   youtube_player_flutter: ^8.0.0
+  just_audio: ^0.9.27
 
   flutter_cached_pdfview: ^0.4.1
 
