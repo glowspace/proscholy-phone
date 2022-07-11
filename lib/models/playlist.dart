@@ -71,5 +71,11 @@ class Playlist implements Comparable<Playlist> {
   String toString() => 'Playlist(id: $id, name: $name)';
 
   @override
+  operator ==(Object other) => other is Playlist && id == other.id;
+
+  @override
+  int get hashCode => id;
+
+  @override
   int compareTo(Playlist other) => rank.compareTo(other.rank);
 }
