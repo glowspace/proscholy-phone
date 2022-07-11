@@ -148,7 +148,10 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
               child: PageView.builder(
                 controller: _pageController,
                 itemCount: widget.songLyrics.length == 1 ? 1 : null,
-                onPageChanged: (value) => setState(() => _currentIndex = value),
+                onPageChanged: (value) => setState(() {
+                  _showingExternals.value = false;
+                  _currentIndex = value;
+                }),
                 itemBuilder: (_, index) => LyricsWidget(
                   controller: _lyricsControllers[index % _lyricsControllers.length],
                 ),
@@ -158,10 +161,14 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
           bottomNavigationBar: bottomBar,
         ),
         ExternalsPlayerWrapper(
+          key: Key('${_songLyric.id}'),
           songLyric: _songLyric,
+          // TODO: move this computations to ExternalsPlayerWrapper
           maxHeight: min(
             2 / 3 * height,
-            _externalsTitleHeight + _songLyric.youtubes.length * (width / 16 * 9 + _externalsNameHeight),
+            _externalsTitleHeight +
+                _songLyric.youtubes.length * (width / 16 * 9 + _externalsNameHeight) +
+                kDefaultPadding,
           ),
           minHeight: _miniPlayerHeight,
           isShowing: _showingExternals,

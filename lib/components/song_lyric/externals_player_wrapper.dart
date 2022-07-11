@@ -54,12 +54,12 @@ class _ExternalsPlayerWrapperState extends State<ExternalsPlayerWrapper> with Si
 
   @override
   void dispose() {
-    super.dispose();
-
     widget.isShowing.removeListener(_updateHeight);
     _isPlaying.removeListener(_isPlayingChanged);
 
     _animationController.dispose();
+
+    super.dispose();
   }
 
   @override

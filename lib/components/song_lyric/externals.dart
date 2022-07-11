@@ -44,11 +44,11 @@ class _ExternalsWidgetState extends State<ExternalsWidget> {
 
   @override
   void dispose() {
-    super.dispose();
-
     for (var controller in _controllers) {
       controller.youtubePlayerController?.dispose();
     }
+
+    super.dispose();
   }
 
   @override
