@@ -1,9 +1,11 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:just_audio/just_audio.dart' hide PlayerState;
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:zpevnik/components/custom/future_builder.dart';
 import 'package:zpevnik/components/song_lyric/externals/audio_player.dart';
 import 'package:zpevnik/components/song_lyric/utils/active_player_controller.dart';
 import 'package:zpevnik/constants.dart';
@@ -11,6 +13,8 @@ import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/components/highlightable.dart';
 
 const _youtubePlayerMaxWidth = 300;
+const _noInternetMessage =
+    'Nahrávky jsou dostupné pouze přes internet. Zkontrolujte prosím připojení k${unbreakableSpace}internetu.';
 
 class ExternalsWidget extends StatefulWidget {
   final SongLyric songLyric;
@@ -37,12 +41,13 @@ class _ExternalsWidgetState extends State<ExternalsWidget> {
 
   bool _isPlaying = false;
 
+  late final Future<void> _initFuture;
+
   @override
   void initState() {
     super.initState();
 
-    _prepareYoutubeControllers();
-    _prepareMp3Controllers();
+    _initFuture = _checkInternetAndPrepare();
   }
 
   @override
@@ -79,17 +84,24 @@ class _ExternalsWidgetState extends State<ExternalsWidget> {
                     margin: const EdgeInsets.only(bottom: kDefaultPadding),
                     child: Text('Nahrávky', style: Theme.of(context).textTheme.titleLarge),
                   ),
-                  Expanded(
-                    child: Container(
+                  CustomFutureBuilder<void>(
+                    future: _initFuture,
+                    errorBuilder: (_, __) => Container(
                       padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-                      child: AlignedGridView.count(
-                        crossAxisCount: (width / _youtubePlayerMaxWidth).floor(),
-                        crossAxisSpacing: kDefaultPadding,
-                        mainAxisSpacing: kDefaultPadding,
-                        padding: const EdgeInsets.only(bottom: kDefaultPadding),
-                        itemCount: _controllers.length,
-                        itemBuilder: (context, index) => _buildSection(context, _controllers[index]),
-                        primary: false,
+                      child: const Text(_noInternetMessage, textAlign: TextAlign.center),
+                    ),
+                    builder: (_, __) => Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+                        child: AlignedGridView.count(
+                          crossAxisCount: (width / _youtubePlayerMaxWidth).floor(),
+                          crossAxisSpacing: kDefaultPadding,
+                          mainAxisSpacing: kDefaultPadding,
+                          padding: const EdgeInsets.only(bottom: kDefaultPadding),
+                          itemCount: _controllers.length,
+                          itemBuilder: (context, index) => _buildSection(context, _controllers[index]),
+                          primary: false,
+                        ),
                       ),
                     ),
                   ),
@@ -171,6 +183,13 @@ class _ExternalsWidgetState extends State<ExternalsWidget> {
     );
   }
 
+  Future<void> _checkInternetAndPrepare() async {
+    await InternetAddress.lookup("youtube.com");
+
+    _prepareYoutubeControllers();
+    _prepareMp3Controllers();
+  }
+
   void _prepareYoutubeControllers() {
     for (final youtube in widget.songLyric.youtubes) {
       if (youtube.mediaId == null) continue;
@@ -207,9 +226,6 @@ class _ExternalsWidgetState extends State<ExternalsWidget> {
     if (!activePlayerController.isPlaying && _activePlayerController != activePlayerController) return;
 
     if (widget.percentage > 0.2) {
-      // print(activePlayerController.isPlaying);
-      // print(activePlayerController.youtubePlayerController?.value.playerState);
-
       if (activePlayerController.isPlaying) {
         _activePlayerController?.pause();
 

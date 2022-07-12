@@ -4,9 +4,16 @@ import 'package:zpevnik/utils/extensions.dart';
 class CustomFutureBuilder<T> extends StatelessWidget {
   final Future<T>? future;
   final Widget Function(BuildContext, Widget)? wrapperBuilder;
-  final Widget Function(BuildContext, T) builder;
+  final Widget Function(BuildContext, Object?)? errorBuilder;
+  final Widget Function(BuildContext, T?) builder;
 
-  const CustomFutureBuilder({Key? key, this.future, this.wrapperBuilder, required this.builder}) : super(key: key);
+  const CustomFutureBuilder({
+    Key? key,
+    this.future,
+    this.wrapperBuilder,
+    this.errorBuilder,
+    required this.builder,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,9 +24,9 @@ class CustomFutureBuilder<T> extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.isDone) {
           if (snapshot.hasError) {
-            return wrapperBuilder(context, Text('${snapshot.error}'));
+            return wrapperBuilder(context, errorBuilder?.call(context, snapshot.error) ?? Text('${snapshot.error}'));
           } else {
-            return wrapperBuilder(context, builder(context, snapshot.data!));
+            return wrapperBuilder(context, builder(context, snapshot.data));
           }
         } else {
           return wrapperBuilder(context, const Center(child: CircularProgressIndicator.adaptive()));

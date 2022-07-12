@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -74,17 +75,23 @@ class Updater {
   }
 
   Future<List<SongLyric>> update() async {
+    final client = Client();
+
+    try {
+      final newsItems = await client.getNews().then((json) => NewsItem.fromMapList(json));
+      store.box<NewsItem>().putMany(newsItems);
+    } on SocketException {
+      client.dispose();
+
+      return [];
+    }
+
     // check if update should happen
     final prefs = await SharedPreferences.getInstance();
     final lastUpdateString = prefs.getString(_lastUpdateKey) ?? _initialLastUpdate;
     final lastUpdate = _dateFormat.parseUtc(lastUpdateString);
 
     final now = DateTime.now().toUtc();
-
-    final client = Client();
-
-    final newsItems = await client.getNews().then((json) => NewsItem.fromMapList(json));
-    store.box<NewsItem>().putMany(newsItems);
 
     if (now.isBefore(lastUpdate.add(_updatePeriod))) {
       client.dispose();

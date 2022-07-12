@@ -101,7 +101,7 @@ class _InitialScreenState extends State<InitialScreen> {
           const SizedBox(height: kDefaultPadding),
           CustomFutureBuilder<bool>(
             future: SignInWithApple.isAvailable(),
-            builder: (_, isAvailable) => isAvailable
+            builder: (_, isAvailable) => (isAvailable ?? false)
                 ? SignInButton(type: SignInButtonType.apple, onSignIn: () => _signInWithApple(context))
                 : Container(),
           ),
