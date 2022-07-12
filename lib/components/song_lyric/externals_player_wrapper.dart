@@ -66,37 +66,40 @@ class _ExternalsPlayerWrapperState extends State<ExternalsPlayerWrapper> with Si
   Widget build(BuildContext context) {
     return ValueListenableBuilder<double>(
       valueListenable: _height,
-      builder: (_, height, __) => Stack(
-        children: [
-          if (height > widget.minHeight)
-            GestureDetector(
-              onTap: _collapseOrHide,
-              child: Opacity(opacity: height / widget.maxHeight, child: Container(color: Colors.black.withAlpha(0x60))),
-            ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: SizedBox(
-              height: height,
-              child: GestureDetector(
-                child: ClipRRect(
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(kDefaultRadius)),
-                  child: Material(
-                    color: Theme.of(context).canvasColor,
-                    child: ExternalsWidget(
-                      songLyric: widget.songLyric,
-                      percentage: (_height.value - widget.minHeight) / (widget.maxHeight - widget.minHeight),
-                      isPlaying: _isPlaying,
+      builder: (_, height, __) => height == 0
+          ? Container()
+          : Stack(
+              children: [
+                if (height > widget.minHeight)
+                  GestureDetector(
+                    onTap: _collapseOrHide,
+                    child: Opacity(
+                        opacity: height / widget.maxHeight, child: Container(color: Colors.black.withAlpha(0x60))),
+                  ),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: SizedBox(
+                    height: height,
+                    child: GestureDetector(
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.vertical(top: Radius.circular(kDefaultRadius)),
+                        child: Material(
+                          color: Theme.of(context).canvasColor,
+                          child: ExternalsWidget(
+                            songLyric: widget.songLyric,
+                            percentage: (_height.value - widget.minHeight) / (widget.maxHeight - widget.minHeight),
+                            isPlaying: _isPlaying,
+                          ),
+                        ),
+                      ),
+                      onTap: _expandWidget,
+                      onPanUpdate: (details) => _changeHeight(_height.value - details.delta.dy),
+                      onPanEnd: _snapWidget,
                     ),
                   ),
                 ),
-                onTap: _expandWidget,
-                onPanUpdate: (details) => _changeHeight(_height.value - details.delta.dy),
-                onPanEnd: _snapWidget,
-              ),
+              ],
             ),
-          ),
-        ],
-      ),
     );
   }
 
