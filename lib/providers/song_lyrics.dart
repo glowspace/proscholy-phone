@@ -169,7 +169,7 @@ mixin _Searchable on SongLyricsProvider {
       if (songLyric != null) {
         if ((songbook == null && searchText == '${songLyric.id}') ||
             songLyric.songbookRecords.any((songbookRecord) =>
-                songbookRecord.songbook.targetId == songbook!.id && searchText == songbookRecord.number)) {
+                songbookRecord.songbook.targetId == songbook?.id && searchText == songbookRecord.number)) {
           _matchedById = songLyric;
         } else if (songLyric.songbookRecords.any((songbookRecord) => searchText == songbookRecord.number)) {
           _songLyricsMatchedBySongbookNumber.add(songLyric);
