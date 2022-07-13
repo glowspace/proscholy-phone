@@ -13,6 +13,8 @@ class Highlightable extends StatefulWidget {
 
   final bool highlightBackground;
 
+  final bool isDisabled;
+
   // to ignore highlight when highlightable child should be highlighted
   final List<GlobalKey>? highlightableChildKeys;
 
@@ -25,6 +27,7 @@ class Highlightable extends StatefulWidget {
     this.highlightColor,
     this.padding,
     this.highlightBackground = false,
+    this.isDisabled = false,
     this.highlightableChildKeys,
   }) : super(key: key);
 
@@ -37,13 +40,20 @@ class _HighlightableState extends State<Highlightable> {
 
   @override
   Widget build(BuildContext context) {
-    Color? color = widget.color ?? Colors.transparent;
-    Color? highlightColor =
-        widget.highlightColor ?? (widget.highlightBackground ? Theme.of(context).highlightColor : Colors.white);
+    final theme = Theme.of(context);
 
-    if (widget.highlightBackground && _isHighlighted) {
-      color = Color.alphaBlend(highlightColor, color);
+    Color? color = widget.color ?? Colors.transparent;
+    Color? highlightColor = widget.highlightColor;
+
+    if (widget.highlightBackground) {
+      highlightColor ??= theme.highlightColor;
+    } else {
+      highlightColor ??= Colors.white;
     }
+
+    if (widget.highlightBackground && _isHighlighted) color = Color.alphaBlend(highlightColor, color);
+
+    if (widget.highlightBackground && widget.isDisabled) color = theme.disabledColor;
 
     Widget child = Container(
       color: color,
@@ -52,8 +62,10 @@ class _HighlightableState extends State<Highlightable> {
     );
 
     if (!widget.highlightBackground) {
+      final double opacity = widget.isDisabled ? 0.25 : (_isHighlighted ? 0.5 : 1);
+
       child = ColorFiltered(
-        colorFilter: ColorFilter.mode(highlightColor.withOpacity(_isHighlighted ? 0.5 : 1), BlendMode.modulate),
+        colorFilter: ColorFilter.mode(highlightColor.withOpacity(opacity), BlendMode.modulate),
         child: child,
       );
     }
@@ -63,7 +75,7 @@ class _HighlightableState extends State<Highlightable> {
       onPanEnd: (_) => setState(() => _isHighlighted = false),
       // delayed, so the highlight is visible when fast tap happens
       onPanCancel: () => setState(() => _isHighlighted = false),
-      onTap: widget.onTap,
+      onTap: widget.isDisabled ? null : widget.onTap,
       onLongPress: widget.onLongPress,
       behavior: HitTestBehavior.translucent,
       child: child,

@@ -101,30 +101,30 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            if (_songLyric.hasRecordings)
-              Highlightable(
-                padding: const EdgeInsets.all(kDefaultPadding),
-                onTap: () => _showingExternals.value = true,
-                child: const Icon(FontAwesomeIcons.headphones),
-              ),
-            if (_songLyric.hasFiles)
-              Highlightable(
-                padding: const EdgeInsets.all(kDefaultPadding),
-                onTap: () => _showFiles(context),
-                child: const Icon(Icons.insert_drive_file),
-              ),
-            if (_songLyric.hasChords)
-              Highlightable(
-                padding: const EdgeInsets.all(kDefaultPadding),
-                onTap: () => _showSettings(context),
-                child: const Icon(Icons.tune),
-              ),
-            if (_songLyric.tags.isNotEmpty || _songLyric.songbookRecords.isNotEmpty)
-              Highlightable(
-                padding: const EdgeInsets.all(kDefaultPadding),
-                onTap: () => _showTags(context),
-                child: const FaIcon(FontAwesomeIcons.tag),
-              ),
+            Highlightable(
+              padding: const EdgeInsets.all(kDefaultPadding),
+              onTap: () => _showingExternals.value = true,
+              isDisabled: !_songLyric.hasRecordings,
+              child: const Icon(FontAwesomeIcons.headphones),
+            ),
+            Highlightable(
+              padding: const EdgeInsets.all(kDefaultPadding),
+              onTap: () => _showFiles(context),
+              isDisabled: !_songLyric.hasFiles,
+              child: const Icon(Icons.insert_drive_file),
+            ),
+            Highlightable(
+              padding: const EdgeInsets.all(kDefaultPadding),
+              onTap: () => _showSettings(context),
+              isDisabled: !_songLyric.hasChords,
+              child: const Icon(Icons.tune),
+            ),
+            Highlightable(
+              padding: const EdgeInsets.all(kDefaultPadding),
+              onTap: () => _showTags(context),
+              isDisabled: !(_songLyric.tags.isNotEmpty || _songLyric.songbookRecords.isNotEmpty),
+              child: const FaIcon(FontAwesomeIcons.tag),
+            ),
             Highlightable(
               padding: const EdgeInsets.all(kDefaultPadding),
               onTap: () => _popOrPushSearch(context),
