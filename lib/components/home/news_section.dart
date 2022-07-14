@@ -35,7 +35,7 @@ class _NewsSectionState extends State<NewsSection> {
             children: [
               const Icon(Icons.info_outline, color: yellow),
               const SizedBox(width: kDefaultPadding),
-              Text('Novinky', style: textTheme.titleMedium),
+              Text('Novinky', style: textTheme.titleSmall),
             ],
           ),
           const SizedBox(height: kDefaultPadding),

@@ -1,12 +1,11 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
-import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/providers/settings.dart';
 import 'package:zpevnik/routes/route_generator.dart';
+import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/uni_links.dart';
 
 const _title = 'Zpěvník';
@@ -22,33 +21,6 @@ class MainWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final lightTheme = ThemeData.light().copyWith(
-      scaffoldBackgroundColor: CupertinoColors.lightBackgroundGray,
-      colorScheme: ColorScheme.fromSeed(seedColor: blue),
-      appBarTheme: ThemeData.light().appBarTheme.copyWith(
-            backgroundColor: CupertinoColors.lightBackgroundGray,
-            shadowColor: Colors.grey,
-            elevation: 1,
-          ),
-      splashFactory: NoSplash.splashFactory,
-      useMaterial3: true,
-    );
-
-    final darkTheme = ThemeData.dark().copyWith(
-      scaffoldBackgroundColor: Colors.black,
-      appBarTheme: ThemeData.dark().appBarTheme.copyWith(
-            backgroundColor: Colors.black,
-            shadowColor: Colors.grey,
-            elevation: 1,
-          ),
-      colorScheme: ColorScheme.fromSeed(seedColor: blue, brightness: Brightness.dark),
-      splashFactory: NoSplash.splashFactory,
-      cupertinoOverrideTheme: const CupertinoThemeData(
-        textTheme: CupertinoTextThemeData(),
-      ),
-      useMaterial3: true,
-    );
-
     final navigationProvider = NavigationProvider();
 
     return MultiProvider(
@@ -60,8 +32,8 @@ class MainWidget extends StatelessWidget {
       builder: (_, __) => MaterialApp(
         debugShowCheckedModeBanner: false,
         title: _title,
-        theme: lightTheme,
-        darkTheme: darkTheme,
+        theme: AppTheme.light(),
+        darkTheme: AppTheme.dark(),
         onGenerateRoute: RouteGenerator.generateRoute,
         navigatorObservers: [navigationProvider],
         builder: (context, widget) => UniLinksHandlerWrapper(child: widget),

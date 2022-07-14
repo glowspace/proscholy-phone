@@ -59,7 +59,7 @@ class _UserScreenState extends State<UserScreen> {
                   _buildLinksSection(context),
                   Highlightable(
                     onTap: () => Navigator.of(context).pushNamed('/about'),
-                    child: Text('O projektu', style: textTheme.caption),
+                    child: Text('O projektu', style: textTheme.bodySmall),
                   ),
                   const SizedBox(height: kDefaultPadding),
                 ],
@@ -161,7 +161,7 @@ class _UserScreenState extends State<UserScreen> {
   //             padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
   //             child: Text(
   //               'Datum poslední aktualizace: ${settingsProvider.lastUpdate}',
-  //               style: AppTheme.of(context).captionTextStyle,
+  //               style: AppTheme.of(context).bodySmallTextStyle,
   //             ),
   //           ),
   //         ],

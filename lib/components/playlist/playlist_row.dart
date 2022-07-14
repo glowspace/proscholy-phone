@@ -26,9 +26,8 @@ class PlaylistRow extends StatelessWidget {
 
     return Highlightable(
       onTap: () => _pushPlaylist(context),
-      padding: visualDensity == VisualDensity.comfortable
-          ? const EdgeInsets.symmetric(vertical: kDefaultPadding / 2)
-          : EdgeInsets.zero,
+      padding:
+          visualDensity == VisualDensity.comfortable ? const EdgeInsets.symmetric(vertical: kDefaultPadding / 2) : null,
       highlightBackground: true,
       highlightableChildKeys: [dragIndicatorKey, playlistButtonKey],
       child: Row(
@@ -48,8 +47,12 @@ class PlaylistRow extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2, horizontal: kDefaultPadding),
             ),
           Expanded(child: Text(playlist.name)),
-          if (!playlist.isFavorites) PlaylistButton(key: playlistButtonKey, playlist: playlist),
-          if (visualDensity == VisualDensity.standard) const SizedBox(width: kDefaultPadding),
+          if (!playlist.isFavorites)
+            PlaylistButton(
+              key: playlistButtonKey,
+              playlist: playlist,
+              extendPadding: visualDensity == VisualDensity.standard,
+            ),
         ],
       ),
     );

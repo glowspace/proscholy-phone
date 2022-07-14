@@ -41,13 +41,16 @@ class FiltersRow extends StatelessWidget {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(_addFilterRadius),
                     child: Highlightable(
-                      padding: const EdgeInsets.all(kDefaultPadding / 2),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: kDefaultPadding / 4,
+                        horizontal: kDefaultPadding / 2,
+                      ),
                       highlightBackground: true,
                       onTap: () => _showFilters(context),
                       child: Row(children: [
                         Icon(Icons.add, size: 12, color: theme.hintColor),
                         const SizedBox(width: kDefaultPadding / 4),
-                        Text('Přidat filtr', style: theme.textTheme.caption),
+                        Text('Přidat filtr', style: theme.textTheme.labelMedium),
                       ]),
                     ),
                   ),

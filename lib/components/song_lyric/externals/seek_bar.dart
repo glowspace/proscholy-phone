@@ -55,7 +55,7 @@ class SeekBarState extends State<SeekBar> {
         ),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-          child: Text(_remainingDuration, style: theme.textTheme.caption),
+          child: Text(_remainingDuration, style: theme.textTheme.bodySmall),
         ),
       ],
     );

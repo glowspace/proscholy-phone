@@ -77,7 +77,7 @@ class _SongLyricSettingsWidget extends State<SongLyricSettingsWidget> {
           ),
           Highlightable(
             padding: const EdgeInsets.all(kDefaultPadding),
-            child: Text('Resetovat nastavení', style: theme.textTheme.caption),
+            child: Text('Resetovat nastavení', style: theme.textTheme.bodySmall),
             onTap: widget.controller.resetSettings,
           ),
         ],

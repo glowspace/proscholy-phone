@@ -17,8 +17,14 @@ enum PlaylistAction {
 class PlaylistButton extends StatelessWidget {
   final Playlist playlist;
   final bool isInAppBar;
+  final bool extendPadding;
 
-  const PlaylistButton({Key? key, required this.playlist, this.isInAppBar = false}) : super(key: key);
+  const PlaylistButton({
+    Key? key,
+    required this.playlist,
+    this.isInAppBar = false,
+    this.extendPadding = false,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +32,9 @@ class PlaylistButton extends StatelessWidget {
       items: _buildPopupMenuItems(context),
       onSelected: _selectedAction,
       menuPosition: isInAppBar ? PopupMenuPosition.under : PopupMenuPosition.over,
-      padding: isInAppBar ? const EdgeInsets.only(left: kDefaultPadding, right: 2 * kDefaultPadding) : null,
+      padding: extendPadding
+          ? const EdgeInsets.fromLTRB(kDefaultPadding, kDefaultPadding / 2, 2 * kDefaultPadding, kDefaultPadding / 2)
+          : null,
     );
   }
 

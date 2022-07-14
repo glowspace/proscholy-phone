@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
 class Logo extends StatelessWidget {
@@ -10,7 +11,7 @@ class Logo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textColor = Theme.of(context).brightness.isLight ? const Color(0xff3d3636) : Colors.white;
+    final textColor = Theme.of(context).brightness.isLight ? lightTitleColor : darkTitleColor;
 
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -38,7 +39,7 @@ class GlowspaceLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textColor = Theme.of(context).brightness.isLight ? const Color(0xff3d3636) : Colors.white;
+    final textColor = Theme.of(context).brightness.isLight ? lightTitleColor : darkTitleColor;
     final text = showDescription ? 'Projekt komunity Glow Space' : 'Glow Space';
 
     return Row(

@@ -37,20 +37,12 @@ class SearchScreen extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             const SizedBox(height: kDefaultPadding),
-            if (searchScreenArguments?.showSearchTitle ?? true)
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding).copyWith(bottom: kDefaultPadding / 2),
-                child: Text(title, style: theme.textTheme.titleLarge),
-              ),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-              child: SearchField(
-                key: const Key('searchfield'),
-                isInsideSearchScreen: true,
-                onChanged: (searchText) =>
-                    songLyricsProvider.search(searchText, songbook: searchScreenArguments?.songbook),
-                onSubmitted: (_) => _maybePushMatchedSonglyric(context),
-              ),
+            SearchField(
+              key: const Key('searchfield'),
+              isInsideSearchScreen: true,
+              onChanged: (searchText) =>
+                  songLyricsProvider.search(searchText, songbook: searchScreenArguments?.songbook),
+              onSubmitted: (_) => _maybePushMatchedSonglyric(context),
             ),
             const SizedBox(height: kDefaultPadding),
             Container(

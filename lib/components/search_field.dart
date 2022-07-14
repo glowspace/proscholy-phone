@@ -44,36 +44,54 @@ class _SearchFieldState extends State<SearchField> {
       );
     }
 
-    return Hero(
-      tag: 'search',
-      child: Material(
-        type: MaterialType.transparency,
-        child: TextField(
-          decoration: InputDecoration(
-            hintText: 'Hledat název, číslo nebo část textu',
-            filled: true,
-            fillColor: theme.brightness.isLight && widget.isInsideSearchScreen
-                ? theme.scaffoldBackgroundColor
-                : theme.colorScheme.surface,
-            isDense: true,
-            border: OutlineInputBorder(
-              borderSide: BorderSide.none,
-              borderRadius: BorderRadius.circular(kDefaultRadius),
-            ),
-            prefixIcon: Container(
-              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-              child: const Icon(Icons.search),
-            ),
-            prefixIconConstraints: const BoxConstraints(),
-            suffixIcon: suffixIcon,
-            suffixIconConstraints: const BoxConstraints(),
-            contentPadding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
+    return Container(
+      padding: widget.isInsideSearchScreen ? const EdgeInsets.only(left: kDefaultPadding) : null,
+      child: Hero(
+        tag: 'search',
+        child: Material(
+          type: MaterialType.transparency,
+          child: Row(
+            children: [
+              Expanded(
+                child: ValueListenableBuilder<TextEditingValue>(
+                  valueListenable: _controller,
+                  builder: (_, value, __) => TextField(
+                    decoration: InputDecoration(
+                      hintText: 'Název, číslo nebo část textu',
+                      filled: true,
+                      fillColor: theme.brightness.isLight && widget.isInsideSearchScreen
+                          ? theme.scaffoldBackgroundColor
+                          : theme.colorScheme.surface,
+                      isDense: true,
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(kDefaultRadius),
+                      ),
+                      prefixIcon: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+                        child: const Icon(Icons.search),
+                      ),
+                      prefixIconConstraints: const BoxConstraints(),
+                      suffixIcon: value.text.isEmpty ? null : suffixIcon,
+                      suffixIconConstraints: const BoxConstraints(),
+                      contentPadding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
+                    ),
+                    onTap: _showSearchScreen,
+                    onChanged: widget.onChanged,
+                    onSubmitted: widget.onSubmitted,
+                    controller: _controller,
+                    focusNode: _focusNode,
+                  ),
+                ),
+              ),
+              if (widget.isInsideSearchScreen)
+                Highlightable(
+                  onTap: () => Navigator.of(context).pop(),
+                  padding: const EdgeInsets.all(kDefaultPadding),
+                  child: Text('Zrušit', style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.primary)),
+                ),
+            ],
           ),
-          onTap: _showSearchScreen,
-          onChanged: widget.onChanged,
-          onSubmitted: widget.onSubmitted,
-          controller: _controller,
-          focusNode: _focusNode,
         ),
       ),
     );

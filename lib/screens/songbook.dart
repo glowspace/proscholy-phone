@@ -28,7 +28,7 @@ class SongbookScreen extends StatelessWidget {
           Highlightable(
             onTap: () => Navigator.of(context).pushNamed(
               '/search',
-              arguments: SearchScreenArguments(showSearchTitle: true, songbook: songbook),
+              arguments: SearchScreenArguments(songbook: songbook),
             ),
             padding: const EdgeInsets.all(kDefaultPadding),
             child: const Icon(Icons.search),

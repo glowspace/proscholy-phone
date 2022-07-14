@@ -65,12 +65,12 @@ class PlaylistScreen extends StatelessWidget {
           Highlightable(
             onTap: () => Navigator.of(context).pushNamed(
               '/search',
-              arguments: SearchScreenArguments(showSearchTitle: true, playlist: playlist),
+              arguments: SearchScreenArguments(playlist: playlist),
             ),
             padding: const EdgeInsets.all(kDefaultPadding),
             child: const Icon(Icons.search),
           ),
-          if (!playlist.isFavorites) PlaylistButton(playlist: playlist, isInAppBar: true),
+          if (!playlist.isFavorites) PlaylistButton(playlist: playlist, isInAppBar: true, extendPadding: true),
         ],
       ),
       floatingActionButton: floatingActionButton,
