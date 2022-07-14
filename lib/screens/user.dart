@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher_string.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:zpevnik/components/custom/close_button.dart';
 import 'package:zpevnik/components/font_size_slider.dart';
 import 'package:zpevnik/components/highlightable.dart';
@@ -126,17 +126,17 @@ class _UserScreenState extends State<UserScreen> {
       child: Column(
         children: [
           Highlightable(
-            onTap: () => launchUrlString(proscholyUrl),
+            onTap: () => launchUrl(Uri.parse(proscholyUrl)),
             padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
             child: const IconItem(text: 'Webová verze', icon: Icons.language),
           ),
           Highlightable(
-            onTap: () => launchUrlString(theme.platform.isIos ? feedbackIOSUrl : feedbackAndroidUrl),
+            onTap: () => launchUrl(Uri.parse(theme.platform.isIos ? feedbackIOSUrl : feedbackAndroidUrl)),
             padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
             child: const IconItem(text: 'Zpětná vazba', icon: Icons.feedback),
           ),
           Highlightable(
-            onTap: () => launchUrlString(addSongUrl),
+            onTap: () => launchUrl(Uri.parse(addSongUrl)),
             padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
             child: const IconItem(text: 'Přidat píseň', icon: Icons.add),
           ),

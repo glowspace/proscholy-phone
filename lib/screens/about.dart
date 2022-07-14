@@ -1,6 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher_string.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:zpevnik/components/custom/back_button.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/links.dart';
@@ -16,7 +16,7 @@ class AboutScreen extends StatelessWidget {
     final highlightedStyle = textStyle?.copyWith(color: theme.colorScheme.primary);
     final boldStyle = textStyle?.copyWith(fontWeight: FontWeight.bold);
 
-    final linkOpener = TapGestureRecognizer()..onTap = () => launchUrlString(proscholyUrl);
+    final linkOpener = TapGestureRecognizer()..onTap = () => launchUrl(Uri.parse(proscholyUrl));
 
     return Scaffold(
       appBar: AppBar(leading: const CustomBackButton(), title: const Text('O projektu')),

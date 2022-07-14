@@ -2,7 +2,7 @@ import 'package:flutter/material.dart' hide PopupMenuEntry, PopupMenuItem;
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:url_launcher/url_launcher_string.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:zpevnik/components/custom/popup_menu_button.dart';
 import 'package:zpevnik/components/icon_item.dart';
 import 'package:zpevnik/components/playlist/playlists_sheet.dart';
@@ -67,10 +67,10 @@ class SongLyricMenuButton extends StatelessWidget {
         Share.share('$songUrl/${songLyric.id}/');
         break;
       case SongLyricMenuAction.openInBrowser:
-        launchUrlString('$songUrl/${songLyric.id}/');
+        launchUrl(Uri.parse('$songUrl/${songLyric.id}/'));
         break;
       case SongLyricMenuAction.report:
-        launchUrlString('$reportSongLyricUrl?customfield_10056=${songLyric.id}+$version+$platform');
+        launchUrl(Uri.parse('$reportSongLyricUrl?customfield_10056=${songLyric.id}+$version+$platform'));
         break;
     }
   }
