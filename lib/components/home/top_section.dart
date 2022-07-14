@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zpevnik/components/highlightable.dart';
+import 'package:zpevnik/components/logo.dart';
 import 'package:zpevnik/constants.dart';
 
 const double _avatarRadius = 19;
@@ -11,7 +12,7 @@ class TopSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Image.asset('assets/images/title.png', height: 2 * _avatarRadius),
+        const Logo(showFullName: false),
         const Spacer(),
         Highlightable(
           onTap: () => Navigator.of(context).pushNamed('/user'),

@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:uni_links/uni_links.dart';
+import 'package:zpevnik/components/logo.dart';
 import 'package:zpevnik/components/section.dart';
 import 'package:zpevnik/components/sign_in_button.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/components/custom/future_builder.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/settings.dart';
-import 'package:zpevnik/routes/arguments/song_lyric.dart';
 import 'package:zpevnik/utils/uni_links.dart';
 
 const _welcomeText = '''
@@ -16,7 +16,6 @@ Ahoj. Vítej ve Zpěvníku!
 
 Nyní se můžeš přihlásit do${unbreakableSpace}svého uživatelského účtu. To ti zajistí automatickou synchronizaci seznamů písní a${unbreakableSpace}spoustu dalších výhod.''';
 
-const _projectTitle = 'Projekt komunity Glow Space';
 const _projectDescription = 'Projekt ProScholy.cz tvoří s${unbreakableSpace}láskou dobrovolníci z komunity Glow Space.';
 
 const _animationDuration = Duration(milliseconds: 800);
@@ -31,15 +30,13 @@ class InitialScreen extends StatefulWidget {
 }
 
 class _InitialScreenState extends State<InitialScreen> {
-  late final Future<void> _initFuture;
-
   bool _showSignInButtons = false;
 
   @override
   void initState() {
     super.initState();
 
-    _initFuture = _init(context);
+    _init();
   }
 
   @override
@@ -47,40 +44,45 @@ class _InitialScreenState extends State<InitialScreen> {
     final mediaQuery = MediaQuery.of(context);
 
     final height = mediaQuery.size.height - mediaQuery.padding.top;
-    final width = mediaQuery.size.width;
 
     return Scaffold(
       body: SafeArea(
-        child: SizedBox(
-          height: height,
-          child: FutureBuilder(
-            future: _initFuture,
-            builder: (_, __) => AnimatedAlign(
-              duration: _animationDuration,
-              alignment: _showSignInButtons ? Alignment.bottomCenter : Alignment.center,
-              child: SingleChildScrollView(
-                child: Column(children: [
-                  const SizedBox(height: 2 * kDefaultPadding),
-                  Image.asset('assets/images/title.png', width: width / 2),
-                  AnimatedAlign(
-                    duration: _animationDuration,
-                    alignment: Alignment.topCenter,
-                    heightFactor: _showSignInButtons ? 1 : 0,
-                    child: AnimatedOpacity(
+        child: Stack(
+          alignment: Alignment.bottomCenter,
+          children: [
+            SizedBox(
+              height: height,
+              child: AnimatedAlign(
+                duration: _animationDuration,
+                alignment: _showSignInButtons ? Alignment.bottomCenter : Alignment.center,
+                child: SingleChildScrollView(
+                  child: Column(children: [
+                    const SizedBox(height: 2 * kDefaultPadding),
+                    const Logo(),
+                    AnimatedAlign(
                       duration: _animationDuration,
-                      opacity: _showSignInButtons ? 1 : 0,
-                      child: Column(
-                        children: [
-                          _buildSignInSection(context),
-                          _buildProjectSection(context),
-                        ],
+                      alignment: Alignment.topCenter,
+                      heightFactor: _showSignInButtons ? 1 : 0,
+                      child: AnimatedOpacity(
+                        duration: _animationDuration,
+                        opacity: _showSignInButtons ? 1 : 0,
+                        child: Column(
+                          children: [
+                            _buildSignInSection(context),
+                            _buildProjectSection(context),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ]),
+                  ]),
+                ),
               ),
             ),
-          ),
+            Visibility(
+              visible: !_showSignInButtons,
+              child: Container(padding: const EdgeInsets.all(kDefaultPadding), child: const GlowspaceLogo()),
+            ),
+          ],
         ),
       ),
     );
@@ -123,7 +125,7 @@ class _InitialScreenState extends State<InitialScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(_projectTitle, style: textTheme.titleMedium),
+          const GlowspaceLogo(showDescription: true),
           const SizedBox(height: kDefaultPadding),
           Text(_projectDescription, style: textTheme.bodyMedium),
           TextButton(
@@ -141,7 +143,7 @@ class _InitialScreenState extends State<InitialScreen> {
     );
   }
 
-  Future<void> _init(BuildContext context) async {
+  Future<void> _init() async {
     await context.read<DataProvider>().init();
     await context.read<SettingsProvider>().init();
 
@@ -151,6 +153,8 @@ class _InitialScreenState extends State<InitialScreen> {
       handleUniLink(context, await getInitialUri());
       // ignore: empty_catches
     } on FormatException {}
+
+    // setState(() => _showSignInButtons = true);
   }
 
   void _signInWithApple(BuildContext context) async {

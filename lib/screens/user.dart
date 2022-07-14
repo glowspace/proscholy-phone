@@ -5,6 +5,7 @@ import 'package:zpevnik/components/custom/close_button.dart';
 import 'package:zpevnik/components/font_size_slider.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/icon_item.dart';
+import 'package:zpevnik/components/logo.dart';
 import 'package:zpevnik/components/section.dart';
 import 'package:zpevnik/components/selector_widget.dart';
 import 'package:zpevnik/constants.dart';
@@ -36,7 +37,7 @@ class _UserScreenState extends State<UserScreen> {
             SingleChildScrollView(
               child: Column(
                 children: [
-                  Image.asset('assets/images/title.png', width: width / 2),
+                  const Logo(),
                   // Center(
                   //   child: Container(
                   //     padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
