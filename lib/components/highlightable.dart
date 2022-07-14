@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zpevnik/constants.dart';
 
 class Highlightable extends StatefulWidget {
   final Widget child;
@@ -35,8 +36,31 @@ class Highlightable extends StatefulWidget {
   State<Highlightable> createState() => _HighlightableState();
 }
 
-class _HighlightableState extends State<Highlightable> {
+class _HighlightableState extends State<Highlightable> with SingleTickerProviderStateMixin {
   bool _isHighlighted = false;
+
+  late final AnimationController _animationController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _animationController = AnimationController(
+      duration: kDefaultAnimationDuration,
+      value: widget.isDisabled ? 0.25 : 1,
+      lowerBound: 0.25,
+      vsync: this,
+    );
+  }
+
+  @override
+  void didUpdateWidget(Highlightable oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (widget.isDisabled != oldWidget.isDisabled) {
+      _animationController.animateTo(widget.isDisabled ? 0.25 : 1);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,10 +86,15 @@ class _HighlightableState extends State<Highlightable> {
     );
 
     if (!widget.highlightBackground) {
-      final double opacity = widget.isDisabled ? 0.25 : (_isHighlighted ? 0.5 : 1);
-
-      child = ColorFiltered(
-        colorFilter: ColorFilter.mode(highlightColor.withOpacity(opacity), BlendMode.modulate),
+      child = AnimatedBuilder(
+        animation: _animationController,
+        builder: (_, child) => ColorFiltered(
+          colorFilter: ColorFilter.mode(
+            highlightColor!.withOpacity(!widget.isDisabled && _isHighlighted ? 0.5 : _animationController.value),
+            BlendMode.modulate,
+          ),
+          child: child,
+        ),
         child: child,
       );
     }
