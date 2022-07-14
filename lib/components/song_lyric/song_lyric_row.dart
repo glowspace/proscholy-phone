@@ -4,13 +4,14 @@ import 'package:provider/provider.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
-import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
 import 'package:zpevnik/routes/arguments/search.dart';
 import 'package:zpevnik/routes/arguments/song_lyric.dart';
 
 const double _iconSize = 16;
 const _disabledAlpha = 0x20;
+
+const double _minSize = 34;
 
 class SongLyricRow extends StatelessWidget {
   final SongLyric songLyric;
@@ -36,36 +37,34 @@ class SongLyricRow extends StatelessWidget {
       highlightBackground: true,
       highlightableChildKeys: [dragIndicatorKey],
       onTap: () => _pushSongLyric(context),
-      padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2, horizontal: kDefaultPadding)
+      padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 3, horizontal: kDefaultPadding)
           .copyWith(left: isReorderable ? 0 : kDefaultPadding),
-      child: Row(
-        children: [
-          if (isReorderable)
-            ReorderableDragStartListener(
-              key: dragIndicatorKey,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 2 * kDefaultPadding),
-                child: const Icon(Icons.drag_indicator),
-              ),
-              index: 0,
-            ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(child: Text(songLyric.name, style: textTheme.bodyMedium)),
-                    if (!isReorderable) ..._buildIndicators(context),
-                  ],
+      child: Container(
+        constraints: const BoxConstraints(minHeight: _minSize),
+        child: Row(
+          children: [
+            if (isReorderable)
+              ReorderableDragStartListener(
+                key: dragIndicatorKey,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 2 * kDefaultPadding),
+                  child: const Icon(Icons.drag_indicator),
                 ),
-                if (songLyric.secondaryName1 != null) Text(songLyric.secondaryName1!, style: textTheme.bodySmall),
-                if (songLyric.secondaryName2 != null) Text(songLyric.secondaryName2!, style: textTheme.bodySmall),
-              ],
+                index: 0,
+              ),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(songLyric.name, style: textTheme.bodyMedium),
+                  if (songLyric.secondaryName1 != null) Text(songLyric.secondaryName1!, style: textTheme.bodySmall),
+                  if (songLyric.secondaryName2 != null) Text(songLyric.secondaryName2!, style: textTheme.bodySmall),
+                ],
+              ),
             ),
-          ),
-        ],
+            if (!isReorderable) ..._buildIndicators(context),
+          ],
+        ),
       ),
     );
 
