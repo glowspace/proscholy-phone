@@ -2,6 +2,7 @@ import 'package:flutter/material.dart' hide PopupMenuEntry, PopupMenuItem, Popup
 import 'package:zpevnik/components/custom/popup_menu_button.dart';
 import 'package:zpevnik/components/icon_item.dart';
 import 'package:zpevnik/components/playlist/dialogs.dart';
+import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/custom/custom_icon_icons.dart';
 import 'package:zpevnik/custom/popup_menu.dart';
 import 'package:zpevnik/models/playlist.dart';
@@ -25,6 +26,7 @@ class PlaylistButton extends StatelessWidget {
       items: _buildPopupMenuItems(context),
       onSelected: _selectedAction,
       menuPosition: isInAppBar ? PopupMenuPosition.under : PopupMenuPosition.over,
+      padding: isInAppBar ? const EdgeInsets.only(left: kDefaultPadding, right: 2 * kDefaultPadding) : null,
     );
   }
 

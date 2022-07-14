@@ -37,8 +37,8 @@ class PlaylistRow extends StatelessWidget {
             ReorderableDragStartListener(
               key: dragIndicatorKey,
               child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 2 * kDefaultPadding),
                 child: const Icon(Icons.drag_indicator),
-                padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
               ),
               index: playlist.rank,
             )
@@ -49,6 +49,7 @@ class PlaylistRow extends StatelessWidget {
             ),
           Expanded(child: Text(playlist.name)),
           if (!playlist.isFavorites) PlaylistButton(key: playlistButtonKey, playlist: playlist),
+          if (visualDensity == VisualDensity.standard) const SizedBox(width: kDefaultPadding),
         ],
       ),
     );

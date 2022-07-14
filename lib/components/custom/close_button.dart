@@ -9,7 +9,7 @@ class CustomCloseButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Highlightable(
       child: const Icon(Icons.close),
-      padding: const EdgeInsets.all(kDefaultPadding),
+      padding: const EdgeInsets.all(kDefaultPadding).copyWith(left: 2 * kDefaultPadding),
       onTap: Navigator.of(context).maybePop,
     );
   }

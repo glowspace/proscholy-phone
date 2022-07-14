@@ -8,10 +8,13 @@ class CustomPopupMenuButton<T> extends StatelessWidget {
   final Function(BuildContext, T?) onSelected;
   final PopupMenuPosition menuPosition;
 
+  final EdgeInsets? padding;
+
   const CustomPopupMenuButton({
     Key? key,
     required this.items,
     required this.onSelected,
+    this.padding,
     this.menuPosition = PopupMenuPosition.under,
   }) : super(key: key);
 
@@ -19,7 +22,7 @@ class CustomPopupMenuButton<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     return Highlightable(
       onTap: () => _showMenu(context),
-      padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2, horizontal: kDefaultPadding),
+      padding: padding ?? const EdgeInsets.symmetric(vertical: kDefaultPadding / 2, horizontal: kDefaultPadding),
       child: const Icon(Icons.more_vert),
     );
   }

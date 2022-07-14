@@ -26,7 +26,11 @@ class SongLyricMenuButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPopupMenuButton(items: _buildPopupMenuItems(context), onSelected: _selectedAction);
+    return CustomPopupMenuButton(
+      items: _buildPopupMenuItems(context),
+      onSelected: _selectedAction,
+      padding: const EdgeInsets.only(left: kDefaultPadding, right: 2 * kDefaultPadding),
+    );
   }
 
   List<PopupMenuEntry<SongLyricMenuAction>> _buildPopupMenuItems(BuildContext context) {

@@ -60,6 +60,7 @@ class PlaylistScreen extends StatelessWidget {
       appBar: AppBar(
         leading: const CustomBackButton(),
         title: Text(playlist.name),
+        centerTitle: false,
         actions: [
           Highlightable(
             onTap: () => Navigator.of(context).pushNamed(

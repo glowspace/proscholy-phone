@@ -44,7 +44,7 @@ class SongLyricRow extends StatelessWidget {
             ReorderableDragStartListener(
               key: dragIndicatorKey,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+                padding: const EdgeInsets.symmetric(horizontal: 2 * kDefaultPadding),
                 child: const Icon(Icons.drag_indicator),
               ),
               index: 0,

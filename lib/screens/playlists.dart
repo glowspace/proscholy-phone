@@ -12,6 +12,7 @@ class PlaylistsScreen extends StatelessWidget {
       appBar: AppBar(
         leading: const CustomBackButton(),
         title: const Text('Moje seznamy'),
+        centerTitle: false,
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Theme.of(context).canvasColor,

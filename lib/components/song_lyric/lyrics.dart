@@ -60,7 +60,7 @@ class _LyricsWidgetState extends State<LyricsWidget> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+              padding: const EdgeInsets.symmetric(horizontal: 2 * kDefaultPadding),
               child: Text(
                 widget.controller.songLyric.name,
                 style: theme.textTheme.titleLarge,
@@ -74,12 +74,12 @@ class _LyricsWidgetState extends State<LyricsWidget> {
               ),
             if (widget.controller.hasLilypond) SizedBox(height: kDefaultPadding * fontSizeScale / 2),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+              padding: const EdgeInsets.symmetric(horizontal: 2 * kDefaultPadding),
               child: _buildLyrics(context),
             ),
             SizedBox(height: kDefaultPadding * fontSizeScale),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+              padding: const EdgeInsets.symmetric(horizontal: 2 * kDefaultPadding),
               child: _buildAuthors(context),
             ),
             SizedBox(height: kDefaultPadding * fontSizeScale),

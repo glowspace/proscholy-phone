@@ -22,7 +22,11 @@ class TranslationsScreen extends StatelessWidget {
     final translations = songLyrics.where((songLyric) => songLyric.type == SongLyricType.translation);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Překlady'), leading: const CustomBackButton()),
+      appBar: AppBar(
+        leading: const CustomBackButton(),
+        title: const Text('Překlady'),
+        centerTitle: false,
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
