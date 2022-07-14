@@ -1,183 +1,257 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:zpevnik/models/author.dart';
-import 'package:zpevnik/models/external.dart';
-import 'package:zpevnik/models/model.dart' as model;
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:path/path.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:zpevnik/models/news_item.dart';
+import 'package:zpevnik/models/objectbox.g.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/playlist_record.dart';
 import 'package:zpevnik/models/song_lyric.dart';
+import 'package:zpevnik/models/song_lyrics_search.dart';
 import 'package:zpevnik/models/songbook.dart';
-import 'package:zpevnik/models/songbook_record.dart';
 import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/providers/utils/updater.dart';
-import 'package:zpevnik/utils/exceptions.dart';
+
+const _versionKey = 'current_version';
 
 class DataProvider extends ChangeNotifier {
-  final updater = Updater();
+  late final SharedPreferences prefs;
+  late final PackageInfo packageInfo;
 
-  late Map<int, Playlist> _playlists;
-  late Map<int, SongLyric> _songLyrics;
-  late Map<int, Songbook> _songbooks;
-  late List<Tag> _tags;
+  late final Store store;
 
-  late Map<int, List<SongLyric>> _songsSongLyrics;
+  late final Updater updater;
+  late final SongLyricsSearch songLyricsSearch;
 
-  List<Playlist> get playlists => _playlists.values.toList();
-  List<SongLyric> get songLyrics => _songLyrics.values.toList();
-  List<Songbook> get songbooks => _songbooks.values.toList();
+  List<NewsItem> _newsItems = [];
+  List<SongLyric> _songLyrics = [];
+  List<Songbook> _songbooks = [];
+  List<Tag> _tags = [];
+  List<Playlist> _playlists = [];
+
+  List<SongLyric> _updatedSongLyrics = [];
+
+  late Playlist _favorites;
+
+  Map<int, SongLyric> _songLyricsById = {};
+  Map<int, Songbook> _songbooksById = {};
+
+  List<NewsItem> get newsItems => _newsItems;
+  List<SongLyric> get songLyrics => _songLyrics;
+  List<Songbook> get songbooks => _songbooks;
   List<Tag> get tags => _tags;
+  List<Playlist> get playlists => _playlists;
 
-  List<SongLyric> songbookSongLyrics(Songbook songbook) {
-    final songLyrics = List<SongLyric>.empty(growable: true);
+  List<SongLyric> get updatedSongLyrics => _updatedSongLyrics;
 
-    for (final record in songbook.records) {
-      final songLyric = _songLyrics[record.songLyricId];
+  Playlist get favorites => _favorites;
 
-      if (songLyric != null) songLyrics.add(songLyric);
-    }
+  SongLyric? getSongLyricById(int id) => _songLyricsById[id];
+  Songbook? getSongbookById(int id) => _songbooksById[id];
 
-    return songLyrics;
+  Future<void> init() async {
+    prefs = await SharedPreferences.getInstance();
+    packageInfo = await PackageInfo.fromPlatform();
+
+    store = await openStore();
+
+    updater = Updater(store);
+
+    songLyricsSearch = SongLyricsSearch();
+
+    await songLyricsSearch.init();
+
+    await _load();
+
+    updater.update().then((songLyrics) {
+      _updatedSongLyrics = songLyrics;
+
+      _load();
+    });
   }
 
-  List<SongLyric> playlistSongLyrics(Playlist playlist) {
-    final songLyrics = List<SongLyric>.empty(growable: true);
+  void toggleFavorite(SongLyric songLyric) {
+    if (songLyric.isFavorite) {
+      _favorites.removeSongLyric(songLyric);
+    } else {
+      final rank = PlaylistRecord.nextRank(store, _favorites);
 
-    for (final playlistRecord in playlist.records.values) {
-      final songLyric = _songLyrics[playlistRecord.songLyricId];
-
-      if (songLyric != null) songLyrics.add(songLyric);
+      _favorites.addSongLyric(songLyric, rank);
     }
 
-    songLyrics.sort((first, second) => playlist.records[first.id]!.rank.compareTo(playlist.records[second.id]!.rank));
-
-    return songLyrics;
+    notifyListeners();
   }
 
-  List<SongLyric>? songsSongLyrics(int songId) => _songsSongLyrics[songId];
+  Playlist createPlaylist(String name) {
+    final playlist = Playlist(name, Playlist.nextRank(store));
 
-  SongLyric? songLyric(int songLyricId) => _songLyrics[songLyricId];
+    store.box<Playlist>().put(playlist);
+    _playlists.add(playlist);
 
-  bool hasTranslations(SongLyric songLyric) => (_songsSongLyrics[songLyric.songId ?? -1]?.length ?? 1) > 1;
+    notifyListeners();
 
-  Future<bool> update({bool forceUpdate = false}) async {
-    bool updated;
+    return playlist;
+  }
 
-    try {
-      await updater.update(forceUpdate);
+  Playlist duplicatePlaylist(Playlist playlist, String name) {
+    final duplicatedPlaylist = Playlist(name, Playlist.nextRank(store));
 
-      updated = true;
-    } on UpdateException {
-      Fluttertoast.showToast(
-        msg: 'Během aktualizace písní nastala chyba.',
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-      );
+    duplicatedPlaylist.playlistRecords.addAll(
+        playlist.playlistRecords.map((playlistRecord) => playlistRecord.copyWith(playlist: duplicatedPlaylist)));
 
-      updated = false;
+    store.box<Playlist>().put(duplicatedPlaylist);
+    _playlists.add(duplicatedPlaylist);
+
+    notifyListeners();
+
+    return duplicatedPlaylist;
+  }
+
+  void renamePlaylist(Playlist playlist, String name) {
+    playlist.name = name;
+
+    store.box<Playlist>().put(playlist);
+
+    notifyListeners();
+  }
+
+  void addToPlaylist(SongLyric songLyric, Playlist playlist) {
+    final rank = PlaylistRecord.nextRank(store, playlist);
+
+    playlist.addSongLyric(songLyric, rank);
+
+    notifyListeners();
+  }
+
+  void reorderedPlaylists() {
+    _playlists.sort();
+
+    store.box<Playlist>().putMany(_playlists);
+
+    notifyListeners();
+  }
+
+  void removePlaylist(Playlist playlist) {
+    store.box<Playlist>().remove(playlist.id);
+    _playlists.remove(playlist);
+
+    notifyListeners();
+  }
+
+  Future<void> _load() async {
+    final currentVersion = prefs.getString(_versionKey);
+    final buildVersion = packageInfo.version;
+
+    if (currentVersion != buildVersion) {
+      await updater.loadInitial();
+
+      store.box<Playlist>().put(Playlist.favorite());
+
+      prefs.setString(_versionKey, buildVersion);
     }
 
-    await _preload();
+    await Future.wait([
+      store.runInTransactionAsync(TxMode.read, NewsItem.load, null).then((newsItems) => _newsItems = newsItems),
+      store.runInTransactionAsync(TxMode.read, Tag.load, null).then((tags) => _tags = tags),
+    ]);
+
+    // TODO: find out how to load this asynchronously
+    // once https://github.com/objectbox/objectbox-dart/issues/340 is fixed it can be run with runInTransactionAsync
+
+    _songLyrics = SongLyric.load(store);
+    _songbooks = Songbook.load(store);
+
+    _playlists = Playlist.load(store);
+    _favorites = Playlist.loadFavorites(store);
+
+    // TODO: do this only for updated songlyrics
+    await songLyricsSearch.update(_songLyrics);
+
+    _songLyricsById = Map.fromIterable(_songLyrics, key: (songLyric) => songLyric.id);
+    _songbooksById = Map.fromIterable(_songbooks, key: (songbook) => songbook.id);
 
     _addLanguagesToTags();
 
-    _songsSongLyrics = Map<int, List<SongLyric>>.from({});
-
-    for (final songLyric in songLyrics) {
-      final songId = songLyric.songId;
-      if (songId == null) continue;
-
-      if (!_songsSongLyrics.containsKey(songId)) _songsSongLyrics[songId] = List<SongLyric>.empty(growable: true);
-
-      _songsSongLyrics[songId]?.add(songLyric);
+    if (currentVersion == null) {
+      try {
+        await _migrateOldDB();
+        // ignore: empty_catches
+      } catch (e) {}
     }
-
-    if (forceUpdate) notifyListeners();
-
-    return updated;
-  }
-
-  Future<void> _preload() async {
-    final futures = List<Future>.empty(growable: true);
-
-    List<Author> authors = [];
-    List<External> externals = [];
-    List<Playlist> playlists = [];
-    List<SongLyric> songLyrics = [];
-    List<Songbook> songbooks = [];
-    List<SongbookRecord> songbookRecords = [];
-    List<PlaylistRecord> playlistRecords = [];
-    List<Tag> tags = [];
-
-    List<model.Song_lyricsAuthors> songLyricAuthors = [];
-    List<model.Song_lyricsTags> songLyricTags = [];
-
-    futures.add((() async => authors = await Author.authors)());
-    futures.add((() async => externals = await External.externals)());
-    futures.add((() async => playlists = await Playlist.playlists)());
-    futures.add((() async => playlistRecords = await PlaylistRecord.playlistRecords)());
-    futures.add((() async => songLyrics = await SongLyric.songLyrics)());
-    futures.add((() async => songbooks = await Songbook.songbooks)());
-    futures.add((() async => songbookRecords = await SongbookRecord.songbookRecords)());
-    futures.add((() async => tags = await Tag.tags)());
-
-    futures.add((() async => songLyricAuthors = await model.Song_lyricsAuthors().select().toList())());
-    futures.add((() async => songLyricTags = await model.Song_lyricsTags().select().toList())());
-
-    await Future.wait(futures);
-
-    final authorsMap = Map<int, Author>.fromIterable(authors, key: (element) => element.id);
-    final playlistsMap = Map<int, Playlist>.fromIterable(playlists, key: (element) => element.id);
-    final songLyricsMap = Map<int, SongLyric>.fromIterable(songLyrics, key: (element) => element.id);
-    final songbooksMap = Map<int, Songbook>.fromIterable(songbooks, key: (element) => element.id);
-
-    for (final songLyricAuthor in songLyricAuthors)
-      if (authorsMap.containsKey(songLyricAuthor.authorsId))
-        songLyricsMap[songLyricAuthor.song_lyricsId]?.authors.add(authorsMap[songLyricAuthor.authorsId]!);
-
-    for (final songLyricTag in songLyricTags)
-      if (songLyricTag.tagsId != null) songLyricsMap[songLyricTag.song_lyricsId]?.tagIds.add(songLyricTag.tagsId!);
-
-    for (final external in externals) songLyricsMap[external.songLyricId]?.externals.add(external);
-
-    for (final songbookRecord in songbookRecords) {
-      songLyricsMap[songbookRecord.songLyricId]?.songbookRecords[songbookRecord.songbookId] = songbookRecord;
-      songbooksMap[songbookRecord.songbookId]?.records.add(songbookRecord);
-    }
-
-    for (final songbook in songbooks)
-      songbook.records.sort((first, second) => compareNatural(first.number, second.number));
-
-    for (final playlistRecord in playlistRecords)
-      playlistsMap[playlistRecord.playlistId]?.records[playlistRecord.songLyricId] = playlistRecord;
-
-    _playlists = playlistsMap;
-    _songLyrics = songLyricsMap;
-    _songbooks = songbooksMap;
-    _tags = tags;
   }
 
   void _addLanguagesToTags() {
-    final languages = Map<String, int>.from({});
+    final Map<String, int> languages = {};
 
     for (final songLyric in songLyrics) {
-      if (!languages.containsKey(songLyric.language)) languages[songLyric.language] = 0;
+      if (songLyric.lang == null) continue;
 
-      languages[songLyric.language] = languages[songLyric.language]! + 1;
+      if (!languages.containsKey(songLyric.langDescription)) languages[songLyric.langDescription!] = 0;
+
+      languages[songLyric.langDescription!] = languages[songLyric.langDescription!]! + 1;
     }
 
-    final languageTags = List<Tag>.empty(growable: true);
+    final List<Tag> languageTags = [];
 
+    // using negative ids to distinguish from other tags
+    int id = -1;
     for (final language in languages.keys) {
-      final tag = Tag(model.Tag(name: language, type_enum: 'LANGUAGE'));
+      final tag = Tag(id--, language, TagType.language.rawValue);
 
       languageTags.add(tag);
     }
 
-    languageTags.sort((first, second) => -languages[first.name]!.compareTo(languages[second.name]!));
+    languageTags.sort((first, second) => languages[second.name]!.compareTo(languages[first.name]!));
 
     _tags.addAll(languageTags);
+  }
+
+  Future<void> _migrateOldDB() async {
+    final db = await openDatabase(join(await getDatabasesPath(), 'zpevnik_proscholy.db'));
+
+    final oldFavorites =
+        await db.query('song_lyrics', columns: ['id', 'favorite_rank'], where: 'favorite_rank IS NOT NULL');
+    final oldPlaylists = await db.query('playlists', columns: ['id', 'name', 'rank', 'is_archived'], orderBy: 'rank');
+    final oldPlaylistRecords =
+        await db.query('playlist_records', columns: ['rank', 'playlistsId', 'song_lyricsId'], orderBy: 'rank');
+
+    final List<Playlist> playlists = [];
+    final List<PlaylistRecord> playlistRecords = [];
+
+    for (final oldFavorite in oldFavorites) {
+      final playlistRecord = PlaylistRecord(oldFavorite['favorite_rank'] as int)
+        ..songLyric.targetId = oldFavorite['id'] as int
+        ..playlist.target = _favorites;
+
+      playlistRecords.add(playlistRecord);
+    }
+
+    for (final oldPlaylist in oldPlaylists) {
+      final playlist = Playlist(oldPlaylist['name'] as String, oldPlaylist['rank'] as int)
+        ..id = (oldPlaylist['id'] as int) + 1;
+
+      playlists.add(playlist);
+    }
+
+    for (final oldPlaylistRecord in oldPlaylistRecords) {
+      final playlistRecord = PlaylistRecord(oldPlaylistRecord['rank'] as int)
+        ..songLyric.targetId = oldPlaylistRecord['song_lyricsId'] as int
+        ..playlist.targetId = (oldPlaylistRecord['playlistsId'] as int) + 1;
+
+      playlistRecords.add(playlistRecord);
+    }
+
+    store.box<Playlist>().putMany(playlists);
+    store.box<PlaylistRecord>().putMany(playlistRecords);
+
+    _playlists.addAll(playlists);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    store.close();
   }
 }

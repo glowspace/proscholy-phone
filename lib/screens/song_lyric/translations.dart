@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:zpevnik/components/custom/back_button.dart';
+import 'package:zpevnik/components/song_lyric/song_lyric_row.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
-import 'package:zpevnik/platform/components/navigation_bar.dart';
-import 'package:zpevnik/platform/components/scaffold.dart';
-import 'package:zpevnik/providers/data.dart';
-import 'package:zpevnik/screens/components/song_lyric_row.dart';
-import 'package:zpevnik/theme.dart';
 
 class TranslationsScreen extends StatelessWidget {
   final SongLyric songLyric;
@@ -15,27 +11,27 @@ class TranslationsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final songLyrics = context.watch<DataProvider>().songsSongLyrics(songLyric.songId ?? -1);
+    final songLyrics = songLyric.song.target!.songLyrics;
 
-    final original = songLyrics?.where((songLyric) => songLyric.type == SongLyricType.original);
+    final original =
+        songLyrics.cast().firstWhere((songLyric) => songLyric.type == SongLyricType.original, orElse: () => null);
 
     final authorizedTranslations =
-        songLyrics?.where((songLyric) => songLyric.type == SongLyricType.authorizedTranslation);
+        songLyrics.where((songLyric) => songLyric.type == SongLyricType.authorizedTranslation);
 
-    final translations = songLyrics?.where((songLyric) => songLyric.type == SongLyricType.translation);
+    final translations = songLyrics.where((songLyric) => songLyric.type == SongLyricType.translation);
 
-    return PlatformScaffold(
-      navigationBar: const PlatformNavigationBar(title: 'Překlady'),
-      body: Container(
-        padding: EdgeInsets.only(top: kDefaultPadding),
+    return Scaffold(
+      appBar: AppBar(title: const Text('Překlady'), leading: const CustomBackButton()),
+      body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
             children: [
-              if (original != null && original.isNotEmpty) _buildSection(context, SongLyricType.original, original),
-              if (authorizedTranslations != null && authorizedTranslations.isNotEmpty)
+              const SizedBox(height: kDefaultPadding),
+              if (original != null) _buildSection(context, SongLyricType.original, [original]),
+              if (authorizedTranslations.isNotEmpty)
                 _buildSection(context, SongLyricType.authorizedTranslation, authorizedTranslations),
-              if (translations != null && translations.isNotEmpty)
-                _buildSection(context, SongLyricType.translation, translations),
+              if (translations.isNotEmpty) _buildSection(context, SongLyricType.translation, translations),
             ],
           ),
         ),
@@ -44,23 +40,34 @@ class TranslationsScreen extends StatelessWidget {
   }
 
   Widget _buildSection(BuildContext context, SongLyricType songLyricType, Iterable<SongLyric> songLyrics) {
-    final textStyle = AppTheme.of(context).subTitleTextStyle?.copyWith(color: songLyricType.color);
+    final Color color;
+
+    switch (songLyricType) {
+      case SongLyricType.original:
+        color = blue;
+        break;
+      case SongLyricType.authorizedTranslation:
+        color = green;
+        break;
+      case SongLyricType.translation:
+        color = red;
+        break;
+    }
+
+    final theme = Theme.of(context);
+    final textStyle = theme.textTheme.titleMedium
+        ?.copyWith(color: ColorScheme.fromSeed(seedColor: color, brightness: theme.brightness).primary);
 
     return Container(
-      padding: EdgeInsets.only(bottom: kDefaultPadding / 2),
+      padding: const EdgeInsets.only(bottom: kDefaultPadding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            padding: EdgeInsets.symmetric(horizontal: kDefaultPadding),
+            padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
             child: Text(songLyricType.description, style: textStyle),
           ),
-          for (final songLyric in songLyrics)
-            SongLyricRow(
-              songLyric: songLyric,
-              translationSongLyric: this.songLyric,
-              songLyrics: context.watch<DataProvider>().songsSongLyrics(songLyric.songId ?? -1),
-            ),
+          ...songLyrics.map((songLyric) => SongLyricRow(songLyric: songLyric)),
         ],
       ),
     );

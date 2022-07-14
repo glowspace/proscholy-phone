@@ -1,7 +1,8 @@
 import 'package:diacritic/diacritic.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:zpevnik/models/playlist.dart';
-import 'package:zpevnik/platform/components/dialog.dart';
+import 'package:zpevnik/providers/data.dart';
 
 mixin _Searchable on _PlaylistsProvider {
   String _searchText = '';
@@ -23,7 +24,7 @@ mixin _Searchable on _PlaylistsProvider {
     final playlists = Set<Playlist>.identity();
 
     for (final predicate in _predicates) {
-      for (final playlist in _allPlaylists) {
+      for (final playlist in _playlists) {
         if (predicate(playlist, searchText.toLowerCase())) playlists.add(playlist);
       }
     }
@@ -42,87 +43,32 @@ mixin _Searchable on _PlaylistsProvider {
 }
 
 mixin _Reorderable on _PlaylistsProvider {
-  bool onReorder(Key key, Key other) {
-    int index = _allPlaylists.indexWhere((playlist) => playlist.key == key);
-    int otherIndex = _allPlaylists.indexWhere((playlist) => playlist.key == other);
-
-    final playlist = _allPlaylists.removeAt(index);
-    _allPlaylists.insert(otherIndex, playlist);
-
-    notifyListeners();
-
-    return true;
-  }
-
-  void onReorderDone(Key _) {
-    for (var i = 0; i < _allPlaylists.length; i++) {
-      _allPlaylists[i].rank = i;
+  void onReorder(BuildContext context, int oldIndex, int newIndex) {
+    if (oldIndex < newIndex) {
+      newIndex -= 1;
     }
+
+    final playlist = _playlists.removeAt(oldIndex);
+    _playlists.insert(newIndex, playlist);
+
+    for (int i = 0; i < _playlists.length; i++) {
+      _playlists[i].rank = i;
+    }
+
+    context.read<DataProvider>().reorderedPlaylists();
   }
 }
 
 class _PlaylistsProvider extends ChangeNotifier {
-  final List<Playlist> _allPlaylists;
+  late List<Playlist> _playlists;
 
-  List<Playlist> get playlists => _allPlaylists;
-
-  _PlaylistsProvider(this._allPlaylists);
-
-  void addPlaylist(String name, {List<int> songLyrics = const [], int rank = 0}) async {
-    final playlist = await Playlist.create(name, rank, songLyrics: songLyrics);
-
-    _allPlaylists.insert(rank, playlist);
-
-    for (int i = rank; i < _allPlaylists.length; i++) _allPlaylists[i].rank = i;
-
-    notifyListeners();
-  }
-
-  // TODO: move context out of this file
-  void addSharedPlaylist(BuildContext context, String playlistName, List<int> songLyrics) {
-    showDialog<String>(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => PlatformDialog(
-        title: 'Přidat playlist',
-        initialValue: playlistName,
-        submitText: 'Přidat',
-      ),
-    ).then((text) {
-      if (text != null) {
-        addPlaylist(text, songLyrics: songLyrics);
-      }
-    });
-  }
-
-  void duplicate(Playlist playlist) {
-    final songLyrics = playlist.records.keys.toList();
-
-    songLyrics.sort((first, second) => playlist.records[first]!.rank.compareTo(playlist.records[second]!.rank));
-
-    addPlaylist('${playlist.name} (kopie)', songLyrics: songLyrics, rank: playlist.rank + 1);
-  }
-
-  void remove(Playlist playlist) {
-    _allPlaylists.remove(playlist);
-
-    playlist.entity.delete(true);
-
-    notifyListeners();
-  }
-
-  void toggleArchive(Playlist playlist) {
-    playlist.isArchived = !playlist.isArchived;
+  void update(List<Playlist> playlists) {
+    _playlists = playlists;
 
     notifyListeners();
   }
 }
 
 class PlaylistsProvider extends _PlaylistsProvider with _Reorderable, _Searchable {
-  PlaylistsProvider(List<Playlist> allPlaylists) : super(allPlaylists);
-
-  @override
-  List<Playlist> get playlists => (_searchResults ?? _allPlaylists).where((playlist) => !playlist.isArchived).toList();
-  List<Playlist> get archivedPlaylists =>
-      (_searchResults ?? _allPlaylists).where((playlist) => playlist.isArchived).toList();
+  List<Playlist> get playlists => _searchResults ?? _playlists;
 }

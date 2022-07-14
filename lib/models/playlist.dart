@@ -1,81 +1,81 @@
-import 'package:flutter/material.dart';
-import 'package:zpevnik/models/model.dart' as model;
+// ignore: unnecessary_import
+import 'package:objectbox/objectbox.dart';
+import 'package:zpevnik/models/objectbox.g.dart';
 import 'package:zpevnik/models/playlist_record.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 
-// wrapper around Playlist db model for easier field access
-class Playlist {
-  final model.Playlist entity;
+const favoritesPlaylistId = 1;
+const _favoritesName = 'Písně s hvězdičkou';
 
-  Playlist(this.entity);
+@Entity()
+class Playlist implements Comparable<Playlist> {
+  @Id(assignable: true)
+  int id = 0;
 
-  static Future<Playlist> create(String name, int rank, {List<int> songLyrics = const []}) async {
-    final entity = model.Playlist(name: name, rank: rank, is_archived: false);
+  String name;
+  int rank;
 
-    entity.id = await entity.save();
+  @Backlink()
+  final playlistRecords = ToMany<PlaylistRecord>();
 
-    return Playlist(entity)..addSongLyrics(songLyrics);
+  Playlist(this.name, this.rank);
+
+  Playlist.favorite()
+      : id = favoritesPlaylistId,
+        name = _favoritesName,
+        rank = -1;
+
+  static List<Playlist> load(Store store) {
+    final query = store.box<Playlist>().query(Playlist_.id.notEquals(favoritesPlaylistId));
+    query.order(Playlist_.rank);
+
+    return query.build().find();
   }
 
-  static Future<List<Playlist>> get playlists async {
-    final entities = await model.Playlist().select().orderBy('rank').toList();
-
-    return entities.map((entity) => Playlist(entity)).toList();
+  static Playlist loadFavorites(Store store) {
+    return store.box<Playlist>().get(favoritesPlaylistId)!;
   }
 
-  final Map<int, PlaylistRecord> records = {};
+  static int nextRank(Store store) {
+    final query = store.box<Playlist>().query();
+    query.order(Playlist_.rank);
 
-  int get id => entity.id ?? 0;
-  String get name => entity.name ?? '';
-  int get rank => entity.rank ?? 0;
-  bool get isArchived => entity.is_archived ?? false;
+    final rank = query.build().findFirst()?.rank ?? -1;
 
-  Key get key => Key(id.toString());
-
-  set name(String value) {
-    entity.name = value;
-    entity.save();
+    return rank + 1;
   }
 
-  set rank(int value) {
-    entity.rank = value;
-    entity.save();
+  bool get isFavorites => id == favoritesPlaylistId;
+
+  void addSongLyric(SongLyric songLyric, int rank) {
+    if (playlistRecords.any((playlistRecord) => playlistRecord.songLyric.target == songLyric)) return;
+
+    final playlistRecord = PlaylistRecord(rank)
+      ..playlist.target = this
+      ..songLyric.target = songLyric;
+
+    playlistRecords.add(playlistRecord);
+    playlistRecords.applyToDb();
+
+    songLyric.playlistRecords.add(playlistRecord);
   }
 
-  set isArchived(bool value) {
-    entity.is_archived = value;
-    entity.save();
+  void removeSongLyric(SongLyric songLyric) {
+    playlistRecords.removeWhere((playlistRecord) => playlistRecord.songLyric.target == songLyric);
+    playlistRecords.applyToDb();
+
+    songLyric.playlistRecords.removeWhere((playlistRecord) => playlistRecord.songLyric.target == songLyric);
   }
 
-  void addSongLyrics(List<dynamic> songLyricsToAdd) async {
-    for (final songLyric in songLyricsToAdd) {
-      final int songLyricId;
+  @override
+  String toString() => 'Playlist(id: $id, name: $name)';
 
-      if (songLyric is SongLyric) {
-        songLyricId = songLyric.id;
-      } else {
-        songLyricId = songLyric;
-      }
+  @override
+  operator ==(Object other) => other is Playlist && id == other.id;
 
-      if (!records.containsKey(songLyricId)) {
-        records[songLyricId] = await PlaylistRecord.create(songLyricId, id, records.length);
-      }
-    }
-  }
+  @override
+  int get hashCode => id;
 
-  void removeSongLyrics(List<SongLyric> songLyrics) {
-    for (final songLyric in songLyrics) {
-      records[songLyric.id]?.entity.delete(true);
-      records.remove(songLyric.id);
-    }
-  }
-
-  void reorderSongLyrics(List<SongLyric> orderedSongLyrics) {
-    int rank = 0;
-
-    // TODO: check if this can be done in batch, also in other places where multiple db changes happen
-    for (final songLyric in orderedSongLyrics) {
-      records[songLyric.id]?.rank = rank++;
-    }
-  }
+  @override
+  int compareTo(Playlist other) => rank.compareTo(other.rank);
 }

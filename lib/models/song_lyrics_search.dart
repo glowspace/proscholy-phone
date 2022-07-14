@@ -1,74 +1,60 @@
-import 'package:sqfentity_gen/sqfentity_gen.dart';
-import 'package:zpevnik/models/model.dart';
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:zpevnik/models/song_lyric.dart';
 
-extension SongLyricsSearch on Model {
-  Future<BoolResult> _initSongLyricsSearch() {
-    return execSQL(
-        'CREATE VIRTUAL TABLE IF NOT EXISTS song_lyrics_search USING FTS4(id, name, secondary_name_1, secondary_name_2, lyrics, numbers, tokenize=unicode61);');
+const _createTableQuery =
+    'CREATE VIRTUAL TABLE IF NOT EXISTS song_lyrics_search USING FTS4(id, name, secondary_name_1, secondary_name_2, lyrics, numbers_with_shortcut, numbers, tokenize=unicode61);';
+
+const _upsertQuery =
+    'INSERT OR REPLACE INTO song_lyrics_search(rowid, id, name, secondary_name_1, secondary_name_2, lyrics, numbers_with_shortcut, numbers) VALUES(?, ?, ?, ?, ?, ?, ?, ?);';
+
+const _selectQuery =
+    'SELECT id, matchinfo(song_lyrics_search, "pcnalx") as info FROM song_lyrics_search WHERE song_lyrics_search MATCH ?;';
+
+final _numberRE = RegExp(r'^\d+$');
+
+class SongLyricsSearch {
+  late final Database _db;
+
+  Future<void> open() async {
+    _db = await openDatabase(join(await getDatabasesPath(), 'zpevnik.db'));
   }
 
-  Future<void> updateSongLyricsSearch(
-    List<SongLyric> songLyrics,
-    List<Songbook> songbooks,
-    List<SongbookRecord> songbookRecords,
-  ) async {
-    await _initSongLyricsSearch();
+  Future<void> init() async {
+    await open();
 
-    final songbooksMap = Map<int, Songbook>.fromIterable(songbooks, key: (songbook) => songbook.id);
-    final songbookNumbersMap = Map<int, List<String>>.from({});
+    await _db.execute(_createTableQuery);
+  }
 
-    for (final songbookRecord in songbookRecords) {
-      final songLyricId = songbookRecord.song_lyricsId;
-
-      if (songLyricId == null) continue;
-
-      if (!songbookNumbersMap.containsKey(songLyricId)) songbookNumbersMap[songLyricId] = [];
-
-      songbookNumbersMap[songLyricId]!
-          .add('${songbooksMap[songbookRecord.songbooksId]?.shortcut}${songbookRecord.number}');
-      songbookNumbersMap[songLyricId]!.add(songbookRecord.number ?? '');
-    }
-
-    final existing = {};
-    for (final map in (await execDataTable('SELECT id from song_lyrics_search'))) {
-      existing[map['id']] = true;
-    }
-
-    await batchStart();
+  Future<void> update(List<SongLyric> songLyrics) async {
+    final batch = _db.batch();
 
     for (final songLyric in songLyrics) {
-      if (existing[songLyric.id] ?? false) {
-        await execSQL(
-            'UPDATE song_lyrics_search SET name = ?, secondary_name_1 = ?, secondary_name_2 = ?, lyrics = ?, numbers = ? WHERE id = ?;',
-            [
-              songLyric.name,
-              songLyric.secondary_name_1,
-              songLyric.secondary_name_2,
-              songLyric.lyrics,
-              songbookNumbersMap[songLyric.id].toString(),
-              songLyric.id,
-            ]);
-      } else {
-        await execSQL(
-            'INSERT INTO song_lyrics_search(id, name, secondary_name_1, secondary_name_2, lyrics, numbers) VALUES(?, ?, ?, ?, ?, ?);',
-            [
-              songLyric.id,
-              songLyric.name,
-              songLyric.secondary_name_1,
-              songLyric.secondary_name_2,
-              songLyric.lyrics,
-              songbookNumbersMap[songLyric.id].toString(),
-            ]);
-      }
+      batch.execute(_upsertQuery, [
+        songLyric.id,
+        songLyric.id,
+        songLyric.name,
+        songLyric.secondaryName1,
+        songLyric.secondaryName2,
+        songLyric.lyrics,
+        songLyric.songbookRecords
+            .map((songbookRecord) => '${songbookRecord.songbook.target!.shortcut}${songbookRecord.number}')
+            .toString(),
+        songLyric.songbookRecords.map((songbookRecord) => songbookRecord.number).toString()
+      ]);
     }
 
-    await batchCommit();
+    await batch.commit();
   }
 
-  Future<List<dynamic>?> searchSongLyrics(String searchText) {
-    searchText = '$searchText*';
-    return execDataTable(
-        'SELECT id, matchinfo(song_lyrics_search, "pcnalx") as info FROM song_lyrics_search WHERE song_lyrics_search MATCH ?;',
-        [searchText]);
+  Future<List<dynamic>> search(String searchText) {
+    searchText.trim();
+    if (!_numberRE.hasMatch(searchText)) searchText = '${searchText.replaceAll(' ', '* ')}*';
+
+    return _db.rawQuery(_selectQuery, [searchText]);
+  }
+
+  Future<void> close() async {
+    await _db.close();
   }
 }

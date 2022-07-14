@@ -1,17 +1,25 @@
-import 'package:zpevnik/models/model.dart' as model;
+import 'package:objectbox/objectbox.dart';
 
-// wrapper around Author db model for easier field access
+@Entity()
 class Author {
-  final model.Author entity;
+  @Id(assignable: true)
+  final int id;
 
-  Author(this.entity);
+  final String name;
 
-  static Future<List<Author>> get authors async {
-    final entities = await model.Author().select().toList();
+  Author(this.id, this.name);
 
-    return entities.map((entity) => Author(entity)).toList();
+  factory Author.fromJson(Map<String, dynamic> json) {
+    return Author(
+      int.parse(json['id'] as String),
+      json['name'] as String,
+    );
   }
 
-  int get id => entity.id ?? 0;
-  String get name => entity.name ?? '';
+  static List<Author> fromMapList(Map<String, dynamic> json) {
+    return (json['authors'] as List).map((json) => Author.fromJson(json)).toList();
+  }
+
+  @override
+  String toString() => 'Author(id: $id, name: $name)';
 }

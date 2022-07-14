@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wakelock/wakelock.dart';
 import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/providers/utils/updater.dart';
 
 const String _fontSizeScaleScaleKey = 'font_size_scale';
 const String _showChordsKey = 'show_chords';
@@ -13,7 +12,7 @@ const String _bottomOptionsCollapsedKey = 'bottom_options_collapsed';
 const String _isDarkModeKey = 'dark_mode';
 
 class SettingsProvider extends ChangeNotifier {
-  final SharedPreferences _prefs;
+  late final SharedPreferences _prefs;
 
   late double _fontSizeScale;
   late double _fontSizeScaleBeforeScale;
@@ -24,7 +23,9 @@ class SettingsProvider extends ChangeNotifier {
   late bool _bottomOptionsCollapsed;
   late bool? _isDarkMode;
 
-  SettingsProvider(this._prefs) {
+  Future<void> init() async {
+    _prefs = await SharedPreferences.getInstance();
+
     _fontSizeScale = _prefs.getDouble(_fontSizeScaleScaleKey) ?? 1;
     _showChords = _prefs.getBool(_showChordsKey) ?? true;
     _accidentals = _prefs.getInt(_accidentalsKey) ?? 0;
@@ -50,12 +51,14 @@ class SettingsProvider extends ChangeNotifier {
 
   bool? get isDarkMode => _isDarkMode;
 
-  String get lastUpdate => _prefs.getString(lastUpdateKey) ?? 'neznámé';
+  // String get lastUpdate => _prefs.getString(lastUpdateKey) ?? 'neznámé';
 
   set fontSizeScale(double value) {
-    if (value < kMinimumFontSizeScale)
+    if (value < kMinimumFontSizeScale) {
       value = kMinimumFontSizeScale;
-    else if (value > kMaximumFontSizeScale) value = kMaximumFontSizeScale;
+    } else if (value > kMaximumFontSizeScale) {
+      value = kMaximumFontSizeScale;
+    }
 
     _fontSizeScale = value;
 
@@ -115,7 +118,7 @@ class SettingsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void fontScaleStarted() => _fontSizeScaleBeforeScale = fontSizeScale;
+  void fontScaleStarted(ScaleStartDetails _) => _fontSizeScaleBeforeScale = fontSizeScale;
 
   void fontScaleUpdated(ScaleUpdateDetails details) => fontSizeScale = _fontSizeScaleBeforeScale * details.scale;
 }

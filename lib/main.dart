@@ -1,57 +1,71 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+// import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:zpevnik/platform/mixin.dart';
+import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/providers/data.dart';
+import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/providers/settings.dart';
-import 'package:zpevnik/screens/miniplayer_wrapper.dart';
-import 'package:zpevnik/theme.dart';
+import 'package:zpevnik/routes/route_generator.dart';
+import 'package:zpevnik/utils/uni_links.dart';
 
 const _title = 'Zpěvník';
 
-late SharedPreferences _prefs;
-
-void main() async {
-  // debugRepaintRainbowEnabled = true;
-
-  WidgetsFlutterBinding.ensureInitialized();
-
-  _prefs = await SharedPreferences.getInstance();
-
+void main() {
   runApp(const MainWidget());
+
+  // debugRepaintRainbowEnabled = true;
 }
 
-class MainWidget extends StatelessWidget with PlatformMixin {
+class MainWidget extends StatelessWidget {
   const MainWidget({Key? key}) : super(key: key);
 
   @override
-  Widget buildAndroid(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: _title,
-      theme: AppTheme.of(context).materialTheme,
-      home: MiniPlayerWrapper(),
+  Widget build(BuildContext context) {
+    final lightTheme = ThemeData.light().copyWith(
+      scaffoldBackgroundColor: CupertinoColors.lightBackgroundGray,
+      colorScheme: ColorScheme.fromSeed(seedColor: blue),
+      appBarTheme: ThemeData.light().appBarTheme.copyWith(
+            backgroundColor: CupertinoColors.lightBackgroundGray,
+            shadowColor: Colors.grey,
+            elevation: 1,
+          ),
+      splashFactory: NoSplash.splashFactory,
+      useMaterial3: true,
     );
-  }
 
-  @override
-  Widget buildIos(BuildContext context) {
-    return CupertinoApp(
-      debugShowCheckedModeBanner: false,
-      title: _title,
-      theme: AppTheme.of(context).cupertinoTheme,
-      home: MiniPlayerWrapper(),
-      // needed by youtube player
-      localizationsDelegates: const [DefaultMaterialLocalizations.delegate],
+    final darkTheme = ThemeData.dark().copyWith(
+      scaffoldBackgroundColor: Colors.black,
+      appBarTheme: ThemeData.dark().appBarTheme.copyWith(
+            backgroundColor: Colors.black,
+            shadowColor: Colors.grey,
+            elevation: 1,
+          ),
+      colorScheme: ColorScheme.fromSeed(seedColor: blue, brightness: Brightness.dark),
+      splashFactory: NoSplash.splashFactory,
+      cupertinoOverrideTheme: const CupertinoThemeData(
+        textTheme: CupertinoTextThemeData(),
+      ),
+      useMaterial3: true,
     );
-  }
 
-  @override
-  Widget buildWrapper(BuildContext context, Widget Function(BuildContext) builder) {
-    return ChangeNotifierProvider(
-      create: (_) => SettingsProvider(_prefs),
-      builder: (_, __) => AppTheme(child: Builder(builder: builder)),
+    final navigationProvider = NavigationProvider();
+
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => DataProvider()),
+        ChangeNotifierProvider(create: (_) => SettingsProvider()),
+        Provider.value(value: navigationProvider),
+      ],
+      builder: (_, __) => MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: _title,
+        theme: lightTheme,
+        darkTheme: darkTheme,
+        onGenerateRoute: RouteGenerator.generateRoute,
+        navigatorObservers: [navigationProvider],
+        builder: (context, widget) => UniLinksHandlerWrapper(child: widget),
+      ),
     );
   }
 }

@@ -1,102 +1,68 @@
 import 'package:flutter/material.dart';
+import 'package:objectbox/objectbox.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zpevnik/custom/sqlite-bm25/bm25.dart';
-import 'package:zpevnik/models/model.dart' as model;
 import 'package:zpevnik/models/playlist.dart';
+import 'package:zpevnik/models/playlist_record.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/models/song_lyrics_search.dart';
 import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/providers/data.dart';
 
-mixin _Searchable on _SongLyricsProvider {
-  final Map<int, SongLyric> _allSongLyricsMap = {};
+const _recentSongLyricsKey = 'recent_song_lyrics';
+const _maxRecentSongLyrics = 5;
 
-  String _searchText = '';
-  List<SongLyric>? _searchResults;
-
-  SongLyric? _matchedById;
-
-  String get searchText => _searchText;
-
-  SongLyric? get matchedById => _matchedById;
-
-  set searchText(String newValue) {
-    _searchText = newValue;
-
-    if (newValue.isEmpty) {
-      _searchResults = null;
-
-      notifyListeners();
-      return;
-    }
-
-    _matchedById = _allSongLyricsMap[int.tryParse(newValue) ?? -1];
-
-    model.Model().searchSongLyrics(newValue).then(_handleSearchResults);
-  }
-
-  void _initializeSearch() {
-    _allSongLyricsMap.clear();
-
-    for (final songLyric in _allSongLyrics) {
-      _allSongLyricsMap[songLyric.id] = songLyric;
-    }
-  }
-
-  void _handleSearchResults(List<dynamic>? results) {
-    if (results == null) return;
-
-    final Map<int, double> ranks = {};
-    final List<SongLyric> songLyrics = [];
-
-    for (final value in results) {
-      final songLyric = _allSongLyricsMap[value['id']];
-
-      if (songLyric != null) {
-        songLyrics.add(songLyric);
-
-        ranks[value['id']] = bm25(value['info'], weights: [50.0, 40.0, 35.0, 30.0, 1.0, 48.0]);
-      }
-    }
-
-    _searchResults = songLyrics..sort((a, b) => ranks[a.id]!.compareTo(ranks[b.id]!));
-    notifyListeners();
-  }
-}
-
-mixin _Filterable on _SongLyricsProvider {
-  final Map<TagType, List<Tag>> _selectedTags = {};
+mixin _Filterable on SongLyricsProvider {
+  final Map<TagType, List<Tag>> _selectedTagsByType = {};
+  final Map<int, Tag> _selectedTags = {};
 
   List<TagsSection> _tagsSections = [];
 
-  List<Tag> get selectedTags {
-    final List<Tag> tags = [];
-
-    for (final _tags in _selectedTags.values) {
-      tags.addAll(_tags);
-    }
-
-    return tags;
-  }
+  List<Tag> get selectedTags => _selectedTags.values.toList();
 
   List<TagsSection> get tagsSections => _tagsSections;
 
-  void _updateTags(DataProvider dataProvider) {
-    final Map<String, List<Tag>> tagsMap = {};
+  bool isSelected(Tag tag) => _selectedTags.containsKey(tag.id);
 
-    for (final tag in dataProvider.tags) {
-      if (!tag.type.supported) continue;
+  void toggleSelectedTag(Tag tag) {
+    if (!isSelected(tag)) {
+      if (!_selectedTagsByType.containsKey(tag.type)) _selectedTagsByType[tag.type] = [];
 
-      final description = tag.type.description;
-
-      if (tagsMap[description] == null) tagsMap[description] = List<Tag>.empty(growable: true);
-
-      tagsMap[description]?.add(Tag.clone(tag));
+      _selectedTags[tag.id] = tag;
+      _selectedTagsByType[tag.type]!.add(tag);
+    } else {
+      _selectedTags.remove(tag.id);
+      _selectedTagsByType[tag.type]!.remove(tag);
     }
 
-    _tagsSections = tagsMap.entries.map((entry) => TagsSection(entry.key, entry.value)).toList();
+    notifyListeners();
+  }
 
-    _tagsSections.sort((first, second) => first.tags[0].type.rawValue.compareTo(second.tags[0].type.rawValue));
+  void clearTags() {
+    _selectedTags.clear();
+    _selectedTagsByType.clear();
+
+    notifyListeners();
+  }
+
+  void _updateTags(List<Tag> tags) {
+    final Map<TagType, List<Tag>> tagsMap = {};
+
+    for (final tag in tags) {
+      if (!tag.type.supported) continue;
+
+      final type = tag.type;
+
+      if (tagsMap[type] == null) tagsMap[type] = List<Tag>.empty(growable: true);
+
+      tagsMap[type]?.add(tag);
+    }
+
+    _tagsSections = tagsMap.entries.map((entry) => TagsSection(entry.key.description, entry.value)).toList();
+
+    _tagsSections.sort((first, second) => first.tags[0].type.index.compareTo(second.tags[0].type.index));
   }
 
   List<SongLyric> _filter(List<SongLyric> songLyrics) {
@@ -107,12 +73,16 @@ mixin _Filterable on _SongLyricsProvider {
     for (final songLyric in songLyrics) {
       bool shouldAdd = true;
 
-      for (final entry in _selectedTags.entries) {
+      for (final entry in _selectedTagsByType.entries) {
+        if (entry.value.isEmpty) continue;
+
         if (entry.key == TagType.language) {
-          shouldAdd &= entry.value.map((tag) => tag.name).contains(songLyric.language);
+          shouldAdd &= entry.value.any((tag) => tag.name == songLyric.langDescription);
         } else {
-          shouldAdd &= entry.value.any((tag) => songLyric.tagIds.contains(tag.id));
+          shouldAdd &= entry.value.any((tag) => songLyric.tags.contains(tag));
         }
+
+        if (!shouldAdd) break;
       }
 
       if (shouldAdd) filtered.add(songLyric);
@@ -120,165 +90,239 @@ mixin _Filterable on _SongLyricsProvider {
 
     return filtered;
   }
+}
 
-  void toggleSelectedTag(Tag tag) {
-    tag.toggleIsSelected();
+mixin _RecentlySearched on SongLyricsProvider {
+  late List<SongLyric> _recentSongLyrics = [];
 
-    if (tag.isSelected) {
-      if (!_selectedTags.containsKey(tag.type)) _selectedTags[tag.type] = [];
+  void _updateRecentlySearched(SharedPreferences prefs) {
+    final songLyrics = prefs
+        .getStringList(_recentSongLyricsKey)
+        ?.map((songLyricId) => _songLyricsMap[int.parse(songLyricId)])
+        .where((songLyric) => songLyric != null)
+        .toList()
+        .cast<SongLyric>();
 
-      _selectedTags[tag.type]!.add(tag);
-    } else {
-      _selectedTags[tag.type]!.remove(tag);
-    }
-
-    notifyListeners();
+    _recentSongLyrics = songLyrics ?? [];
   }
 
-  void clearTags() {
-    for (final tag in selectedTags) {
-      tag.toggleIsSelected();
-    }
+  void addRecentSongLyric(SongLyric songLyric) {
+    _recentSongLyrics.remove(songLyric);
+    _recentSongLyrics.insert(0, songLyric);
 
-    _selectedTags.clear();
+    if (_recentSongLyrics.length > _maxRecentSongLyrics) _recentSongLyrics.removeLast();
 
-    notifyListeners();
+    SharedPreferences.getInstance().then((prefs) {
+      List<int> recentSongLyricsIds =
+          prefs.getStringList(_recentSongLyricsKey)?.map((id) => int.parse(id)).toList() ?? [];
+
+      recentSongLyricsIds.remove(songLyric.id);
+      recentSongLyricsIds.insert(0, songLyric.id);
+
+      if (recentSongLyricsIds.length > _maxRecentSongLyrics) recentSongLyricsIds.removeLast();
+
+      prefs.setStringList(_recentSongLyricsKey, recentSongLyricsIds.map((id) => '$id').toList());
+    });
+
+    Future.delayed(const Duration(milliseconds: 500), () => notifyListeners());
   }
 }
 
-mixin _Selectable on _SongLyricsProvider {
-  final Map<int, SongLyric> _selectedSongLyrics = {};
+mixin _Searchable on SongLyricsProvider {
+  String _searchText = '';
 
-  bool _selectionEnabled = false;
+  SongLyric? _matchedById;
 
-  List<SongLyric> get selectedSongLyrics => _selectedSongLyrics.values.toList();
+  List<SongLyric>? _searchResults;
 
-  bool get selectionEnabled => _selectionEnabled;
+  final List<SongLyric> _songLyricsMatchedBySongbookNumber = [];
 
-  String get title {
-    if (selectedSongLyrics.isEmpty) {
-      return "Nic nevybráno";
-    } else if (selectedSongLyrics.length == 1) {
-      return "1 píseň";
-    } else if (selectedSongLyrics.length < 5) {
-      return "${selectedSongLyrics.length} písně";
+  String get searchText => _searchText;
+
+  SongLyric? get matchedById => _matchedById;
+
+  void search(String searchText, {Songbook? songbook}) async {
+    _searchText = searchText;
+
+    _matchedById = null;
+    _songLyricsMatchedBySongbookNumber.clear();
+
+    if (searchText.isEmpty) {
+      _searchResults = null;
+
+      notifyListeners();
+
+      return;
     }
 
-    return "${selectedSongLyrics.length} písní";
-  }
+    final songLyricsSearch = SongLyricsSearch();
+    await songLyricsSearch.init();
 
-  bool get allFavorite => selectedSongLyrics.every((songLyric) => songLyric.isFavorite);
+    final result = await songLyricsSearch.search(searchText);
 
-  set selectionEnabled(bool value) {
-    _selectionEnabled = value;
-    _selectedSongLyrics.clear();
+    final Map<int, double> ranks = {};
+    final List<SongLyric> searchResults = [];
 
-    notifyListeners();
-  }
+    for (final value in result) {
+      final songLyric = _songLyricsMap[value['id']];
 
-  bool isSelected(SongLyric songLyric) => _selectedSongLyrics.containsKey(songLyric.id);
+      if (songLyric != null) {
+        if ((songbook == null && searchText == '${songLyric.id}') ||
+            songLyric.songbookRecords.any((songbookRecord) =>
+                songbookRecord.songbook.targetId == songbook?.id && searchText == songbookRecord.number)) {
+          _matchedById = songLyric;
+        } else if (songLyric.songbookRecords.any((songbookRecord) => searchText == songbookRecord.number)) {
+          _songLyricsMatchedBySongbookNumber.add(songLyric);
+        } else {
+          searchResults.add(songLyric);
+        }
 
-  void toggleSelected(SongLyric songLyric) {
-    if (_selectedSongLyrics.remove(songLyric.id) == null) _selectedSongLyrics[songLyric.id] = songLyric;
-
-    notifyListeners();
-  }
-
-  void toggleAll() {
-    final allSelectedSongLyrics = songLyrics.every((songLyric) => _selectedSongLyrics.containsKey(songLyric.id));
-
-    for (final songLyric in songLyrics) {
-      if (allSelectedSongLyrics) {
-        _selectedSongLyrics.remove(songLyric.id);
-      } else {
-        _selectedSongLyrics[songLyric.id] = songLyric;
+        // weights: [id, name, secondary_name_1, secondary_name_2, lyrics, numbers_with_shortcut, numbers]
+        ranks[value['id']] = bm25(value['info'], weights: [50.0, 40.0, 35.0, 30.0, 1.0, 48.0, 45.0]);
       }
     }
 
-    notifyListeners();
-  }
+    _searchResults = searchResults;
+    _searchResults?.sort((a, b) => ranks[a.id]!.compareTo(ranks[b.id]!));
 
-  void toggleFavorite() {
-    final all = allFavorite;
-
-    for (final songLyric in selectedSongLyrics) {
-      if (all == songLyric.isFavorite) songLyric.toggleFavorite();
-    }
+    songLyricsSearch.close();
 
     notifyListeners();
   }
 }
 
-mixin Reorderable on _SongLyricsProvider {
-  bool onReorder(Key key, Key other) {
-    int index = _allSongLyrics.indexWhere((songLyric) => songLyric.key == key);
-    int otherIndex = _allSongLyrics.indexWhere((songLyric) => songLyric.key == other);
+abstract class SongLyricsProvider extends ChangeNotifier {
+  late List<SongLyric> _songLyrics;
+  late Map<int, SongLyric> _songLyricsMap;
 
-    final songLyric = _allSongLyrics.removeAt(index);
-    _allSongLyrics.insert(otherIndex, songLyric);
+  List<SongLyric> get songLyrics => _songLyrics;
 
-    notifyListeners();
+  void _updateSongLyrics(List<SongLyric> songLyrics) {
+    _songLyrics = songLyrics;
 
-    return true;
-  }
-
-  void onReorderDone(Key _, {Playlist? playlist}) {
-    if (playlist != null) {
-      playlist.reorderSongLyrics(_allSongLyrics);
-    } else {
-      int rank = 0;
-
-      for (final songLyric in _allSongLyrics) {
-        if (songLyric.isFavorite) songLyric.favoriteRank = rank++;
-      }
-    }
+    _songLyricsMap = Map.fromIterable(songLyrics, key: (songLyric) => songLyric.id);
   }
 }
 
-class _SongLyricsProvider extends ChangeNotifier {
-  List<SongLyric> _allSongLyrics = [];
+class AllSongLyricsProvider extends SongLyricsProvider with _Filterable, _RecentlySearched, _Searchable {
+  AllSongLyricsProvider(DataProvider dataProvider, {List<SongLyric>? songLyrics, Tag? initialTag}) {
+    _updateSongLyrics(songLyrics ?? dataProvider.songLyrics);
 
-  List<SongLyric> get songLyrics => _allSongLyrics;
+    _updateRecentlySearched(dataProvider.prefs);
 
-  void update(DataProvider dataProvider, {Songbook? songbook, Playlist? playlist}) {
-    if (songbook != null) {
-      _allSongLyrics = dataProvider.songbookSongLyrics(songbook);
-    } else if (playlist != null) {
-      _allSongLyrics = dataProvider.playlistSongLyrics(playlist);
-    } else {
-      _allSongLyrics = dataProvider.songLyrics;
-    }
+    _updateTags(dataProvider.tags);
+
+    if (initialTag != null) toggleSelectedTag(initialTag);
   }
-}
 
-class SongLyricsProvider extends _SongLyricsProvider with _Filterable, _Searchable, _Selectable {
-  SongLyricsProvider() {
-    _initializeSearch();
+  @override
+  SongLyric? get matchedById {
+    if (super.matchedById == null) return null;
+
+    final filtered = _filter([super.matchedById!]);
+
+    return filtered.isEmpty ? null : filtered.first;
   }
+
+  List<SongLyric> get recentSongLyrics => _searchText.isEmpty && _selectedTags.isEmpty ? _recentSongLyrics : [];
 
   @override
   List<SongLyric> get songLyrics => _filter(_searchResults ?? super.songLyrics);
 
-  @override
-  void update(DataProvider dataProvider, {Songbook? songbook, Playlist? playlist}) {
-    super.update(dataProvider, songbook: songbook, playlist: playlist);
+  List<SongLyric> get songLyricsMatchedBySongbookNumber => _filter(_songLyricsMatchedBySongbookNumber);
 
-    _initializeSearch();
+  void update(DataProvider dataProvider, {List<SongLyric>? songLyrics}) {
+    _updateSongLyrics(songLyrics ?? dataProvider.songLyrics);
 
-    _updateTags(dataProvider);
+    _updateTags(dataProvider.tags);
+
+    notifyListeners();
   }
 }
 
-class FavoriteSongLyricsProvider extends SongLyricsProvider with Reorderable {
-  // TODO: this could be done better if isFavorite was check before calling super, or allSongLyrics should contain only favorite songlyrics
-  @override
-  List<SongLyric> get songLyrics => super.songLyrics.where((songLyric) => songLyric.isFavorite).toList();
-}
-
-class PlaylistSongLyricsProvider extends SongLyricsProvider with Reorderable {
+class PlaylistSongLyricsProvider extends SongLyricsProvider with _Searchable {
   final Playlist playlist;
 
-  PlaylistSongLyricsProvider(this.playlist) : super();
+  PlaylistSongLyricsProvider(DataProvider dataProvider, this.playlist) {
+    final songLyrics = (playlist.playlistRecords..sort())
+        .map((playlistRecord) => dataProvider.getSongLyricById(playlistRecord.songLyric.targetId))
+        .toList()
+        .cast<SongLyric>();
+    _updateSongLyrics(songLyrics);
+  }
 
-  void removeSongLyrics() => playlist.removeSongLyrics(selectedSongLyrics);
+  @override
+  List<SongLyric> get songLyrics => _searchResults ?? super.songLyrics;
+
+  void update(DataProvider dataProvider) {
+    final songLyrics = (playlist.playlistRecords..sort())
+        .map((playlistRecord) => dataProvider.getSongLyricById(playlistRecord.songLyric.targetId))
+        .toList()
+        .cast<SongLyric>();
+    _updateSongLyrics(songLyrics);
+
+    notifyListeners();
+  }
+
+  void onReorder(BuildContext context, int oldIndex, int newIndex) {
+    if (oldIndex < newIndex) {
+      newIndex -= 1;
+    }
+
+    final playlistRecord = playlist.playlistRecords.removeAt(oldIndex);
+    playlist.playlistRecords.insert(newIndex, playlistRecord);
+
+    final songLyric = _songLyrics.removeAt(oldIndex);
+    _songLyrics.insert(newIndex, songLyric);
+
+    for (int i = 0; i < playlist.playlistRecords.length; i++) {
+      playlist.playlistRecords[i].rank = i;
+    }
+
+    context.read<DataProvider>().store.box<PlaylistRecord>().putMany(playlist.playlistRecords);
+
+    notifyListeners();
+  }
+
+  void removeSongLyric(SongLyric songLyric) {
+    playlist.removeSongLyric(songLyric);
+
+    _songLyrics.remove(songLyric);
+    _songLyricsMap.remove(songLyric.id);
+
+    notifyListeners();
+  }
+}
+
+class SongbookSongLyricsProvider extends SongLyricsProvider with _Searchable {
+  final Songbook songbook;
+
+  SongbookSongLyricsProvider(DataProvider dataProvider, this.songbook) {
+    final songLyrics = (songbook.songbookRecords..sort())
+        .map((songbookRecord) => dataProvider.getSongLyricById(songbookRecord.songLyric.targetId))
+        .where((songLyric) => songLyric != null)
+        .toList()
+        .cast<SongLyric>();
+    _updateSongLyrics(songLyrics);
+  }
+
+  @override
+  List<SongLyric> get songLyrics => _searchResults ?? super.songLyrics;
+
+  void update(DataProvider dataProvider) {
+    final songLyrics = (songbook.songbookRecords..sort())
+        .map((songbookRecord) => dataProvider.getSongLyricById(songbookRecord.songLyric.targetId))
+        .where((songLyric) => songLyric != null)
+        .toList()
+        .cast<SongLyric>();
+    _updateSongLyrics(songLyrics);
+
+    notifyListeners();
+  }
+}
+
+class UpdatedSongLyricsProvider extends SongLyricsProvider {
+  UpdatedSongLyricsProvider(DataProvider dataProvider) {
+    _updateSongLyrics(dataProvider.updatedSongLyrics);
+  }
 }
