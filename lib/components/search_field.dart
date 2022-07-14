@@ -3,6 +3,67 @@ import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
+class SearchFieldTransitionWidget extends AnimatedWidget {
+  final Animation<double> animation;
+
+  const SearchFieldTransitionWidget({
+    Key? key,
+    required this.animation,
+  }) : super(key: key, listenable: animation);
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    final fillColor = ColorTween(
+      begin: theme.colorScheme.surface,
+      end: theme.brightness.isLight ? theme.scaffoldBackgroundColor : theme.colorScheme.surface,
+    ).evaluate(animation);
+
+    return Container(
+      padding: EdgeInsets.only(left: animation.value * kDefaultPadding),
+      child: Material(
+        type: MaterialType.transparency,
+        child: Row(
+          children: [
+            Expanded(
+              child: TextField(
+                decoration: InputDecoration(
+                  hintText: 'Název, číslo nebo část textu',
+                  filled: true,
+                  fillColor: fillColor,
+                  isDense: true,
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.circular(kDefaultRadius),
+                  ),
+                  prefixIcon: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+                    child: const Icon(Icons.search),
+                  ),
+                  prefixIconConstraints: const BoxConstraints(),
+                  contentPadding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
+                ),
+              ),
+            ),
+            SizeTransition(
+              sizeFactor: animation,
+              axis: Axis.horizontal,
+              child: Opacity(
+                opacity: animation.value,
+                child: Container(
+                  padding: const EdgeInsets.all(kDefaultPadding),
+                  child: Text('Zrušit', style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.primary)),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class SearchField extends StatefulWidget {
   final bool isInsideSearchScreen;
   final Function(String)? onChanged;
@@ -44,10 +105,11 @@ class _SearchFieldState extends State<SearchField> {
       );
     }
 
-    return Container(
-      padding: widget.isInsideSearchScreen ? const EdgeInsets.only(left: kDefaultPadding) : null,
-      child: Hero(
-        tag: 'search',
+    return Hero(
+      tag: 'search',
+      flightShuttleBuilder: (_, animation, __, ___, ____) => SearchFieldTransitionWidget(animation: animation),
+      child: Container(
+        padding: widget.isInsideSearchScreen ? const EdgeInsets.only(left: kDefaultPadding) : null,
         child: Material(
           type: MaterialType.transparency,
           child: Row(
