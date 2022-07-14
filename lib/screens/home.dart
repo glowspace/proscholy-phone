@@ -15,8 +15,10 @@ class HomeScreen extends StatelessWidget {
     final String text;
     final now = DateTime.now();
 
-    if (now.hour < 12) {
+    if (now.hour < 11) {
       text = 'Dobré ráno';
+    } else if (now.hour < 12) {
+      text = 'Dobré dopoledne';
     } else if (now.hour < 18) {
       text = 'Dobré odpoledne';
     } else {
