@@ -51,6 +51,7 @@ class CustomPopupMenuButton<T> extends StatelessWidget {
       items: items,
       shape: Border.all(color: Theme.of(context).dividerColor),
       position: position,
+      color: Theme.of(context).colorScheme.surface,
     ).then((value) => onSelected(context, value));
   }
 }

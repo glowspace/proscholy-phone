@@ -35,50 +35,53 @@ class _SongLyricSettingsWidget extends State<SongLyricSettingsWidget> {
     final theme = Theme.of(context);
     final accidentalsStyle = theme.textTheme.bodyMedium?.copyWith(fontSize: 20, fontFamily: 'Hiragino Sans');
 
-    return Wrap(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(kDefaultPadding),
-          child: Text('Nastavení zobrazení', style: Theme.of(context).textTheme.titleLarge),
-        ),
-        SingleChildScrollView(
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-            child: Column(children: [
-              Row(children: [const Expanded(child: Text('Transpozice')), _buildTranspositionStepper(context)]),
-              const SizedBox(height: kDefaultPadding / 2),
-              Row(children: [
-                const Expanded(child: Text('Posuvky')),
-                SelectorWidget(
-                  onSelected: widget.controller.accidentalsChanged,
-                  options: [
-                    Text('#', style: accidentalsStyle, textAlign: TextAlign.center),
-                    Text('♭', style: accidentalsStyle, textAlign: TextAlign.center)
-                  ],
-                  selected: widget.controller.accidentals,
-                  width: _settingsOptionsWidth,
-                ),
-              ]),
-              const SizedBox(height: kDefaultPadding / 2),
-              Row(children: [
-                const Expanded(child: Text('Akordy')),
-                SelectorWidget(
-                  onSelected: (index) => widget.controller.showChordsChanged(index == 1),
-                  options: const [Icon(Icons.visibility_off, size: 20), Icon(Icons.visibility, size: 20)],
-                  selected: widget.controller.showChords ? 1 : 0,
-                  width: _settingsOptionsWidth,
-                ),
-              ]),
-              const SizedBox(height: kDefaultPadding / 2),
-            ]),
+    return SafeArea(
+      top: false,
+      child: Wrap(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(kDefaultPadding),
+            child: Text('Nastavení zobrazení', style: Theme.of(context).textTheme.titleLarge),
           ),
-        ),
-        Highlightable(
-          padding: const EdgeInsets.all(kDefaultPadding),
-          child: Text('Resetovat nastavení', style: theme.textTheme.caption),
-          onTap: widget.controller.resetSettings,
-        ),
-      ],
+          SingleChildScrollView(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+              child: Column(children: [
+                Row(children: [const Expanded(child: Text('Transpozice')), _buildTranspositionStepper(context)]),
+                const SizedBox(height: kDefaultPadding / 2),
+                Row(children: [
+                  const Expanded(child: Text('Posuvky')),
+                  SelectorWidget(
+                    onSelected: widget.controller.accidentalsChanged,
+                    options: [
+                      Text('#', style: accidentalsStyle, textAlign: TextAlign.center),
+                      Text('♭', style: accidentalsStyle, textAlign: TextAlign.center)
+                    ],
+                    selected: widget.controller.accidentals,
+                    width: _settingsOptionsWidth,
+                  ),
+                ]),
+                const SizedBox(height: kDefaultPadding / 2),
+                Row(children: [
+                  const Expanded(child: Text('Akordy')),
+                  SelectorWidget(
+                    onSelected: (index) => widget.controller.showChordsChanged(index == 1),
+                    options: const [Icon(Icons.visibility_off, size: 20), Icon(Icons.visibility, size: 20)],
+                    selected: widget.controller.showChords ? 1 : 0,
+                    width: _settingsOptionsWidth,
+                  ),
+                ]),
+                const SizedBox(height: kDefaultPadding / 2),
+              ]),
+            ),
+          ),
+          Highlightable(
+            padding: const EdgeInsets.all(kDefaultPadding),
+            child: Text('Resetovat nastavení', style: theme.textTheme.caption),
+            onTap: widget.controller.resetSettings,
+          ),
+        ],
+      ),
     );
   }
 

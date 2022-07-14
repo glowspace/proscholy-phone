@@ -1,14 +1,9 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/external.dart';
 import 'package:zpevnik/models/song_lyric.dart';
-
-const double _filesHeaderHeight = 48;
-const double _filesHeightPerFile = 48;
 
 class SongLyricFilesWidget extends StatelessWidget {
   final SongLyric songLyric;
@@ -19,22 +14,25 @@ class SongLyricFilesWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final pdfs = songLyric.pdfs;
 
-    return Wrap(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(kDefaultPadding),
-          child: Text('Noty', style: Theme.of(context).textTheme.titleLarge),
-        ),
-        SingleChildScrollView(
-          child: ListView.builder(
-            padding: const EdgeInsets.only(bottom: kDefaultPadding),
-            itemCount: pdfs.length,
-            itemBuilder: (context, index) => _buildFileTile(context, pdfs[index]),
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
+    return SafeArea(
+      top: false,
+      child: Wrap(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(kDefaultPadding),
+            child: Text('Noty', style: Theme.of(context).textTheme.titleLarge),
           ),
-        ),
-      ],
+          SingleChildScrollView(
+            child: ListView.builder(
+              padding: const EdgeInsets.only(bottom: kDefaultPadding),
+              itemCount: pdfs.length,
+              itemBuilder: (context, index) => _buildFileTile(context, pdfs[index]),
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+            ),
+          ),
+        ],
+      ),
     );
   }
 

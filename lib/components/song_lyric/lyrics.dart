@@ -38,6 +38,13 @@ class _LyricsWidgetState extends State<LyricsWidget> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    widget.controller.updateLilypondColor(Theme.of(context).colorScheme.onBackground.hex);
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final width = MediaQuery.of(context).size.width;
@@ -48,7 +55,7 @@ class _LyricsWidgetState extends State<LyricsWidget> {
       controller: widget.scrollController,
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
-        color: theme.colorScheme.surface,
+        color: theme.brightness == Brightness.light ? theme.colorScheme.surface : theme.scaffoldBackgroundColor,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [

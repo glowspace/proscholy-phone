@@ -43,6 +43,9 @@ class MainWidget extends StatelessWidget {
           ),
       colorScheme: ColorScheme.fromSeed(seedColor: blue, brightness: Brightness.dark),
       splashFactory: NoSplash.splashFactory,
+      cupertinoOverrideTheme: const CupertinoThemeData(
+        textTheme: CupertinoTextThemeData(),
+      ),
       useMaterial3: true,
     );
 

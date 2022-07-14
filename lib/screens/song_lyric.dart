@@ -97,7 +97,7 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
       );
 
       bottomBar = BottomAppBar(
-        color: theme.bottomNavigationBarTheme.backgroundColor,
+        color: ElevationOverlay.colorWithOverlay(theme.colorScheme.surface, theme.colorScheme.primary, 3.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [

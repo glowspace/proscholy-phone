@@ -10,39 +10,42 @@ class SongLyricTags extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(kDefaultPadding),
-              child: Text('Štítky', style: Theme.of(context).textTheme.titleLarge),
-            ),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding).copyWith(bottom: kDefaultPadding),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Wrap(
-                    spacing: kDefaultPadding / 2,
-                    runSpacing: kDefaultPadding / 2,
-                    children: songLyric.tags.map((tag) => SongLyricTag(tag: tag)).toList(),
-                  ),
-                  const SizedBox(height: kDefaultPadding / 2),
-                  Wrap(
-                    spacing: kDefaultPadding / 2,
-                    runSpacing: kDefaultPadding / 2,
-                    children: songLyric.songbookRecords
-                        .map((songbookRecord) => SongLyricTag(songbookRecord: songbookRecord))
-                        .toList(),
-                  ),
-                ],
+    return SafeArea(
+      top: false,
+      child: Wrap(
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(kDefaultPadding),
+                child: Text('Štítky', style: Theme.of(context).textTheme.titleLarge),
               ),
-            ),
-          ],
-        ),
-      ],
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding).copyWith(bottom: kDefaultPadding),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Wrap(
+                      spacing: kDefaultPadding / 2,
+                      runSpacing: kDefaultPadding / 2,
+                      children: songLyric.tags.map((tag) => SongLyricTag(tag: tag)).toList(),
+                    ),
+                    const SizedBox(height: kDefaultPadding / 2),
+                    Wrap(
+                      spacing: kDefaultPadding / 2,
+                      runSpacing: kDefaultPadding / 2,
+                      children: songLyric.songbookRecords
+                          .map((songbookRecord) => SongLyricTag(songbookRecord: songbookRecord))
+                          .toList(),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

@@ -53,12 +53,19 @@ class UpdateSection extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     text,
-                    if (state is UpdaterStateError) const SizedBox(height: kDefaultPadding / 2),
+                    if (state is UpdaterStateError || state is UpdaterStateDone)
+                      const SizedBox(height: kDefaultPadding / 2),
                     if (state is UpdaterStateError)
                       Highlightable(
                         onTap: () => launchUrl(
                             Uri.parse('$reportUrl?summary=Chyba při aktualizaci písní&description=${state.error}')),
                         child: Text('Nahlásit chybu', style: textTheme.bodyMedium?.copyWith(color: red)),
+                      ),
+                    if (state is UpdaterStateDone)
+                      Highlightable(
+                        onTap: () => Navigator.of(context).pushNamed('/updated_song_lyrics'),
+                        child:
+                            Text('Zobrazit', style: textTheme.bodyMedium?.copyWith(color: theme.colorScheme.primary)),
                       ),
                   ],
                 ),
@@ -86,12 +93,6 @@ class UpdateSection extends StatelessWidget {
                     ),
                   ),
                 ),
-              ),
-            const SizedBox(height: kDefaultPadding),
-            if (state is UpdaterStateDone)
-              Highlightable(
-                onTap: () => Navigator.of(context).pushNamed('/updated_song_lyrics'),
-                child: Text('Zobrazit', style: textTheme.bodyMedium?.copyWith(color: theme.colorScheme.primary)),
               ),
           ],
         ),

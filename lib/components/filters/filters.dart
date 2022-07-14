@@ -11,15 +11,18 @@ class FiltersWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      controller: PrimaryScrollController.of(context),
-      padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
-      addRepaintBoundaries: false,
-      itemCount: tagsSections.length,
-      itemBuilder: (context, index) => FiltersSection(
-        title: tagsSections[index].title,
-        tags: tagsSections[index].tags,
-        isLast: index == tagsSections.length - 1,
+    return SafeArea(
+      top: false,
+      child: ListView.builder(
+        controller: PrimaryScrollController.of(context),
+        padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
+        addRepaintBoundaries: false,
+        itemCount: tagsSections.length,
+        itemBuilder: (context, index) => FiltersSection(
+          title: tagsSections[index].title,
+          tags: tagsSections[index].tags,
+          isLast: index == tagsSections.length - 1,
+        ),
       ),
     );
   }

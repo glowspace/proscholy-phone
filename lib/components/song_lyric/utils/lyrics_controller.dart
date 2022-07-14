@@ -29,6 +29,17 @@ class LyricsController extends ChangeNotifier {
   String lilypond(String hexColor) {
     if (_lilypond != null) return _lilypond!;
 
+    updateLilypondColor(hexColor);
+
+    return _lilypond!;
+  }
+
+  bool _isProjectionEnabled = false;
+  int _currentlyProjectedVerse = 0;
+  bool get isProjectionEnabled => _isProjectionEnabled;
+  int get currentlyProjectedVerse => _currentlyProjectedVerse;
+
+  void updateLilypondColor(String hexColor) {
     _lilypond = (songLyric.lilypond ?? '')
         .replaceAll(_styleRE, '')
         .replaceAll('currentColor', hexColor)
@@ -38,14 +49,7 @@ class LyricsController extends ChangeNotifier {
 
       return '';
     });
-
-    return _lilypond!;
   }
-
-  bool _isProjectionEnabled = false;
-  int _currentlyProjectedVerse = 0;
-  bool get isProjectionEnabled => _isProjectionEnabled;
-  int get currentlyProjectedVerse => _currentlyProjectedVerse;
 
   void toggleisProjectionEnabled() {
     _isProjectionEnabled = !_isProjectionEnabled;
