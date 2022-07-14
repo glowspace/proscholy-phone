@@ -16,6 +16,8 @@ class NewsSection extends StatefulWidget {
 }
 
 class _NewsSectionState extends State<NewsSection> {
+  final _pageController = PageController(initialPage: 0);
+
   int _currentIndex = 0;
 
   @override
@@ -25,7 +27,7 @@ class _NewsSectionState extends State<NewsSection> {
     final newsItems = context.watch<DataProvider>().newsItems;
 
     return Section(
-      padding: const EdgeInsets.all(kDefaultPadding),
+      padding: const EdgeInsets.all(kDefaultPadding).copyWith(bottom: kDefaultPadding / 2),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -43,6 +45,7 @@ class _NewsSectionState extends State<NewsSection> {
             SizedBox(
               height: _newsItemHeight,
               child: PageView.builder(
+                controller: _pageController,
                 onPageChanged: (index) => setState(() => _currentIndex = index),
                 itemCount: newsItems.length,
                 itemBuilder: (_, index) => Highlightable(
@@ -52,12 +55,17 @@ class _NewsSectionState extends State<NewsSection> {
               ),
             ),
           if (newsItems.isNotEmpty)
-            Container(
-              padding: const EdgeInsets.only(top: kDefaultPadding / 2),
-              child: Row(
-                children: List.generate(
-                  newsItems.length,
-                  (index) => Container(
+            Row(
+              children: List.generate(
+                newsItems.length,
+                (index) => Highlightable(
+                  onTap: () => _pageController.animateToPage(
+                    index,
+                    duration: kDefaultAnimationDuration,
+                    curve: Curves.easeInOut,
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
+                  child: Container(
                     margin: const EdgeInsets.only(right: 4),
                     width: 24,
                     height: 2,
