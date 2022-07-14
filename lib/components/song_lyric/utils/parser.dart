@@ -115,6 +115,8 @@ class _FilledTokensBuilder {
   VerseNumber? currentVerseNumber;
 
   List<Token> _fillSubstitutes(List<Token> tokens) {
+    log(tokens.toString());
+
     if (tokens.isEmpty) return [];
 
     // log(songLyric.lyrics);
@@ -170,7 +172,7 @@ class _FilledTokensBuilder {
 
         currentVerseNumber!._verseHasChord = true;
 
-        _fillToken(chordSubstitutes[token.index]);
+        if (token.index < chordSubstitutes.length) _fillToken(chordSubstitutes[token.index]);
       } else if (token is Comment) {
         // checks if comment is last part of verse, if so, it will first end the verse and then start the comment
         final index = _commentIsInVerseEnd(i, tokens);
