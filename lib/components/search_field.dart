@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/utils/extensions.dart';
 
 class SearchField extends StatefulWidget {
   final bool isInsideSearchScreen;
@@ -51,7 +52,9 @@ class _SearchFieldState extends State<SearchField> {
           decoration: InputDecoration(
             hintText: 'Hledat název, číslo nebo část textu',
             filled: true,
-            fillColor: theme.colorScheme.surface,
+            fillColor: theme.brightness.isLight && widget.isInsideSearchScreen
+                ? theme.scaffoldBackgroundColor
+                : theme.colorScheme.surface,
             isDense: true,
             border: OutlineInputBorder(
               borderSide: BorderSide.none,

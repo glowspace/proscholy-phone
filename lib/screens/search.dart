@@ -7,6 +7,7 @@ import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
 import 'package:zpevnik/routes/arguments/search.dart';
 import 'package:zpevnik/routes/arguments/song_lyric.dart';
+import 'package:zpevnik/utils/extensions.dart';
 
 class SearchScreen extends StatelessWidget {
   const SearchScreen({Key? key}) : super(key: key);
@@ -29,6 +30,7 @@ class SearchScreen extends StatelessWidget {
     }
 
     return Scaffold(
+      backgroundColor: theme.brightness.isLight ? theme.colorScheme.surface : null,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
