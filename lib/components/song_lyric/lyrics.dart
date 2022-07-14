@@ -219,7 +219,7 @@ class _LyricsWidgetState extends State<LyricsWidget> {
     final fontSizeScale = context.select<SettingsProvider, double>((provider) => provider.fontSizeScale);
 
     final showChords = hasChords && widget.controller.showChords;
-    final textStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
+    final textStyle = Theme.of(context).textTheme.caption?.copyWith(
           fontStyle: FontStyle.italic,
           height: showChords ? 2.5 : 1.5,
         );
