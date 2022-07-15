@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/components/song_lyric/utils/converter.dart';
 
+final _numberRE = RegExp(r'^\d+[\.:]?$');
+
 abstract class Token {}
 
 class Comment extends Token {
@@ -76,6 +78,8 @@ class VerseNumber extends Token {
   bool _verseHasChord = false;
 
   bool get verseHasChord => _verseHasChord;
+
+  bool get shouldUseChordsForSubstitutes => _numberRE.hasMatch(value);
 
   @override
   String toString() => 'VerseNumber($value)';
@@ -164,7 +168,8 @@ class _FilledTokensBuilder {
         if (!isInsideInterlude) _fillEmptyVerseNumber();
 
         currentVerseNumber?._verseHasChord = true;
-        chordSubstitutes.add(token);
+
+        if (currentVerseNumber?.shouldUseChordsForSubstitutes ?? false) chordSubstitutes.add(token);
 
         _fillToken(token);
       } else if (token is ChordSubstitute) {
