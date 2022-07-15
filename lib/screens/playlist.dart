@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 // import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 // import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:zpevnik/components/bottom_navigation_bar.dart';
 import 'package:zpevnik/components/custom/back_button.dart';
 import 'package:zpevnik/components/highlightable.dart';
 // import 'package:zpevnik/components/playlist/action_button.dart';
@@ -62,18 +63,11 @@ class PlaylistScreen extends StatelessWidget {
         title: Text(playlist.name, style: Theme.of(context).textTheme.titleMedium),
         centerTitle: false,
         actions: [
-          Highlightable(
-            onTap: () => Navigator.of(context).pushNamed(
-              '/search',
-              arguments: SearchScreenArguments(playlist: playlist),
-            ),
-            padding: const EdgeInsets.all(kDefaultPadding),
-            child: const Icon(Icons.search),
-          ),
           if (!playlist.isFavorites) PlaylistButton(playlist: playlist, isInAppBar: true, extendPadding: true),
         ],
       ),
       floatingActionButton: floatingActionButton,
+      bottomNavigationBar: CustomBottomNavigationBar(playlist: playlist),
       body: SafeArea(
         child: ChangeNotifierProxyProvider<DataProvider, PlaylistSongLyricsProvider>(
           create: (context) => PlaylistSongLyricsProvider(dataProvider, playlist),

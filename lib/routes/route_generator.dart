@@ -10,7 +10,7 @@ import 'package:zpevnik/providers/song_lyrics.dart';
 import 'package:zpevnik/routes/arguments/search.dart';
 import 'package:zpevnik/routes/arguments/song_lyric.dart';
 import 'package:zpevnik/screens/about.dart';
-import 'package:zpevnik/screens/content.dart';
+import 'package:zpevnik/screens/home.dart';
 import 'package:zpevnik/screens/initial.dart';
 import 'package:zpevnik/screens/pdf.dart';
 import 'package:zpevnik/screens/playlist.dart';
@@ -31,7 +31,7 @@ class RouteGenerator {
       case '/about':
         return MaterialPageRoute(settings: settings, builder: (_) => const AboutScreen());
       case '/home':
-        return MaterialPageRoute(settings: settings, builder: (_) => const ContentScreen());
+        return MaterialPageRoute(settings: settings, builder: (_) => const HomeScreen());
       case '/pdf':
         final pdf = settings.arguments as External;
 

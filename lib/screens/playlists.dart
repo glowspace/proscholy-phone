@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zpevnik/components/bottom_navigation_bar.dart';
 import 'package:zpevnik/components/custom/back_button.dart';
 import 'package:zpevnik/components/playlist/playlists_list_view.dart';
 import 'package:zpevnik/components/playlist/dialogs.dart';
@@ -19,6 +20,7 @@ class PlaylistsScreen extends StatelessWidget {
         child: const Icon(Icons.add),
         onPressed: () => showPlaylistDialog(context),
       ),
+      bottomNavigationBar: const CustomBottomNavigationBar(),
       body: const SafeArea(child: PlaylistsListView()),
     );
   }

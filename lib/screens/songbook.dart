@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:zpevnik/components/bottom_navigation_bar.dart';
 import 'package:zpevnik/components/custom/back_button.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/search_field.dart';
@@ -25,17 +26,8 @@ class SongbookScreen extends StatelessWidget {
         leading: const CustomBackButton(),
         title: Text(songbook.name, style: Theme.of(context).textTheme.titleMedium),
         centerTitle: false,
-        actions: [
-          Highlightable(
-            onTap: () => Navigator.of(context).pushNamed(
-              '/search',
-              arguments: SearchScreenArguments(songbook: songbook),
-            ),
-            padding: const EdgeInsets.all(kDefaultPadding),
-            child: const Icon(Icons.search),
-          ),
-        ],
       ),
+      bottomNavigationBar: CustomBottomNavigationBar(songbook: songbook),
       body: SafeArea(
         child: ChangeNotifierProxyProvider<DataProvider, SongbookSongLyricsProvider>(
           create: (context) => SongbookSongLyricsProvider(dataProvider, songbook),
