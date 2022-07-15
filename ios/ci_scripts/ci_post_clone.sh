@@ -1,24 +1,22 @@
 #!/bin/sh
 
-# by default, the execution directory of this script is the ci_scripts directory
-# CI_WORKSPACE is the directory of your cloned repo
-echo "🟩 Navigate from ($PWD) to ($CI_WORKSPACE)"
-cd $CI_WORKSPACE
+# The default execution directory of this script is the ci_scripts directory.
+cd $CI_WORKSPACE # change working directory to the root of your cloned repo.
 
-echo "🟩 Install Flutter"
-time git clone https://github.com/flutter/flutter.git -b stable $HOME/flutter
+# Install Flutter using git.
+git clone https://github.com/flutter/flutter.git -b stable $HOME/flutter
 export PATH="$PATH:$HOME/flutter/bin"
 
-echo "🟩 Flutter Precache"
-time flutter precache --ios
+# Install Flutter artifacts for iOS (--ios), or macOS (--macos) platforms.
+flutter precache --ios
 
-echo "🟩 Install Flutter Dependencies"
-time flutter pub get
+# Install Flutter dependencies.
+flutter pub get
 
-echo "🟩 Install CocoaPods via Homebrew"
-time HOMEBREW_NO_AUTO_UPDATE=1 brew install cocoapods
+# Install CocoaPods using Homebrew.
+brew install cocoapods
 
-echo "🟩 Install CocoaPods dependencies..."
-time cd ios && pod install
+# Install CocoaPods dependencies.
+cd ios && pod install # run `pod install` in the `ios` directory.
 
 exit 0
