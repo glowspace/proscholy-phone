@@ -119,8 +119,6 @@ class _FilledTokensBuilder {
   VerseNumber? currentVerseNumber;
 
   List<Token> _fillSubstitutes(List<Token> tokens) {
-    log(tokens.toString());
-
     if (tokens.isEmpty) return [];
 
     // log(songLyric.lyrics);

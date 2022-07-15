@@ -59,7 +59,7 @@ class PlaylistScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: const CustomBackButton(),
-        title: Text(playlist.name),
+        title: Text(playlist.name, style: Theme.of(context).textTheme.titleMedium),
         centerTitle: false,
         actions: [
           Highlightable(

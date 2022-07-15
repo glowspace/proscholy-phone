@@ -19,7 +19,11 @@ class AboutScreen extends StatelessWidget {
     final linkOpener = TapGestureRecognizer()..onTap = () => launchUrl(Uri.parse(proscholyUrl));
 
     return Scaffold(
-      appBar: AppBar(leading: const CustomBackButton(), title: const Text('O projektu')),
+      appBar: AppBar(
+        leading: const CustomBackButton(),
+        title: Text('O projektu', style: Theme.of(context).textTheme.titleMedium),
+        centerTitle: false,
+      ),
       body: SafeArea(
         child: Container(
           padding: const EdgeInsets.all(kDefaultPadding),

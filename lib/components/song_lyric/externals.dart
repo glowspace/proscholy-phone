@@ -65,53 +65,56 @@ class _ExternalsWidgetState extends State<ExternalsWidget> {
 
     final width = MediaQuery.of(context).size.width;
 
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        Opacity(
-          // opacity can't be zero, otherwise player will be disposed and will stop plaing
-          opacity: min(1, widget.percentage + 0.01),
-          child: Transform.translate(
-            // because opacity can't be zero, translate it out of screen, so it won't be visible
-            offset: Offset(0, widget.percentage == 0 ? 100 : 0),
-            child: Container(
-              padding: const EdgeInsets.only(top: kDefaultPadding),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-                    margin: const EdgeInsets.only(bottom: kDefaultPadding),
-                    child: Text('Nahrávky', style: Theme.of(context).textTheme.titleLarge),
-                  ),
-                  CustomFutureBuilder<void>(
-                    future: _initFuture,
-                    errorBuilder: (_, __) => Container(
+    return SafeArea(
+      top: false,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          Opacity(
+            // opacity can't be zero, otherwise player will be disposed and will stop plaing
+            opacity: min(1, widget.percentage + 0.01),
+            child: Transform.translate(
+              // because opacity can't be zero, translate it out of screen, so it won't be visible
+              offset: Offset(0, widget.percentage == 0 ? 100 : 0),
+              child: Container(
+                padding: const EdgeInsets.only(top: kDefaultPadding),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
                       padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-                      child: const Text(_noInternetMessage, textAlign: TextAlign.center),
+                      margin: const EdgeInsets.only(bottom: kDefaultPadding),
+                      child: Text('Nahrávky', style: Theme.of(context).textTheme.titleLarge),
                     ),
-                    builder: (_, __) => Expanded(
-                      child: Container(
+                    CustomFutureBuilder<void>(
+                      future: _initFuture,
+                      errorBuilder: (_, __) => Container(
                         padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-                        child: AlignedGridView.count(
-                          crossAxisCount: (width / _youtubePlayerMaxWidth).floor(),
-                          crossAxisSpacing: kDefaultPadding,
-                          mainAxisSpacing: kDefaultPadding,
-                          padding: const EdgeInsets.only(bottom: kDefaultPadding),
-                          itemCount: _controllers.length,
-                          itemBuilder: (context, index) => _buildSection(context, _controllers[index]),
-                          primary: false,
+                        child: const Text(_noInternetMessage, textAlign: TextAlign.center),
+                      ),
+                      builder: (_, __) => Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+                          child: AlignedGridView.count(
+                            crossAxisCount: (width / _youtubePlayerMaxWidth).floor(),
+                            crossAxisSpacing: kDefaultPadding,
+                            mainAxisSpacing: kDefaultPadding,
+                            padding: const EdgeInsets.only(bottom: kDefaultPadding),
+                            itemCount: _controllers.length,
+                            itemBuilder: (context, index) => _buildSection(context, _controllers[index]),
+                            primary: false,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-        if (_activePlayerController != null) _buildCollapsedPlayer(context),
-      ],
+          if (_activePlayerController != null) _buildCollapsedPlayer(context),
+        ],
+      ),
     );
   }
 

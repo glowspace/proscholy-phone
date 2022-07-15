@@ -7,8 +7,9 @@ import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/components/filters/filter_tag.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
 import 'package:zpevnik/components/filters/filters.dart';
+import 'package:zpevnik/utils/extensions.dart';
 
-const double _addFilterRadius = 10;
+const double _addFilterRadius = 7;
 
 class FiltersRow extends StatelessWidget {
   const FiltersRow({Key? key}) : super(key: key);
@@ -19,10 +20,12 @@ class FiltersRow extends StatelessWidget {
 
     final selectedTags = context.watch<AllSongLyricsProvider>().selectedTags;
 
+    final addFilterButtonColor = theme.brightness.isLight ? const Color(0xff848484) : const Color(0xff7b7b7b);
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Icon(Icons.filter_alt),
+        Icon(Icons.filter_alt, color: theme.brightness.isLight ? const Color(0xff50555c) : const Color(0xffafaaa3)),
         const SizedBox(width: kDefaultPadding / 2),
         Expanded(
           child: SingleChildScrollView(
@@ -34,7 +37,7 @@ class FiltersRow extends StatelessWidget {
                 padding: const EdgeInsets.only(right: kDefaultPadding),
                 child: DottedBorder(
                   dashPattern: const [7, 3],
-                  color: theme.hintColor,
+                  color: addFilterButtonColor,
                   borderType: BorderType.RRect,
                   radius: const Radius.circular(_addFilterRadius),
                   padding: EdgeInsets.zero,
@@ -42,15 +45,15 @@ class FiltersRow extends StatelessWidget {
                     borderRadius: BorderRadius.circular(_addFilterRadius),
                     child: Highlightable(
                       padding: const EdgeInsets.symmetric(
-                        vertical: kDefaultPadding / 4,
+                        vertical: kDefaultPadding / 2,
                         horizontal: kDefaultPadding / 2,
                       ),
                       highlightBackground: true,
                       onTap: () => _showFilters(context),
                       child: Row(children: [
-                        Icon(Icons.add, size: 12, color: theme.hintColor),
+                        Icon(Icons.add, size: 12, color: addFilterButtonColor),
                         const SizedBox(width: kDefaultPadding / 4),
-                        Text('Přidat filtr', style: theme.textTheme.labelMedium),
+                        Text('Přidat filtr', style: theme.textTheme.labelMedium?.copyWith(color: addFilterButtonColor)),
                       ]),
                     ),
                   ),

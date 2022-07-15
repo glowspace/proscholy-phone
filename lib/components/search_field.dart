@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
 class SearchFieldTransitionWidget extends AnimatedWidget {
@@ -30,6 +31,8 @@ class SearchFieldTransitionWidget extends AnimatedWidget {
               child: TextField(
                 decoration: InputDecoration(
                   hintText: 'Název, číslo nebo část textu',
+                  hintStyle: theme.textTheme.titleMedium
+                      ?.copyWith(color: theme.brightness.isLight ? lightIconColor : darkIconColor),
                   filled: true,
                   fillColor: fillColor,
                   isDense: true,
@@ -100,7 +103,7 @@ class _SearchFieldState extends State<SearchField> {
     if (widget.isInsideSearchScreen) {
       suffixIcon = Highlightable(
         padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-        child: const Icon(Icons.clear),
+        child: Icon(Icons.clear, color: theme.iconTheme.color),
         onTap: _clearOrPop,
       );
     }
@@ -120,6 +123,8 @@ class _SearchFieldState extends State<SearchField> {
                   builder: (_, value, __) => TextField(
                     decoration: InputDecoration(
                       hintText: 'Název, číslo nebo část textu',
+                      hintStyle: theme.textTheme.titleMedium
+                          ?.copyWith(color: theme.brightness.isLight ? lightIconColor : darkIconColor),
                       filled: true,
                       fillColor: theme.brightness.isLight && widget.isInsideSearchScreen
                           ? theme.scaffoldBackgroundColor
@@ -131,7 +136,7 @@ class _SearchFieldState extends State<SearchField> {
                       ),
                       prefixIcon: Container(
                         padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-                        child: const Icon(Icons.search),
+                        child: Icon(Icons.search, color: theme.iconTheme.color),
                       ),
                       prefixIconConstraints: const BoxConstraints(),
                       suffixIcon: value.text.isEmpty ? null : suffixIcon,

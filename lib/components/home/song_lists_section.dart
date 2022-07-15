@@ -6,6 +6,8 @@ import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/playlist/playlist_row.dart';
 import 'package:zpevnik/components/section.dart';
 import 'package:zpevnik/providers/data.dart';
+import 'package:zpevnik/theme.dart';
+import 'package:zpevnik/utils/extensions.dart';
 
 const double _navigateNextIconSize = 20;
 
@@ -33,7 +35,12 @@ class SongListsSection extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('Všechny seznamy', style: Theme.of(context).textTheme.bodySmall),
+            Text('Všechny seznamy',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Theme.of(context).brightness.isLight ? lightTextColor : darkTextColor,
+                  fontWeight: FontWeight.w500,
+                )),
             const Icon(Icons.navigate_next, size: _navigateNextIconSize),
           ],
         ),

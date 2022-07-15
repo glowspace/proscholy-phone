@@ -11,7 +11,7 @@ class PlaylistsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: const CustomBackButton(),
-        title: const Text('Moje seznamy'),
+        title: Text('Moje seznamy', style: Theme.of(context).textTheme.titleMedium),
         centerTitle: false,
       ),
       floatingActionButton: FloatingActionButton(

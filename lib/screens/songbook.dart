@@ -23,7 +23,8 @@ class SongbookScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: const CustomBackButton(),
-        title: Text(songbook.name),
+        title: Text(songbook.name, style: Theme.of(context).textTheme.titleMedium),
+        centerTitle: false,
         actions: [
           Highlightable(
             onTap: () => Navigator.of(context).pushNamed(

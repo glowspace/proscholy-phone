@@ -37,8 +37,12 @@ class SongLyricRow extends StatelessWidget {
       highlightBackground: true,
       highlightableChildKeys: [dragIndicatorKey],
       onTap: () => _pushSongLyric(context),
-      padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 3, horizontal: kDefaultPadding)
-          .copyWith(left: isReorderable ? 0 : kDefaultPadding),
+      padding: EdgeInsets.fromLTRB(
+        isReorderable ? 0 : 1.5 * kDefaultPadding,
+        kDefaultPadding / 3,
+        1.5 * kDefaultPadding,
+        kDefaultPadding / 3,
+      ),
       child: Container(
         constraints: const BoxConstraints(minHeight: _minSize),
         child: Row(

@@ -24,7 +24,7 @@ class TranslationsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: const CustomBackButton(),
-        title: const Text('Překlady'),
+        title: Text('Překlady', style: Theme.of(context).textTheme.titleMedium),
         centerTitle: false,
       ),
       body: SafeArea(
@@ -68,7 +68,7 @@ class TranslationsScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+            padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
             child: Text(songLyricType.description, style: textStyle),
           ),
           ...songLyrics.map((songLyric) => SongLyricRow(songLyric: songLyric)),
