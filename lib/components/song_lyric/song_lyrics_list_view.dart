@@ -61,6 +61,8 @@ class SongLyricsListView<T extends SongLyricsProvider> extends StatelessWidget {
       listViewKey = Key(songLyricsProvider.searchText);
     }
 
+    final _needsTopPadding = listItems.isEmpty;
+
     listItems.addAll(_songLyricRowBuilders(songLyricsProvider.songLyrics,
         isReorderable: songLyricsProvider is PlaylistSongLyricsProvider));
 
@@ -105,7 +107,7 @@ class SongLyricsListView<T extends SongLyricsProvider> extends StatelessWidget {
     return ListView.builder(
       key: listViewKey,
       primary: false,
-      padding: const EdgeInsets.only(bottom: 2 * kDefaultPadding),
+      padding: EdgeInsets.only(top: _needsTopPadding ? kDefaultPadding / 2 : 0, bottom: 2 * kDefaultPadding),
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       itemCount: listItems.length,
       itemBuilder: (context, index) => listItems[index](context),

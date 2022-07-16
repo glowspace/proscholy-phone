@@ -23,23 +23,9 @@ const _initialLastUpdate = '2022-07-05 00:00:00';
 
 const _updatePeriod = Duration(hours: 1);
 
-const updateAnimationDuration = Duration(milliseconds: 1200);
-
 abstract class UpdaterState {}
 
-class UpdaterStateLoading extends UpdaterState {}
-
-class UpdaterStateUpdating extends UpdaterState {
-  final int current;
-  final int count;
-
-  UpdaterStateUpdating(this.current, this.count);
-
-  UpdaterState get next => UpdaterStateUpdating(current + 1, count);
-
-  @override
-  String toString() => '$current/$count';
-}
+class UpdaterStateUpdating extends UpdaterState {}
 
 class UpdaterStateIdle extends UpdaterState {}
 
@@ -62,8 +48,6 @@ class Updater {
 
   final ValueNotifier<UpdaterState> state = ValueNotifier(UpdaterStateIdle());
   int updatingSongLyricsCount = 0;
-
-  bool get isUpdating => state.value is! UpdaterStateIdle;
 
   Future<void> loadInitial() async {
     // TODO: remove json file after loading
@@ -99,7 +83,7 @@ class Updater {
       return [];
     }
 
-    state.value = UpdaterStateLoading();
+    state.value = UpdaterStateUpdating();
 
     // load updated data from server
     final data = await client.getData();
@@ -117,9 +101,7 @@ class Updater {
     for (final songLyric in data['song_lyrics']) {
       final id = int.parse(songLyric['id']);
 
-      if (!existingSongLyricsIds.contains(id) || _dateFormat.parse(songLyric['updated_at']).isAfter(lastUpdate)) {
-        songLyricsIds.add(id);
-      }
+      if (!existingSongLyricsIds.contains(id)) songLyricsIds.add(id);
 
       existingSongLyricsIds.remove(id);
     }
@@ -127,33 +109,17 @@ class Updater {
     // remove song lyrics that were removed on server
     box.removeMany(existingSongLyricsIds.toList());
 
-    if (songLyricsIds.isEmpty) {
-      state.value = UpdaterStateIdle();
-
-      client.dispose();
-
-      prefs.setString(_lastUpdateKey, _dateFormat.format(now));
-
-      return [];
-    }
-
-    state.value = UpdaterStateUpdating(0, songLyricsIds.length);
-
-    // fetch updated song lyrics asynchronously
+    // fetch missing song lyrics asynchronously
     final List<Future<SongLyric>> futures = [];
 
     for (final songLyricId in songLyricsIds) {
-      futures.add(client.getSongLyric(songLyricId).then((json) {
-        state.value = (state.value as UpdaterStateUpdating).next;
-
-        return SongLyric.fromJson(json, store);
-      }));
+      futures.add(client.getSongLyric(songLyricId).then((json) => SongLyric.fromJson(json, store)));
     }
 
     try {
       final songLyrics = await Future.wait(futures);
 
-      await Future.delayed(updateAnimationDuration + const Duration(milliseconds: 100));
+      songLyrics.addAll(SongLyric.fromMapList(await client.getSongLyrics(lastUpdate), store));
 
       state.value = UpdaterStateDone(songLyrics.length);
 

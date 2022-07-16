@@ -13,7 +13,8 @@ class UpdatedSongLyricsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: const CustomBackButton(),
-        title: const Text('Naposledy aktualizované'),
+        title: Text('Naposledy aktualizované', style: Theme.of(context).textTheme.titleMedium),
+        centerTitle: false,
       ),
       body: SafeArea(
         child: ChangeNotifierProvider(

@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:pool/pool.dart';
 
-const _poolSize = 5;
+final _dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
 
 final _url = Uri.https('zpevnik.proscholy.cz', 'graphql');
 
@@ -37,7 +39,6 @@ query {
   }
   song_lyrics {
     id
-    updated_at
   }
   tags_enum {
     id
@@ -47,6 +48,54 @@ query {
 }''';
 
 const _idPlaceholder = '[ID]';
+const _updatedAfterPlaceholder = '[UPDATED_AFTER]';
+
+const _songLyricsQuery = '''
+query {
+  song_lyrics(updated_after: $_updatedAfterPlaceholder) {
+    id
+    name
+    secondary_name_1
+    secondary_name_2
+    lyrics
+    lilypond_svg
+    lang
+    lang_string
+    type_enum
+    has_chords
+    song {
+      id
+    }
+    songbook_records {
+      pivot {
+        id
+        number
+        songbook {
+          id
+        }
+      }
+    }
+    externals {
+      id
+      public_name
+      media_id
+      media_type
+      authors {
+        id
+      }
+    }
+    authors_pivot {
+      pivot {
+        author {
+          id
+        }
+      }
+    }
+    tags {
+      id
+    }
+  }
+}''';
 
 const _songLyricQuery = '''
 query {
@@ -97,16 +146,13 @@ query {
 
 class Client {
   final http.Client client;
-  final Pool pool;
 
-  Client()
-      : client = http.Client(),
-        pool = Pool(_poolSize);
+  Client() : client = http.Client();
 
   Future<Map<String, dynamic>> getNews() async {
     final body = {'query': _newsQuery};
 
-    final response = await pool.withResource(() => client.post(_url, body: body));
+    final response = await client.post(_url, body: body);
 
     return jsonDecode(response.body)['data'];
   }
@@ -114,7 +160,17 @@ class Client {
   Future<Map<String, dynamic>> getData() async {
     final body = {'query': _updateQuery};
 
-    final response = await pool.withResource(() => client.post(_url, body: body));
+    final response = await client.post(_url, body: body);
+
+    return jsonDecode(response.body)['data'];
+  }
+
+  Future<Map<String, dynamic>> getSongLyrics(DateTime updatedAfter) async {
+    final body = {
+      'query': _songLyricsQuery.replaceFirst(_updatedAfterPlaceholder, '"${_dateFormat.format(updatedAfter)}"')
+    };
+
+    final response = await client.post(_url, body: body);
 
     return jsonDecode(response.body)['data'];
   }
@@ -122,13 +178,12 @@ class Client {
   Future<Map<String, dynamic>> getSongLyric(int id) async {
     final body = {'query': _songLyricQuery.replaceFirst(_idPlaceholder, '$id')};
 
-    final response = await pool.withResource(() => client.post(_url, body: body));
+    final response = await client.post(_url, body: body);
 
     return jsonDecode(response.body)['data']['song_lyric'];
   }
 
   void dispose() {
     client.close();
-    pool.close();
   }
 }

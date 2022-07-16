@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/section.dart';
-import 'package:zpevnik/components/song_lyric/song_lyric_row.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/links.dart';
 import 'package:zpevnik/providers/data.dart';
@@ -18,7 +17,7 @@ class UpdateSection extends StatelessWidget {
 
     return ValueListenableBuilder<UpdaterState>(
       valueListenable: updater.state,
-      builder: (context, value, __) => updater.isUpdating ? _buildUpdateInfo(context, value) : Container(),
+      builder: (context, state, __) => _shouldDisplay(state) ? _buildUpdateInfo(context, state) : Container(),
     );
   }
 
@@ -28,10 +27,8 @@ class UpdateSection extends StatelessWidget {
 
     final Text text;
 
-    if (state is UpdaterStateLoading) {
+    if (state is UpdaterStateUpdating) {
       text = Text('Probíhá stahování písní', style: textTheme.bodyMedium);
-    } else if (state is UpdaterStateUpdating) {
-      text = Text('Probíhá stahování písní ($state)', style: textTheme.bodyMedium);
     } else if (state is UpdaterStateDone) {
       text = Text('Počet aktualizovaných písní: ${state.updatedCount}', style: textTheme.bodyMedium);
     } else if (state is UpdaterStateError) {
@@ -79,24 +76,14 @@ class UpdateSection extends StatelessWidget {
             if (state is UpdaterStateUpdating)
               Container(
                 padding: const EdgeInsets.only(top: kDefaultPadding / 2),
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(kDefaultRadius)),
-                child: AnimatedSize(
-                  alignment: Alignment.centerLeft,
-                  curve: Curves.easeInOut,
-                  duration: updateAnimationDuration,
-                  child: Container(
-                    width: state.current / state.count * (MediaQuery.of(context).size.width - 4 * kDefaultPadding),
-                    height: 4,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(kDefaultRadius),
-                      color: theme.colorScheme.primary,
-                    ),
-                  ),
-                ),
+                child: const LinearProgressIndicator(),
               ),
           ],
         ),
       ),
     );
   }
+
+  bool _shouldDisplay(UpdaterState state) =>
+      state is! UpdaterStateIdle && (state is! UpdaterStateDone || state.updatedCount > 0);
 }
