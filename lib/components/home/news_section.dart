@@ -40,7 +40,10 @@ class _NewsSectionState extends State<NewsSection> {
           ),
           const SizedBox(height: kDefaultPadding),
           if (newsItems.isEmpty)
-            Text('Žádné novinky', style: textTheme.bodyMedium)
+            Container(
+              padding: const EdgeInsets.only(bottom: kDefaultPadding / 2),
+              child: Text('Žádné novinky', style: textTheme.bodyMedium),
+            )
           else
             SizedBox(
               height: _newsItemHeight,

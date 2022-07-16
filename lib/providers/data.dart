@@ -179,6 +179,8 @@ class DataProvider extends ChangeNotifier {
         // ignore: empty_catches
       } catch (e) {}
     }
+
+    notifyListeners();
   }
 
   void _addLanguagesToTags() {
