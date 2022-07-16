@@ -18,6 +18,7 @@ import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/components/song_lyric/utils/lyrics_controller.dart';
 import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/providers/settings.dart';
+import 'package:zpevnik/utils/extensions.dart';
 
 const double _externalsTitleHeight = 2 * kDefaultPadding + 21;
 const double _externalsNameHeight = 2 * kDefaultPadding + 18;
@@ -73,8 +74,17 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
     AppBar? appBar;
     Widget? bottomBar;
 
+    final backgroundColor = theme.brightness.isLight ? theme.colorScheme.surface : theme.scaffoldBackgroundColor;
+    final borderColor = theme.brightness.isLight ? const Color(0xffd0d0d0) : const Color(0xff2f2f2f);
+
     if (!_fullscreen) {
       appBar = AppBar(
+        backgroundColor: backgroundColor,
+        elevation: 0,
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1.0),
+          child: Container(color: borderColor, height: 1.0),
+        ),
         title: Text('${_songLyric.id}', style: theme.textTheme.titleMedium),
         centerTitle: false,
         leading: const CustomBackButton(),
@@ -96,41 +106,45 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
         ],
       );
 
-      bottomBar = BottomAppBar(
-        color: ElevationOverlay.colorWithOverlay(theme.colorScheme.surface, theme.colorScheme.primary, 3.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Highlightable(
-              padding: const EdgeInsets.all(kDefaultPadding),
-              onTap: () => _showingExternals.value = true,
-              isDisabled: !_songLyric.hasRecordings,
-              child: const Icon(FontAwesomeIcons.headphones),
-            ),
-            Highlightable(
-              padding: const EdgeInsets.all(kDefaultPadding),
-              onTap: () => _showFiles(context),
-              isDisabled: !_songLyric.hasFiles,
-              child: const Icon(Icons.insert_drive_file),
-            ),
-            Highlightable(
-              padding: const EdgeInsets.all(kDefaultPadding),
-              onTap: () => _showSettings(context),
-              isDisabled: !_songLyric.hasChords,
-              child: const Icon(Icons.tune),
-            ),
-            Highlightable(
-              padding: const EdgeInsets.all(kDefaultPadding),
-              onTap: () => _showTags(context),
-              isDisabled: !(_songLyric.tags.isNotEmpty || _songLyric.songbookRecords.isNotEmpty),
-              child: const FaIcon(FontAwesomeIcons.tag),
-            ),
-            Highlightable(
-              padding: const EdgeInsets.all(kDefaultPadding),
-              onTap: () => _popOrPushSearch(context),
-              child: const Icon(Icons.search),
-            ),
-          ],
+      bottomBar = Container(
+        decoration: BoxDecoration(border: Border(top: BorderSide(color: borderColor, width: 1))),
+        child: BottomAppBar(
+          color: backgroundColor,
+          elevation: 0,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Highlightable(
+                padding: const EdgeInsets.all(kDefaultPadding),
+                onTap: () => _showingExternals.value = true,
+                isDisabled: !_songLyric.hasRecordings,
+                child: const Icon(FontAwesomeIcons.headphones),
+              ),
+              Highlightable(
+                padding: const EdgeInsets.all(kDefaultPadding),
+                onTap: () => _showFiles(context),
+                isDisabled: !_songLyric.hasFiles,
+                child: const Icon(Icons.insert_drive_file),
+              ),
+              Highlightable(
+                padding: const EdgeInsets.all(kDefaultPadding),
+                onTap: () => _showSettings(context),
+                isDisabled: !_songLyric.hasChords,
+                child: const Icon(Icons.tune),
+              ),
+              Highlightable(
+                padding: const EdgeInsets.all(kDefaultPadding),
+                onTap: () => _showTags(context),
+                isDisabled: !(_songLyric.tags.isNotEmpty || _songLyric.songbookRecords.isNotEmpty),
+                child: const FaIcon(FontAwesomeIcons.tag),
+              ),
+              Highlightable(
+                padding: const EdgeInsets.all(kDefaultPadding),
+                onTap: () => _popOrPushSearch(context),
+                child: const Icon(Icons.search),
+              ),
+            ],
+          ),
         ),
       );
     }
@@ -139,6 +153,7 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
       children: [
         Scaffold(
           appBar: appBar,
+          backgroundColor: backgroundColor,
           body: SafeArea(
             child: GestureDetector(
               onScaleStart: settingsProvider.fontScaleStarted,

@@ -55,7 +55,6 @@ class _LyricsWidgetState extends State<LyricsWidget> {
       controller: widget.scrollController,
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
-        color: theme.brightness == Brightness.light ? theme.colorScheme.surface : theme.scaffoldBackgroundColor,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [

@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:zpevnik/constants.dart';
 
+const Color lightBackgroundColor = Color(0xffe5e5e5);
+const Color darkBackgroundColor = Color(0xff000000);
+
 const Color lightTitleColor = Color(0xff3d3636);
 const Color darkTitleColor = Color(0xffc2c9c9);
 
@@ -25,10 +28,10 @@ class AppTheme {
     final iconTheme = theme.iconTheme.copyWith(color: lightIconColor);
 
     return theme.copyWith(
-      scaffoldBackgroundColor: CupertinoColors.lightBackgroundGray,
+      scaffoldBackgroundColor: lightBackgroundColor,
       colorScheme: ColorScheme.fromSeed(seedColor: blue),
       appBarTheme: theme.appBarTheme.copyWith(
-        backgroundColor: CupertinoColors.lightBackgroundGray,
+        backgroundColor: lightBackgroundColor,
         shadowColor: Colors.grey,
         iconTheme: iconTheme,
         elevation: 1,
@@ -54,10 +57,10 @@ class AppTheme {
     final iconTheme = theme.iconTheme.copyWith(color: darkIconColor);
 
     return theme.copyWith(
-      scaffoldBackgroundColor: Colors.black,
+      scaffoldBackgroundColor: darkBackgroundColor,
       colorScheme: ColorScheme.fromSeed(seedColor: blue, brightness: Brightness.dark),
       appBarTheme: theme.appBarTheme.copyWith(
-        backgroundColor: Colors.black,
+        backgroundColor: darkBackgroundColor,
         shadowColor: Colors.grey,
         iconTheme: iconTheme,
         elevation: 1,
