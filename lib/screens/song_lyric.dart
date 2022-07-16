@@ -185,7 +185,7 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
                 _songLyric.youtubes.length * (width / 16 * 9 + _externalsNameHeight) +
                 kDefaultPadding,
           ),
-          minHeight: _miniPlayerHeight,
+          minHeight: _miniPlayerHeight + MediaQuery.of(context).padding.bottom,
           isShowing: _showingExternals,
         ),
       ],
