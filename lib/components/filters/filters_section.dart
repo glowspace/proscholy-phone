@@ -31,7 +31,7 @@ class FiltersSection extends StatelessWidget {
               const SizedBox(height: kDefaultPadding),
               Wrap(
                 spacing: kDefaultPadding / 2,
-                runSpacing: kDefaultPadding / 4,
+                runSpacing: kDefaultPadding / 2,
                 children: tags.map((tag) => FilterTag(tag: tag, isToggable: true)).toList(),
               ),
             ],

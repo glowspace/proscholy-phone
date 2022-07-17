@@ -62,7 +62,7 @@ class FilterTag extends StatelessWidget {
     }
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 4),
+      margin: const EdgeInsets.all(kDefaultPadding / 4),
       padding: isToggable ? null : padding,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(isRemovable ? _filterRadius : 32),

@@ -149,6 +149,8 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
       );
     }
 
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
+
     return Stack(
       children: [
         Scaffold(
@@ -182,10 +184,11 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
           maxHeight: min(
             2 / 3 * height,
             _externalsTitleHeight +
+                bottomPadding +
                 _songLyric.youtubes.length * (width / 16 * 9 + _externalsNameHeight) +
                 kDefaultPadding,
           ),
-          minHeight: _miniPlayerHeight + MediaQuery.of(context).padding.bottom,
+          minHeight: _miniPlayerHeight + bottomPadding,
           isShowing: _showingExternals,
         ),
       ],

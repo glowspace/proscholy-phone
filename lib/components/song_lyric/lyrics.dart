@@ -71,7 +71,7 @@ class _LyricsWidgetState extends State<LyricsWidget> {
                 widget.controller.lilypond(theme.colorScheme.onBackground.hex),
                 width: min(width, widget.controller.lilypondWidth),
               ),
-            if (widget.controller.hasLilypond) SizedBox(height: kDefaultPadding * fontSizeScale / 2),
+            SizedBox(height: kDefaultPadding * fontSizeScale),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 2 * kDefaultPadding),
               child: _buildLyrics(context),

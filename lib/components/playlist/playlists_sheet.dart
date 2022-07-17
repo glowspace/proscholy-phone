@@ -17,31 +17,34 @@ class PlaylistsSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final playlists = context.watch<DataProvider>().playlists;
 
-    return Wrap(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(kDefaultPadding).copyWith(bottom: kDefaultPadding / 2),
-          child: Text('Playlisty', style: Theme.of(context).textTheme.titleLarge),
-        ),
-        SingleChildScrollView(
-          child: Column(children: [
-            Highlightable(
-              onTap: () => showPlaylistDialog(context),
-              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
-              child: const IconItem(text: 'Nový playlist', icon: Icons.add, iconSize: 20),
-            ),
-            const Divider(height: kDefaultPadding),
-            ...playlists.map(
-              (playlist) => Highlightable(
-                onTap: () => _addToPlaylist(context, playlist),
+    return SafeArea(
+      top: false,
+      child: Wrap(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(kDefaultPadding).copyWith(bottom: kDefaultPadding / 2),
+            child: Text('Playlisty', style: Theme.of(context).textTheme.titleLarge),
+          ),
+          SingleChildScrollView(
+            child: Column(children: [
+              Highlightable(
+                onTap: () => showPlaylistDialog(context),
                 padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
-                child: IconItem(text: playlist.name, icon: Icons.playlist_play_rounded, iconSize: 20),
+                child: const IconItem(text: 'Nový playlist', icon: Icons.add, iconSize: 20),
               ),
-            ),
-            const SizedBox(height: kDefaultPadding),
-          ]),
-        ),
-      ],
+              const Divider(height: kDefaultPadding),
+              ...playlists.map(
+                (playlist) => Highlightable(
+                  onTap: () => _addToPlaylist(context, playlist),
+                  padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
+                  child: IconItem(text: playlist.name, icon: Icons.playlist_play_rounded, iconSize: 20),
+                ),
+              ),
+              const SizedBox(height: kDefaultPadding),
+            ]),
+          ),
+        ],
+      ),
     );
   }
 
