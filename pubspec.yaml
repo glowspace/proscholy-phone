@@ -53,6 +53,8 @@ dependencies:
 
   # flutter_quill: ^5.0.4
 
+  flutter_core_spotlight: ^1.0.4
+
   dotted_border: ^2.0.0+2
 
   font_awesome_flutter: ^10.1.0

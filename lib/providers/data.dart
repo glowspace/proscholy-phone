@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_core_spotlight/flutter_core_spotlight.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path/path.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -69,6 +70,8 @@ class DataProvider extends ChangeNotifier {
 
       _load();
     });
+
+    _indexSpotlight();
   }
 
   void toggleFavorite(SongLyric songLyric) {
@@ -251,6 +254,18 @@ class DataProvider extends ChangeNotifier {
     store.box<PlaylistRecord>().putMany(playlistRecords);
 
     _playlists.addAll(playlists);
+  }
+
+  void _indexSpotlight() {
+    // TODO: index only updates, remove old song lyrics
+    FlutterCoreSpotlight.instance.indexSearchableItems(_songLyrics
+        .map((songLyric) => FlutterSpotlightItem(
+              uniqueIdentifier: 'song_lyric_${songLyric.id}',
+              domainIdentifier: 'cz.proscholy.id.zpevnik',
+              attributeTitle: songLyric.name,
+              attributeDescription: songLyric.lyrics?.replaceAll(RegExp(r'\[[^\]]+\]'), '') ?? '',
+            ))
+        .toList());
   }
 
   @override

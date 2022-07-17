@@ -9,7 +9,7 @@ import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/components/custom/future_builder.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/settings.dart';
-import 'package:zpevnik/utils/uni_links.dart';
+import 'package:zpevnik/utils/links.dart';
 
 const _welcomeText = '''
 Ahoj. Vítej ve Zpěvníku!
@@ -150,7 +150,7 @@ class _InitialScreenState extends State<InitialScreen> {
     _pushHomeScreen(context);
 
     try {
-      handleUniLink(context, await getInitialUri());
+      handleUniLink(context, null, await getInitialUri());
       // ignore: empty_catches
     } on FormatException {}
 

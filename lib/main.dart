@@ -6,7 +6,7 @@ import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/providers/settings.dart';
 import 'package:zpevnik/routes/route_generator.dart';
 import 'package:zpevnik/theme.dart';
-import 'package:zpevnik/utils/uni_links.dart';
+import 'package:zpevnik/utils/links.dart';
 
 const _title = 'Zpěvník';
 
@@ -15,6 +15,8 @@ void main() {
 
   // debugRepaintRainbowEnabled = true;
 }
+
+final _navigatorKey = GlobalKey<NavigatorState>();
 
 class MainWidget extends StatelessWidget {
   const MainWidget({Key? key}) : super(key: key);
@@ -30,13 +32,14 @@ class MainWidget extends StatelessWidget {
         Provider.value(value: navigationProvider),
       ],
       builder: (_, __) => MaterialApp(
+        navigatorKey: _navigatorKey,
         debugShowCheckedModeBanner: false,
         title: _title,
         theme: AppTheme.light(),
         darkTheme: AppTheme.dark(),
         onGenerateRoute: RouteGenerator.generateRoute,
         navigatorObservers: [navigationProvider],
-        builder: (context, widget) => UniLinksHandlerWrapper(child: widget),
+        builder: (_, child) => LinksHandlerWrapper(navigatorKey: _navigatorKey, child: child),
       ),
     );
   }
