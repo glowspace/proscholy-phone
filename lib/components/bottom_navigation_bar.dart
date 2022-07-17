@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/songbook.dart';
+import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/routes/arguments/search.dart';
 
 const double _navigationBarHeight = 64;
@@ -43,7 +45,13 @@ class CustomBottomNavigationBar extends StatelessWidget {
       Navigator.of(context)
           .pushNamed('/search', arguments: SearchScreenArguments(playlist: playlist, songbook: songbook));
     } else if (index == 2) {
-      Navigator.of(context).pushNamed('/playlists');
+      final navigationProvider = context.read<NavigationProvider>();
+
+      if (navigationProvider.hasPlaylistsScreenRoute) {
+        Navigator.of(context).popUntil((route) => route == navigationProvider.playlistsScreenRoute);
+      } else {
+        Navigator.of(context).pushNamed('/playlists');
+      }
     } else {
       Navigator.of(context).popUntil((route) => route.settings.name == '/home');
     }
