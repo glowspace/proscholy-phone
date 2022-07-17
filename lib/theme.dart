@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:zpevnik/constants.dart';
 
-const Color lightBackgroundColor = Color(0xffe5e5e5);
+const Color lightBackgroundColor = Color(0xfff2f1f6);
 const Color darkBackgroundColor = Color(0xff000000);
 
 const Color lightTitleColor = Color(0xff3d3636);
