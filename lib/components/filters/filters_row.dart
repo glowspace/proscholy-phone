@@ -33,7 +33,7 @@ class FiltersRow extends StatelessWidget {
             child: Row(children: [
               ...selectedTags.map((tag) => FilterTag(tag: tag, isRemovable: true)),
               Container(
-                margin: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 4),
+                margin: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 4, vertical: 2),
                 padding: const EdgeInsets.only(right: kDefaultPadding),
                 child: DottedBorder(
                   dashPattern: const [7, 3],
