@@ -4,6 +4,9 @@ import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
+import 'package:zpevnik/utils/extensions.dart';
+
+const double _filterRadius = 7;
 
 class FilterTag extends StatelessWidget {
   final Tag tag;
@@ -27,6 +30,10 @@ class FilterTag extends StatelessWidget {
 
     final songLyricsProvider = context.watch<AllSongLyricsProvider>();
 
+    final backgroundColor = theme.brightness.isLight ? const Color(0xfff2f1f6) : const Color(0xff15131d);
+    final selectedBackgroundColor = theme.brightness.isLight ? const Color(0xffe4e2ec) : const Color(0xff3c3653);
+    final removeBackgroundColor = theme.brightness.isLight ? const Color(0xffe9e4f5) : const Color(0xff1c1333);
+
     Widget child = Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -37,8 +44,8 @@ class FilterTag extends StatelessWidget {
             highlightBackground: true,
             onTap: () => songLyricsProvider.toggleSelectedTag(tag),
             padding: const EdgeInsets.all(kDefaultPadding / 2).copyWith(left: kDefaultPadding / 4),
-            color: theme.colorScheme.primary.withAlpha(0x30),
-            highlightColor: theme.colorScheme.primary.withAlpha(0x30),
+            color: removeBackgroundColor,
+            highlightColor: theme.colorScheme.primary.withAlpha(0x10),
             child: const Icon(Icons.close, size: 14),
           ),
       ],
@@ -47,7 +54,7 @@ class FilterTag extends StatelessWidget {
     if (isToggable) {
       child = Highlightable(
         highlightBackground: true,
-        highlightColor: theme.colorScheme.primary.withAlpha(0x20),
+        highlightColor: theme.colorScheme.primary.withAlpha(0x10),
         onTap: () => songLyricsProvider.toggleSelectedTag(tag),
         padding: padding,
         child: child,
@@ -58,9 +65,9 @@ class FilterTag extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 4),
       padding: isToggable ? null : padding,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(32),
+        borderRadius: BorderRadius.circular(isRemovable ? _filterRadius : 32),
         border: isToggable ? Border.all(color: theme.hintColor, width: 0.5) : null,
-        color: (isRemovable || songLyricsProvider.isSelected(tag)) ? theme.colorScheme.primary.withAlpha(0x40) : null,
+        color: isRemovable ? backgroundColor : (songLyricsProvider.isSelected(tag) ? selectedBackgroundColor : null),
       ),
       clipBehavior: Clip.antiAlias,
       child: child,

@@ -45,7 +45,7 @@ class FiltersRow extends StatelessWidget {
                     borderRadius: BorderRadius.circular(_addFilterRadius),
                     child: Highlightable(
                       padding: const EdgeInsets.symmetric(
-                        vertical: kDefaultPadding / 2,
+                        vertical: kDefaultPadding / 3,
                         horizontal: kDefaultPadding / 2,
                       ),
                       highlightBackground: true,

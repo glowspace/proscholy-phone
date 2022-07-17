@@ -4,6 +4,7 @@ import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songbook_record.dart';
 import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/routes/arguments/search.dart';
+import 'package:zpevnik/utils/extensions.dart';
 
 class SongLyricTag extends StatelessWidget {
   final SongbookRecord? songbookRecord;
@@ -24,6 +25,9 @@ class SongLyricTag extends StatelessWidget {
       text = tag!.name;
     }
 
+    final backgroundColor = theme.brightness.isLight ? const Color(0xfff2f1f6) : const Color(0xff15131d);
+    final numberBackgroundColor = theme.brightness.isLight ? const Color(0xffe9e4f5) : const Color(0xff1c1333);
+
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(32),
@@ -31,8 +35,8 @@ class SongLyricTag extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       child: Highlightable(
         highlightBackground: true,
-        color: theme.colorScheme.primary.withAlpha(0x20),
-        highlightColor: theme.colorScheme.primary.withAlpha(0x40),
+        color: backgroundColor,
+        highlightColor: theme.colorScheme.primary.withAlpha(0x10),
         onTap: () => songbookRecord != null
             ? Navigator.of(context).popAndPushNamed('/songbook', arguments: songbookRecord!.songbook.target)
             : Navigator.of(context).popAndPushNamed('/search', arguments: SearchScreenArguments(initialTag: tag)),
@@ -47,7 +51,7 @@ class SongLyricTag extends StatelessWidget {
             if (songbookRecord != null)
               Container(
                 padding: const EdgeInsets.all(kDefaultPadding / 2).copyWith(right: 3 * kDefaultPadding / 4),
-                color: theme.colorScheme.primary.withAlpha(0x30),
+                color: numberBackgroundColor,
                 child: Text(songbookRecord!.number),
               ),
           ],
