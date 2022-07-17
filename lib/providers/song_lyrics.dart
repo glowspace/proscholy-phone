@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:objectbox/objectbox.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zpevnik/custom/sqlite-bm25/bm25.dart';
@@ -78,6 +77,9 @@ mixin _Filterable on SongLyricsProvider {
 
         if (entry.key == TagType.language) {
           shouldAdd &= entry.value.any((tag) => tag.name == songLyric.langDescription);
+        } else if (entry.key == TagType.songbook) {
+          shouldAdd &= entry.value.any((tag) =>
+              songLyric.songbookRecords.any((songbookRecord) => songbookRecord.songbook.target?.name == tag.name));
         } else {
           shouldAdd &= entry.value.any((tag) => songLyric.tags.contains(tag));
         }

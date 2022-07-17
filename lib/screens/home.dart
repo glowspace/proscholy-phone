@@ -3,6 +3,7 @@ import 'package:zpevnik/components/bottom_navigation_bar.dart';
 import 'package:zpevnik/components/home/news_section.dart';
 import 'package:zpevnik/components/home/shared_with_me_section.dart';
 import 'package:zpevnik/components/home/song_lists_section.dart';
+import 'package:zpevnik/components/home/songbooks_section.dart';
 import 'package:zpevnik/components/home/top_section.dart';
 import 'package:zpevnik/components/home/update_section.dart';
 import 'package:zpevnik/components/search_field.dart';
@@ -46,6 +47,8 @@ class HomeScreen extends StatelessWidget {
                 const NewsSection(),
                 const SizedBox(height: 2 * kDefaultPadding),
                 const SongListsSection(),
+                const SizedBox(height: 2 * kDefaultPadding),
+                const SongbooksSection(),
                 const SizedBox(height: 2 * kDefaultPadding),
                 // const SharedWithMeSection(),
               ],

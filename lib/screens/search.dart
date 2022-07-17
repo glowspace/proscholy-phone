@@ -19,16 +19,6 @@ class SearchScreen extends StatelessWidget {
     final songLyricsProvider = context.read<AllSongLyricsProvider>();
     final searchScreenArguments = ModalRoute.of(context)?.settings.arguments as SearchScreenArguments?;
 
-    final String title;
-
-    if (searchScreenArguments?.songbook != null) {
-      title = searchScreenArguments!.songbook!.name;
-    } else if (searchScreenArguments?.playlist != null) {
-      title = searchScreenArguments!.playlist!.name;
-    } else {
-      title = 'Vyhledávání';
-    }
-
     return Scaffold(
       backgroundColor: theme.brightness.isLight ? theme.colorScheme.surface : null,
       body: SafeArea(

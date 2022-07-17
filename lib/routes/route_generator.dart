@@ -20,6 +20,7 @@ import 'package:zpevnik/screens/search.dart';
 import 'package:zpevnik/screens/song_lyric.dart';
 import 'package:zpevnik/screens/song_lyric/translations.dart';
 import 'package:zpevnik/screens/songbook.dart';
+import 'package:zpevnik/screens/songbooks.dart';
 import 'package:zpevnik/screens/updated_song_lyrics.dart';
 import 'package:zpevnik/screens/user.dart';
 
@@ -90,6 +91,8 @@ class RouteGenerator {
         final songbook = settings.arguments as Songbook;
 
         return MaterialPageRoute(settings: settings, builder: (_) => SongbookScreen(songbook: songbook));
+      case '/songbooks':
+        return MaterialPageRoute(settings: settings, builder: (_) => const SongbooksScreen());
       case '/updated_song_lyrics':
         return MaterialPageRoute(settings: settings, builder: (_) => const UpdatedSongLyricsScreen());
       case '/user':

@@ -173,6 +173,9 @@ class DataProvider extends ChangeNotifier {
 
     _addLanguagesToTags();
 
+    int id = -100;
+    _tags.addAll(songbooks.map((songbook) => Tag(id--, songbook.name, TagType.songbook.rawValue)));
+
     if (currentVersion == null) {
       try {
         await _migrateOldDB();

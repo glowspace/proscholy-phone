@@ -5,6 +5,7 @@ import 'package:zpevnik/models/objectbox.g.dart';
 enum TagType {
   liturgyPart,
   liturgyPeriod,
+  liturgyDay,
   sacredOccasion,
   saints,
   historyPeriod,
@@ -13,6 +14,7 @@ enum TagType {
   musicalForm,
   generic,
   language,
+  songbook,
   unknown
 }
 
@@ -23,6 +25,8 @@ extension TagTypeExtension on TagType {
         return TagType.liturgyPart;
       case 'LITURGY_PERIOD':
         return TagType.liturgyPeriod;
+      case 'LITURGY_DAY':
+        return TagType.liturgyDay;
       case 'SAINTS':
         return TagType.saints;
       case 'HISTORY_PERIOD':
@@ -66,6 +70,10 @@ extension TagTypeExtension on TagType {
         return TagType.language;
       case 9:
         return TagType.generic;
+      case 10:
+        return TagType.liturgyDay;
+      case 11:
+        return TagType.songbook;
       default:
         return TagType.unknown;
     }
@@ -93,6 +101,10 @@ extension TagTypeExtension on TagType {
         return 8;
       case TagType.generic:
         return 9;
+      case TagType.liturgyDay:
+        return 10;
+      case TagType.songbook:
+        return 11;
       default:
         return 10;
     }
@@ -104,8 +116,9 @@ extension TagTypeExtension on TagType {
       case TagType.liturgyPart:
       case TagType.liturgyPeriod:
       case TagType.saints:
-      case TagType.language:
       case TagType.sacredOccasion:
+      case TagType.language:
+      case TagType.songbook:
         return true;
       default:
         return false;
@@ -126,6 +139,8 @@ extension TagTypeExtension on TagType {
         return 'Svátosti a pobožnosti';
       case TagType.language:
         return 'Jazyky';
+      case TagType.songbook:
+        return 'Zpěvníky';
       default:
         return 'Filtry';
     }
