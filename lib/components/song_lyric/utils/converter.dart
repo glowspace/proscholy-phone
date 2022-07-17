@@ -16,7 +16,7 @@ final _fromFlat = {
   'As': 'G#',
   'S': 'A#',
 };
-final _fromFlatRE = RegExp(r'([CDEFGAH][bs]|B)');
+final _fromFlatRE = RegExp(r'([CDEFGAH][bs](?!us)|B)');
 
 String transpose(String chord, int transposition) {
   return chord.replaceFirstMapped(_plainChordsRE, (match) {

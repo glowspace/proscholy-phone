@@ -77,6 +77,8 @@ class LyricsController extends ChangeNotifier {
   void changeTransposition(int byValue) {
     songLyric.transposition += byValue;
 
+    if (songLyric.transposition.abs() == 12) songLyric.transposition = 0;
+
     _songLyricUpdated();
   }
 
