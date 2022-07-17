@@ -4,6 +4,7 @@ import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/routes/arguments/search.dart';
+import 'package:zpevnik/utils/extensions.dart';
 
 const double _navigationBarHeight = 64;
 
@@ -18,6 +19,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
     return Hero(
       tag: 'bottomNavigationBar',
       child: NavigationBar(
+        backgroundColor: Theme.of(context).brightness.isLight ? const Color(0xfffffbfe) : const Color(0xff1e1e1e),
         selectedIndex: ModalRoute.of(context)?.settings.name == '/home' ? 0 : 2,
         height: _navigationBarHeight,
         onDestinationSelected: (index) => _onDestinationSelected(context, index),
