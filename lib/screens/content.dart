@@ -18,19 +18,21 @@ class ContentScreen extends StatelessWidget {
           if (constraints.maxWidth > kTabletWidthBreakpoint) {
             return Row(
               crossAxisAlignment: CrossAxisAlignment.start,
+              // switching direction, so push navitaion of the content does not overlap with menu
+              textDirection: TextDirection.rtl,
               children: [
+                Expanded(
+                  child: Navigator(
+                    key: navigationProvider.navigatorKey,
+                    onGenerateRoute: RouteGenerator.generateRoute,
+                  ),
+                ),
+                const VerticalDivider(width: 0),
                 SizedBox(
                   width: 320,
                   child: Navigator(
                     key: navigationProvider.menuNavigatorKey,
                     onGenerateRoute: MenuRouteGenerator.generateRoute,
-                  ),
-                ),
-                const VerticalDivider(width: 0),
-                Expanded(
-                  child: Navigator(
-                    key: navigationProvider.navigatorKey,
-                    onGenerateRoute: RouteGenerator.generateRoute,
                   ),
                 ),
               ],
