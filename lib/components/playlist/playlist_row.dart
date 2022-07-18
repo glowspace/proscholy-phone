@@ -3,6 +3,7 @@ import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/playlist/playlist_button.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/playlist.dart';
+import 'package:zpevnik/providers/navigation.dart';
 
 const double _iconSize = 20;
 
@@ -61,6 +62,6 @@ class PlaylistRow extends StatelessWidget {
   void _pushPlaylist(BuildContext context) {
     FocusScope.of(context).unfocus();
 
-    Navigator.of(context).pushNamed('/playlist', arguments: playlist);
+    NavigationProvider.navigatorOf(context).pushNamed('/playlist', arguments: playlist);
   }
 }

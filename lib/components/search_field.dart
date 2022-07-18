@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
@@ -153,7 +154,7 @@ class _SearchFieldState extends State<SearchField> {
               ),
               if (widget.isInsideSearchScreen)
                 Highlightable(
-                  onTap: () => Navigator.of(context).pop(),
+                  onTap: () => NavigationProvider.navigatorOf(context).pop(),
                   padding: const EdgeInsets.all(kDefaultPadding),
                   child: Text('Zrušit', style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.primary)),
                 ),
@@ -170,12 +171,12 @@ class _SearchFieldState extends State<SearchField> {
     // prevent keyboard from showing up
     FocusScope.of(context).requestFocus(FocusNode());
 
-    Navigator.of(context).pushNamed('/search');
+    NavigationProvider.navigatorOf(context).pushNamed('/search');
   }
 
   void _clearOrPop() {
     if (_controller.text.isEmpty) {
-      Navigator.of(context).pop();
+      NavigationProvider.navigatorOf(context).pop();
     } else {
       _controller.clear();
       widget.onChanged?.call('');

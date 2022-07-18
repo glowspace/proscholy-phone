@@ -5,6 +5,7 @@ import 'package:flutter_core_spotlight/flutter_core_spotlight.dart';
 import 'package:provider/provider.dart';
 import 'package:uni_links/uni_links.dart';
 import 'package:zpevnik/providers/data.dart';
+import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/routes/arguments/song_lyric.dart';
 
 final spotlightSongLyricRE = RegExp(r'^song_lyric_(\d+)$');
@@ -63,7 +64,8 @@ void handleUniLink(BuildContext context, GlobalKey<NavigatorState>? navigatorKey
       final songbook = context.read<DataProvider>().getSongbookById(int.parse(songbookMatch.group(1) ?? '0'));
 
       if (songbook != null) {
-        (navigatorKey?.currentState ?? Navigator.of(context)).pushNamed('/songbook', arguments: songbook);
+        (navigatorKey?.currentState ?? NavigationProvider.navigatorOf(context))
+            .pushNamed('/songbook', arguments: songbook);
 
         return;
       }
@@ -87,7 +89,7 @@ void _pushSongLyric(BuildContext context, GlobalKey<NavigatorState>? navigatorKe
   final songLyric = context.read<DataProvider>().getSongLyricById(int.parse(idMatch.group(1) ?? '0'));
 
   if (songLyric != null) {
-    (navigatorKey?.currentState ?? Navigator.of(context))
+    (navigatorKey?.currentState ?? NavigationProvider.navigatorOf(context))
         .pushNamed('/song_lyric', arguments: SongLyricScreenArguments([songLyric], 0));
   }
 }

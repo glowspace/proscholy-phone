@@ -5,6 +5,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:zpevnik/providers/navigation.dart';
 
 // Examples can assume:
 // enum Commands { heroAndScholar, hurricaneCame }
@@ -1156,7 +1157,7 @@ class PopupMenuButtonState<T> extends State<PopupMenuButton<T>> {
   void showButtonMenu() {
     final PopupMenuThemeData popupMenuTheme = PopupMenuTheme.of(context);
     final RenderBox button = context.findRenderObject()! as RenderBox;
-    final RenderBox overlay = Navigator.of(context).overlay!.context.findRenderObject()! as RenderBox;
+    final RenderBox overlay = NavigationProvider.navigatorOf(context).overlay!.context.findRenderObject()! as RenderBox;
     final Offset offset;
     switch (widget.position) {
       case PopupMenuPosition.over:

@@ -97,7 +97,7 @@ class SongbookTile extends StatelessWidget {
     final navigationBarTextColor =
         (songbook.colorText == null || !AppTheme.of(context).isLight) ? null : HexColor.fromHex(songbook.colorText);
 
-    Navigator.of(context).push(platformRouteBuilder(
+    NavigationProvider.navigatorOf(context).push(platformRouteBuilder(
       context,
       SongbookScreen(
         songbook: songbook,

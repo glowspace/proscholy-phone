@@ -12,6 +12,7 @@ import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/data.dart';
+import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
 import 'package:zpevnik/routes/arguments/search.dart';
 
@@ -79,11 +80,11 @@ class PlaylistScreen extends StatelessWidget {
   }
 
   void _addText(BuildContext context) async {
-    Navigator.of(context).pushNamed('/playlist/custom_text');
+    NavigationProvider.navigatorOf(context).pushNamed('/playlist/custom_text');
   }
 
   void _addSongLyric(BuildContext context) async {
-    final songLyric = await Navigator.of(context).pushNamed(
+    final songLyric = await NavigationProvider.navigatorOf(context).pushNamed(
       '/search',
       arguments: SearchScreenArguments(shouldReturnSongLyric: true),
     );

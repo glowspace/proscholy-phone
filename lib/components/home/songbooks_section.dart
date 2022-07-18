@@ -7,6 +7,7 @@ import 'package:zpevnik/components/playlist/playlist_row.dart';
 import 'package:zpevnik/components/section.dart';
 import 'package:zpevnik/components/songbook/songbook_row.dart';
 import 'package:zpevnik/providers/data.dart';
+import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
@@ -32,7 +33,7 @@ class SongbooksSection extends StatelessWidget {
         physics: const NeverScrollableScrollPhysics(),
       ),
       action: Highlightable(
-        onTap: () => Navigator.of(context).pushNamed('/songbooks'),
+        onTap: () => NavigationProvider.navigatorOf(context).pushNamed('/songbooks'),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [

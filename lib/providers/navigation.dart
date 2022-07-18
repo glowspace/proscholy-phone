@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class NavigationProvider extends NavigatorObserver {
+  final navigatorKey = GlobalKey<NavigatorState>();
+  final menuNavigatorKey = GlobalKey<NavigatorState>();
+
   Route? _playlistsScreenRoute;
   Route? _searchScreenRoute;
   Route? _translationsScreenRoute;
@@ -12,6 +16,18 @@ class NavigationProvider extends NavigatorObserver {
   bool get hasPlaylistsScreenRoute => _playlistsScreenRoute != null;
   bool get hasSearchScreenRoute => _searchScreenRoute != null;
   bool get hasTranslationsScreenRoute => _translationsScreenRoute != null;
+
+  static NavigatorState navigatorOf(BuildContext context) {
+    final navigationProvider = context.read<NavigationProvider>();
+
+    return navigationProvider.navigatorKey.currentState ?? Navigator.of(context);
+  }
+
+  static NavigatorState menuNavigatorOf(BuildContext context) {
+    final navigationProvider = context.read<NavigationProvider>();
+
+    return navigationProvider.menuNavigatorKey.currentState ?? Navigator.of(context);
+  }
 
   @override
   void didPush(Route route, Route? previousRoute) {

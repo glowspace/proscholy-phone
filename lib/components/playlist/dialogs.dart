@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/data.dart';
+import 'package:zpevnik/providers/navigation.dart';
 
 const _emptyPlaylistNameMessage = 'Název playlistu je prázdný';
 
@@ -28,7 +29,7 @@ void showPlaylistDialog(BuildContext context, {SongLyric? selectedSongLyric, boo
 
     if (selectedSongLyric != null) dataProvider.addToPlaylist(selectedSongLyric, playlist);
 
-    if (openPlaylist) Navigator.of(context).popAndPushNamed('/playlist', arguments: playlist);
+    if (openPlaylist) NavigationProvider.navigatorOf(context).popAndPushNamed('/playlist', arguments: playlist);
   }
 }
 
@@ -69,7 +70,7 @@ void showDuplicatePlaylistDialog(BuildContext context, Playlist playlist) async 
     final duplicatedPlaylist = context.read<DataProvider>().duplicatePlaylist(playlist, results[0]);
 
     if (ModalRoute.of(context)?.settings.name != '/playlists') {
-      Navigator.of(context).pushNamed('/playlist', arguments: duplicatedPlaylist);
+      NavigationProvider.navigatorOf(context).pushNamed('/playlist', arguments: duplicatedPlaylist);
     }
   }
 }
@@ -86,6 +87,6 @@ void showremovePlaylistDialog(BuildContext context, Playlist playlist) async {
   if (result == OkCancelResult.ok) {
     context.read<DataProvider>().removePlaylist(playlist);
 
-    if (ModalRoute.of(context)?.settings.name == '/playlist') Navigator.of(context).pop();
+    if (ModalRoute.of(context)?.settings.name == '/playlist') NavigationProvider.navigatorOf(context).pop();
   }
 }

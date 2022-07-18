@@ -8,6 +8,7 @@ import 'package:zpevnik/components/song_lyric/song_lyrics_list_view.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/providers/data.dart';
+import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
 import 'package:zpevnik/routes/arguments/search.dart';
 import 'package:zpevnik/routes/arguments/song_lyric.dart';
@@ -42,7 +43,7 @@ class SongbookScreen extends StatelessWidget {
     final songLyricsProvider = context.read<SongbookSongLyricsProvider>();
 
     if (songLyricsProvider.matchedById != null) {
-      Navigator.of(context)
+      NavigationProvider.navigatorOf(context)
           .pushNamed('/song_lyric', arguments: SongLyricScreenArguments([songLyricsProvider.matchedById!], 0));
     }
   }

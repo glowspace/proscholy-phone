@@ -21,7 +21,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
       transitionOnUserGestures: true,
       child: NavigationBar(
         backgroundColor: Theme.of(context).brightness.isLight ? const Color(0xfffffbfe) : const Color(0xff1e1e1e),
-        selectedIndex: ModalRoute.of(context)?.settings.name == '/home' ? 0 : 2,
+        selectedIndex: ModalRoute.of(context)?.settings.name == '/' ? 0 : 2,
         height: _navigationBarHeight,
         onDestinationSelected: (index) => _onDestinationSelected(context, index),
         destinations: const [
@@ -45,18 +45,18 @@ class CustomBottomNavigationBar extends StatelessWidget {
 
   void _onDestinationSelected(BuildContext context, int index) {
     if (index == 1) {
-      Navigator.of(context)
+      NavigationProvider.navigatorOf(context)
           .pushNamed('/search', arguments: SearchScreenArguments(playlist: playlist, songbook: songbook));
     } else if (index == 2) {
       final navigationProvider = context.read<NavigationProvider>();
 
       if (navigationProvider.hasPlaylistsScreenRoute) {
-        Navigator.of(context).popUntil((route) => route == navigationProvider.playlistsScreenRoute);
+        NavigationProvider.navigatorOf(context).popUntil((route) => route == navigationProvider.playlistsScreenRoute);
       } else {
-        Navigator.of(context).pushNamed('/playlists');
+        NavigationProvider.navigatorOf(context).pushNamed('/playlists');
       }
     } else {
-      Navigator.of(context).popUntil((route) => route.settings.name == '/home');
+      NavigationProvider.navigatorOf(context).popUntil((route) => route.settings.name == '/');
     }
   }
 }

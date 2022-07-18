@@ -7,6 +7,7 @@ import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/data.dart';
+import 'package:zpevnik/providers/navigation.dart';
 
 class PlaylistsSheet extends StatelessWidget {
   final SongLyric selectedSongLyric;
@@ -51,6 +52,6 @@ class PlaylistsSheet extends StatelessWidget {
   void _addToPlaylist(BuildContext context, Playlist playlist) {
     context.read<DataProvider>().addToPlaylist(selectedSongLyric, playlist);
 
-    Navigator.of(context).popAndPushNamed('/playlist', arguments: playlist);
+    NavigationProvider.navigatorOf(context).popAndPushNamed('/playlist', arguments: playlist);
   }
 }

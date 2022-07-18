@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
+import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
 import 'package:zpevnik/routes/arguments/search.dart';
 import 'package:zpevnik/routes/arguments/song_lyric.dart';
@@ -122,13 +123,13 @@ class SongLyricRow extends StatelessWidget {
     final arguments = ModalRoute.of(context)?.settings.arguments;
 
     if (arguments is SearchScreenArguments && arguments.shouldReturnSongLyric) {
-      Navigator.of(context).pop(songLyric);
+      NavigationProvider.navigatorOf(context).pop(songLyric);
     } else {
       context.read<AllSongLyricsProvider?>()?.addRecentSongLyric(songLyric);
 
       final arguments = songLyricScreenArguments ?? SongLyricScreenArguments([songLyric], 0);
 
-      Navigator.of(context).pushNamed('/song_lyric', arguments: arguments);
+      NavigationProvider.navigatorOf(context).pushNamed('/song_lyric', arguments: arguments);
     }
   }
 }

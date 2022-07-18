@@ -6,6 +6,7 @@ import 'package:zpevnik/components/section.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/links.dart';
 import 'package:zpevnik/providers/data.dart';
+import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/providers/utils/updater.dart';
 
 class UpdateSection extends StatelessWidget {
@@ -60,7 +61,7 @@ class UpdateSection extends StatelessWidget {
                       ),
                     if (state is UpdaterStateDone)
                       Highlightable(
-                        onTap: () => Navigator.of(context).pushNamed('/updated_song_lyrics'),
+                        onTap: () => NavigationProvider.navigatorOf(context).pushNamed('/updated_song_lyrics'),
                         child:
                             Text('Zobrazit', style: textTheme.bodyMedium?.copyWith(color: theme.colorScheme.primary)),
                       ),

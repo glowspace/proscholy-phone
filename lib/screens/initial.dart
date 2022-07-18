@@ -8,7 +8,9 @@ import 'package:zpevnik/components/sign_in_button.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/components/custom/future_builder.dart';
 import 'package:zpevnik/providers/data.dart';
+import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/providers/settings.dart';
+import 'package:zpevnik/screens/content.dart';
 import 'package:zpevnik/utils/links.dart';
 
 const _welcomeText = '''
@@ -171,7 +173,7 @@ class _InitialScreenState extends State<InitialScreen> {
   void _pushHomeScreen(BuildContext context) {
     context.read<DataProvider>().prefs.setBool(_loggedInKey, true);
 
-    Navigator.of(context).pushReplacementNamed('/home');
+    NavigationProvider.navigatorOf(context).pushReplacement(MaterialPageRoute(builder: (_) => const ContentScreen()));
   }
 
   void _learnMore(BuildContext context) {}
