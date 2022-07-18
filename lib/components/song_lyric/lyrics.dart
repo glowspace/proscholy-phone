@@ -68,6 +68,7 @@ class _LyricsWidgetState extends State<LyricsWidget> {
             ),
             if (widget.controller.hasLilypond)
               SvgPicture.string(
+                alignment: Alignment.centerLeft,
                 widget.controller.lilypond(theme.colorScheme.onBackground.hex),
                 width: min(width, widget.controller.lilypondWidth),
               ),

@@ -24,6 +24,7 @@ class ContentScreen extends StatelessWidget {
                 Expanded(
                   child: Navigator(
                     key: navigationProvider.navigatorKey,
+                    observers: [navigationProvider],
                     onGenerateRoute: RouteGenerator.generateRoute,
                   ),
                 ),
@@ -41,6 +42,7 @@ class ContentScreen extends StatelessWidget {
 
           return Navigator(
             key: navigationProvider.navigatorKey,
+            observers: [navigationProvider],
             onGenerateRoute: RouteGenerator.generateRoute,
           );
         },

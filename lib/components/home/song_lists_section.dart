@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/playlist/playlist_row.dart';
 import 'package:zpevnik/components/section.dart';
-import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/theme.dart';
@@ -23,12 +22,9 @@ class SongListsSection extends StatelessWidget {
     final dataProvider = context.watch<DataProvider>();
     final playlists = [dataProvider.favorites] + dataProvider.playlists;
 
-    final Widget? action;
-
-    if (MediaQuery.of(context).size.width > kTabletWidthBreakpoint) {
-      action = null;
-    } else {
-      action = Highlightable(
+    return Section(
+      title: Text('Moje seznamy', style: Theme.of(context).textTheme.titleLarge),
+      action: Highlightable(
         onTap: () => NavigationProvider.navigatorOf(context).pushNamed('/playlists'),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -44,12 +40,7 @@ class SongListsSection extends StatelessWidget {
             const Icon(Icons.navigate_next, size: _navigateNextIconSize),
           ],
         ),
-      );
-    }
-
-    return Section(
-      title: Text('Moje seznamy', style: Theme.of(context).textTheme.titleLarge),
-      action: action,
+      ),
       child: ListView.separated(
         itemCount: min(_maxShowingPlaylists, playlists.length),
         itemBuilder: (_, index) => PlaylistRow(playlist: playlists[index], visualDensity: VisualDensity.comfortable),

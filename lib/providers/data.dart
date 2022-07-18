@@ -163,7 +163,7 @@ class DataProvider extends ChangeNotifier {
     // once https://github.com/objectbox/objectbox-dart/issues/340 is fixed it can be run with runInTransactionAsync
 
     _songLyrics = SongLyric.load(store);
-    _songbooks = Songbook.load(store);
+    _songbooks = Songbook.load(store)..sort();
 
     _playlists = Playlist.load(store);
     _favorites = Playlist.loadFavorites(store);
@@ -176,6 +176,7 @@ class DataProvider extends ChangeNotifier {
 
     _addLanguagesToTags();
 
+    // FIXME: should depend on last id in language tags
     int id = -100;
     _tags.addAll(songbooks.map((songbook) => Tag(id--, songbook.name, TagType.songbook.rawValue)));
 

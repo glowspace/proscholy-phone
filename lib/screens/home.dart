@@ -30,9 +30,9 @@ class HomeScreen extends StatelessWidget {
     return LayoutBuilder(builder: (_, constraints) {
       if (constraints.maxWidth > kTabletWidthBreakpoint) {
         return _HomeScreenTablet(greetings: text);
-      } else {
-        return _HomeScreenPhone(greetings: text);
       }
+
+      return _HomeScreenPhone(greetings: text);
     });
   }
 }
@@ -90,7 +90,7 @@ class _HomeScreenTablet extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 2 * kDefaultPadding),
                 Text(greetings, style: Theme.of(context).textTheme.titleLarge),
