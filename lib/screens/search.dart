@@ -42,28 +42,24 @@ class SearchScreen extends StatelessWidget {
       ],
     );
 
-    return LayoutBuilder(
-      builder: (_, constraints) {
-        if (constraints.maxWidth > kThreeSectionsWidthBreakpoint) {
-          return Scaffold(
-            backgroundColor: theme.brightness.isLight ? theme.colorScheme.surface : null,
-            body: SafeArea(
-              child: SplitView(
-                child: child,
-                subChild: Scaffold(
-                  backgroundColor: theme.brightness.isLight ? theme.colorScheme.surface : null,
-                  body: SafeArea(child: FiltersWidget(tagsSections: songLyricsProvider.tagsSections)),
-                ),
-              ),
+    if (MediaQuery.of(context).size.width > kThreeSectionsWidthBreakpoint) {
+      return Scaffold(
+        backgroundColor: theme.brightness.isLight ? theme.colorScheme.surface : null,
+        body: SafeArea(
+          child: SplitView(
+            child: child,
+            subChild: Scaffold(
+              backgroundColor: theme.brightness.isLight ? theme.colorScheme.surface : null,
+              body: SafeArea(child: FiltersWidget(tagsSections: songLyricsProvider.tagsSections)),
             ),
-          );
-        }
+          ),
+        ),
+      );
+    }
 
-        return Scaffold(
-          backgroundColor: theme.brightness.isLight ? theme.colorScheme.surface : null,
-          body: SafeArea(child: child),
-        );
-      },
+    return Scaffold(
+      backgroundColor: theme.brightness.isLight ? theme.colorScheme.surface : null,
+      body: SafeArea(child: child),
     );
   }
 

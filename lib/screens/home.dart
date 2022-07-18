@@ -27,13 +27,9 @@ class HomeScreen extends StatelessWidget {
       text = 'Dobrý večer';
     }
 
-    return LayoutBuilder(builder: (_, constraints) {
-      if (constraints.maxWidth > kTabletWidthBreakpoint) {
-        return _HomeScreenTablet(greetings: text);
-      }
+    if (MediaQuery.of(context).size.width > kTabletWidthBreakpoint) return _HomeScreenTablet(greetings: text);
 
-      return _HomeScreenPhone(greetings: text);
-    });
+    return _HomeScreenPhone(greetings: text);
   }
 }
 

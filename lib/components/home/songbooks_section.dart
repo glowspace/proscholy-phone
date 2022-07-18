@@ -22,13 +22,9 @@ class SongbooksSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (_, constraints) {
-      if (constraints.maxWidth > kTabletWidthBreakpoint) {
-        return const _SongbooksSectionTablet();
-      }
+    if (MediaQuery.of(context).size.width > kTabletWidthBreakpoint) return const _SongbooksSectionTablet();
 
-      return const _SongbooksSectionPhone();
-    });
+    return const _SongbooksSectionPhone();
   }
 }
 
@@ -81,7 +77,6 @@ class _SongbooksSectionTablet extends StatelessWidget {
     return Section(
       title: Text('Zpěvníky', style: Theme.of(context).textTheme.titleLarge),
       child: Row(
-        mainAxisSize: MainAxisSize.min,
         children: songbooks
             .sublist(0, min(_maxShowingSongbooksTablet, songbooks.length))
             .map((songbook) => SongbookTile(songbook: songbook))
