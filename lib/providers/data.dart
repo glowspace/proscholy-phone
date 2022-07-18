@@ -65,7 +65,7 @@ class DataProvider extends ChangeNotifier {
 
     await _load();
 
-    updater.update().then((songLyrics) {
+    updater.update(this).then((songLyrics) {
       _updatedSongLyrics = songLyrics;
 
       _load();
@@ -144,7 +144,7 @@ class DataProvider extends ChangeNotifier {
 
   Future<void> _load() async {
     final currentVersion = prefs.getString(_versionKey);
-    final buildVersion = packageInfo.version;
+    final buildVersion = '${packageInfo.version}+${packageInfo.buildNumber}';
 
     if (currentVersion != buildVersion) {
       await updater.loadInitial();

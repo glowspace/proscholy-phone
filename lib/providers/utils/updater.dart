@@ -14,6 +14,7 @@ import 'package:zpevnik/models/song.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/models/tag.dart';
+import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/utils/client.dart';
 
 final _dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
@@ -58,7 +59,7 @@ class Updater {
     await _parse(json['data'], isSongLyricsFull: true);
   }
 
-  Future<List<SongLyric>> update() async {
+  Future<List<SongLyric>> update(DataProvider dataProvider) async {
     final client = Client();
 
     try {
@@ -121,9 +122,33 @@ class Updater {
 
       songLyrics.addAll(SongLyric.fromMapList(await client.getSongLyrics(lastUpdate), store));
 
-      state.value = UpdaterStateDone(songLyrics.length);
+      // need to remove relations, because otherwise objectbox will just add new relations and keep old ones
+      store.runInTransaction(TxMode.write, () {
+        for (final songLyric in songLyrics) {
+          final existingSongLyric = dataProvider.getSongLyricById(songLyric.id);
+
+          if (existingSongLyric != null) {
+            final authors = existingSongLyric.authors;
+            final externals = existingSongLyric.externals;
+            final songbookRecords = existingSongLyric.songbookRecords;
+            final tags = existingSongLyric.tags;
+
+            authors.clear();
+            externals.clear();
+            songbookRecords.clear();
+            tags.clear();
+
+            authors.applyToDb();
+            externals.applyToDb();
+            songbookRecords.applyToDb();
+            tags.applyToDb();
+          }
+        }
+      });
 
       box.putMany(songLyrics);
+
+      state.value = UpdaterStateDone(songLyrics.length);
 
       prefs.setString(_lastUpdateKey, _dateFormat.format(now));
 
