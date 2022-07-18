@@ -18,6 +18,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Hero(
       tag: 'bottomNavigationBar',
+      transitionOnUserGestures: true,
       child: NavigationBar(
         backgroundColor: Theme.of(context).brightness.isLight ? const Color(0xfffffbfe) : const Color(0xff1e1e1e),
         selectedIndex: ModalRoute.of(context)?.settings.name == '/home' ? 0 : 2,
