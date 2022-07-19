@@ -33,6 +33,10 @@ class MenuRouteGenerator {
         final playlist = settings.arguments as Playlist;
 
         return MaterialPageRoute(settings: settings, builder: (_) => PlaylistScreen(playlist: playlist));
+      case '/songbook':
+        final songbook = settings.arguments as Songbook;
+
+        return MaterialPageRoute(settings: settings, builder: (_) => SongbookScreen(songbook: songbook));
       default:
         throw 'Unknown route: ${settings.name}';
     }

@@ -66,10 +66,12 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final mediaQuery = MediaQuery.of(context);
+
     final settingsProvider = context.read<SettingsProvider>();
 
-    final width = MediaQuery.of(context).size.width;
-    final height = MediaQuery.of(context).size.height;
+    final width = mediaQuery.size.width;
+    final height = mediaQuery.size.height;
 
     AppBar? appBar;
     Widget? bottomBar;
@@ -107,40 +109,43 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
         ],
       );
 
+      const bottomBarActionPadding = EdgeInsets.symmetric(vertical: kDefaultPadding, horizontal: 3 * kDefaultPadding);
+
       bottomBar = Container(
         decoration: BoxDecoration(border: Border(top: BorderSide(color: borderColor, width: 1))),
         child: BottomAppBar(
           color: backgroundColor,
           elevation: 0,
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: mediaQuery.isTablet ? MainAxisAlignment.end : MainAxisAlignment.spaceAround,
             children: [
               Highlightable(
-                padding: const EdgeInsets.all(kDefaultPadding),
+                padding: bottomBarActionPadding,
                 onTap: () => _showingExternals.value = true,
                 isDisabled: !_songLyric.hasRecordings,
                 child: const Icon(FontAwesomeIcons.headphones),
               ),
               Highlightable(
-                padding: const EdgeInsets.all(kDefaultPadding),
+                padding: bottomBarActionPadding,
                 onTap: () => _showFiles(context),
                 isDisabled: !_songLyric.hasFiles,
                 child: const Icon(Icons.insert_drive_file),
               ),
               Highlightable(
-                padding: const EdgeInsets.all(kDefaultPadding),
+                padding: bottomBarActionPadding,
                 onTap: () => _showSettings(context),
                 isDisabled: !_songLyric.hasChords,
                 child: const Icon(Icons.tune),
               ),
               Highlightable(
-                padding: const EdgeInsets.all(kDefaultPadding),
+                padding: bottomBarActionPadding,
                 onTap: () => _showTags(context),
                 isDisabled: !(_songLyric.tags.isNotEmpty || _songLyric.songbookRecords.isNotEmpty),
                 child: const FaIcon(FontAwesomeIcons.tag),
               ),
               Highlightable(
-                padding: const EdgeInsets.all(kDefaultPadding),
+                padding: bottomBarActionPadding,
                 onTap: () => NavigationProvider.of(context).popToOrPushNamed('/search'),
                 child: const Icon(Icons.search),
               ),

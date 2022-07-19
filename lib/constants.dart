@@ -15,6 +15,5 @@ const Color yellow = Color(0xffee9528);
 const String unbreakableSpace = '\u00A0';
 
 const kTabletWidthBreakpoint = 600;
-const kThreeSectionsWidthBreakpoint = 1200;
 
 const imagesPath = 'assets/images';

@@ -246,22 +246,14 @@ class PlaylistSongLyricsProvider extends SongLyricsProvider with _Searchable {
   final Playlist playlist;
 
   PlaylistSongLyricsProvider(DataProvider dataProvider, this.playlist) {
-    final songLyrics = (playlist.playlistRecords..sort())
-        .map((playlistRecord) => dataProvider.getSongLyricById(playlistRecord.songLyric.targetId))
-        .toList()
-        .cast<SongLyric>();
-    _updateSongLyrics(songLyrics);
+    _updateSongLyrics(dataProvider.getPlaylistsSongLyrics(playlist));
   }
 
   @override
   List<SongLyric> get songLyrics => _searchResults ?? super.songLyrics;
 
   void update(DataProvider dataProvider) {
-    final songLyrics = (playlist.playlistRecords..sort())
-        .map((playlistRecord) => dataProvider.getSongLyricById(playlistRecord.songLyric.targetId))
-        .toList()
-        .cast<SongLyric>();
-    _updateSongLyrics(songLyrics);
+    _updateSongLyrics(dataProvider.getPlaylistsSongLyrics(playlist));
 
     notifyListeners();
   }
@@ -300,24 +292,14 @@ class SongbookSongLyricsProvider extends SongLyricsProvider with _Searchable {
   final Songbook songbook;
 
   SongbookSongLyricsProvider(DataProvider dataProvider, this.songbook) {
-    final songLyrics = (songbook.songbookRecords..sort())
-        .map((songbookRecord) => dataProvider.getSongLyricById(songbookRecord.songLyric.targetId))
-        .where((songLyric) => songLyric != null)
-        .toList()
-        .cast<SongLyric>();
-    _updateSongLyrics(songLyrics);
+    _updateSongLyrics(dataProvider.getSongbooksSongLyrics(songbook));
   }
 
   @override
   List<SongLyric> get songLyrics => _searchResults ?? super.songLyrics;
 
   void update(DataProvider dataProvider) {
-    final songLyrics = (songbook.songbookRecords..sort())
-        .map((songbookRecord) => dataProvider.getSongLyricById(songbookRecord.songLyric.targetId))
-        .where((songLyric) => songLyric != null)
-        .toList()
-        .cast<SongLyric>();
-    _updateSongLyrics(songLyrics);
+    _updateSongLyrics(dataProvider.getSongbooksSongLyrics(songbook));
 
     notifyListeners();
   }

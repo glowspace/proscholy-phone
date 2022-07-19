@@ -8,6 +8,7 @@ import 'package:zpevnik/components/home/top_section.dart';
 import 'package:zpevnik/components/home/update_section.dart';
 import 'package:zpevnik/components/search_field.dart';
 import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/utils/extensions.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -27,7 +28,7 @@ class HomeScreen extends StatelessWidget {
       text = 'Dobrý večer';
     }
 
-    if (MediaQuery.of(context).size.width > kTabletWidthBreakpoint) return _HomeScreenTablet(greetings: text);
+    if (MediaQuery.of(context).isTablet) return _HomeScreenTablet(greetings: text);
 
     return _HomeScreenPhone(greetings: text);
   }

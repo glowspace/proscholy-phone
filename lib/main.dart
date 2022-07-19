@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 // import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
-import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/providers/settings.dart';
 import 'package:zpevnik/screens/initial.dart';
 import 'package:zpevnik/theme.dart';
+import 'package:zpevnik/utils/extensions.dart';
 
 const _title = 'Zpěvník';
 
@@ -31,9 +31,7 @@ class MainWidget extends StatelessWidget {
         providers: [
           ChangeNotifierProvider(create: (_) => DataProvider()),
           ChangeNotifierProvider(create: (_) => SettingsProvider()),
-          Provider(
-            create: (_) => NavigationProvider(hasMenu: MediaQuery.of(context).size.width > kTabletWidthBreakpoint),
-          ),
+          ChangeNotifierProvider(create: (_) => NavigationProvider(hasMenu: MediaQuery.of(context).isTablet)),
         ],
         builder: (_, __) => child!,
       ),

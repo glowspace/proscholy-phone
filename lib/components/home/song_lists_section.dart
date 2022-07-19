@@ -6,6 +6,7 @@ import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/playlist/playlist_row.dart';
 import 'package:zpevnik/components/section.dart';
 import 'package:zpevnik/providers/data.dart';
+import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
@@ -24,7 +25,7 @@ class SongListsSection extends StatelessWidget {
     return Section(
       title: Text('Moje seznamy', style: Theme.of(context).textTheme.titleLarge),
       action: Highlightable(
-        onTap: () => Navigator.of(context).pushNamed('/playlists'),
+        onTap: () => NavigationProvider.of(context).pushNamed('/playlists'),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [

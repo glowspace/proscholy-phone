@@ -51,6 +51,25 @@ class DataProvider extends ChangeNotifier {
   SongLyric? getSongLyricById(int id) => _songLyricsById[id];
   Songbook? getSongbookById(int id) => _songbooksById[id];
 
+  List<SongLyric> getPlaylistsSongLyrics(Playlist playlist) {
+    final songLyrics = (playlist.playlistRecords..sort())
+        .map((playlistRecord) => getSongLyricById(playlistRecord.songLyric.targetId))
+        .toList()
+        .cast<SongLyric>();
+
+    return songLyrics;
+  }
+
+  List<SongLyric> getSongbooksSongLyrics(Songbook songbook) {
+    final songLyrics = (songbook.songbookRecords..sort())
+        .map((songbookRecord) => getSongLyricById(songbookRecord.songLyric.targetId))
+        .where((songLyric) => songLyric != null)
+        .toList()
+        .cast<SongLyric>();
+
+    return songLyrics;
+  }
+
   Future<void> init() async {
     prefs = await SharedPreferences.getInstance();
     packageInfo = await PackageInfo.fromPlatform();

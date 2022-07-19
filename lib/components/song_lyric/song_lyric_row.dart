@@ -129,7 +129,7 @@ class SongLyricRow extends StatelessWidget {
 
       final arguments = songLyricScreenArguments ?? SongLyricScreenArguments([songLyric], 0);
 
-      Navigator.of(context).pushNamed('/song_lyric', arguments: arguments);
+      NavigationProvider.of(context).pushNamed('/song_lyric', arguments: arguments);
     }
   }
 }

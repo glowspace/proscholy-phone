@@ -62,6 +62,6 @@ class PlaylistRow extends StatelessWidget {
   void _pushPlaylist(BuildContext context) {
     FocusScope.of(context).unfocus();
 
-    Navigator.of(context).pushNamed('/playlist', arguments: playlist);
+    NavigationProvider.of(context).pushNamed('/playlist', arguments: playlist);
   }
 }

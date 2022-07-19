@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:zpevnik/models/playlist.dart';
+import 'package:zpevnik/models/song_lyric.dart';
+import 'package:zpevnik/models/songbook.dart';
+import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/utils/navigation_observer.dart';
+import 'package:zpevnik/routes/arguments/song_lyric.dart';
 
-class NavigationProvider {
+class NavigationProvider extends ChangeNotifier {
   final bool hasMenu;
 
-  final GlobalKey<NavigatorState> navigatorKey;
-  final GlobalKey<NavigatorState>? menuNavigatorKey;
+  late final navigatorKey = GlobalKey<NavigatorState>();
+  late final menuNavigatorKey = hasMenu ? GlobalKey<NavigatorState>() : null;
 
-  final CustomNavigatorObserver navigatorObserver;
-  final CustomNavigatorObserver? menuNavigatorObserver;
+  late final navigatorObserver = CustomNavigatorObserver(onNavigationStackChanged: notifyListeners);
+  late final menuNavigatorObserver =
+      hasMenu ? CustomNavigatorObserver(onNavigationStackChanged: notifyListeners) : null;
 
-  NavigationProvider({this.hasMenu = false})
-      : navigatorKey = GlobalKey(),
-        menuNavigatorKey = hasMenu ? GlobalKey() : null,
-        navigatorObserver = CustomNavigatorObserver(),
-        menuNavigatorObserver = hasMenu ? CustomNavigatorObserver() : null;
+  NavigationProvider({this.hasMenu = false});
 
   static NavigationProvider of(BuildContext context) {
     return context.read<NavigationProvider>();
@@ -28,11 +30,28 @@ class NavigationProvider {
   }
 
   Future<T?>? pushNamed<T>(String name, {Object? arguments}) {
-    if (name == '/playlist') {
-      return _maybeMenuNavigator.currentState?.pushNamed(name, arguments: arguments);
-    }
+    switch (name) {
+      case '/playlist':
+        final songLyrics =
+            navigatorKey.currentContext!.read<DataProvider>().getPlaylistsSongLyrics(arguments as Playlist);
 
-    return navigatorKey.currentState?.pushNamed<T>(name, arguments: arguments);
+        if (songLyrics.isNotEmpty) {
+          navigatorKey.currentState?.pushNamed('/song_lyric', arguments: SongLyricScreenArguments(songLyrics, 0));
+        }
+
+        return _maybeMenuNavigator.currentState?.pushNamed(name, arguments: arguments);
+      case '/songbook':
+        final songLyrics =
+            navigatorKey.currentContext!.read<DataProvider>().getSongbooksSongLyrics(arguments as Songbook);
+
+        if (songLyrics.isNotEmpty) {
+          navigatorKey.currentState?.pushNamed('/song_lyric', arguments: SongLyricScreenArguments(songLyrics, 0));
+        }
+
+        return _maybeMenuNavigator.currentState?.pushNamed(name, arguments: arguments);
+      default:
+        return navigatorKey.currentState?.pushNamed<T>(name, arguments: arguments);
+    }
   }
 
   void popToOrPushNamed(String name, {Object? arguments}) {
@@ -44,6 +63,16 @@ class NavigationProvider {
       pushNamed(name, arguments: arguments);
     }
   }
+
+  // TODO: temporary solution, just to test animation on real device
+  Future<bool> willPop() async {
+    if (menuNavigatorKey != null) navigatorKey.currentState?.maybePop();
+
+    return true;
+  }
+
+  bool get isSearch =>
+      navigatorObserver.navigationStack.isNotEmpty && navigatorObserver.navigationStack.last == '/search';
 
   GlobalKey<NavigatorState> get _maybeMenuNavigator => menuNavigatorKey ?? navigatorKey;
 }

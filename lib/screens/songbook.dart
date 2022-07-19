@@ -7,6 +7,7 @@ import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
 import 'package:zpevnik/routes/arguments/song_lyric.dart';
+import 'package:zpevnik/utils/extensions.dart';
 
 class SongbookScreen extends StatelessWidget {
   final Songbook songbook;
@@ -23,7 +24,7 @@ class SongbookScreen extends StatelessWidget {
         title: Text(songbook.name, style: Theme.of(context).textTheme.titleMedium),
         centerTitle: false,
       ),
-      bottomNavigationBar: CustomBottomNavigationBar(songbook: songbook),
+      bottomNavigationBar: MediaQuery.of(context).isTablet ? null : CustomBottomNavigationBar(songbook: songbook),
       body: SafeArea(
         child: ChangeNotifierProxyProvider<DataProvider, SongbookSongLyricsProvider>(
           create: (context) => SongbookSongLyricsProvider(dataProvider, songbook),

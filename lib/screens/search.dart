@@ -41,7 +41,9 @@ class SearchScreen extends StatelessWidget {
       ],
     );
 
-    if (MediaQuery.of(context).size.width > kThreeSectionsWidthBreakpoint) {
+    final mediaQuery = MediaQuery.of(context);
+
+    if (mediaQuery.isTablet && mediaQuery.isLandscape) {
       return Scaffold(
         backgroundColor: theme.brightness.isLight ? theme.colorScheme.surface : null,
         body: SafeArea(

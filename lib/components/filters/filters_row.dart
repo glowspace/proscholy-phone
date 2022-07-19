@@ -15,9 +15,10 @@ class FiltersRow extends StatelessWidget {
 
     final selectedTags = context.watch<AllSongLyricsProvider>().selectedTags;
 
-    final width = MediaQuery.of(context).size.width;
+    final mediaQuery = MediaQuery.of(context);
+    final showingThreeSections = mediaQuery.isTablet && mediaQuery.isLandscape;
 
-    if (selectedTags.isEmpty && width > kThreeSectionsWidthBreakpoint) return Container();
+    if (selectedTags.isEmpty && showingThreeSections) return Container();
 
     return Container(
       margin: const EdgeInsets.only(top: kDefaultPadding),
@@ -31,7 +32,7 @@ class FiltersRow extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               child: Row(children: [
                 ...selectedTags.map((tag) => FilterTag(tag: tag, isRemovable: true)),
-                if (width <= kThreeSectionsWidthBreakpoint) const AddFilterTag(),
+                if (!showingThreeSections) const AddFilterTag(),
               ]),
             ),
           ),

@@ -6,8 +6,8 @@ import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/section.dart';
 import 'package:zpevnik/components/songbook/songbook_row.dart';
 import 'package:zpevnik/components/songbook/songbook_tile.dart';
-import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/data.dart';
+import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
@@ -21,7 +21,7 @@ class SongbooksSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (MediaQuery.of(context).size.width > kTabletWidthBreakpoint) return const _SongbooksSectionTablet();
+    if (MediaQuery.of(context).isTablet) return const _SongbooksSectionTablet();
 
     return const _SongbooksSectionPhone();
   }
@@ -45,7 +45,7 @@ class _SongbooksSectionPhone extends StatelessWidget {
         physics: const NeverScrollableScrollPhysics(),
       ),
       action: Highlightable(
-        onTap: () => Navigator.of(context).pushNamed('/songbooks'),
+        onTap: () => NavigationProvider.of(context).pushNamed('/songbooks'),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -82,7 +82,7 @@ class _SongbooksSectionTablet extends StatelessWidget {
             .toList(),
       ),
       action: Highlightable(
-        onTap: () => Navigator.of(context).pushNamed('/songbooks'),
+        onTap: () => NavigationProvider.of(context).pushNamed('/songbooks'),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zpevnik/constants.dart' hide red, green, blue;
 
 extension PlatformExtension on TargetPlatform {
   bool get isIos => this == TargetPlatform.iOS;
@@ -26,4 +27,9 @@ extension HexColor on Color {
   String get hex {
     return '#${red.toRadixString(16)}${green.toRadixString(16)}${blue.toRadixString(16)}';
   }
+}
+
+extension MediaQueryExtension on MediaQueryData {
+  bool get isTablet => size.width > kTabletWidthBreakpoint;
+  bool get isLandscape => orientation == Orientation.landscape;
 }
