@@ -45,6 +45,7 @@ class AppTheme {
         labelLarge: GoogleFonts.roboto(fontSize: 14, color: lightCommentColor, fontWeight: FontWeight.w400),
         labelMedium: const TextStyle(fontSize: 12, color: lightCaptionColor, fontWeight: FontWeight.w400),
       ),
+      dividerColor: const Color(0xffd0d0d0),
       iconTheme: iconTheme,
       splashFactory: NoSplash.splashFactory,
       useMaterial3: true,
@@ -74,6 +75,7 @@ class AppTheme {
         labelLarge: GoogleFonts.roboto(fontSize: 14, color: darkCommentColor, fontWeight: FontWeight.w400),
         labelMedium: const TextStyle(fontSize: 12, color: darkCaptionColor, fontWeight: FontWeight.w400),
       ),
+      dividerColor: const Color(0xff2f2f2f),
       iconTheme: iconTheme,
       splashFactory: NoSplash.splashFactory,
       cupertinoOverrideTheme: const CupertinoThemeData(

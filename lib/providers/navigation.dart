@@ -5,6 +5,7 @@ import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/utils/navigation_observer.dart';
+import 'package:zpevnik/routes/arguments/search.dart';
 import 'package:zpevnik/routes/arguments/song_lyric.dart';
 
 class NavigationProvider extends ChangeNotifier {
@@ -16,6 +17,8 @@ class NavigationProvider extends ChangeNotifier {
   late final navigatorObserver = CustomNavigatorObserver(onNavigationStackChanged: notifyListeners);
   late final menuNavigatorObserver =
       hasMenu ? CustomNavigatorObserver(onNavigationStackChanged: notifyListeners) : null;
+
+  PageController? _songLyricPageController;
 
   NavigationProvider({this.hasMenu = false});
 
@@ -29,26 +32,72 @@ class NavigationProvider extends ChangeNotifier {
     return navigationProvider.navigatorKey.currentState ?? Navigator.of(context);
   }
 
-  Future<T?>? pushNamed<T>(String name, {Object? arguments}) {
+  Future<T?>? pushNamed<T>(String name, {Object? arguments}) async {
+    if (menuNavigatorKey == null) return navigatorKey.currentState?.pushNamed<T>(name, arguments: arguments);
+
     switch (name) {
       case '/playlist':
-        final songLyrics =
-            navigatorKey.currentContext!.read<DataProvider>().getPlaylistsSongLyrics(arguments as Playlist);
+        final dataProvider = navigatorKey.currentContext!.read<DataProvider>();
+        final songLyrics = dataProvider.getPlaylistsSongLyrics(arguments as Playlist);
+
+        final oldRoute = navigatorObserver.currentRoute;
 
         if (songLyrics.isNotEmpty) {
-          navigatorKey.currentState?.pushNamed('/song_lyric', arguments: SongLyricScreenArguments(songLyrics, 0));
+          _songLyricPageController = PageController(initialPage: 0);
+
+          navigatorKey.currentState?.pushNamed(
+            '/song_lyric',
+            arguments: SongLyricScreenArguments(songLyrics, 0, pageController: _songLyricPageController),
+          );
+        } else {
+          navigatorKey.currentState
+              ?.pushNamed('/search', arguments: SearchScreenArguments(shouldReturnSongLyric: true))
+              .then((songLyric) {
+            if (songLyric != null && songLyric is SongLyric) {
+              dataProvider.addToPlaylist(songLyric, arguments);
+
+              navigatorKey.currentState?.pushNamed('/song_lyric', arguments: SongLyricScreenArguments([songLyric], 0));
+            }
+          });
         }
 
-        return _maybeMenuNavigator.currentState?.pushNamed(name, arguments: arguments);
+        final result = await menuNavigatorKey!.currentState?.pushNamed<T>(name, arguments: arguments);
+
+        _songLyricPageController = null;
+
+        navigatorKey.currentState?.popUntil((route) => oldRoute == route);
+
+        return result;
       case '/songbook':
         final songLyrics =
             navigatorKey.currentContext!.read<DataProvider>().getSongbooksSongLyrics(arguments as Songbook);
 
+        final oldRoute = navigatorObserver.currentRoute;
+
         if (songLyrics.isNotEmpty) {
-          navigatorKey.currentState?.pushNamed('/song_lyric', arguments: SongLyricScreenArguments(songLyrics, 0));
+          _songLyricPageController = PageController(initialPage: 0);
+
+          navigatorKey.currentState?.pushNamed(
+            '/song_lyric',
+            arguments: SongLyricScreenArguments(songLyrics, 0, pageController: _songLyricPageController),
+          );
         }
 
-        return _maybeMenuNavigator.currentState?.pushNamed(name, arguments: arguments);
+        final result = await menuNavigatorKey!.currentState?.pushNamed<T>(name, arguments: arguments);
+
+        _songLyricPageController = null;
+
+        navigatorKey.currentState?.popUntil((route) => oldRoute == route);
+
+        return result;
+      case '/song_lyric':
+        if (_songLyricPageController != null) {
+          _songLyricPageController!.jumpToPage((arguments as SongLyricScreenArguments).index);
+
+          return null;
+        }
+
+        return navigatorKey.currentState?.pushNamed<T>(name, arguments: arguments);
       default:
         return navigatorKey.currentState?.pushNamed<T>(name, arguments: arguments);
     }
@@ -64,15 +113,13 @@ class NavigationProvider extends ChangeNotifier {
     }
   }
 
-  // TODO: temporary solution, just to test animation on real device
-  Future<bool> willPop() async {
-    if (menuNavigatorKey != null) navigatorKey.currentState?.maybePop();
-
-    return true;
-  }
-
   bool get isSearch =>
       navigatorObserver.navigationStack.isNotEmpty && navigatorObserver.navigationStack.last == '/search';
 
-  GlobalKey<NavigatorState> get _maybeMenuNavigator => menuNavigatorKey ?? navigatorKey;
+  bool get songLyricCanPopIndividually {
+    if (menuNavigatorObserver == null) return true;
+
+    return menuNavigatorObserver!.navigationStack.last != '/playlist' &&
+        menuNavigatorObserver!.navigationStack.last != '/songbook';
+  }
 }

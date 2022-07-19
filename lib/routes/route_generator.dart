@@ -80,14 +80,14 @@ class RouteGenerator {
 
               return AllSongLyricsProvider(
                 dataProvider,
-                songLyrics: getSongLyrics(arguments, dataProvider),
+                songLyrics: _getSongLyrics(arguments, dataProvider),
                 initialTag: arguments?.initialTag,
               );
             },
             update: (_, dataProvider, allSongLyricsProvider) => allSongLyricsProvider!
               ..update(
                 dataProvider,
-                songLyrics: getSongLyrics(arguments, dataProvider),
+                songLyrics: _getSongLyrics(arguments, dataProvider),
               ),
             builder: (_, __) => const SearchScreen(),
           ),
@@ -98,7 +98,11 @@ class RouteGenerator {
 
         return MaterialPageRoute(
           settings: settings,
-          builder: (_) => SongLyricScreen(songLyrics: arguments.songLyrics, initialIndex: arguments.index),
+          builder: (_) => SongLyricScreen(
+            songLyrics: arguments.songLyrics,
+            initialIndex: arguments.index,
+            pageController: arguments.pageController,
+          ),
         );
       case '/song_lyrics/translations':
         final songLyric = settings.arguments as SongLyric;
@@ -119,19 +123,11 @@ class RouteGenerator {
     }
   }
 
-  static List<SongLyric> getSongLyrics(SearchScreenArguments? arguments, DataProvider dataProvider) {
+  static List<SongLyric> _getSongLyrics(SearchScreenArguments? arguments, DataProvider dataProvider) {
     if (arguments?.playlist != null) {
-      return (arguments!.playlist!.playlistRecords..sort())
-          .map((songbookRecord) => dataProvider.getSongLyricById(songbookRecord.songLyric.targetId))
-          .where((songLyric) => songLyric != null)
-          .toList()
-          .cast<SongLyric>();
+      return dataProvider.getPlaylistsSongLyrics(arguments!.playlist!);
     } else if (arguments?.songbook != null) {
-      return (arguments!.songbook!.songbookRecords..sort())
-          .map((songbookRecord) => dataProvider.getSongLyricById(songbookRecord.songLyric.targetId))
-          .where((songLyric) => songLyric != null)
-          .toList()
-          .cast<SongLyric>();
+      return dataProvider.getSongbooksSongLyrics(arguments!.songbook!);
     }
 
     return dataProvider.songLyrics;

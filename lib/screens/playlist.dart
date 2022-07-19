@@ -22,6 +22,11 @@ class PlaylistScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    final isTablet = MediaQuery.of(context).isTablet;
+    final backgroundColor = theme.brightness.isLight ? theme.colorScheme.surface : theme.scaffoldBackgroundColor;
+
     final dataProvider = context.watch<DataProvider>();
 
     final Widget floatingActionButton;
@@ -57,25 +62,25 @@ class PlaylistScreen extends StatelessWidget {
     //   );
     // }
 
-    return WillPopScope(
-      onWillPop: NavigationProvider.of(context).willPop,
-      child: Scaffold(
-        appBar: AppBar(
-          leading: const CustomBackButton(),
-          title: Text(playlist.name, style: Theme.of(context).textTheme.titleMedium),
-          centerTitle: false,
-          actions: [
-            if (!playlist.isFavorites) PlaylistButton(playlist: playlist, isInAppBar: true, extendPadding: true),
-          ],
-        ),
-        floatingActionButton: floatingActionButton,
-        bottomNavigationBar: MediaQuery.of(context).isTablet ? null : CustomBottomNavigationBar(playlist: playlist),
-        body: SafeArea(
-          child: ChangeNotifierProxyProvider<DataProvider, PlaylistSongLyricsProvider>(
-            create: (context) => PlaylistSongLyricsProvider(dataProvider, playlist),
-            update: (_, dataProvider, playlistSongLyricsProvider) => playlistSongLyricsProvider!..update(dataProvider),
-            builder: (_, __) => const SongLyricsListView<PlaylistSongLyricsProvider>(),
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: isTablet ? backgroundColor : null,
+        elevation: isTablet ? 0 : null,
+        leading: const CustomBackButton(),
+        title: Text(playlist.name, style: Theme.of(context).textTheme.titleMedium),
+        centerTitle: false,
+        actions: [
+          if (!playlist.isFavorites) PlaylistButton(playlist: playlist, isInAppBar: true, extendPadding: true),
+        ],
+      ),
+      backgroundColor: isTablet ? backgroundColor : null,
+      floatingActionButton: floatingActionButton,
+      bottomNavigationBar: MediaQuery.of(context).isTablet ? null : CustomBottomNavigationBar(playlist: playlist),
+      body: SafeArea(
+        child: ChangeNotifierProxyProvider<DataProvider, PlaylistSongLyricsProvider>(
+          create: (context) => PlaylistSongLyricsProvider(dataProvider, playlist),
+          update: (_, dataProvider, playlistSongLyricsProvider) => playlistSongLyricsProvider!..update(dataProvider),
+          builder: (_, __) => const SongLyricsListView<PlaylistSongLyricsProvider>(),
         ),
       ),
     );

@@ -62,7 +62,6 @@ class AddFilterTag extends StatelessWidget {
           builder: (_, __) => FiltersWidget(tagsSections: songLyricsProvider.tagsSections),
         ),
       ),
-      useRootNavigator: true,
     );
   }
 }

@@ -16,14 +16,22 @@ class SongbookScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    final isTablet = MediaQuery.of(context).isTablet;
+    final backgroundColor = theme.brightness.isLight ? theme.colorScheme.surface : theme.scaffoldBackgroundColor;
+
     final dataProvider = context.watch<DataProvider>();
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: isTablet ? backgroundColor : null,
+        elevation: isTablet ? 0 : null,
         leading: const CustomBackButton(),
         title: Text(songbook.name, style: Theme.of(context).textTheme.titleMedium),
         centerTitle: false,
       ),
+      backgroundColor: isTablet ? backgroundColor : null,
       bottomNavigationBar: MediaQuery.of(context).isTablet ? null : CustomBottomNavigationBar(songbook: songbook),
       body: SafeArea(
         child: ChangeNotifierProxyProvider<DataProvider, SongbookSongLyricsProvider>(

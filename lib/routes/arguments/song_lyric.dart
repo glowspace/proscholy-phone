@@ -1,8 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 
 class SongLyricScreenArguments {
   final List<SongLyric> songLyrics;
   final int index;
 
-  SongLyricScreenArguments(this.songLyrics, this.index);
+  final PageController? pageController;
+
+  SongLyricScreenArguments(this.songLyrics, this.index, {this.pageController});
 }

@@ -27,11 +27,13 @@ const double _miniPlayerHeight = 64;
 class SongLyricScreen extends StatefulWidget {
   final List<SongLyric> songLyrics;
   final int initialIndex;
+  final PageController? pageController;
 
   const SongLyricScreen({
     Key? key,
     required this.songLyrics,
     required this.initialIndex,
+    this.pageController,
   }) : super(key: key);
 
   @override
@@ -59,7 +61,7 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
     _currentIndex = widget.initialIndex + (widget.songLyrics.length == 1 ? 0 : 10 * widget.songLyrics.length);
     _lyricsControllers = widget.songLyrics.map((songLyric) => LyricsController(songLyric, context)).toList();
 
-    _pageController = PageController(initialPage: _currentIndex);
+    _pageController = widget.pageController ?? PageController(initialPage: _currentIndex);
     _showingExternals = ValueNotifier(false);
   }
 
@@ -73,11 +75,11 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
     final width = mediaQuery.size.width;
     final height = mediaQuery.size.height;
 
+    final backgroundColor = theme.brightness.isLight ? theme.colorScheme.surface : theme.scaffoldBackgroundColor;
+    final canPopIndividually = NavigationProvider.of(context).songLyricCanPopIndividually;
+
     AppBar? appBar;
     Widget? bottomBar;
-
-    final backgroundColor = theme.brightness.isLight ? theme.colorScheme.surface : theme.scaffoldBackgroundColor;
-    final borderColor = theme.brightness.isLight ? const Color(0xffd0d0d0) : const Color(0xff2f2f2f);
 
     if (!_fullscreen) {
       appBar = AppBar(
@@ -85,11 +87,16 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
         elevation: 0,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1.0),
-          child: Container(color: borderColor, height: 1.0),
+          child: Container(color: theme.dividerColor, height: 1.0),
         ),
         title: Text('${_songLyric.id}', style: theme.textTheme.titleMedium),
         centerTitle: false,
-        leading: const CustomBackButton(),
+        leading: canPopIndividually
+            ? const CustomBackButton()
+            : Highlightable(
+                child: const Icon(Icons.open_in_full),
+                padding: const EdgeInsets.all(kDefaultPadding).copyWith(left: 2.5 * kDefaultPadding),
+              ),
         actions: [
           if (_songLyric.hasTranslations)
             Highlightable(
@@ -112,7 +119,7 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
       const bottomBarActionPadding = EdgeInsets.symmetric(vertical: kDefaultPadding, horizontal: 3 * kDefaultPadding);
 
       bottomBar = Container(
-        decoration: BoxDecoration(border: Border(top: BorderSide(color: borderColor, width: 1))),
+        decoration: BoxDecoration(border: Border(top: BorderSide(color: theme.dividerColor, width: 1))),
         child: BottomAppBar(
           color: backgroundColor,
           elevation: 0,
@@ -207,7 +214,6 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
       context: context,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(kDefaultRadius))),
       builder: (context) => SongLyricFilesWidget(songLyric: _songLyric),
-      useRootNavigator: true,
     );
   }
 
@@ -216,7 +222,6 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
       context: context,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(kDefaultRadius))),
       builder: (context) => SongLyricSettingsWidget(controller: _lyricsController),
-      useRootNavigator: true,
     );
   }
 
@@ -225,7 +230,6 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
       context: context,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(kDefaultRadius))),
       builder: (context) => SongLyricTags(songLyric: _songLyric),
-      useRootNavigator: true,
     );
   }
 
