@@ -11,17 +11,23 @@ class CustomNavigatorObserver extends NavigatorObserver {
   void didPush(Route route, Route? previousRoute) {
     super.didPush(route, previousRoute);
 
-    navigationStack.add(route.settings.name!);
+    final name = route.settings.name;
 
-    if (navigationStack.length != 1) onNavigationStackChanged?.call();
+    if (name != null) {
+      navigationStack.add(name);
+
+      if (navigationStack.length != 1) onNavigationStackChanged?.call();
+    }
   }
 
   @override
   void didPop(Route route, Route? previousRoute) {
     super.didPop(route, previousRoute);
 
-    navigationStack.removeLast();
-    onNavigationStackChanged?.call();
+    if (route.settings.name != null) {
+      navigationStack.removeLast();
+      onNavigationStackChanged?.call();
+    }
   }
 
   @override
