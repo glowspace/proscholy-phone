@@ -30,7 +30,7 @@ class CustomPopupMenuButton<T> extends StatelessWidget {
 
   void _showMenu(BuildContext context) {
     final button = context.findRenderObject()! as RenderBox;
-    final overlay = NavigationProvider.navigatorOf(context).overlay!.context.findRenderObject()! as RenderBox;
+    final overlay = Navigator.of(context).overlay!.context.findRenderObject()! as RenderBox;
 
     final Offset offset;
     switch (menuPosition) {
