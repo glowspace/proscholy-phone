@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
+import 'package:zpevnik/models/songbook_record.dart';
 import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
 import 'package:zpevnik/routes/arguments/search.dart';
@@ -34,6 +35,22 @@ class SongLyricRow extends StatelessWidget {
 
     final dragIndicatorKey = GlobalKey();
 
+    String? songbookName;
+
+    final searchText = context.read<AllSongLyricsProvider?>()?.searchText;
+
+    if (searchText != null && searchText.isNotEmpty) {
+      for (final songbookRecord in songLyric.songbookRecords) {
+        if (searchText == songbookRecord.number) {
+          songbookName = songbookRecord.songbook.target!.name;
+
+          break;
+        }
+      }
+    }
+
+    const textMargin = EdgeInsets.only(top: 2);
+
     final row = Highlightable(
       highlightBackground: true,
       highlightableChildKeys: [dragIndicatorKey],
@@ -62,8 +79,12 @@ class SongLyricRow extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(songLyric.name, style: textTheme.bodyMedium),
-                  if (songLyric.secondaryName1 != null) Text(songLyric.secondaryName1!, style: textTheme.bodySmall),
-                  if (songLyric.secondaryName2 != null) Text(songLyric.secondaryName2!, style: textTheme.bodySmall),
+                  if (songbookName != null)
+                    Container(margin: textMargin, child: Text(songbookName, style: textTheme.bodySmall)),
+                  if (songLyric.secondaryName1 != null)
+                    Container(margin: textMargin, child: Text(songLyric.secondaryName1!, style: textTheme.bodySmall)),
+                  if (songLyric.secondaryName2 != null)
+                    Container(margin: textMargin, child: Text(songLyric.secondaryName2!, style: textTheme.bodySmall)),
                 ],
               ),
             ),
