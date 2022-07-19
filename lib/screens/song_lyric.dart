@@ -192,6 +192,7 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
             _externalsTitleHeight +
                 bottomPadding +
                 _songLyric.youtubes.length * (width / 16 * 9 + _externalsNameHeight) +
+                _songLyric.mp3s.length * (64 + kDefaultPadding) +
                 kDefaultPadding,
           ),
           minHeight: _miniPlayerHeight + bottomPadding,
