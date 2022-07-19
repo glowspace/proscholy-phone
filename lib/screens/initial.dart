@@ -151,11 +151,6 @@ class _InitialScreenState extends State<InitialScreen> {
 
     _pushHomeScreen(context);
 
-    try {
-      handleUniLink(context, null, await getInitialUri());
-      // ignore: empty_catches
-    } on FormatException {}
-
     // setState(() => _showSignInButtons = true);
   }
 
