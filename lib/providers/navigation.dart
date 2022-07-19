@@ -1,21 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:zpevnik/providers/utils/navigation_observer.dart';
 
-class NavigationProvider extends NavigatorObserver {
-  final navigatorKey = GlobalKey<NavigatorState>();
-  final menuNavigatorKey = GlobalKey<NavigatorState>();
+class NavigationProvider {
+  final bool hasMenu;
 
-  Route? _playlistsScreenRoute;
-  Route? _searchScreenRoute;
-  Route? _translationsScreenRoute;
+  final GlobalKey<NavigatorState> navigatorKey;
+  final GlobalKey<NavigatorState>? menuNavigatorKey;
 
-  Route? get playlistsScreenRoute => _playlistsScreenRoute;
-  Route? get searchScreenRoute => _searchScreenRoute;
-  Route? get translationsScreenRoute => _translationsScreenRoute;
+  final CustomNavigatorObserver navigatorObserver;
+  final CustomNavigatorObserver? menuNavigatorObserver;
 
-  bool get hasPlaylistsScreenRoute => _playlistsScreenRoute != null;
-  bool get hasSearchScreenRoute => _searchScreenRoute != null;
-  bool get hasTranslationsScreenRoute => _translationsScreenRoute != null;
+  NavigationProvider({this.hasMenu = false})
+      : navigatorKey = GlobalKey(),
+        menuNavigatorKey = hasMenu ? GlobalKey() : null,
+        navigatorObserver = CustomNavigatorObserver(),
+        menuNavigatorObserver = hasMenu ? CustomNavigatorObserver() : null;
+
+  static NavigationProvider of(BuildContext context) {
+    return context.read<NavigationProvider>();
+  }
 
   static NavigatorState navigatorOf(BuildContext context) {
     final navigationProvider = context.read<NavigationProvider>();
@@ -23,48 +27,23 @@ class NavigationProvider extends NavigatorObserver {
     return navigationProvider.navigatorKey.currentState ?? Navigator.of(context);
   }
 
-  static NavigatorState menuNavigatorOf(BuildContext context) {
-    final navigationProvider = context.read<NavigationProvider>();
+  Future<T?>? pushNamed<T>(String name, {Object? arguments}) {
+    if (name == '/playlist') {
+      return _maybeMenuNavigator.currentState?.pushNamed(name, arguments: arguments);
+    }
 
-    return navigationProvider.menuNavigatorKey.currentState ?? Navigator.of(context);
+    return navigatorKey.currentState?.pushNamed<T>(name, arguments: arguments);
   }
 
-  @override
-  void didPush(Route route, Route? previousRoute) {
-    super.didPush(route, previousRoute);
-
-    if (route.settings.name == '/playlists') {
-      _playlistsScreenRoute = route;
-    } else if (route.settings.name == '/search') {
-      _searchScreenRoute = route;
-    } else if (route.settings.name == '/song_lyrics/translations') {
-      _translationsScreenRoute = route;
+  void popToOrPushNamed(String name, {Object? arguments}) {
+    if (navigatorObserver.navigationStack.contains(name)) {
+      navigatorKey.currentState?.popUntil(ModalRoute.withName(name));
+    } else if (menuNavigatorObserver?.navigationStack.contains(name) ?? false) {
+      menuNavigatorKey?.currentState?.popUntil(ModalRoute.withName(name));
+    } else {
+      pushNamed(name, arguments: arguments);
     }
   }
 
-  @override
-  void didPop(Route route, Route? previousRoute) {
-    super.didPop(route, previousRoute);
-
-    if (route == _playlistsScreenRoute) {
-      _playlistsScreenRoute = null;
-    } else if (route == _searchScreenRoute) {
-      _searchScreenRoute = null;
-    } else if (route == _translationsScreenRoute) {
-      _translationsScreenRoute = null;
-    }
-  }
-
-  @override
-  void didRemove(Route route, Route? previousRoute) {
-    super.didRemove(route, previousRoute);
-
-    if (route == _playlistsScreenRoute) {
-      _playlistsScreenRoute = null;
-    } else if (route == _searchScreenRoute) {
-      _searchScreenRoute = null;
-    } else if (route == _translationsScreenRoute) {
-      _translationsScreenRoute = null;
-    }
-  }
+  GlobalKey<NavigatorState> get _maybeMenuNavigator => menuNavigatorKey ?? navigatorKey;
 }

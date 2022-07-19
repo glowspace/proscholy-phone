@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/songbook.dart';
-import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/routes/arguments/search.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
@@ -45,18 +43,12 @@ class CustomBottomNavigationBar extends StatelessWidget {
 
   void _onDestinationSelected(BuildContext context, int index) {
     if (index == 1) {
-      NavigationProvider.navigatorOf(context)
+      Navigator.of(context)
           .pushNamed('/search', arguments: SearchScreenArguments(playlist: playlist, songbook: songbook));
     } else if (index == 2) {
-      final navigationProvider = context.read<NavigationProvider>();
-
-      if (navigationProvider.hasPlaylistsScreenRoute) {
-        NavigationProvider.navigatorOf(context).popUntil((route) => route == navigationProvider.playlistsScreenRoute);
-      } else {
-        NavigationProvider.navigatorOf(context).pushNamed('/playlists');
-      }
+      // Navigator.of(context).popToOrPushNamed('/playlists');
     } else {
-      NavigationProvider.navigatorOf(context).popUntil((route) => route.settings.name == '/');
+      Navigator.of(context).popUntil(ModalRoute.withName('/'));
     }
   }
 }

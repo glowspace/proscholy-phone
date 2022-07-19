@@ -10,7 +10,6 @@ import 'package:zpevnik/components/section.dart';
 import 'package:zpevnik/components/selector_widget.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/links.dart';
-import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/providers/settings.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
@@ -59,7 +58,7 @@ class _UserScreenState extends State<UserScreen> {
                   _buildSongSettings(context),
                   _buildLinksSection(context),
                   Highlightable(
-                    onTap: () => NavigationProvider.navigatorOf(context).pushNamed('/about'),
+                    onTap: () => Navigator.of(context).pushNamed('/about'),
                     child: Text('O projektu', style: textTheme.bodySmall),
                   ),
                   const SizedBox(height: kDefaultPadding),

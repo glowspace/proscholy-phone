@@ -154,7 +154,7 @@ class _SearchFieldState extends State<SearchField> {
               ),
               if (widget.isInsideSearchScreen)
                 Highlightable(
-                  onTap: () => NavigationProvider.navigatorOf(context).pop(),
+                  onTap: () => Navigator.of(context).pop(),
                   padding: const EdgeInsets.all(kDefaultPadding),
                   child: Text('Zrušit', style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.primary)),
                 ),
@@ -171,12 +171,12 @@ class _SearchFieldState extends State<SearchField> {
     // prevent keyboard from showing up
     FocusScope.of(context).requestFocus(FocusNode());
 
-    NavigationProvider.navigatorOf(context).pushNamed('/search');
+    NavigationProvider.of(context).pushNamed('/search');
   }
 
   void _clearOrPop() {
     if (_controller.text.isEmpty) {
-      NavigationProvider.navigatorOf(context).pop();
+      Navigator.of(context).pop();
     } else {
       _controller.clear();
       widget.onChanged?.call('');

@@ -4,15 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/components/bottom_navigation_bar.dart';
 import 'package:zpevnik/components/custom/back_button.dart';
-import 'package:zpevnik/components/highlightable.dart';
 // import 'package:zpevnik/components/playlist/action_button.dart';
 import 'package:zpevnik/components/playlist/playlist_button.dart';
 import 'package:zpevnik/components/song_lyric/song_lyrics_list_view.dart';
-import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/data.dart';
-import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
 import 'package:zpevnik/routes/arguments/search.dart';
 
@@ -80,11 +77,11 @@ class PlaylistScreen extends StatelessWidget {
   }
 
   void _addText(BuildContext context) async {
-    NavigationProvider.navigatorOf(context).pushNamed('/playlist/custom_text');
+    Navigator.of(context).pushNamed('/playlist/custom_text');
   }
 
   void _addSongLyric(BuildContext context) async {
-    final songLyric = await NavigationProvider.navigatorOf(context).pushNamed(
+    final songLyric = await Navigator.of(context).pushNamed(
       '/search',
       arguments: SearchScreenArguments(shouldReturnSongLyric: true),
     );

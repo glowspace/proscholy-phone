@@ -29,7 +29,7 @@ void showPlaylistDialog(BuildContext context, {SongLyric? selectedSongLyric, boo
 
     if (selectedSongLyric != null) dataProvider.addToPlaylist(selectedSongLyric, playlist);
 
-    if (openPlaylist) NavigationProvider.navigatorOf(context).popAndPushNamed('/playlist', arguments: playlist);
+    if (openPlaylist) Navigator.of(context).popAndPushNamed('/playlist', arguments: playlist);
   }
 }
 
@@ -70,7 +70,7 @@ void showDuplicatePlaylistDialog(BuildContext context, Playlist playlist) async 
     final duplicatedPlaylist = context.read<DataProvider>().duplicatePlaylist(playlist, results[0]);
 
     if (ModalRoute.of(context)?.settings.name != '/playlists') {
-      NavigationProvider.navigatorOf(context).pushNamed('/playlist', arguments: duplicatedPlaylist);
+      Navigator.of(context).pushNamed('/playlist', arguments: duplicatedPlaylist);
     }
   }
 }
@@ -87,6 +87,6 @@ void showremovePlaylistDialog(BuildContext context, Playlist playlist) async {
   if (result == OkCancelResult.ok) {
     context.read<DataProvider>().removePlaylist(playlist);
 
-    if (ModalRoute.of(context)?.settings.name == '/playlist') NavigationProvider.navigatorOf(context).pop();
+    if (ModalRoute.of(context)?.settings.name == '/playlist') Navigator.of(context).pop();
   }
 }

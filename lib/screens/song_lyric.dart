@@ -91,7 +91,8 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
         actions: [
           if (_songLyric.hasTranslations)
             Highlightable(
-              onTap: () => _popOrPushTranslations(context),
+              onTap: () =>
+                  NavigationProvider.of(context).popToOrPushNamed('/song_lyrics/translations', arguments: _songLyric),
               padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
               child: const Icon(Icons.translate),
             ),
@@ -140,7 +141,7 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
               ),
               Highlightable(
                 padding: const EdgeInsets.all(kDefaultPadding),
-                onTap: () => _popOrPushSearch(context),
+                onTap: () => NavigationProvider.of(context).popToOrPushNamed('/search'),
                 child: const Icon(Icons.search),
               ),
             ],
@@ -220,26 +221,6 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
       builder: (context) => SongLyricTags(songLyric: _songLyric),
       useRootNavigator: true,
     );
-  }
-
-  void _popOrPushTranslations(BuildContext context) {
-    final navigationProvider = context.read<NavigationProvider>();
-
-    if (navigationProvider.hasTranslationsScreenRoute) {
-      NavigationProvider.navigatorOf(context).popUntil((route) => route == navigationProvider.translationsScreenRoute);
-    } else {
-      NavigationProvider.navigatorOf(context).pushNamed('/song_lyrics/translations', arguments: _songLyric);
-    }
-  }
-
-  void _popOrPushSearch(BuildContext context) {
-    final navigationProvider = context.read<NavigationProvider>();
-
-    if (navigationProvider.hasSearchScreenRoute) {
-      NavigationProvider.navigatorOf(context).popUntil((route) => route == navigationProvider.searchScreenRoute);
-    } else {
-      NavigationProvider.navigatorOf(context).pushNamed('/search');
-    }
   }
 
   void _toggleFavorite(BuildContext context) {

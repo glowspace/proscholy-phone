@@ -75,6 +75,6 @@ class SongbookTile extends StatelessWidget {
   void _pushSongbook(BuildContext context) {
     FocusScope.of(context).unfocus();
 
-    NavigationProvider.navigatorOf(context).pushNamed('/songbook', arguments: songbook);
+    Navigator.of(context).pushNamed('/songbook', arguments: songbook);
   }
 }

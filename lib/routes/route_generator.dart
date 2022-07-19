@@ -29,6 +29,10 @@ class MenuRouteGenerator {
     switch (settings.name) {
       case '/':
         return MaterialPageRoute(settings: settings, builder: (_) => const HomeMenu());
+      case '/playlist':
+        final playlist = settings.arguments as Playlist;
+
+        return MaterialPageRoute(settings: settings, builder: (_) => PlaylistScreen(playlist: playlist));
       default:
         throw 'Unknown route: ${settings.name}';
     }

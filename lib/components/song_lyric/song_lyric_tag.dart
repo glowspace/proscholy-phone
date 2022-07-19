@@ -39,10 +39,8 @@ class SongLyricTag extends StatelessWidget {
         color: backgroundColor,
         highlightColor: theme.colorScheme.primary.withAlpha(0x10),
         onTap: () => songbookRecord != null
-            ? NavigationProvider.navigatorOf(context)
-                .popAndPushNamed('/songbook', arguments: songbookRecord!.songbook.target)
-            : NavigationProvider.navigatorOf(context)
-                .popAndPushNamed('/search', arguments: SearchScreenArguments(initialTag: tag)),
+            ? Navigator.of(context).popAndPushNamed('/songbook', arguments: songbookRecord!.songbook.target)
+            : Navigator.of(context).popAndPushNamed('/search', arguments: SearchScreenArguments(initialTag: tag)),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [

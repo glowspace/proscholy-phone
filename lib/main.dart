@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 // import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
+import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/providers/settings.dart';
@@ -20,18 +21,21 @@ class MainWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => DataProvider()),
-        ChangeNotifierProvider(create: (_) => SettingsProvider()),
-        Provider(create: (_) => NavigationProvider()),
-      ],
-      builder: (_, __) => MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: _title,
-        theme: AppTheme.light(),
-        darkTheme: AppTheme.dark(),
-        home: const InitialScreen(),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: _title,
+      theme: AppTheme.light(),
+      darkTheme: AppTheme.dark(),
+      home: const InitialScreen(),
+      builder: (context, child) => MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => DataProvider()),
+          ChangeNotifierProvider(create: (_) => SettingsProvider()),
+          Provider(
+            create: (_) => NavigationProvider(hasMenu: MediaQuery.of(context).size.width > kTabletWidthBreakpoint),
+          ),
+        ],
+        builder: (_, __) => child!,
       ),
     );
   }

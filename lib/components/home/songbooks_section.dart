@@ -8,14 +8,13 @@ import 'package:zpevnik/components/songbook/songbook_row.dart';
 import 'package:zpevnik/components/songbook/songbook_tile.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/data.dart';
-import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
 const double _navigateNextIconSize = 20;
 
 const _maxShowingSongbooksPhone = 3;
-const _maxShowingSongbooksTablet = 4;
+const _maxShowingSongbooksTablet = 3;
 
 class SongbooksSection extends StatelessWidget {
   const SongbooksSection({Key? key}) : super(key: key);
@@ -46,7 +45,7 @@ class _SongbooksSectionPhone extends StatelessWidget {
         physics: const NeverScrollableScrollPhysics(),
       ),
       action: Highlightable(
-        onTap: () => NavigationProvider.navigatorOf(context).pushNamed('/songbooks'),
+        onTap: () => Navigator.of(context).pushNamed('/songbooks'),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -83,7 +82,7 @@ class _SongbooksSectionTablet extends StatelessWidget {
             .toList(),
       ),
       action: Highlightable(
-        onTap: () => NavigationProvider.navigatorOf(context).pushNamed('/songbooks'),
+        onTap: () => Navigator.of(context).pushNamed('/songbooks'),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
