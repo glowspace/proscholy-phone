@@ -75,6 +75,7 @@ class PlaylistScreen extends StatelessWidget {
           Highlightable(
             onTap: () => NavigationProvider.of(context)
                 .pushNamed('/search', arguments: SearchScreenArguments(playlist: playlist)),
+            isDisabled: playlist.playlistRecords.isEmpty,
             padding: const EdgeInsets.all(kDefaultPadding).copyWith(left: 2.5 * kDefaultPadding),
             child: const Icon(Icons.filter_alt),
           ),
@@ -82,7 +83,7 @@ class PlaylistScreen extends StatelessWidget {
         ],
       ),
       backgroundColor: isTablet ? backgroundColor : null,
-      floatingActionButton: floatingActionButton,
+      floatingActionButton: isTablet && playlist.playlistRecords.isEmpty ? null : floatingActionButton,
       bottomNavigationBar: MediaQuery.of(context).isTablet ? null : const CustomBottomNavigationBar(),
       body: SafeArea(
         child: ChangeNotifierProxyProvider<DataProvider, PlaylistSongLyricsProvider>(
@@ -94,9 +95,9 @@ class PlaylistScreen extends StatelessWidget {
     );
   }
 
-  void _addText(BuildContext context) async {
-    NavigationProvider.of(context).pushNamed('/playlist/custom_text');
-  }
+  // void _addText(BuildContext context) async {
+  //   NavigationProvider.of(context).pushNamed('/playlist/custom_text');
+  // }
 
   void _addSongLyric(BuildContext context) async {
     final songLyric = await NavigationProvider.of(context).pushNamed(

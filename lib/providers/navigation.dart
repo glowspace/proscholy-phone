@@ -18,8 +18,6 @@ class NavigationProvider extends ChangeNotifier {
   late final menuNavigatorObserver =
       hasMenu ? CustomNavigatorObserver(onNavigationStackChanged: notifyListeners) : null;
 
-  PageController? _songLyricPageController;
-
   NavigationProvider({this.hasMenu = false});
 
   bool _isFullScreen = false;
@@ -54,16 +52,7 @@ class NavigationProvider extends ChangeNotifier {
         final dataProvider = navigatorKey.currentContext!.read<DataProvider>();
         final songLyrics = dataProvider.getPlaylistsSongLyrics(arguments as Playlist);
 
-        final oldRoute = navigatorObserver.currentRoute;
-
-        if (songLyrics.isNotEmpty) {
-          _songLyricPageController = PageController(initialPage: 0);
-
-          navigatorKey.currentState?.pushNamed(
-            '/song_lyric',
-            arguments: SongLyricScreenArguments(songLyrics, 0, pageController: _songLyricPageController),
-          );
-        } else {
+        return _pushSongLyricsWithMenu(name, arguments, songLyrics, onSongLyricsEmpty: () {
           navigatorKey.currentState
               ?.pushNamed('/search', arguments: SearchScreenArguments(shouldReturnSongLyric: true))
               .then((songLyric) {
@@ -73,48 +62,22 @@ class NavigationProvider extends ChangeNotifier {
               navigatorKey.currentState?.pushNamed('/song_lyric', arguments: SongLyricScreenArguments([songLyric], 0));
             }
           });
-        }
-
-        final result = await menuNavigatorKey!.currentState?.pushNamed<T>(name, arguments: arguments);
-
-        _songLyricPageController = null;
-
-        navigatorKey.currentState?.popUntil((route) => oldRoute == route);
-
-        return result;
-      case '/song_lyric':
-        if (_songLyricPageController != null) {
-          _songLyricPageController!.jumpToPage((arguments as SongLyricScreenArguments).index);
-
-          return null;
-        }
-
-        return navigatorKey.currentState?.pushNamed<T>(name, arguments: arguments);
+        });
+      case '/song_lyric/translations':
+        return _pushSongLyricsWithMenu(name, arguments, []);
       case '/songbook':
         final songLyrics =
             navigatorKey.currentContext!.read<DataProvider>().getSongbooksSongLyrics(arguments as Songbook);
 
-        final oldRoute = navigatorObserver.currentRoute;
-
-        if (songLyrics.isNotEmpty) {
-          _songLyricPageController = PageController(initialPage: 0);
-
-          navigatorKey.currentState?.pushNamed(
-            '/song_lyric',
-            arguments: SongLyricScreenArguments(songLyrics, 0, pageController: _songLyricPageController),
-          );
-        }
-
-        final result = await menuNavigatorKey!.currentState?.pushNamed<T>(name, arguments: arguments);
-
-        _songLyricPageController = null;
-
-        navigatorKey.currentState?.popUntil((route) => oldRoute == route);
-
-        return result;
+        return _pushSongLyricsWithMenu(name, arguments, songLyrics);
       case '/user':
+      case '/updated_song_lyrics':
         return menuNavigatorKey!.currentState?.pushNamed<T>(name, arguments: arguments);
       default:
+        if (navigatorObserver.navigationStack.last == name) {
+          return navigatorKey.currentState?.pushReplacementNamed<T, void>(name, arguments: arguments);
+        }
+
         return navigatorKey.currentState?.pushNamed<T>(name, arguments: arguments);
     }
   }
@@ -127,6 +90,26 @@ class NavigationProvider extends ChangeNotifier {
     } else {
       pushNamed(name, arguments: arguments);
     }
+  }
+
+  Future<T?>? _pushSongLyricsWithMenu<T>(String name, Object? arguments, List<SongLyric> songLyrics,
+      {Function()? onSongLyricsEmpty}) async {
+    final oldRoute = navigatorObserver.currentRoute;
+
+    if (songLyrics.isNotEmpty) {
+      navigatorKey.currentState?.pushNamed(
+        '/song_lyric',
+        arguments: SongLyricScreenArguments(songLyrics, 0),
+      );
+    } else {
+      onSongLyricsEmpty?.call();
+    }
+
+    final result = await menuNavigatorKey!.currentState?.pushNamed<T>(name, arguments: arguments);
+
+    navigatorKey.currentState?.popUntil((route) => oldRoute == route);
+
+    return result;
   }
 
   static NavigationProvider of(BuildContext context) {

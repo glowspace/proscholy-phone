@@ -32,31 +32,23 @@ class MenuRouteGenerator {
       case '/playlist':
         final playlist = settings.arguments as Playlist;
 
-        return MaterialPageRoute(
-            settings: settings, builder: (_) => PlaylistScreen(playlist: playlist), fullscreenDialog: true);
-      // return PageRouteBuilder(
-      //     pageBuilder: (context, animation, secondaryAnimation) => PlaylistScreen(playlist: playlist),
-      //     transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      //       // const begin = Offset(0.0, 1.0);
-      //       // const end = Offset.zero;
-      //       const begin = 0.0;
-      //       const end = 1.0;
-      //       var curve = Curves.ease;
-      //       final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-      //       final offsetAnimation = animation.drive(tween);
+        return MaterialPageRoute(settings: settings, builder: (_) => PlaylistScreen(playlist: playlist));
+      case '/song_lyric/translations':
+        final songLyric = settings.arguments as SongLyric;
 
-      //       return FadeTransition(
-      //         // position: offsetAnimation,
-      //         opacity: offsetAnimation,
-      //         child: child,
-      //       );
-      //     });
+        return MaterialPageRoute(settings: settings, builder: (_) => TranslationsScreen(songLyric: songLyric));
       case '/songbook':
         final songbook = settings.arguments as Songbook;
 
-        return MaterialPageRoute(settings: settings, builder: (_) => SongbookScreen(songbook: songbook));
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => SongbookScreen(songbook: songbook),
+          fullscreenDialog: true,
+        );
+      case '/updated_song_lyrics':
+        return MaterialPageRoute(settings: settings, builder: (_) => const UpdatedSongLyricsScreen());
       case '/user':
-        return MaterialPageRoute(settings: settings, builder: (_) => const UserScreen(), fullscreenDialog: true);
+        return MaterialPageRoute(settings: settings, builder: (_) => const UserScreen());
       default:
         throw 'Unknown route: ${settings.name}';
     }
@@ -116,16 +108,11 @@ class RouteGenerator {
       case '/song_lyric':
         final arguments = settings.arguments as SongLyricScreenArguments;
 
-        return MaterialPageRoute(
+        return CustomPageRouteBuilder(
           settings: settings,
-          builder: (_) => SongLyricScreen(
-            songLyrics: arguments.songLyrics,
-            initialIndex: arguments.index,
-            pageController: arguments.pageController,
-          ),
-          fullscreenDialog: true,
+          pageBuilder: (_, __, ___) => SongLyricScreen(songLyrics: arguments.songLyrics, initialIndex: arguments.index),
         );
-      case '/song_lyrics/translations':
+      case '/song_lyric/translations':
         final songLyric = settings.arguments as SongLyric;
 
         return MaterialPageRoute(settings: settings, builder: (_) => TranslationsScreen(songLyric: songLyric));
@@ -153,4 +140,16 @@ class RouteGenerator {
 
     return dataProvider.songLyrics;
   }
+}
+
+class CustomPageRouteBuilder extends PageRouteBuilder {
+  CustomPageRouteBuilder({required super.pageBuilder, super.settings})
+      : super(
+          transitionsBuilder: (_, animation, __, child) {
+            final opacityAnimation =
+                animation.drive(Tween(begin: 0.0, end: 1.0).chain(CurveTween(curve: Curves.easeInOut)));
+
+            return FadeTransition(opacity: opacityAnimation, child: child);
+          },
+        );
 }

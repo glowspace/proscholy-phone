@@ -114,7 +114,9 @@ class _SearchFieldState extends State<SearchField> {
 
     return Hero(
       tag: 'search',
-      flightShuttleBuilder: (_, animation, __, ___, ____) => SearchFieldTransitionWidget(animation: animation),
+      flightShuttleBuilder: MediaQuery.of(context).isTablet
+          ? null
+          : (_, animation, __, ___, ____) => SearchFieldTransitionWidget(animation: animation),
       child: Container(
         padding: widget.isInsideSearchScreen ? const EdgeInsets.only(left: kDefaultPadding) : null,
         child: Material(

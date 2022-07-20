@@ -102,7 +102,7 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
         actions: [
           if (_songLyric.hasTranslations)
             Highlightable(
-              onTap: () => navigationProvider.popToOrPushNamed('/song_lyrics/translations', arguments: _songLyric),
+              onTap: () => navigationProvider.popToOrPushNamed('/song_lyric/translations', arguments: _songLyric),
               padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
               child: const Icon(Icons.translate),
             ),

@@ -6,9 +6,13 @@ import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
 import 'package:zpevnik/routes/arguments/song_lyric.dart';
+import 'package:zpevnik/utils/extensions.dart';
 
-const _noSongLyricsText =
+const _noSongLyricsTextPhone =
     'V tomto seznamu nemáte žádné písně. Klikněte na${unbreakableSpace}tlačítko níže pro přidání nové písně.';
+
+const _noSongLyricsTextTablet =
+    'V tomto seznamu nemáte žádné písně. Vyberte si první píseň ze${unbreakableSpace}seznamu vpravo.';
 
 typedef ListItemBuilder = Widget Function(BuildContext);
 
@@ -81,7 +85,7 @@ class SongLyricsListView<T extends SongLyricsProvider> extends StatelessWidget {
         }
       } else if (songLyricsProvider is PlaylistSongLyricsProvider) {
         if (songLyricsProvider.searchText.isEmpty) {
-          text = _noSongLyricsText;
+          text = MediaQuery.of(context).isTablet ? _noSongLyricsTextTablet : _noSongLyricsTextPhone;
         } else {
           text = 'Nebyly nalezeny žádné písně pro hledaný výraz: "${songLyricsProvider.searchText}".';
         }
