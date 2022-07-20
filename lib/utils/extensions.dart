@@ -30,6 +30,6 @@ extension HexColor on Color {
 }
 
 extension MediaQueryExtension on MediaQueryData {
-  bool get isTablet => size.width > kTabletWidthBreakpoint;
+  bool get isTablet => size.width > kTabletSizeBreakpoint && size.height > kTabletSizeBreakpoint;
   bool get isLandscape => orientation == Orientation.landscape;
 }

@@ -17,7 +17,7 @@ class ContentScreen extends StatelessWidget {
       child: LinksHandlerWrapper(
         child: LayoutBuilder(
           builder: (_, constraints) {
-            if (constraints.maxWidth > kTabletWidthBreakpoint) {
+            if (constraints.maxWidth > kTabletSizeBreakpoint && constraints.maxHeight > kTabletSizeBreakpoint) {
               return Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

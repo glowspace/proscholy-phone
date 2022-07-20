@@ -87,19 +87,21 @@ class _HomeScreenTablet extends StatelessWidget {
           const Spacer(flex: 1),
           Expanded(
             flex: 8,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 2 * kDefaultPadding),
-                Text(greetings, style: Theme.of(context).textTheme.titleLarge),
-                const SizedBox(height: kDefaultPadding / 2),
-                const UpdateSection(),
-                const NewsSection(),
-                const SizedBox(height: 2 * kDefaultPadding),
-                const SongbooksSection(),
-                const SizedBox(height: 2 * kDefaultPadding),
-                // const SharedWithMeSection(),
-              ],
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 2 * kDefaultPadding),
+                  Text(greetings, style: Theme.of(context).textTheme.titleLarge),
+                  const SizedBox(height: kDefaultPadding / 2),
+                  const UpdateSection(),
+                  const NewsSection(),
+                  const SizedBox(height: 2 * kDefaultPadding),
+                  const SongbooksSection(),
+                  const SizedBox(height: 2 * kDefaultPadding),
+                  // const SharedWithMeSection(),
+                ],
+              ),
             ),
           ),
           const Spacer(flex: 1),

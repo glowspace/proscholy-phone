@@ -17,7 +17,7 @@ class TopSection extends StatelessWidget {
       children: [
         const Logo(showFullName: false),
         const Spacer(),
-        if (width <= kTabletWidthBreakpoint)
+        if (width <= kTabletSizeBreakpoint)
           Highlightable(
             onTap: () => NavigationProvider.of(context).pushNamed('/user'),
             padding: const EdgeInsets.all(kDefaultPadding / 2),

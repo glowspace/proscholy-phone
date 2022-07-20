@@ -32,7 +32,25 @@ class MenuRouteGenerator {
       case '/playlist':
         final playlist = settings.arguments as Playlist;
 
-        return MaterialPageRoute(settings: settings, builder: (_) => PlaylistScreen(playlist: playlist));
+        return MaterialPageRoute(
+            settings: settings, builder: (_) => PlaylistScreen(playlist: playlist), fullscreenDialog: true);
+      // return PageRouteBuilder(
+      //     pageBuilder: (context, animation, secondaryAnimation) => PlaylistScreen(playlist: playlist),
+      //     transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      //       // const begin = Offset(0.0, 1.0);
+      //       // const end = Offset.zero;
+      //       const begin = 0.0;
+      //       const end = 1.0;
+      //       var curve = Curves.ease;
+      //       final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+      //       final offsetAnimation = animation.drive(tween);
+
+      //       return FadeTransition(
+      //         // position: offsetAnimation,
+      //         opacity: offsetAnimation,
+      //         child: child,
+      //       );
+      //     });
       case '/songbook':
         final songbook = settings.arguments as Songbook;
 
@@ -105,6 +123,7 @@ class RouteGenerator {
             initialIndex: arguments.index,
             pageController: arguments.pageController,
           ),
+          fullscreenDialog: true,
         );
       case '/song_lyrics/translations':
         final songLyric = settings.arguments as SongLyric;
