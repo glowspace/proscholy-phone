@@ -17,7 +17,7 @@ class PlaylistRecord implements Comparable<PlaylistRecord> {
 
   static int nextRank(Store store, Playlist playlist) {
     final query = store.box<PlaylistRecord>().query(PlaylistRecord_.playlist.equals(playlist.id));
-    query.order(PlaylistRecord_.rank);
+    query.order(PlaylistRecord_.rank, flags: 1);
 
     final rank = query.build().findFirst()?.rank ?? -1;
 
