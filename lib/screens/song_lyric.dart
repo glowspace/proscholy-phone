@@ -164,7 +164,7 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
 
     final bottomPadding = MediaQuery.of(context).padding.bottom;
 
-    return Stack(
+    final scaffold = Stack(
       children: [
         Scaffold(
           appBar: appBar,
@@ -207,6 +207,10 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
         ),
       ],
     );
+
+    if (canPopIndividually) return scaffold;
+
+    return WillPopScope(onWillPop: () async => false, child: scaffold);
   }
 
   void _showFiles(BuildContext context) {
