@@ -22,14 +22,24 @@ class NavigationProvider extends ChangeNotifier {
 
   NavigationProvider({this.hasMenu = false});
 
-  static NavigationProvider of(BuildContext context) {
-    return context.read<NavigationProvider>();
+  bool _isFullScreen = false;
+
+  bool get isFullScreen => _isFullScreen;
+
+  bool get isSearch =>
+      navigatorObserver.navigationStack.isNotEmpty && navigatorObserver.navigationStack.last == '/search';
+
+  bool get songLyricCanPopIndividually {
+    if (menuNavigatorObserver == null) return true;
+
+    return menuNavigatorObserver!.navigationStack.last != '/playlist' &&
+        menuNavigatorObserver!.navigationStack.last != '/songbook';
   }
 
-  static NavigatorState navigatorOf(BuildContext context) {
-    final navigationProvider = context.read<NavigationProvider>();
+  void toggleFullscreen() {
+    _isFullScreen = !_isFullScreen;
 
-    return navigationProvider.navigatorKey.currentState ?? Navigator.of(context);
+    notifyListeners();
   }
 
   Future<T?>? pushNamed<T>(String name, {Object? arguments}) async {
@@ -115,13 +125,13 @@ class NavigationProvider extends ChangeNotifier {
     }
   }
 
-  bool get isSearch =>
-      navigatorObserver.navigationStack.isNotEmpty && navigatorObserver.navigationStack.last == '/search';
+  static NavigationProvider of(BuildContext context) {
+    return context.read<NavigationProvider>();
+  }
 
-  bool get songLyricCanPopIndividually {
-    if (menuNavigatorObserver == null) return true;
+  static NavigatorState navigatorOf(BuildContext context) {
+    final navigationProvider = context.read<NavigationProvider>();
 
-    return menuNavigatorObserver!.navigationStack.last != '/playlist' &&
-        menuNavigatorObserver!.navigationStack.last != '/songbook';
+    return navigationProvider.navigatorKey.currentState ?? Navigator.of(context);
   }
 }

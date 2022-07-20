@@ -11,6 +11,7 @@ class ContentScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final navigationProvider = context.read<NavigationProvider>();
+    final isFullScreen = context.select<NavigationProvider, bool>((provider) => provider.isFullScreen);
 
     return WillPopScope(
       onWillPop: () async => !(await navigationProvider.navigatorKey.currentState?.maybePop() ?? false),
@@ -21,14 +22,19 @@ class ContentScreen extends StatelessWidget {
               return Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ClipRect(
-                    clipBehavior: Clip.antiAlias,
-                    child: SizedBox(
-                      width: 320,
-                      child: Navigator(
-                        key: navigationProvider.menuNavigatorKey,
-                        observers: [navigationProvider.menuNavigatorObserver!, HeroController()],
-                        onGenerateRoute: MenuRouteGenerator.generateRoute,
+                  AnimatedAlign(
+                    alignment: Alignment.center,
+                    duration: kDefaultAnimationDuration,
+                    widthFactor: isFullScreen ? 0 : 1,
+                    child: ClipRect(
+                      clipBehavior: Clip.antiAlias,
+                      child: SizedBox(
+                        width: 320,
+                        child: Navigator(
+                          key: navigationProvider.menuNavigatorKey,
+                          observers: [navigationProvider.menuNavigatorObserver!, HeroController()],
+                          onGenerateRoute: MenuRouteGenerator.generateRoute,
+                        ),
                       ),
                     ),
                   ),

@@ -71,12 +71,13 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
     final mediaQuery = MediaQuery.of(context);
 
     final settingsProvider = context.read<SettingsProvider>();
+    final navigationProvider = NavigationProvider.of(context);
 
     final width = mediaQuery.size.width;
     final height = mediaQuery.size.height;
 
     final backgroundColor = theme.brightness.isLight ? theme.colorScheme.surface : theme.scaffoldBackgroundColor;
-    final canPopIndividually = NavigationProvider.of(context).songLyricCanPopIndividually;
+    final canPopIndividually = navigationProvider.songLyricCanPopIndividually;
 
     AppBar? appBar;
     Widget? bottomBar;
@@ -94,14 +95,14 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
         leading: canPopIndividually
             ? const CustomBackButton()
             : Highlightable(
-                child: const Icon(Icons.open_in_full),
+                onTap: navigationProvider.toggleFullscreen,
                 padding: const EdgeInsets.all(kDefaultPadding).copyWith(left: 2.5 * kDefaultPadding),
+                child: Icon(navigationProvider.isFullScreen ? Icons.close_fullscreen : Icons.open_in_full),
               ),
         actions: [
           if (_songLyric.hasTranslations)
             Highlightable(
-              onTap: () =>
-                  NavigationProvider.of(context).popToOrPushNamed('/song_lyrics/translations', arguments: _songLyric),
+              onTap: () => navigationProvider.popToOrPushNamed('/song_lyrics/translations', arguments: _songLyric),
               padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
               child: const Icon(Icons.translate),
             ),
@@ -153,7 +154,7 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
               ),
               Highlightable(
                 padding: bottomBarActionPadding,
-                onTap: () => NavigationProvider.of(context).popToOrPushNamed('/search'),
+                onTap: () => navigationProvider.popToOrPushNamed('/search'),
                 child: const Icon(Icons.search),
               ),
             ],
