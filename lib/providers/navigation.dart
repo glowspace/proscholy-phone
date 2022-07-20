@@ -36,7 +36,8 @@ class NavigationProvider extends ChangeNotifier {
 
     return menuNavigatorObserver!.navigationStack.last != '/playlist' &&
         menuNavigatorObserver!.navigationStack.last != '/songbook' &&
-        menuNavigatorObserver!.navigationStack.last != '/song_lyric/translations';
+        menuNavigatorObserver!.navigationStack.last != '/song_lyric/translations' &&
+        menuNavigatorObserver!.navigationStack.last != '/updated_song_lyrics';
   }
 
   void toggleFullscreen() {
@@ -76,8 +77,11 @@ class NavigationProvider extends ChangeNotifier {
 
         return _pushSongLyricsWithMenu(name, arguments, songLyrics);
       case '/user':
-      case '/updated_song_lyrics':
         return menuNavigatorKey!.currentState?.pushNamed<T>(name, arguments: arguments);
+      case '/updated_song_lyrics':
+        final songLyrics = navigatorKey.currentContext!.read<DataProvider>().updatedSongLyrics;
+
+        return _pushSongLyricsWithMenu(name, arguments, songLyrics);
       default:
         if (navigatorObserver.navigationStack.last == name) {
           return navigatorKey.currentState?.pushReplacementNamed<T, void>(name, arguments: arguments);
