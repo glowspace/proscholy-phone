@@ -29,6 +29,10 @@ class NavigationProvider extends ChangeNotifier {
   bool get isSearch =>
       navigatorObserver.navigationStack.isNotEmpty && navigatorObserver.navigationStack.last == '/search';
 
+  bool get isHomeMenu => menuNavigatorObserver == null
+      ? false
+      : menuNavigatorObserver!.navigationStack.isNotEmpty && menuNavigatorObserver!.navigationStack.last == '/';
+
   bool get songLyricCanPopIndividually {
     if (menuNavigatorObserver == null) return true;
 

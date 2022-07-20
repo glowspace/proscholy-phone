@@ -32,8 +32,11 @@ class SearchFieldTransitionWidget extends AnimatedWidget {
               child: TextField(
                 decoration: InputDecoration(
                   hintText: 'Název, číslo nebo část textu',
-                  hintStyle: theme.textTheme.titleMedium
-                      ?.copyWith(color: theme.brightness.isLight ? lightIconColor : darkIconColor),
+                  hintStyle: theme.textTheme.titleMedium?.copyWith(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                    color: theme.brightness.isLight ? lightIconColor : darkIconColor,
+                  ),
                   filled: true,
                   fillColor: fillColor,
                   isDense: true,
@@ -124,8 +127,11 @@ class _SearchFieldState extends State<SearchField> {
                   builder: (_, value, __) => TextField(
                     decoration: InputDecoration(
                       hintText: 'Název, číslo nebo část textu',
-                      hintStyle: theme.textTheme.titleMedium
-                          ?.copyWith(color: theme.brightness.isLight ? lightIconColor : darkIconColor),
+                      hintStyle: theme.textTheme.titleMedium?.copyWith(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                        color: theme.brightness.isLight ? lightIconColor : darkIconColor,
+                      ),
                       filled: true,
                       fillColor: theme.brightness.isLight && widget.isInsideSearchScreen
                           ? theme.scaffoldBackgroundColor

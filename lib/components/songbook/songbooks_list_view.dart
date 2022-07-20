@@ -46,7 +46,7 @@ class _SongbooksListViewPhone extends StatelessWidget {
       data: Theme.of(context).copyWith(canvasColor: Colors.transparent),
       child: ListView.builder(
         primary: false,
-        padding: const EdgeInsets.only(top: kDefaultPadding / 2, bottom: 2 * kDefaultPadding),
+        padding: shrinkWrap ? null : const EdgeInsets.only(top: kDefaultPadding / 2, bottom: 2 * kDefaultPadding),
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         itemCount: songbooks.length,
         itemBuilder: (context, index) => SongbookRow(songbook: songbooks[index]),
@@ -82,7 +82,7 @@ class _SongbooksListViewTablet extends StatelessWidget {
       child: AlignedGridView.count(
         crossAxisCount: crossAxisCount,
         primary: false,
-        padding: const EdgeInsets.only(top: kDefaultPadding / 2, bottom: 2 * kDefaultPadding),
+        padding: shrinkWrap ? null : const EdgeInsets.only(top: kDefaultPadding / 2, bottom: 2 * kDefaultPadding),
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         itemCount: songbooks.length,
         itemBuilder: (context, index) => SongbookTile(songbook: songbooks[index]),

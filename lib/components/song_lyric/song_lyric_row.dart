@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
-import 'package:zpevnik/models/songbook_record.dart';
 import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
 import 'package:zpevnik/routes/arguments/search.dart';
@@ -18,6 +17,7 @@ const double _minSize = 34;
 class SongLyricRow extends StatelessWidget {
   final SongLyric songLyric;
   final bool isReorderable;
+  final bool isDraggable;
 
   // arguments that hold song lyrics that are accessible through swiping on song lyrics screen
   final SongLyricScreenArguments? songLyricScreenArguments;
@@ -27,6 +27,7 @@ class SongLyricRow extends StatelessWidget {
     required this.songLyric,
     this.isReorderable = false,
     this.songLyricScreenArguments,
+    this.isDraggable = false,
   }) : super(key: key);
 
   @override
@@ -103,6 +104,24 @@ class SongLyricRow extends StatelessWidget {
         direction: DismissDirection.endToStart,
         background: Container(color: red),
         child: row,
+      );
+    }
+
+    if (isDraggable) {
+      return Draggable(
+        data: songLyric,
+        rootOverlay: true,
+        child: row,
+        feedback: Opacity(
+          opacity: 0.75,
+          child: Material(
+            color: Colors.transparent,
+            child: Container(
+              padding: const EdgeInsets.all(kDefaultPadding),
+              child: Text(songLyric.name),
+            ),
+          ),
+        ),
       );
     }
 

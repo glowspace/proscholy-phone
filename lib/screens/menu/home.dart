@@ -7,11 +7,15 @@ import 'package:zpevnik/components/search_field.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/navigation.dart';
 
+final _tipMessage = 'Tip: písně z hledání můžete prstem přetáhnout přímo do seznamu.';
+
 class HomeMenu extends StatelessWidget {
   const HomeMenu({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     final isSearch = context.select<NavigationProvider, bool>((provider) => provider.isSearch);
 
     return Scaffold(
@@ -26,18 +30,23 @@ class HomeMenu extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    AnimatedCrossFade(
-                      crossFadeState: isSearch ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-                      duration: kDefaultAnimationDuration,
-                      firstChild: Column(
-                        children: const [
-                          SizedBox(height: 2 * kDefaultPadding),
-                          TopSection(),
-                          SizedBox(height: 2 * kDefaultPadding),
-                          SearchField(key: Key('searchfield')),
-                        ],
+                    const SizedBox(height: 2 * kDefaultPadding),
+                    const TopSection(),
+                    Container(
+                      margin: const EdgeInsets.only(top: 2 * kDefaultPadding),
+                      child: AnimatedCrossFade(
+                        crossFadeState: isSearch ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                        duration: kDefaultAnimationDuration,
+                        firstChild: const SearchField(key: Key('searchfield')),
+                        secondChild: Container(
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.surface,
+                            borderRadius: BorderRadius.circular(kDefaultRadius),
+                          ),
+                          padding: const EdgeInsets.all(kDefaultPadding),
+                          child: Text(_tipMessage, style: theme.textTheme.caption),
+                        ),
                       ),
-                      secondChild: Container(),
                     ),
                     const SizedBox(height: 2 * kDefaultPadding),
                     Text('Moje seznamy', style: Theme.of(context).textTheme.titleLarge),

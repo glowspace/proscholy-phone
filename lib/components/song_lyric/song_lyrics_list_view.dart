@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:zpevnik/components/song_lyric/song_lyric_row.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
+import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
 import 'package:zpevnik/routes/arguments/song_lyric.dart';
 
@@ -34,7 +35,10 @@ class SongLyricsListView<T extends SongLyricsProvider> extends StatelessWidget {
       }
 
       if (songLyricsProvider.matchedById != null) {
-        listItems.add((_) => SongLyricRow(songLyric: songLyricsProvider.matchedById!));
+        listItems.add((_) => SongLyricRow(
+              songLyric: songLyricsProvider.matchedById!,
+              isDraggable: NavigationProvider.of(context).isHomeMenu,
+            ));
         listItems.add((_) => const SizedBox(height: 2 * kDefaultPadding));
       }
 
@@ -128,10 +132,11 @@ class SongLyricsListView<T extends SongLyricsProvider> extends StatelessWidget {
 
     for (var i = 0; i < songLyrics.length; i++) {
       listItems.add(
-        (_) => SongLyricRow(
+        (context) => SongLyricRow(
           key: Key('${songLyrics[i].id}'),
           songLyric: songLyrics[i],
           isReorderable: isReorderable,
+          isDraggable: NavigationProvider.of(context).isHomeMenu,
           songLyricScreenArguments: SongLyricScreenArguments(songLyrics, i),
         ),
       );
