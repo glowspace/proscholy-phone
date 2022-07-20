@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/components/bottom_navigation_bar.dart';
 import 'package:zpevnik/components/custom/back_button.dart';
+import 'package:zpevnik/components/highlightable.dart';
 // import 'package:zpevnik/components/playlist/action_button.dart';
 import 'package:zpevnik/components/playlist/playlist_button.dart';
 import 'package:zpevnik/components/song_lyric/song_lyrics_list_view.dart';
+import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/data.dart';
@@ -70,12 +72,18 @@ class PlaylistScreen extends StatelessWidget {
         title: Text(playlist.name, style: Theme.of(context).textTheme.titleMedium),
         centerTitle: false,
         actions: [
+          Highlightable(
+            onTap: () => NavigationProvider.of(context)
+                .pushNamed('/search', arguments: SearchScreenArguments(playlist: playlist)),
+            padding: const EdgeInsets.all(kDefaultPadding).copyWith(left: 2.5 * kDefaultPadding),
+            child: const Icon(Icons.filter_alt),
+          ),
           if (!playlist.isFavorites) PlaylistButton(playlist: playlist, isInAppBar: true, extendPadding: true),
         ],
       ),
       backgroundColor: isTablet ? backgroundColor : null,
       floatingActionButton: floatingActionButton,
-      bottomNavigationBar: MediaQuery.of(context).isTablet ? null : CustomBottomNavigationBar(playlist: playlist),
+      bottomNavigationBar: MediaQuery.of(context).isTablet ? null : const CustomBottomNavigationBar(),
       body: SafeArea(
         child: ChangeNotifierProxyProvider<DataProvider, PlaylistSongLyricsProvider>(
           create: (context) => PlaylistSongLyricsProvider(dataProvider, playlist),

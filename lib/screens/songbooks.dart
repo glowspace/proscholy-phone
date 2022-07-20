@@ -18,7 +18,7 @@ class SongbooksScreen extends StatelessWidget {
         centerTitle: false,
       ),
       bottomNavigationBar: MediaQuery.of(context).isTablet ? null : const CustomBottomNavigationBar(),
-      body: SafeArea(child: SongbooksListView(songbooks: context.read<DataProvider>().songbooks)),
+      body: SafeArea(child: SongbooksListView(songbooks: context.watch<DataProvider>().songbooks)),
     );
   }
 }
