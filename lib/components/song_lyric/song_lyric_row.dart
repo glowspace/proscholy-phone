@@ -110,6 +110,8 @@ class SongLyricRow extends StatelessWidget {
     if (isDraggable) {
       return Draggable(
         data: songLyric,
+        dragAnchorStrategy: pointerDragAnchorStrategy,
+        affinity: Axis.horizontal,
         rootOverlay: true,
         child: row,
         feedback: Opacity(
