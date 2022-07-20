@@ -60,12 +60,14 @@ class NavigationProvider extends ChangeNotifier {
             if (songLyric != null && songLyric is SongLyric) {
               dataProvider.addToPlaylist(songLyric, arguments);
 
-              navigatorKey.currentState?.pushNamed('/song_lyric', arguments: SongLyricScreenArguments([songLyric], 0));
+              navigatorKey.currentState
+                  ?.pushNamed('/song_lyric', arguments: SongLyricScreenArguments([songLyric], 0, isTablet: true));
             }
           });
         });
       case '/song_lyric':
-        return navigatorKey.currentState?.pushNamed<T>(name, arguments: arguments);
+        return navigatorKey.currentState
+            ?.pushNamed<T>(name, arguments: (arguments as SongLyricScreenArguments).copyWith(isTablet: true));
       case '/song_lyric/translations':
         return _pushSongLyricsWithMenu(name, arguments, []);
       case '/songbook':
@@ -102,7 +104,7 @@ class NavigationProvider extends ChangeNotifier {
     if (songLyrics.isNotEmpty) {
       navigatorKey.currentState?.pushNamed(
         '/song_lyric',
-        arguments: SongLyricScreenArguments(songLyrics, 0),
+        arguments: SongLyricScreenArguments(songLyrics, 0, isTablet: true),
       );
     } else {
       onSongLyricsEmpty?.call();

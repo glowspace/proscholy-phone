@@ -108,9 +108,17 @@ class RouteGenerator {
       case '/song_lyric':
         final arguments = settings.arguments as SongLyricScreenArguments;
 
-        return CustomPageRouteBuilder(
+        if (arguments.isTablet) {
+          return CustomPageRouteBuilder(
+            settings: settings,
+            pageBuilder: (_, __, ___) =>
+                SongLyricScreen(songLyrics: arguments.songLyrics, initialIndex: arguments.index),
+          );
+        }
+
+        return MaterialPageRoute(
           settings: settings,
-          pageBuilder: (_, __, ___) => SongLyricScreen(songLyrics: arguments.songLyrics, initialIndex: arguments.index),
+          builder: (_) => SongLyricScreen(songLyrics: arguments.songLyrics, initialIndex: arguments.index),
         );
       case '/song_lyric/translations':
         final songLyric = settings.arguments as SongLyric;

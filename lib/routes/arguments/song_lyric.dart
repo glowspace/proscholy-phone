@@ -4,5 +4,14 @@ class SongLyricScreenArguments {
   final List<SongLyric> songLyrics;
   final int index;
 
-  SongLyricScreenArguments(this.songLyrics, this.index);
+  final bool isTablet;
+
+  SongLyricScreenArguments(this.songLyrics, this.index, {this.isTablet = false});
+
+  SongLyricScreenArguments copyWith({List<SongLyric>? songLyrics, int? index, bool? isTablet}) =>
+      SongLyricScreenArguments(
+        songLyrics ?? this.songLyrics,
+        index ?? this.index,
+        isTablet: isTablet ?? this.isTablet,
+      );
 }
