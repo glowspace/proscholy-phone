@@ -161,6 +161,16 @@ class DataProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void togglePin(Songbook songbook) {
+    songbook.isPinned = !songbook.isPinned;
+
+    store.box<Songbook>().put(songbook);
+
+    _songbooks.sort();
+
+    notifyListeners();
+  }
+
   Future<void> _load() async {
     final currentVersion = prefs.getString(_versionKey);
     final buildVersion = '${packageInfo.version}+${packageInfo.buildNumber}';

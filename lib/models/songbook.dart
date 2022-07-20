@@ -56,17 +56,17 @@ class Songbook implements Comparable<Songbook> {
 
   @override
   int compareTo(Songbook other) {
+    if (isPinned && !other.isPinned) {
+      return -1;
+    } else if (!isPinned && other.isPinned) {
+      return 1;
+    }
+
     if (prioritized.containsKey(shortcut) && prioritized.containsKey(other.shortcut)) {
       return prioritized[shortcut]!.compareTo(prioritized[other.shortcut]!);
     } else if (prioritized.containsKey(shortcut)) {
       return -1;
     } else if (prioritized.containsKey(other.shortcut)) {
-      return 1;
-    }
-
-    if (isPinned && !other.isPinned) {
-      return -1;
-    } else if (!isPinned && other.isPinned) {
       return 1;
     }
 

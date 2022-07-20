@@ -1,8 +1,8 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songbook.dart';
+import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/components/highlightable.dart';
 
@@ -66,6 +66,7 @@ class SongbookTile extends StatelessWidget {
                 Highlightable(
                   key: pinHighlightablKey,
                   child: Icon(songbook.isPinned ? Icons.push_pin : Icons.push_pin_outlined),
+                  onTap: () => context.read<DataProvider>().togglePin(songbook),
                 )
               ],
             ),
