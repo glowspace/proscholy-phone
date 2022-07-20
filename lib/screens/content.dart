@@ -27,7 +27,7 @@ class ContentScreen extends StatelessWidget {
                       width: 320,
                       child: Navigator(
                         key: navigationProvider.menuNavigatorKey,
-                        observers: [navigationProvider.menuNavigatorObserver!],
+                        observers: [navigationProvider.menuNavigatorObserver!, HeroController()],
                         onGenerateRoute: MenuRouteGenerator.generateRoute,
                       ),
                     ),
@@ -38,7 +38,7 @@ class ContentScreen extends StatelessWidget {
                       clipBehavior: Clip.antiAlias,
                       child: Navigator(
                         key: navigationProvider.navigatorKey,
-                        observers: [navigationProvider.navigatorObserver],
+                        observers: [navigationProvider.navigatorObserver, HeroController()],
                         onGenerateRoute: RouteGenerator.generateRoute,
                       ),
                     ),
@@ -49,7 +49,7 @@ class ContentScreen extends StatelessWidget {
 
             return Navigator(
               key: navigationProvider.navigatorKey,
-              observers: [navigationProvider.navigatorObserver],
+              observers: [navigationProvider.navigatorObserver, HeroController()],
               onGenerateRoute: RouteGenerator.generateRoute,
             );
           },
