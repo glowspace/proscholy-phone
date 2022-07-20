@@ -117,7 +117,9 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
         ],
       );
 
-      const bottomBarActionPadding = EdgeInsets.symmetric(vertical: kDefaultPadding, horizontal: 3 * kDefaultPadding);
+      final bottomBarActionPadding = mediaQuery.isTablet
+          ? const EdgeInsets.symmetric(vertical: kDefaultPadding, horizontal: 3 * kDefaultPadding)
+          : const EdgeInsets.symmetric(vertical: kDefaultPadding);
 
       bottomBar = Container(
         decoration: BoxDecoration(border: Border(top: BorderSide(color: theme.dividerColor, width: 1))),
