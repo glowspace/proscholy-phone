@@ -83,9 +83,10 @@ class _HomeScreenTablet extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
+        child: Row(children: [
+          const Spacer(flex: 1),
+          Expanded(
+            flex: 8,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -101,7 +102,8 @@ class _HomeScreenTablet extends StatelessWidget {
               ],
             ),
           ),
-        ),
+          const Spacer(flex: 1),
+        ]),
       ),
     );
   }

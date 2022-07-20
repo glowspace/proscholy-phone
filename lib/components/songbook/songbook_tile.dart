@@ -53,7 +53,10 @@ class SongbookTile extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(15),
-              child: Image.asset(imagePath),
+              child: AspectRatio(
+                aspectRatio: 4 / 3,
+                child: FittedBox(child: Image.asset(imagePath)),
+              ),
             ),
             const SizedBox(height: kDefaultPadding / 2),
             Row(
