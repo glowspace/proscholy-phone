@@ -35,7 +35,8 @@ class NavigationProvider extends ChangeNotifier {
     if (menuNavigatorObserver == null) return true;
 
     return menuNavigatorObserver!.navigationStack.last != '/playlist' &&
-        menuNavigatorObserver!.navigationStack.last != '/songbook';
+        menuNavigatorObserver!.navigationStack.last != '/songbook' &&
+        menuNavigatorObserver!.navigationStack.last != '/song_lyric/translations';
   }
 
   void toggleFullscreen() {
@@ -63,6 +64,8 @@ class NavigationProvider extends ChangeNotifier {
             }
           });
         });
+      case '/song_lyric':
+        return navigatorKey.currentState?.pushNamed<T>(name, arguments: arguments);
       case '/song_lyric/translations':
         return _pushSongLyricsWithMenu(name, arguments, []);
       case '/songbook':
