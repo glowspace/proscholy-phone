@@ -68,6 +68,14 @@ class NavigationProvider extends ChangeNotifier {
         navigatorKey.currentState?.popUntil((route) => oldRoute == route);
 
         return result;
+      case '/song_lyric':
+        if (_songLyricPageController != null) {
+          _songLyricPageController!.jumpToPage((arguments as SongLyricScreenArguments).index);
+
+          return null;
+        }
+
+        return navigatorKey.currentState?.pushNamed<T>(name, arguments: arguments);
       case '/songbook':
         final songLyrics =
             navigatorKey.currentContext!.read<DataProvider>().getSongbooksSongLyrics(arguments as Songbook);
@@ -90,14 +98,8 @@ class NavigationProvider extends ChangeNotifier {
         navigatorKey.currentState?.popUntil((route) => oldRoute == route);
 
         return result;
-      case '/song_lyric':
-        if (_songLyricPageController != null) {
-          _songLyricPageController!.jumpToPage((arguments as SongLyricScreenArguments).index);
-
-          return null;
-        }
-
-        return navigatorKey.currentState?.pushNamed<T>(name, arguments: arguments);
+      case '/user':
+        return menuNavigatorKey!.currentState?.pushNamed<T>(name, arguments: arguments);
       default:
         return navigatorKey.currentState?.pushNamed<T>(name, arguments: arguments);
     }

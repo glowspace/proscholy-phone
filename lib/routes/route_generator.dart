@@ -37,6 +37,8 @@ class MenuRouteGenerator {
         final songbook = settings.arguments as Songbook;
 
         return MaterialPageRoute(settings: settings, builder: (_) => SongbookScreen(songbook: songbook));
+      case '/user':
+        return MaterialPageRoute(settings: settings, builder: (_) => const UserScreen(), fullscreenDialog: true);
       default:
         throw 'Unknown route: ${settings.name}';
     }
