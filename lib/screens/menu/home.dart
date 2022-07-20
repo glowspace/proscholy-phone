@@ -26,14 +26,16 @@ class HomeMenu extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const SizedBox(height: 2 * kDefaultPadding),
-                    const TopSection(),
                     AnimatedCrossFade(
                       crossFadeState: isSearch ? CrossFadeState.showSecond : CrossFadeState.showFirst,
                       duration: kDefaultAnimationDuration,
-                      firstChild: Container(
-                        margin: const EdgeInsets.only(top: 2 * kDefaultPadding),
-                        child: const SearchField(key: Key('searchfield')),
+                      firstChild: Column(
+                        children: const [
+                          SizedBox(height: 2 * kDefaultPadding),
+                          TopSection(),
+                          SizedBox(height: 2 * kDefaultPadding),
+                          SearchField(key: Key('searchfield')),
+                        ],
                       ),
                       secondChild: Container(),
                     ),
