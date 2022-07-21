@@ -292,12 +292,23 @@ class DataProvider extends ChangeNotifier {
       playlists.add(playlist);
     }
 
+    // there was some bug in the old database where the playlist records were stored multiple times, this will keep track of inserted playlist records to avoid duplicates
+    final Map<int, Set<int>> insertedPlaylistRecords = {};
+
     for (final oldPlaylistRecord in oldPlaylistRecords) {
+      final playlistId = oldPlaylistRecord['playlistsId'] as int;
+      final songLyricId = oldPlaylistRecord['song_lyricsId'] as int;
+
+      if (insertedPlaylistRecords[playlistId]?.contains(songLyricId) ?? false) continue;
+
       final playlistRecord = PlaylistRecord(oldPlaylistRecord['rank'] as int)
-        ..songLyric.targetId = oldPlaylistRecord['song_lyricsId'] as int
-        ..playlist.targetId = (oldPlaylistRecord['playlistsId'] as int) + 1;
+        ..songLyric.targetId = songLyricId
+        ..playlist.targetId = playlistId + 1;
 
       playlistRecords.add(playlistRecord);
+
+      insertedPlaylistRecords[playlistId] ??= {};
+      insertedPlaylistRecords[playlistId]!.add(songLyricId);
     }
 
     store.box<Playlist>().putMany(playlists);
