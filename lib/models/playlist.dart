@@ -38,7 +38,7 @@ class Playlist implements Comparable<Playlist> {
 
   static int nextRank(Store store) {
     final query = store.box<Playlist>().query();
-    query.order(Playlist_.rank);
+    query.order(Playlist_.rank, flags: 1);
 
     final rank = query.build().findFirst()?.rank ?? -1;
 

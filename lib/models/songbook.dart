@@ -3,8 +3,11 @@ import 'package:objectbox/objectbox.dart';
 import 'package:zpevnik/models/objectbox.g.dart';
 import 'package:zpevnik/models/songbook_record.dart';
 
+// prioritized songbook shortcuts in sorting
+const prioritized = {'H1': 0, 'H2': 1, 'K': 2, 'Kan': 3};
+
 @Entity()
-class Songbook {
+class Songbook implements Comparable<Songbook> {
   @Id(assignable: true)
   final int id;
 
@@ -15,6 +18,7 @@ class Songbook {
   final String? colorText;
 
   final bool isPrivate;
+  bool isPinned = false;
 
   @Backlink()
   final songbookRecords = ToMany<SongbookRecord>();
@@ -44,12 +48,28 @@ class Songbook {
   }
 
   static List<Songbook> load(Store store) {
-    final query = store.box<Songbook>().query(Songbook_.isPrivate.equals(false));
-    query.order(Songbook_.name);
-
-    return query.build().find();
+    return store.box<Songbook>().query(Songbook_.isPrivate.equals(false)).build().find();
   }
 
   @override
   String toString() => 'Songbook(id: $id, name: $name)';
+
+  @override
+  int compareTo(Songbook other) {
+    if (isPinned && !other.isPinned) {
+      return -1;
+    } else if (!isPinned && other.isPinned) {
+      return 1;
+    }
+
+    if (prioritized.containsKey(shortcut) && prioritized.containsKey(other.shortcut)) {
+      return prioritized[shortcut]!.compareTo(prioritized[other.shortcut]!);
+    } else if (prioritized.containsKey(shortcut)) {
+      return -1;
+    } else if (prioritized.containsKey(other.shortcut)) {
+      return 1;
+    }
+
+    return name.compareTo(other.name);
+  }
 }

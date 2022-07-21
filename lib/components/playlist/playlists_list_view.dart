@@ -30,7 +30,7 @@ class PlaylistsListView extends StatelessWidget {
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         buildDefaultDragHandles: false,
         itemCount: playlistsProvider.playlists.length,
-        itemBuilder: (context, index) {
+        itemBuilder: (_, index) {
           final playlist = playlistsProvider.playlists[index];
 
           return PlaylistRow(key: Key('${playlist.id}'), playlist: playlist, isReorderable: true);

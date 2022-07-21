@@ -156,7 +156,8 @@ class SongLyric {
 
   bool get hasLyrics => lyrics != null && lyrics!.isNotEmpty;
   bool get hasFiles => externals.any((external) => external.type == MediaType.pdf);
-  bool get hasRecordings => externals.any((external) => external.type == MediaType.youtube);
+  bool get hasRecordings =>
+      externals.any((external) => external.type == MediaType.youtube || external.type == MediaType.mp3);
 
   bool get isFavorite =>
       playlistRecords.any((playlistRecord) => playlistRecord.playlist.targetId == favoritesPlaylistId);

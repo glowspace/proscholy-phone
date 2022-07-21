@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_core_spotlight/flutter_core_spotlight.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -50,6 +52,25 @@ class DataProvider extends ChangeNotifier {
 
   SongLyric? getSongLyricById(int id) => _songLyricsById[id];
   Songbook? getSongbookById(int id) => _songbooksById[id];
+
+  List<SongLyric> getPlaylistsSongLyrics(Playlist playlist) {
+    final songLyrics = (playlist.playlistRecords..sort())
+        .map((playlistRecord) => getSongLyricById(playlistRecord.songLyric.targetId))
+        .toList()
+        .cast<SongLyric>();
+
+    return songLyrics;
+  }
+
+  List<SongLyric> getSongbooksSongLyrics(Songbook songbook) {
+    final songLyrics = (songbook.songbookRecords..sort())
+        .map((songbookRecord) => getSongLyricById(songbookRecord.songLyric.targetId))
+        .where((songLyric) => songLyric != null)
+        .toList()
+        .cast<SongLyric>();
+
+    return songLyrics;
+  }
 
   Future<void> init() async {
     prefs = await SharedPreferences.getInstance();
@@ -142,6 +163,22 @@ class DataProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void togglePin(Songbook songbook) {
+    songbook.isPinned = !songbook.isPinned;
+
+    store.box<Songbook>().put(songbook);
+
+    _songbooks.sort();
+
+    notifyListeners();
+  }
+
+  Stream<List<SongLyric>> watchPlaylistRecordsChanges(Playlist playlist) {
+    final query = store.box<PlaylistRecord>().query(PlaylistRecord_.playlist.equals(playlist.id));
+
+    return query.watch().map((_) => getPlaylistsSongLyrics(playlist));
+  }
+
   Future<void> _load() async {
     final currentVersion = prefs.getString(_versionKey);
     final buildVersion = '${packageInfo.version}+${packageInfo.buildNumber}';
@@ -163,7 +200,7 @@ class DataProvider extends ChangeNotifier {
     // once https://github.com/objectbox/objectbox-dart/issues/340 is fixed it can be run with runInTransactionAsync
 
     _songLyrics = SongLyric.load(store);
-    _songbooks = Songbook.load(store);
+    _songbooks = Songbook.load(store)..sort();
 
     _playlists = Playlist.load(store);
     _favorites = Playlist.loadFavorites(store);
@@ -176,6 +213,7 @@ class DataProvider extends ChangeNotifier {
 
     _addLanguagesToTags();
 
+    // FIXME: should depend on last id in language tags
     int id = -100;
     _tags.addAll(songbooks.map((songbook) => Tag(id--, songbook.name, TagType.songbook.rawValue)));
 

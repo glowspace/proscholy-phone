@@ -3,7 +3,6 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:pool/pool.dart';
 
 final _dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
 

@@ -3,6 +3,7 @@ import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songbook_record.dart';
 import 'package:zpevnik/models/tag.dart';
+import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/routes/arguments/search.dart';
 import 'package:zpevnik/utils/extensions.dart';
 

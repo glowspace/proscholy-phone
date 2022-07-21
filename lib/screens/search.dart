@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:zpevnik/components/filters/filters.dart';
 import 'package:zpevnik/components/filters/filters_row.dart';
 import 'package:zpevnik/components/search_field.dart';
 import 'package:zpevnik/components/song_lyric/song_lyrics_list_view.dart';
+import 'package:zpevnik/components/split_view.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
 import 'package:zpevnik/routes/arguments/search.dart';
@@ -19,31 +21,46 @@ class SearchScreen extends StatelessWidget {
     final songLyricsProvider = context.read<AllSongLyricsProvider>();
     final searchScreenArguments = ModalRoute.of(context)?.settings.arguments as SearchScreenArguments?;
 
+    final child = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const SizedBox(height: kDefaultPadding),
+        SearchField(
+          key: const Key('searchfield'),
+          isInsideSearchScreen: true,
+          onChanged: (searchText) => songLyricsProvider.search(searchText, songbook: searchScreenArguments?.songbook),
+          onSubmitted: (_) => _maybePushMatchedSonglyric(context),
+        ),
+        Container(
+          padding: const EdgeInsets.only(left: kDefaultPadding),
+          child: const FiltersRow(),
+        ),
+        const SizedBox(height: kDefaultPadding),
+        const Expanded(child: SongLyricsListView<AllSongLyricsProvider>()),
+      ],
+    );
+
+    final mediaQuery = MediaQuery.of(context);
+
+    if (mediaQuery.isTablet && mediaQuery.isLandscape) {
+      return Scaffold(
+        backgroundColor: theme.brightness.isLight ? theme.colorScheme.surface : null,
+        body: SafeArea(
+          child: SplitView(
+            child: child,
+            subChild: Scaffold(
+              backgroundColor: theme.brightness.isLight ? theme.colorScheme.surface : null,
+              body: SafeArea(child: FiltersWidget(tagsSections: songLyricsProvider.tagsSections)),
+            ),
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: theme.brightness.isLight ? theme.colorScheme.surface : null,
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const SizedBox(height: kDefaultPadding),
-            SearchField(
-              key: const Key('searchfield'),
-              isInsideSearchScreen: true,
-              onChanged: (searchText) =>
-                  songLyricsProvider.search(searchText, songbook: searchScreenArguments?.songbook),
-              onSubmitted: (_) => _maybePushMatchedSonglyric(context),
-            ),
-            const SizedBox(height: kDefaultPadding),
-            Container(
-              padding: const EdgeInsets.only(left: kDefaultPadding),
-              child: const FiltersRow(),
-            ),
-            const SizedBox(height: kDefaultPadding),
-            const Expanded(child: SongLyricsListView<AllSongLyricsProvider>()),
-          ],
-        ),
-      ),
+      body: SafeArea(child: child),
     );
   }
 

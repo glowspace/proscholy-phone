@@ -34,7 +34,7 @@ class Section extends StatelessWidget {
       return Container(
         margin: margin,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Row(children: [
               Expanded(child: title!),

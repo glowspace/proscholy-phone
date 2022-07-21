@@ -8,6 +8,7 @@ import 'package:zpevnik/components/home/top_section.dart';
 import 'package:zpevnik/components/home/update_section.dart';
 import 'package:zpevnik/components/search_field.dart';
 import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/utils/extensions.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -27,12 +28,25 @@ class HomeScreen extends StatelessWidget {
       text = 'Dobrý večer';
     }
 
+    if (MediaQuery.of(context).isTablet) return _HomeScreenTablet(greetings: text);
+
+    return _HomeScreenPhone(greetings: text);
+  }
+}
+
+class _HomeScreenPhone extends StatelessWidget {
+  final String greetings;
+
+  const _HomeScreenPhone({Key? key, required this.greetings}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: const CustomBottomNavigationBar(),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+            padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -41,7 +55,7 @@ class HomeScreen extends StatelessWidget {
                 const SizedBox(height: 2 * kDefaultPadding),
                 const SearchField(key: Key('searchfield')),
                 const SizedBox(height: 2 * kDefaultPadding),
-                Text(text, style: Theme.of(context).textTheme.titleLarge),
+                Text(greetings, style: Theme.of(context).textTheme.titleLarge),
                 const SizedBox(height: kDefaultPadding / 2),
                 const UpdateSection(),
                 const NewsSection(),
@@ -55,6 +69,43 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _HomeScreenTablet extends StatelessWidget {
+  final String greetings;
+
+  const _HomeScreenTablet({Key? key, required this.greetings}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: Row(children: [
+          const Spacer(flex: 1),
+          Expanded(
+            flex: 8,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 2 * kDefaultPadding),
+                  Text(greetings, style: Theme.of(context).textTheme.titleLarge),
+                  const SizedBox(height: kDefaultPadding / 2),
+                  const UpdateSection(),
+                  const NewsSection(),
+                  const SizedBox(height: 2 * kDefaultPadding),
+                  const SongbooksSection(),
+                  const SizedBox(height: 2 * kDefaultPadding),
+                  // const SharedWithMeSection(),
+                ],
+              ),
+            ),
+          ),
+          const Spacer(flex: 1),
+        ]),
       ),
     );
   }

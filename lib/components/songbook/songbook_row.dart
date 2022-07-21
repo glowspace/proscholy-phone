@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songbook.dart';
+import 'package:zpevnik/providers/navigation.dart';
 
 class SongbookRow extends StatelessWidget {
   final Songbook songbook;
@@ -26,6 +27,6 @@ class SongbookRow extends StatelessWidget {
   void _pushSongbook(BuildContext context) {
     FocusScope.of(context).unfocus();
 
-    Navigator.of(context).pushNamed('/songbook', arguments: songbook);
+    NavigationProvider.of(context).pushNamed('/songbook', arguments: songbook);
   }
 }

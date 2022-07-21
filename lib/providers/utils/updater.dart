@@ -168,6 +168,13 @@ class Updater {
     final songbooks = Songbook.fromMapList(json);
     final tags = Tag.fromMapList(json);
 
+    final query = store.box<Songbook>().query(Songbook_.isPinned.equals(true)).build();
+    final pinnedSongbooks = query.property(Songbook_.id).find().toSet();
+
+    for (final songbook in songbooks) {
+      songbook.isPinned = pinnedSongbooks.contains(songbook.id);
+    }
+
     await Future.wait([
       store.runInTransactionAsync<List<int>, List<Author>>(
         TxMode.write,

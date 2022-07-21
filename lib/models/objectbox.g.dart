@@ -94,7 +94,7 @@ final _entities = <ModelEntity>[
   ModelEntity(
       id: const IdUid(8, 2724259771969584896),
       name: 'Songbook',
-      lastPropertyId: const IdUid(6, 7680416521438868557),
+      lastPropertyId: const IdUid(7, 6957339251542960973),
       flags: 0,
       properties: <ModelProperty>[
         ModelProperty(
@@ -125,6 +125,11 @@ final _entities = <ModelEntity>[
         ModelProperty(
             id: const IdUid(6, 7680416521438868557),
             name: 'isPrivate',
+            type: 1,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(7, 6957339251542960973),
+            name: 'isPinned',
             type: 1,
             flags: 0)
       ],
@@ -629,13 +634,14 @@ ModelDefinition getObjectBoxModel() {
           final colorTextOffset = object.colorText == null
               ? null
               : fbb.writeString(object.colorText!);
-          fbb.startTable(7);
+          fbb.startTable(8);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, nameOffset);
           fbb.addOffset(2, shortcutOffset);
           fbb.addOffset(3, colorOffset);
           fbb.addOffset(4, colorTextOffset);
           fbb.addBool(5, object.isPrivate);
+          fbb.addBool(6, object.isPinned);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -653,7 +659,9 @@ ModelDefinition getObjectBoxModel() {
                   .vTableGetNullable(buffer, rootOffset, 10),
               const fb.StringReader(asciiOptimization: true)
                   .vTableGetNullable(buffer, rootOffset, 12),
-              const fb.BoolReader().vTableGet(buffer, rootOffset, 14, false));
+              const fb.BoolReader().vTableGet(buffer, rootOffset, 14, false))
+            ..isPinned =
+                const fb.BoolReader().vTableGet(buffer, rootOffset, 16, false);
           InternalToManyAccess.setRelInfo(
               object.songbookRecords,
               store,
@@ -1041,6 +1049,10 @@ class Songbook_ {
   /// see [Songbook.isPrivate]
   static final isPrivate =
       QueryBooleanProperty<Songbook>(_entities[3].properties[5]);
+
+  /// see [Songbook.isPinned]
+  static final isPinned =
+      QueryBooleanProperty<Songbook>(_entities[3].properties[6]);
 }
 
 /// [SongbookRecord] entity fields to define ObjectBox queries.

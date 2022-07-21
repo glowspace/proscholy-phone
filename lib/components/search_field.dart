@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
@@ -31,8 +32,11 @@ class SearchFieldTransitionWidget extends AnimatedWidget {
               child: TextField(
                 decoration: InputDecoration(
                   hintText: 'Název, číslo nebo část textu',
-                  hintStyle: theme.textTheme.titleMedium
-                      ?.copyWith(color: theme.brightness.isLight ? lightIconColor : darkIconColor),
+                  hintStyle: theme.textTheme.titleMedium?.copyWith(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                    color: theme.brightness.isLight ? lightIconColor : darkIconColor,
+                  ),
                   filled: true,
                   fillColor: fillColor,
                   isDense: true,
@@ -110,7 +114,9 @@ class _SearchFieldState extends State<SearchField> {
 
     return Hero(
       tag: 'search',
-      flightShuttleBuilder: (_, animation, __, ___, ____) => SearchFieldTransitionWidget(animation: animation),
+      flightShuttleBuilder: MediaQuery.of(context).isTablet
+          ? null
+          : (_, animation, __, ___, ____) => SearchFieldTransitionWidget(animation: animation),
       child: Container(
         padding: widget.isInsideSearchScreen ? const EdgeInsets.only(left: kDefaultPadding) : null,
         child: Material(
@@ -123,8 +129,11 @@ class _SearchFieldState extends State<SearchField> {
                   builder: (_, value, __) => TextField(
                     decoration: InputDecoration(
                       hintText: 'Název, číslo nebo část textu',
-                      hintStyle: theme.textTheme.titleMedium
-                          ?.copyWith(color: theme.brightness.isLight ? lightIconColor : darkIconColor),
+                      hintStyle: theme.textTheme.titleMedium?.copyWith(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                        color: theme.brightness.isLight ? lightIconColor : darkIconColor,
+                      ),
                       filled: true,
                       fillColor: theme.brightness.isLight && widget.isInsideSearchScreen
                           ? theme.scaffoldBackgroundColor
@@ -170,7 +179,7 @@ class _SearchFieldState extends State<SearchField> {
     // prevent keyboard from showing up
     FocusScope.of(context).requestFocus(FocusNode());
 
-    Navigator.of(context).pushNamed('/search');
+    NavigationProvider.of(context).pushNamed('/search');
   }
 
   void _clearOrPop() {

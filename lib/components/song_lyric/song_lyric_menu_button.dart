@@ -84,7 +84,6 @@ class SongLyricMenuButton extends StatelessWidget {
       context: context,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(kDefaultRadius))),
       builder: (context) => PlaylistsSheet(selectedSongLyric: songLyric),
-      useRootNavigator: true,
     );
   }
 }

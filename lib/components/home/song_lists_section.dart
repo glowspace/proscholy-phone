@@ -6,6 +6,7 @@ import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/playlist/playlist_row.dart';
 import 'package:zpevnik/components/section.dart';
 import 'package:zpevnik/providers/data.dart';
+import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
@@ -23,15 +24,8 @@ class SongListsSection extends StatelessWidget {
 
     return Section(
       title: Text('Moje seznamy', style: Theme.of(context).textTheme.titleLarge),
-      child: ListView.separated(
-        itemCount: min(_maxShowingPlaylists, playlists.length),
-        itemBuilder: (_, index) => PlaylistRow(playlist: playlists[index], visualDensity: VisualDensity.comfortable),
-        separatorBuilder: (_, __) => const Divider(height: 0),
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-      ),
       action: Highlightable(
-        onTap: () => Navigator.of(context).pushNamed('/playlists'),
+        onTap: () => NavigationProvider.of(context).pushNamed('/playlists'),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -46,6 +40,13 @@ class SongListsSection extends StatelessWidget {
             const Icon(Icons.navigate_next, size: _navigateNextIconSize),
           ],
         ),
+      ),
+      child: ListView.separated(
+        itemCount: min(_maxShowingPlaylists, playlists.length),
+        itemBuilder: (_, index) => PlaylistRow(playlist: playlists[index], visualDensity: VisualDensity.comfortable),
+        separatorBuilder: (_, __) => const Divider(height: 0),
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
       ),
     );
   }

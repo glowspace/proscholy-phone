@@ -12,8 +12,10 @@ import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/data.dart';
+import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
 import 'package:zpevnik/routes/arguments/search.dart';
+import 'package:zpevnik/utils/extensions.dart';
 
 class PlaylistScreen extends StatelessWidget {
   final Playlist playlist;
@@ -22,6 +24,11 @@ class PlaylistScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    final isTablet = MediaQuery.of(context).isTablet;
+    final backgroundColor = theme.brightness.isLight ? theme.colorScheme.surface : theme.scaffoldBackgroundColor;
+
     final dataProvider = context.watch<DataProvider>();
 
     final Widget floatingActionButton;
@@ -59,31 +66,41 @@ class PlaylistScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: isTablet ? backgroundColor : null,
+        elevation: isTablet ? 0 : null,
         leading: const CustomBackButton(),
         title: Text(playlist.name, style: Theme.of(context).textTheme.titleMedium),
         centerTitle: false,
         actions: [
+          Highlightable(
+            onTap: () => NavigationProvider.of(context)
+                .pushNamed('/search', arguments: SearchScreenArguments(playlist: playlist)),
+            isDisabled: playlist.playlistRecords.isEmpty,
+            padding: const EdgeInsets.all(kDefaultPadding).copyWith(left: 2.5 * kDefaultPadding),
+            child: const Icon(Icons.filter_alt),
+          ),
           if (!playlist.isFavorites) PlaylistButton(playlist: playlist, isInAppBar: true, extendPadding: true),
         ],
       ),
-      floatingActionButton: floatingActionButton,
-      bottomNavigationBar: CustomBottomNavigationBar(playlist: playlist),
+      backgroundColor: isTablet ? backgroundColor : null,
+      floatingActionButton: isTablet && playlist.playlistRecords.isEmpty ? null : floatingActionButton,
+      bottomNavigationBar: MediaQuery.of(context).isTablet ? null : const CustomBottomNavigationBar(),
       body: SafeArea(
         child: ChangeNotifierProxyProvider<DataProvider, PlaylistSongLyricsProvider>(
           create: (context) => PlaylistSongLyricsProvider(dataProvider, playlist),
           update: (_, dataProvider, playlistSongLyricsProvider) => playlistSongLyricsProvider!..update(dataProvider),
-          builder: (_, __) => const SongLyricsListView<PlaylistSongLyricsProvider>(),
+          builder: (_, __) => const SongLyricsListView<PlaylistSongLyricsProvider>(allowRowHighlight: true),
         ),
       ),
     );
   }
 
-  void _addText(BuildContext context) async {
-    Navigator.of(context).pushNamed('/playlist/custom_text');
-  }
+  // void _addText(BuildContext context) async {
+  //   NavigationProvider.of(context).pushNamed('/playlist/custom_text');
+  // }
 
   void _addSongLyric(BuildContext context) async {
-    final songLyric = await Navigator.of(context).pushNamed(
+    final songLyric = await NavigationProvider.of(context).pushNamed(
       '/search',
       arguments: SearchScreenArguments(shouldReturnSongLyric: true),
     );
