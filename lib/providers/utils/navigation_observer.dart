@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wakelock/wakelock.dart';
 
 class CustomNavigatorObserver extends NavigatorObserver {
   final Function? onNavigationStackChanged;
@@ -22,6 +23,12 @@ class CustomNavigatorObserver extends NavigatorObserver {
     if (name != null) {
       navigationStack.add(name);
 
+      if (name == '/song_lyric') {
+        Wakelock.enable();
+      } else {
+        Wakelock.disable();
+      }
+
       if (navigationStack.length != 1) onNavigationStackChanged?.call();
     }
   }
@@ -31,6 +38,12 @@ class CustomNavigatorObserver extends NavigatorObserver {
     super.didPop(route, previousRoute);
 
     _currentRoute = previousRoute;
+
+    if (previousRoute?.settings.name == '/song_lyric') {
+      Wakelock.enable();
+    } else {
+      Wakelock.disable();
+    }
 
     if (route.settings.name != null) {
       navigationStack.removeLast();
