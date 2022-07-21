@@ -27,6 +27,9 @@ class DataProvider extends ChangeNotifier {
   late final Updater updater;
   late final SongLyricsSearch songLyricsSearch;
 
+  // using negative ids to distinguish from other tags
+  int _tagId = -1;
+
   List<NewsItem> _newsItems = [];
   List<SongLyric> _songLyrics = [];
   List<Songbook> _songbooks = [];
@@ -109,6 +112,7 @@ class DataProvider extends ChangeNotifier {
 
   Playlist createPlaylist(String name) {
     final playlist = Playlist(name, Playlist.nextRank(store));
+    _tags.add(Tag(_tagId--, playlist.name, TagType.playlist.rawValue));
 
     store.box<Playlist>().put(playlist);
     _playlists.add(playlist);
@@ -120,6 +124,7 @@ class DataProvider extends ChangeNotifier {
 
   Playlist duplicatePlaylist(Playlist playlist, String name) {
     final duplicatedPlaylist = Playlist(name, Playlist.nextRank(store));
+    _tags.add(Tag(_tagId--, duplicatedPlaylist.name, TagType.playlist.rawValue));
 
     duplicatedPlaylist.playlistRecords.addAll(
         playlist.playlistRecords.map((playlistRecord) => playlistRecord.copyWith(playlist: duplicatedPlaylist)));
@@ -133,7 +138,11 @@ class DataProvider extends ChangeNotifier {
   }
 
   void renamePlaylist(Playlist playlist, String name) {
+    final index = _tags.indexWhere((tag) => tag.type == TagType.playlist && tag.name == playlist.name);
+
     playlist.name = name;
+
+    _tags[index] = Tag(_tags[index].id, playlist.name, TagType.playlist.rawValue);
 
     store.box<Playlist>().put(playlist);
 
@@ -151,6 +160,9 @@ class DataProvider extends ChangeNotifier {
   void reorderedPlaylists() {
     _playlists.sort();
 
+    _tags.removeWhere((tag) => tag.type == TagType.playlist && tag.name != _favorites.name);
+    _tags.addAll(_playlists.map((playlist) => Tag(_tagId--, playlist.name, TagType.playlist.rawValue)));
+
     store.box<Playlist>().putMany(_playlists);
 
     notifyListeners();
@@ -159,6 +171,8 @@ class DataProvider extends ChangeNotifier {
   void removePlaylist(Playlist playlist) {
     store.box<Playlist>().remove(playlist.id);
     _playlists.remove(playlist);
+
+    _tags.removeWhere((tag) => tag.type == TagType.playlist && tag.name == playlist.name);
 
     notifyListeners();
   }
@@ -213,11 +227,9 @@ class DataProvider extends ChangeNotifier {
 
     _addLanguagesToTags();
 
-    // FIXME: should depend on last id in language tags
-    int id = -100;
-    _tags.addAll(songbooks.map((songbook) => Tag(id--, songbook.name, TagType.songbook.rawValue)));
-    _tags.add(Tag(id--, _favorites.name, TagType.playlist.rawValue));
-    _tags.addAll(playlists.map((playlist) => Tag(id--, playlist.name, TagType.playlist.rawValue)));
+    _tags.addAll(songbooks.map((songbook) => Tag(_tagId--, songbook.name, TagType.songbook.rawValue)));
+    _tags.add(Tag(_tagId--, _favorites.name, TagType.playlist.rawValue));
+    _tags.addAll(playlists.map((playlist) => Tag(_tagId--, playlist.name, TagType.playlist.rawValue)));
 
     if (currentVersion == null) {
       try {
@@ -242,10 +254,8 @@ class DataProvider extends ChangeNotifier {
 
     final List<Tag> languageTags = [];
 
-    // using negative ids to distinguish from other tags
-    int id = -1;
     for (final language in languages.keys) {
-      final tag = Tag(id--, language, TagType.language.rawValue);
+      final tag = Tag(_tagId--, language, TagType.language.rawValue);
 
       languageTags.add(tag);
     }

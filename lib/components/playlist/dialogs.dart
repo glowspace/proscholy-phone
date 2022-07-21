@@ -7,6 +7,7 @@ import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/navigation.dart';
 
 const _emptyPlaylistNameMessage = 'Název playlistu je prázdný';
+const _playlistWithSameNameMessage = 'Playlist s tímto názvem již existuje';
 
 void showPlaylistDialog(BuildContext context, {SongLyric? selectedSongLyric, bool openPlaylist = false}) async {
   final results = await showTextInputDialog(
@@ -14,12 +15,7 @@ void showPlaylistDialog(BuildContext context, {SongLyric? selectedSongLyric, boo
     title: 'Nový playlist',
     okLabel: 'Vytvořit',
     cancelLabel: 'Zrušit',
-    textFields: [
-      DialogTextField(
-        hintText: 'Název',
-        validator: (text) => (text?.isEmpty ?? true) ? _emptyPlaylistNameMessage : null,
-      ),
-    ],
+    textFields: [DialogTextField(hintText: 'Název', validator: _validator(context))],
   );
 
   if (results != null) {
@@ -39,13 +35,7 @@ void showRenamePlaylistDialog(BuildContext context, Playlist playlist) async {
     title: 'Přejmenovat playlist',
     okLabel: 'Přejmenovat',
     cancelLabel: 'Zrušit',
-    textFields: [
-      DialogTextField(
-        hintText: 'Název',
-        initialText: playlist.name,
-        validator: (text) => (text?.isEmpty ?? true) ? _emptyPlaylistNameMessage : null,
-      ),
-    ],
+    textFields: [DialogTextField(hintText: 'Název', initialText: playlist.name, validator: _validator(context))],
   );
 
   if (results != null) context.read<DataProvider>().renamePlaylist(playlist, results[0]);
@@ -58,11 +48,7 @@ void showDuplicatePlaylistDialog(BuildContext context, Playlist playlist) async 
     okLabel: 'Vytvořit',
     cancelLabel: 'Zrušit',
     textFields: [
-      DialogTextField(
-        hintText: 'Název',
-        initialText: '${playlist.name} (kopie)',
-        validator: (text) => (text?.isEmpty ?? true) ? _emptyPlaylistNameMessage : null,
-      ),
+      DialogTextField(hintText: 'Název', initialText: '${playlist.name} (kopie)', validator: _validator(context)),
     ],
   );
 
@@ -75,7 +61,32 @@ void showDuplicatePlaylistDialog(BuildContext context, Playlist playlist) async 
   }
 }
 
-void showremovePlaylistDialog(BuildContext context, Playlist playlist) async {
+void showAcceptSharedPlaylistDialog(BuildContext context, String name, List<int> songLyricsIds) async {
+  final results = await showTextInputDialog(
+    context: context,
+    title: 'Přidat playlist',
+    okLabel: 'Přidat',
+    cancelLabel: 'Zrušit',
+    textFields: [DialogTextField(hintText: 'Název', initialText: name, validator: _validator(context))],
+  );
+
+  if (results != null) {
+    final dataProvider = context.read<DataProvider>();
+    final playlist = dataProvider.createPlaylist(results[0]);
+
+    for (final songLyricId in songLyricsIds) {
+      final songLyric = dataProvider.getSongLyricById(songLyricId);
+
+      if (songLyric != null) dataProvider.addToPlaylist(songLyric, playlist);
+    }
+
+    if (ModalRoute.of(context)?.settings.name != '/playlists') {
+      NavigationProvider.of(context).pushNamed('/playlist', arguments: playlist);
+    }
+  }
+}
+
+void showRemovePlaylistDialog(BuildContext context, Playlist playlist) async {
   final result = await showOkCancelAlertDialog(
     context: context,
     title: 'Smazat playlist',
@@ -89,4 +100,12 @@ void showremovePlaylistDialog(BuildContext context, Playlist playlist) async {
 
     if (ModalRoute.of(context)?.settings.name == '/playlist') Navigator.of(context).pop();
   }
+}
+
+String? Function(String?) _validator(BuildContext context) {
+  final playlists = context.read<DataProvider>().playlists;
+
+  return (text) => (text?.isEmpty ?? true)
+      ? _emptyPlaylistNameMessage
+      : (playlists.any((playlist) => playlist.name == text) ? _playlistWithSameNameMessage : null);
 }

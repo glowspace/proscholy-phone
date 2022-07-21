@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_core_spotlight/flutter_core_spotlight.dart';
 import 'package:provider/provider.dart';
 import 'package:uni_links/uni_links.dart';
+import 'package:zpevnik/components/playlist/dialogs.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/routes/arguments/song_lyric.dart';
 
 final spotlightSongLyricRE = RegExp(r'^song_lyric_(\d+)$');
 final uniLinkSongLyricRE = RegExp(r'pisen/(\d+)/');
-final uniLinkSongbookRE = RegExp(r'zpevniky=(\d+)');
 
 class LinksHandlerWrapper extends StatefulWidget {
   final Widget? child;
@@ -58,15 +58,24 @@ void handleUniLink(BuildContext context, Uri? uri) async {
       return;
     }
 
-    final songbookMatch = uniLinkSongbookRE.firstMatch(uri.path);
+    final songbookId = uri.queryParameters['zpevniky'];
 
-    if (songbookMatch != null) {
-      final songbook = context.read<DataProvider>().getSongbookById(int.parse(songbookMatch.group(1) ?? '0'));
+    if (songbookId != null) {
+      final songbook = context.read<DataProvider>().getSongbookById(int.parse(songbookId));
 
       if (songbook != null) {
         NavigationProvider.of(context).pushNamed('/songbook', arguments: songbook);
 
         return;
+      }
+    }
+
+    if (uri.path == '/add_playlist') {
+      final playlistName = uri.queryParameters['name'];
+      final songLyricsIds = uri.queryParameters['ids']?.split(',').map((id) => int.parse(id)).toList();
+
+      if (playlistName != null && songLyricsIds != null) {
+        showAcceptSharedPlaylistDialog(context, playlistName, songLyricsIds);
       }
     }
   }
