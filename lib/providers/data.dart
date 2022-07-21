@@ -42,6 +42,7 @@ class DataProvider extends ChangeNotifier {
 
   Map<int, SongLyric> _songLyricsById = {};
   Map<int, Songbook> _songbooksById = {};
+  Map<String, Tag> _tagsBySongbookName = {};
 
   List<NewsItem> get newsItems => _newsItems;
   List<SongLyric> get songLyrics => _songLyrics;
@@ -55,6 +56,7 @@ class DataProvider extends ChangeNotifier {
 
   SongLyric? getSongLyricById(int id) => _songLyricsById[id];
   Songbook? getSongbookById(int id) => _songbooksById[id];
+  Tag? getTagBySongbookName(String name) => _tagsBySongbookName[name];
 
   List<SongLyric> getPlaylistsSongLyrics(Playlist playlist) {
     final songLyrics = (playlist.playlistRecords..sort())
@@ -227,7 +229,13 @@ class DataProvider extends ChangeNotifier {
 
     _addLanguagesToTags();
 
-    _tags.addAll(songbooks.map((songbook) => Tag(_tagId--, songbook.name, TagType.songbook.rawValue)));
+    _tags.addAll(songbooks.map((songbook) {
+      final tag = Tag(_tagId--, songbook.name, TagType.songbook.rawValue);
+
+      _tagsBySongbookName[songbook.name] = tag;
+
+      return tag;
+    }));
     _tags.add(Tag(_tagId--, _favorites.name, TagType.playlist.rawValue));
     _tags.addAll(playlists.map((playlist) => Tag(_tagId--, playlist.name, TagType.playlist.rawValue)));
 
