@@ -111,8 +111,11 @@ class RouteGenerator {
         if (arguments.isTablet) {
           return CustomPageRouteBuilder(
             settings: settings,
-            pageBuilder: (_, __, ___) =>
-                SongLyricScreen(songLyrics: arguments.songLyrics, initialIndex: arguments.index),
+            pageBuilder: (_, __, ___) => SongLyricScreen(
+              songLyrics: arguments.songLyrics,
+              initialIndex: arguments.index,
+              playlist: arguments.playlist,
+            ),
           );
         }
 

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart' hide PopupMenuEntry, PopupMenuItem;
@@ -13,6 +14,7 @@ import 'package:zpevnik/components/song_lyric/song_lyric_menu_button.dart';
 import 'package:zpevnik/components/song_lyric/song_lyric_settings.dart';
 import 'package:zpevnik/components/song_lyric/song_lyric_tags.dart';
 import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/components/song_lyric/utils/lyrics_controller.dart';
@@ -27,13 +29,14 @@ const double _miniPlayerHeight = 64;
 class SongLyricScreen extends StatefulWidget {
   final List<SongLyric> songLyrics;
   final int initialIndex;
-  final PageController? pageController;
+
+  final Playlist? playlist;
 
   const SongLyricScreen({
     Key? key,
     required this.songLyrics,
     required this.initialIndex,
-    this.pageController,
+    this.playlist,
   }) : super(key: key);
 
   @override
@@ -44,13 +47,15 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
   late final PageController _pageController;
   late final ValueNotifier<bool> _showingExternals;
 
-  late final List<LyricsController> _lyricsControllers;
+  StreamSubscription<List<SongLyric>>? _songLyricsSubscription;
+
+  late List<LyricsController> _lyricsControllers;
 
   late int _currentIndex;
 
   bool _fullscreen = false;
 
-  SongLyric get _songLyric => widget.songLyrics[_currentIndex % widget.songLyrics.length];
+  SongLyric get _songLyric => _lyricsController.songLyric;
   LyricsController get _lyricsController => _lyricsControllers[_currentIndex % _lyricsControllers.length];
 
   @override
@@ -61,8 +66,29 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
     _currentIndex = widget.initialIndex + (widget.songLyrics.length == 1 ? 0 : 10 * widget.songLyrics.length);
     _lyricsControllers = widget.songLyrics.map((songLyric) => LyricsController(songLyric, context)).toList();
 
-    _pageController = widget.pageController ?? PageController(initialPage: _currentIndex);
+    _pageController = PageController(initialPage: _currentIndex);
     _showingExternals = ValueNotifier(false);
+
+    if (widget.playlist != null) {
+      _songLyricsSubscription =
+          context.read<DataProvider>().watchPlaylistRecordsChanges(widget.playlist!).listen((songLyrics) {
+        setState(() {
+          _currentIndex =
+              (_currentIndex % _lyricsControllers.length) + (songLyrics.length == 1 ? 0 : 10 * songLyrics.length);
+          _lyricsControllers = songLyrics.map((songLyric) => LyricsController(songLyric, context)).toList();
+          _pageController.jumpToPage(_currentIndex);
+        });
+
+        context.read<ValueNotifier<SongLyric?>>().value = _songLyric;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _songLyricsSubscription?.cancel();
+
+    super.dispose();
   }
 
   @override
@@ -180,7 +206,7 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
               behavior: HitTestBehavior.translucent,
               child: PageView.builder(
                 controller: _pageController,
-                itemCount: widget.songLyrics.length == 1 ? 1 : null,
+                itemCount: _lyricsControllers.length == 1 ? 1 : null,
                 onPageChanged: (value) => setState(() {
                   _showingExternals.value = false;
                   _currentIndex = value;

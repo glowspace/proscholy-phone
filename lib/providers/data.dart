@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_core_spotlight/flutter_core_spotlight.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -169,6 +171,12 @@ class DataProvider extends ChangeNotifier {
     _songbooks.sort();
 
     notifyListeners();
+  }
+
+  Stream<List<SongLyric>> watchPlaylistRecordsChanges(Playlist playlist) {
+    final query = store.box<PlaylistRecord>().query(PlaylistRecord_.playlist.equals(playlist.id));
+
+    return query.watch().map((_) => getPlaylistsSongLyrics(playlist));
   }
 
   Future<void> _load() async {

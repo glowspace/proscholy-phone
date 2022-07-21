@@ -1,3 +1,4 @@
+import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 
 class SongLyricScreenArguments {
@@ -6,12 +7,20 @@ class SongLyricScreenArguments {
 
   final bool isTablet;
 
-  SongLyricScreenArguments(this.songLyrics, this.index, {this.isTablet = false});
+  final Playlist? playlist;
 
-  SongLyricScreenArguments copyWith({List<SongLyric>? songLyrics, int? index, bool? isTablet}) =>
+  SongLyricScreenArguments(this.songLyrics, this.index, {this.isTablet = false, this.playlist});
+
+  SongLyricScreenArguments copyWith({
+    List<SongLyric>? songLyrics,
+    int? index,
+    bool? isTablet,
+    Playlist? playlist,
+  }) =>
       SongLyricScreenArguments(
         songLyrics ?? this.songLyrics,
         index ?? this.index,
         isTablet: isTablet ?? this.isTablet,
+        playlist: playlist ?? this.playlist,
       );
 }

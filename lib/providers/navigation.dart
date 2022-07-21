@@ -59,15 +59,15 @@ class NavigationProvider extends ChangeNotifier {
         final dataProvider = navigatorKey.currentContext!.read<DataProvider>();
         final songLyrics = dataProvider.getPlaylistsSongLyrics(arguments as Playlist);
 
-        return _pushSongLyricsWithMenu(name, arguments, songLyrics, onSongLyricsEmpty: () {
+        return _pushSongLyricsWithMenu(name, arguments, songLyrics, playlist: arguments, onSongLyricsEmpty: () {
           navigatorKey.currentState
               ?.pushNamed('/search', arguments: SearchScreenArguments(shouldReturnSongLyric: true))
               .then((songLyric) {
             if (songLyric != null && songLyric is SongLyric) {
               dataProvider.addToPlaylist(songLyric, arguments);
 
-              navigatorKey.currentState
-                  ?.pushNamed('/song_lyric', arguments: SongLyricScreenArguments([songLyric], 0, isTablet: true));
+              navigatorKey.currentState?.pushNamed('/song_lyric',
+                  arguments: SongLyricScreenArguments([songLyric], 0, isTablet: true, playlist: arguments));
             }
           });
         });
@@ -119,8 +119,13 @@ class NavigationProvider extends ChangeNotifier {
     return pushNamed(name, arguments: arguments);
   }
 
-  Future<T?>? _pushSongLyricsWithMenu<T>(String name, Object? arguments, List<SongLyric> songLyrics,
-      {Function()? onSongLyricsEmpty}) async {
+  Future<T?>? _pushSongLyricsWithMenu<T>(
+    String name,
+    Object? arguments,
+    List<SongLyric> songLyrics, {
+    Playlist? playlist,
+    Function()? onSongLyricsEmpty,
+  }) async {
     final oldRoute = navigatorObserver.currentRoute;
 
     if (songLyrics.isNotEmpty) {
@@ -128,7 +133,7 @@ class NavigationProvider extends ChangeNotifier {
 
       navigatorKey.currentState?.pushNamed(
         '/song_lyric',
-        arguments: SongLyricScreenArguments(songLyrics, 0, isTablet: true),
+        arguments: SongLyricScreenArguments(songLyrics, 0, isTablet: true, playlist: playlist),
       );
     } else {
       onSongLyricsEmpty?.call();
