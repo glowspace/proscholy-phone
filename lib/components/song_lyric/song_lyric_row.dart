@@ -72,33 +72,36 @@ class SongLyricRow extends StatelessWidget {
               kDefaultPadding / 3,
             ),
       onTap: () => _pushSongLyric(context),
-      child: Row(
-        children: [
-          if (isReorderable)
-            ReorderableDragStartListener(
-              key: dragIndicatorKey,
-              child: Container(
-                padding: const EdgeInsets.only(left: kDefaultPadding, right: 2 * kDefaultPadding),
-                child: const Icon(Icons.drag_indicator),
+      child: Container(
+        constraints: const BoxConstraints(minHeight: _minSize),
+        child: Row(
+          children: [
+            if (isReorderable)
+              ReorderableDragStartListener(
+                key: dragIndicatorKey,
+                child: Container(
+                  padding: const EdgeInsets.only(left: kDefaultPadding, right: 2 * kDefaultPadding),
+                  child: const Icon(Icons.drag_indicator),
+                ),
+                index: 0,
               ),
-              index: 0,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(songLyric.name, style: textTheme.bodyMedium),
+                  if (songbookName != null)
+                    Container(margin: textMargin, child: Text(songbookName, style: textTheme.bodySmall)),
+                  if (songLyric.secondaryName1 != null)
+                    Container(margin: textMargin, child: Text(songLyric.secondaryName1!, style: textTheme.bodySmall)),
+                  if (songLyric.secondaryName2 != null)
+                    Container(margin: textMargin, child: Text(songLyric.secondaryName2!, style: textTheme.bodySmall)),
+                ],
+              ),
             ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(songLyric.name, style: textTheme.bodyMedium),
-                if (songbookName != null)
-                  Container(margin: textMargin, child: Text(songbookName, style: textTheme.bodySmall)),
-                if (songLyric.secondaryName1 != null)
-                  Container(margin: textMargin, child: Text(songLyric.secondaryName1!, style: textTheme.bodySmall)),
-                if (songLyric.secondaryName2 != null)
-                  Container(margin: textMargin, child: Text(songLyric.secondaryName2!, style: textTheme.bodySmall)),
-              ],
-            ),
-          ),
-          if (!isReorderable) ..._buildIndicators(context),
-        ],
+            if (!isReorderable) ..._buildIndicators(context),
+          ],
+        ),
       ),
     );
 
@@ -106,7 +109,6 @@ class SongLyricRow extends StatelessWidget {
       row = ValueListenableBuilder<SongLyric?>(
         valueListenable: context.read<ValueNotifier<SongLyric?>>(),
         builder: (_, activeSongLyric, child) => Container(
-          constraints: const BoxConstraints(minHeight: _minSize),
           decoration: activeSongLyric == songLyric
               ? BoxDecoration(color: hightlightColor, borderRadius: BorderRadius.circular(kDefaultRadius))
               : BoxDecoration(borderRadius: BorderRadius.circular(kDefaultRadius)),

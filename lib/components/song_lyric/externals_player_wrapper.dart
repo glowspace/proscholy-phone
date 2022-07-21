@@ -104,13 +104,21 @@ class _ExternalsPlayerWrapperState extends State<ExternalsPlayerWrapper> with Si
   double get _maxHeight {
     final mediaQuery = MediaQuery.of(context);
 
+    final youtubes = widget.songLyric.youtubes;
+    final mp3s = widget.songLyric.mp3s;
+
+    final externalsPerRow = (mediaQuery.size.width / 300).floor();
+    final rowsForMp3s =
+        ((youtubes.length + mp3s.length) / externalsPerRow).ceil() - (youtubes.length / externalsPerRow).ceil();
+
     return min(
       2 / 3 * mediaQuery.size.height,
       _externalsTitleHeight +
-          mediaQuery.padding.bottom +
-          widget.songLyric.youtubes.length * (min(300, mediaQuery.size.width) / 16 * 9 + _externalsNameHeight) +
-          widget.songLyric.mp3s.length * (64 + kDefaultPadding) +
-          kDefaultPadding,
+          (youtubes.length / externalsPerRow) *
+              (min(mediaQuery.size.width / externalsPerRow, mediaQuery.size.width) / 16 * 9 + _externalsNameHeight) +
+          rowsForMp3s * (64 + kDefaultPadding) +
+          kDefaultPadding +
+          mediaQuery.padding.bottom,
     );
   }
 

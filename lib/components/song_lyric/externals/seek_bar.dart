@@ -32,7 +32,7 @@ class SeekBarState extends State<SeekBar> {
       alignment: AlignmentDirectional.bottomEnd,
       children: [
         Container(
-          padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
+          padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
           child: SliderTheme(
             data: theme.sliderTheme.copyWith(overlayShape: SliderComponentShape.noOverlay),
             child: Slider(
