@@ -48,7 +48,7 @@ class MenuRouteGenerator {
       case '/updated_song_lyrics':
         return MaterialPageRoute(settings: settings, builder: (_) => const UpdatedSongLyricsScreen());
       case '/user':
-        return MaterialPageRoute(settings: settings, builder: (_) => const UserScreen());
+        return MaterialPageRoute(settings: settings, builder: (_) => const UserScreen(), fullscreenDialog: true);
       default:
         throw 'Unknown route: ${settings.name}';
     }

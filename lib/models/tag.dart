@@ -55,7 +55,7 @@ extension TagTypeExtension on TagType {
       case 1:
         return TagType.liturgyPeriod;
       case 2:
-        return TagType.saints;
+        return TagType.generic;
       case 3:
         return TagType.historyPeriod;
       case 4:
@@ -65,11 +65,11 @@ extension TagTypeExtension on TagType {
       case 6:
         return TagType.musicalForm;
       case 7:
-        return TagType.sacredOccasion;
+        return TagType.saints;
       case 8:
-        return TagType.language;
+        return TagType.sacredOccasion;
       case 9:
-        return TagType.generic;
+        return TagType.language;
       case 10:
         return TagType.liturgyDay;
       case 11:
@@ -85,7 +85,7 @@ extension TagTypeExtension on TagType {
         return 0;
       case TagType.liturgyPeriod:
         return 1;
-      case TagType.saints:
+      case TagType.generic:
         return 2;
       case TagType.historyPeriod:
         return 3;
@@ -95,11 +95,11 @@ extension TagTypeExtension on TagType {
         return 5;
       case TagType.musicalForm:
         return 6;
-      case TagType.sacredOccasion:
+      case TagType.saints:
         return 7;
-      case TagType.language:
+      case TagType.sacredOccasion:
         return 8;
-      case TagType.generic:
+      case TagType.language:
         return 9;
       case TagType.liturgyDay:
         return 10;

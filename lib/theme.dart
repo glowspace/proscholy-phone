@@ -25,11 +25,13 @@ class AppTheme {
   static ThemeData light() {
     final theme = ThemeData.light();
 
+    final colorScheme = ColorScheme.fromSeed(seedColor: blue).copyWith(surface: Colors.white);
     final iconTheme = theme.iconTheme.copyWith(color: lightIconColor);
 
     return theme.copyWith(
       scaffoldBackgroundColor: lightBackgroundColor,
       colorScheme: ColorScheme.fromSeed(seedColor: blue).copyWith(surface: Colors.white),
+      canvasColor: colorScheme.surface,
       appBarTheme: theme.appBarTheme.copyWith(
         backgroundColor: lightBackgroundColor,
         shadowColor: Colors.grey,
@@ -55,11 +57,13 @@ class AppTheme {
   static ThemeData dark() {
     final theme = ThemeData.dark();
 
+    final colorScheme = ColorScheme.fromSeed(seedColor: blue, brightness: Brightness.dark);
     final iconTheme = theme.iconTheme.copyWith(color: darkIconColor);
 
     return theme.copyWith(
       scaffoldBackgroundColor: darkBackgroundColor,
-      colorScheme: ColorScheme.fromSeed(seedColor: blue, brightness: Brightness.dark),
+      canvasColor: colorScheme.surface,
+      colorScheme: colorScheme,
       appBarTheme: theme.appBarTheme.copyWith(
         backgroundColor: darkBackgroundColor,
         shadowColor: Colors.grey,

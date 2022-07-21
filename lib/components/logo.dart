@@ -22,9 +22,10 @@ class Logo extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Text('Zpěvník', style: GoogleFonts.roboto(fontSize: 34, color: textColor, fontWeight: FontWeight.w700)),
-            if (showFullName)
-              Text('ProScholy.cz',
-                  style: GoogleFonts.roboto(fontSize: 16, color: textColor, fontWeight: FontWeight.w400)),
+            // hiding full name for now
+            // if (showFullName)
+            //   Text('ProScholy.cz',
+            //       style: GoogleFonts.roboto(fontSize: 16, color: textColor, fontWeight: FontWeight.w400)),
           ],
         )
       ],

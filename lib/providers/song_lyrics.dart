@@ -61,7 +61,7 @@ mixin _Filterable on SongLyricsProvider {
 
     _tagsSections = tagsMap.entries.map((entry) => TagsSection(entry.key.description, entry.value)).toList();
 
-    _tagsSections.sort((first, second) => first.tags[0].type.index.compareTo(second.tags[0].type.index));
+    _tagsSections.sort((first, second) => first.tags[0].type.rawValue.compareTo(second.tags[0].type.rawValue));
   }
 
   List<SongLyric> _filter(List<SongLyric> songLyrics) {

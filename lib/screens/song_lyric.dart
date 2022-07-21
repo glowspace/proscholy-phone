@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:flutter/material.dart' hide PopupMenuEntry, PopupMenuItem;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -21,10 +20,6 @@ import 'package:zpevnik/components/song_lyric/utils/lyrics_controller.dart';
 import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/providers/settings.dart';
 import 'package:zpevnik/utils/extensions.dart';
-
-const double _externalsTitleHeight = 2 * kDefaultPadding + 21;
-const double _externalsNameHeight = 2 * kDefaultPadding + 18;
-const double _miniPlayerHeight = 64;
 
 class SongLyricScreen extends StatefulWidget {
   final List<SongLyric> songLyrics;
@@ -72,6 +67,8 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
     if (widget.playlist != null) {
       _songLyricsSubscription =
           context.read<DataProvider>().watchPlaylistRecordsChanges(widget.playlist!).listen((songLyrics) {
+        if (songLyrics.isEmpty) return;
+
         setState(() {
           _currentIndex =
               (_currentIndex % _lyricsControllers.length) + (songLyrics.length == 1 ? 0 : 10 * songLyrics.length);
@@ -98,9 +95,6 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
 
     final settingsProvider = context.read<SettingsProvider>();
     final navigationProvider = NavigationProvider.of(context);
-
-    final width = mediaQuery.size.width;
-    final height = mediaQuery.size.height;
 
     final backgroundColor = theme.brightness.isLight ? theme.colorScheme.surface : theme.scaffoldBackgroundColor;
     final canPopIndividually = navigationProvider.songLyricCanPopIndividually;
@@ -191,8 +185,6 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
       );
     }
 
-    final bottomPadding = MediaQuery.of(context).padding.bottom;
-
     final scaffold = Stack(
       children: [
         Scaffold(
@@ -223,16 +215,6 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
         ExternalsPlayerWrapper(
           key: Key('${_songLyric.id}'),
           songLyric: _songLyric,
-          // TODO: move this computations to ExternalsPlayerWrapper
-          maxHeight: min(
-            2 / 3 * height,
-            _externalsTitleHeight +
-                bottomPadding +
-                _songLyric.youtubes.length * (width / 16 * 9 + _externalsNameHeight) +
-                _songLyric.mp3s.length * (64 + kDefaultPadding) +
-                kDefaultPadding,
-          ),
-          minHeight: _miniPlayerHeight + bottomPadding,
           isShowing: _showingExternals,
         ),
       ],

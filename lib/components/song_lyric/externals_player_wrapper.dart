@@ -1,7 +1,14 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:zpevnik/components/song_lyric/externals.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
+
+const double _miniPlayerHeight = 64;
+
+const double _externalsTitleHeight = 2 * kDefaultPadding + 21;
+const double _externalsNameHeight = 2 * kDefaultPadding + 18;
 
 const _dragSpeedScale = 0.01;
 
@@ -9,16 +16,7 @@ class ExternalsPlayerWrapper extends StatefulWidget {
   final SongLyric songLyric;
   final ValueNotifier<bool> isShowing;
 
-  final double maxHeight;
-  final double minHeight;
-
-  const ExternalsPlayerWrapper({
-    Key? key,
-    required this.songLyric,
-    required this.isShowing,
-    this.maxHeight = 0,
-    this.minHeight = 0,
-  }) : super(key: key);
+  const ExternalsPlayerWrapper({Key? key, required this.songLyric, required this.isShowing}) : super(key: key);
 
   @override
   State<ExternalsPlayerWrapper> createState() => _ExternalsPlayerWrapperState();
@@ -45,8 +43,8 @@ class _ExternalsPlayerWrapperState extends State<ExternalsPlayerWrapper> with Si
 
   @override
   void didUpdateWidget(covariant ExternalsPlayerWrapper oldWidget) {
-    if (_height.value == oldWidget.maxHeight && widget.maxHeight != oldWidget.maxHeight) {
-      _height.value = widget.maxHeight;
+    if (_height.value > _minHeight) {
+      _height.value = _maxHeight;
     }
 
     super.didUpdateWidget(oldWidget);
@@ -70,11 +68,10 @@ class _ExternalsPlayerWrapperState extends State<ExternalsPlayerWrapper> with Si
           ? Container()
           : Stack(
               children: [
-                if (height > widget.minHeight)
+                if (height > _minHeight)
                   GestureDetector(
                     onTap: _collapseOrHide,
-                    child: Opacity(
-                        opacity: height / widget.maxHeight, child: Container(color: Colors.black.withAlpha(0x60))),
+                    child: Opacity(opacity: height / _maxHeight, child: Container(color: Colors.black.withAlpha(0x60))),
                   ),
                 Align(
                   alignment: Alignment.bottomCenter,
@@ -87,7 +84,7 @@ class _ExternalsPlayerWrapperState extends State<ExternalsPlayerWrapper> with Si
                           color: Theme.of(context).canvasColor,
                           child: ExternalsWidget(
                             songLyric: widget.songLyric,
-                            percentage: (_height.value - widget.minHeight) / (widget.maxHeight - widget.minHeight),
+                            percentage: (_height.value - _minHeight) / (_maxHeight - _minHeight),
                             isPlaying: _isPlaying,
                           ),
                         ),
@@ -103,8 +100,22 @@ class _ExternalsPlayerWrapperState extends State<ExternalsPlayerWrapper> with Si
     );
   }
 
+  double get _minHeight => MediaQuery.of(context).padding.bottom + _miniPlayerHeight;
+  double get _maxHeight {
+    final mediaQuery = MediaQuery.of(context);
+
+    return min(
+      2 / 3 * mediaQuery.size.height,
+      _externalsTitleHeight +
+          mediaQuery.padding.bottom +
+          widget.songLyric.youtubes.length * (min(300, mediaQuery.size.width) / 16 * 9 + _externalsNameHeight) +
+          widget.songLyric.mp3s.length * (64 + kDefaultPadding) +
+          kDefaultPadding,
+    );
+  }
+
   void _updateHeight() {
-    final double newHeight = widget.isShowing.value ? (_isCollapsed ? widget.minHeight : widget.maxHeight) : 0;
+    final double newHeight = widget.isShowing.value ? (_isCollapsed ? _minHeight : _maxHeight) : 0;
 
     final heightAnimation = Tween(
       begin: _height.value,
@@ -121,15 +132,15 @@ class _ExternalsPlayerWrapperState extends State<ExternalsPlayerWrapper> with Si
   }
 
   void _changeHeight(double height) {
-    if (height > widget.maxHeight) height = widget.maxHeight;
+    if (height > _maxHeight) height = _maxHeight;
 
-    if (_isCollapsed && height < widget.minHeight) height = widget.minHeight;
+    if (_isCollapsed && height < _minHeight) height = _minHeight;
 
     _height.value = height;
   }
 
   void _snapWidget(DragEndDetails details) {
-    if (_height.value - _dragSpeedScale * details.velocity.pixelsPerSecond.dy < widget.maxHeight / 2) {
+    if (_height.value - _dragSpeedScale * details.velocity.pixelsPerSecond.dy < _maxHeight / 2) {
       _collapseOrHide();
     } else {
       _expandWidget();

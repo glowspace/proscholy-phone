@@ -37,7 +37,7 @@ class FilterTag extends StatelessWidget {
     Widget child = Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(tag.name),
+        Flexible(child: Text(tag.name, overflow: TextOverflow.ellipsis, maxLines: 1)),
         if (isRemovable) const SizedBox(width: kDefaultPadding / 2),
         if (isRemovable)
           Highlightable(
