@@ -13,24 +13,38 @@ class PlaylistsListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dataProvider = context.watch<DataProvider>();
-    final playlists = [dataProvider.favorites] + dataProvider.playlists;
 
-    return ListView.builder(
-      primary: false,
-      padding: const EdgeInsets.only(top: kDefaultPadding / 2, bottom: 2 * kDefaultPadding),
-      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-      itemCount: playlists.length + 1,
-      itemBuilder: (_, index) {
-        if (index == playlists.length) {
-          return Highlightable(
+    return SingleChildScrollView(
+      child: Container(
+        padding: const EdgeInsets.only(top: kDefaultPadding / 2, bottom: 2 * kDefaultPadding),
+        child: Column(children: [
+          PlaylistRow(playlist: dataProvider.favorites, visualDensity: VisualDensity.comfortable),
+          Theme(
+            data: Theme.of(context).copyWith(canvasColor: Colors.transparent),
+            child: ReorderableListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              padding: EdgeInsets.zero,
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+              buildDefaultDragHandles: false,
+              itemCount: dataProvider.playlists.length,
+              itemBuilder: (_, index) => PlaylistRow(
+                key: Key('${dataProvider.playlists[index].id}'),
+                playlist: dataProvider.playlists[index],
+                isReorderable: true,
+                showDragIndicator: false,
+                visualDensity: VisualDensity.comfortable,
+              ),
+              onReorder: dataProvider.reorderedPlaylists,
+            ),
+          ),
+          Highlightable(
             onTap: () => showPlaylistDialog(context),
             padding: const EdgeInsets.all(kDefaultPadding),
             child: const IconItem(icon: Icons.add, text: 'Vytvořit nový seznam', iconSize: 20),
-          );
-        }
-
-        return PlaylistRow(playlist: playlists[index], visualDensity: VisualDensity.comfortable);
-      },
+          ),
+        ]),
+      ),
     );
   }
 }

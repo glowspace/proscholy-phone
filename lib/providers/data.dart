@@ -42,7 +42,7 @@ class DataProvider extends ChangeNotifier {
 
   Map<int, SongLyric> _songLyricsById = {};
   Map<int, Songbook> _songbooksById = {};
-  Map<String, Tag> _tagsBySongbookName = {};
+  final Map<String, Tag> _tagsBySongbookName = {};
 
   List<NewsItem> get newsItems => _newsItems;
   List<SongLyric> get songLyrics => _songLyrics;
@@ -159,8 +159,17 @@ class DataProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void reorderedPlaylists() {
-    _playlists.sort();
+  void reorderedPlaylists(int oldIndex, int newIndex) {
+    if (oldIndex < newIndex) {
+      newIndex -= 1;
+    }
+
+    final playlist = _playlists.removeAt(oldIndex);
+    _playlists.insert(newIndex, playlist);
+
+    for (int i = 0; i < _playlists.length; i++) {
+      _playlists[i].rank = i;
+    }
 
     _tags.removeWhere((tag) => tag.type == TagType.playlist && tag.name != _favorites.name);
     _tags.addAll(_playlists.map((playlist) => Tag(_tagId--, playlist.name, TagType.playlist.rawValue)));

@@ -13,6 +13,7 @@ const double _iconSize = 20;
 class PlaylistRow extends StatelessWidget {
   final Playlist playlist;
   final bool isReorderable;
+  final bool showDragIndicator;
 
   final VisualDensity visualDensity;
 
@@ -20,6 +21,7 @@ class PlaylistRow extends StatelessWidget {
     Key? key,
     required this.playlist,
     this.isReorderable = false,
+    this.showDragIndicator = true,
     this.visualDensity = VisualDensity.standard,
   }) : super(key: key);
 
@@ -42,7 +44,7 @@ class PlaylistRow extends StatelessWidget {
         highlightableChildKeys: [dragIndicatorKey, playlistButtonKey],
         child: Row(
           children: [
-            if (isReorderable)
+            if (isReorderable && showDragIndicator)
               ReorderableDragStartListener(
                 key: dragIndicatorKey,
                 child: Container(

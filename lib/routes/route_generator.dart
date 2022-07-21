@@ -5,7 +5,6 @@ import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/providers/data.dart';
-import 'package:zpevnik/providers/playlists.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
 import 'package:zpevnik/routes/arguments/search.dart';
 import 'package:zpevnik/routes/arguments/song_lyric.dart';
@@ -73,14 +72,7 @@ class RouteGenerator {
       // case '/playlist/custom_text':
       //   return MaterialPageRoute(settings: settings, builder: (_) => const CustomTextScreen(), fullscreenDialog: true);
       case '/playlists':
-        return MaterialPageRoute(
-          settings: settings,
-          builder: (_) => ChangeNotifierProxyProvider<DataProvider, PlaylistsProvider>(
-            create: (context) => PlaylistsProvider(),
-            update: (context, dataProvider, playlistsProvider) => playlistsProvider!..update(dataProvider.playlists),
-            builder: (_, __) => const PlaylistsScreen(),
-          ),
-        );
+        return MaterialPageRoute(settings: settings, builder: (_) => const PlaylistsScreen());
       case '/search':
         final arguments = settings.arguments as SearchScreenArguments?;
 

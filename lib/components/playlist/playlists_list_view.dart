@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/components/playlist/playlist_row.dart';
 import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/providers/playlists.dart';
+import 'package:zpevnik/providers/data.dart';
 
 const _noPlaylistsText =
     'Nemáte vytvořený žádný seznam písní. Klikněte na${unbreakableSpace}tlačítko níže pro vytvoření nového seznamu.';
@@ -12,9 +12,10 @@ class PlaylistsListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final playlistsProvider = context.watch<PlaylistsProvider>();
+    final dataProvider = context.watch<DataProvider>();
+    final playlists = dataProvider.playlists;
 
-    if (playlistsProvider.playlists.isEmpty) {
+    if (playlists.isEmpty) {
       return Container(
         padding: const EdgeInsets.all(kDefaultPadding),
         child: const Center(child: Text(_noPlaylistsText, textAlign: TextAlign.center)),
@@ -24,18 +25,17 @@ class PlaylistsListView extends StatelessWidget {
     return Theme(
       data: Theme.of(context).copyWith(canvasColor: Colors.transparent),
       child: ReorderableListView.builder(
-        key: Key(playlistsProvider.searchText),
         primary: false,
         padding: const EdgeInsets.only(top: kDefaultPadding / 2, bottom: 2 * kDefaultPadding),
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         buildDefaultDragHandles: false,
-        itemCount: playlistsProvider.playlists.length,
+        itemCount: playlists.length,
         itemBuilder: (_, index) {
-          final playlist = playlistsProvider.playlists[index];
+          final playlist = playlists[index];
 
           return PlaylistRow(key: Key('${playlist.id}'), playlist: playlist, isReorderable: true);
         },
-        onReorder: (newIndex, oldIndex) => playlistsProvider.onReorder(context, newIndex, oldIndex),
+        onReorder: dataProvider.reorderedPlaylists,
       ),
     );
   }
