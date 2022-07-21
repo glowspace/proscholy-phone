@@ -89,7 +89,7 @@ class PlaylistScreen extends StatelessWidget {
         child: ChangeNotifierProxyProvider<DataProvider, PlaylistSongLyricsProvider>(
           create: (context) => PlaylistSongLyricsProvider(dataProvider, playlist),
           update: (_, dataProvider, playlistSongLyricsProvider) => playlistSongLyricsProvider!..update(dataProvider),
-          builder: (_, __) => const SongLyricsListView<PlaylistSongLyricsProvider>(),
+          builder: (_, __) => const SongLyricsListView<PlaylistSongLyricsProvider>(allowRowHighlight: true),
         ),
       ),
     );

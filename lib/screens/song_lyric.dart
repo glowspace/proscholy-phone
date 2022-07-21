@@ -184,6 +184,7 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
                 onPageChanged: (value) => setState(() {
                   _showingExternals.value = false;
                   _currentIndex = value;
+                  context.read<ValueNotifier<SongLyric?>>().value = _songLyric;
                 }),
                 itemBuilder: (_, index) => LyricsWidget(
                   controller: _lyricsControllers[index % _lyricsControllers.length],

@@ -28,7 +28,7 @@ class UpdatedSongLyricsScreen extends StatelessWidget {
       body: SafeArea(
         child: ChangeNotifierProvider(
           create: (context) => UpdatedSongLyricsProvider(context.read<DataProvider>()),
-          builder: (_, __) => const SongLyricsListView<UpdatedSongLyricsProvider>(),
+          builder: (_, __) => const SongLyricsListView<UpdatedSongLyricsProvider>(allowRowHighlight: true),
         ),
       ),
     );

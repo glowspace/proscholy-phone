@@ -80,7 +80,7 @@ class TranslationsScreen extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
             child: Text(songLyricType.description, style: textStyle),
           ),
-          ...songLyrics.map((songLyric) => SongLyricRow(songLyric: songLyric)),
+          ...songLyrics.map((songLyric) => SongLyricRow(songLyric: songLyric, allowHighlight: true)),
         ],
       ),
     );

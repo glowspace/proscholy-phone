@@ -47,7 +47,7 @@ class SongbookScreen extends StatelessWidget {
         child: ChangeNotifierProxyProvider<DataProvider, SongbookSongLyricsProvider>(
           create: (context) => SongbookSongLyricsProvider(dataProvider, songbook),
           update: (_, dataProvider, songbookSongLyricsProvider) => songbookSongLyricsProvider!..update(dataProvider),
-          builder: (_, __) => const SongLyricsListView<SongbookSongLyricsProvider>(),
+          builder: (_, __) => const SongLyricsListView<SongbookSongLyricsProvider>(allowRowHighlight: true),
         ),
       ),
     );

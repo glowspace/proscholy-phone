@@ -67,8 +67,12 @@ class NavigationProvider extends ChangeNotifier {
           });
         });
       case '/song_lyric':
+        final songLyricScreenArguments = arguments as SongLyricScreenArguments;
+        navigatorKey.currentContext?.read<ValueNotifier<SongLyric?>>().value =
+            songLyricScreenArguments.songLyrics[songLyricScreenArguments.index];
+
         return navigatorKey.currentState
-            ?.pushNamed<T>(name, arguments: (arguments as SongLyricScreenArguments).copyWith(isTablet: true));
+            ?.pushNamed<T>(name, arguments: songLyricScreenArguments.copyWith(isTablet: true));
       case '/song_lyric/translations':
         return _pushSongLyricsWithMenu(name, arguments, []);
       case '/songbook':
@@ -106,6 +110,8 @@ class NavigationProvider extends ChangeNotifier {
     final oldRoute = navigatorObserver.currentRoute;
 
     if (songLyrics.isNotEmpty) {
+      navigatorKey.currentContext?.read<ValueNotifier<SongLyric?>>().value = songLyrics[0];
+
       navigatorKey.currentState?.pushNamed(
         '/song_lyric',
         arguments: SongLyricScreenArguments(songLyrics, 0, isTablet: true),

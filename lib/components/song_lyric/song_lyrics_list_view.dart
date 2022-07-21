@@ -17,7 +17,9 @@ const _noSongLyricsTextTablet =
 typedef ListItemBuilder = Widget Function(BuildContext);
 
 class SongLyricsListView<T extends SongLyricsProvider> extends StatelessWidget {
-  const SongLyricsListView({Key? key}) : super(key: key);
+  final bool allowRowHighlight;
+
+  const SongLyricsListView({Key? key, this.allowRowHighlight = false}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -141,6 +143,7 @@ class SongLyricsListView<T extends SongLyricsProvider> extends StatelessWidget {
           songLyric: songLyrics[i],
           isReorderable: isReorderable,
           isDraggable: NavigationProvider.of(context).isHomeMenu,
+          allowHighlight: allowRowHighlight,
           songLyricScreenArguments: SongLyricScreenArguments(songLyrics, i),
         ),
       );
