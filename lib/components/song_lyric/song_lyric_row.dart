@@ -119,7 +119,7 @@ class SongLyricRow extends StatelessWidget {
 
     final songLyricsProvider = context.read<PlaylistSongLyricsProvider?>();
 
-    if (songLyricsProvider != null && !songLyricsProvider.playlist.isFavorites) {
+    if (songLyricsProvider != null) {
       return Dismissible(
         key: Key('${songLyric.id}'),
         onDismissed: (_) => songLyricsProvider.removeSongLyric(songLyric),
