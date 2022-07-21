@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
-import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
 import 'package:zpevnik/routes/arguments/search.dart';
@@ -59,10 +58,12 @@ class SongLyricRow extends StatelessWidget {
 
     final hightlightColor = theme.brightness.isLight ? const Color(0xffe8e6ef) : const Color(0xff15131d);
 
+    final isTablet = MediaQuery.of(context).isTablet;
+
     Widget row = Highlightable(
       highlightBackground: true,
       highlightableChildKeys: [dragIndicatorKey],
-      padding: allowHighlight
+      padding: isTablet && allowHighlight
           ? EdgeInsets.symmetric(horizontal: isReorderable ? 0 : kDefaultPadding, vertical: kDefaultPadding / 3)
           : EdgeInsets.fromLTRB(
               isReorderable ? kDefaultPadding : 1.5 * kDefaultPadding,
@@ -101,7 +102,7 @@ class SongLyricRow extends StatelessWidget {
       ),
     );
 
-    if (allowHighlight) {
+    if (isTablet && allowHighlight) {
       row = ValueListenableBuilder<SongLyric?>(
         valueListenable: context.read<ValueNotifier<SongLyric?>>(),
         builder: (_, activeSongLyric, child) => Container(
