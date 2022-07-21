@@ -92,15 +92,12 @@ class RouteGenerator {
 
               return AllSongLyricsProvider(
                 dataProvider,
-                songLyrics: _getSongLyrics(arguments, dataProvider),
+                songLyrics: dataProvider.songLyrics,
                 initialTag: arguments?.initialTag,
               );
             },
-            update: (_, dataProvider, allSongLyricsProvider) => allSongLyricsProvider!
-              ..update(
-                dataProvider,
-                songLyrics: _getSongLyrics(arguments, dataProvider),
-              ),
+            update: (_, dataProvider, allSongLyricsProvider) =>
+                allSongLyricsProvider!..update(dataProvider, songLyrics: dataProvider.songLyrics),
             builder: (_, __) => const SearchScreen(),
           ),
           fullscreenDialog: true,
@@ -140,16 +137,6 @@ class RouteGenerator {
       default:
         throw 'Unknown route: ${settings.name}';
     }
-  }
-
-  static List<SongLyric> _getSongLyrics(SearchScreenArguments? arguments, DataProvider dataProvider) {
-    if (arguments?.playlist != null) {
-      return dataProvider.getPlaylistsSongLyrics(arguments!.playlist!);
-    } else if (arguments?.songbook != null) {
-      return dataProvider.getSongbooksSongLyrics(arguments!.songbook!);
-    }
-
-    return dataProvider.songLyrics;
   }
 }
 

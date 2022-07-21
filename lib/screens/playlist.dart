@@ -73,8 +73,12 @@ class PlaylistScreen extends StatelessWidget {
         centerTitle: false,
         actions: [
           Highlightable(
-            onTap: () => NavigationProvider.of(context)
-                .pushNamed('/search', arguments: SearchScreenArguments(playlist: playlist)),
+            onTap: () => NavigationProvider.of(context).pushNamed(
+              '/search',
+              arguments: SearchScreenArguments(
+                initialTag: dataProvider.tags.firstWhere((tag) => tag.name == playlist.name),
+              ),
+            ),
             isDisabled: playlist.playlistRecords.isEmpty,
             padding: const EdgeInsets.all(kDefaultPadding).copyWith(left: 2.5 * kDefaultPadding),
             child: const Icon(Icons.filter_alt),

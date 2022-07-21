@@ -35,8 +35,12 @@ class SongbookScreen extends StatelessWidget {
           centerTitle: false,
           actions: [
             Highlightable(
-              onTap: () => NavigationProvider.of(context)
-                  .pushNamed('/search', arguments: SearchScreenArguments(songbook: songbook)),
+              onTap: () => NavigationProvider.of(context).pushNamed(
+                '/search',
+                arguments: SearchScreenArguments(
+                  initialTag: dataProvider.tags.firstWhere((tag) => tag.name == songbook.name),
+                ),
+              ),
               padding: const EdgeInsets.all(kDefaultPadding).copyWith(left: 2.5 * kDefaultPadding),
               child: const Icon(Icons.filter_alt),
             ),

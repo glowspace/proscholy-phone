@@ -15,6 +15,7 @@ enum TagType {
   generic,
   language,
   songbook,
+  playlist,
   unknown
 }
 
@@ -74,6 +75,8 @@ extension TagTypeExtension on TagType {
         return TagType.liturgyDay;
       case 11:
         return TagType.songbook;
+      case 12:
+        return TagType.playlist;
       default:
         return TagType.unknown;
     }
@@ -105,8 +108,10 @@ extension TagTypeExtension on TagType {
         return 10;
       case TagType.songbook:
         return 11;
+      case TagType.playlist:
+        return 12;
       default:
-        return 10;
+        return 13;
     }
   }
 
@@ -119,6 +124,7 @@ extension TagTypeExtension on TagType {
       case TagType.sacredOccasion:
       case TagType.language:
       case TagType.songbook:
+      case TagType.playlist:
         return true;
       default:
         return false;
@@ -141,6 +147,8 @@ extension TagTypeExtension on TagType {
         return 'Jazyky';
       case TagType.songbook:
         return 'Zpěvníky';
+      case TagType.playlist:
+        return 'Playlisty';
       default:
         return 'Filtry';
     }

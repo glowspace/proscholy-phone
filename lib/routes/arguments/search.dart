@@ -1,6 +1,4 @@
 // used as argument when pushing "/search" route
-import 'package:zpevnik/models/playlist.dart';
-import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/models/tag.dart';
 
 class SearchScreenArguments {
@@ -10,14 +8,8 @@ class SearchScreenArguments {
   // filter tag that should be applied initially, used when pushing "/search" from tag displayed in song lyric screen
   final Tag? initialTag;
 
-  final Playlist? playlist;
-
-  final Songbook? songbook;
-
   SearchScreenArguments({
     this.shouldReturnSongLyric = false,
     this.initialTag,
-    this.playlist,
-    this.songbook,
   });
 }

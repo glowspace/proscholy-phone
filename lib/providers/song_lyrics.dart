@@ -80,6 +80,9 @@ mixin _Filterable on SongLyricsProvider {
         } else if (entry.key == TagType.songbook) {
           shouldAdd &= entry.value.any((tag) =>
               songLyric.songbookRecords.any((songbookRecord) => songbookRecord.songbook.target?.name == tag.name));
+        } else if (entry.key == TagType.playlist) {
+          shouldAdd &= entry.value.any((tag) =>
+              songLyric.playlistRecords.any((playlistRecord) => playlistRecord.playlist.target?.name == tag.name));
         } else {
           shouldAdd &= entry.value.any((tag) => songLyric.tags.contains(tag));
         }
@@ -143,7 +146,7 @@ mixin _Searchable on SongLyricsProvider {
 
   SongLyric? get matchedById => _matchedById;
 
-  void search(String searchText, {Songbook? songbook}) async {
+  void search(String searchText) async {
     _searchText = searchText;
 
     _matchedById = null;
@@ -169,9 +172,7 @@ mixin _Searchable on SongLyricsProvider {
       final songLyric = _songLyricsMap[value['id']];
 
       if (songLyric != null) {
-        if ((songbook == null && searchText == '${songLyric.id}') ||
-            songLyric.songbookRecords.any((songbookRecord) =>
-                songbookRecord.songbook.targetId == songbook?.id && searchText == songbookRecord.number)) {
+        if (searchText == '${songLyric.id}') {
           _matchedById = songLyric;
         } else if (songLyric.songbookRecords.any((songbookRecord) => searchText == songbookRecord.number)) {
           _songLyricsMatchedBySongbookNumber.add(songLyric);

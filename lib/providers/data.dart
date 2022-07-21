@@ -216,6 +216,8 @@ class DataProvider extends ChangeNotifier {
     // FIXME: should depend on last id in language tags
     int id = -100;
     _tags.addAll(songbooks.map((songbook) => Tag(id--, songbook.name, TagType.songbook.rawValue)));
+    _tags.add(Tag(id--, _favorites.name, TagType.playlist.rawValue));
+    _tags.addAll(playlists.map((playlist) => Tag(id--, playlist.name, TagType.playlist.rawValue)));
 
     if (currentVersion == null) {
       try {

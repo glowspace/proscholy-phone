@@ -19,7 +19,6 @@ class SearchScreen extends StatelessWidget {
     final theme = Theme.of(context);
 
     final songLyricsProvider = context.read<AllSongLyricsProvider>();
-    final searchScreenArguments = ModalRoute.of(context)?.settings.arguments as SearchScreenArguments?;
 
     final child = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -29,7 +28,7 @@ class SearchScreen extends StatelessWidget {
         SearchField(
           key: const Key('searchfield'),
           isInsideSearchScreen: true,
-          onChanged: (searchText) => songLyricsProvider.search(searchText, songbook: searchScreenArguments?.songbook),
+          onChanged: (searchText) => songLyricsProvider.search(searchText),
           onSubmitted: (_) => _maybePushMatchedSonglyric(context),
         ),
         Container(
