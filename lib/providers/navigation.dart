@@ -51,6 +51,11 @@ class NavigationProvider extends ChangeNotifier {
 
     switch (name) {
       case '/playlist':
+        final currentSettings = menuNavigatorObserver!.currentRoute?.settings;
+        if (currentSettings != null && currentSettings.name == '/playlist' && currentSettings.arguments == arguments) {
+          return null;
+        }
+
         final dataProvider = navigatorKey.currentContext!.read<DataProvider>();
         final songLyrics = dataProvider.getPlaylistsSongLyrics(arguments as Playlist);
 
@@ -103,6 +108,15 @@ class NavigationProvider extends ChangeNotifier {
     } else {
       pushNamed(name, arguments: arguments);
     }
+  }
+
+  Future<T?>? popAndPushNamed<T>(String name, {Object? arguments}) {
+    if (menuNavigatorKey == null) {
+      return navigatorKey.currentState?.popAndPushNamed<T, void>(name, arguments: arguments);
+    }
+
+    navigatorKey.currentState?.pop();
+    return pushNamed(name, arguments: arguments);
   }
 
   Future<T?>? _pushSongLyricsWithMenu<T>(String name, Object? arguments, List<SongLyric> songLyrics,
