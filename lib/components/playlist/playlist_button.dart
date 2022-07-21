@@ -90,6 +90,11 @@ class PlaylistButton extends StatelessWidget {
         .toList()
         .join(',');
 
-    Share.share(Uri.encodeFull('$deepLinkUrl/add_playlist?name=${playlist.name}&ids=$songLyricsIds'));
+    final box = context.findRenderObject() as RenderBox?;
+
+    Share.share(
+      Uri.encodeFull('$deepLinkUrl/add_playlist?name=${playlist.name}&ids=$songLyricsIds'),
+      sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
+    );
   }
 }
