@@ -66,9 +66,9 @@ extension TagTypeExtension on TagType {
       case 6:
         return TagType.musicalForm;
       case 7:
-        return TagType.saints;
-      case 8:
         return TagType.sacredOccasion;
+      case 8:
+        return TagType.saints;
       case 9:
         return TagType.language;
       case 10:
@@ -98,9 +98,9 @@ extension TagTypeExtension on TagType {
         return 5;
       case TagType.musicalForm:
         return 6;
-      case TagType.saints:
-        return 7;
       case TagType.sacredOccasion:
+        return 7;
+      case TagType.saints:
         return 8;
       case TagType.language:
         return 9;
