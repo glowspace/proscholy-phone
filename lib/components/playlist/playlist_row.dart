@@ -55,8 +55,11 @@ class PlaylistRow extends StatelessWidget {
               )
             else
               Container(
-                child: Icon(playlist.isFavorites ? Icons.star : Icons.playlist_play_rounded, size: _iconSize),
-                padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2, horizontal: kDefaultPadding),
+                child: Icon(playlist.isFavorites ? Icons.star : Icons.playlist_play_rounded,
+                    size: visualDensity == VisualDensity.comfortable ? _iconSize : null),
+                padding: visualDensity == VisualDensity.comfortable
+                    ? const EdgeInsets.symmetric(vertical: kDefaultPadding / 2, horizontal: kDefaultPadding)
+                    : const EdgeInsets.symmetric(vertical: kDefaultPadding / 2, horizontal: 2 * kDefaultPadding),
               ),
             Expanded(child: Text(playlist.name)),
             if (!playlist.isFavorites)

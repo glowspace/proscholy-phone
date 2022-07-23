@@ -22,21 +22,27 @@ class PlaylistsListView extends StatelessWidget {
       );
     }
 
-    return Theme(
-      data: Theme.of(context).copyWith(canvasColor: Colors.transparent),
-      child: ReorderableListView.builder(
-        primary: false,
-        padding: const EdgeInsets.only(top: kDefaultPadding / 2, bottom: 2 * kDefaultPadding),
-        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-        buildDefaultDragHandles: false,
-        itemCount: playlists.length,
-        itemBuilder: (_, index) {
-          final playlist = playlists[index];
+    return SingleChildScrollView(
+      child: Column(children: [
+        PlaylistRow(playlist: dataProvider.favorites),
+        Theme(
+          data: Theme.of(context).copyWith(canvasColor: Colors.transparent),
+          child: ReorderableListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            padding: const EdgeInsets.only(top: kDefaultPadding / 2, bottom: 2 * kDefaultPadding),
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            buildDefaultDragHandles: false,
+            itemCount: playlists.length,
+            itemBuilder: (_, index) {
+              final playlist = playlists[index];
 
-          return PlaylistRow(key: Key('${playlist.id}'), playlist: playlist, isReorderable: true);
-        },
-        onReorder: dataProvider.reorderedPlaylists,
-      ),
+              return PlaylistRow(key: Key('${playlist.id}'), playlist: playlist, isReorderable: true);
+            },
+            onReorder: dataProvider.reorderedPlaylists,
+          ),
+        ),
+      ]),
     );
   }
 }
