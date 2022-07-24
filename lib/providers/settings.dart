@@ -20,7 +20,12 @@ class SettingsProvider extends ChangeNotifier {
 
     _fontSizeScale = _prefs.getDouble(_fontSizeScaleScaleKey) ?? 1;
     _showChords = _prefs.getBool(_showChordsKey) ?? true;
-    _accidentals = _prefs.getInt(_accidentalsKey) ?? 0;
+    try {
+      _accidentals = _prefs.getInt(_accidentalsKey) ?? 0;
+    } on TypeError {
+      _prefs.remove(_accidentalsKey);
+      _accidentals = 0;
+    }
   }
 
   double get fontSizeScale => _fontSizeScale;
