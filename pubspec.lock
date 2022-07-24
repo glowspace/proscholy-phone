@@ -744,6 +744,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.27.4"
+  sentry:
+    dependency: transitive
+    description:
+      name: sentry
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "6.7.0"
+  sentry_flutter:
+    dependency: "direct main"
+    description:
+      name: sentry_flutter
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "6.7.0"
   share_plus:
     dependency: "direct main"
     description:

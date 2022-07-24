@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 // import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/providers/settings.dart';
@@ -10,10 +11,14 @@ import 'package:zpevnik/utils/extensions.dart';
 
 const _title = 'Zpěvník';
 
-void main() {
-  runApp(const MainWidget());
-
-  // debugRepaintRainbowEnabled = true;
+Future<void> main() async {
+  await SentryFlutter.init(
+    (options) {
+      options.dsn = 'https://59762f67d1644603bddb1f0fc27849dd@sentry.glowspace.cz/2';
+      options.tracesSampleRate = 1.0;
+    },
+    appRunner: () => runApp(const MainWidget()),
+  );
 }
 
 class MainWidget extends StatelessWidget {

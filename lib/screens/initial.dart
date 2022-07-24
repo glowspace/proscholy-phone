@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:zpevnik/components/logo.dart';
 import 'package:zpevnik/components/section.dart';
@@ -143,10 +144,14 @@ class _InitialScreenState extends State<InitialScreen> {
   }
 
   Future<void> _init() async {
-    await context.read<DataProvider>().init();
-    await context.read<SettingsProvider>().init();
+    try {
+      await context.read<DataProvider>().init();
+      await context.read<SettingsProvider>().init();
 
-    _pushHomeScreen(context);
+      _pushHomeScreen(context);
+    } catch (exception, stackTrace) {
+      await Sentry.captureException(exception, stackTrace: stackTrace);
+    }
 
     // setState(() => _showSignInButtons = true);
   }
