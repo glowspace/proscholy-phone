@@ -20,8 +20,15 @@ class SongLyricsSearch {
     _db = await openDatabase(join(await getDatabasesPath(), 'zpevnik.db'));
   }
 
-  Future<void> init() async {
+  Future<void> init(bool dropOld) async {
     await open();
+
+    if (dropOld) {
+      try {
+        await _db.execute('DROP table song_lyrics_search');
+        // ignore: empty_catches
+      } catch (e) {}
+    }
 
     await _db.execute(_createTableQuery);
   }

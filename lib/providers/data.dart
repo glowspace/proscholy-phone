@@ -25,7 +25,6 @@ class DataProvider extends ChangeNotifier {
   late final Store store;
 
   late final Updater updater;
-  late final SongLyricsSearch songLyricsSearch;
 
   // using negative ids to distinguish from other tags
   int _tagId = -1;
@@ -84,10 +83,6 @@ class DataProvider extends ChangeNotifier {
     store = await openStore();
 
     updater = Updater(store);
-
-    songLyricsSearch = SongLyricsSearch();
-
-    await songLyricsSearch.init();
 
     await _load();
 
@@ -208,6 +203,10 @@ class DataProvider extends ChangeNotifier {
     final currentVersion = prefs.getString(_versionKey);
     final buildVersion = '${packageInfo.version}+${packageInfo.buildNumber}';
 
+    final songLyricsSearch = SongLyricsSearch();
+
+    await songLyricsSearch.init(currentVersion != buildVersion);
+
     if (currentVersion != buildVersion) {
       await updater.loadInitial();
 
@@ -232,6 +231,8 @@ class DataProvider extends ChangeNotifier {
 
     // TODO: do this only for updated songlyrics
     await songLyricsSearch.update(_songLyrics);
+
+    songLyricsSearch.close();
 
     _songLyricsById = Map.fromIterable(_songLyrics, key: (songLyric) => songLyric.id);
     _songbooksById = Map.fromIterable(_songbooks, key: (songbook) => songbook.id);

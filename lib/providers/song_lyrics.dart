@@ -161,7 +161,7 @@ mixin _Searchable on SongLyricsProvider {
     }
 
     final songLyricsSearch = SongLyricsSearch();
-    await songLyricsSearch.init();
+    await songLyricsSearch.init(false);
 
     final result = await songLyricsSearch.search(searchText);
 
