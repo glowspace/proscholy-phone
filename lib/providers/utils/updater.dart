@@ -110,17 +110,21 @@ class Updater {
     // remove song lyrics that were removed on server
     box.removeMany(existingSongLyricsIds.toList());
 
-    // fetch missing song lyrics asynchronously
-    final List<Future<SongLyric>> futures = [];
-
-    for (final songLyricId in songLyricsIds) {
-      futures.add(client.getSongLyric(songLyricId).then((json) => SongLyric.fromJson(json, store)));
-    }
-
     try {
-      final songLyrics = await Future.wait(futures);
+      final songLyrics = SongLyric.fromMapList(await client.getSongLyrics(lastUpdate), store);
 
-      songLyrics.addAll(SongLyric.fromMapList(await client.getSongLyrics(lastUpdate), store));
+      for (final songLyric in songLyrics) {
+        songLyricsIds.remove(songLyric.id);
+      }
+
+      // fetch missing song lyrics asynchronously
+      final List<Future<SongLyric>> futures = [];
+
+      for (final songLyricId in songLyricsIds) {
+        futures.add(client.getSongLyric(songLyricId).then((json) => SongLyric.fromJson(json, store)));
+      }
+
+      songLyrics.addAll(await Future.wait(futures));
 
       // need to remove relations, because otherwise objectbox will just add new relations and keep old ones
       store.runInTransaction(TxMode.write, () {
