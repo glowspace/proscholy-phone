@@ -87,7 +87,7 @@ class DataProvider extends ChangeNotifier {
     await _load();
 
     updater.update(this).then((songLyrics) {
-      _updatedSongLyrics = songLyrics;
+      _updatedSongLyrics = songLyrics.where((songLyric) => songLyric.hasLyrics || songLyric.lilypond != null).toList();
 
       _load();
     });
