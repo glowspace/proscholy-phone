@@ -70,6 +70,8 @@ class PlaylistScreen extends StatelessWidget {
         elevation: isTablet ? 0 : null,
         leading: const CustomBackButton(),
         title: Text(playlist.name, style: Theme.of(context).textTheme.titleMedium),
+        leadingWidth: 24 + 4 * kDefaultPadding,
+        titleSpacing: 0,
         centerTitle: false,
         actions: [
           Highlightable(
@@ -80,7 +82,7 @@ class PlaylistScreen extends StatelessWidget {
               ),
             ),
             isDisabled: playlist.playlistRecords.isEmpty,
-            padding: const EdgeInsets.all(kDefaultPadding).copyWith(left: 2.5 * kDefaultPadding),
+            padding: const EdgeInsets.all(kDefaultPadding),
             child: const Icon(Icons.filter_alt),
           ),
           if (!playlist.isFavorites) PlaylistButton(playlist: playlist, isInAppBar: true, extendPadding: true),

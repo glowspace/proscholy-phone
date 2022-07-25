@@ -28,23 +28,26 @@ class SongbookScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: isTablet ? backgroundColor : null,
-          elevation: isTablet ? 0 : null,
-          leading: const CustomBackButton(),
-          title: Text(songbook.name, style: Theme.of(context).textTheme.titleMedium),
-          centerTitle: false,
-          actions: [
-            Highlightable(
-              onTap: () => NavigationProvider.of(context).pushNamed(
-                '/search',
-                arguments: SearchScreenArguments(
-                  initialTag: dataProvider.tags.firstWhere((tag) => tag.name == songbook.name),
-                ),
+        backgroundColor: isTablet ? backgroundColor : null,
+        elevation: isTablet ? 0 : null,
+        leading: const CustomBackButton(),
+        title: Text(songbook.name, style: Theme.of(context).textTheme.titleMedium),
+        centerTitle: false,
+        leadingWidth: 24 + 4 * kDefaultPadding,
+        titleSpacing: 0,
+        actions: [
+          Highlightable(
+            onTap: () => NavigationProvider.of(context).pushNamed(
+              '/search',
+              arguments: SearchScreenArguments(
+                initialTag: dataProvider.tags.firstWhere((tag) => tag.name == songbook.name),
               ),
-              padding: const EdgeInsets.all(kDefaultPadding).copyWith(left: 2.5 * kDefaultPadding),
-              child: const Icon(Icons.filter_alt),
             ),
-          ]),
+            padding: const EdgeInsets.all(kDefaultPadding),
+            child: const Icon(Icons.filter_alt),
+          ),
+        ],
+      ),
       backgroundColor: isTablet ? backgroundColor : null,
       bottomNavigationBar: MediaQuery.of(context).isTablet ? null : const CustomBottomNavigationBar(),
       body: SafeArea(
