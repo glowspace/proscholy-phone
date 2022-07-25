@@ -195,7 +195,7 @@ class _FilledTokensBuilder {
       } else if (token is InterludeEnd) {
         isInsideInterlude = false;
         _fillToken(token);
-      } else {
+      } else if (!isInsideInterlude) {
         _fillEmptyVerseNumber();
 
         // remove leading space from first string after verse number

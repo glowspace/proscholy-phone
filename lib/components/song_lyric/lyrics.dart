@@ -243,11 +243,13 @@ class _LyricsWidgetState extends State<LyricsWidget> {
     String chordText = convertAccidentals(
         transpose(chord.value, widget.controller.songLyric.transposition), widget.controller.accidentals);
 
-    int? chordNumberIndex;
-    for (int i = 0; i < chordText.length; i++) {
-      if (int.tryParse(chordText[i]) != null) {
-        chordNumberIndex = i;
-        break;
+    int chordNumberIndex = chordText.indexOf('maj');
+    if (chordNumberIndex == -1) {
+      for (int i = 0; i < chordText.length; i++) {
+        if (int.tryParse(chordText[i]) != null) {
+          chordNumberIndex = i;
+          break;
+        }
       }
     }
 
@@ -258,7 +260,7 @@ class _LyricsWidgetState extends State<LyricsWidget> {
         Container(
           transform: Matrix4.translationValues(0, chordOffset, 0),
           padding: EdgeInsets.only(right: fontSizeScale * kDefaultPadding / 2),
-          child: chordNumberIndex == null
+          child: chordNumberIndex == -1
               ? Text(chordText, style: textStyle?.copyWith(color: chordColor))
               : Row(
                   mainAxisSize: MainAxisSize.min,
