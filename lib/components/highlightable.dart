@@ -102,8 +102,8 @@ class _HighlightableState extends State<Highlightable> with SingleTickerProvider
     return GestureDetector(
       onPanDown: (details) => setState(() => _isHighlighted = !_containsChild(details)),
       onPanEnd: (_) => setState(() => _isHighlighted = false),
-      // delayed, so the highlight is visible when fast tap happens
       onPanCancel: () => setState(() => _isHighlighted = false),
+      onPanUpdate: (details) => _updateHighlight(context, details),
       onTap: widget.isDisabled ? null : widget.onTap,
       onLongPress: widget.onLongPress,
       behavior: HitTestBehavior.translucent,
@@ -125,5 +125,17 @@ class _HighlightableState extends State<Highlightable> with SingleTickerProvider
     }
 
     return false;
+  }
+
+  void _updateHighlight(BuildContext context, DragUpdateDetails details) {
+    if (!_isHighlighted) return;
+
+    final renderBox = context.findRenderObject() as RenderBox?;
+
+    if (renderBox != null) {
+      final rectangle = renderBox.localToGlobal(Offset.zero) & renderBox.size;
+
+      if (!rectangle.contains(details.globalPosition)) setState(() => _isHighlighted = false);
+    }
   }
 }
