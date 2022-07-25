@@ -1,30 +1,42 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:zpevnik/components/songbook/songbook_row.dart';
 import 'package:zpevnik/components/songbook/songbook_tile.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songbook.dart';
-import 'package:zpevnik/utils/extensions.dart';
 
 const _minTileWidth = 250;
 
-class SongbooksListView extends StatelessWidget {
+class SongbooksGridView extends StatelessWidget {
   final List<Songbook> songbooks;
   final bool shrinkWrap;
+  final bool isCrossAxisCountMultipleOfTwo;
 
-  const SongbooksListView({Key? key, required this.songbooks, this.shrinkWrap = false}) : super(key: key);
+  const SongbooksGridView({
+    Key? key,
+    required this.songbooks,
+    this.shrinkWrap = false,
+    this.isCrossAxisCountMultipleOfTwo = false,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+
+    int crossAxisCount = max(2, (width / _minTileWidth).floor());
+
+    if (isCrossAxisCountMultipleOfTwo && crossAxisCount % 2 != 0) crossAxisCount--;
+
     return Theme(
       data: Theme.of(context).copyWith(canvasColor: Colors.transparent),
-      child: ListView.separated(
+      child: AlignedGridView.count(
+        crossAxisCount: crossAxisCount,
         primary: false,
         padding: shrinkWrap ? null : const EdgeInsets.only(top: kDefaultPadding / 2, bottom: 2 * kDefaultPadding),
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         itemCount: songbooks.length,
-        itemBuilder: (_, index) => SongbookRow(songbook: songbooks[index]),
-        separatorBuilder: (_, __) => const Divider(height: 0),
+        itemBuilder: (context, index) => SongbookTile(songbook: songbooks[index]),
         shrinkWrap: shrinkWrap,
         physics: shrinkWrap ? const NeverScrollableScrollPhysics() : null,
       ),
