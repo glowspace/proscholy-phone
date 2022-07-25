@@ -148,7 +148,11 @@ class Updater {
 
       box.putMany(songLyrics);
 
-      state.value = UpdaterStateDone(songLyrics.length);
+      if (songLyrics.isNotEmpty) {
+        state.value = UpdaterStateDone(songLyrics.length);
+      } else {
+        state.value = UpdaterStateIdle();
+      }
 
       prefs.setString(_lastUpdateKey, _dateFormat.format(now));
 

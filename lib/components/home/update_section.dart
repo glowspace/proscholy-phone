@@ -18,7 +18,12 @@ class UpdateSection extends StatelessWidget {
 
     return ValueListenableBuilder<UpdaterState>(
       valueListenable: updater.state,
-      builder: (context, state, __) => _shouldDisplay(state) ? _buildUpdateInfo(context, state) : Container(),
+      builder: (context, state, __) => AnimatedCrossFade(
+        crossFadeState: state is UpdaterStateIdle ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+        duration: kDefaultAnimationDuration,
+        firstChild: _buildUpdateInfo(context, state),
+        secondChild: Container(),
+      ),
     );
   }
 
@@ -28,14 +33,12 @@ class UpdateSection extends StatelessWidget {
 
     final Text text;
 
-    if (state is UpdaterStateUpdating) {
-      text = Text('Probíhá stahování písní', style: textTheme.bodyMedium);
-    } else if (state is UpdaterStateDone) {
+    if (state is UpdaterStateDone) {
       text = Text('Počet aktualizovaných písní: ${state.updatedCount}', style: textTheme.bodyMedium);
     } else if (state is UpdaterStateError) {
       text = Text('Nastala chyba při aktualizaci', style: textTheme.bodyMedium);
     } else {
-      text = Text('', style: textTheme.bodyMedium);
+      text = Text('Probíhá stahování písní', style: textTheme.bodyMedium);
     }
 
     return Container(
@@ -74,7 +77,7 @@ class UpdateSection extends StatelessWidget {
                   child: const Icon(Icons.close),
                 )
             ]),
-            if (state is UpdaterStateUpdating)
+            if (state is UpdaterStateIdle || state is UpdaterStateUpdating)
               Container(
                 padding: const EdgeInsets.only(top: kDefaultPadding / 2),
                 child: const LinearProgressIndicator(),
@@ -84,7 +87,4 @@ class UpdateSection extends StatelessWidget {
       ),
     );
   }
-
-  bool _shouldDisplay(UpdaterState state) =>
-      state is! UpdaterStateIdle && (state is! UpdaterStateDone || state.updatedCount > 0);
 }
