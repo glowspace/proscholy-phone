@@ -210,7 +210,7 @@ class DataProvider extends ChangeNotifier {
 
     await songLyricsSearch.init(currentVersion != buildVersion);
 
-    if (currentVersion == buildVersion) {
+    if (currentVersion != buildVersion) {
       await updater.loadInitial();
 
       store.box<Playlist>().put(Playlist.favorite());
@@ -308,9 +308,20 @@ class DataProvider extends ChangeNotifier {
 
     final List<PlaylistRecord> playlistRecords = [];
 
+    final existingFavorites = store
+        .box<PlaylistRecord>()
+        .query(PlaylistRecord_.playlist.equals(favorites.id))
+        .build()
+        .property(PlaylistRecord_.songLyric)
+        .find();
+
     for (final oldFavorite in oldFavorites) {
+      final songLyricId = oldFavorite['id'] as int;
+
+      if (existingFavorites.contains(songLyricId)) continue;
+
       final playlistRecord = PlaylistRecord(oldFavorite['favorite_rank'] as int)
-        ..songLyric.targetId = oldFavorite['id'] as int
+        ..songLyric.targetId = songLyricId
         ..playlist.target = _favorites;
 
       playlistRecords.add(playlistRecord);
@@ -323,7 +334,7 @@ class DataProvider extends ChangeNotifier {
       final playlistId = playlistsIdMapping[oldPlaylistRecord['playlistsId'] as int];
       final songLyricId = oldPlaylistRecord['song_lyricsId'] as int;
 
-      if (playlistId == null) continue;
+      if (playlistId == null || playlistId == 0) continue;
 
       if (insertedPlaylistRecords[playlistId]?.contains(songLyricId) ?? false) continue;
 
