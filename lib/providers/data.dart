@@ -210,12 +210,17 @@ class DataProvider extends ChangeNotifier {
 
     await songLyricsSearch.init(currentVersion != buildVersion);
 
-    if (currentVersion != buildVersion) {
+    if (currentVersion == buildVersion) {
       await updater.loadInitial();
 
       store.box<Playlist>().put(Playlist.favorite());
 
       prefs.setString(_versionKey, buildVersion);
+
+      try {
+        await _migrateOldDB();
+        // ignore: empty_catches
+      } catch (e) {}
     }
 
     await Future.wait([
@@ -249,13 +254,6 @@ class DataProvider extends ChangeNotifier {
     }));
     _tags.add(Tag(_tagId--, _favorites.name, TagType.playlist.rawValue));
     _tags.addAll(playlists.map((playlist) => Tag(_tagId--, playlist.name, TagType.playlist.rawValue)));
-
-    if (currentVersion == null) {
-      try {
-        await _migrateOldDB();
-        // ignore: empty_catches
-      } catch (e) {}
-    }
 
     notifyListeners();
   }
@@ -294,6 +292,20 @@ class DataProvider extends ChangeNotifier {
         await db.query('playlist_records', columns: ['rank', 'playlistsId', 'song_lyricsId'], orderBy: 'rank');
 
     final List<Playlist> playlists = [];
+
+    for (final oldPlaylist in oldPlaylists) {
+      final playlist = Playlist(oldPlaylist['name'] as String, oldPlaylist['rank'] as int);
+
+      playlists.add(playlist);
+    }
+
+    store.box<Playlist>().putMany(playlists);
+
+    final Map<int, int> playlistsIdMapping = {};
+    for (var i = 0; i < playlists.length; i++) {
+      playlistsIdMapping[oldPlaylists[i]['id'] as int] = i;
+    }
+
     final List<PlaylistRecord> playlistRecords = [];
 
     for (final oldFavorite in oldFavorites) {
@@ -304,25 +316,20 @@ class DataProvider extends ChangeNotifier {
       playlistRecords.add(playlistRecord);
     }
 
-    for (final oldPlaylist in oldPlaylists) {
-      final playlist = Playlist(oldPlaylist['name'] as String, oldPlaylist['rank'] as int)
-        ..id = (oldPlaylist['id'] as int) + 1;
-
-      playlists.add(playlist);
-    }
-
     // there was some bug in the old database where the playlist records were stored multiple times, this will keep track of inserted playlist records to avoid duplicates
     final Map<int, Set<int>> insertedPlaylistRecords = {};
 
     for (final oldPlaylistRecord in oldPlaylistRecords) {
-      final playlistId = oldPlaylistRecord['playlistsId'] as int;
+      final playlistId = playlistsIdMapping[oldPlaylistRecord['playlistsId'] as int];
       final songLyricId = oldPlaylistRecord['song_lyricsId'] as int;
+
+      if (playlistId == null) continue;
 
       if (insertedPlaylistRecords[playlistId]?.contains(songLyricId) ?? false) continue;
 
       final playlistRecord = PlaylistRecord(oldPlaylistRecord['rank'] as int)
         ..songLyric.targetId = songLyricId
-        ..playlist.targetId = playlistId + 1;
+        ..playlist.targetId = playlistId;
 
       playlistRecords.add(playlistRecord);
 
@@ -330,7 +337,6 @@ class DataProvider extends ChangeNotifier {
       insertedPlaylistRecords[playlistId]!.add(songLyricId);
     }
 
-    store.box<Playlist>().putMany(playlists);
     store.box<PlaylistRecord>().putMany(playlistRecords);
 
     _playlists.addAll(playlists);

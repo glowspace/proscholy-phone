@@ -12,6 +12,7 @@ class Playlist implements Comparable<Playlist> {
   @Id(assignable: true)
   int id = 0;
 
+  @Unique(onConflict: ConflictStrategy.fail)
   String name;
   int rank;
 
