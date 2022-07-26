@@ -243,6 +243,8 @@ class _FilledTokensBuilder {
 
   int? _commentIsInVerseEnd(int i, List<Token> tokens) {
     while (true) {
+      if (i >= tokens.length) return null;
+
       if (tokens[i] is VerseEnd) {
         return i;
       } else if (tokens[i] is! Comment && tokens[i] is! NewLine) {
