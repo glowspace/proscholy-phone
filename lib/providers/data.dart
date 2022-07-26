@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_core_spotlight/flutter_core_spotlight.dart';
@@ -97,7 +98,7 @@ class DataProvider extends ChangeNotifier {
       _load();
     });
 
-    _indexSpotlight();
+    if (Platform.isIOS) _indexSpotlight();
   }
 
   void toggleFavorite(SongLyric songLyric) {
