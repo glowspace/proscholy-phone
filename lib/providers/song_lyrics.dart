@@ -160,7 +160,6 @@ mixin _Searchable on SongLyricsProvider {
       return;
     }
 
-    final songLyricsSearch = SongLyricsSearch();
     await songLyricsSearch.init(false);
 
     final result = await songLyricsSearch.search(searchText);
@@ -188,13 +187,15 @@ mixin _Searchable on SongLyricsProvider {
     _searchResults = searchResults;
     _searchResults?.sort((a, b) => ranks[a.id]!.compareTo(ranks[b.id]!));
 
-    songLyricsSearch.close();
-
     notifyListeners();
   }
 }
 
 abstract class SongLyricsProvider extends ChangeNotifier {
+  final SongLyricsSearch songLyricsSearch;
+
+  SongLyricsProvider(this.songLyricsSearch);
+
   late List<SongLyric> _songLyrics;
   late Map<int, SongLyric> _songLyricsMap;
 
@@ -208,7 +209,8 @@ abstract class SongLyricsProvider extends ChangeNotifier {
 }
 
 class AllSongLyricsProvider extends SongLyricsProvider with _Filterable, _RecentlySearched, _Searchable {
-  AllSongLyricsProvider(DataProvider dataProvider, {List<SongLyric>? songLyrics, Tag? initialTag}) {
+  AllSongLyricsProvider(DataProvider dataProvider, {List<SongLyric>? songLyrics, Tag? initialTag})
+      : super(dataProvider.songLyricsSearch) {
     _updateSongLyrics(songLyrics ?? dataProvider.songLyrics);
 
     _updateRecentlySearched(dataProvider.prefs);
@@ -246,7 +248,7 @@ class AllSongLyricsProvider extends SongLyricsProvider with _Filterable, _Recent
 class PlaylistSongLyricsProvider extends SongLyricsProvider with _Searchable {
   final Playlist playlist;
 
-  PlaylistSongLyricsProvider(DataProvider dataProvider, this.playlist) {
+  PlaylistSongLyricsProvider(DataProvider dataProvider, this.playlist) : super(dataProvider.songLyricsSearch) {
     _updateSongLyrics(dataProvider.getPlaylistsSongLyrics(playlist));
   }
 
@@ -292,7 +294,7 @@ class PlaylistSongLyricsProvider extends SongLyricsProvider with _Searchable {
 class SongbookSongLyricsProvider extends SongLyricsProvider with _Searchable {
   final Songbook songbook;
 
-  SongbookSongLyricsProvider(DataProvider dataProvider, this.songbook) {
+  SongbookSongLyricsProvider(DataProvider dataProvider, this.songbook) : super(dataProvider.songLyricsSearch) {
     _updateSongLyrics(dataProvider.getSongbooksSongLyrics(songbook));
   }
 
@@ -307,7 +309,7 @@ class SongbookSongLyricsProvider extends SongLyricsProvider with _Searchable {
 }
 
 class UpdatedSongLyricsProvider extends SongLyricsProvider {
-  UpdatedSongLyricsProvider(DataProvider dataProvider) {
+  UpdatedSongLyricsProvider(DataProvider dataProvider) : super(dataProvider.songLyricsSearch) {
     _updateSongLyrics(dataProvider.updatedSongLyrics);
   }
 }

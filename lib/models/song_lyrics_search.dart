@@ -21,8 +21,6 @@ class SongLyricsSearch {
   }
 
   Future<void> init(bool dropOld) async {
-    await open();
-
     if (dropOld) {
       try {
         await _db.execute('DROP table song_lyrics_search');

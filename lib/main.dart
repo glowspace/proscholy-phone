@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
@@ -12,6 +13,8 @@ import 'package:zpevnik/utils/extensions.dart';
 const _title = 'Zpěvník';
 
 Future<void> main() async {
+  if (kDebugMode) return runApp(const MainWidget());
+
   await SentryFlutter.init(
     (options) {
       options.dsn = 'https://59762f67d1644603bddb1f0fc27849dd@sentry.glowspace.cz/2';

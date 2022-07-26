@@ -144,14 +144,10 @@ class _InitialScreenState extends State<InitialScreen> {
   }
 
   Future<void> _init() async {
-    try {
-      await context.read<DataProvider>().init();
-      await context.read<SettingsProvider>().init();
+    await context.read<DataProvider>().init();
+    await context.read<SettingsProvider>().init();
 
-      _pushHomeScreen(context);
-    } catch (exception, stackTrace) {
-      await Sentry.captureException(exception, stackTrace: stackTrace);
-    }
+    _pushHomeScreen(context);
 
     // setState(() => _showSignInButtons = true);
   }
