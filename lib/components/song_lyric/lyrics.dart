@@ -3,8 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
-import 'package:zpevnik/components/filters/filter_tag.dart';
-import 'package:zpevnik/components/song_lyric/song_lyric_tag.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/settings.dart';
 import 'package:zpevnik/components/song_lyric/utils/converter.dart';
@@ -102,7 +100,7 @@ class _LyricsWidgetState extends State<LyricsWidget> {
         if (widget.controller.showChords) {
           children.add(_buildInterlude(context, currentToken));
         } else {
-          while (currentToken is! InterludeEnd) {
+          while (currentToken != null && currentToken is! InterludeEnd) {
             currentToken = widget.controller.parser.nextToken;
           }
         }

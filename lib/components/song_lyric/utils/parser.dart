@@ -194,6 +194,7 @@ class _FilledTokensBuilder {
         _fillToken(token);
       } else if (token is InterludeEnd) {
         isInsideInterlude = false;
+        if (filledTokens.last is! NewLine) _fillToken(NewLine());
         _fillToken(token);
       } else if (!isInsideInterlude) {
         _fillEmptyVerseNumber();
