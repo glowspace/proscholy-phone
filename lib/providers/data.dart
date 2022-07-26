@@ -303,7 +303,7 @@ class DataProvider extends ChangeNotifier {
 
     final Map<int, int> playlistsIdMapping = {};
     for (var i = 0; i < playlists.length; i++) {
-      playlistsIdMapping[oldPlaylists[i]['id'] as int] = i;
+      playlistsIdMapping[oldPlaylists[i]['id'] as int] = playlists[i].id;
     }
 
     final List<PlaylistRecord> playlistRecords = [];
