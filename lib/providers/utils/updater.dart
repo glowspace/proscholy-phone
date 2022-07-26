@@ -24,30 +24,12 @@ const _initialLastUpdate = '2022-07-26 13:29:00';
 
 const _updatePeriod = Duration(hours: 1);
 
-abstract class UpdaterState {}
-
-class UpdaterStateUpdating extends UpdaterState {}
-
-class UpdaterStateIdle extends UpdaterState {}
-
-class UpdaterStateDone extends UpdaterState {
-  final int updatedCount;
-
-  UpdaterStateDone(this.updatedCount);
-}
-
-class UpdaterStateError extends UpdaterState {
-  final String error;
-
-  UpdaterStateError(this.error);
-}
-
 class Updater {
   final Store store;
+  final SharedPreferences prefs;
 
-  Updater(this.store);
+  Updater(this.store, this.prefs);
 
-  final ValueNotifier<UpdaterState> state = ValueNotifier(UpdaterStateIdle());
   int updatingSongLyricsCount = 0;
 
   Future<void> loadInitial() async {
@@ -83,8 +65,6 @@ class Updater {
 
       return [];
     }
-
-    state.value = UpdaterStateUpdating();
 
     // load updated data from server
     final data = await client.getData();
@@ -152,22 +132,14 @@ class Updater {
 
       box.putMany(songLyrics);
 
-      if (songLyrics.isNotEmpty) {
-        state.value = UpdaterStateDone(songLyrics.length);
-      } else {
-        state.value = UpdaterStateIdle();
-      }
-
       prefs.setString(_lastUpdateKey, _dateFormat.format(now));
 
       return songLyrics;
     } catch (error) {
-      state.value = UpdaterStateError('$error');
+      rethrow;
     } finally {
       client.dispose();
     }
-
-    return [];
   }
 
   Future<void> _parse(Map<String, dynamic> json, {bool isSongLyricsFull = false}) async {

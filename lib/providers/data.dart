@@ -86,18 +86,12 @@ class DataProvider extends ChangeNotifier {
 
     store = await openStore();
 
-    updater = Updater(store);
+    updater = Updater(store, prefs);
     songLyricsSearch = SongLyricsSearch();
 
     await songLyricsSearch.open();
 
     await _load();
-
-    updater.update(this).then((songLyrics) {
-      _updatedSongLyrics = songLyrics.where((songLyric) => songLyric.hasLyrics || songLyric.lilypond != null).toList();
-
-      _load();
-    });
 
     if (Platform.isIOS) _indexSpotlight();
   }
@@ -204,6 +198,16 @@ class DataProvider extends ChangeNotifier {
     final query = store.box<PlaylistRecord>().query(PlaylistRecord_.playlist.equals(playlist.id));
 
     return query.watch().map((_) => getPlaylistsSongLyrics(playlist));
+  }
+
+  Future<int> update() async {
+    final songLyrics = await updater.update(this);
+
+    _updatedSongLyrics = songLyrics.where((songLyric) => songLyric.hasLyrics || songLyric.lilypond != null).toList();
+
+    await _load();
+
+    return _updatedSongLyrics.length;
   }
 
   Future<void> _load() async {
