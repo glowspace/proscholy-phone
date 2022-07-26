@@ -16,7 +16,14 @@ class ExternalsPlayerWrapper extends StatefulWidget {
   final SongLyric songLyric;
   final ValueNotifier<bool> isShowing;
 
-  const ExternalsPlayerWrapper({Key? key, required this.songLyric, required this.isShowing}) : super(key: key);
+  final double width;
+
+  const ExternalsPlayerWrapper({
+    Key? key,
+    required this.songLyric,
+    required this.isShowing,
+    required this.width,
+  }) : super(key: key);
 
   @override
   State<ExternalsPlayerWrapper> createState() => _ExternalsPlayerWrapperState();
@@ -85,6 +92,7 @@ class _ExternalsPlayerWrapperState extends State<ExternalsPlayerWrapper> with Si
                           child: ExternalsWidget(
                             songLyric: widget.songLyric,
                             percentage: (_height.value - _minHeight) / (_maxHeight - _minHeight),
+                            width: widget.width,
                             isPlaying: _isPlaying,
                           ),
                         ),
@@ -107,15 +115,15 @@ class _ExternalsPlayerWrapperState extends State<ExternalsPlayerWrapper> with Si
     final youtubes = widget.songLyric.youtubes;
     final mp3s = widget.songLyric.mp3s;
 
-    final externalsPerRow = (mediaQuery.size.width / 300).floor();
+    final externalsPerRow = (widget.width / 250).floor();
     final rowsForMp3s =
         ((youtubes.length + mp3s.length) / externalsPerRow).ceil() - (youtubes.length / externalsPerRow).ceil();
 
     return min(
       2 / 3 * mediaQuery.size.height,
       _externalsTitleHeight +
-          (youtubes.length / externalsPerRow) *
-              (min(mediaQuery.size.width / externalsPerRow, mediaQuery.size.width) / 16 * 9 + _externalsNameHeight) +
+          (youtubes.length / externalsPerRow).ceil() *
+              ((min(widget.width / externalsPerRow, widget.width)) / 16 * 9 + _externalsNameHeight) +
           rowsForMp3s * (64 + kDefaultPadding) +
           kDefaultPadding +
           mediaQuery.padding.bottom,

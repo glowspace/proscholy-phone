@@ -212,10 +212,13 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
           ),
           bottomNavigationBar: bottomBar,
         ),
-        ExternalsPlayerWrapper(
-          key: Key('${_songLyric.id}'),
-          songLyric: _songLyric,
-          isShowing: _showingExternals,
+        LayoutBuilder(
+          builder: (_, constraints) => ExternalsPlayerWrapper(
+            key: Key('${_songLyric.id}'),
+            songLyric: _songLyric,
+            isShowing: _showingExternals,
+            width: constraints.maxWidth,
+          ),
         ),
       ],
     );

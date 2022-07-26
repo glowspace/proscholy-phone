@@ -12,7 +12,7 @@ import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/components/highlightable.dart';
 
-const _youtubePlayerMaxWidth = 300;
+const _youtubePlayerMaxWidth = 250;
 const _noInternetMessage =
     'Nahrávky jsou dostupné pouze přes internet. Zkontrolujte prosím připojení k${unbreakableSpace}internetu.';
 
@@ -21,12 +21,15 @@ class ExternalsWidget extends StatefulWidget {
 
   final double percentage;
 
+  final double width;
+
   final ValueNotifier<bool> isPlaying;
 
   const ExternalsWidget({
     Key? key,
     required this.songLyric,
     this.percentage = 0.0,
+    required this.width,
     required this.isPlaying,
   }) : super(key: key);
 
@@ -63,8 +66,6 @@ class _ExternalsWidgetState extends State<ExternalsWidget> {
   Widget build(BuildContext context) {
     if (widget.percentage < 0) return Container();
 
-    final width = MediaQuery.of(context).size.width;
-
     return SafeArea(
       top: false,
       child: Stack(
@@ -96,7 +97,7 @@ class _ExternalsWidgetState extends State<ExternalsWidget> {
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
                           child: AlignedGridView.count(
-                            crossAxisCount: (width / _youtubePlayerMaxWidth).floor(),
+                            crossAxisCount: (widget.width / _youtubePlayerMaxWidth).floor(),
                             crossAxisSpacing: kDefaultPadding,
                             mainAxisSpacing: kDefaultPadding,
                             padding: const EdgeInsets.only(bottom: kDefaultPadding),
