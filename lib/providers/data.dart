@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_core_spotlight/flutter_core_spotlight.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path/path.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:zpevnik/models/news_item.dart';
@@ -221,7 +222,9 @@ class DataProvider extends ChangeNotifier {
       try {
         await _migrateOldDB();
         // ignore: empty_catches
-      } catch (e) {}
+      } catch (e, s) {
+        Sentry.captureException(e, stackTrace: s);
+      }
     }
 
     await Future.wait([
@@ -311,10 +314,11 @@ class DataProvider extends ChangeNotifier {
 
     final existingFavorites = store
         .box<PlaylistRecord>()
-        .query(PlaylistRecord_.playlist.equals(favorites.id))
+        .query(PlaylistRecord_.playlist.equals(1))
         .build()
-        .property(PlaylistRecord_.songLyric)
-        .find();
+        .find()
+        .map((playlistRecord) => playlistRecord.songLyric.targetId)
+        .toList();
 
     for (final oldFavorite in oldFavorites) {
       final songLyricId = oldFavorite['id'] as int;
@@ -323,7 +327,7 @@ class DataProvider extends ChangeNotifier {
 
       final playlistRecord = PlaylistRecord(oldFavorite['favorite_rank'] as int)
         ..songLyric.targetId = songLyricId
-        ..playlist.target = _favorites;
+        ..playlist.targetId = 1;
 
       playlistRecords.add(playlistRecord);
     }
