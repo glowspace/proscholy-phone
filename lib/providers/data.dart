@@ -301,8 +301,20 @@ class DataProvider extends ChangeNotifier {
 
     final List<Playlist> playlists = [];
 
+    // it was possible to have multiple playlists with the same name, so counter is used to make sure that names are unique
+    final Map<String, int> playlistsByNameCounter = {};
+
     for (final oldPlaylist in oldPlaylists) {
-      final playlist = Playlist(oldPlaylist['name'] as String, oldPlaylist['rank'] as int);
+      String name = oldPlaylist['name'] as String;
+
+      if (playlistsByNameCounter.containsKey(name)) {
+        name = '$name (${playlistsByNameCounter[name]})';
+      }
+
+      playlistsByNameCounter[name] ??= 0;
+      playlistsByNameCounter[name] = playlistsByNameCounter[name]! + 1;
+
+      final playlist = Playlist(name, oldPlaylist['rank'] as int);
 
       playlists.add(playlist);
     }
