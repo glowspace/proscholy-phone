@@ -4,9 +4,6 @@ import 'package:zpevnik/components/playlist/playlist_row.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/data.dart';
 
-const _noPlaylistsText =
-    'Nemáte vytvořený žádný seznam písní. Klikněte na${unbreakableSpace}tlačítko níže pro vytvoření nového seznamu.';
-
 class PlaylistsListView extends StatelessWidget {
   const PlaylistsListView({Key? key}) : super(key: key);
 
@@ -14,13 +11,6 @@ class PlaylistsListView extends StatelessWidget {
   Widget build(BuildContext context) {
     final dataProvider = context.watch<DataProvider>();
     final playlists = dataProvider.playlists;
-
-    if (playlists.isEmpty) {
-      return Container(
-        padding: const EdgeInsets.all(kDefaultPadding),
-        child: const Center(child: Text(_noPlaylistsText, textAlign: TextAlign.center)),
-      );
-    }
 
     return SingleChildScrollView(
       child: Column(children: [
