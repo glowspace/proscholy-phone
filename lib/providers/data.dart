@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_core_spotlight/flutter_core_spotlight.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path/path.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:zpevnik/models/news_item.dart';
@@ -226,9 +225,7 @@ class DataProvider extends ChangeNotifier {
       try {
         await _migrateOldDB();
         // ignore: empty_catches
-      } catch (e, s) {
-        Sentry.captureException(e, stackTrace: s);
-      }
+      } catch (e) {}
     }
 
     await Future.wait([
