@@ -190,6 +190,9 @@ class DataProvider extends ChangeNotifier {
 
     _songbooks.sort();
 
+    _tags.removeWhere((tag) => tag.type == TagType.songbook);
+    _tags.addAll(_songbooks.map((songbook) => Tag(_tagId--, songbook.name, TagType.songbook.rawValue)));
+
     notifyListeners();
   }
 
