@@ -167,25 +167,35 @@ mixin _Searchable on SongLyricsProvider {
     final Map<int, double> ranks = {};
     final List<SongLyric> searchResults = [];
 
+    final Map<int, Songbook> matchedSongbooks = {};
+
     for (final value in result) {
       final songLyric = _songLyricsMap[value['id']];
 
       if (songLyric != null) {
         if (searchText == '${songLyric.id}') {
           _matchedById = songLyric;
-        } else if (songLyric.songbookRecords.any((songbookRecord) => searchText == songbookRecord.number)) {
-          _songLyricsMatchedBySongbookNumber.add(songLyric);
         } else {
-          searchResults.add(songLyric);
+          try {
+            final songbookRecord =
+                songLyric.songbookRecords.firstWhere((songbookRecord) => searchText == songbookRecord.number);
+
+            _songLyricsMatchedBySongbookNumber.add(songLyric);
+            matchedSongbooks[songLyric.id] = songbookRecord.songbook.target!;
+          } on StateError {
+            searchResults.add(songLyric);
+          }
         }
 
         // weights: [id, name, secondary_name_1, secondary_name_2, lyrics, numbers_with_shortcut, numbers]
-        ranks[value['id']] = bm25(value['info'], weights: [50.0, 40.0, 35.0, 30.0, 1.0, 48.0, 45.0]);
+        ranks[songLyric.id] = bm25(value['info'], weights: [50.0, 40.0, 35.0, 30.0, 1.0, 48.0, 45.0]);
       }
     }
 
     _searchResults = searchResults;
     _searchResults?.sort((a, b) => ranks[a.id]!.compareTo(ranks[b.id]!));
+
+    _songLyricsMatchedBySongbookNumber.sort((a, b) => matchedSongbooks[a.id]!.compareTo(matchedSongbooks[b.id]!));
 
     notifyListeners();
   }
