@@ -23,6 +23,7 @@ const _existingLogos = [
   'csmom',
   'csmta',
   'csmzd',
+  'csmhk',
   'dbl',
   'k',
   'kan',

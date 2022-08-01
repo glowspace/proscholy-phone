@@ -4,7 +4,7 @@ import 'package:zpevnik/models/objectbox.g.dart';
 import 'package:zpevnik/models/songbook_record.dart';
 
 // prioritized songbook shortcuts in sorting
-const prioritized = {'H1': 0, 'H2': 1, 'K': 2, 'Kan': 3};
+const prioritized = {'CSMHK': -1, 'H1': 0, 'H2': 1, 'K': 2, 'Kan': 3};
 
 @Entity()
 class Songbook implements Comparable<Songbook> {
