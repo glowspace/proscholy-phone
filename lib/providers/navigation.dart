@@ -31,6 +31,9 @@ class NavigationProvider extends ChangeNotifier {
       ? false
       : menuNavigatorObserver!.navigationStack.isNotEmpty && menuNavigatorObserver!.navigationStack.last == '/';
 
+  bool get isFiltersOpen =>
+      navigatorObserver.navigationStack.isNotEmpty && navigatorObserver.navigationStack.last == '/filters';
+
   bool get songLyricCanPopIndividually {
     if (menuNavigatorObserver == null) return true;
 

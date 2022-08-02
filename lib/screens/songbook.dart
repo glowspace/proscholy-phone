@@ -6,6 +6,7 @@ import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/song_lyric/song_lyrics_list_view.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songbook.dart';
+import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
@@ -40,7 +41,8 @@ class SongbookScreen extends StatelessWidget {
             onTap: () => NavigationProvider.of(context).pushNamed(
               '/search',
               arguments: SearchScreenArguments(
-                initialTag: dataProvider.tags.firstWhere((tag) => tag.name == songbook.name),
+                initialTag:
+                    dataProvider.tags.cast<Tag?>().firstWhere((tag) => tag?.name == songbook.name, orElse: () => null),
               ),
             ),
             padding: const EdgeInsets.all(kDefaultPadding),

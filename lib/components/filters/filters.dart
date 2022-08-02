@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/components/filters/filters_section.dart';
+import 'package:zpevnik/providers/navigation.dart';
 
 class FiltersWidget extends StatelessWidget {
   final List<TagsSection> tagsSections;
@@ -12,7 +13,7 @@ class FiltersWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return OrientationBuilder(builder: (context, orientation) {
-      if (orientation == Orientation.landscape) {
+      if (orientation == Orientation.landscape && NavigationProvider.of(context).isFiltersOpen) {
         Navigator.of(context).pop();
       }
 
