@@ -28,6 +28,7 @@ class _NewsSectionState extends State<NewsSection> {
 
     return Section(
       padding: const EdgeInsets.all(kDefaultPadding).copyWith(bottom: kDefaultPadding / 2),
+      margin: const EdgeInsets.only(top: kDefaultPadding / 2),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

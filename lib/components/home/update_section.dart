@@ -54,7 +54,7 @@ class _UpdateSectionState extends State<UpdateSection> {
           crossFadeState: isShowing ? CrossFadeState.showFirst : CrossFadeState.showSecond,
           duration: kDefaultAnimationDuration,
           firstChild: Container(
-            padding: const EdgeInsets.only(bottom: 2 * kDefaultPadding),
+            padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
             child: Section(
               padding: const EdgeInsets.all(kDefaultPadding),
               child: Column(
