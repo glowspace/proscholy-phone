@@ -108,7 +108,16 @@ class VerseEnd extends Token {
   String toString() => 'VerseEnd()';
 }
 
-enum _ParserState { chord, comment, lineStart, interlude, possibleVerseNumber, verseNumber, verseSubstitute, verseLine }
+enum _ParserState {
+  chord,
+  comment,
+  lineStart,
+  interlude,
+  possibleVerseNumber,
+  verseNumber,
+  possibleVerseSubstitute,
+  verseLine
+}
 
 class _FilledTokensBuilder {
   final List<Token> filledTokens = [];
@@ -361,12 +370,12 @@ class SongLyricsParser {
         case '(':
           if (state == _ParserState.lineStart) {
             currentString = '';
-            state = _ParserState.verseSubstitute;
+            state = _ParserState.possibleVerseSubstitute;
           }
           break;
         // handles verse substitute end
         case ')':
-          if (state == _ParserState.verseSubstitute) {
+          if (state == _ParserState.possibleVerseSubstitute) {
             if (isInsideVerse) tokens.add(VerseEnd());
             if (isInsideInterlude) tokens.add(InterludeEnd());
 
@@ -377,6 +386,8 @@ class SongLyricsParser {
 
             isInsideVerse = true;
             isInsideInterlude = false;
+          } else {
+            currentString += c;
           }
           break;
         // handles interlude
@@ -433,6 +444,10 @@ class SongLyricsParser {
         // handles end of line
         case '\r\n':
         case '\n':
+          if (currentString.trim().isEmpty && tokens.last is VerseNumber) {
+            tokens.add(VerseEnd());
+          }
+
           if (state == _ParserState.comment) {
             tokens.add(Comment(currentString));
           } else if (currentString.isNotEmpty) {
@@ -449,6 +464,9 @@ class SongLyricsParser {
           if (state == _ParserState.lineStart) {
             state = _ParserState.verseLine;
           } else if (state == _ParserState.possibleVerseNumber && int.tryParse(c) == null) {
+            state = _ParserState.verseLine;
+          } else if (state == _ParserState.possibleVerseSubstitute && int.tryParse(c) == null) {
+            currentString = '($currentString';
             state = _ParserState.verseLine;
           }
 
