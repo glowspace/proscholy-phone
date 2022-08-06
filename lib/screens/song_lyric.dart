@@ -8,6 +8,7 @@ import 'package:zpevnik/components/custom/back_button.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/song_lyric/externals_player_wrapper.dart';
 import 'package:zpevnik/components/song_lyric/lyrics.dart';
+import 'package:zpevnik/components/song_lyric/now_playing_banner.dart';
 import 'package:zpevnik/components/song_lyric/song_lyric_files.dart';
 import 'package:zpevnik/components/song_lyric/song_lyric_menu_button.dart';
 import 'package:zpevnik/components/song_lyric/song_lyric_settings.dart';
@@ -25,12 +26,15 @@ class SongLyricScreen extends StatefulWidget {
   final List<SongLyric> songLyrics;
   final int initialIndex;
 
+  final bool shouldShowBanner;
+
   final Playlist? playlist;
 
   const SongLyricScreen({
     Key? key,
     required this.songLyrics,
     required this.initialIndex,
+    this.shouldShowBanner = false,
     this.playlist,
   }) : super(key: key);
 
@@ -220,6 +224,7 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
             width: constraints.maxWidth,
           ),
         ),
+        if (widget.shouldShowBanner) NowPlayingBanner(currentSongLyric: _songLyric),
       ],
     );
 
