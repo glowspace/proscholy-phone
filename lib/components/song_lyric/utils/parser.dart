@@ -371,6 +371,8 @@ class SongLyricsParser {
           if (state == _ParserState.lineStart) {
             currentString = '';
             state = _ParserState.possibleVerseSubstitute;
+          } else {
+            currentString += c;
           }
           break;
         // handles verse substitute end
