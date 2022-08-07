@@ -63,6 +63,7 @@ class DataProvider extends ChangeNotifier {
   List<SongLyric> getPlaylistsSongLyrics(Playlist playlist) {
     final songLyrics = (playlist.playlistRecords..sort())
         .map((playlistRecord) => getSongLyricById(playlistRecord.songLyric.targetId))
+        .where((songLyric) => songLyric != null)
         .toList()
         .cast<SongLyric>();
 
