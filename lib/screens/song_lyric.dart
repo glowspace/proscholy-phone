@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart' hide PopupMenuEntry, PopupMenuItem;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
@@ -19,10 +20,11 @@ import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/components/song_lyric/utils/lyrics_controller.dart';
 import 'package:zpevnik/providers/navigation.dart';
+import 'package:zpevnik/providers/nearby_song_lyrics.dart';
 import 'package:zpevnik/providers/settings.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
-class SongLyricScreen extends StatefulWidget {
+class SongLyricScreen extends ConsumerStatefulWidget {
   final List<SongLyric> songLyrics;
   final int initialIndex;
 
@@ -39,10 +41,10 @@ class SongLyricScreen extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<SongLyricScreen> createState() => _SongLyricScreenState();
+  ConsumerState<SongLyricScreen> createState() => _SongLyricScreenState();
 }
 
-class _SongLyricScreenState extends State<SongLyricScreen> {
+class _SongLyricScreenState extends ConsumerState<SongLyricScreen> {
   late final PageController _pageController;
   late final ValueNotifier<bool> _showingExternals;
 
@@ -83,6 +85,8 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
         context.read<ValueNotifier<SongLyric?>>().value = _songLyric;
       });
     }
+
+    ref.read(songLyricsAdvertiserProvider.notifier).onSongLyricChanged(_songLyric);
   }
 
   @override
@@ -207,6 +211,7 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
                   _showingExternals.value = false;
                   _currentIndex = value;
                   context.read<ValueNotifier<SongLyric?>>().value = _songLyric;
+                  ref.read(songLyricsAdvertiserProvider.notifier).onSongLyricChanged(_songLyric);
                 }),
                 itemBuilder: (_, index) => LyricsWidget(
                   controller: _lyricsControllers[index % _lyricsControllers.length],

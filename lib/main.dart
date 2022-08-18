@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter/rendering.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' hide ChangeNotifierProvider;
 import 'package:provider/provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:zpevnik/providers/data.dart';
@@ -29,19 +30,21 @@ class MainWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: _title,
-      theme: AppTheme.light(),
-      darkTheme: AppTheme.dark(),
-      home: const InitialScreen(),
-      builder: (context, child) => MultiProvider(
-        providers: [
-          ChangeNotifierProvider(create: (_) => DataProvider()),
-          ChangeNotifierProvider(create: (_) => SettingsProvider()),
-          ChangeNotifierProvider(create: (_) => NavigationProvider(hasMenu: MediaQuery.of(context).isTablet)),
-        ],
-        builder: (_, __) => child!,
+    return ProviderScope(
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: _title,
+        theme: AppTheme.light(),
+        darkTheme: AppTheme.dark(),
+        home: const InitialScreen(),
+        builder: (context, child) => MultiProvider(
+          providers: [
+            ChangeNotifierProvider(create: (_) => DataProvider()),
+            ChangeNotifierProvider(create: (_) => SettingsProvider()),
+            ChangeNotifierProvider(create: (_) => NavigationProvider(hasMenu: MediaQuery.of(context).isTablet)),
+          ],
+          builder: (_, __) => child!,
+        ),
       ),
     );
   }

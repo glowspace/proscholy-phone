@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zpevnik/components/bottom_navigation_bar.dart';
+import 'package:zpevnik/components/home/nearby_song_lyrics/nearby_song_lyrics_section.dart';
 import 'package:zpevnik/components/home/news_section.dart';
 import 'package:zpevnik/components/home/now_playing_section.dart';
 import 'package:zpevnik/components/home/shared_with_me_section.dart';
@@ -57,7 +58,8 @@ class _HomeScreenPhone extends StatelessWidget {
                 const SearchField(key: Key('searchfield')),
                 const SizedBox(height: 2 * kDefaultPadding),
                 Text(greetings, style: Theme.of(context).textTheme.titleLarge),
-                const NowPlayingSection(),
+                // const NowPlayingSection(),
+                const NearbySongLyricsSection(),
                 const UpdateSection(),
                 const NewsSection(),
                 const SizedBox(height: 2 * kDefaultPadding),
