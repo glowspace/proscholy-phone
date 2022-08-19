@@ -140,7 +140,7 @@ mixin _Searchable on SongLyricsProvider {
 
   List<SongLyric>? _searchResults;
 
-  final List<SongLyric> _songLyricsMatchedBySongbookNumber = [];
+  List<SongLyric> _songLyricsMatchedBySongbookNumber = [];
 
   String get searchText => _searchText;
 
@@ -150,10 +150,10 @@ mixin _Searchable on SongLyricsProvider {
     _searchText = searchText;
 
     _matchedById = null;
-    _songLyricsMatchedBySongbookNumber.clear();
 
     if (searchText.isEmpty) {
       _searchResults = null;
+      _songLyricsMatchedBySongbookNumber = [];
 
       notifyListeners();
 
@@ -169,6 +169,8 @@ mixin _Searchable on SongLyricsProvider {
 
     final Map<int, Songbook> matchedSongbooks = {};
 
+    final List<SongLyric> songLyricsMatchedBySongbookNumber = [];
+
     for (final value in result) {
       final songLyric = _songLyricsMap[value['id']];
 
@@ -180,7 +182,7 @@ mixin _Searchable on SongLyricsProvider {
             final songbookRecord =
                 songLyric.songbookRecords.firstWhere((songbookRecord) => searchText == songbookRecord.number);
 
-            _songLyricsMatchedBySongbookNumber.add(songLyric);
+            songLyricsMatchedBySongbookNumber.add(songLyric);
             matchedSongbooks[songLyric.id] = songbookRecord.songbook.target!;
           } on StateError {
             searchResults.add(songLyric);
@@ -195,7 +197,8 @@ mixin _Searchable on SongLyricsProvider {
     _searchResults = searchResults;
     _searchResults?.sort((a, b) => ranks[a.id]!.compareTo(ranks[b.id]!));
 
-    _songLyricsMatchedBySongbookNumber.sort((a, b) => matchedSongbooks[a.id]!.compareTo(matchedSongbooks[b.id]!));
+    _songLyricsMatchedBySongbookNumber = songLyricsMatchedBySongbookNumber
+      ..sort((a, b) => matchedSongbooks[a.id]!.compareTo(matchedSongbooks[b.id]!));
 
     notifyListeners();
   }
