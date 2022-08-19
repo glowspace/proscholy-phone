@@ -43,6 +43,8 @@
 	<true/>
 	<key>NSBluetoothAlwaysUsageDescription</key>
 	<string>Bluetooth je potřeba pro sdílené zobrazení.</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>Bluetooth je potřeba pro sdílené zobrazení.</string>
 	<key>NSBonjourServices</key>
 	<array>
 		<string>_proscholy-conn._tcp</string>
