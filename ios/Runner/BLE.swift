@@ -104,15 +104,15 @@ enum Message {
   func encode() -> [String: Any] {
     switch (self) {
       case .discoveredPublisher(let uuid, let name, let additional):
-        return ["msg_type": 1, "uuid": uuid.uuidString, "name": name, "additional": additional]
+        return ["msg_type": "discoveredPublisher", "uuid": uuid.uuidString, "name": name, "additional": additional]
       case .data(let data):
-        return ["msg_type": 2, "data": data]
+        return ["msg_type": "data", "data": data]
       case .didConnect(let name):
-        return ["msg_type": 3, "uuid": name.uuidString]
+        return ["msg_type": "didConnect", "uuid": name.uuidString]
       case .didDisconnect(let name):
-        return ["msg_type": 4, "uuid": name.uuidString]
+        return ["msg_type": "didDisconnect", "uuid": name.uuidString]
       case .lostPublisher(let uuid):
-        return ["msg_type": 5, "uuid": uuid.uuidString]
+        return ["msg_type": "lostPublisher", "uuid": uuid.uuidString]
     }
   }
 }
@@ -309,6 +309,8 @@ class PeripheralDelegate: NSObject, CBPeripheralDelegate, FlutterStreamHandler {
       send(.data(data))
     }
   }
+
+  // MARK: - custom functions
 
   private func send(_ message: Message) {
     updatesSink?(message.encode())
