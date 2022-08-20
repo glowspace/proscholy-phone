@@ -77,6 +77,7 @@ query {
     externals {
       id
       public_name
+      url
       media_id
       media_type
       authors {
@@ -124,6 +125,7 @@ query {
     externals {
       id
       public_name
+      url
       media_id
       media_type
       authors {
