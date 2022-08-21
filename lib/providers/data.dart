@@ -109,11 +109,15 @@ class DataProvider extends ChangeNotifier {
   }
 
   Playlist createPlaylist(String name) {
-    final playlist = Playlist(name, Playlist.nextRank(store));
+    final playlist = Playlist(name, 0);
     _tags.add(Tag(_tagId--, playlist.name, TagType.playlist.rawValue));
 
-    store.box<Playlist>().put(playlist);
-    _playlists.add(playlist);
+    for (var playlist in _playlists) {
+      playlist.rank++;
+    }
+
+    _playlists.insert(0, playlist);
+    store.box<Playlist>().putMany(_playlists);
 
     notifyListeners();
 
@@ -121,14 +125,18 @@ class DataProvider extends ChangeNotifier {
   }
 
   Playlist duplicatePlaylist(Playlist playlist, String name) {
-    final duplicatedPlaylist = Playlist(name, Playlist.nextRank(store));
+    final duplicatedPlaylist = Playlist(name, 0);
     _tags.add(Tag(_tagId--, duplicatedPlaylist.name, TagType.playlist.rawValue));
+
+    for (var playlist in _playlists) {
+      playlist.rank++;
+    }
 
     duplicatedPlaylist.playlistRecords.addAll(
         playlist.playlistRecords.map((playlistRecord) => playlistRecord.copyWith(playlist: duplicatedPlaylist)));
 
-    store.box<Playlist>().put(duplicatedPlaylist);
-    _playlists.add(duplicatedPlaylist);
+    _playlists.insert(0, duplicatedPlaylist);
+    store.box<Playlist>().putMany(_playlists);
 
     notifyListeners();
 
