@@ -2,7 +2,6 @@ import 'package:flutter/material.dart' hide PopupMenuEntry, PopupMenuItem;
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:zpevnik/components/custom/popup_menu_button.dart';
 import 'package:zpevnik/components/icon_item.dart';
 import 'package:zpevnik/components/playlist/playlists_sheet.dart';
@@ -11,6 +10,7 @@ import 'package:zpevnik/custom/popup_menu.dart';
 import 'package:zpevnik/links.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/data.dart';
+import 'package:zpevnik/utils/url_launcher.dart';
 
 enum SongLyricMenuAction {
   addToPlaylist,
@@ -73,10 +73,10 @@ class SongLyricMenuButton extends StatelessWidget {
         Share.share('$songUrl/${songLyric.id}/', sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size);
         break;
       case SongLyricMenuAction.openInBrowser:
-        launchUrl(Uri.parse('$songUrl/${songLyric.id}/'));
+        launch('$songUrl/${songLyric.id}/');
         break;
       case SongLyricMenuAction.report:
-        launchUrl(Uri.parse('$reportSongLyricUrl?customfield_10056=${songLyric.id}+$version+$platform'));
+        launch('$reportSongLyricUrl?customfield_10056=${songLyric.id}+$version+$platform');
         break;
     }
   }

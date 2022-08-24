@@ -1,9 +1,9 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:zpevnik/components/custom/back_button.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/links.dart';
+import 'package:zpevnik/utils/url_launcher.dart';
 
 class AboutScreen extends StatelessWidget {
   const AboutScreen({Key? key}) : super(key: key);
@@ -16,7 +16,7 @@ class AboutScreen extends StatelessWidget {
     final highlightedStyle = textStyle?.copyWith(color: theme.colorScheme.primary);
     final boldStyle = textStyle?.copyWith(fontWeight: FontWeight.bold);
 
-    final linkOpener = TapGestureRecognizer()..onTap = () => launchUrl(Uri.parse(proscholyUrl));
+    final linkOpener = TapGestureRecognizer()..onTap = () => launch(proscholyUrl);
 
     return Scaffold(
       appBar: AppBar(

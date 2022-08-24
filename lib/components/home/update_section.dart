@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/section.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/links.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/navigation.dart';
-import 'package:zpevnik/providers/utils/updater.dart';
 import 'package:zpevnik/utils/extensions.dart';
+import 'package:zpevnik/utils/url_launcher.dart';
 
 class UpdateSection extends StatefulWidget {
   const UpdateSection({Key? key}) : super(key: key);
@@ -69,8 +68,8 @@ class _UpdateSectionState extends State<UpdateSection> {
                           if (snapshot.isDone && isShowing) const SizedBox(height: kDefaultPadding / 2),
                           if (snapshot.hasError)
                             Highlightable(
-                              onTap: () => launchUrl(Uri.parse(
-                                  '$reportUrl?summary=Chyba při aktualizaci písní&description=${snapshot.error}')),
+                              onTap: () => launch(
+                                  '$reportUrl?summary=Chyba při aktualizaci písní&description=${snapshot.error}'),
                               child: Text('Nahlásit chybu', style: textTheme.bodyMedium?.copyWith(color: red)),
                             ),
                           if (snapshot.hasData && updatedCount > 0)

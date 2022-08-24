@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/section.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/data.dart';
+import 'package:zpevnik/utils/url_launcher.dart';
 
 const double _newsItemHeight = 18;
 
@@ -53,7 +53,7 @@ class _NewsSectionState extends State<NewsSection> {
                 onPageChanged: (index) => setState(() => _currentIndex = index),
                 itemCount: newsItems.length,
                 itemBuilder: (_, index) => Highlightable(
-                  onTap: () => launchUrl(Uri.parse(newsItems[index].link)),
+                  onTap: () => launch(newsItems[index].link),
                   child: Text(newsItems[index].text, style: textTheme.bodyMedium),
                 ),
               ),

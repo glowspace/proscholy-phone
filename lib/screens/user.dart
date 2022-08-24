@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:zpevnik/components/custom/close_button.dart';
 import 'package:zpevnik/components/font_size_slider.dart';
 import 'package:zpevnik/components/highlightable.dart';
@@ -13,6 +12,7 @@ import 'package:zpevnik/links.dart';
 import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/providers/settings.dart';
 import 'package:zpevnik/utils/extensions.dart';
+import 'package:zpevnik/utils/url_launcher.dart';
 
 const double _avatarRadius = 48;
 const double _settingsOptionsWidth = 100;
@@ -127,17 +127,17 @@ class _UserScreenState extends State<UserScreen> {
       child: Column(
         children: [
           Highlightable(
-            onTap: () => launchUrl(Uri.parse(proscholyUrl)),
+            onTap: () => launch(proscholyUrl),
             padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
             child: const IconItem(text: 'Webová verze', icon: Icons.language),
           ),
           Highlightable(
-            onTap: () => launchUrl(Uri.parse(theme.platform.isIos ? feedbackIOSUrl : feedbackAndroidUrl)),
+            onTap: () => launch(theme.platform.isIos ? feedbackIOSUrl : feedbackAndroidUrl),
             padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
             child: const IconItem(text: 'Zpětná vazba', icon: Icons.feedback),
           ),
           Highlightable(
-            onTap: () => launchUrl(Uri.parse(addSongUrl)),
+            onTap: () => launch(addSongUrl),
             padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
             child: const IconItem(text: 'Přidat píseň', icon: Icons.add),
           ),
