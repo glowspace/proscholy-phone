@@ -29,19 +29,37 @@ class MainWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: _title,
-      theme: AppTheme.light(),
-      darkTheme: AppTheme.dark(),
-      home: const InitialScreen(),
-      builder: (context, child) => MultiProvider(
-        providers: [
-          ChangeNotifierProvider(create: (_) => DataProvider()),
-          ChangeNotifierProvider(create: (_) => SettingsProvider()),
-          ChangeNotifierProvider(create: (_) => NavigationProvider(hasMenu: MediaQuery.of(context).isTablet)),
-        ],
-        builder: (_, __) => child!,
+    return ChangeNotifierProvider(
+      create: (_) => SettingsProvider(),
+      builder: (_, __) => Builder(
+        builder: (context) {
+          final darkModeEnabled = context.watch<SettingsProvider>().darkModeEnabled;
+          ThemeMode? themeMode;
+
+          if (darkModeEnabled != null) {
+            if (darkModeEnabled) {
+              themeMode = ThemeMode.dark;
+            } else {
+              themeMode = ThemeMode.light;
+            }
+          }
+
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: _title,
+            theme: AppTheme.light(),
+            darkTheme: AppTheme.dark(),
+            themeMode: themeMode,
+            home: const InitialScreen(),
+            builder: (context, child) => MultiProvider(
+              providers: [
+                ChangeNotifierProvider(create: (_) => DataProvider()),
+                ChangeNotifierProvider(create: (_) => NavigationProvider(hasMenu: MediaQuery.of(context).isTablet)),
+              ],
+              builder: (_, __) => child!,
+            ),
+          );
+        },
       ),
     );
   }

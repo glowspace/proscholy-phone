@@ -7,6 +7,7 @@ extension PlatformExtension on TargetPlatform {
 
 extension BrightnessExtension on Brightness {
   bool get isLight => this == Brightness.light;
+  bool get isDark => this == Brightness.dark;
 }
 
 extension AsyncSnapshotExtension on AsyncSnapshot {

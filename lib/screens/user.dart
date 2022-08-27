@@ -56,6 +56,7 @@ class _UserScreenState extends State<UserScreen> {
                   //   child: Text('Odhlásit se', style: textTheme.bodyMedium?.copyWith(color: red)),
                   // ),
                   // const SizedBox(height: kDefaultPadding),
+                  _buildAppSettings(context),
                   _buildSongSettings(context),
                   _buildLinksSection(context),
                   Highlightable(
@@ -68,6 +69,24 @@ class _UserScreenState extends State<UserScreen> {
             ),
             const CustomCloseButton(),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAppSettings(BuildContext context) {
+    final systemDarkModeEnabled = MediaQuery.of(context).platformBrightness.isDark;
+
+    return Consumer<SettingsProvider>(
+      builder: (_, provider, __) => Section(
+        title: Text('Nastavení', style: Theme.of(context).textTheme.titleMedium),
+        margin: const EdgeInsets.all(kDefaultPadding),
+        padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+        child: SwitchListTile.adaptive(
+          title: Text('Tmavý mód', style: Theme.of(context).textTheme.bodyMedium),
+          value: provider.darkModeEnabled ?? systemDarkModeEnabled,
+          onChanged: (value) => provider.darkModeEnabled = value == systemDarkModeEnabled ? null : value,
+          contentPadding: EdgeInsets.zero,
         ),
       ),
     );
