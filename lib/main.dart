@@ -33,7 +33,7 @@ class MainWidget extends StatelessWidget {
       create: (_) => SettingsProvider(),
       builder: (_, __) => Builder(
         builder: (context) {
-          final darkModeEnabled = context.watch<SettingsProvider>().darkModeEnabled;
+          final darkModeEnabled = context.select<SettingsProvider, bool?>((provider) => provider.darkModeEnabled);
           ThemeMode? themeMode;
 
           if (darkModeEnabled != null) {
