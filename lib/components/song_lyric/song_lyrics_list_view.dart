@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/components/song_lyric/song_lyric_row.dart';
 import 'package:zpevnik/constants.dart';
@@ -100,16 +101,18 @@ class SongLyricsListView<T extends SongLyricsProvider> extends StatelessWidget {
     }
 
     if (songLyricsProvider is PlaylistSongLyricsProvider) {
-      return Theme(
-        data: Theme.of(context).copyWith(canvasColor: Colors.transparent),
-        child: ReorderableListView.builder(
-          key: listViewKey,
-          primary: false,
-          padding: const EdgeInsets.only(top: kDefaultPadding / 2, bottom: 2 * kDefaultPadding),
-          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-          itemCount: listItems.length,
-          itemBuilder: (context, index) => listItems[index](context),
-          onReorder: (newIndex, oldIndex) => songLyricsProvider.onReorder(context, newIndex, oldIndex),
+      return SlidableAutoCloseBehavior(
+        child: Theme(
+          data: Theme.of(context).copyWith(canvasColor: Colors.transparent),
+          child: ReorderableListView.builder(
+            key: listViewKey,
+            primary: false,
+            padding: const EdgeInsets.only(top: kDefaultPadding / 2, bottom: 2 * kDefaultPadding),
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            itemCount: listItems.length,
+            itemBuilder: (context, index) => listItems[index](context),
+            onReorder: (newIndex, oldIndex) => songLyricsProvider.onReorder(context, newIndex, oldIndex),
+          ),
         ),
       );
     }

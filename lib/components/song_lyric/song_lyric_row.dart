@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/components/highlightable.dart';
@@ -122,12 +123,25 @@ class SongLyricRow extends StatelessWidget {
 
     final songLyricsProvider = context.read<PlaylistSongLyricsProvider?>();
 
+    // SlidableAuto
+
     if (songLyricsProvider != null) {
-      return Dismissible(
+      return Slidable(
         key: Key('${songLyric.id}'),
-        onDismissed: (_) => songLyricsProvider.removeSongLyric(songLyric),
-        direction: DismissDirection.endToStart,
-        background: Container(color: red),
+        groupTag: 'song_lyric',
+        endActionPane: ActionPane(
+          motion: const DrawerMotion(),
+          extentRatio: 0.25,
+          children: [
+            SlidableAction(
+              onPressed: (_) => songLyricsProvider.removeSongLyric(songLyric),
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+              icon: Icons.delete,
+              label: 'Odstranit',
+            ),
+          ],
+        ),
         child: row,
       );
     }
