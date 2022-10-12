@@ -15,33 +15,33 @@ class AdditionalSection extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Section(
-      title: Text('Další', style: theme.textTheme.titleLarge),
+      title: Text('Další možnosti', style: theme.textTheme.titleLarge),
       child: Column(children: [
         Highlightable(
           onTap: () => launch(proscholyUrl),
           highlightBackground: true,
-          padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
+          padding: const EdgeInsets.all(kDefaultPadding),
           child: const IconItem(text: 'Webová verze', icon: Icons.language, trailingIcon: Icons.open_in_new),
         ),
-        const Divider(height: kDefaultPadding),
+        const Divider(height: 0),
         Highlightable(
           onTap: () => launch(theme.platform.isIos ? feedbackIOSUrl : feedbackAndroidUrl),
           highlightBackground: true,
-          padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
+          padding: const EdgeInsets.all(kDefaultPadding),
           child: const IconItem(text: 'Zpětná vazba', icon: Icons.feedback, trailingIcon: Icons.open_in_new),
         ),
-        const Divider(height: kDefaultPadding),
+        const Divider(height: 0),
         Highlightable(
           onTap: () => launch(addSongUrl),
           highlightBackground: true,
-          padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
+          padding: const EdgeInsets.all(kDefaultPadding),
           child: const IconItem(text: 'Přidat píseň', icon: Icons.add, trailingIcon: Icons.open_in_new),
         ),
-        const Divider(height: kDefaultPadding),
+        const Divider(height: 0),
         Highlightable(
           onTap: () => launch(dontaionsUrl),
           highlightBackground: true,
-          padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
+          padding: const EdgeInsets.all(kDefaultPadding),
           child: const IconItem(text: 'Darovat', icon: Icons.favorite, trailingIcon: Icons.open_in_new, iconColor: red),
         ),
       ]),
