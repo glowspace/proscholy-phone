@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:zpevnik/firebase_options.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/providers/settings.dart';
@@ -14,9 +15,11 @@ import 'package:zpevnik/utils/extensions.dart';
 const _title = 'Zpěvník';
 
 Future<void> main() async {
-  if (kDebugMode) return runApp(const MainWidget());
+  WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  if (kDebugMode) return runApp(const MainWidget());
 
   await SentryFlutter.init(
     (options) {
