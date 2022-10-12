@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zpevnik/components/bottom_navigation_bar.dart';
+import 'package:zpevnik/components/home/additional_section.dart';
 import 'package:zpevnik/components/home/news_section.dart';
 import 'package:zpevnik/components/home/now_playing_section.dart';
 import 'package:zpevnik/components/home/shared_with_me_section.dart';
@@ -64,6 +65,8 @@ class _HomeScreenPhone extends StatelessWidget {
                 const SongListsSection(),
                 const SizedBox(height: 2 * kDefaultPadding),
                 const SongbooksSection(),
+                const SizedBox(height: 2 * kDefaultPadding),
+                const AdditionalSection(),
                 const SizedBox(height: 2 * kDefaultPadding),
                 // const SharedWithMeSection(),
               ],

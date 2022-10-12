@@ -18,7 +18,7 @@ class SongbookRow extends StatelessWidget {
 
     return Highlightable(
       onTap: () => _pushSongbook(context),
-      padding: const EdgeInsets.symmetric(vertical: kDefaultPadding, horizontal: 1.5 * kDefaultPadding),
+      padding: const EdgeInsets.symmetric(vertical: kDefaultPadding, horizontal: 1.25 * kDefaultPadding),
       highlightBackground: true,
       child: Row(children: [
         Container(

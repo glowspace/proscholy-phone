@@ -58,7 +58,6 @@ class _UserScreenState extends State<UserScreen> {
                   // const SizedBox(height: kDefaultPadding),
                   _buildAppSettings(context),
                   _buildSongSettings(context),
-                  _buildLinksSection(context),
                   Highlightable(
                     onTap: () => NavigationProvider.of(context).pushNamed('/about'),
                     child: Text('O projektu', style: textTheme.bodySmall),
@@ -132,35 +131,6 @@ class _UserScreenState extends State<UserScreen> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildLinksSection(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Section(
-      title: Text('Odkazy', style: theme.textTheme.titleMedium),
-      margin: const EdgeInsets.all(kDefaultPadding),
-      padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding),
-      child: Column(
-        children: [
-          Highlightable(
-            onTap: () => launch(proscholyUrl),
-            padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
-            child: const IconItem(text: 'Webová verze', icon: Icons.language),
-          ),
-          Highlightable(
-            onTap: () => launch(theme.platform.isIos ? feedbackIOSUrl : feedbackAndroidUrl),
-            padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
-            child: const IconItem(text: 'Zpětná vazba', icon: Icons.feedback),
-          ),
-          Highlightable(
-            onTap: () => launch(addSongUrl),
-            padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
-            child: const IconItem(text: 'Přidat píseň', icon: Icons.add),
-          ),
-        ],
       ),
     );
   }

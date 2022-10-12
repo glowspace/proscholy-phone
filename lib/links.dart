@@ -15,3 +15,5 @@ const feedbackIOSUrl =
 const addSongUrl = 'https://forms.gle/AYXXxkWtDHQQ13856';
 
 const deepLinkUrl = 'pro-scholy://zpevnik';
+
+const dontaionsUrl = 'https://www.darujme.cz/darovat/1205564';
