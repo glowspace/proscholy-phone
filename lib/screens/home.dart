@@ -103,6 +103,8 @@ class _HomeScreenTablet extends StatelessWidget {
                   const SizedBox(height: 2 * kDefaultPadding),
                   const SongbooksSection(),
                   const SizedBox(height: 2 * kDefaultPadding),
+                  const AdditionalSection(),
+                  const SizedBox(height: 2 * kDefaultPadding),
                   // const SharedWithMeSection(),
                 ],
               ),
