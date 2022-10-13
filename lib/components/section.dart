@@ -16,7 +16,7 @@ class Section extends StatelessWidget {
     required this.child,
     this.action,
     this.margin,
-    this.padding = const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
+    this.padding,
   }) : super(key: key);
 
   @override
