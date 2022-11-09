@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 // ignore: unnecessary_import
@@ -20,7 +19,7 @@ import 'package:zpevnik/utils/client.dart';
 final _dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
 
 const _lastUpdateKey = 'last_update';
-const _initialLastUpdate = '2022-08-27 09:00:00';
+const _initialLastUpdate = '2022-11-09 18:00:00';
 
 const _updatePeriod = Duration(hours: 1);
 

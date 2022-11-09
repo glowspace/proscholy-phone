@@ -12,7 +12,7 @@ class SongLyricFilesWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final pdfs = songLyric.pdfs;
+    final files = songLyric.files;
 
     return SafeArea(
       top: false,
@@ -25,8 +25,8 @@ class SongLyricFilesWidget extends StatelessWidget {
           SingleChildScrollView(
             child: ListView.builder(
               padding: const EdgeInsets.only(bottom: kDefaultPadding),
-              itemCount: pdfs.length,
-              itemBuilder: (context, index) => _buildFileTile(context, pdfs[index]),
+              itemCount: files.length,
+              itemBuilder: (context, index) => _buildFileTile(context, files[index]),
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
             ),
@@ -36,19 +36,23 @@ class SongLyricFilesWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildFileTile(BuildContext context, External pdf) {
+  Widget _buildFileTile(BuildContext context, External file) {
     return Highlightable(
-      onTap: () => _pushPdf(context, pdf),
+      onTap: () => file.type == MediaType.pdf ? _pushPdf(context, file) : _pushJpg(context, file),
       padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
       child: Row(children: [
         const FaIcon(FontAwesomeIcons.filePdf),
         const SizedBox(width: kDefaultPadding),
-        Expanded(child: Text(pdf.name)),
+        Expanded(child: Text(file.name)),
       ]),
     );
   }
 
   void _pushPdf(BuildContext context, External pdf) {
     Navigator.popAndPushNamed(context, '/pdf', arguments: pdf);
+  }
+
+  void _pushJpg(BuildContext context, External jpg) {
+    Navigator.popAndPushNamed(context, '/jpg', arguments: jpg);
   }
 }

@@ -155,7 +155,7 @@ class SongLyric {
   bool get hasTranslations => (song.target?.songLyrics.length ?? 1) > 1;
 
   bool get hasLyrics => lyrics != null && lyrics!.isNotEmpty;
-  bool get hasFiles => externals.any((external) => external.type == MediaType.pdf);
+  bool get hasFiles => externals.any((external) => external.type == MediaType.pdf || external.type == MediaType.jpg);
   bool get hasRecordings =>
       externals.any((external) => external.type == MediaType.youtube || external.type == MediaType.mp3);
 
@@ -194,7 +194,8 @@ class SongLyric {
     }
   }
 
-  List<External> get pdfs => externals.where((external) => external.type == MediaType.pdf).toList();
+  List<External> get files =>
+      externals.where((external) => external.type == MediaType.pdf || external.type == MediaType.jpg).toList();
   List<External> get youtubes => externals.where((external) => external.type == MediaType.youtube).toList();
   List<External> get mp3s => externals.where((external) => external.type == MediaType.mp3).toList();
 

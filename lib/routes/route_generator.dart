@@ -10,6 +10,7 @@ import 'package:zpevnik/routes/arguments/search.dart';
 import 'package:zpevnik/routes/arguments/song_lyric.dart';
 import 'package:zpevnik/screens/about.dart';
 import 'package:zpevnik/screens/home.dart';
+import 'package:zpevnik/screens/jpg.dart';
 import 'package:zpevnik/screens/menu/home.dart';
 import 'package:zpevnik/screens/pdf.dart';
 import 'package:zpevnik/screens/playlist.dart';
@@ -65,6 +66,10 @@ class RouteGenerator {
         final pdf = settings.arguments as External;
 
         return MaterialPageRoute(settings: settings, builder: (_) => PdfScreen(pdf: pdf));
+      case '/jpg':
+        final jpg = settings.arguments as External;
+
+        return MaterialPageRoute(settings: settings, builder: (_) => JpgScreen(jpg: jpg));
       case '/playlist':
         final playlist = settings.arguments as Playlist;
 

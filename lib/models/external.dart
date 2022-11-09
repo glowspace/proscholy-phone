@@ -9,6 +9,7 @@ enum MediaType {
   youtube,
   mp3,
   pdf,
+  jpg,
   unsupported,
 }
 
@@ -25,6 +26,8 @@ extension MediaTypeExtension on MediaType {
         return MediaType.mp3;
       case "file/pdf":
         return MediaType.pdf;
+      case "file/jpg":
+        return MediaType.jpg;
       default:
         return MediaType.unsupported;
     }
@@ -42,6 +45,8 @@ extension MediaTypeExtension on MediaType {
         return MediaType.mp3;
       case 4:
         return MediaType.pdf;
+      case 5:
+        return MediaType.jpg;
       default:
         return MediaType.unsupported;
     }
@@ -59,8 +64,10 @@ extension MediaTypeExtension on MediaType {
         return 3;
       case MediaType.pdf:
         return 4;
-      default:
+      case MediaType.jpg:
         return 5;
+      default:
+        return -1;
     }
   }
 }
@@ -108,6 +115,8 @@ class External {
       case MediaType.youtube:
         return _nameAuthorRE.firstMatch(name)?.group(2) ?? name;
       case MediaType.pdf:
+        return mediaId ?? _nameAuthorRE.firstMatch(name)?.group(2) ?? name;
+      case MediaType.jpg:
         return mediaId ?? _nameAuthorRE.firstMatch(name)?.group(2) ?? name;
       case MediaType.mp3:
         return _nameAuthorRE.firstMatch(name)?.group(2) ?? name;
