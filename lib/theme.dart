@@ -30,7 +30,7 @@ class AppTheme {
 
     return theme.copyWith(
       scaffoldBackgroundColor: lightBackgroundColor,
-      colorScheme: ColorScheme.fromSeed(seedColor: blue).copyWith(surface: Colors.white),
+      colorScheme: colorScheme,
       canvasColor: colorScheme.surface,
       appBarTheme: theme.appBarTheme.copyWith(
         backgroundColor: lightBackgroundColor,

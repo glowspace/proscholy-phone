@@ -9,11 +9,14 @@ class CustomBottomNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isLight = Theme.of(context).brightness.isLight;
+
     return Hero(
       tag: 'bottomNavigationBar',
       transitionOnUserGestures: true,
       child: NavigationBar(
-        backgroundColor: Theme.of(context).brightness.isLight ? const Color(0xfffffbfe) : const Color(0xff1e1e1e),
+        backgroundColor: isLight ? const Color(0xfffffbfe) : const Color(0xff1e1e1e),
+        surfaceTintColor: isLight ? const Color(0xfffffbfe) : const Color(0xff1e1e1e),
         selectedIndex: ModalRoute.of(context)?.settings.name == '/' ? 0 : 2,
         height: _navigationBarHeight,
         onDestinationSelected: (index) => _onDestinationSelected(context, index),
