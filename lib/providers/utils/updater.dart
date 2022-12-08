@@ -33,6 +33,7 @@ class Updater {
 
   Future<void> loadInitial() async {
     // TODO: remove json file after loading
+    // This is not possible right now
     final json = jsonDecode(await rootBundle.loadString('assets/data.json'));
 
     SharedPreferences.getInstance().then((prefs) => prefs.remove(_lastUpdateKey));
@@ -179,7 +180,10 @@ class Updater {
 
     if (isSongLyricsFull) {
       final songLyrics = await store.runInTransactionAsync<List<SongLyric>, Map<String, dynamic>>(
-          TxMode.read, (store, params) => SongLyric.fromMapList(params, store), json);
+        TxMode.read,
+        (store, params) => SongLyric.fromMapList(params, store),
+        json,
+      );
 
       await store.runInTransactionAsync<List<int>, List<SongLyric>>(
         TxMode.write,

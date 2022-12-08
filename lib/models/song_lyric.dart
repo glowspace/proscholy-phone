@@ -120,6 +120,11 @@ class SongLyric {
     final songbookRecords = SongbookRecord.fromMapList(json, id);
     final externals = External.fromMapList(json, id);
 
+    final query = store.box<SongLyric>().query(SongLyric_.id.equals(id)).build();
+
+    final transpositions = query.property(SongLyric_.transposition).find();
+    final accidentals = query.property(SongLyric_.accidentals).find();
+
     return SongLyric(
       id,
       json['name'] as String,
@@ -132,6 +137,8 @@ class SongLyric {
       SongLyricTypeExtension.fromString(json['type_enum'] as String?).rawValue,
       json['has_chords'] as bool,
     )
+      ..transposition = transpositions.isEmpty ? 0 : transpositions.first
+      ..accidentals = accidentals.isEmpty ? 0 : accidentals.first
       ..authors.addAll(authors.cast())
       ..song.targetId = json['song'] == null ? null : int.parse(json['song']['id'] as String)
       ..tags.addAll(tags.cast())

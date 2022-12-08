@@ -174,7 +174,7 @@ final _entities = <ModelEntity>[
   ModelEntity(
       id: const IdUid(11, 6447883453535376640),
       name: 'SongLyric',
-      lastPropertyId: const IdUid(16, 8676940974206202217),
+      lastPropertyId: const IdUid(26, 4952449864415835601),
       flags: 0,
       properties: <ModelProperty>[
         ModelProperty(
@@ -235,17 +235,17 @@ final _entities = <ModelEntity>[
             type: 1,
             flags: 0),
         ModelProperty(
-            id: const IdUid(13, 8296175755256605743),
+            id: const IdUid(22, 4355414326890607438),
             name: 'accidentals',
             type: 6,
             flags: 0),
         ModelProperty(
-            id: const IdUid(14, 1715249534898951602),
+            id: const IdUid(23, 7347294181262392126),
             name: 'showChords',
             type: 1,
             flags: 0),
         ModelProperty(
-            id: const IdUid(15, 9195031951480790049),
+            id: const IdUid(24, 8592014509296857970),
             name: 'transposition',
             type: 6,
             flags: 0)
@@ -421,8 +421,8 @@ Future<Store> openStore(
 ModelDefinition getObjectBoxModel() {
   final model = ModelInfo(
       entities: _entities,
-      lastEntityId: const IdUid(17, 7654860777539205773),
-      lastIndexId: const IdUid(14, 1347531346618730530),
+      lastEntityId: const IdUid(19, 308563676121461278),
+      lastIndexId: const IdUid(19, 1850499091710419784),
       lastRelationId: const IdUid(8, 1345337331648128811),
       lastSequenceId: const IdUid(0, 0),
       retiredEntityUids: const [
@@ -432,9 +432,18 @@ ModelDefinition getObjectBoxModel() {
         5722656750256100534,
         3974850738104585390,
         7087359921340693986,
-        3574257195436151857
+        3574257195436151857,
+        4289723463740273072,
+        308563676121461278
       ],
-      retiredIndexUids: const [9023521533068155021],
+      retiredIndexUids: const [
+        9023521533068155021,
+        8226372830687146371,
+        7685595388740378375,
+        7916231218966853097,
+        5349464891857123935,
+        1850499091710419784
+      ],
       retiredPropertyUids: const [
         1286404604582147955,
         2045942571545498429,
@@ -486,7 +495,27 @@ ModelDefinition getObjectBoxModel() {
         5458802551295315336,
         299538624348525419,
         7917435652412581048,
-        344917746087617944
+        344917746087617944,
+        8296175755256605743,
+        1715249534898951602,
+        9195031951480790049,
+        2394749474446949643,
+        1060045570178656313,
+        2261087093503428517,
+        2772973546189811204,
+        6246097383067926012,
+        1429273622555481500,
+        4919637654774237975,
+        5849904806336203926,
+        3530014358950602617,
+        124942079172408792,
+        8881930723356889494,
+        8434279879851819318,
+        4952449864415835601,
+        2950767695190299953,
+        6120913430319880953,
+        5404942060880140897,
+        7528607199616284548
       ],
       retiredRelationUids: const [
         7916874752771113838,
@@ -756,7 +785,7 @@ ModelDefinition getObjectBoxModel() {
           final langDescriptionOffset = object.langDescription == null
               ? null
               : fbb.writeString(object.langDescription!);
-          fbb.startTable(17);
+          fbb.startTable(27);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, nameOffset);
           fbb.addOffset(2, secondaryName1Offset);
@@ -768,9 +797,9 @@ ModelDefinition getObjectBoxModel() {
           fbb.addInt64(8, object.song.targetId);
           fbb.addInt64(10, object.dbType);
           fbb.addBool(11, object.hasChords);
-          fbb.addInt64(12, object.accidentals);
-          fbb.addBool(13, object.showChords);
-          fbb.addInt64(14, object.transposition);
+          fbb.addInt64(21, object.accidentals);
+          fbb.addBool(22, object.showChords);
+          fbb.addInt64(23, object.transposition);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -797,11 +826,11 @@ ModelDefinition getObjectBoxModel() {
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 24, 0),
               const fb.BoolReader().vTableGet(buffer, rootOffset, 26, false))
             ..accidentals =
-                const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 28)
+                const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 46)
             ..showChords =
-                const fb.BoolReader().vTableGetNullable(buffer, rootOffset, 30)
+                const fb.BoolReader().vTableGetNullable(buffer, rootOffset, 48)
             ..transposition =
-                const fb.Int64Reader().vTableGet(buffer, rootOffset, 32, 0);
+                const fb.Int64Reader().vTableGet(buffer, rootOffset, 50, 0);
           object.song.targetId =
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 20, 0);
           object.song.attach(store);
