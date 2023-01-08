@@ -118,23 +118,23 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
         centerTitle: false,
         leading: canPopIndividually
             ? const CustomBackButton()
-            : Highlightable(
+            : HighlightableIconButton(
                 onTap: navigationProvider.toggleFullscreen,
                 padding: const EdgeInsets.all(kDefaultPadding).copyWith(left: 2.5 * kDefaultPadding),
-                child: Icon(navigationProvider.isFullScreen ? Icons.close_fullscreen : Icons.open_in_full),
+                icon: Icon(navigationProvider.isFullScreen ? Icons.close_fullscreen : Icons.open_in_full),
               ),
         actions: [
           if (_songLyric.hasTranslations)
-            Highlightable(
+            HighlightableIconButton(
               onTap: () => navigationProvider.popToOrPushNamed('/song_lyric/translations', arguments: _songLyric),
               padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-              child: const Icon(Icons.translate),
+              icon: const Icon(Icons.translate),
             ),
           StatefulBuilder(
-            builder: (context, setState) => Highlightable(
+            builder: (context, setState) => HighlightableIconButton(
               onTap: () => setState(() => _toggleFavorite(context)),
               padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-              child: Icon(_songLyric.isFavorite ? Icons.star : Icons.star_outline),
+              icon: Icon(_songLyric.isFavorite ? Icons.star : Icons.star_outline),
             ),
           ),
           SongLyricMenuButton(songLyric: _songLyric),
@@ -143,7 +143,7 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
 
       final bottomBarActionPadding = mediaQuery.isTablet
           ? const EdgeInsets.symmetric(vertical: kDefaultPadding, horizontal: 3 * kDefaultPadding)
-          : const EdgeInsets.symmetric(vertical: kDefaultPadding);
+          : const EdgeInsets.all(kDefaultPadding);
 
       bottomBar = Container(
         decoration: BoxDecoration(border: Border(top: BorderSide(color: theme.dividerColor, width: 1))),
@@ -154,34 +154,32 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: mediaQuery.isTablet ? MainAxisAlignment.end : MainAxisAlignment.spaceAround,
             children: [
-              Highlightable(
+              HighlightableIconButton(
                 padding: bottomBarActionPadding,
-                onTap: () => _showingExternals.value = true,
-                isDisabled: !_songLyric.hasRecordings,
-                child: const Icon(FontAwesomeIcons.headphones),
+                onTap: _songLyric.hasRecordings ? () => _showingExternals.value = true : null,
+                icon: const Icon(FontAwesomeIcons.headphones),
               ),
-              Highlightable(
+              HighlightableIconButton(
                 padding: bottomBarActionPadding,
-                onTap: () => _showFiles(context),
-                isDisabled: !_songLyric.hasFiles,
-                child: const Icon(Icons.insert_drive_file),
+                onTap: _songLyric.hasFiles ? () => _showFiles(context) : null,
+                icon: const Icon(Icons.insert_drive_file),
               ),
-              Highlightable(
+              HighlightableIconButton(
                 padding: bottomBarActionPadding,
-                onTap: () => _showSettings(context),
-                isDisabled: !_songLyric.hasChords,
-                child: const Icon(Icons.tune),
+                onTap: _songLyric.hasChords ? () => _showSettings(context) : null,
+                icon: const Icon(Icons.tune),
               ),
-              Highlightable(
+              HighlightableIconButton(
                 padding: bottomBarActionPadding,
-                onTap: () => _showTags(context),
-                isDisabled: !(_songLyric.tags.isNotEmpty || _songLyric.songbookRecords.isNotEmpty),
-                child: const FaIcon(FontAwesomeIcons.tag),
+                onTap: _songLyric.tags.isNotEmpty || _songLyric.songbookRecords.isNotEmpty
+                    ? () => _showTags(context)
+                    : null,
+                icon: const FaIcon(FontAwesomeIcons.tag),
               ),
-              Highlightable(
+              HighlightableIconButton(
                 padding: bottomBarActionPadding,
                 onTap: () => navigationProvider.popToOrPushNamed('/search'),
-                child: const Icon(Icons.search),
+                icon: const Icon(Icons.search),
               ),
             ],
           ),

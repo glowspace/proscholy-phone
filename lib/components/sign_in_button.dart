@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
@@ -102,16 +101,17 @@ class _SignInButtonState extends State<SignInButton> {
         border: widget.type.border,
       ),
       clipBehavior: Clip.antiAlias,
-      child: Highlightable(
-        highlightBackground: widget.type != SignInButtonType.noSignIn,
+      child: InkWell(
         onTap: widget.onSignIn,
-        padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2, vertical: kDefaultPadding / 3),
-        child: Row(
-          children: [
-            widget.type.logo(theme),
-            const SizedBox(width: kDefaultPadding / 2),
-            Expanded(child: Text(widget.type.text, style: widget.type.style(theme), maxLines: 2))
-          ],
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2, vertical: kDefaultPadding / 3),
+          child: Row(
+            children: [
+              widget.type.logo(theme),
+              const SizedBox(width: kDefaultPadding / 2),
+              Expanded(child: Text(widget.type.text, style: widget.type.style(theme), maxLines: 2))
+            ],
+          ),
         ),
       ),
     );

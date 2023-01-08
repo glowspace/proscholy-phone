@@ -44,34 +44,34 @@ class SongbookTile extends StatelessWidget {
 
     final pinHighlightablKey = GlobalKey();
 
-    return Highlightable(
+    return InkWell(
       onTap: () => _pushSongbook(context),
-      padding: const EdgeInsets.all(kDefaultPadding),
-      highlightBackground: true,
-      highlightableChildKeys: [pinHighlightablKey],
-      child: IntrinsicWidth(
-        child: Column(
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(15),
-              child: AspectRatio(
-                aspectRatio: 4 / 3,
-                child: FittedBox(child: Image.asset(imagePath)),
+      child: Padding(
+        padding: const EdgeInsets.all(kDefaultPadding),
+        child: IntrinsicWidth(
+          child: Column(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(15),
+                child: AspectRatio(
+                  aspectRatio: 4 / 3,
+                  child: FittedBox(child: Image.asset(imagePath)),
+                ),
               ),
-            ),
-            const SizedBox(height: kDefaultPadding / 2),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(child: Text(songbook.name, maxLines: 2)),
-                Highlightable(
-                  key: pinHighlightablKey,
-                  child: Icon(songbook.isPinned ? Icons.push_pin : Icons.push_pin_outlined),
-                  onTap: () => context.read<DataProvider>().togglePin(songbook),
-                )
-              ],
-            ),
-          ],
+              const SizedBox(height: kDefaultPadding / 2),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(child: Text(songbook.name, maxLines: 2)),
+                  HighlightableIconButton(
+                    key: pinHighlightablKey,
+                    onTap: () => context.read<DataProvider>().togglePin(songbook),
+                    icon: Icon(songbook.isPinned ? Icons.push_pin : Icons.push_pin_outlined),
+                  )
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

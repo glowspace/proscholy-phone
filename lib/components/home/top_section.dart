@@ -18,10 +18,10 @@ class TopSection extends StatelessWidget {
         const Logo(showFullName: false),
         const Spacer(),
         if (width <= kTabletSizeBreakpoint)
-          Highlightable(
+          HighlightableIconButton(
             onTap: () => NavigationProvider.of(context).pushNamed('/user'),
             padding: const EdgeInsets.all(kDefaultPadding / 2),
-            child: const Icon(Icons.settings, size: 28),
+            icon: const Icon(Icons.settings, size: 28),
             // CircleAvatar(
             //   backgroundImage: const AssetImage('assets/images/songbooks/default.png'),
             //   backgroundColor: Theme.of(context).colorScheme.surface,

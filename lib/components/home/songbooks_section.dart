@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/components/highlightable.dart';
+import 'package:zpevnik/components/open_all_button.dart';
 import 'package:zpevnik/components/section.dart';
 import 'package:zpevnik/components/songbook/songbooks_grid_view.dart';
 import 'package:zpevnik/components/songbook/songbooks_list_view.dart';
@@ -29,22 +30,9 @@ class SongbooksSection extends StatelessWidget {
       child: MediaQuery.of(context).isTablet
           ? SongbooksGridView(songbooks: showingSongbooks, shrinkWrap: true, isCrossAxisCountMultipleOfTwo: true)
           : SongbooksListView(songbooks: showingSongbooks, shrinkWrap: true),
-      action: Highlightable(
+      action: OpenAllButton(
+        title: 'Všechny zpěvníky',
         onTap: () => NavigationProvider.of(context).pushNamed('/songbooks'),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'Všechny zpěvníky',
-              style: TextStyle(
-                fontSize: 14,
-                color: Theme.of(context).brightness.isLight ? lightTextColor : darkTextColor,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            const Icon(Icons.navigate_next, size: _navigateNextIconSize),
-          ],
-        ),
       ),
     );
   }

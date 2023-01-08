@@ -34,7 +34,7 @@ class ExternalsWidget extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ExternalsWidgetState createState() => _ExternalsWidgetState();
+  State<ExternalsWidget> createState() => _ExternalsWidgetState();
 }
 
 class _ExternalsWidgetState extends State<ExternalsWidget> {
@@ -160,26 +160,26 @@ class _ExternalsWidgetState extends State<ExternalsWidget> {
               width: width / 3,
               child: Text(playerController.external.name, overflow: TextOverflow.fade),
             ),
-            Highlightable(
+            HighlightableIconButton(
               onTap: playerController.rewind,
-              child: const Icon(Icons.fast_rewind),
               padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+              icon: const Icon(Icons.fast_rewind),
             ),
-            Highlightable(
+            HighlightableIconButton(
               onTap: playerController.isPlaying ? playerController.pause : playerController.play,
-              child: Icon(playerController.isPlaying ? Icons.pause : Icons.play_arrow),
               padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+              icon: Icon(playerController.isPlaying ? Icons.pause : Icons.play_arrow),
             ),
-            Highlightable(
+            HighlightableIconButton(
               onTap: playerController.forward,
-              child: const Icon(Icons.fast_forward),
               padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+              icon: const Icon(Icons.fast_forward),
             ),
             const Spacer(),
-            Highlightable(
+            HighlightableIconButton(
               onTap: _dismiss,
-              child: const Icon(Icons.close),
               padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+              icon: const Icon(Icons.close),
             )
           ],
         ),

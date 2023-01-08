@@ -105,10 +105,11 @@ class _SearchFieldState extends State<SearchField> {
 
     Widget? suffixIcon;
     if (widget.isInsideSearchScreen) {
-      suffixIcon = Highlightable(
+      // FIXME: highlight does not work, also there is some grey line when search text is empty
+      suffixIcon = HighlightableIconButton(
         padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-        child: Icon(Icons.clear, color: theme.iconTheme.color),
         onTap: _clearOrPop,
+        icon: Icon(Icons.clear, color: theme.iconTheme.color),
       );
     }
 
@@ -161,10 +162,12 @@ class _SearchFieldState extends State<SearchField> {
                 ),
               ),
               if (widget.isInsideSearchScreen)
-                Highlightable(
+                HighlightableTextButton(
                   onTap: () => Navigator.of(context).pop(),
                   padding: const EdgeInsets.all(kDefaultPadding),
-                  child: Text('Zrušit', style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.primary)),
+                  textStyle: theme.textTheme.bodyMedium,
+                  foregroundColor: theme.colorScheme.primary,
+                  child: const Text('Zrušit'),
                 ),
             ],
           ),

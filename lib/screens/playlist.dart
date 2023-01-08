@@ -74,16 +74,17 @@ class PlaylistScreen extends StatelessWidget {
         titleSpacing: 0,
         centerTitle: false,
         actions: [
-          Highlightable(
-            onTap: () => NavigationProvider.of(context).pushNamed(
-              '/search',
-              arguments: SearchScreenArguments(
-                initialTag: dataProvider.tags.firstWhere((tag) => tag.name == playlist.name),
-              ),
-            ),
-            isDisabled: playlist.playlistRecords.isEmpty,
+          HighlightableIconButton(
+            onTap: playlist.playlistRecords.isEmpty
+                ? null
+                : () => NavigationProvider.of(context).pushNamed(
+                      '/search',
+                      arguments: SearchScreenArguments(
+                        initialTag: dataProvider.tags.firstWhere((tag) => tag.name == playlist.name),
+                      ),
+                    ),
             padding: const EdgeInsets.all(kDefaultPadding),
-            child: const Icon(Icons.filter_alt),
+            icon: const Icon(Icons.filter_alt),
           ),
           if (!playlist.isFavorites) PlaylistButton(playlist: playlist, isInAppBar: true, extendPadding: true),
         ],

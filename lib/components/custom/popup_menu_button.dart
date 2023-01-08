@@ -20,10 +20,10 @@ class CustomPopupMenuButton<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Highlightable(
+    return HighlightableIconButton(
       onTap: () => _showMenu(context),
       padding: padding ?? const EdgeInsets.symmetric(vertical: kDefaultPadding / 2, horizontal: kDefaultPadding),
-      child: const Icon(Icons.more_vert),
+      icon: const Icon(Icons.more_vert),
     );
   }
 

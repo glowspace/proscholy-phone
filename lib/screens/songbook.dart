@@ -37,7 +37,7 @@ class SongbookScreen extends StatelessWidget {
         leadingWidth: 24 + 4 * kDefaultPadding,
         titleSpacing: 0,
         actions: [
-          Highlightable(
+          HighlightableIconButton(
             onTap: () => NavigationProvider.of(context).pushNamed(
               '/search',
               arguments: SearchScreenArguments(
@@ -46,7 +46,7 @@ class SongbookScreen extends StatelessWidget {
               ),
             ),
             padding: const EdgeInsets.all(kDefaultPadding),
-            child: const Icon(Icons.filter_alt),
+            icon: const Icon(Icons.filter_alt),
           ),
         ],
       ),

@@ -52,9 +52,9 @@ class _NewsSectionState extends State<NewsSection> {
                 controller: _pageController,
                 onPageChanged: (index) => setState(() => _currentIndex = index),
                 itemCount: newsItems.length,
-                itemBuilder: (_, index) => Highlightable(
+                itemBuilder: (_, index) => HighlightableTextButton(
                   onTap: () => launch(newsItems[index].link),
-                  child: Text(newsItems[index].text, style: textTheme.bodyMedium),
+                  child: Text(newsItems[index].text),
                 ),
               ),
             ),

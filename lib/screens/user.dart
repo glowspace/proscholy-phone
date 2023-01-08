@@ -58,9 +58,10 @@ class _UserScreenState extends State<UserScreen> {
                   // const SizedBox(height: kDefaultPadding),
                   _buildAppSettings(context),
                   _buildSongSettings(context),
-                  Highlightable(
+                  HighlightableTextButton(
                     onTap: () => NavigationProvider.of(context).pushNamed('/about'),
-                    child: Text('O projektu', style: textTheme.bodySmall),
+                    textStyle: textTheme.bodySmall,
+                    child: const Text('O projektu'),
                   ),
                   const SizedBox(height: kDefaultPadding),
                 ],

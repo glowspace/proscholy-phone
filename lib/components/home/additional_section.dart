@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/icon_item.dart';
 import 'package:zpevnik/components/section.dart';
 import 'package:zpevnik/constants.dart';
@@ -17,32 +16,36 @@ class AdditionalSection extends StatelessWidget {
     return Section(
       title: Text('Další možnosti', style: theme.textTheme.titleLarge),
       child: Column(children: [
-        Highlightable(
+        InkWell(
           onTap: () => launch(proscholyUrl),
-          highlightBackground: true,
-          padding: const EdgeInsets.all(kDefaultPadding),
-          child: const IconItem(text: 'Webová verze', icon: Icons.language, trailingIcon: Icons.open_in_new),
+          child: const Padding(
+            padding: EdgeInsets.all(kDefaultPadding),
+            child: IconItem(text: 'Webová verze', icon: Icons.language, trailingIcon: Icons.open_in_new),
+          ),
         ),
         const Divider(height: 0),
-        Highlightable(
+        InkWell(
           onTap: () => launch(theme.platform.isIos ? feedbackIOSUrl : feedbackAndroidUrl),
-          highlightBackground: true,
-          padding: const EdgeInsets.all(kDefaultPadding),
-          child: const IconItem(text: 'Zpětná vazba', icon: Icons.feedback, trailingIcon: Icons.open_in_new),
+          child: const Padding(
+            padding: EdgeInsets.all(kDefaultPadding),
+            child: IconItem(text: 'Zpětná vazba', icon: Icons.feedback, trailingIcon: Icons.open_in_new),
+          ),
         ),
         const Divider(height: 0),
-        Highlightable(
+        InkWell(
           onTap: () => launch(addSongUrl),
-          highlightBackground: true,
-          padding: const EdgeInsets.all(kDefaultPadding),
-          child: const IconItem(text: 'Přidat píseň', icon: Icons.add, trailingIcon: Icons.open_in_new),
+          child: const Padding(
+            padding: EdgeInsets.all(kDefaultPadding),
+            child: IconItem(text: 'Přidat píseň', icon: Icons.add, trailingIcon: Icons.open_in_new),
+          ),
         ),
         const Divider(height: 0),
-        Highlightable(
+        InkWell(
           onTap: () => launch(dontaionsUrl),
-          highlightBackground: true,
-          padding: const EdgeInsets.all(kDefaultPadding),
-          child: const IconItem(text: 'Darovat', icon: Icons.favorite, trailingIcon: Icons.open_in_new, iconColor: red),
+          child: const Padding(
+            padding: EdgeInsets.all(kDefaultPadding),
+            child: IconItem(text: 'Darovat', icon: Icons.favorite, trailingIcon: Icons.open_in_new, iconColor: red),
+          ),
         ),
       ]),
     );

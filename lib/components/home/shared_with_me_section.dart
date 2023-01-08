@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:zpevnik/components/highlightable.dart';
+import 'package:zpevnik/components/open_all_button.dart';
 import 'package:zpevnik/components/section.dart';
-
-const double _navigateNextIconSize = 20;
 
 class SharedWithMeSection extends StatelessWidget {
   const SharedWithMeSection({Key? key}) : super(key: key);
@@ -14,15 +12,7 @@ class SharedWithMeSection extends StatelessWidget {
       child: Row(
         children: [],
       ),
-      action: Highlightable(
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text('Všechny sdílené', style: Theme.of(context).textTheme.bodySmall),
-            const Icon(Icons.navigate_next, size: _navigateNextIconSize),
-          ],
-        ),
-      ),
+      action: OpenAllButton(title: 'Všechny sdílené'),
     );
   }
 }

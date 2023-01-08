@@ -7,7 +7,7 @@ import 'package:zpevnik/components/search_field.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/navigation.dart';
 
-final _tipMessage = 'Tip: písně z hledání můžete prstem přetáhnout přímo do seznamu.';
+const _tipMessage = 'Tip: písně z hledání můžete prstem přetáhnout přímo do seznamu.';
 
 class HomeMenu extends StatelessWidget {
   const HomeMenu({Key? key}) : super(key: key);
@@ -57,10 +57,10 @@ class HomeMenu extends StatelessWidget {
               ),
             ),
             const Divider(height: 0),
-            Highlightable(
+            HighlightableIconButton(
               onTap: () => NavigationProvider.of(context).pushNamed('/user'),
               padding: const EdgeInsets.all(1.5 * kDefaultPadding),
-              child: const Icon(Icons.settings, size: 28),
+              icon: const Icon(Icons.settings, size: 28),
             ),
           ],
         ),

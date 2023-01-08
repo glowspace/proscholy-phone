@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/data.dart';
@@ -52,36 +51,38 @@ class _NowPlayingSectionState extends State<NowPlayingSection> {
           margin: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
           clipBehavior: Clip.antiAlias,
-          child: Highlightable(
+          child: InkWell(
             onTap: () => _pushSongLyric(context, songLyric!),
-            padding: const EdgeInsets.fromLTRB(2 * kDefaultPadding, kDefaultPadding, kDefaultPadding, kDefaultPadding),
-            color: theme.brightness.isLight ? _backgroundColor : _backgroundHighlightColor,
             highlightColor: theme.brightness.isLight ? _backgroundHighlightColor : _backgroundColor,
-            highlightBackground: true,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Flexible(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Právě teď na CSM',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400, color: Colors.white),
-                      ),
-                      const SizedBox(height: kDefaultPadding / 2),
-                      Text(
-                        songLyric?.name ?? '',
-                        style: const TextStyle(fontSize: 19, fontWeight: FontWeight.w500, color: Colors.white),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
+            child: Container(
+              color: theme.brightness.isLight ? _backgroundColor : _backgroundHighlightColor,
+              padding:
+                  const EdgeInsets.fromLTRB(2 * kDefaultPadding, kDefaultPadding, kDefaultPadding, kDefaultPadding),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Flexible(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Právě teď na CSM',
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400, color: Colors.white),
+                        ),
+                        const SizedBox(height: kDefaultPadding / 2),
+                        Text(
+                          songLyric?.name ?? '',
+                          style: const TextStyle(fontSize: 19, fontWeight: FontWeight.w500, color: Colors.white),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                const SizedBox(width: kDefaultPadding),
-                Image.asset('assets/images/logos/csmhk.png', height: 56),
-              ],
+                  const SizedBox(width: kDefaultPadding),
+                  Image.asset('assets/images/logos/csmhk.png', height: 56),
+                ],
+              ),
             ),
           ),
         ),

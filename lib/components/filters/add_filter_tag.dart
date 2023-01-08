@@ -27,15 +27,14 @@ class AddFilterTag extends StatelessWidget {
         borderType: BorderType.RRect,
         radius: const Radius.circular(_addFilterRadius),
         padding: EdgeInsets.zero,
-        child: ClipRRect(
+        child: InkWell(
           borderRadius: BorderRadius.circular(_addFilterRadius),
-          child: Highlightable(
+          onTap: () => _showFilters(context),
+          child: Padding(
             padding: const EdgeInsets.symmetric(
               vertical: kDefaultPadding / 3,
               horizontal: kDefaultPadding / 2,
             ),
-            highlightBackground: true,
-            onTap: () => _showFilters(context),
             child: Row(children: [
               Icon(Icons.add, size: 12, color: addFilterButtonColor),
               const SizedBox(width: kDefaultPadding / 4),

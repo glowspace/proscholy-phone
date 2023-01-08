@@ -27,7 +27,7 @@ class Section extends StatelessWidget {
       padding: padding,
       decoration: BoxDecoration(color: theme.colorScheme.surface, borderRadius: BorderRadius.circular(kDefaultRadius)),
       clipBehavior: Clip.antiAlias,
-      child: child,
+      child: Material(child: child), // needs another wrapping in material widget, so inkwell highlight is visible
     );
 
     if (title != null) {

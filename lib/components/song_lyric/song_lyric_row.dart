@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/navigation.dart';
@@ -61,30 +60,28 @@ class SongLyricRow extends StatelessWidget {
 
     final isTablet = MediaQuery.of(context).isTablet;
 
-    Widget row = Highlightable(
-      highlightBackground: true,
-      highlightableChildKeys: [dragIndicatorKey],
-      padding: isTablet && allowHighlight
-          ? EdgeInsets.symmetric(horizontal: isReorderable ? 0 : kDefaultPadding, vertical: kDefaultPadding / 3)
-          : EdgeInsets.fromLTRB(
-              isReorderable ? kDefaultPadding : 1.5 * kDefaultPadding,
-              kDefaultPadding / 3,
-              1.5 * kDefaultPadding,
-              kDefaultPadding / 3,
-            ),
+    Widget row = InkWell(
       onTap: () => _pushSongLyric(context),
       child: Container(
         constraints: const BoxConstraints(minHeight: _minSize),
+        padding: isTablet && allowHighlight
+            ? EdgeInsets.symmetric(horizontal: isReorderable ? 0 : kDefaultPadding, vertical: kDefaultPadding / 3)
+            : EdgeInsets.fromLTRB(
+                isReorderable ? kDefaultPadding : 1.5 * kDefaultPadding,
+                kDefaultPadding / 3,
+                1.5 * kDefaultPadding,
+                kDefaultPadding / 3,
+              ),
         child: Row(
           children: [
             if (isReorderable)
               ReorderableDragStartListener(
                 key: dragIndicatorKey,
+                index: 0,
                 child: Container(
                   padding: const EdgeInsets.only(left: kDefaultPadding, right: 2 * kDefaultPadding),
                   child: const Icon(Icons.drag_indicator),
                 ),
-                index: 0,
               ),
             Expanded(
               child: Column(
@@ -152,7 +149,6 @@ class SongLyricRow extends StatelessWidget {
         dragAnchorStrategy: pointerDragAnchorStrategy,
         affinity: Axis.horizontal,
         rootOverlay: true,
-        child: row,
         feedback: Opacity(
           opacity: 0.75,
           child: Material(
@@ -163,6 +159,7 @@ class SongLyricRow extends StatelessWidget {
             ),
           ),
         ),
+        child: row,
       );
     }
 

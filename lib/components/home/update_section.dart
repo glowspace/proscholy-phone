@@ -67,26 +67,26 @@ class _UpdateSectionState extends State<UpdateSection> {
                           Text(text, style: textTheme.bodyMedium),
                           if (snapshot.isDone && isShowing) const SizedBox(height: kDefaultPadding / 2),
                           if (snapshot.hasError)
-                            Highlightable(
+                            HighlightableTextButton(
                               onTap: () => launch(
-                                  '$reportUrl?summary=Chyba při aktualizaci písní&description=${snapshot.error}'),
-                              child: Text('Nahlásit chybu', style: textTheme.bodyMedium?.copyWith(color: red)),
+                                '$reportUrl?summary=Chyba při aktualizaci písní&description=${snapshot.error}',
+                              ),
+                              foregroundColor: red,
+                              child: const Text('Nahlásit chybu'),
                             ),
                           if (snapshot.hasData && updatedCount > 0)
-                            Highlightable(
+                            HighlightableTextButton(
                               onTap: () => NavigationProvider.of(context).pushNamed('/updated_song_lyrics'),
-                              child: Text(
-                                'Zobrazit',
-                                style: textTheme.bodyMedium?.copyWith(color: theme.colorScheme.primary),
-                              ),
+                              foregroundColor: theme.colorScheme.primary,
+                              child: const Text('Zobrazit'),
                             ),
                         ],
                       ),
                     ),
                     if (snapshot.isDone && isShowing)
-                      Highlightable(
+                      HighlightableIconButton(
                         onTap: () => setState(() => _isHidden = true),
-                        child: const Icon(Icons.close),
+                        icon: const Icon(Icons.close),
                       )
                   ]),
                   if (!snapshot.isDone)

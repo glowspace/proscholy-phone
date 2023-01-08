@@ -7,10 +7,10 @@ class CustomBackButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Highlightable(
-      child: const BackButtonIcon(),
+    return HighlightableIconButton(
       padding: const EdgeInsets.all(kDefaultPadding).copyWith(left: 2.5 * kDefaultPadding),
       onTap: Navigator.of(context).maybePop,
+      icon: const BackButtonIcon(),
     );
   }
 }
