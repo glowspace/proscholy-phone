@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:zpevnik/constants.dart';
 
 class HighlightableForegroundColor extends MaterialStateProperty<Color?> {
   final Color? foregroundColor;

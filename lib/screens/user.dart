@@ -3,18 +3,15 @@ import 'package:provider/provider.dart';
 import 'package:zpevnik/components/custom/close_button.dart';
 import 'package:zpevnik/components/font_size_slider.dart';
 import 'package:zpevnik/components/highlightable.dart';
-import 'package:zpevnik/components/icon_item.dart';
 import 'package:zpevnik/components/logo.dart';
 import 'package:zpevnik/components/section.dart';
 import 'package:zpevnik/components/selector_widget.dart';
 import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/links.dart';
 import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/providers/settings.dart';
 import 'package:zpevnik/utils/extensions.dart';
-import 'package:zpevnik/utils/url_launcher.dart';
 
-const double _avatarRadius = 48;
+// const double _avatarRadius = 48;
 const double _settingsOptionsWidth = 100;
 
 class UserScreen extends StatefulWidget {
@@ -29,7 +26,7 @@ class _UserScreenState extends State<UserScreen> {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
 
-    final width = MediaQuery.of(context).size.width;
+    // final width = MediaQuery.of(context).size.width;
 
     return Scaffold(
       body: SafeArea(

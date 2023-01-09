@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/logo.dart';
 import 'package:zpevnik/components/section.dart';
 import 'package:zpevnik/components/sign_in_button.dart';
@@ -116,7 +117,6 @@ class _InitialScreenState extends State<InitialScreen> {
   Widget _buildProjectSection(BuildContext context) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
-    final colorScheme = theme.colorScheme;
 
     return Section(
       margin: const EdgeInsets.all(2 * kDefaultPadding).copyWith(top: kDefaultPadding),
@@ -127,15 +127,10 @@ class _InitialScreenState extends State<InitialScreen> {
           const GlowspaceLogo(showDescription: true),
           const SizedBox(height: kDefaultPadding),
           Text(_projectDescription, style: textTheme.bodyMedium),
-          TextButton(
+          HighlightableTextButton(
+            onTap: () => _learnMore(context),
+            foregroundColor: theme.colorScheme.primary,
             child: const Text('Dozvědět se více'),
-            onPressed: () => _learnMore(context),
-            style: ButtonStyle(
-              padding: MaterialStateProperty.all(EdgeInsets.zero),
-              overlayColor: MaterialStateProperty.all(Colors.transparent),
-              foregroundColor: MaterialStateProperty.resolveWith((states) =>
-                  states.contains(MaterialState.pressed) ? colorScheme.primary.withAlpha(0x80) : colorScheme.primary),
-            ),
           ),
         ],
       ),

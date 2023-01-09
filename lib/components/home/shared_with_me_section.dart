@@ -9,10 +9,10 @@ class SharedWithMeSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Section(
       title: Text('Sdíleno se mnou', style: Theme.of(context).textTheme.titleLarge),
+      action: const OpenAllButton(title: 'Všechny sdílené'),
       child: Row(
-        children: [],
+        children: const [],
       ),
-      action: OpenAllButton(title: 'Všechny sdílené'),
     );
   }
 }

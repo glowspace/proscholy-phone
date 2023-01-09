@@ -4,7 +4,7 @@ import 'package:zpevnik/components/logo.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/navigation.dart';
 
-const double _avatarRadius = 19;
+// const double _avatarRadius = 19;
 
 class TopSection extends StatelessWidget {
   const TopSection({Key? key}) : super(key: key);

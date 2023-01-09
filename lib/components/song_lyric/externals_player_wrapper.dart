@@ -85,6 +85,9 @@ class _ExternalsPlayerWrapperState extends State<ExternalsPlayerWrapper> with Si
                   child: SizedBox(
                     height: height,
                     child: GestureDetector(
+                      onTap: _expandWidget,
+                      onPanUpdate: (details) => _changeHeight(_height.value - details.delta.dy),
+                      onPanEnd: _snapWidget,
                       child: ClipRRect(
                         borderRadius: const BorderRadius.vertical(top: Radius.circular(kDefaultRadius)),
                         child: Material(
@@ -97,9 +100,6 @@ class _ExternalsPlayerWrapperState extends State<ExternalsPlayerWrapper> with Si
                           ),
                         ),
                       ),
-                      onTap: _expandWidget,
-                      onPanUpdate: (details) => _changeHeight(_height.value - details.delta.dy),
-                      onPanEnd: _snapWidget,
                     ),
                   ),
                 ),

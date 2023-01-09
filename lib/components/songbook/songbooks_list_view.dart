@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:zpevnik/components/songbook/songbook_row.dart';
-import 'package:zpevnik/components/songbook/songbook_tile.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songbook.dart';
-import 'package:zpevnik/utils/extensions.dart';
-
-const _minTileWidth = 250;
 
 class SongbooksListView extends StatelessWidget {
   final List<Songbook> songbooks;

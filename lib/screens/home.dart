@@ -3,7 +3,7 @@ import 'package:zpevnik/components/bottom_navigation_bar.dart';
 import 'package:zpevnik/components/home/additional_section.dart';
 import 'package:zpevnik/components/home/news_section.dart';
 import 'package:zpevnik/components/home/now_playing_section.dart';
-import 'package:zpevnik/components/home/shared_with_me_section.dart';
+// import 'package:zpevnik/components/home/shared_with_me_section.dart';
 import 'package:zpevnik/components/home/song_lists_section.dart';
 import 'package:zpevnik/components/home/songbooks_section.dart';
 import 'package:zpevnik/components/home/top_section.dart';

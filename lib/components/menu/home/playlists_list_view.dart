@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/components/highlightable.dart';
-import 'package:zpevnik/components/icon_item.dart';
 import 'package:zpevnik/components/playlist/dialogs.dart';
 import 'package:zpevnik/components/playlist/playlist_row.dart';
 import 'package:zpevnik/constants.dart';

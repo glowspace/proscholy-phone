@@ -54,7 +54,7 @@ class PlaylistButton extends StatelessWidget {
       ),
       const PopupMenuItem(
         value: PlaylistAction.duplicate,
-        child: IconItem(icon: CustomIcon.content_duplicate, text: 'Duplikovat'),
+        child: IconItem(icon: CustomIcon.contentDuplicate, text: 'Duplikovat'),
       ),
       const PopupMenuItem(
         value: PlaylistAction.remove,

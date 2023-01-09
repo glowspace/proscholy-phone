@@ -11,7 +11,7 @@
 ///      fonts:
 ///       - asset: fonts/CustomIcon.ttf
 ///
-/// 
+///
 ///
 import 'package:flutter/widgets.dart';
 
@@ -21,5 +21,5 @@ class CustomIcon {
   static const _kFontFam = 'CustomIcon';
   static const _kFontPkg = null;
 
-  static const IconData content_duplicate = IconData(0xe801, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData contentDuplicate = IconData(0xe801, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }

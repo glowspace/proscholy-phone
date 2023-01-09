@@ -7,7 +7,6 @@ import 'package:zpevnik/components/song_lyric/song_lyrics_list_view.dart';
 import 'package:zpevnik/components/split_view.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
-import 'package:zpevnik/routes/arguments/search.dart';
 import 'package:zpevnik/routes/arguments/song_lyric.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
@@ -47,11 +46,11 @@ class SearchScreen extends StatelessWidget {
         backgroundColor: theme.brightness.isLight ? theme.colorScheme.surface : null,
         body: SafeArea(
           child: SplitView(
-            child: child,
             subChild: Scaffold(
               backgroundColor: theme.brightness.isLight ? theme.colorScheme.surface : null,
               body: SafeArea(child: FiltersWidget(tagsSections: songLyricsProvider.tagsSections)),
             ),
+            child: child,
           ),
         ),
       );
