@@ -40,24 +40,25 @@ class FilterTag extends StatelessWidget {
         Flexible(child: Text(tag.name, overflow: TextOverflow.ellipsis, maxLines: 1)),
         if (isRemovable) const SizedBox(width: kDefaultPadding / 2),
         if (isRemovable)
-          Highlightable(
-            highlightBackground: true,
-            onTap: () => songLyricsProvider.toggleSelectedTag(tag),
-            padding: const EdgeInsets.all(kDefaultPadding / 2).copyWith(left: kDefaultPadding / 4),
+          Material(
             color: removeBackgroundColor,
-            highlightColor: theme.colorScheme.primary.withAlpha(0x10),
-            child: const Icon(Icons.close, size: 14),
+            child: InkWell(
+              onTap: () => songLyricsProvider.toggleSelectedTag(tag),
+              highlightColor: theme.colorScheme.primary.withAlpha(0x20),
+              child: Padding(
+                padding: const EdgeInsets.all(kDefaultPadding / 2).copyWith(left: kDefaultPadding / 4),
+                child: const Icon(Icons.close, size: 14),
+              ),
+            ),
           ),
       ],
     );
 
     if (isToggable) {
-      child = Highlightable(
-        highlightBackground: true,
+      child = InkWell(
         highlightColor: theme.colorScheme.primary.withAlpha(0x10),
         onTap: () => songLyricsProvider.toggleSelectedTag(tag),
-        padding: padding,
-        child: child,
+        child: Padding(padding: padding, child: child),
       );
     }
 

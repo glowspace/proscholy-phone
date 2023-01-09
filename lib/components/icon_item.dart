@@ -25,7 +25,7 @@ class IconItem extends StatelessWidget {
       children: [
         Icon(icon, color: iconColor, size: iconSize),
         const SizedBox(width: kDefaultPadding),
-        Expanded(child: Text(text, style: Theme.of(context).textTheme.bodyMedium)),
+        Expanded(child: Text(text)),
         if (trailingIcon != null) Icon(trailingIcon, size: 0.8 * iconSize),
       ],
     );

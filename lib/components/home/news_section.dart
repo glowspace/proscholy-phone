@@ -62,15 +62,15 @@ class _NewsSectionState extends State<NewsSection> {
             Row(
               children: List.generate(
                 newsItems.length,
-                (index) => Highlightable(
+                (index) => InkWell(
                   onTap: () => _pageController.animateToPage(
                     index,
                     duration: kDefaultAnimationDuration,
                     curve: Curves.easeInOut,
                   ),
-                  padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
                   child: Container(
                     margin: const EdgeInsets.only(right: 4),
+                    padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
                     width: 24,
                     height: 2,
                     color: yellow.withAlpha(_currentIndex == index ? 0xff : 0x40),

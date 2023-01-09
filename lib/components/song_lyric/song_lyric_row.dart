@@ -38,8 +38,6 @@ class SongLyricRow extends StatelessWidget {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
 
-    final dragIndicatorKey = GlobalKey();
-
     String? songbookName;
 
     final searchText = context.read<AllSongLyricsProvider?>()?.searchText;
@@ -76,7 +74,6 @@ class SongLyricRow extends StatelessWidget {
           children: [
             if (isReorderable)
               ReorderableDragStartListener(
-                key: dragIndicatorKey,
                 index: 0,
                 child: Container(
                   padding: const EdgeInsets.only(left: kDefaultPadding, right: 2 * kDefaultPadding),

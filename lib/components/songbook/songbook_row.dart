@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/providers/navigation.dart';
@@ -16,23 +15,24 @@ class SongbookRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
 
-    return Highlightable(
+    return InkWell(
       onTap: () => _pushSongbook(context),
-      padding: const EdgeInsets.symmetric(vertical: kDefaultPadding, horizontal: 1.25 * kDefaultPadding),
-      highlightBackground: true,
-      child: Row(children: [
-        Container(
-          width: _songbookColorBoxSize,
-          height: _songbookColorBoxSize,
-          decoration: BoxDecoration(
-            color: HexColor.fromHex(songbook.color) ?? blue,
-            borderRadius: BorderRadius.circular(4),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: kDefaultPadding, horizontal: 1.25 * kDefaultPadding),
+        child: Row(children: [
+          Container(
+            width: _songbookColorBoxSize,
+            height: _songbookColorBoxSize,
+            decoration: BoxDecoration(
+              color: HexColor.fromHex(songbook.color) ?? blue,
+              borderRadius: BorderRadius.circular(4),
+            ),
           ),
-        ),
-        const SizedBox(width: kDefaultPadding),
-        Expanded(child: Text(songbook.name, style: textTheme.bodyMedium)),
-        Text(songbook.shortcut, style: textTheme.bodySmall),
-      ]),
+          const SizedBox(width: kDefaultPadding),
+          Expanded(child: Text(songbook.name, style: textTheme.bodyMedium)),
+          Text(songbook.shortcut, style: textTheme.bodySmall),
+        ]),
+      ),
     );
   }
 

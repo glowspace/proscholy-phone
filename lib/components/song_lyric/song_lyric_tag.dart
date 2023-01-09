@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songbook_record.dart';
 import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/providers/data.dart';
-import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/routes/arguments/search.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
@@ -31,15 +29,13 @@ class SongLyricTag extends StatelessWidget {
     final backgroundColor = theme.brightness.isLight ? const Color(0xfff2f1f6) : const Color(0xff15131d);
     final numberBackgroundColor = theme.brightness.isLight ? const Color(0xffe9e4f5) : const Color(0xff1c1333);
 
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(32),
-      ),
+    return Material(
       clipBehavior: Clip.antiAlias,
-      child: Highlightable(
-        highlightBackground: true,
-        color: backgroundColor,
-        highlightColor: theme.colorScheme.primary.withAlpha(0x10),
+      borderRadius: BorderRadius.circular(32),
+      color: backgroundColor,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(32),
+        highlightColor: theme.colorScheme.primary.withAlpha(0x20),
         onTap: () => songbookRecord != null
             ? Navigator.of(context).popAndPushNamed(
                 '/search',

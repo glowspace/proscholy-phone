@@ -27,22 +27,27 @@ class PlaylistsSheet extends StatelessWidget {
             child: Text('Playlisty', style: Theme.of(context).textTheme.titleLarge),
           ),
           SingleChildScrollView(
-            child: Column(children: [
-              Highlightable(
-                onTap: () => showPlaylistDialog(context),
-                padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
-                child: const IconItem(text: 'Nový playlist', icon: Icons.add, iconSize: 20),
-              ),
-              const Divider(height: kDefaultPadding),
-              ...playlists.map(
-                (playlist) => Highlightable(
-                  onTap: () => _addToPlaylist(context, playlist),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                HighlightableTextButton(
+                  onTap: () => showPlaylistDialog(context),
                   padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
-                  child: IconItem(text: playlist.name, icon: Icons.playlist_play_rounded, iconSize: 20),
+                  icon: const Icon(Icons.add, size: 20),
+                  child: const Text('Nový playlist'),
                 ),
-              ),
-              const SizedBox(height: kDefaultPadding),
-            ]),
+                const Divider(height: kDefaultPadding),
+                ...playlists.map(
+                  (playlist) => HighlightableTextButton(
+                    onTap: () => _addToPlaylist(context, playlist),
+                    padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
+                    icon: const Icon(Icons.playlist_play_rounded, size: 20),
+                    child: Text(playlist.name),
+                  ),
+                ),
+                const SizedBox(height: kDefaultPadding),
+              ],
+            ),
           ),
         ],
       ),

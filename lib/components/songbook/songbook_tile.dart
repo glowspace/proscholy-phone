@@ -42,8 +42,6 @@ class SongbookTile extends StatelessWidget {
     final shortcut = songbook.shortcut.toLowerCase();
     final imagePath = _existingLogos.contains(shortcut) ? '$_logosPath/$shortcut.png' : '$_logosPath/default.png';
 
-    final pinHighlightablKey = GlobalKey();
-
     return InkWell(
       onTap: () => _pushSongbook(context),
       child: Padding(
@@ -64,7 +62,6 @@ class SongbookTile extends StatelessWidget {
                 children: [
                   Expanded(child: Text(songbook.name, maxLines: 2)),
                   HighlightableIconButton(
-                    key: pinHighlightablKey,
                     onTap: () => context.read<DataProvider>().togglePin(songbook),
                     icon: Icon(songbook.isPinned ? Icons.push_pin : Icons.push_pin_outlined),
                   )

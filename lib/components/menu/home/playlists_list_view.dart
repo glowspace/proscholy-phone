@@ -38,10 +38,11 @@ class PlaylistsListView extends StatelessWidget {
               onReorder: dataProvider.reorderedPlaylists,
             ),
           ),
-          Highlightable(
+          HighlightableTextButton(
             onTap: () => showPlaylistDialog(context),
             padding: const EdgeInsets.all(kDefaultPadding),
-            child: const IconItem(icon: Icons.add, text: 'Vytvořit nový seznam', iconSize: 20),
+            icon: const Icon(Icons.add, size: 20),
+            child: const Text('Vytvořit nový seznam'),
           ),
         ]),
       ),
