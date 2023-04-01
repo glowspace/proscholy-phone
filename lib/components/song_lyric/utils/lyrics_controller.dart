@@ -34,11 +34,6 @@ class LyricsController extends ChangeNotifier {
     return _lilypond!;
   }
 
-  bool _isProjectionEnabled = false;
-  int _currentlyProjectedVerse = 0;
-  bool get isProjectionEnabled => _isProjectionEnabled;
-  int get currentlyProjectedVerse => _currentlyProjectedVerse;
-
   void updateLilypondColor(String hexColor) {
     _lilypond = (songLyric.lilypond ?? '')
         .replaceAll(_styleRE, '')
@@ -49,26 +44,6 @@ class LyricsController extends ChangeNotifier {
 
       return '';
     });
-  }
-
-  void toggleisProjectionEnabled() {
-    _isProjectionEnabled = !_isProjectionEnabled;
-
-    if (isProjectionEnabled) _currentlyProjectedVerse = 0;
-
-    notifyListeners();
-  }
-
-  void nextVerse() {
-    // if (_currentlyProjectedVerse + 1 < (_preparedLyrics?.length ?? 0)) _currentlyProjectedVerse += 1;
-
-    notifyListeners();
-  }
-
-  void previousVerse() {
-    // if (_currentlyProjectedVerse > 0) _currentlyProjectedVerse -= 1;
-
-    notifyListeners();
   }
 
   bool get showChords => songLyric.showChords ?? context.read<SettingsProvider>().showChords;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:zpevnik/components/song_lyric/utils/parser.dart';
 import 'package:zpevnik/models/external.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
@@ -16,12 +17,12 @@ import 'package:zpevnik/screens/pdf.dart';
 import 'package:zpevnik/screens/playlist.dart';
 // import 'package:zpevnik/screens/playlist/custom_text.dart';
 import 'package:zpevnik/screens/playlists.dart';
-import 'package:zpevnik/screens/presentation.dart';
 import 'package:zpevnik/screens/search.dart';
 import 'package:zpevnik/screens/song_lyric.dart';
 import 'package:zpevnik/screens/song_lyric/translations.dart';
 import 'package:zpevnik/screens/songbook.dart';
 import 'package:zpevnik/screens/songbooks.dart';
+import 'package:zpevnik/screens/start_presentation_screen.dart';
 import 'package:zpevnik/screens/updated_song_lyrics.dart';
 import 'package:zpevnik/screens/user.dart';
 
@@ -125,6 +126,11 @@ class RouteGenerator {
             shouldShowBanner: arguments.shouldShowBanner,
           ),
         );
+      case '/song_lyric/present':
+        final songLyricsParser = settings.arguments as SongLyricsParser;
+
+        return MaterialPageRoute(
+            settings: settings, builder: (_) => StartPresentationScreen(songLyricsParser: songLyricsParser));
       case '/song_lyric/translations':
         final songLyric = settings.arguments as SongLyric;
 

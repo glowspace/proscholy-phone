@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart' hide PopupMenuEntry, PopupMenuItem;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:presentation/presentation.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/components/custom/back_button.dart';
 import 'package:zpevnik/components/highlightable.dart';
@@ -19,6 +18,7 @@ import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/components/song_lyric/utils/lyrics_controller.dart';
 import 'package:zpevnik/providers/navigation.dart';
+import 'package:zpevnik/providers/presentation_provider.dart';
 import 'package:zpevnik/providers/settings.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
@@ -67,8 +67,6 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
 
     _pageController = PageController(initialPage: _currentIndex);
     _showingExternals = ValueNotifier(false);
-
-    Presentation().transferData(_songLyric.name);
 
     if (widget.playlist != null) {
       _songLyricsSubscription =
@@ -139,7 +137,7 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
               icon: Icon(_songLyric.isFavorite ? Icons.star : Icons.star_outline),
             ),
           ),
-          SongLyricMenuButton(songLyric: _songLyric),
+          SongLyricMenuButton(songLyric: _songLyric, songLyricsParser: _lyricsController.parser),
         ],
       );
 
@@ -213,7 +211,7 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
                 onPageChanged: (value) => setState(() {
                   _showingExternals.value = false;
                   _currentIndex = value;
-                  Presentation().transferData(_songLyric.name);
+                  context.read<PresentationProvider>().changeSongLyric(_lyricsController.parser);
                   context.read<ValueNotifier<SongLyric?>>().value = _songLyric;
                 }),
                 itemBuilder: (_, index) => LyricsWidget(

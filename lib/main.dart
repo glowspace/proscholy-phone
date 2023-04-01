@@ -8,6 +8,7 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:zpevnik/firebase_options.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/navigation.dart';
+import 'package:zpevnik/providers/presentation_provider.dart';
 import 'package:zpevnik/providers/settings.dart';
 import 'package:zpevnik/screens/initial.dart';
 import 'package:zpevnik/screens/presentation.dart';
@@ -63,6 +64,7 @@ class MainWidget extends StatelessWidget {
               providers: [
                 ChangeNotifierProvider(create: (_) => DataProvider()),
                 ChangeNotifierProvider(create: (_) => NavigationProvider(hasMenu: MediaQuery.of(context).isTablet)),
+                Provider(create: (_) => PresentationProvider()),
               ],
               builder: (_, __) => child!,
             ),

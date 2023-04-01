@@ -4,15 +4,18 @@ import 'package:share_plus/share_plus.dart';
 import 'package:zpevnik/components/custom/popup_menu_button.dart';
 import 'package:zpevnik/components/icon_item.dart';
 import 'package:zpevnik/components/playlist/playlists_sheet.dart';
+import 'package:zpevnik/components/song_lyric/utils/parser.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/custom/popup_menu.dart';
 import 'package:zpevnik/links.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/data.dart';
+import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/utils/url_launcher.dart';
 
 enum SongLyricMenuAction {
   addToPlaylist,
+  present,
   share,
   openInBrowser,
   report,
@@ -20,8 +23,10 @@ enum SongLyricMenuAction {
 
 class SongLyricMenuButton extends StatelessWidget {
   final SongLyric songLyric;
+  // TODO: this is only temporary, remove it once better solution to pass this to presentation is found
+  final SongLyricsParser songLyricsParser;
 
-  const SongLyricMenuButton({Key? key, required this.songLyric}) : super(key: key);
+  const SongLyricMenuButton({Key? key, required this.songLyric, required this.songLyricsParser}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +46,10 @@ class SongLyricMenuButton extends StatelessWidget {
       // PopupMenuItem(
       //   child: _buildItem(context, Icons.tap_and_play, 'Připojit k zařízením v okolí'),
       // ),
+      PopupMenuItem(
+        value: SongLyricMenuAction.present,
+        child: IconItem(icon: Icons.cast, text: 'Spustit prezentaci'),
+      ),
       PopupMenuItem(
         value: SongLyricMenuAction.share,
         child: IconItem(icon: Icons.share, text: 'Sdílet'),
@@ -65,6 +74,9 @@ class SongLyricMenuButton extends StatelessWidget {
     switch (action) {
       case SongLyricMenuAction.addToPlaylist:
         _showPlaylists(context);
+        break;
+      case SongLyricMenuAction.present:
+        NavigationProvider.of(context).pushNamed('/song_lyric/present', arguments: songLyricsParser);
         break;
       case SongLyricMenuAction.share:
         final box = context.findRenderObject() as RenderBox?;

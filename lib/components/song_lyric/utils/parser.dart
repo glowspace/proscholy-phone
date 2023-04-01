@@ -298,9 +298,6 @@ class SongLyricsParser {
   Token? get nextToken {
     _parsedSongLyrics ??= _FilledTokensBuilder()._fillSubstitutes(_parseTokens());
 
-    // log(_parsedSongLyrics.toString());
-    // log(songLyric.lyrics.toString());
-
     if (_currentTokenIndex == _parsedSongLyrics!.length) {
       _currentTokenIndex = 0;
       return null;
@@ -484,5 +481,28 @@ class SongLyricsParser {
     if (isInsideInterlude) tokens.add(InterludeEnd());
 
     return tokens;
+  }
+
+  String getVerse(int order) {
+    String verse = '';
+    for (final token in _parsedSongLyrics!) {
+      if (order == 0) {
+        if (token is VersePart) {
+          verse = '$verse${token.value}';
+        } else if (token is VerseNumber) {
+          verse = '$verse${token.value} ';
+        } else if (token is NewLine) {
+          verse = '$verse\n';
+        }
+      }
+
+      if (token is VerseEnd) {
+        if (order == 0) break;
+
+        order--;
+      }
+    }
+
+    return verse;
   }
 }
