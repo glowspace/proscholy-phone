@@ -4,7 +4,8 @@
 // With a Dart package, run `dart run build_runner build`.
 // See also https://docs.objectbox.io/getting-started#generate-objectbox-code
 
-// ignore_for_file: camel_case_types
+// ignore_for_file: camel_case_types, depend_on_referenced_packages
+// coverage:ignore-file
 
 import 'dart:typed_data';
 
@@ -597,12 +598,11 @@ ModelDefinition getObjectBoxModel() {
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0),
               const fb.StringReader(asciiOptimization: true)
                   .vTableGet(buffer, rootOffset, 6, ''));
-          InternalToManyAccess.setRelInfo(
+          InternalToManyAccess.setRelInfo<Song>(
               object.songLyrics,
               store,
               RelInfo<SongLyric>.toOneBacklink(
-                  9, object.id, (SongLyric srcObject) => srcObject.song),
-              store.box<Song>());
+                  9, object.id, (SongLyric srcObject) => srcObject.song));
           return object;
         }),
     Author: EntityDefinition<Author>(
@@ -692,12 +692,11 @@ ModelDefinition getObjectBoxModel() {
               const fb.BoolReader().vTableGet(buffer, rootOffset, 14, false))
             ..isPinned =
                 const fb.BoolReader().vTableGet(buffer, rootOffset, 16, false);
-          InternalToManyAccess.setRelInfo(
+          InternalToManyAccess.setRelInfo<Songbook>(
               object.songbookRecords,
               store,
               RelInfo<SongbookRecord>.toOneBacklink(8, object.id,
-                  (SongbookRecord srcObject) => srcObject.songbook),
-              store.box<Songbook>());
+                  (SongbookRecord srcObject) => srcObject.songbook));
           return object;
         }),
     SongbookRecord: EntityDefinition<SongbookRecord>(
@@ -834,28 +833,25 @@ ModelDefinition getObjectBoxModel() {
           object.song.targetId =
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 20, 0);
           object.song.attach(store);
-          InternalToManyAccess.setRelInfo(object.authors, store,
-              RelInfo<SongLyric>.toMany(6, object.id), store.box<SongLyric>());
-          InternalToManyAccess.setRelInfo(object.tags, store,
-              RelInfo<SongLyric>.toMany(7, object.id), store.box<SongLyric>());
-          InternalToManyAccess.setRelInfo(
+          InternalToManyAccess.setRelInfo<SongLyric>(
+              object.authors, store, RelInfo<SongLyric>.toMany(6, object.id));
+          InternalToManyAccess.setRelInfo<SongLyric>(
+              object.tags, store, RelInfo<SongLyric>.toMany(7, object.id));
+          InternalToManyAccess.setRelInfo<SongLyric>(
               object.externals,
               store,
               RelInfo<External>.toOneBacklink(
-                  5, object.id, (External srcObject) => srcObject.songLyric),
-              store.box<SongLyric>());
-          InternalToManyAccess.setRelInfo(
+                  5, object.id, (External srcObject) => srcObject.songLyric));
+          InternalToManyAccess.setRelInfo<SongLyric>(
               object.songbookRecords,
               store,
               RelInfo<SongbookRecord>.toOneBacklink(7, object.id,
-                  (SongbookRecord srcObject) => srcObject.songLyric),
-              store.box<SongLyric>());
-          InternalToManyAccess.setRelInfo(
+                  (SongbookRecord srcObject) => srcObject.songLyric));
+          InternalToManyAccess.setRelInfo<SongLyric>(
               object.playlistRecords,
               store,
               RelInfo<PlaylistRecord>.toOneBacklink(3, object.id,
-                  (PlaylistRecord srcObject) => srcObject.songLyric),
-              store.box<SongLyric>());
+                  (PlaylistRecord srcObject) => srcObject.songLyric));
           return object;
         }),
     NewsItem: EntityDefinition<NewsItem>(
@@ -980,12 +976,11 @@ ModelDefinition getObjectBoxModel() {
                   .vTableGet(buffer, rootOffset, 6, ''),
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 8, 0))
             ..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
-          InternalToManyAccess.setRelInfo(
+          InternalToManyAccess.setRelInfo<Playlist>(
               object.playlistRecords,
               store,
               RelInfo<PlaylistRecord>.toOneBacklink(4, object.id,
-                  (PlaylistRecord srcObject) => srcObject.playlist),
-              store.box<Playlist>());
+                  (PlaylistRecord srcObject) => srcObject.playlist));
           return object;
         }),
     PlaylistRecord: EntityDefinition<PlaylistRecord>(

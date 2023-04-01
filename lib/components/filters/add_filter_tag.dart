@@ -1,6 +1,5 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/components/filters/filters.dart';
 import 'package:zpevnik/constants.dart';
@@ -50,7 +49,7 @@ class AddFilterTag extends StatelessWidget {
 
     FocusScope.of(context).unfocus();
 
-    showMaterialModalBottomSheet(
+    showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(kDefaultRadius))),
       builder: (context) => SizedBox(
@@ -60,7 +59,7 @@ class AddFilterTag extends StatelessWidget {
           builder: (_, __) => FiltersWidget(tagsSections: songLyricsProvider.tagsSections),
         ),
       ),
-      settings: const RouteSettings(name: '/filters'),
+      routeSettings: const RouteSettings(name: '/filters'),
     );
   }
 }

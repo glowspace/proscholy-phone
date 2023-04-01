@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:presentation/presentation.dart';
 // import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -9,6 +10,7 @@ import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/providers/settings.dart';
 import 'package:zpevnik/screens/initial.dart';
+import 'package:zpevnik/screens/presentation.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
@@ -65,6 +67,30 @@ class MainWidget extends StatelessWidget {
               builder: (_, __) => child!,
             ),
           );
+        },
+      ),
+    );
+  }
+}
+
+@pragma('vm:entry-point')
+void mainPresentation() => runApp(const MainPresentation());
+
+class MainPresentation extends StatelessWidget {
+  const MainPresentation({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: _title,
+      theme: AppTheme.dark(),
+      home: StreamBuilder<String>(
+        stream: Presentation().getDataStream(),
+        builder: (_, snapshot) {
+          if (snapshot.hasData) return PresentationScreen(key: Key(snapshot.data!), presentedLyrics: snapshot.data!);
+
+          return const Scaffold(body: Center(child: CircularProgressIndicator()));
         },
       ),
     );

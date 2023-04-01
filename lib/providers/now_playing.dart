@@ -13,17 +13,17 @@ class NowPlayingController extends ValueNotifier<SongLyric?> {
   final DataProvider dataProvider;
 
   NowPlayingController(this.dataProvider) : super(null) {
-    _connectSocket(dataProvider);
+    // _connectSocket(dataProvider);
 
-    _connectivitySubscription = Connectivity().onConnectivityChanged.listen((result) {
-      if (result == ConnectivityResult.none) {
-        _channel?.sink.close();
-      } else if (result == ConnectivityResult.wifi || result == ConnectivityResult.mobile) {
-        _channel?.sink.close();
+    // _connectivitySubscription = Connectivity().onConnectivityChanged.listen((result) {
+    //   if (result == ConnectivityResult.none) {
+    //     _channel?.sink.close();
+    //   } else if (result == ConnectivityResult.wifi || result == ConnectivityResult.mobile) {
+    //     _channel?.sink.close();
 
-        _connectSocket(dataProvider);
-      }
-    });
+    //     _connectSocket(dataProvider);
+    //   }
+    // });
   }
 
   WebSocketChannel? _channel;

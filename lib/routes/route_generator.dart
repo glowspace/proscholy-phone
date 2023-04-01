@@ -16,6 +16,7 @@ import 'package:zpevnik/screens/pdf.dart';
 import 'package:zpevnik/screens/playlist.dart';
 // import 'package:zpevnik/screens/playlist/custom_text.dart';
 import 'package:zpevnik/screens/playlists.dart';
+import 'package:zpevnik/screens/presentation.dart';
 import 'package:zpevnik/screens/search.dart';
 import 'package:zpevnik/screens/song_lyric.dart';
 import 'package:zpevnik/screens/song_lyric/translations.dart';
@@ -78,6 +79,8 @@ class RouteGenerator {
       //   return MaterialPageRoute(settings: settings, builder: (_) => const CustomTextScreen(), fullscreenDialog: true);
       case '/playlists':
         return MaterialPageRoute(settings: settings, builder: (_) => const PlaylistsScreen());
+      // case '/presentation':
+      //   return MaterialPageRoute(settings: settings, builder: (_) => const PresentationScreen(presentedLyrics: 'Test'));
       case '/search':
         final arguments = settings.arguments as SearchScreenArguments?;
 

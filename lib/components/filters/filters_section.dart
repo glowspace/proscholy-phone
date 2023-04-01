@@ -37,7 +37,7 @@ class FiltersSection extends StatelessWidget {
             ],
           ),
         ),
-        if (!isLast) Divider(thickness: 1, color: theme.dividerColor),
+        if (!isLast) Divider(thickness: 1, color: theme.colorScheme.outlineVariant),
       ],
     );
   }

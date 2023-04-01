@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart' hide PopupMenuEntry, PopupMenuItem;
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:zpevnik/components/custom/popup_menu_button.dart';
@@ -82,7 +81,7 @@ class SongLyricMenuButton extends StatelessWidget {
   }
 
   void _showPlaylists(BuildContext context) {
-    showMaterialModalBottomSheet(
+    showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(kDefaultRadius))),
       builder: (context) => PlaylistsSheet(selectedSongLyric: songLyric),

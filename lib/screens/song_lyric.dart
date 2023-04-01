@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart' hide PopupMenuEntry, PopupMenuItem;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:presentation/presentation.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/components/custom/back_button.dart';
 import 'package:zpevnik/components/highlightable.dart';
@@ -68,6 +68,8 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
     _pageController = PageController(initialPage: _currentIndex);
     _showingExternals = ValueNotifier(false);
 
+    Presentation().transferData(_songLyric.name);
+
     if (widget.playlist != null) {
       _songLyricsSubscription =
           context.read<DataProvider>().watchPlaylistRecordsChanges(widget.playlist!).listen((songLyrics) {
@@ -112,7 +114,7 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
         elevation: 0,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1.0),
-          child: Container(color: theme.dividerColor, height: 1.0),
+          child: Container(color: theme.colorScheme.outlineVariant, height: 1.0),
         ),
         title: Text('${_songLyric.id}', style: theme.textTheme.titleMedium),
         centerTitle: false,
@@ -146,42 +148,49 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
           : const EdgeInsets.all(kDefaultPadding);
 
       bottomBar = Container(
-        decoration: BoxDecoration(border: Border(top: BorderSide(color: theme.dividerColor, width: 1))),
-        child: BottomAppBar(
-          color: backgroundColor,
-          elevation: 0,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: mediaQuery.isTablet ? MainAxisAlignment.end : MainAxisAlignment.spaceAround,
-            children: [
-              HighlightableIconButton(
-                padding: bottomBarActionPadding,
-                onTap: _songLyric.hasRecordings ? () => _showingExternals.value = true : null,
-                icon: const Icon(FontAwesomeIcons.headphones),
+        decoration: BoxDecoration(border: Border(top: BorderSide(color: theme.colorScheme.outlineVariant, width: 1))),
+        child: Theme(
+          // TODO: remove this when the bottom app bar works with material3 correctly (can't change color, small padding)
+          data: theme.copyWith(useMaterial3: false),
+          child: BottomAppBar(
+            color: backgroundColor,
+            elevation: 0,
+            child: Theme(
+              // TODO: remove this when the bottom app bar works with material3 correctly (can't change color, small padding)
+              data: theme,
+              child: Row(
+                mainAxisAlignment: mediaQuery.isTablet ? MainAxisAlignment.end : MainAxisAlignment.spaceAround,
+                children: [
+                  HighlightableIconButton(
+                    padding: bottomBarActionPadding,
+                    onTap: _songLyric.hasRecordings ? () => _showingExternals.value = true : null,
+                    icon: const Icon(FontAwesomeIcons.headphones),
+                  ),
+                  HighlightableIconButton(
+                    padding: bottomBarActionPadding,
+                    onTap: _songLyric.hasFiles ? () => _showFiles(context) : null,
+                    icon: const Icon(Icons.insert_drive_file),
+                  ),
+                  HighlightableIconButton(
+                    padding: bottomBarActionPadding,
+                    onTap: _songLyric.hasChords ? () => _showSettings(context) : null,
+                    icon: const Icon(Icons.tune),
+                  ),
+                  HighlightableIconButton(
+                    padding: bottomBarActionPadding,
+                    onTap: _songLyric.tags.isNotEmpty || _songLyric.songbookRecords.isNotEmpty
+                        ? () => _showTags(context)
+                        : null,
+                    icon: const FaIcon(FontAwesomeIcons.tag),
+                  ),
+                  HighlightableIconButton(
+                    padding: bottomBarActionPadding,
+                    onTap: () => navigationProvider.popToOrPushNamed('/search'),
+                    icon: const Icon(Icons.search),
+                  ),
+                ],
               ),
-              HighlightableIconButton(
-                padding: bottomBarActionPadding,
-                onTap: _songLyric.hasFiles ? () => _showFiles(context) : null,
-                icon: const Icon(Icons.insert_drive_file),
-              ),
-              HighlightableIconButton(
-                padding: bottomBarActionPadding,
-                onTap: _songLyric.hasChords ? () => _showSettings(context) : null,
-                icon: const Icon(Icons.tune),
-              ),
-              HighlightableIconButton(
-                padding: bottomBarActionPadding,
-                onTap: _songLyric.tags.isNotEmpty || _songLyric.songbookRecords.isNotEmpty
-                    ? () => _showTags(context)
-                    : null,
-                icon: const FaIcon(FontAwesomeIcons.tag),
-              ),
-              HighlightableIconButton(
-                padding: bottomBarActionPadding,
-                onTap: () => navigationProvider.popToOrPushNamed('/search'),
-                icon: const Icon(Icons.search),
-              ),
-            ],
+            ),
           ),
         ),
       );
@@ -204,6 +213,7 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
                 onPageChanged: (value) => setState(() {
                   _showingExternals.value = false;
                   _currentIndex = value;
+                  Presentation().transferData(_songLyric.name);
                   context.read<ValueNotifier<SongLyric?>>().value = _songLyric;
                 }),
                 itemBuilder: (_, index) => LyricsWidget(
@@ -232,7 +242,7 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
   }
 
   void _showFiles(BuildContext context) {
-    showMaterialModalBottomSheet(
+    showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(kDefaultRadius))),
       builder: (context) => SongLyricFilesWidget(songLyric: _songLyric),
@@ -240,7 +250,7 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
   }
 
   void _showSettings(BuildContext context) {
-    showMaterialModalBottomSheet(
+    showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(kDefaultRadius))),
       builder: (context) => SongLyricSettingsWidget(controller: _lyricsController),
@@ -248,7 +258,7 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
   }
 
   void _showTags(BuildContext context) {
-    showMaterialModalBottomSheet(
+    showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(kDefaultRadius))),
       builder: (context) => SongLyricTags(songLyric: _songLyric),

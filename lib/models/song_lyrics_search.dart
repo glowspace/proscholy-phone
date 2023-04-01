@@ -52,7 +52,7 @@ class SongLyricsSearch {
     await batch.commit();
   }
 
-  Future<List<dynamic>> search(String searchText) {
+  Future<List<dynamic>> search(String searchText) async {
     searchText.trim();
     if (!_numberRE.hasMatch(searchText)) searchText = '${searchText.replaceAll(' ', '* ')}*';
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zpevnik/constants.dart';
 
 class HighlightableForegroundColor extends MaterialStateProperty<Color?> {
   final Color? foregroundColor;
@@ -16,22 +17,23 @@ class HighlightableForegroundColor extends MaterialStateProperty<Color?> {
 }
 
 class HighlightableIconButton extends StatelessWidget {
-  final EdgeInsets padding;
+  final EdgeInsets? padding;
   final Function()? onTap;
   final Widget icon;
+  final bool shrinkWrap;
 
-  const HighlightableIconButton({super.key, this.padding = EdgeInsets.zero, this.onTap, required this.icon});
+  const HighlightableIconButton({super.key, this.padding, this.onTap, required this.icon, this.shrinkWrap = false});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     return IconButton(
-      constraints: const BoxConstraints(),
+      constraints: shrinkWrap ? const BoxConstraints() : null,
       style: IconButton.styleFrom(
         padding: padding,
         highlightColor: Colors.transparent,
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        tapTargetSize: shrinkWrap ? MaterialTapTargetSize.shrinkWrap : null,
       ).copyWith(
         foregroundColor: HighlightableForegroundColor(
           foregroundColor: theme.iconTheme.color,

@@ -22,6 +22,7 @@ class CustomPopupMenuButton<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     return HighlightableIconButton(
       onTap: () => _showMenu(context),
+      shrinkWrap: menuPosition == PopupMenuPosition.over,
       padding: padding ?? const EdgeInsets.symmetric(vertical: kDefaultPadding / 2, horizontal: kDefaultPadding),
       icon: const Icon(Icons.more_vert),
     );
@@ -52,7 +53,7 @@ class CustomPopupMenuButton<T> extends StatelessWidget {
     showMenu(
       context: context,
       items: items,
-      shape: Border.all(color: Theme.of(context).dividerColor),
+      shape: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
       position: position,
       color: Theme.of(context).colorScheme.surface,
     ).then((value) => onSelected(context, value));

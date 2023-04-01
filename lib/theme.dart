@@ -30,7 +30,7 @@ class AppTheme {
 
     return theme.copyWith(
       scaffoldBackgroundColor: lightBackgroundColor,
-      colorScheme: colorScheme,
+      colorScheme: colorScheme.copyWith(outlineVariant: const Color(0xffd0d0d0)),
       canvasColor: colorScheme.surface,
       appBarTheme: theme.appBarTheme.copyWith(
         backgroundColor: lightBackgroundColor,
@@ -47,7 +47,6 @@ class AppTheme {
         labelLarge: GoogleFonts.roboto(fontSize: 14, color: lightCommentColor, fontWeight: FontWeight.w400),
         labelMedium: const TextStyle(fontSize: 12, color: lightCaptionColor, fontWeight: FontWeight.w400),
       ),
-      dividerColor: const Color(0xffd0d0d0),
       iconTheme: iconTheme,
       splashFactory: NoSplash.splashFactory,
       useMaterial3: true,
@@ -62,8 +61,9 @@ class AppTheme {
 
     return theme.copyWith(
       scaffoldBackgroundColor: darkBackgroundColor,
+      colorScheme: colorScheme.copyWith(outlineVariant: const Color(0xff2f2f2f)),
       canvasColor: colorScheme.surface,
-      colorScheme: colorScheme,
+      bottomSheetTheme: theme.bottomSheetTheme.copyWith(modalBackgroundColor: colorScheme.surface, modalElevation: 0),
       appBarTheme: theme.appBarTheme.copyWith(
         backgroundColor: darkBackgroundColor,
         shadowColor: Colors.grey,
@@ -79,7 +79,6 @@ class AppTheme {
         labelLarge: GoogleFonts.roboto(fontSize: 14, color: darkCommentColor, fontWeight: FontWeight.w400),
         labelMedium: const TextStyle(fontSize: 12, color: darkCaptionColor, fontWeight: FontWeight.w400),
       ),
-      dividerColor: const Color(0xff2f2f2f),
       iconTheme: iconTheme,
       splashFactory: NoSplash.splashFactory,
       cupertinoOverrideTheme: const CupertinoThemeData(
