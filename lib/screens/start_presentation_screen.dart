@@ -5,7 +5,7 @@ import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/presentation/settings.dart';
 import 'package:zpevnik/components/song_lyric/utils/parser.dart';
 import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/providers/presentation_provider.dart';
+import 'package:zpevnik/providers/presentation.dart';
 
 class StartPresentationScreen extends StatelessWidget {
   final SongLyricsParser songLyricsParser;
@@ -32,7 +32,7 @@ class StartPresentationScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: const SafeArea(child: PresentationSettings()),
+      body: const SafeArea(child: PresentationSettingsWidget()),
     );
   }
 }

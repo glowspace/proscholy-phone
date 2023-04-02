@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/components/custom/back_button.dart';
 import 'package:zpevnik/components/highlightable.dart';
+import 'package:zpevnik/components/presentation/settings.dart';
 import 'package:zpevnik/components/song_lyric/externals_player_wrapper.dart';
 import 'package:zpevnik/components/song_lyric/lyrics.dart';
 import 'package:zpevnik/components/song_lyric/now_playing_banner.dart';
@@ -18,7 +19,7 @@ import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/components/song_lyric/utils/lyrics_controller.dart';
 import 'package:zpevnik/providers/navigation.dart';
-import 'package:zpevnik/providers/presentation_provider.dart';
+import 'package:zpevnik/providers/presentation.dart';
 import 'package:zpevnik/providers/settings.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
@@ -145,6 +146,8 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
           ? const EdgeInsets.symmetric(vertical: kDefaultPadding, horizontal: 3 * kDefaultPadding)
           : const EdgeInsets.all(kDefaultPadding);
 
+      final presentationProvider = context.watch<PresentationProvider>();
+
       bottomBar = Container(
         decoration: BoxDecoration(border: Border(top: BorderSide(color: theme.colorScheme.outlineVariant, width: 1))),
         child: Theme(
@@ -158,35 +161,63 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
               data: theme,
               child: Row(
                 mainAxisAlignment: mediaQuery.isTablet ? MainAxisAlignment.end : MainAxisAlignment.spaceAround,
-                children: [
-                  HighlightableIconButton(
-                    padding: bottomBarActionPadding,
-                    onTap: _songLyric.hasRecordings ? () => _showingExternals.value = true : null,
-                    icon: const Icon(FontAwesomeIcons.headphones),
-                  ),
-                  HighlightableIconButton(
-                    padding: bottomBarActionPadding,
-                    onTap: _songLyric.hasFiles ? () => _showFiles(context) : null,
-                    icon: const Icon(Icons.insert_drive_file),
-                  ),
-                  HighlightableIconButton(
-                    padding: bottomBarActionPadding,
-                    onTap: _songLyric.hasChords ? () => _showSettings(context) : null,
-                    icon: const Icon(Icons.tune),
-                  ),
-                  HighlightableIconButton(
-                    padding: bottomBarActionPadding,
-                    onTap: _songLyric.tags.isNotEmpty || _songLyric.songbookRecords.isNotEmpty
-                        ? () => _showTags(context)
-                        : null,
-                    icon: const FaIcon(FontAwesomeIcons.tag),
-                  ),
-                  HighlightableIconButton(
-                    padding: bottomBarActionPadding,
-                    onTap: () => navigationProvider.popToOrPushNamed('/search'),
-                    icon: const Icon(Icons.search),
-                  ),
-                ],
+                children: presentationProvider.isPresenting
+                    ? [
+                        HighlightableIconButton(
+                          padding: bottomBarActionPadding,
+                          onTap: presentationProvider.prevVerse,
+                          icon: Icon(Icons.adaptive.arrow_back),
+                        ),
+                        HighlightableIconButton(
+                          padding: bottomBarActionPadding,
+                          onTap: presentationProvider.togglePause,
+                          icon: Icon(presentationProvider.isPaused ? Icons.play_arrow : Icons.pause),
+                        ),
+                        HighlightableIconButton(
+                          padding: bottomBarActionPadding,
+                          onTap: presentationProvider.nextVerse,
+                          icon: Icon(Icons.adaptive.arrow_forward),
+                        ),
+                        HighlightableIconButton(
+                          padding: bottomBarActionPadding,
+                          onTap: () => _showSettings(context),
+                          icon: const Icon(Icons.tune),
+                        ),
+                        HighlightableIconButton(
+                          padding: bottomBarActionPadding,
+                          onTap: () => presentationProvider.stop(),
+                          icon: const Icon(Icons.close),
+                        ),
+                      ]
+                    : [
+                        HighlightableIconButton(
+                          padding: bottomBarActionPadding,
+                          onTap: _songLyric.hasRecordings ? () => _showingExternals.value = true : null,
+                          icon: const Icon(FontAwesomeIcons.headphones),
+                        ),
+                        HighlightableIconButton(
+                          padding: bottomBarActionPadding,
+                          onTap: _songLyric.hasFiles ? () => _showFiles(context) : null,
+                          icon: const Icon(Icons.insert_drive_file),
+                        ),
+                        HighlightableIconButton(
+                          padding: bottomBarActionPadding,
+                          onTap: _songLyric.hasChords ? () => _showSettings(context) : null,
+                          icon: const Icon(Icons.tune),
+                        ),
+                        HighlightableIconButton(
+                          padding: bottomBarActionPadding,
+                          onTap: _songLyric.tags.isNotEmpty || _songLyric.songbookRecords.isNotEmpty
+                              ? () => _showTags(context)
+                              : null,
+                          icon: const FaIcon(FontAwesomeIcons.tag),
+                        ),
+                        HighlightableIconButton(
+                          padding: bottomBarActionPadding,
+                          onTap: () => navigationProvider.popToOrPushNamed('/search'),
+                          icon: const Icon(Icons.search),
+                        ),
+                      ],
               ),
             ),
           ),
@@ -248,11 +279,19 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
   }
 
   void _showSettings(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(kDefaultRadius))),
-      builder: (context) => SongLyricSettingsWidget(controller: _lyricsController),
-    );
+    if (context.read<PresentationProvider>().isPresenting) {
+      showModalBottomSheet(
+        context: context,
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(kDefaultRadius))),
+        builder: (context) => const PresentationSettingsWidget(),
+      );
+    } else {
+      showModalBottomSheet(
+        context: context,
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(kDefaultRadius))),
+        builder: (context) => SongLyricSettingsWidget(controller: _lyricsController),
+      );
+    }
   }
 
   void _showTags(BuildContext context) {

@@ -1,14 +1,13 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:presentation/presentation.dart';
 // import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:zpevnik/firebase_options.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/navigation.dart';
-import 'package:zpevnik/providers/presentation_provider.dart';
+import 'package:zpevnik/providers/presentation.dart';
 import 'package:zpevnik/providers/settings.dart';
 import 'package:zpevnik/screens/initial.dart';
 import 'package:zpevnik/screens/presentation.dart';
@@ -64,7 +63,7 @@ class MainWidget extends StatelessWidget {
               providers: [
                 ChangeNotifierProvider(create: (_) => DataProvider()),
                 ChangeNotifierProvider(create: (_) => NavigationProvider(hasMenu: MediaQuery.of(context).isTablet)),
-                Provider(create: (_) => PresentationProvider()),
+                ChangeNotifierProvider(create: (_) => PresentationProvider()),
               ],
               builder: (_, __) => child!,
             ),
@@ -83,18 +82,6 @@ class MainPresentation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: _title,
-      theme: AppTheme.dark(),
-      home: StreamBuilder<String>(
-        stream: Presentation().getDataStream(),
-        builder: (_, snapshot) {
-          if (snapshot.hasData) return PresentationScreen(key: Key(snapshot.data!), presentedLyrics: snapshot.data!);
-
-          return const Scaffold(body: Center(child: CircularProgressIndicator()));
-        },
-      ),
-    );
+    return const MaterialApp(debugShowCheckedModeBanner: false, title: _title, home: PresentationScreen());
   }
 }

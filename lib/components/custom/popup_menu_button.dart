@@ -38,7 +38,7 @@ class CustomPopupMenuButton<T> extends StatelessWidget {
         offset = const Offset(0, 0);
         break;
       case PopupMenuPosition.under:
-        offset = Offset(0.0, button.size.height);
+        offset = Offset(0.0, button.size.height + 4);
         break;
     }
 
@@ -55,7 +55,7 @@ class CustomPopupMenuButton<T> extends StatelessWidget {
       items: items,
       shape: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
       position: position,
-      color: Theme.of(context).colorScheme.surface,
+      color: Theme.of(context).scaffoldBackgroundColor,
     ).then((value) => onSelected(context, value));
   }
 }

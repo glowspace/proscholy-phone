@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:presentation/presentation.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/navigation.dart';
@@ -89,6 +90,10 @@ class _SearchFieldState extends State<SearchField> {
   @override
   void initState() {
     super.initState();
+
+    Presentation().getDataStream().listen((event) {
+      print(event);
+    });
 
     _controller = TextEditingController();
     _focusNode = FocusNode();

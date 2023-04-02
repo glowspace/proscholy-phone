@@ -11,6 +11,7 @@ import 'package:zpevnik/links.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/navigation.dart';
+import 'package:zpevnik/providers/presentation.dart';
 import 'package:zpevnik/utils/url_launcher.dart';
 
 enum SongLyricMenuAction {
@@ -38,8 +39,8 @@ class SongLyricMenuButton extends StatelessWidget {
   }
 
   List<PopupMenuEntry<SongLyricMenuAction>> _buildPopupMenuItems(BuildContext context) {
-    return const [
-      PopupMenuItem(
+    return [
+      const PopupMenuItem(
         value: SongLyricMenuAction.addToPlaylist,
         child: IconItem(icon: Icons.playlist_add, text: 'Přidat do seznamu'),
       ),
@@ -48,17 +49,19 @@ class SongLyricMenuButton extends StatelessWidget {
       // ),
       PopupMenuItem(
         value: SongLyricMenuAction.present,
-        child: IconItem(icon: Icons.cast, text: 'Spustit prezentaci'),
+        child: IconItem(
+            icon: Icons.cast,
+            text: context.watch<PresentationProvider>().isPresenting ? 'Ukončit prezentaci' : 'Spustit prezentaci'),
       ),
-      PopupMenuItem(
+      const PopupMenuItem(
         value: SongLyricMenuAction.share,
         child: IconItem(icon: Icons.share, text: 'Sdílet'),
       ),
-      PopupMenuItem(
+      const PopupMenuItem(
         value: SongLyricMenuAction.openInBrowser,
         child: IconItem(icon: Icons.language, text: 'Otevřít na webu'),
       ),
-      PopupMenuItem(
+      const PopupMenuItem(
         value: SongLyricMenuAction.report,
         child: IconItem(icon: Icons.warning, text: 'Nahlásit'),
       ),
@@ -76,7 +79,13 @@ class SongLyricMenuButton extends StatelessWidget {
         _showPlaylists(context);
         break;
       case SongLyricMenuAction.present:
-        NavigationProvider.of(context).pushNamed('/song_lyric/present', arguments: songLyricsParser);
+        final presentationProvider = context.read<PresentationProvider>();
+
+        if (presentationProvider.isPresenting) {
+          presentationProvider.stop();
+        } else {
+          NavigationProvider.of(context).pushNamed('/song_lyric/present', arguments: songLyricsParser);
+        }
         break;
       case SongLyricMenuAction.share:
         final box = context.findRenderObject() as RenderBox?;

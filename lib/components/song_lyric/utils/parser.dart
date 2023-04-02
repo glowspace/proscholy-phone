@@ -485,6 +485,8 @@ class SongLyricsParser {
 
   String getVerse(int order) {
     String verse = '';
+    Token? lastToken;
+
     for (final token in _parsedSongLyrics!) {
       if (order == 0) {
         if (token is VersePart) {
@@ -496,11 +498,13 @@ class SongLyricsParser {
         }
       }
 
-      if (token is VerseEnd) {
+      if ((token is NewLine && lastToken is NewLine)) {
         if (order == 0) break;
 
         order--;
       }
+
+      lastToken = token;
     }
 
     return verse;
