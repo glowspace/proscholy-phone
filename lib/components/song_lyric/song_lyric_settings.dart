@@ -4,7 +4,7 @@ import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/selector_widget.dart';
 import 'package:zpevnik/components/song_lyric/utils/lyrics_controller.dart';
 
-const double _settingsOptionsWidth = 100;
+const double _settingsOptionsWidth = 120;
 
 class SongLyricSettingsWidget extends StatefulWidget {
   final LyricsController controller;

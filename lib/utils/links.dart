@@ -73,9 +73,11 @@ void handleUniLink(BuildContext context, Uri? uri) async {
     if (uri.path == '/add_playlist') {
       final playlistName = uri.queryParameters['name'];
       final songLyricsIds = uri.queryParameters['ids']?.split(',').map((id) => int.parse(id)).toList();
+      final songLyricsTranspositions =
+          uri.queryParameters['transpositions']?.split(',').map((id) => int.parse(id)).toList();
 
       if (playlistName != null && songLyricsIds != null) {
-        showAcceptSharedPlaylistDialog(context, playlistName, songLyricsIds);
+        showAcceptSharedPlaylistDialog(context, playlistName, songLyricsIds, songLyricsTranspositions);
       }
     }
   }

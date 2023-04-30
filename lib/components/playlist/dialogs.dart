@@ -68,7 +68,8 @@ void showDuplicatePlaylistDialog(BuildContext context, Playlist playlist) async 
   }
 }
 
-void showAcceptSharedPlaylistDialog(BuildContext context, String name, List<int> songLyricsIds) async {
+void showAcceptSharedPlaylistDialog(
+    BuildContext context, String name, List<int> songLyricsIds, List<int>? transpositions) async {
   final dataProvider = context.read<DataProvider>();
   final playlists = dataProvider.playlists;
 
@@ -82,11 +83,15 @@ void showAcceptSharedPlaylistDialog(BuildContext context, String name, List<int>
 
   if (results != null) {
     final playlist = dataProvider.createPlaylist(results[0]);
+    int index = 0;
 
     for (final songLyricId in songLyricsIds) {
       final songLyric = dataProvider.getSongLyricById(songLyricId);
 
-      if (songLyric != null) dataProvider.addToPlaylist(songLyric, playlist);
+      if (songLyric != null) {
+        if (transpositions != null) songLyric.transposition = transpositions[index++];
+        dataProvider.addToPlaylist(songLyric, playlist);
+      }
     }
 
     if (ModalRoute.of(context)?.settings.name != '/playlists') {
