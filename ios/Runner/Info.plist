@@ -48,7 +48,7 @@
 		<string>_proscholy-conn._tcp</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
-	<string>LaunchScreen.storyboard</string>
+	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
 	<key>UIRequiresPersistentWiFi</key>
@@ -72,5 +72,7 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>UIStatusBarHidden</key>
+	<false/>
 </dict>
 </plist>

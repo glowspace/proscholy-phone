@@ -51,7 +51,7 @@ class SongLyricMenuButton extends StatelessWidget {
         value: SongLyricMenuAction.present,
         child: IconItem(
             icon: Icons.cast,
-            text: context.watch<PresentationProvider>().isPresenting ? 'Ukončit prezentaci' : 'Spustit prezentaci'),
+            text: context.watch<PresentationProvider>().isPresenting ? 'Ukončit promítání' : 'Spustit promítání'),
       ),
       const PopupMenuItem(
         value: SongLyricMenuAction.share,

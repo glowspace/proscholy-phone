@@ -484,6 +484,8 @@ class SongLyricsParser {
   }
 
   String getVerse(int order) {
+    _parsedSongLyrics ??= _FilledTokensBuilder()._fillSubstitutes(_parseTokens());
+
     String verse = '';
     Token? lastToken;
 
@@ -507,6 +509,6 @@ class SongLyricsParser {
       lastToken = token;
     }
 
-    return verse;
+    return verse.trim();
   }
 }

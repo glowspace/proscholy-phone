@@ -69,6 +69,8 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
     _pageController = PageController(initialPage: _currentIndex);
     _showingExternals = ValueNotifier(false);
 
+    context.read<PresentationProvider>().changeSongLyric(_lyricsController.parser);
+
     if (widget.playlist != null) {
       _songLyricsSubscription =
           context.read<DataProvider>().watchPlaylistRecordsChanges(widget.playlist!).listen((songLyrics) {

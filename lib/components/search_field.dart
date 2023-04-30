@@ -91,10 +91,6 @@ class _SearchFieldState extends State<SearchField> {
   void initState() {
     super.initState();
 
-    Presentation().getDataStream().listen((event) {
-      print(event);
-    });
-
     _controller = TextEditingController();
     _focusNode = FocusNode();
 

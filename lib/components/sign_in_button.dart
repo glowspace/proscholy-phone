@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
-const _logosPath = 'assets/images/logos/';
+const _logosPath = 'assets/images/logos';
 
 enum SignInButtonType {
   google,

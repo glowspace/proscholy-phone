@@ -1,7 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:presentation/presentation.dart';
 import 'package:zpevnik/components/song_lyric/utils/parser.dart';
-import 'package:zpevnik/models/presentation_settings.dart';
+import 'package:zpevnik/models/presentation.dart';
 
 class PresentationProvider extends ChangeNotifier {
   final presentation = Presentation();
@@ -15,7 +17,13 @@ class PresentationProvider extends ChangeNotifier {
   bool get isPresenting => _isPresenting;
   bool get isPaused => _isPaused;
 
+  bool _isBeforeStart = false;
+  bool _isAfterEnd = false;
+
   int _verseOrder = 0;
+
+  PresentationData _showingData = defaultPresentationData;
+  PresentationSettings get settings => _showingData.settings;
 
   void start(SongLyricsParser songLyricsParser) {
     _isPresenting = true;
@@ -23,8 +31,12 @@ class PresentationProvider extends ChangeNotifier {
 
     _songLyricsParser = songLyricsParser;
 
-    presentation.changeSettings({'id': '${songLyricsParser.songLyric.id}', 'name': songLyricsParser.songLyric.name});
-    presentation.transferData(songLyricsParser.getVerse(_verseOrder));
+    presentation.startPresentation();
+    _changeShowingData(_showingData.copyWith(
+      songLyricId: songLyricsParser.songLyric.id,
+      songLyricName: songLyricsParser.songLyric.name,
+      lyrics: songLyricsParser.getVerse(_verseOrder),
+    ));
 
     notifyListeners();
   }
@@ -32,32 +44,40 @@ class PresentationProvider extends ChangeNotifier {
   void stop() {
     _isPresenting = false;
 
+    presentation.stopPresentation();
+
     notifyListeners();
   }
 
   void nextVerse() {
+    if (_isAfterEnd) return;
+    _isBeforeStart = false;
+
     _verseOrder++;
 
     final verse = _songLyricsParser!.getVerse(_verseOrder);
-    if (verse.isEmpty) _verseOrder--;
+    if (verse.isEmpty) _isAfterEnd = true;
 
     if (isPaused) {
-      _nextAction = () => presentation.transferData(verse);
+      _nextAction = () => _changeShowingData(_showingData.copyWith(lyrics: verse));
     } else {
-      presentation.transferData(verse);
+      _changeShowingData(_showingData.copyWith(lyrics: verse));
     }
   }
 
   void prevVerse() {
+    if (_isBeforeStart) return;
+    _isAfterEnd = false;
+
     _verseOrder--;
 
     final verse = _songLyricsParser!.getVerse(_verseOrder);
-    if (verse.isEmpty) _verseOrder++;
+    if (verse.isEmpty) _isBeforeStart = true;
 
     if (isPaused) {
-      _nextAction = () => presentation.transferData(verse);
+      _nextAction = () => _changeShowingData(_showingData.copyWith(lyrics: verse));
     } else {
-      presentation.transferData(verse);
+      _changeShowingData(_showingData.copyWith(lyrics: verse));
     }
   }
 
@@ -70,7 +90,7 @@ class PresentationProvider extends ChangeNotifier {
   }
 
   void changeSettings(PresentationSettings settings) {
-    presentation.changeSettings(settings.toJson());
+    _changeShowingData(_showingData.copyWith(settings: settings));
   }
 
   void changeSongLyric(SongLyricsParser songLyricsParser) {
@@ -80,15 +100,25 @@ class PresentationProvider extends ChangeNotifier {
 
     if (isPaused) {
       _nextAction = () {
-        presentation.changeSettings({
-          'id': '${songLyricsParser.songLyric.id}',
-          'name': songLyricsParser.songLyric.name,
-        });
-        presentation.transferData(songLyricsParser.getVerse(_verseOrder));
+        _changeShowingData(_showingData.copyWith(
+          songLyricId: songLyricsParser.songLyric.id,
+          songLyricName: songLyricsParser.songLyric.name,
+          lyrics: songLyricsParser.getVerse(_verseOrder),
+        ));
       };
     } else {
-      presentation.changeSettings({'id': '${songLyricsParser.songLyric.id}', 'name': songLyricsParser.songLyric.name});
-      presentation.transferData(songLyricsParser.getVerse(_verseOrder));
+      _changeShowingData(_showingData.copyWith(
+        songLyricId: songLyricsParser.songLyric.id,
+        songLyricName: songLyricsParser.songLyric.name,
+        lyrics: songLyricsParser.getVerse(_verseOrder),
+      ));
     }
   }
+
+  void _changeShowingData(PresentationData data) {
+    _showingData = data;
+    presentation.transferData(jsonEncode(data));
+  }
+
+  Future<bool> get canPresent => presentation.canPresent();
 }

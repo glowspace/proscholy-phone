@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/components/section.dart';
 import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/models/presentation_settings.dart';
+import 'package:zpevnik/models/presentation.dart';
 import 'package:zpevnik/providers/presentation.dart';
-
-const _availableFontSizes = [96, 104, 112, 120, 128, 136, 144, 152, 160];
 
 class PresentationSettingsWidget extends StatefulWidget {
   const PresentationSettingsWidget({super.key});
@@ -15,7 +13,14 @@ class PresentationSettingsWidget extends StatefulWidget {
 }
 
 class _PresentationSettingsState extends State<PresentationSettingsWidget> {
-  PresentationSettings _presentationSettings = defaultPresentationSettings;
+  late PresentationSettings _presentationSettings;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _presentationSettings = context.read<PresentationProvider>().settings;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,19 +31,6 @@ class _PresentationSettingsState extends State<PresentationSettingsWidget> {
       margin: const EdgeInsets.all(kDefaultPadding),
       padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
       child: Column(children: [
-        Row(children: [
-          Text('Velikost písma', style: textTheme.bodyMedium),
-          const Spacer(),
-          DropdownButton<int>(
-            value: _presentationSettings.fontSize,
-            items: [
-              for (final fontSize in _availableFontSizes) DropdownMenuItem(value: fontSize, child: Text('$fontSize')),
-            ],
-            onChanged: (value) => _settingsChanged(
-              () => setState(() => _presentationSettings = _presentationSettings.copyWith(fontSize: value)),
-            ),
-          ),
-        ]),
         SwitchListTile.adaptive(
           title: Text('Zobrazovat pozadí', style: textTheme.bodyMedium),
           value: _presentationSettings.showBackground,
