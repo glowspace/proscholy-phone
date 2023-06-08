@@ -8,6 +8,7 @@ import 'package:zpevnik/models/playlist_record.dart';
 import 'package:zpevnik/models/song.dart';
 import 'package:zpevnik/models/songbook_record.dart';
 import 'package:zpevnik/models/tag.dart';
+import 'package:zpevnik/models/utils.dart';
 
 enum SongLyricType {
   original,
@@ -87,7 +88,6 @@ class SongLyric {
   final song = ToOne<Song>();
   final tags = ToMany<Tag>();
 
-  @Backlink()
   final externals = ToMany<External>();
 
   @Backlink()
@@ -117,8 +117,9 @@ class SongLyric {
     final tags =
         store.box<Tag>().getMany((json['tags'] as List).map((json) => int.parse(json['id'] as String)).toList());
 
-    final songbookRecords = SongbookRecord.fromMapList(json, id);
-    final externals = External.fromMapList(json, id);
+    final songbookRecords =
+        readJsonList(json[SongbookRecord.fieldKey], mapper: (json) => SongbookRecord.fromJson(json['pivot']));
+    final externals = readJsonList(json[External.fieldKey], mapper: External.fromJson);
 
     final query = store.box<SongLyric>().query(SongLyric_.id.equals(id)).build();
 
@@ -162,9 +163,10 @@ class SongLyric {
   bool get hasTranslations => (song.target?.songLyrics.length ?? 1) > 1;
 
   bool get hasLyrics => lyrics != null && lyrics!.isNotEmpty;
-  bool get hasFiles => externals.any((external) => external.type == MediaType.pdf || external.type == MediaType.jpg);
+  bool get hasFiles =>
+      externals.any((external) => external.mediaType == MediaType.pdf || external.mediaType == MediaType.jpg);
   bool get hasRecordings =>
-      externals.any((external) => external.type == MediaType.youtube || external.type == MediaType.mp3);
+      externals.any((external) => external.mediaType == MediaType.youtube || external.mediaType == MediaType.mp3);
 
   bool get isFavorite =>
       playlistRecords.any((playlistRecord) => playlistRecord.playlist.targetId == favoritesPlaylistId);
@@ -201,10 +203,11 @@ class SongLyric {
     }
   }
 
-  List<External> get files =>
-      externals.where((external) => external.type == MediaType.pdf || external.type == MediaType.jpg).toList();
-  List<External> get youtubes => externals.where((external) => external.type == MediaType.youtube).toList();
-  List<External> get mp3s => externals.where((external) => external.type == MediaType.mp3).toList();
+  List<External> get files => externals
+      .where((external) => external.mediaType == MediaType.pdf || external.mediaType == MediaType.jpg)
+      .toList();
+  List<External> get youtubes => externals.where((external) => external.mediaType == MediaType.youtube).toList();
+  List<External> get mp3s => externals.where((external) => external.mediaType == MediaType.mp3).toList();
 
   @override
   String toString() => 'SongLyric(id: $id, name: $name)';

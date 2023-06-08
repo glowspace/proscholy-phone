@@ -1,25 +1,19 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:objectbox/objectbox.dart';
 
-@Entity()
-class Author {
-  @Id(assignable: true)
-  final int id;
+part 'author.freezed.dart';
+part 'author.g.dart';
 
-  final String name;
+@Freezed(toJson: false)
+class Author with _$Author {
+  static const String fieldKey = 'authors';
 
-  Author(this.id, this.name);
+  @Entity(realClass: Author)
+  @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
+  const factory Author({
+    @Id(assignable: true) @JsonKey(fromJson: int.parse) required int id,
+    required String name,
+  }) = _Author;
 
-  factory Author.fromJson(Map<String, dynamic> json) {
-    return Author(
-      int.parse(json['id'] as String),
-      json['name'] as String,
-    );
-  }
-
-  static List<Author> fromMapList(Map<String, dynamic> json) {
-    return (json['authors'] as List).map((json) => Author.fromJson(json)).toList();
-  }
-
-  @override
-  String toString() => 'Author(id: $id, name: $name)';
+  factory Author.fromJson(Map<String, Object?> json) => _$AuthorFromJson(json);
 }
