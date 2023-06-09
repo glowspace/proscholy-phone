@@ -93,10 +93,10 @@ class SongLyricMenuButton extends StatelessWidget {
         Share.share('$songUrl/${songLyric.id}/', sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size);
         break;
       case SongLyricMenuAction.openInBrowser:
-        launch('$songUrl/${songLyric.id}/');
+        launch(context, '$songUrl/${songLyric.id}/');
         break;
       case SongLyricMenuAction.report:
-        launch('$reportSongLyricUrl?customfield_10056=${songLyric.id}+$version+$platform');
+        launch(context, '$reportSongLyricUrl?customfield_10056=${songLyric.id}+$version+$platform');
         break;
     }
   }

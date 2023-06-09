@@ -69,6 +69,7 @@ class _UpdateSectionState extends State<UpdateSection> {
                           if (snapshot.hasError)
                             HighlightableTextButton(
                               onTap: () => launch(
+                                context,
                                 '$reportUrl?summary=Chyba při aktualizaci písní&description=${snapshot.error}',
                               ),
                               foregroundColor: red,

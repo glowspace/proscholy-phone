@@ -17,7 +17,7 @@ class AdditionalSection extends StatelessWidget {
       title: Text('Další možnosti', style: theme.textTheme.titleLarge),
       child: Column(children: [
         InkWell(
-          onTap: () => launch(proscholyUrl),
+          onTap: () => launch(context, proscholyUrl),
           child: const Padding(
             padding: EdgeInsets.all(kDefaultPadding),
             child: IconItem(text: 'Webová verze', icon: Icons.language, trailingIcon: Icons.open_in_new),
@@ -25,7 +25,7 @@ class AdditionalSection extends StatelessWidget {
         ),
         const Divider(height: 0),
         InkWell(
-          onTap: () => launch(theme.platform.isIos ? feedbackIOSUrl : feedbackAndroidUrl),
+          onTap: () => launch(context, theme.platform.isIos ? feedbackIOSUrl : feedbackAndroidUrl),
           child: const Padding(
             padding: EdgeInsets.all(kDefaultPadding),
             child: IconItem(text: 'Zpětná vazba', icon: Icons.feedback, trailingIcon: Icons.open_in_new),
@@ -33,7 +33,7 @@ class AdditionalSection extends StatelessWidget {
         ),
         const Divider(height: 0),
         InkWell(
-          onTap: () => launch(addSongUrl),
+          onTap: () => launch(context, addSongUrl),
           child: const Padding(
             padding: EdgeInsets.all(kDefaultPadding),
             child: IconItem(text: 'Přidat píseň', icon: Icons.add, trailingIcon: Icons.open_in_new),
@@ -41,7 +41,7 @@ class AdditionalSection extends StatelessWidget {
         ),
         const Divider(height: 0),
         InkWell(
-          onTap: () => launch(dontaionsUrl),
+          onTap: () => launch(context, dontaionsUrl),
           child: const Padding(
             padding: EdgeInsets.all(kDefaultPadding),
             child: IconItem(text: 'Darovat', icon: Icons.favorite, trailingIcon: Icons.open_in_new, iconColor: red),

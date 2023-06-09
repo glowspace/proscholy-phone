@@ -53,7 +53,7 @@ class _NewsSectionState extends State<NewsSection> {
                 onPageChanged: (index) => setState(() => _currentIndex = index),
                 itemCount: newsItems.length,
                 itemBuilder: (_, index) => HighlightableTextButton(
-                  onTap: () => launch(newsItems[index].link),
+                  onTap: () => launch(context, newsItems[index].link),
                   child: Text(newsItems[index].text),
                 ),
               ),
