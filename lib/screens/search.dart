@@ -48,7 +48,7 @@ class SearchScreen extends StatelessWidget {
           child: SplitView(
             subChild: Scaffold(
               backgroundColor: theme.brightness.isLight ? theme.colorScheme.surface : null,
-              body: SafeArea(child: FiltersWidget(tagsSections: songLyricsProvider.tagsSections)),
+              // body: SafeArea(child: FiltersWidget(tagsSections: songLyricsProvider.tagsSections)),
             ),
             child: child,
           ),

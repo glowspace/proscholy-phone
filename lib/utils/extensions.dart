@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:zpevnik/constants.dart' hide red, green, blue;
 
 extension PlatformExtension on TargetPlatform {
+  bool get isAndroid => this == TargetPlatform.android;
   bool get isIos => this == TargetPlatform.iOS;
 }
 

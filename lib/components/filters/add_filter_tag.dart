@@ -56,7 +56,7 @@ class AddFilterTag extends StatelessWidget {
         height: 2 / 3 * MediaQuery.of(context).size.height,
         child: ChangeNotifierProvider.value(
           value: songLyricsProvider,
-          builder: (_, __) => FiltersWidget(tagsSections: songLyricsProvider.tagsSections),
+          // builder: (_, __) => FiltersWidget(tagsSections: songLyricsProvider.tagsSections),
         ),
       ),
       routeSettings: const RouteSettings(name: '/filters'),

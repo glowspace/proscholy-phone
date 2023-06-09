@@ -1,10 +1,13 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' hide ChangeNotifierProvider;
 // import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zpevnik/firebase_options.dart';
+import 'package:zpevnik/providers/app_dependencies.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/providers/presentation.dart';
@@ -21,54 +24,57 @@ Future<void> main() async {
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  if (kDebugMode) return runApp(const MainWidget());
+  final appDependencies = AppDependencies(
+    sharedPreferences: await SharedPreferences.getInstance(),
+  );
+
+  void appRunner() => runApp(ProviderScope(
+        overrides: [appDependenciesProvider.overrideWithValue(appDependencies)],
+        child: const MainWidget(),
+      ));
+
+  if (kDebugMode) return appRunner();
 
   await SentryFlutter.init(
     (options) {
       options.dsn = 'https://59762f67d1644603bddb1f0fc27849dd@sentry.glowspace.cz/2';
       options.tracesSampleRate = 1.0;
     },
-    appRunner: () => runApp(const MainWidget()),
+    appRunner: appRunner,
   );
 }
 
-class MainWidget extends StatelessWidget {
+class MainWidget extends ConsumerWidget {
   const MainWidget({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => SettingsProvider(),
-      builder: (_, __) => Builder(
-        builder: (context) {
-          final darkModeEnabled = context.select<SettingsProvider, bool?>((provider) => provider.darkModeEnabled);
-          ThemeMode? themeMode;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final darkModeEnabled = ref.watch(settingsProvider.select((settings) => settings.darkModeEnabled));
 
-          if (darkModeEnabled != null) {
-            if (darkModeEnabled) {
-              themeMode = ThemeMode.dark;
-            } else {
-              themeMode = ThemeMode.light;
-            }
-          }
+    ThemeMode? themeMode;
 
-          return MaterialApp(
-            debugShowCheckedModeBanner: false,
-            title: _title,
-            theme: AppTheme.light(),
-            darkTheme: AppTheme.dark(),
-            themeMode: themeMode,
-            home: const InitialScreen(),
-            builder: (context, child) => MultiProvider(
-              providers: [
-                ChangeNotifierProvider(create: (_) => DataProvider()),
-                ChangeNotifierProvider(create: (_) => NavigationProvider(hasMenu: MediaQuery.of(context).isTablet)),
-                ChangeNotifierProvider(create: (_) => PresentationProvider()),
-              ],
-              builder: (_, __) => child!,
-            ),
-          );
-        },
+    if (darkModeEnabled != null) {
+      if (darkModeEnabled) {
+        themeMode = ThemeMode.dark;
+      } else {
+        themeMode = ThemeMode.light;
+      }
+    }
+
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: _title,
+      theme: AppTheme.light(),
+      darkTheme: AppTheme.dark(),
+      themeMode: themeMode,
+      home: const InitialScreen(),
+      builder: (context, child) => MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => DataProvider()),
+          ChangeNotifierProvider(create: (_) => NavigationProvider(hasMenu: MediaQuery.of(context).isTablet)),
+          ChangeNotifierProvider(create: (_) => PresentationProvider()),
+        ],
+        builder: (_, __) => child!,
       ),
     );
   }

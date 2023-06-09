@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/services.dart';
@@ -13,6 +14,7 @@ import 'package:zpevnik/models/song.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/models/tag.dart';
+import 'package:zpevnik/models/utils.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/utils/client.dart';
 
@@ -45,7 +47,8 @@ class Updater {
     final client = Client();
 
     try {
-      final newsItems = await client.getNews().then((json) => NewsItem.fromMapList(json));
+      final newsItems =
+          await client.getNews().then((json) => readJsonList(json[NewsItem.fieldKey], mapper: NewsItem.fromJson));
       store.box<NewsItem>().putMany(newsItems);
     } on SocketException {
       client.dispose();
@@ -143,10 +146,10 @@ class Updater {
   }
 
   Future<void> _parse(Map<String, dynamic> json, {bool isSongLyricsFull = false}) async {
-    final authors = Author.fromMapList(json);
+    final authors = readJsonList(json[Author.fieldKey], mapper: Author.fromJson);
     final songs = Song.fromMapList(json);
     final songbooks = Songbook.fromMapList(json);
-    final tags = Tag.fromMapList(json);
+    final tags = readJsonList(json[Tag.fieldKey], mapper: Tag.fromJson);
 
     final query = store.box<Songbook>().query(Songbook_.isPinned.equals(true)).build();
     final pinnedSongbooks = query.property(Songbook_.id).find().toSet();

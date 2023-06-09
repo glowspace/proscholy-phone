@@ -46,8 +46,9 @@ class LyricsController extends ChangeNotifier {
     });
   }
 
-  bool get showChords => songLyric.showChords ?? context.read<SettingsProvider>().showChords;
-  int get accidentals => songLyric.accidentals ?? context.read<SettingsProvider>().accidentals;
+  // TODO: handle this when it has access to `SettingsProvider`
+  bool get showChords => songLyric.showChords ?? true; //context.read<SettingsProvider>().showChords;
+  int get accidentals => songLyric.accidentals ?? 1; //context.read<SettingsProvider>().accidentals;
 
   void changeTransposition(int byValue) {
     songLyric.transposition += byValue;
@@ -74,7 +75,8 @@ class LyricsController extends ChangeNotifier {
     songLyric.accidentals = null;
     songLyric.transposition = 0;
 
-    context.read<SettingsProvider>().fontSizeScale = 1;
+    // TODO: handle this when it has access to `SettingsProvider`
+    // context.read<SettingsProvider>().fontSizeScale = 1;
 
     _songLyricUpdated();
   }

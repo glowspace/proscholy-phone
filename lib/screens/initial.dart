@@ -8,7 +8,6 @@ import 'package:zpevnik/components/sign_in_button.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/components/custom/future_builder.dart';
 import 'package:zpevnik/providers/data.dart';
-import 'package:zpevnik/providers/settings.dart';
 import 'package:zpevnik/screens/content.dart';
 
 const _welcomeText = '''
@@ -139,7 +138,6 @@ class _InitialScreenState extends State<InitialScreen> {
 
   Future<void> _init() async {
     await context.read<DataProvider>().init();
-    await context.read<SettingsProvider>().init();
 
     _pushHomeScreen(context);
 

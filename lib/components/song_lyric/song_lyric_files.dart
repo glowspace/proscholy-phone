@@ -37,7 +37,7 @@ class SongLyricFilesWidget extends StatelessWidget {
 
   Widget _buildFileTile(BuildContext context, External file) {
     return InkWell(
-      onTap: () => file.type == MediaType.pdf ? _pushPdf(context, file) : _pushJpg(context, file),
+      onTap: () => file.mediaType == MediaType.pdf ? _pushPdf(context, file) : _pushJpg(context, file),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
         child: Row(children: [

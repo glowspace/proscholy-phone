@@ -5,6 +5,13 @@ import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/components/filters/filters_section.dart';
 import 'package:zpevnik/providers/navigation.dart';
 
+class TagsSection {
+  final String title;
+  final List<Tag> tags;
+
+  TagsSection(this.title, this.tags);
+}
+
 class FiltersWidget extends StatelessWidget {
   final List<TagsSection> tagsSections;
 

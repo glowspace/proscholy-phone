@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zpevnik/components/custom/close_button.dart';
 import 'package:zpevnik/components/font_size_slider.dart';
 import 'package:zpevnik/components/highlightable.dart';
@@ -14,14 +14,9 @@ import 'package:zpevnik/utils/extensions.dart';
 // const double _avatarRadius = 48;
 const double _settingsOptionsWidth = 100;
 
-class UserScreen extends StatefulWidget {
-  const UserScreen({Key? key}) : super(key: key);
+class UserScreen extends StatelessWidget {
+  const UserScreen({super.key});
 
-  @override
-  State<UserScreen> createState() => _UserScreenState();
-}
-
-class _UserScreenState extends State<UserScreen> {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
@@ -72,17 +67,19 @@ class _UserScreenState extends State<UserScreen> {
   }
 
   Widget _buildAppSettings(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
     final systemDarkModeEnabled = MediaQuery.of(context).platformBrightness.isDark;
 
-    return Consumer<SettingsProvider>(
-      builder: (_, provider, __) => Section(
-        title: Text('Nastavení', style: Theme.of(context).textTheme.titleMedium),
-        margin: const EdgeInsets.all(kDefaultPadding),
-        padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-        child: SwitchListTile.adaptive(
-          title: Text('Tmavý mód', style: Theme.of(context).textTheme.bodyMedium),
-          value: provider.darkModeEnabled ?? systemDarkModeEnabled,
-          onChanged: (value) => provider.darkModeEnabled = value == systemDarkModeEnabled ? null : value,
+    return Section(
+      title: Text('Nastavení', style: textTheme.titleMedium),
+      margin: const EdgeInsets.all(kDefaultPadding),
+      padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+      child: Consumer(
+        builder: (_, ref, __) => SwitchListTile.adaptive(
+          title: Text('Tmavý mód', style: textTheme.bodyMedium),
+          value: ref.watch(settingsProvider.select((settings) => settings.darkModeEnabled)) ?? systemDarkModeEnabled,
+          onChanged: (value) =>
+              ref.read(settingsProvider.notifier).changeDarkModeEnabled(value == systemDarkModeEnabled ? null : value),
           contentPadding: EdgeInsets.zero,
         ),
       ),
@@ -92,43 +89,45 @@ class _UserScreenState extends State<UserScreen> {
   Widget _buildSongSettings(BuildContext context) {
     final accidentalsStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(fontFamily: 'KaiseiHarunoUmi');
 
-    return Consumer<SettingsProvider>(
-      builder: (_, provider, __) => Section(
-        title: Text('Nastavení písní', style: Theme.of(context).textTheme.titleMedium),
-        margin: const EdgeInsets.all(kDefaultPadding),
-        padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding),
-        child: Column(
-          children: [
-            Row(children: [
-              const Expanded(child: Text('Posuvky')),
-              SelectorWidget(
-                onSelected: (index) => provider.accidentals = index,
+    return Section(
+      title: Text('Nastavení písní', style: Theme.of(context).textTheme.titleMedium),
+      margin: const EdgeInsets.all(kDefaultPadding),
+      padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding),
+      child: Column(
+        children: [
+          Row(children: [
+            const Expanded(child: Text('Posuvky')),
+            Consumer(
+              builder: (_, ref, __) => SelectorWidget(
+                onSelected: ref.read(settingsProvider.notifier).changeAccidentals,
                 options: [
                   Text('#', style: accidentalsStyle, textAlign: TextAlign.center),
                   Text('♭', style: accidentalsStyle, textAlign: TextAlign.center)
                 ],
-                selected: provider.accidentals,
+                selected: ref.watch(settingsProvider.select((settings) => settings.accidentals)),
                 width: _settingsOptionsWidth,
               ),
-            ]),
-            const Divider(height: kDefaultPadding),
-            Row(children: [
-              const Expanded(child: Text('Akordy')),
-              SelectorWidget(
-                onSelected: (index) => provider.showChords = index == 1,
-                options: const [Icon(Icons.visibility_off, size: 20), Icon(Icons.visibility, size: 20)],
-                selected: provider.showChords ? 1 : 0,
-                width: _settingsOptionsWidth,
-              ),
-            ]),
-            const Divider(height: kDefaultPadding),
-            const SizedBox(height: kDefaultPadding / 2),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: const [Text('Velikost písma'), FontSizeSlider()],
             ),
-          ],
-        ),
+          ]),
+          const Divider(height: kDefaultPadding),
+          Row(children: [
+            const Expanded(child: Text('Akordy')),
+            Consumer(
+              builder: (context, ref, __) => SelectorWidget(
+                onSelected: (index) => ref.read(settingsProvider.notifier).changeShowChords(index == 1),
+                options: const [Icon(Icons.visibility_off, size: 20), Icon(Icons.visibility, size: 20)],
+                selected: ref.watch(settingsProvider.select((settings) => settings.showChords)) ? 1 : 0,
+                width: _settingsOptionsWidth,
+              ),
+            ),
+          ]),
+          const Divider(height: kDefaultPadding),
+          const SizedBox(height: kDefaultPadding / 2),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: const [Text('Velikost písma'), FontSizeSlider()],
+          ),
+        ],
       ),
     );
   }

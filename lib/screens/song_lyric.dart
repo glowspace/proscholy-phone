@@ -100,7 +100,6 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
     final theme = Theme.of(context);
     final mediaQuery = MediaQuery.of(context);
 
-    final settingsProvider = context.read<SettingsProvider>();
     final navigationProvider = NavigationProvider.of(context);
 
     final backgroundColor = theme.brightness.isLight ? theme.colorScheme.surface : theme.scaffoldBackgroundColor;
@@ -234,8 +233,9 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
           backgroundColor: backgroundColor,
           body: SafeArea(
             child: GestureDetector(
-              onScaleStart: settingsProvider.fontScaleStarted,
-              onScaleUpdate: settingsProvider.fontScaleUpdated,
+              // TODO: handle this inside this widget
+              // onScaleStart: settingsProvider.fontScaleStarted,
+              // onScaleUpdate: settingsProvider.fontScaleUpdated,
               onTap: () => setState(() => _fullscreen = !_fullscreen),
               behavior: HitTestBehavior.translucent,
               child: PageView.builder(

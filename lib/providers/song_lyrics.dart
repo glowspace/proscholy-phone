@@ -17,11 +17,11 @@ mixin _Filterable on SongLyricsProvider {
   final Map<TagType, List<Tag>> _selectedTagsByType = {};
   final Map<int, Tag> _selectedTags = {};
 
-  List<TagsSection> _tagsSections = [];
+  // List<TagsSection> _tagsSections = [];
 
   List<Tag> get selectedTags => _selectedTags.values.toList();
 
-  List<TagsSection> get tagsSections => _tagsSections;
+  // List<TagsSection> get tagsSections => _tagsSections;
 
   bool isSelected(Tag tag) => _selectedTags.containsKey(tag.id);
 
@@ -50,7 +50,7 @@ mixin _Filterable on SongLyricsProvider {
     final Map<TagType, List<Tag>> tagsMap = {};
 
     for (final tag in tags) {
-      if (!tag.type.supported) continue;
+      if (!tag.type.isSupported) continue;
 
       final type = tag.type;
 
@@ -59,9 +59,9 @@ mixin _Filterable on SongLyricsProvider {
       tagsMap[type]?.add(tag);
     }
 
-    _tagsSections = tagsMap.entries.map((entry) => TagsSection(entry.key.description, entry.value)).toList();
+    // _tagsSections = tagsMap.entries.map((entry) => TagsSection(entry.key.description, entry.value)).toList();
 
-    _tagsSections.sort((first, second) => first.tags[0].type.rawValue.compareTo(second.tags[0].type.rawValue));
+    // _tagsSections.sort((first, second) => first.tags[0].type.rawValue.compareTo(second.tags[0].type.rawValue));
   }
 
   List<SongLyric> _filter(List<SongLyric> songLyrics) {

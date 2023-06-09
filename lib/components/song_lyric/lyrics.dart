@@ -1,8 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/settings.dart';
 import 'package:zpevnik/components/song_lyric/utils/converter.dart';
@@ -10,17 +10,17 @@ import 'package:zpevnik/components/song_lyric/utils/lyrics_controller.dart';
 import 'package:zpevnik/components/song_lyric/utils/parser.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
-class LyricsWidget extends StatefulWidget {
+class LyricsWidget extends ConsumerStatefulWidget {
   final LyricsController controller;
   final ScrollController? scrollController;
 
   const LyricsWidget({Key? key, required this.controller, this.scrollController}) : super(key: key);
 
   @override
-  State<LyricsWidget> createState() => _LyricsWidgetState();
+  ConsumerState<LyricsWidget> createState() => _LyricsWidgetState();
 }
 
-class _LyricsWidgetState extends State<LyricsWidget> {
+class _LyricsWidgetState extends ConsumerState<LyricsWidget> {
   @override
   void initState() {
     super.initState();
@@ -47,7 +47,7 @@ class _LyricsWidgetState extends State<LyricsWidget> {
     final theme = Theme.of(context);
     final width = MediaQuery.of(context).size.width;
 
-    final fontSizeScale = context.select<SettingsProvider, double>((provider) => provider.fontSizeScale);
+    final fontSizeScale = ref.watch(settingsProvider.select((settings) => settings.fontSizeScale));
 
     return SingleChildScrollView(
       controller: widget.scrollController,
@@ -88,7 +88,7 @@ class _LyricsWidgetState extends State<LyricsWidget> {
   }
 
   Widget _buildLyrics(BuildContext context) {
-    final fontSizeScale = context.select<SettingsProvider, double>((provider) => provider.fontSizeScale);
+    final fontSizeScale = ref.watch(settingsProvider.select((settings) => settings.fontSizeScale));
 
     final List<Widget> children = [];
 
@@ -120,7 +120,7 @@ class _LyricsWidgetState extends State<LyricsWidget> {
   }
 
   Widget _buildInterlude(BuildContext context, Interlude interlude) {
-    final fontSizeScale = context.select<SettingsProvider, double>((provider) => provider.fontSizeScale);
+    final fontSizeScale = ref.watch(settingsProvider.select((settings) => settings.fontSizeScale));
 
     final List<Widget> children = [];
     Token? currentToken = widget.controller.parser.nextToken;
@@ -151,7 +151,7 @@ class _LyricsWidgetState extends State<LyricsWidget> {
   }
 
   Widget _buildVerse(BuildContext context, VerseNumber number) {
-    final fontSizeScale = context.select<SettingsProvider, double>((provider) => provider.fontSizeScale);
+    final fontSizeScale = ref.watch(settingsProvider.select((settings) => settings.fontSizeScale));
 
     final textStyle = _textStyle(context, number.verseHasChord);
 
@@ -183,7 +183,7 @@ class _LyricsWidgetState extends State<LyricsWidget> {
   }
 
   Widget _buildLine(BuildContext context, Token token, TextStyle? textStyle, {bool isInterlude = false}) {
-    final fontSizeScale = context.select<SettingsProvider, double>((provider) => provider.fontSizeScale);
+    final fontSizeScale = ref.watch(settingsProvider.select((settings) => settings.fontSizeScale));
 
     final List<InlineSpan> children = [];
 
@@ -221,7 +221,7 @@ class _LyricsWidgetState extends State<LyricsWidget> {
   }
 
   Widget _buildComment(BuildContext context, Comment comment, bool hasChords) {
-    final fontSizeScale = context.select<SettingsProvider, double>((provider) => provider.fontSizeScale);
+    final fontSizeScale = ref.watch(settingsProvider.select((settings) => settings.fontSizeScale));
 
     final showChords = hasChords && widget.controller.showChords;
     final textStyle = Theme.of(context).textTheme.labelLarge?.copyWith(
@@ -234,7 +234,7 @@ class _LyricsWidgetState extends State<LyricsWidget> {
 
   WidgetSpan _buildChord(BuildContext context, Chord chord, TextStyle? textStyle,
       {VersePart? versePart, bool isInterlude = false}) {
-    final fontSizeScale = context.select<SettingsProvider, double>((provider) => provider.fontSizeScale);
+    final fontSizeScale = ref.watch(settingsProvider.select((settings) => settings.fontSizeScale));
 
     final chordOffset = isInterlude ? 0.0 : -(textStyle?.fontSize ?? 0);
 
@@ -283,7 +283,7 @@ class _LyricsWidgetState extends State<LyricsWidget> {
   }
 
   Widget _buildAuthors(BuildContext context) {
-    final fontSizeScale = context.select<SettingsProvider, double>((provider) => provider.fontSizeScale);
+    final fontSizeScale = ref.watch(settingsProvider.select((settings) => settings.fontSizeScale));
 
     return Text(
       widget.controller.songLyric.authorsText,

@@ -110,7 +110,7 @@ class DataProvider extends ChangeNotifier {
 
   Playlist createPlaylist(String name) {
     final playlist = Playlist(name, 0);
-    _tags.add(Tag(_tagId--, playlist.name, TagType.playlist.rawValue));
+    // _tags.add(Tag(_tagId--, playlist.name, TagType.playlist.rawValue));
 
     for (var playlist in _playlists) {
       playlist.rank++;
@@ -126,7 +126,7 @@ class DataProvider extends ChangeNotifier {
 
   Playlist duplicatePlaylist(Playlist playlist, String name) {
     final duplicatedPlaylist = Playlist(name, 0);
-    _tags.add(Tag(_tagId--, duplicatedPlaylist.name, TagType.playlist.rawValue));
+    // _tags.add(Tag(_tagId--, duplicatedPlaylist.name, TagType.playlist.rawValue));
 
     for (var playlist in _playlists) {
       playlist.rank++;
@@ -148,7 +148,7 @@ class DataProvider extends ChangeNotifier {
 
     playlist.name = name;
 
-    _tags[index] = Tag(_tags[index].id, playlist.name, TagType.playlist.rawValue);
+    // _tags[index] = Tag(_tags[index].id, playlist.name, TagType.playlist.rawValue);
 
     store.box<Playlist>().put(playlist);
 
@@ -176,7 +176,7 @@ class DataProvider extends ChangeNotifier {
     }
 
     _tags.removeWhere((tag) => tag.type == TagType.playlist && tag.name != _favorites.name);
-    _tags.addAll(_playlists.map((playlist) => Tag(_tagId--, playlist.name, TagType.playlist.rawValue)));
+    // _tags.addAll(_playlists.map((playlist) => Tag(_tagId--, playlist.name, TagType.playlist.rawValue)));
 
     store.box<Playlist>().putMany(_playlists);
 
@@ -200,7 +200,7 @@ class DataProvider extends ChangeNotifier {
     _songbooks.sort();
 
     _tags.removeWhere((tag) => tag.type == TagType.songbook);
-    _tags.addAll(_songbooks.map((songbook) => Tag(_tagId--, songbook.name, TagType.songbook.rawValue)));
+    // _tags.addAll(_songbooks.map((songbook) => Tag(_tagId--, songbook.name, TagType.songbook.rawValue)));
 
     notifyListeners();
   }
@@ -241,8 +241,8 @@ class DataProvider extends ChangeNotifier {
     }
 
     await Future.wait([
-      store.runInTransactionAsync(TxMode.read, NewsItem.load, null).then((newsItems) => _newsItems = newsItems),
-      store.runInTransactionAsync(TxMode.read, Tag.load, null).then((tags) => _tags = tags),
+      // store.runInTransactionAsync(TxMode.read, NewsItem.load, null).then((newsItems) => _newsItems = newsItems),
+      // store.runInTransactionAsync(TxMode.read, Tag.load, null).then((tags) => _tags = tags),
     ]);
 
     // TODO: find out how to load this asynchronously
@@ -262,15 +262,15 @@ class DataProvider extends ChangeNotifier {
 
     _addLanguagesToTags();
 
-    _tags.addAll(songbooks.map((songbook) {
-      final tag = Tag(_tagId--, songbook.name, TagType.songbook.rawValue);
+    // _tags.addAll(songbooks.map((songbook) {
+    //   final tag = Tag(_tagId--, songbook.name, TagType.songbook.rawValue);
 
-      _tagsBySongbookName[songbook.name] = tag;
+    //   _tagsBySongbookName[songbook.name] = tag;
 
-      return tag;
-    }));
-    _tags.add(Tag(_tagId--, _favorites.name, TagType.playlist.rawValue));
-    _tags.addAll(playlists.map((playlist) => Tag(_tagId--, playlist.name, TagType.playlist.rawValue)));
+    //   return tag;
+    // }));
+    // _tags.add(Tag(_tagId--, _favorites.name, TagType.playlist.rawValue));
+    // _tags.addAll(playlists.map((playlist) => Tag(_tagId--, playlist.name, TagType.playlist.rawValue)));
 
     notifyListeners();
   }
@@ -289,9 +289,9 @@ class DataProvider extends ChangeNotifier {
     final List<Tag> languageTags = [];
 
     for (final language in languages.keys) {
-      final tag = Tag(_tagId--, language, TagType.language.rawValue);
+      // final tag = Tag(_tagId--, language, TagType.language.rawValue);
 
-      languageTags.add(tag);
+      // languageTags.add(tag);
     }
 
     languageTags.sort((first, second) => languages[second.name]!.compareTo(languages[first.name]!));
