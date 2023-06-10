@@ -19,6 +19,7 @@ import '../models/external.dart';
 import '../models/news_item.dart';
 import '../models/playlist.dart';
 import '../models/playlist_record.dart';
+import '../models/settings.dart';
 import '../models/song.dart';
 import '../models/song_lyric.dart';
 import '../models/songbook.dart';
@@ -142,7 +143,7 @@ final _entities = <ModelEntity>[
   ModelEntity(
       id: const IdUid(11, 6447883453535376640),
       name: 'SongLyric',
-      lastPropertyId: const IdUid(26, 4952449864415835601),
+      lastPropertyId: const IdUid(30, 877463639476040784),
       flags: 0,
       properties: <ModelProperty>[
         ModelProperty(
@@ -203,17 +204,24 @@ final _entities = <ModelEntity>[
             type: 1,
             flags: 0),
         ModelProperty(
-            id: const IdUid(22, 4355414326890607438),
+            id: const IdUid(27, 6634000943299233800),
+            name: 'settingsId',
+            type: 11,
+            flags: 520,
+            indexId: const IdUid(24, 3194090501901701737),
+            relationTarget: 'SongLyricSettingsModel'),
+        ModelProperty(
+            id: const IdUid(28, 2248651936251834385),
             name: 'accidentals',
             type: 6,
             flags: 0),
         ModelProperty(
-            id: const IdUid(23, 7347294181262392126),
+            id: const IdUid(29, 2725133101306089103),
             name: 'showChords',
             type: 1,
             flags: 0),
         ModelProperty(
-            id: const IdUid(24, 8592014509296857970),
+            id: const IdUid(30, 877463639476040784),
             name: 'transposition',
             type: 6,
             flags: 0)
@@ -394,6 +402,35 @@ final _entities = <ModelEntity>[
             relationTarget: 'Songbook')
       ],
       relations: <ModelRelation>[],
+      backlinks: <ModelBacklink>[]),
+  ModelEntity(
+      id: const IdUid(26, 2579025596415757190),
+      name: 'SongLyricSettingsModel',
+      lastPropertyId: const IdUid(4, 2158821106708501781),
+      flags: 0,
+      properties: <ModelProperty>[
+        ModelProperty(
+            id: const IdUid(1, 4510330000821768000),
+            name: 'id',
+            type: 6,
+            flags: 129),
+        ModelProperty(
+            id: const IdUid(2, 955041504416303189),
+            name: 'showChords',
+            type: 1,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(3, 7993064974507732675),
+            name: 'accidentals',
+            type: 6,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(4, 2158821106708501781),
+            name: 'transposition',
+            type: 6,
+            flags: 0)
+      ],
+      relations: <ModelRelation>[],
       backlinks: <ModelBacklink>[])
 ];
 
@@ -417,8 +454,8 @@ Future<Store> openStore(
 ModelDefinition getObjectBoxModel() {
   final model = ModelInfo(
       entities: _entities,
-      lastEntityId: const IdUid(23, 7160511514999660732),
-      lastIndexId: const IdUid(23, 5242048903287845208),
+      lastEntityId: const IdUid(26, 2579025596415757190),
+      lastIndexId: const IdUid(24, 3194090501901701737),
       lastRelationId: const IdUid(9, 8422971963228606271),
       lastSequenceId: const IdUid(0, 0),
       retiredEntityUids: const [
@@ -434,7 +471,9 @@ ModelDefinition getObjectBoxModel() {
         4858060119845349265,
         7232145165103886962,
         2597589184475292283,
-        5411092516801734488
+        5411092516801734488,
+        6986594521625743802,
+        2522739531388194317
       ],
       retiredIndexUids: const [
         9023521533068155021,
@@ -539,7 +578,18 @@ ModelDefinition getObjectBoxModel() {
         7280372561955828184,
         1444001612510512690,
         6355653792151155048,
-        6969151749899368053
+        6969151749899368053,
+        5645385055775181315,
+        5885944739107639076,
+        609104550284394923,
+        3025155449914660591,
+        9117540678062583315,
+        8545806207006443860,
+        6997166501319242202,
+        8450811010030069419,
+        4355414326890607438,
+        7347294181262392126,
+        8592014509296857970
       ],
       retiredRelationUids: const [
         7916874752771113838,
@@ -725,7 +775,7 @@ ModelDefinition getObjectBoxModel() {
         }),
     SongLyric: EntityDefinition<SongLyric>(
         model: _entities[4],
-        toOneRelations: (SongLyric object) => [object.song],
+        toOneRelations: (SongLyric object) => [object.song, object.settings],
         toManyRelations: (SongLyric object) => {
               RelInfo<SongLyric>.toMany(6, object.id): object.authors,
               RelInfo<SongLyric>.toMany(7, object.id): object.tags,
@@ -765,7 +815,7 @@ ModelDefinition getObjectBoxModel() {
           final langDescriptionOffset = object.langDescription == null
               ? null
               : fbb.writeString(object.langDescription!);
-          fbb.startTable(27);
+          fbb.startTable(31);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, nameOffset);
           fbb.addOffset(2, secondaryName1Offset);
@@ -777,9 +827,10 @@ ModelDefinition getObjectBoxModel() {
           fbb.addInt64(8, object.song.targetId);
           fbb.addInt64(10, object.dbType);
           fbb.addBool(11, object.hasChords);
-          fbb.addInt64(21, object.accidentals);
-          fbb.addBool(22, object.showChords);
-          fbb.addInt64(23, object.transposition);
+          fbb.addInt64(26, object.settings.targetId);
+          fbb.addInt64(27, object.accidentals);
+          fbb.addBool(28, object.showChords);
+          fbb.addInt64(29, object.transposition);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -806,14 +857,17 @@ ModelDefinition getObjectBoxModel() {
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 24, 0),
               const fb.BoolReader().vTableGet(buffer, rootOffset, 26, false))
             ..accidentals =
-                const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 46)
+                const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 58)
             ..showChords =
-                const fb.BoolReader().vTableGetNullable(buffer, rootOffset, 48)
+                const fb.BoolReader().vTableGetNullable(buffer, rootOffset, 60)
             ..transposition =
-                const fb.Int64Reader().vTableGet(buffer, rootOffset, 50, 0);
+                const fb.Int64Reader().vTableGet(buffer, rootOffset, 62, 0);
           object.song.targetId =
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 20, 0);
           object.song.attach(store);
+          object.settings.targetId =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 56, 0);
+          object.settings.attach(store);
           InternalToManyAccess.setRelInfo<SongLyric>(
               object.authors, store, RelInfo<SongLyric>.toMany(6, object.id));
           InternalToManyAccess.setRelInfo<SongLyric>(
@@ -1032,6 +1086,44 @@ ModelDefinition getObjectBoxModel() {
           object.songLyric.attach(store);
           object.songbook.attach(store);
           return object;
+        }),
+    SongLyricSettingsModel: EntityDefinition<SongLyricSettingsModel>(
+        model: _entities[10],
+        toOneRelations: (SongLyricSettingsModel object) => [],
+        toManyRelations: (SongLyricSettingsModel object) => {},
+        getId: (SongLyricSettingsModel object) => object.id,
+        setId: (SongLyricSettingsModel object, int id) {
+          if (object.id != id) {
+            throw ArgumentError('Field SongLyricSettingsModel.id is read-only '
+                '(final or getter-only) and it was declared to be self-assigned. '
+                'However, the currently inserted object (.id=${object.id}) '
+                "doesn't match the inserted ID (ID $id). "
+                'You must assign an ID before calling [box.put()].');
+          }
+        },
+        objectToFB: (SongLyricSettingsModel object, fb.Builder fbb) {
+          fbb.startTable(5);
+          fbb.addInt64(0, object.id);
+          fbb.addBool(1, object.showChords);
+          fbb.addInt64(2, object.accidentals);
+          fbb.addInt64(3, object.transposition);
+          fbb.finish(fbb.endTable());
+          return object.id;
+        },
+        objectFromFB: (Store store, ByteData fbData) {
+          final buffer = fb.BufferContext(fbData);
+          final rootOffset = buffer.derefObject(0);
+
+          final object = SongLyricSettingsModel(
+              id: const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0),
+              showChords:
+                  const fb.BoolReader().vTableGet(buffer, rootOffset, 6, false),
+              accidentals:
+                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 8, 0),
+              transposition:
+                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 10, 0));
+
+          return object;
         })
   };
 
@@ -1142,17 +1234,21 @@ class SongLyric_ {
   static final hasChords =
       QueryBooleanProperty<SongLyric>(_entities[4].properties[10]);
 
+  /// see [SongLyric.settings]
+  static final settings = QueryRelationToOne<SongLyric, SongLyricSettingsModel>(
+      _entities[4].properties[11]);
+
   /// see [SongLyric.accidentals]
   static final accidentals =
-      QueryIntegerProperty<SongLyric>(_entities[4].properties[11]);
+      QueryIntegerProperty<SongLyric>(_entities[4].properties[12]);
 
   /// see [SongLyric.showChords]
   static final showChords =
-      QueryBooleanProperty<SongLyric>(_entities[4].properties[12]);
+      QueryBooleanProperty<SongLyric>(_entities[4].properties[13]);
 
   /// see [SongLyric.transposition]
   static final transposition =
-      QueryIntegerProperty<SongLyric>(_entities[4].properties[13]);
+      QueryIntegerProperty<SongLyric>(_entities[4].properties[14]);
 
   /// see [SongLyric.authors]
   static final authors =
@@ -1253,4 +1349,23 @@ class SongbookRecord_ {
   /// see [SongbookRecord.songbook]
   static final songbook =
       QueryRelationToOne<SongbookRecord, Songbook>(_entities[9].properties[3]);
+}
+
+/// [SongLyricSettingsModel] entity fields to define ObjectBox queries.
+class SongLyricSettingsModel_ {
+  /// see [SongLyricSettingsModel.id]
+  static final id =
+      QueryIntegerProperty<SongLyricSettingsModel>(_entities[10].properties[0]);
+
+  /// see [SongLyricSettingsModel.showChords]
+  static final showChords =
+      QueryBooleanProperty<SongLyricSettingsModel>(_entities[10].properties[1]);
+
+  /// see [SongLyricSettingsModel.accidentals]
+  static final accidentals =
+      QueryIntegerProperty<SongLyricSettingsModel>(_entities[10].properties[2]);
+
+  /// see [SongLyricSettingsModel.transposition]
+  static final transposition =
+      QueryIntegerProperty<SongLyricSettingsModel>(_entities[10].properties[3]);
 }

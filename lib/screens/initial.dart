@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:provider/provider.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:zpevnik/components/highlightable.dart';
@@ -7,6 +8,7 @@ import 'package:zpevnik/components/section.dart';
 import 'package:zpevnik/components/sign_in_button.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/components/custom/future_builder.dart';
+import 'package:zpevnik/providers/app_dependencies.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/screens/content.dart';
 
@@ -21,14 +23,14 @@ const _animationDuration = Duration(milliseconds: 800);
 
 const _loggedInKey = 'loggedIn';
 
-class InitialScreen extends StatefulWidget {
+class InitialScreen extends ConsumerStatefulWidget {
   const InitialScreen({Key? key}) : super(key: key);
 
   @override
-  State<InitialScreen> createState() => _InitialScreenState();
+  ConsumerState<InitialScreen> createState() => _InitialScreenState();
 }
 
-class _InitialScreenState extends State<InitialScreen> {
+class _InitialScreenState extends ConsumerState<InitialScreen> {
   bool _showSignInButtons = false;
 
   @override
@@ -137,7 +139,9 @@ class _InitialScreenState extends State<InitialScreen> {
   }
 
   Future<void> _init() async {
-    await context.read<DataProvider>().init();
+    await context
+        .read<DataProvider>()
+        .init(ref.read(appDependenciesProvider.select((appDependencies) => appDependencies.store)));
 
     _pushHomeScreen(context);
 

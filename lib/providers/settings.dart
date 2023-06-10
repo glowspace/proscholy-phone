@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:zpevnik/models/objectbox.g.dart';
 import 'package:zpevnik/models/settings.dart';
+import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/app_dependencies.dart';
 
 part 'settings.g.dart';
@@ -41,4 +43,71 @@ class Settings extends _$Settings {
   void changeShowChords(bool showChords) => state = state.copyWith(showChords: showChords);
 
   void changeAccidentals(int accidentals) => state = state.copyWith(accidentals: accidentals);
+}
+
+@riverpod
+class SongLyricSettings extends _$SongLyricSettings {
+  // TODO: support individual settings also for playlist records
+  @override
+  SongLyricSettingsModel build(SongLyric songLyric) {
+    ref.listenSelf((_, newValue) {
+      // TODO: remove old settings when migrating from older versions, remove it after some time
+      if (newValue.showChords != songLyric.showChords ||
+          newValue.accidentals != songLyric.accidentals ||
+          newValue.transposition != songLyric.transposition) {
+        songLyric.showChords = true;
+        songLyric.accidentals = 1;
+        songLyric.transposition;
+      }
+
+      songLyric.settings.target = newValue == defaultSongLyricSettings ? null : newValue;
+
+      ref
+          .read(appDependenciesProvider.select((appDependencies) => appDependencies.store))
+          .box<SongLyric>()
+          .put(songLyric);
+    });
+
+    // TODO: copyWith is only used to preserve settings from older versions, remove it after some time
+    return songLyric.settings.target ??
+        defaultSongLyricSettings.copyWith(
+          showChords: songLyric.showChords ?? true,
+          accidentals: songLyric.accidentals ?? 1,
+          transposition: songLyric.transposition,
+        );
+  }
+
+  void changeShowChords(bool showChords) => _updateState(state.copyWith(showChords: showChords));
+
+  void changeAccidentals(int accidentals) => _updateState(state.copyWith(accidentals: accidentals));
+
+  void changeTransposition(int transposition) =>
+      _updateState(state.copyWith(transposition: state.transposition + transposition));
+
+  void reset() => _updateState(defaultSongLyricSettings);
+
+  void _updateState(SongLyricSettingsModel songLyricSettings) {
+    final songLyricSettingsBox = ref
+        .read(appDependenciesProvider.select((appDependencies) => appDependencies.store))
+        .box<SongLyricSettingsModel>();
+
+    if (songLyricSettings == defaultSongLyricSettings) {
+      songLyricSettingsBox.remove(state.id);
+    } else {
+      // decide id for new objects
+      if (songLyricSettings.id == 0) {
+        final queryBuilder = songLyricSettingsBox.query()..order(SongLyricSettingsModel_.id, flags: Order.descending);
+        final query = queryBuilder.build();
+        final lastId = query.findFirst()?.id ?? 0;
+
+        query.close();
+
+        songLyricSettings = songLyricSettings.copyWith(id: lastId + 1);
+      }
+
+      songLyricSettingsBox.put(songLyricSettings);
+    }
+
+    state = songLyricSettings;
+  }
 }

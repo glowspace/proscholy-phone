@@ -97,7 +97,8 @@ class _LyricsWidgetState extends ConsumerState<LyricsWidget> {
       if (currentToken is Comment) {
         children.add(_buildComment(context, currentToken, false));
       } else if (currentToken is Interlude) {
-        if (widget.controller.showChords) {
+        if (ref.watch(songLyricSettingsProvider(widget.controller.songLyric)
+            .select((songLyricSettings) => songLyricSettings.showChords))) {
           children.add(_buildInterlude(context, currentToken));
         } else {
           while (currentToken != null && currentToken is! InterludeEnd) {
@@ -191,13 +192,17 @@ class _LyricsWidgetState extends ConsumerState<LyricsWidget> {
     Chord? currentChord;
     while (currentToken != null && currentToken is! NewLine) {
       if (currentToken is VersePart) {
-        if (currentChord == null || !widget.controller.showChords) {
+        if (currentChord == null ||
+            ref.watch(songLyricSettingsProvider(widget.controller.songLyric)
+                .select((songLyricSettings) => !songLyricSettings.showChords))) {
           children.add(WidgetSpan(child: Text(currentToken.value, style: textStyle)));
         } else {
           children.add(_buildChord(context, currentChord, textStyle, versePart: currentToken));
           currentChord = null;
         }
-      } else if (currentToken is Chord && widget.controller.showChords) {
+      } else if (currentToken is Chord &&
+          ref.watch(songLyricSettingsProvider(widget.controller.songLyric)
+              .select((songLyricSettings) => songLyricSettings.showChords))) {
         if (isInterlude) {
           children.add(_buildChord(context, currentToken, textStyle, isInterlude: true));
         } else if (currentChord != null) {
@@ -210,7 +215,10 @@ class _LyricsWidgetState extends ConsumerState<LyricsWidget> {
       currentToken = widget.controller.parser.nextToken;
     }
 
-    if (!isInterlude && currentChord != null && widget.controller.showChords) {
+    if (!isInterlude &&
+        currentChord != null &&
+        ref.watch(songLyricSettingsProvider(widget.controller.songLyric)
+            .select((songLyricSettings) => songLyricSettings.showChords))) {
       children.add(_buildChord(context, currentChord, textStyle));
     }
 
@@ -223,7 +231,9 @@ class _LyricsWidgetState extends ConsumerState<LyricsWidget> {
   Widget _buildComment(BuildContext context, Comment comment, bool hasChords) {
     final fontSizeScale = ref.watch(settingsProvider.select((settings) => settings.fontSizeScale));
 
-    final showChords = hasChords && widget.controller.showChords;
+    final showChords = hasChords &&
+        ref.watch(songLyricSettingsProvider(widget.controller.songLyric)
+            .select((songLyricSettings) => songLyricSettings.showChords));
     final textStyle = Theme.of(context).textTheme.labelLarge?.copyWith(
           fontStyle: FontStyle.italic,
           height: showChords ? 2.5 : 1.5,
@@ -239,7 +249,12 @@ class _LyricsWidgetState extends ConsumerState<LyricsWidget> {
     final chordOffset = isInterlude ? 0.0 : -(textStyle?.fontSize ?? 0);
 
     String chordText = convertAccidentals(
-        transpose(chord.value, widget.controller.songLyric.transposition), widget.controller.accidentals);
+        transpose(
+            chord.value,
+            ref.watch(songLyricSettingsProvider(widget.controller.songLyric)
+                .select((songLyricSettings) => songLyricSettings.transposition))),
+        ref.watch(songLyricSettingsProvider(widget.controller.songLyric)
+            .select((songLyricSettings) => songLyricSettings.accidentals)));
 
     int chordNumberIndex = chordText.indexOf('maj');
     if (chordNumberIndex == -1) {
@@ -293,7 +308,9 @@ class _LyricsWidgetState extends ConsumerState<LyricsWidget> {
   }
 
   TextStyle? _textStyle(BuildContext context, bool hasChords) {
-    final showChords = hasChords && widget.controller.showChords;
+    final showChords = hasChords &&
+        ref.watch(songLyricSettingsProvider(widget.controller.songLyric)
+            .select((songLyricSettings) => songLyricSettings.showChords));
 
     return Theme.of(context).textTheme.bodyMedium?.copyWith(height: showChords ? 2.5 : 1.5);
   }

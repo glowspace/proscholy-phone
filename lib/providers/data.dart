@@ -80,11 +80,11 @@ class DataProvider extends ChangeNotifier {
     return songLyrics;
   }
 
-  Future<void> init() async {
+  Future<void> init(Store store) async {
     prefs = await SharedPreferences.getInstance();
     packageInfo = await PackageInfo.fromPlatform();
 
-    store = await openStore();
+    this.store = store;
 
     updater = Updater(store, prefs);
     songLyricsSearch = SongLyricsSearch();

@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:objectbox/objectbox.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -13,5 +14,6 @@ AppDependencies appDependencies(AppDependenciesRef ref) => throw UnimplementedEr
 class AppDependencies with _$AppDependencies {
   const factory AppDependencies({
     required SharedPreferences sharedPreferences,
+    required Store store,
   }) = _AppDependencies;
 }

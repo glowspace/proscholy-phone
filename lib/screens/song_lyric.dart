@@ -291,7 +291,7 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
       showModalBottomSheet(
         context: context,
         shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(kDefaultRadius))),
-        builder: (context) => SongLyricSettingsWidget(controller: _lyricsController),
+        builder: (context) => SongLyricSettingsWidget(songLyric: _songLyric),
       );
     }
   }

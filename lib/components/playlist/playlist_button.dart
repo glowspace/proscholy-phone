@@ -93,7 +93,7 @@ class PlaylistButton extends StatelessWidget {
     final songLyricsTranspositions = context
         .read<DataProvider>()
         .getPlaylistsSongLyrics(playlist)
-        .map((songLyric) => songLyric.transposition)
+        .map((songLyric) => songLyric.settings.target?.transposition ?? 0)
         .toList()
         .join(',');
 

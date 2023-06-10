@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zpevnik/firebase_options.dart';
+import 'package:zpevnik/models/objectbox.g.dart';
 import 'package:zpevnik/providers/app_dependencies.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/navigation.dart';
@@ -26,6 +27,7 @@ Future<void> main() async {
 
   final appDependencies = AppDependencies(
     sharedPreferences: await SharedPreferences.getInstance(),
+    store: await openStore(),
   );
 
   void appRunner() => runApp(ProviderScope(

@@ -1,37 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/selector_widget.dart';
-import 'package:zpevnik/components/song_lyric/utils/lyrics_controller.dart';
+import 'package:zpevnik/models/song_lyric.dart';
+import 'package:zpevnik/providers/settings.dart';
 
 const double _settingsOptionsWidth = 120;
 
-class SongLyricSettingsWidget extends StatefulWidget {
-  final LyricsController controller;
+class SongLyricSettingsWidget extends ConsumerWidget {
+  final SongLyric songLyric;
 
-  const SongLyricSettingsWidget({Key? key, required this.controller}) : super(key: key);
-
-  @override
-  State<StatefulWidget> createState() => _SongLyricSettingsWidget();
-}
-
-class _SongLyricSettingsWidget extends State<SongLyricSettingsWidget> {
-  @override
-  void initState() {
-    super.initState();
-
-    widget.controller.addListener(_update);
-  }
+  const SongLyricSettingsWidget({super.key, required this.songLyric});
 
   @override
-  void dispose() {
-    super.dispose();
-
-    widget.controller.removeListener(_update);
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final accidentalsStyle = theme.textTheme.bodyMedium?.copyWith(fontSize: 20, fontFamily: 'Hiragino Sans');
 
@@ -51,24 +34,31 @@ class _SongLyricSettingsWidget extends State<SongLyricSettingsWidget> {
                 const SizedBox(height: kDefaultPadding / 2),
                 Row(children: [
                   const Expanded(child: Text('Posuvky')),
-                  SelectorWidget(
-                    onSelected: widget.controller.accidentalsChanged,
-                    options: [
-                      Text('#', style: accidentalsStyle, textAlign: TextAlign.center),
-                      Text('♭', style: accidentalsStyle, textAlign: TextAlign.center)
-                    ],
-                    selected: widget.controller.accidentals,
-                    width: _settingsOptionsWidth,
+                  Consumer(
+                    builder: (_, ref, __) => SelectorWidget(
+                      onSelected: ref.read(songLyricSettingsProvider(songLyric).notifier).changeAccidentals,
+                      options: [
+                        Text('#', style: accidentalsStyle, textAlign: TextAlign.center),
+                        Text('♭', style: accidentalsStyle, textAlign: TextAlign.center)
+                      ],
+                      selected: ref.watch(songLyricSettingsProvider(songLyric)
+                          .select((songLyricSettings) => songLyricSettings.accidentals)),
+                      width: _settingsOptionsWidth,
+                    ),
                   ),
                 ]),
                 const SizedBox(height: kDefaultPadding / 2),
                 Row(children: [
                   const Expanded(child: Text('Akordy')),
-                  SelectorWidget(
-                    onSelected: (index) => widget.controller.showChordsChanged(index == 1),
-                    options: const [Icon(Icons.visibility_off, size: 20), Icon(Icons.visibility, size: 20)],
-                    selected: widget.controller.showChords ? 1 : 0,
-                    width: _settingsOptionsWidth,
+                  Consumer(
+                    builder: (_, ref, __) => SelectorWidget(
+                      onSelected: (index) =>
+                          ref.read(songLyricSettingsProvider(songLyric).notifier).changeShowChords(index == 1),
+                      options: const [Icon(Icons.visibility_off, size: 20), Icon(Icons.visibility, size: 20)],
+                      selected: ref.watch(songLyricSettingsProvider(songLyric)
+                          .select((songLyricSettings) => songLyricSettings.showChords ? 1 : 0)),
+                      width: _settingsOptionsWidth,
+                    ),
                   ),
                 ]),
                 const SizedBox(height: kDefaultPadding / 2),
@@ -76,7 +66,7 @@ class _SongLyricSettingsWidget extends State<SongLyricSettingsWidget> {
             ),
           ),
           HighlightableTextButton(
-            onTap: widget.controller.resetSettings,
+            onTap: ref.read(songLyricSettingsProvider(songLyric).notifier).reset,
             padding: const EdgeInsets.all(kDefaultPadding),
             textStyle: theme.textTheme.bodySmall,
             child: const Text('Resetovat nastavení'),
@@ -89,21 +79,26 @@ class _SongLyricSettingsWidget extends State<SongLyricSettingsWidget> {
   Widget _buildTranspositionStepper(BuildContext context) {
     return SizedBox(
       width: _settingsOptionsWidth,
-      child: Row(children: [
-        HighlightableIconButton(
-          padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 4),
-          onTap: () => widget.controller.changeTransposition(-1),
-          icon: const Icon(Icons.remove),
-        ),
-        Expanded(child: Text('${widget.controller.songLyric.transposition}', textAlign: TextAlign.center)),
-        HighlightableIconButton(
-          padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 4),
-          onTap: () => widget.controller.changeTransposition(1),
-          icon: const Icon(Icons.add),
-        ),
-      ]),
+      child: Consumer(
+        builder: (_, ref, __) => Row(children: [
+          HighlightableIconButton(
+            padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 4),
+            onTap: () => ref.read(songLyricSettingsProvider(songLyric).notifier).changeTransposition(-1),
+            icon: const Icon(Icons.remove),
+          ),
+          Expanded(
+            child: Text(
+              '${ref.watch(songLyricSettingsProvider(songLyric).select((songLyricSettings) => songLyricSettings.transposition))}',
+              textAlign: TextAlign.center,
+            ),
+          ),
+          HighlightableIconButton(
+            padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 4),
+            onTap: () => ref.read(songLyricSettingsProvider(songLyric).notifier).changeTransposition(1),
+            icon: const Icon(Icons.add),
+          ),
+        ]),
+      ),
     );
   }
-
-  void _update() => setState(() {});
 }

@@ -220,29 +220,36 @@ abstract class _GlobalSettings implements GlobalSettings {
 }
 
 /// @nodoc
-mixin _$SongLyricSettings {
-  bool? get showChords => throw _privateConstructorUsedError;
-  int? get accidentals => throw _privateConstructorUsedError;
-  int? get transposition => throw _privateConstructorUsedError;
+mixin _$SongLyricSettingsModel {
+  @Id(assignable: true)
+  int get id => throw _privateConstructorUsedError;
+  bool get showChords => throw _privateConstructorUsedError;
+  int get accidentals => throw _privateConstructorUsedError;
+  int get transposition => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
-  $SongLyricSettingsCopyWith<SongLyricSettings> get copyWith =>
+  $SongLyricSettingsModelCopyWith<SongLyricSettingsModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $SongLyricSettingsCopyWith<$Res> {
-  factory $SongLyricSettingsCopyWith(
-          SongLyricSettings value, $Res Function(SongLyricSettings) then) =
-      _$SongLyricSettingsCopyWithImpl<$Res, SongLyricSettings>;
+abstract class $SongLyricSettingsModelCopyWith<$Res> {
+  factory $SongLyricSettingsModelCopyWith(SongLyricSettingsModel value,
+          $Res Function(SongLyricSettingsModel) then) =
+      _$SongLyricSettingsModelCopyWithImpl<$Res, SongLyricSettingsModel>;
   @useResult
-  $Res call({bool? showChords, int? accidentals, int? transposition});
+  $Res call(
+      {@Id(assignable: true) int id,
+      bool showChords,
+      int accidentals,
+      int transposition});
 }
 
 /// @nodoc
-class _$SongLyricSettingsCopyWithImpl<$Res, $Val extends SongLyricSettings>
-    implements $SongLyricSettingsCopyWith<$Res> {
-  _$SongLyricSettingsCopyWithImpl(this._value, this._then);
+class _$SongLyricSettingsModelCopyWithImpl<$Res,
+        $Val extends SongLyricSettingsModel>
+    implements $SongLyricSettingsModelCopyWith<$Res> {
+  _$SongLyricSettingsModelCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -252,93 +259,116 @@ class _$SongLyricSettingsCopyWithImpl<$Res, $Val extends SongLyricSettings>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? showChords = freezed,
-    Object? accidentals = freezed,
-    Object? transposition = freezed,
+    Object? id = null,
+    Object? showChords = null,
+    Object? accidentals = null,
+    Object? transposition = null,
   }) {
     return _then(_value.copyWith(
-      showChords: freezed == showChords
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      showChords: null == showChords
           ? _value.showChords
           : showChords // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      accidentals: freezed == accidentals
+              as bool,
+      accidentals: null == accidentals
           ? _value.accidentals
           : accidentals // ignore: cast_nullable_to_non_nullable
-              as int?,
-      transposition: freezed == transposition
+              as int,
+      transposition: null == transposition
           ? _value.transposition
           : transposition // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
     ) as $Val);
   }
 }
 
 /// @nodoc
-abstract class _$$_SongLyricSettingsCopyWith<$Res>
-    implements $SongLyricSettingsCopyWith<$Res> {
-  factory _$$_SongLyricSettingsCopyWith(_$_SongLyricSettings value,
-          $Res Function(_$_SongLyricSettings) then) =
-      __$$_SongLyricSettingsCopyWithImpl<$Res>;
+abstract class _$$_SongLyricSettingsModelCopyWith<$Res>
+    implements $SongLyricSettingsModelCopyWith<$Res> {
+  factory _$$_SongLyricSettingsModelCopyWith(_$_SongLyricSettingsModel value,
+          $Res Function(_$_SongLyricSettingsModel) then) =
+      __$$_SongLyricSettingsModelCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({bool? showChords, int? accidentals, int? transposition});
+  $Res call(
+      {@Id(assignable: true) int id,
+      bool showChords,
+      int accidentals,
+      int transposition});
 }
 
 /// @nodoc
-class __$$_SongLyricSettingsCopyWithImpl<$Res>
-    extends _$SongLyricSettingsCopyWithImpl<$Res, _$_SongLyricSettings>
-    implements _$$_SongLyricSettingsCopyWith<$Res> {
-  __$$_SongLyricSettingsCopyWithImpl(
-      _$_SongLyricSettings _value, $Res Function(_$_SongLyricSettings) _then)
+class __$$_SongLyricSettingsModelCopyWithImpl<$Res>
+    extends _$SongLyricSettingsModelCopyWithImpl<$Res,
+        _$_SongLyricSettingsModel>
+    implements _$$_SongLyricSettingsModelCopyWith<$Res> {
+  __$$_SongLyricSettingsModelCopyWithImpl(_$_SongLyricSettingsModel _value,
+      $Res Function(_$_SongLyricSettingsModel) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? showChords = freezed,
-    Object? accidentals = freezed,
-    Object? transposition = freezed,
+    Object? id = null,
+    Object? showChords = null,
+    Object? accidentals = null,
+    Object? transposition = null,
   }) {
-    return _then(_$_SongLyricSettings(
-      showChords: freezed == showChords
+    return _then(_$_SongLyricSettingsModel(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      showChords: null == showChords
           ? _value.showChords
           : showChords // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      accidentals: freezed == accidentals
+              as bool,
+      accidentals: null == accidentals
           ? _value.accidentals
           : accidentals // ignore: cast_nullable_to_non_nullable
-              as int?,
-      transposition: freezed == transposition
+              as int,
+      transposition: null == transposition
           ? _value.transposition
           : transposition // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
     ));
   }
 }
 
 /// @nodoc
 
-class _$_SongLyricSettings implements _SongLyricSettings {
-  const _$_SongLyricSettings(
-      {this.showChords, this.accidentals, this.transposition});
+@Entity(realClass: SongLyricSettingsModel)
+class _$_SongLyricSettingsModel implements _SongLyricSettingsModel {
+  const _$_SongLyricSettingsModel(
+      {@Id(assignable: true) required this.id,
+      required this.showChords,
+      required this.accidentals,
+      required this.transposition});
 
   @override
-  final bool? showChords;
+  @Id(assignable: true)
+  final int id;
   @override
-  final int? accidentals;
+  final bool showChords;
   @override
-  final int? transposition;
+  final int accidentals;
+  @override
+  final int transposition;
 
   @override
   String toString() {
-    return 'SongLyricSettings(showChords: $showChords, accidentals: $accidentals, transposition: $transposition)';
+    return 'SongLyricSettingsModel(id: $id, showChords: $showChords, accidentals: $accidentals, transposition: $transposition)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_SongLyricSettings &&
+            other is _$_SongLyricSettingsModel &&
+            (identical(other.id, id) || other.id == id) &&
             (identical(other.showChords, showChords) ||
                 other.showChords == showChords) &&
             (identical(other.accidentals, accidentals) ||
@@ -349,30 +379,34 @@ class _$_SongLyricSettings implements _SongLyricSettings {
 
   @override
   int get hashCode =>
-      Object.hash(runtimeType, showChords, accidentals, transposition);
+      Object.hash(runtimeType, id, showChords, accidentals, transposition);
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_SongLyricSettingsCopyWith<_$_SongLyricSettings> get copyWith =>
-      __$$_SongLyricSettingsCopyWithImpl<_$_SongLyricSettings>(
+  _$$_SongLyricSettingsModelCopyWith<_$_SongLyricSettingsModel> get copyWith =>
+      __$$_SongLyricSettingsModelCopyWithImpl<_$_SongLyricSettingsModel>(
           this, _$identity);
 }
 
-abstract class _SongLyricSettings implements SongLyricSettings {
-  const factory _SongLyricSettings(
-      {final bool? showChords,
-      final int? accidentals,
-      final int? transposition}) = _$_SongLyricSettings;
+abstract class _SongLyricSettingsModel implements SongLyricSettingsModel {
+  const factory _SongLyricSettingsModel(
+      {@Id(assignable: true) required final int id,
+      required final bool showChords,
+      required final int accidentals,
+      required final int transposition}) = _$_SongLyricSettingsModel;
 
   @override
-  bool? get showChords;
+  @Id(assignable: true)
+  int get id;
   @override
-  int? get accidentals;
+  bool get showChords;
   @override
-  int? get transposition;
+  int get accidentals;
+  @override
+  int get transposition;
   @override
   @JsonKey(ignore: true)
-  _$$_SongLyricSettingsCopyWith<_$_SongLyricSettings> get copyWith =>
+  _$$_SongLyricSettingsModelCopyWith<_$_SongLyricSettingsModel> get copyWith =>
       throw _privateConstructorUsedError;
 }

@@ -1,9 +1,11 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:objectbox/objectbox.dart';
 
 part 'settings.freezed.dart';
 part 'settings.g.dart';
 
-const defaultGlobalSettings = GlobalSettings(fontSizeScale: 1, showChords: true, accidentals: 0);
+const defaultGlobalSettings = GlobalSettings(fontSizeScale: 1, showChords: true, accidentals: 1);
+const defaultSongLyricSettings = SongLyricSettingsModel(id: 0, showChords: true, accidentals: 1, transposition: 0);
 
 @freezed
 class GlobalSettings with _$GlobalSettings {
@@ -18,10 +20,12 @@ class GlobalSettings with _$GlobalSettings {
 }
 
 @freezed
-class SongLyricSettings with _$SongLyricSettings {
-  const factory SongLyricSettings({
-    bool? showChords,
-    int? accidentals,
-    int? transposition,
-  }) = _SongLyricSettings;
+class SongLyricSettingsModel with _$SongLyricSettingsModel {
+  @Entity(realClass: SongLyricSettingsModel)
+  const factory SongLyricSettingsModel({
+    @Id(assignable: true) required int id,
+    required bool showChords,
+    required int accidentals,
+    required int transposition,
+  }) = _SongLyricSettingsModel;
 }

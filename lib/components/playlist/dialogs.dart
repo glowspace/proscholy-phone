@@ -89,7 +89,8 @@ void showAcceptSharedPlaylistDialog(
       final songLyric = dataProvider.getSongLyricById(songLyricId);
 
       if (songLyric != null) {
-        if (transpositions != null) songLyric.transposition = transpositions[index++];
+        // TODO: save this with new settings
+        // if (transpositions != null) songLyric.transposition = transpositions[index++];
         dataProvider.addToPlaylist(songLyric, playlist);
       }
     }

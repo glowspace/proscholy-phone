@@ -5,6 +5,7 @@ import 'package:zpevnik/models/external.dart';
 import 'package:zpevnik/models/objectbox.g.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/playlist_record.dart';
+import 'package:zpevnik/models/settings.dart';
 import 'package:zpevnik/models/song.dart';
 import 'package:zpevnik/models/songbook_record.dart';
 import 'package:zpevnik/models/tag.dart';
@@ -83,6 +84,8 @@ class SongLyric {
   int? accidentals;
   bool? showChords;
   int transposition = 0;
+
+  final settings = ToOne<SongLyricSettingsModel>();
 
   final authors = ToMany<Author>();
   final song = ToOne<Song>();

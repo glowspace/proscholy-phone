@@ -17,6 +17,7 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$AppDependencies {
   SharedPreferences get sharedPreferences => throw _privateConstructorUsedError;
+  Store get store => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $AppDependenciesCopyWith<AppDependencies> get copyWith =>
@@ -29,7 +30,7 @@ abstract class $AppDependenciesCopyWith<$Res> {
           AppDependencies value, $Res Function(AppDependencies) then) =
       _$AppDependenciesCopyWithImpl<$Res, AppDependencies>;
   @useResult
-  $Res call({SharedPreferences sharedPreferences});
+  $Res call({SharedPreferences sharedPreferences, Store store});
 }
 
 /// @nodoc
@@ -46,12 +47,17 @@ class _$AppDependenciesCopyWithImpl<$Res, $Val extends AppDependencies>
   @override
   $Res call({
     Object? sharedPreferences = null,
+    Object? store = null,
   }) {
     return _then(_value.copyWith(
       sharedPreferences: null == sharedPreferences
           ? _value.sharedPreferences
           : sharedPreferences // ignore: cast_nullable_to_non_nullable
               as SharedPreferences,
+      store: null == store
+          ? _value.store
+          : store // ignore: cast_nullable_to_non_nullable
+              as Store,
     ) as $Val);
   }
 }
@@ -64,7 +70,7 @@ abstract class _$$_AppDependenciesCopyWith<$Res>
       __$$_AppDependenciesCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({SharedPreferences sharedPreferences});
+  $Res call({SharedPreferences sharedPreferences, Store store});
 }
 
 /// @nodoc
@@ -79,12 +85,17 @@ class __$$_AppDependenciesCopyWithImpl<$Res>
   @override
   $Res call({
     Object? sharedPreferences = null,
+    Object? store = null,
   }) {
     return _then(_$_AppDependencies(
       sharedPreferences: null == sharedPreferences
           ? _value.sharedPreferences
           : sharedPreferences // ignore: cast_nullable_to_non_nullable
               as SharedPreferences,
+      store: null == store
+          ? _value.store
+          : store // ignore: cast_nullable_to_non_nullable
+              as Store,
     ));
   }
 }
@@ -92,14 +103,17 @@ class __$$_AppDependenciesCopyWithImpl<$Res>
 /// @nodoc
 
 class _$_AppDependencies implements _AppDependencies {
-  const _$_AppDependencies({required this.sharedPreferences});
+  const _$_AppDependencies(
+      {required this.sharedPreferences, required this.store});
 
   @override
   final SharedPreferences sharedPreferences;
+  @override
+  final Store store;
 
   @override
   String toString() {
-    return 'AppDependencies(sharedPreferences: $sharedPreferences)';
+    return 'AppDependencies(sharedPreferences: $sharedPreferences, store: $store)';
   }
 
   @override
@@ -108,11 +122,12 @@ class _$_AppDependencies implements _AppDependencies {
         (other.runtimeType == runtimeType &&
             other is _$_AppDependencies &&
             (identical(other.sharedPreferences, sharedPreferences) ||
-                other.sharedPreferences == sharedPreferences));
+                other.sharedPreferences == sharedPreferences) &&
+            (identical(other.store, store) || other.store == store));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, sharedPreferences);
+  int get hashCode => Object.hash(runtimeType, sharedPreferences, store);
 
   @JsonKey(ignore: true)
   @override
@@ -123,11 +138,13 @@ class _$_AppDependencies implements _AppDependencies {
 
 abstract class _AppDependencies implements AppDependencies {
   const factory _AppDependencies(
-          {required final SharedPreferences sharedPreferences}) =
-      _$_AppDependencies;
+      {required final SharedPreferences sharedPreferences,
+      required final Store store}) = _$_AppDependencies;
 
   @override
   SharedPreferences get sharedPreferences;
+  @override
+  Store get store;
   @override
   @JsonKey(ignore: true)
   _$$_AppDependenciesCopyWith<_$_AppDependencies> get copyWith =>
