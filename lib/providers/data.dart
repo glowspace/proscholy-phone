@@ -222,7 +222,8 @@ class DataProvider extends ChangeNotifier {
   }
 
   Future<void> _load() async {
-    final currentVersion = prefs.getString(_versionKey);
+    final currentVersion = 'test';
+    // prefs.getString(_versionKey);
     final buildVersion = '${packageInfo.version}+${packageInfo.buildNumber}';
 
     await songLyricsSearch.init(currentVersion != buildVersion);

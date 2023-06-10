@@ -21,7 +21,7 @@ import 'package:zpevnik/utils/client.dart';
 final _dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
 
 const _lastUpdateKey = 'last_update';
-const _initialLastUpdate = '2023-04-30 13:00:00';
+const _initialLastUpdate = '2023-06-10 10:00:00';
 
 const _updatePeriod = Duration(hours: 1);
 
