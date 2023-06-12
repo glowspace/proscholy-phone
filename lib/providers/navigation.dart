@@ -67,7 +67,7 @@ class NavigationProvider extends ChangeNotifier {
               ?.pushNamed('/search', arguments: SearchScreenArguments(shouldReturnSongLyric: true))
               .then((songLyric) {
             if (songLyric != null && songLyric is SongLyric) {
-              dataProvider.addToPlaylist(songLyric, arguments);
+              // dataProvider.addToPlaylist(songLyric, arguments);
 
               navigatorKey.currentState?.pushNamed('/song_lyric',
                   arguments: SongLyricScreenArguments([songLyric], 0, isTablet: true, playlist: arguments));

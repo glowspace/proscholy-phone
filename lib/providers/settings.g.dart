@@ -6,7 +6,7 @@ part of 'settings.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$settingsHash() => r'7790a7a0898eb3477aa1dfdb504a9408c5450718';
+String _$settingsHash() => r'bc0d4a67289167c59f0b241a871010c976ee965b';
 
 /// See also [Settings].
 @ProviderFor(Settings)
@@ -21,7 +21,7 @@ final settingsProvider =
 );
 
 typedef _$Settings = AutoDisposeNotifier<GlobalSettings>;
-String _$songLyricSettingsHash() => r'fc4c49e28b1abc9ab5e4b2329dec0ba0548811e3';
+String _$songLyricSettingsHash() => r'2954e796c5b27ddc6163f246670d70eb5e179d33';
 
 /// Copied from Dart SDK
 class _SystemHash {

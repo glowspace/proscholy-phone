@@ -197,8 +197,8 @@ mixin _Searchable on SongLyricsProvider {
     _searchResults = searchResults;
     _searchResults?.sort((a, b) => ranks[a.id]!.compareTo(ranks[b.id]!));
 
-    _songLyricsMatchedBySongbookNumber = songLyricsMatchedBySongbookNumber
-      ..sort((a, b) => matchedSongbooks[a.id]!.compareTo(matchedSongbooks[b.id]!));
+    // _songLyricsMatchedBySongbookNumber = songLyricsMatchedBySongbookNumber
+    // ..sort((a, b) => matchedSongbooks[a.id]!.compareTo(matchedSongbooks[b.id]!));
 
     notifyListeners();
   }
@@ -285,9 +285,9 @@ class PlaylistSongLyricsProvider extends SongLyricsProvider with _Searchable {
     final songLyric = _songLyrics.removeAt(oldIndex);
     _songLyrics.insert(newIndex, songLyric);
 
-    for (int i = 0; i < playlist.playlistRecords.length; i++) {
-      playlist.playlistRecords[i].rank = i;
-    }
+    // for (int i = 0; i < playlist.playlistRecords.length; i++) {
+    //   playlist.playlistRecords[i].rank = i;
+    // }
 
     context.read<DataProvider>().store.box<PlaylistRecord>().putMany(playlist.playlistRecords);
 
@@ -295,7 +295,7 @@ class PlaylistSongLyricsProvider extends SongLyricsProvider with _Searchable {
   }
 
   void removeSongLyric(SongLyric songLyric) {
-    playlist.removeSongLyric(songLyric);
+    // playlist.removeSongLyric(songLyric);
 
     _songLyrics.remove(songLyric);
     _songLyricsMap.remove(songLyric.id);

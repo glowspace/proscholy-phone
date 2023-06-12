@@ -5,6 +5,7 @@ import 'package:zpevnik/models/objectbox.g.dart';
 import 'package:zpevnik/models/settings.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/app_dependencies.dart';
+import 'package:zpevnik/providers/util.dart';
 
 part 'settings.g.dart';
 
@@ -23,7 +24,7 @@ class Settings extends _$Settings {
     final prefs = ref.read(appDependenciesProvider.select((appDependencies) => appDependencies.sharedPreferences));
     final settingsData = prefs.getString(_settingsKey);
 
-    ref.listenSelf((_, newValue) => prefs.setString(_settingsKey, jsonEncode(newValue)));
+    ref.listenSelf((_, next) => prefs.setString(_settingsKey, jsonEncode(next)));
 
     if (settingsData != null) return GlobalSettings.fromJson(jsonDecode(settingsData));
 
@@ -50,17 +51,10 @@ class SongLyricSettings extends _$SongLyricSettings {
   // TODO: support individual settings also for playlist records
   @override
   SongLyricSettingsModel build(SongLyric songLyric) {
-    ref.listenSelf((_, newValue) {
-      // TODO: remove old settings when migrating from older versions, remove it after some time
-      if (newValue.showChords != songLyric.showChords ||
-          newValue.accidentals != songLyric.accidentals ||
-          newValue.transposition != songLyric.transposition) {
-        songLyric.showChords = true;
-        songLyric.accidentals = 1;
-        songLyric.transposition;
-      }
+    ref.listenSelf((previous, next) {
+      if (previous == null || previous == next) return;
 
-      songLyric.settings.target = newValue == defaultSongLyricSettings ? null : newValue;
+      songLyric.settings.target = next == defaultSongLyricSettings ? null : next;
 
       ref
           .read(appDependenciesProvider.select((appDependencies) => appDependencies.store))
@@ -68,13 +62,7 @@ class SongLyricSettings extends _$SongLyricSettings {
           .put(songLyric);
     });
 
-    // TODO: copyWith is only used to preserve settings from older versions, remove it after some time
-    return songLyric.settings.target ??
-        defaultSongLyricSettings.copyWith(
-          showChords: songLyric.showChords ?? true,
-          accidentals: songLyric.accidentals ?? 1,
-          transposition: songLyric.transposition,
-        );
+    return songLyric.settings.target ?? defaultSongLyricSettings;
   }
 
   void changeShowChords(bool showChords) => _updateState(state.copyWith(showChords: showChords));
@@ -96,13 +84,7 @@ class SongLyricSettings extends _$SongLyricSettings {
     } else {
       // decide id for new objects
       if (songLyricSettings.id == 0) {
-        final queryBuilder = songLyricSettingsBox.query()..order(SongLyricSettingsModel_.id, flags: Order.descending);
-        final query = queryBuilder.build();
-        final lastId = query.findFirst()?.id ?? 0;
-
-        query.close();
-
-        songLyricSettings = songLyricSettings.copyWith(id: lastId + 1);
+        songLyricSettings = songLyricSettings.copyWith(id: nextId(ref, SongLyricSettingsModel_.id));
       }
 
       songLyricSettingsBox.put(songLyricSettings);
