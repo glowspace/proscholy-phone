@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:objectbox/objectbox.dart';
+import 'package:zpevnik/models/identifiable.dart';
 
 part 'external.freezed.dart';
 part 'external.g.dart';
@@ -56,7 +57,7 @@ enum MediaType {
 }
 
 @Freezed(toJson: false)
-class External with _$External {
+class External with _$External implements Identifiable {
   static const String fieldKey = 'externals';
 
   const External._();

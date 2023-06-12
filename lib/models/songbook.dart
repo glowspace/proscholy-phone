@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:objectbox/objectbox.dart';
+import 'package:zpevnik/models/identifiable.dart';
 import 'package:zpevnik/models/songbook_record.dart';
 
 part 'songbook.freezed.dart';
@@ -9,7 +10,7 @@ part 'songbook.g.dart';
 const prioritized = {'H1': 0, 'H2': 1, 'K': 2, 'Kan': 3};
 
 @Freezed(toJson: false)
-class Songbook with _$Songbook implements Comparable<Songbook> {
+class Songbook with _$Songbook implements Comparable<Songbook>, Identifiable {
   static const String fieldKey = 'songbooks';
 
   const Songbook._();

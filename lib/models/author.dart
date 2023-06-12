@@ -1,11 +1,12 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:objectbox/objectbox.dart';
+import 'package:zpevnik/models/identifiable.dart';
 
 part 'author.freezed.dart';
 part 'author.g.dart';
 
 @Freezed(toJson: false)
-class Author with _$Author {
+class Author with _$Author implements Identifiable {
   static const String fieldKey = 'authors';
 
   @Entity(realClass: Author)

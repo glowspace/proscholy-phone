@@ -1,13 +1,14 @@
 import 'package:collection/collection.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:objectbox/objectbox.dart';
+import 'package:zpevnik/models/identifiable.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 
 part 'song.freezed.dart';
 part 'song.g.dart';
 
 @Freezed(toJson: false)
-class Song with _$Song {
+class Song with _$Song implements Identifiable {
   static const String fieldKey = 'songs';
 
   const Song._();

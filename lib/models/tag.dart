@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:objectbox/objectbox.dart';
+import 'package:zpevnik/models/identifiable.dart';
 
 part 'tag.freezed.dart';
 part 'tag.g.dart';
@@ -89,7 +90,7 @@ enum TagType {
 }
 
 @Freezed(toJson: false)
-class Tag with _$Tag {
+class Tag with _$Tag implements Identifiable {
   static const String fieldKey = 'tags_enum';
 
   const Tag._();

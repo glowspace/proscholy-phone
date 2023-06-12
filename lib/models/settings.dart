@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:objectbox/objectbox.dart';
+import 'package:zpevnik/models/identifiable.dart';
 
 part 'settings.freezed.dart';
 part 'settings.g.dart';
@@ -20,7 +21,7 @@ class GlobalSettings with _$GlobalSettings {
 }
 
 @freezed
-class SongLyricSettingsModel with _$SongLyricSettingsModel {
+class SongLyricSettingsModel with _$SongLyricSettingsModel implements Identifiable {
   @Entity(realClass: SongLyricSettingsModel)
   const factory SongLyricSettingsModel({
     @Id(assignable: true) required int id,

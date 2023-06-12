@@ -2,6 +2,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:objectbox/objectbox.dart';
 import 'package:zpevnik/models/author.dart';
 import 'package:zpevnik/models/external.dart';
+import 'package:zpevnik/models/identifiable.dart';
 import 'package:zpevnik/models/playlist_record.dart';
 import 'package:zpevnik/models/settings.dart';
 import 'package:zpevnik/models/song.dart';
@@ -45,7 +46,7 @@ enum SongLyricType {
 }
 
 @Freezed(toJson: false)
-class SongLyric with _$SongLyric {
+class SongLyric with _$SongLyric implements Identifiable {
   static const String fieldKey = 'song_lyrics';
 
   const SongLyric._();

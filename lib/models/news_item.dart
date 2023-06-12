@@ -1,11 +1,12 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:objectbox/objectbox.dart';
+import 'package:zpevnik/models/identifiable.dart';
 
 part 'news_item.freezed.dart';
 part 'news_item.g.dart';
 
 @Freezed(toJson: false)
-class NewsItem with _$NewsItem {
+class NewsItem with _$NewsItem implements Identifiable {
   static const String fieldKey = 'news_items';
 
   @Entity(realClass: NewsItem)

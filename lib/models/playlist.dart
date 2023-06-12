@@ -1,14 +1,15 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:objectbox/objectbox.dart';
+import 'package:zpevnik/models/identifiable.dart';
 import 'package:zpevnik/models/playlist_record.dart';
 
 part 'playlist.freezed.dart';
 
-const _favoritesPlaylistId = 1;
+const favoritesPlaylistId = 1;
 const _favoritesName = 'Písně s hvězdičkou';
 
 @freezed
-class Playlist with _$Playlist {
+class Playlist with _$Playlist implements Identifiable {
   const Playlist._();
 
   @Entity(realClass: Playlist)
@@ -20,11 +21,11 @@ class Playlist with _$Playlist {
   }) = _Playlist;
 
   factory Playlist.favorites() => Playlist(
-        id: _favoritesPlaylistId,
+        id: favoritesPlaylistId,
         name: _favoritesName,
         rank: 0,
         playlistRecords: ToMany(),
       );
 
-  bool get isFavorites => id == _favoritesPlaylistId;
+  bool get isFavorites => id == favoritesPlaylistId;
 }
