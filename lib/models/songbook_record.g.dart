@@ -10,6 +10,6 @@ _$_SongbookRecord _$$_SongbookRecordFromJson(Map<String, dynamic> json) =>
     _$_SongbookRecord(
       id: int.parse(json['id'] as String),
       number: json['number'] as String,
-      songLyric: songLyricFromJson(json['song_lyric'] as Map<String, dynamic>),
-      songbook: songbookFromJson(json['songbook'] as Map<String, dynamic>),
+      songLyric: _songLyricFromJson(json['song_lyric'] as Map<String, dynamic>),
+      songbook: _songbookFromJson(json['songbook'] as Map<String, dynamic>),
     );

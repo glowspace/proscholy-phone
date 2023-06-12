@@ -24,9 +24,9 @@ mixin _$SongbookRecord {
   @JsonKey(fromJson: int.parse)
   int get id => throw _privateConstructorUsedError;
   String get number => throw _privateConstructorUsedError;
-  @JsonKey(fromJson: songLyricFromJson)
+  @JsonKey(fromJson: _songLyricFromJson)
   ToOne<SongLyric> get songLyric => throw _privateConstructorUsedError;
-  @JsonKey(fromJson: songbookFromJson)
+  @JsonKey(fromJson: _songbookFromJson)
   ToOne<Songbook> get songbook => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -43,8 +43,8 @@ abstract class $SongbookRecordCopyWith<$Res> {
   $Res call(
       {@Id(assignable: true) @JsonKey(fromJson: int.parse) int id,
       String number,
-      @JsonKey(fromJson: songLyricFromJson) ToOne<SongLyric> songLyric,
-      @JsonKey(fromJson: songbookFromJson) ToOne<Songbook> songbook});
+      @JsonKey(fromJson: _songLyricFromJson) ToOne<SongLyric> songLyric,
+      @JsonKey(fromJson: _songbookFromJson) ToOne<Songbook> songbook});
 }
 
 /// @nodoc
@@ -97,8 +97,8 @@ abstract class _$$_SongbookRecordCopyWith<$Res>
   $Res call(
       {@Id(assignable: true) @JsonKey(fromJson: int.parse) int id,
       String number,
-      @JsonKey(fromJson: songLyricFromJson) ToOne<SongLyric> songLyric,
-      @JsonKey(fromJson: songbookFromJson) ToOne<Songbook> songbook});
+      @JsonKey(fromJson: _songLyricFromJson) ToOne<SongLyric> songLyric,
+      @JsonKey(fromJson: _songbookFromJson) ToOne<Songbook> songbook});
 }
 
 /// @nodoc
@@ -146,8 +146,8 @@ class _$_SongbookRecord extends _SongbookRecord {
   const _$_SongbookRecord(
       {@Id(assignable: true) @JsonKey(fromJson: int.parse) required this.id,
       required this.number,
-      @JsonKey(fromJson: songLyricFromJson) required this.songLyric,
-      @JsonKey(fromJson: songbookFromJson) required this.songbook})
+      @JsonKey(fromJson: _songLyricFromJson) required this.songLyric,
+      @JsonKey(fromJson: _songbookFromJson) required this.songbook})
       : super._();
 
   factory _$_SongbookRecord.fromJson(Map<String, dynamic> json) =>
@@ -160,10 +160,10 @@ class _$_SongbookRecord extends _SongbookRecord {
   @override
   final String number;
   @override
-  @JsonKey(fromJson: songLyricFromJson)
+  @JsonKey(fromJson: _songLyricFromJson)
   final ToOne<SongLyric> songLyric;
   @override
-  @JsonKey(fromJson: songbookFromJson)
+  @JsonKey(fromJson: _songbookFromJson)
   final ToOne<Songbook> songbook;
 
   @override
@@ -201,9 +201,9 @@ abstract class _SongbookRecord extends SongbookRecord {
       @JsonKey(fromJson: int.parse)
           required final int id,
       required final String number,
-      @JsonKey(fromJson: songLyricFromJson)
+      @JsonKey(fromJson: _songLyricFromJson)
           required final ToOne<SongLyric> songLyric,
-      @JsonKey(fromJson: songbookFromJson)
+      @JsonKey(fromJson: _songbookFromJson)
           required final ToOne<Songbook> songbook}) = _$_SongbookRecord;
   const _SongbookRecord._() : super._();
 
@@ -217,10 +217,10 @@ abstract class _SongbookRecord extends SongbookRecord {
   @override
   String get number;
   @override
-  @JsonKey(fromJson: songLyricFromJson)
+  @JsonKey(fromJson: _songLyricFromJson)
   ToOne<SongLyric> get songLyric;
   @override
-  @JsonKey(fromJson: songbookFromJson)
+  @JsonKey(fromJson: _songbookFromJson)
   ToOne<Songbook> get songbook;
   @override
   @JsonKey(ignore: true)

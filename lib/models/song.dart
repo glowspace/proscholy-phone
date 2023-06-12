@@ -1,29 +1,30 @@
+import 'package:collection/collection.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:objectbox/objectbox.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 
-@Entity()
-class Song {
-  @Id(assignable: true)
-  final int id;
+part 'song.freezed.dart';
+part 'song.g.dart';
 
-  final String name;
+@Freezed(toJson: false)
+class Song with _$Song {
+  static const String fieldKey = 'songs';
 
-  @Backlink()
-  final songLyrics = ToMany<SongLyric>();
+  const Song._();
 
-  Song(this.id, this.name);
+  @Entity(realClass: Song)
+  @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
+  const factory Song({
+    @Id(assignable: true) @JsonKey(fromJson: int.parse) required int id,
+    required String name,
+    @Backlink() @JsonKey(fromJson: _songLyricsFromJson) required ToMany<SongLyric> songLyrics,
+  }) = _Song;
 
-  factory Song.fromJson(Map<String, dynamic> json) {
-    return Song(
-      int.parse(json['id'] as String),
-      json['name'] as String,
-    );
-  }
+  factory Song.fromJson(Map<String, Object?> json) => _$SongFromJson(json);
 
-  static List<Song> fromMapList(Map<String, dynamic> json) {
-    return (json['songs'] as List).map((json) => Song.fromJson(json)).toList();
-  }
+  bool get hasTranslations => songLyrics.length > 1;
 
-  @override
-  String toString() => 'Song(id: $id, name: $name)';
+  SongLyric? get original => songLyrics.firstWhereOrNull((songLyric) => songLyric.type == SongLyricType.original);
 }
+
+ToMany<SongLyric> _songLyricsFromJson(List<dynamic>? jsonList) => ToMany();

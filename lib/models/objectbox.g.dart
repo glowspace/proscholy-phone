@@ -318,7 +318,7 @@ final _entities = <ModelEntity>[
             id: const IdUid(1, 2084793810234461107),
             name: 'id',
             type: 6,
-            flags: 1),
+            flags: 129),
         ModelProperty(
             id: const IdUid(3, 3680925814327867808),
             name: 'songLyricId',
@@ -669,9 +669,10 @@ ModelDefinition getObjectBoxModel() {
           final rootOffset = buffer.derefObject(0);
 
           final object = Song(
-              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0),
-              const fb.StringReader(asciiOptimization: true)
-                  .vTableGet(buffer, rootOffset, 6, ''));
+              id: const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0),
+              name: const fb.StringReader(asciiOptimization: true)
+                  .vTableGet(buffer, rootOffset, 6, ''),
+              songLyrics: ToMany());
           InternalToManyAccess.setRelInfo<Song>(
               object.songLyrics,
               store,
@@ -754,18 +755,20 @@ ModelDefinition getObjectBoxModel() {
           final rootOffset = buffer.derefObject(0);
 
           final object = Songbook(
-              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0),
-              const fb.StringReader(asciiOptimization: true)
+              id: const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0),
+              name: const fb.StringReader(asciiOptimization: true)
                   .vTableGet(buffer, rootOffset, 6, ''),
-              const fb.StringReader(asciiOptimization: true)
+              shortcut: const fb.StringReader(asciiOptimization: true)
                   .vTableGet(buffer, rootOffset, 8, ''),
-              const fb.StringReader(asciiOptimization: true)
+              color: const fb.StringReader(asciiOptimization: true)
                   .vTableGetNullable(buffer, rootOffset, 10),
-              const fb.StringReader(asciiOptimization: true)
+              colorText: const fb.StringReader(asciiOptimization: true)
                   .vTableGetNullable(buffer, rootOffset, 12),
-              const fb.BoolReader().vTableGet(buffer, rootOffset, 14, false))
-            ..isPinned =
-                const fb.BoolReader().vTableGet(buffer, rootOffset, 16, false);
+              isPrivate: const fb.BoolReader()
+                  .vTableGet(buffer, rootOffset, 14, false),
+              isPinned: const fb.BoolReader()
+                  .vTableGetNullable(buffer, rootOffset, 16),
+              songbookRecords: ToMany());
           InternalToManyAccess.setRelInfo<Songbook>(
               object.songbookRecords,
               store,
@@ -839,34 +842,35 @@ ModelDefinition getObjectBoxModel() {
           final rootOffset = buffer.derefObject(0);
 
           final object = SongLyric(
-              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0),
-              const fb.StringReader(asciiOptimization: true)
+              id: const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0),
+              name: const fb.StringReader(asciiOptimization: true)
                   .vTableGet(buffer, rootOffset, 6, ''),
-              const fb.StringReader(asciiOptimization: true)
+              secondaryName1: const fb.StringReader(asciiOptimization: true)
                   .vTableGetNullable(buffer, rootOffset, 8),
-              const fb.StringReader(asciiOptimization: true)
+              secondaryName2: const fb.StringReader(asciiOptimization: true)
                   .vTableGetNullable(buffer, rootOffset, 10),
-              const fb.StringReader(asciiOptimization: true)
+              lyrics: const fb.StringReader(asciiOptimization: true)
                   .vTableGetNullable(buffer, rootOffset, 12),
-              const fb.StringReader(asciiOptimization: true)
+              lilypond: const fb.StringReader(asciiOptimization: true)
                   .vTableGetNullable(buffer, rootOffset, 14),
-              const fb.StringReader(asciiOptimization: true)
+              lang: const fb.StringReader(asciiOptimization: true)
                   .vTableGetNullable(buffer, rootOffset, 16),
-              const fb.StringReader(asciiOptimization: true)
+              langDescription: const fb.StringReader(asciiOptimization: true)
                   .vTableGetNullable(buffer, rootOffset, 18),
-              const fb.Int64Reader().vTableGet(buffer, rootOffset, 24, 0),
-              const fb.BoolReader().vTableGet(buffer, rootOffset, 26, false))
-            ..accidentals =
-                const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 58)
-            ..showChords =
-                const fb.BoolReader().vTableGetNullable(buffer, rootOffset, 60)
-            ..transposition =
-                const fb.Int64Reader().vTableGet(buffer, rootOffset, 62, 0);
-          object.song.targetId =
-              const fb.Int64Reader().vTableGet(buffer, rootOffset, 20, 0);
+              dbType:
+                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 24, 0),
+              hasChords: const fb.BoolReader().vTableGet(buffer, rootOffset, 26, false),
+              accidentals: const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 58),
+              showChords: const fb.BoolReader().vTableGetNullable(buffer, rootOffset, 60),
+              transposition: const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 62),
+              song: ToOne(targetId: const fb.Int64Reader().vTableGet(buffer, rootOffset, 20, 0)),
+              settings: ToOne(targetId: const fb.Int64Reader().vTableGet(buffer, rootOffset, 56, 0)),
+              authors: ToMany(),
+              tags: ToMany(),
+              externals: ToMany(),
+              songbookRecords: ToMany(),
+              playlistRecords: ToMany());
           object.song.attach(store);
-          object.settings.targetId =
-              const fb.Int64Reader().vTableGet(buffer, rootOffset, 56, 0);
           object.settings.attach(store);
           InternalToManyAccess.setRelInfo<SongLyric>(
               object.authors, store, RelInfo<SongLyric>.toMany(6, object.id));
@@ -942,7 +946,13 @@ ModelDefinition getObjectBoxModel() {
             },
         getId: (Playlist object) => object.id,
         setId: (Playlist object, int id) {
-          object.id = id;
+          if (object.id != id) {
+            throw ArgumentError('Field Playlist.id is read-only '
+                '(final or getter-only) and it was declared to be self-assigned. '
+                'However, the currently inserted object (.id=${object.id}) '
+                "doesn't match the inserted ID (ID $id). "
+                'You must assign an ID before calling [box.put()].');
+          }
         },
         objectToFB: (Playlist object, fb.Builder fbb) {
           final nameOffset = fbb.writeString(object.name);
@@ -958,10 +968,11 @@ ModelDefinition getObjectBoxModel() {
           final rootOffset = buffer.derefObject(0);
 
           final object = Playlist(
-              const fb.StringReader(asciiOptimization: true)
+              id: const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0),
+              name: const fb.StringReader(asciiOptimization: true)
                   .vTableGet(buffer, rootOffset, 6, ''),
-              const fb.Int64Reader().vTableGet(buffer, rootOffset, 8, 0))
-            ..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+              rank: const fb.Int64Reader().vTableGet(buffer, rootOffset, 8, 0),
+              playlistRecords: ToMany());
           InternalToManyAccess.setRelInfo<Playlist>(
               object.playlistRecords,
               store,
@@ -976,7 +987,13 @@ ModelDefinition getObjectBoxModel() {
         toManyRelations: (PlaylistRecord object) => {},
         getId: (PlaylistRecord object) => object.id,
         setId: (PlaylistRecord object, int id) {
-          object.id = id;
+          if (object.id != id) {
+            throw ArgumentError('Field PlaylistRecord.id is read-only '
+                '(final or getter-only) and it was declared to be self-assigned. '
+                'However, the currently inserted object (.id=${object.id}) '
+                "doesn't match the inserted ID (ID $id). "
+                'You must assign an ID before calling [box.put()].');
+          }
         },
         objectToFB: (PlaylistRecord object, fb.Builder fbb) {
           fbb.startTable(6);
@@ -992,13 +1009,15 @@ ModelDefinition getObjectBoxModel() {
           final rootOffset = buffer.derefObject(0);
 
           final object = PlaylistRecord(
-              const fb.Int64Reader().vTableGet(buffer, rootOffset, 12, 0))
-            ..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
-          object.songLyric.targetId =
-              const fb.Int64Reader().vTableGet(buffer, rootOffset, 8, 0);
+              id: const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0),
+              rank: const fb.Int64Reader().vTableGet(buffer, rootOffset, 12, 0),
+              songLyric: ToOne(
+                  targetId: const fb.Int64Reader()
+                      .vTableGet(buffer, rootOffset, 8, 0)),
+              playlist: ToOne(
+                  targetId: const fb.Int64Reader()
+                      .vTableGet(buffer, rootOffset, 10, 0)));
           object.songLyric.attach(store);
-          object.playlist.targetId =
-              const fb.Int64Reader().vTableGet(buffer, rootOffset, 10, 0);
           object.playlist.attach(store);
           return object;
         }),

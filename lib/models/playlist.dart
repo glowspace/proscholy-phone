@@ -1,82 +1,30 @@
-// ignore: unnecessary_import
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:objectbox/objectbox.dart';
-import 'package:zpevnik/models/objectbox.g.dart';
 import 'package:zpevnik/models/playlist_record.dart';
-import 'package:zpevnik/models/song_lyric.dart';
 
-const favoritesPlaylistId = 1;
+part 'playlist.freezed.dart';
+
+const _favoritesPlaylistId = 1;
 const _favoritesName = 'Písně s hvězdičkou';
 
-@Entity()
-class Playlist implements Comparable<Playlist> {
-  @Id(assignable: true)
-  int id = 0;
+@freezed
+class Playlist with _$Playlist {
+  const Playlist._();
 
-  @Unique(onConflict: ConflictStrategy.fail)
-  String name;
-  int rank;
+  @Entity(realClass: Playlist)
+  const factory Playlist({
+    @Id(assignable: true) required int id,
+    @Unique(onConflict: ConflictStrategy.fail) required String name,
+    required int rank,
+    @Backlink() required ToMany<PlaylistRecord> playlistRecords,
+  }) = _Playlist;
 
-  @Backlink()
-  final playlistRecords = ToMany<PlaylistRecord>();
+  factory Playlist.favorites() => Playlist(
+        id: _favoritesPlaylistId,
+        name: _favoritesName,
+        rank: 0,
+        playlistRecords: ToMany(),
+      );
 
-  Playlist(this.name, this.rank);
-
-  Playlist.favorite()
-      : id = favoritesPlaylistId,
-        name = _favoritesName,
-        rank = -1;
-
-  static List<Playlist> load(Store store) {
-    final query = store.box<Playlist>().query(Playlist_.id.notEquals(favoritesPlaylistId));
-    query.order(Playlist_.rank);
-
-    return query.build().find();
-  }
-
-  static Playlist loadFavorites(Store store) {
-    return store.box<Playlist>().get(favoritesPlaylistId)!;
-  }
-
-  static int nextRank(Store store) {
-    final query = store.box<Playlist>().query();
-    query.order(Playlist_.rank, flags: 1);
-
-    final rank = query.build().findFirst()?.rank ?? -1;
-
-    return rank + 1;
-  }
-
-  bool get isFavorites => id == favoritesPlaylistId;
-
-  void addSongLyric(SongLyric songLyric, int rank) {
-    if (playlistRecords.any((playlistRecord) => playlistRecord.songLyric.target == songLyric)) return;
-
-    final playlistRecord = PlaylistRecord(rank)
-      ..playlist.target = this
-      ..songLyric.target = songLyric;
-
-    playlistRecords.add(playlistRecord);
-    playlistRecords.applyToDb();
-
-    songLyric.playlistRecords.add(playlistRecord);
-  }
-
-  void removeSongLyric(SongLyric songLyric) {
-    playlistRecords.removeWhere((playlistRecord) => playlistRecord.songLyric.target == songLyric);
-    playlistRecords.applyToDb();
-
-    songLyric.playlistRecords.removeWhere((playlistRecord) => playlistRecord.songLyric.target == songLyric);
-  }
-
-  @override
-  String toString() => 'Playlist(id: $id, name: $name)';
-
-  @override
-  operator ==(Object other) => other is Playlist && id == other.id;
-
-  @override
-  int get hashCode => id;
-
-  @override
-  int compareTo(Playlist other) => rank.compareTo(other.rank);
+  bool get isFavorites => id == _favoritesPlaylistId;
 }
