@@ -1,9 +1,7 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:zpevnik/components/filters/filters.dart';
 import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/providers/song_lyrics.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
 const double _addFilterRadius = 7;
@@ -45,8 +43,6 @@ class AddFilterTag extends StatelessWidget {
   }
 
   void _showFilters(BuildContext context) {
-    final songLyricsProvider = context.read<AllSongLyricsProvider>();
-
     FocusScope.of(context).unfocus();
 
     showModalBottomSheet(
@@ -54,10 +50,7 @@ class AddFilterTag extends StatelessWidget {
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(kDefaultRadius))),
       builder: (context) => SizedBox(
         height: 2 / 3 * MediaQuery.of(context).size.height,
-        child: ChangeNotifierProvider.value(
-          value: songLyricsProvider,
-          // builder: (_, __) => FiltersWidget(tagsSections: songLyricsProvider.tagsSections),
-        ),
+        child: const FiltersWidget(),
       ),
       routeSettings: const RouteSettings(name: '/filters'),
     );

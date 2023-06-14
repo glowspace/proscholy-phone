@@ -6,11 +6,11 @@ part of 'songbooks.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$songbooksHash() => r'd2c2bc7eda7e913910efebc6b04202689e89ca52';
+String _$songbooksHash() => r'8a11e795453ee27c44361043cb948d42b1a96179';
 
 /// See also [songbooks].
 @ProviderFor(songbooks)
-final songbooksProvider = Provider<List<Songbook>>.internal(
+final songbooksProvider = AutoDisposeProvider<List<Songbook>>.internal(
   songbooks,
   name: r'songbooksProvider',
   debugGetCreateSourceHash:
@@ -19,13 +19,13 @@ final songbooksProvider = Provider<List<Songbook>>.internal(
   allTransitiveDependencies: null,
 );
 
-typedef SongbooksRef = ProviderRef<List<Songbook>>;
-String _$pinnedSongbookIdsHash() => r'858f80cf4690384887c3d87e57ef72c75e975a5e';
+typedef SongbooksRef = AutoDisposeProviderRef<List<Songbook>>;
+String _$pinnedSongbookIdsHash() => r'1a656d296c8a7ce7da95f6957b69496149d9ce20';
 
 /// See also [PinnedSongbookIds].
 @ProviderFor(PinnedSongbookIds)
 final pinnedSongbookIdsProvider =
-    NotifierProvider<PinnedSongbookIds, Set<int>>.internal(
+    AutoDisposeNotifierProvider<PinnedSongbookIds, Set<int>>.internal(
   PinnedSongbookIds.new,
   name: r'pinnedSongbookIdsProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -35,5 +35,5 @@ final pinnedSongbookIdsProvider =
   allTransitiveDependencies: null,
 );
 
-typedef _$PinnedSongbookIds = Notifier<Set<int>>;
+typedef _$PinnedSongbookIds = AutoDisposeNotifier<Set<int>>;
 // ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions

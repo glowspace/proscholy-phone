@@ -33,8 +33,7 @@ mixin _$Songbook {
   bool? get isPinned => throw _privateConstructorUsedError;
   @Backlink()
   @JsonKey(fromJson: _songbookRecordsFromJson)
-  ToMany<SongbookRecord> get songbookRecords =>
-      throw _privateConstructorUsedError;
+  ToMany<SongbookRecord> get records => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $SongbookCopyWith<Songbook> get copyWith =>
@@ -60,7 +59,7 @@ abstract class $SongbookCopyWith<$Res> {
           bool? isPinned,
       @Backlink()
       @JsonKey(fromJson: _songbookRecordsFromJson)
-          ToMany<SongbookRecord> songbookRecords});
+          ToMany<SongbookRecord> records});
 }
 
 /// @nodoc
@@ -83,7 +82,7 @@ class _$SongbookCopyWithImpl<$Res, $Val extends Songbook>
     Object? colorText = freezed,
     Object? isPrivate = null,
     Object? isPinned = freezed,
-    Object? songbookRecords = null,
+    Object? records = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -114,9 +113,9 @@ class _$SongbookCopyWithImpl<$Res, $Val extends Songbook>
           ? _value.isPinned
           : isPinned // ignore: cast_nullable_to_non_nullable
               as bool?,
-      songbookRecords: null == songbookRecords
-          ? _value.songbookRecords
-          : songbookRecords // ignore: cast_nullable_to_non_nullable
+      records: null == records
+          ? _value.records
+          : records // ignore: cast_nullable_to_non_nullable
               as ToMany<SongbookRecord>,
     ) as $Val);
   }
@@ -143,7 +142,7 @@ abstract class _$$_SongbookCopyWith<$Res> implements $SongbookCopyWith<$Res> {
           bool? isPinned,
       @Backlink()
       @JsonKey(fromJson: _songbookRecordsFromJson)
-          ToMany<SongbookRecord> songbookRecords});
+          ToMany<SongbookRecord> records});
 }
 
 /// @nodoc
@@ -164,7 +163,7 @@ class __$$_SongbookCopyWithImpl<$Res>
     Object? colorText = freezed,
     Object? isPrivate = null,
     Object? isPinned = freezed,
-    Object? songbookRecords = null,
+    Object? records = null,
   }) {
     return _then(_$_Songbook(
       id: null == id
@@ -195,9 +194,9 @@ class __$$_SongbookCopyWithImpl<$Res>
           ? _value.isPinned
           : isPinned // ignore: cast_nullable_to_non_nullable
               as bool?,
-      songbookRecords: null == songbookRecords
-          ? _value.songbookRecords
-          : songbookRecords // ignore: cast_nullable_to_non_nullable
+      records: null == records
+          ? _value.records
+          : records // ignore: cast_nullable_to_non_nullable
               as ToMany<SongbookRecord>,
     ));
   }
@@ -222,7 +221,7 @@ class _$_Songbook extends _Songbook {
           this.isPinned,
       @Backlink()
       @JsonKey(fromJson: _songbookRecordsFromJson)
-          required this.songbookRecords})
+          required this.records})
       : super._();
 
   factory _$_Songbook.fromJson(Map<String, dynamic> json) =>
@@ -249,11 +248,11 @@ class _$_Songbook extends _Songbook {
   @override
   @Backlink()
   @JsonKey(fromJson: _songbookRecordsFromJson)
-  final ToMany<SongbookRecord> songbookRecords;
+  final ToMany<SongbookRecord> records;
 
   @override
   String toString() {
-    return 'Songbook(id: $id, name: $name, shortcut: $shortcut, color: $color, colorText: $colorText, isPrivate: $isPrivate, isPinned: $isPinned, songbookRecords: $songbookRecords)';
+    return 'Songbook(id: $id, name: $name, shortcut: $shortcut, color: $color, colorText: $colorText, isPrivate: $isPrivate, isPinned: $isPinned, records: $records)';
   }
 
   @override
@@ -272,8 +271,7 @@ class _$_Songbook extends _Songbook {
                 other.isPrivate == isPrivate) &&
             (identical(other.isPinned, isPinned) ||
                 other.isPinned == isPinned) &&
-            const DeepCollectionEquality()
-                .equals(other.songbookRecords, songbookRecords));
+            const DeepCollectionEquality().equals(other.records, records));
   }
 
   @JsonKey(ignore: true)
@@ -287,7 +285,7 @@ class _$_Songbook extends _Songbook {
       colorText,
       isPrivate,
       isPinned,
-      const DeepCollectionEquality().hash(songbookRecords));
+      const DeepCollectionEquality().hash(records));
 
   @JsonKey(ignore: true)
   @override
@@ -311,7 +309,7 @@ abstract class _Songbook extends Songbook {
           final bool? isPinned,
       @Backlink()
       @JsonKey(fromJson: _songbookRecordsFromJson)
-          required final ToMany<SongbookRecord> songbookRecords}) = _$_Songbook;
+          required final ToMany<SongbookRecord> records}) = _$_Songbook;
   const _Songbook._() : super._();
 
   factory _Songbook.fromJson(Map<String, dynamic> json) = _$_Songbook.fromJson;
@@ -337,7 +335,7 @@ abstract class _Songbook extends Songbook {
   @override
   @Backlink()
   @JsonKey(fromJson: _songbookRecordsFromJson)
-  ToMany<SongbookRecord> get songbookRecords;
+  ToMany<SongbookRecord> get records;
   @override
   @JsonKey(ignore: true)
   _$$_SongbookCopyWith<_$_Songbook> get copyWith =>

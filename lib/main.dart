@@ -1,11 +1,15 @@
+import 'dart:developer';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' hide ChangeNotifierProvider;
+import 'package:path/path.dart';
 // import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:zpevnik/firebase_options.dart';
 import 'package:zpevnik/models/objectbox.g.dart';
 import 'package:zpevnik/providers/app_dependencies.dart';
@@ -13,7 +17,7 @@ import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/providers/presentation.dart';
 import 'package:zpevnik/providers/settings.dart';
-import 'package:zpevnik/screens/initial.dart';
+import 'package:zpevnik/routes/route_generator.dart';
 import 'package:zpevnik/screens/presentation.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/extensions.dart';
@@ -28,9 +32,11 @@ Future<void> main() async {
   final appDependencies = AppDependencies(
     sharedPreferences: await SharedPreferences.getInstance(),
     store: await openStore(),
+    ftsDatabase: await openDatabase(join(await getDatabasesPath(), 'zpevnik.db')),
   );
 
   void appRunner() => runApp(ProviderScope(
+        observers: [MyProviderObserver()],
         overrides: [appDependenciesProvider.overrideWithValue(appDependencies)],
         child: const MainWidget(),
       ));
@@ -63,13 +69,13 @@ class MainWidget extends ConsumerWidget {
       }
     }
 
-    return MaterialApp(
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       title: _title,
       theme: AppTheme.light(),
       darkTheme: AppTheme.dark(),
       themeMode: themeMode,
-      home: const InitialScreen(),
+      routerConfig: appRouter,
       builder: (context, child) => MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => DataProvider()),
@@ -91,5 +97,29 @@ class MainPresentation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(debugShowCheckedModeBanner: false, title: _title, home: PresentationScreen());
+  }
+}
+
+class MyProviderObserver extends ProviderObserver {
+  @override
+  void didAddProvider(ProviderBase<Object?> provider, Object? value, ProviderContainer container) {
+    super.didAddProvider(provider, value, container);
+
+    log('added provider: $provider');
+  }
+
+  @override
+  void didUpdateProvider(
+      ProviderBase<Object?> provider, Object? previousValue, Object? newValue, ProviderContainer container) {
+    super.didUpdateProvider(provider, previousValue, newValue, container);
+
+    log('updated provider: $provider');
+  }
+
+  @override
+  void didDisposeProvider(ProviderBase<Object?> provider, ProviderContainer container) {
+    super.didDisposeProvider(provider, container);
+
+    log('disposed provider: $provider');
   }
 }

@@ -16,7 +16,7 @@ import 'package:zpevnik/models/playlist_record.dart';
 import 'package:zpevnik/models/settings.dart';
 import 'package:zpevnik/models/song.dart';
 import 'package:zpevnik/models/song_lyric.dart';
-import 'package:zpevnik/models/song_lyrics_search.dart';
+import 'package:zpevnik/providers/utils/song_lyrics_search.dart';
 import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/models/songbook_record.dart';
 import 'package:zpevnik/models/tag.dart';
@@ -57,25 +57,25 @@ class DataProvider extends ChangeNotifier {
   Songbook? getSongbookById(int id) => _songbooksById[id];
   Tag? getTagBySongbookName(String name) => _tagsBySongbookName[name];
 
-  List<SongLyric> getPlaylistsSongLyrics(Playlist playlist) {
-    final songLyrics = (playlist.playlistRecords..sort())
-        .map((playlistRecord) => getSongLyricById(playlistRecord.songLyric.targetId))
-        .where((songLyric) => songLyric != null)
-        .toList()
-        .cast<SongLyric>();
+  // List<SongLyric> getPlaylistsSongLyrics(Playlist playlist) {
+  //   final songLyrics = (playlist.playlistRecords..sort())
+  //       .map((playlistRecord) => getSongLyricById(playlistRecord.songLyric.targetId))
+  //       .where((songLyric) => songLyric != null)
+  //       .toList()
+  //       .cast<SongLyric>();
 
-    return songLyrics;
-  }
+  //   return songLyrics;
+  // }
 
-  List<SongLyric> getSongbooksSongLyrics(Songbook songbook) {
-    final songLyrics = (songbook.songbookRecords..sort())
-        .map((songbookRecord) => getSongLyricById(songbookRecord.songLyric.targetId))
-        .where((songLyric) => songLyric != null)
-        .toList()
-        .cast<SongLyric>();
+  // List<SongLyric> getSongbooksSongLyrics(Songbook songbook) {
+  //   final songLyrics = (songbook.songbookRecords..sort())
+  //       .map((songbookRecord) => getSongLyricById(songbookRecord.songLyric.targetId))
+  //       .where((songLyric) => songLyric != null)
+  //       .toList()
+  //       .cast<SongLyric>();
 
-    return songLyrics;
-  }
+  //   return songLyrics;
+  // }
 
   Future<void> init(Store store) async {
     prefs = await SharedPreferences.getInstance();
@@ -125,11 +125,11 @@ class DataProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Stream<List<SongLyric>> watchPlaylistRecordsChanges(Playlist playlist) {
-    final query = store.box<PlaylistRecord>().query(PlaylistRecord_.playlist.equals(playlist.id));
+  // Stream<List<SongLyric>> watchPlaylistRecordsChanges(Playlist playlist) {
+  //   final query = store.box<PlaylistRecord>().query(PlaylistRecord_.playlist.equals(playlist.id));
 
-    return query.watch().map((_) => getPlaylistsSongLyrics(playlist));
-  }
+  //   return query.watch().map((_) => getPlaylistsSongLyrics(playlist));
+  // }
 
   Future<int> update() async {
     final songLyrics = await updater.update(this);

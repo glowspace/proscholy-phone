@@ -79,7 +79,7 @@ class PlaylistScreen extends StatelessWidget {
         centerTitle: false,
         actions: [
           HighlightableIconButton(
-            onTap: playlist.playlistRecords.isEmpty
+            onTap: playlist.records.isEmpty
                 ? null
                 : () => NavigationProvider.of(context).pushNamed(
                       '/search',
@@ -94,13 +94,11 @@ class PlaylistScreen extends StatelessWidget {
         ],
       ),
       backgroundColor: isTablet ? backgroundColor : null,
-      floatingActionButton: isTablet && playlist.playlistRecords.isEmpty ? null : floatingActionButton,
+      floatingActionButton: isTablet && playlist.records.isEmpty ? null : floatingActionButton,
       bottomNavigationBar: MediaQuery.of(context).isTablet ? null : const CustomBottomNavigationBar(),
       body: SafeArea(
-        child: ChangeNotifierProxyProvider<DataProvider, PlaylistSongLyricsProvider>(
-          create: (context) => PlaylistSongLyricsProvider(dataProvider, playlist),
-          update: (_, dataProvider, playlistSongLyricsProvider) => playlistSongLyricsProvider!..update(dataProvider),
-          builder: (_, __) => const SongLyricsListView<PlaylistSongLyricsProvider>(allowRowHighlight: true),
+        child: Consumer(
+          builder: (_, ref, __) => SongLyricsListView(songLyrics: ref.watch(songsListSongLyricsProvider(playlist))),
         ),
       ),
     );

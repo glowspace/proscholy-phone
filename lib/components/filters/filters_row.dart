@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zpevnik/components/filters/add_filter_tag.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/components/filters/filter_tag.dart';
-import 'package:zpevnik/providers/song_lyrics.dart';
+import 'package:zpevnik/providers/tags.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
-class FiltersRow extends StatelessWidget {
+class FiltersRow extends ConsumerWidget {
   const FiltersRow({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-
-    final selectedTags = context.watch<AllSongLyricsProvider>().selectedTags;
 
     final mediaQuery = MediaQuery.of(context);
     final showingThreeSections = mediaQuery.isTablet && mediaQuery.isLandscape;
+
+    final selectedTags = ref.watch(selectedTagsProvider);
 
     if (selectedTags.isEmpty && showingThreeSections) return Container();
 

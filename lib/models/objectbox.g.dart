@@ -138,7 +138,7 @@ final _entities = <ModelEntity>[
       relations: <ModelRelation>[],
       backlinks: <ModelBacklink>[
         ModelBacklink(
-            name: 'songbookRecords', srcEntity: 'SongbookRecord', srcField: '')
+            name: 'records', srcEntity: 'SongbookRecord', srcField: '')
       ]),
   ModelEntity(
       id: const IdUid(11, 6447883453535376640),
@@ -306,7 +306,7 @@ final _entities = <ModelEntity>[
       relations: <ModelRelation>[],
       backlinks: <ModelBacklink>[
         ModelBacklink(
-            name: 'playlistRecords', srcEntity: 'PlaylistRecord', srcField: '')
+            name: 'records', srcEntity: 'PlaylistRecord', srcField: '')
       ]),
   ModelEntity(
       id: const IdUid(17, 7654860777539205773),
@@ -719,7 +719,7 @@ ModelDefinition getObjectBoxModel() {
         toManyRelations: (Songbook object) => {
               RelInfo<SongbookRecord>.toOneBacklink(4, object.id,
                       (SongbookRecord srcObject) => srcObject.songbook):
-                  object.songbookRecords
+                  object.records
             },
         getId: (Songbook object) => object.id,
         setId: (Songbook object, int id) {
@@ -768,9 +768,9 @@ ModelDefinition getObjectBoxModel() {
                   .vTableGet(buffer, rootOffset, 14, false),
               isPinned: const fb.BoolReader()
                   .vTableGetNullable(buffer, rootOffset, 16),
-              songbookRecords: ToMany());
+              records: ToMany());
           InternalToManyAccess.setRelInfo<Songbook>(
-              object.songbookRecords,
+              object.records,
               store,
               RelInfo<SongbookRecord>.toOneBacklink(4, object.id,
                   (SongbookRecord srcObject) => srcObject.songbook));
@@ -942,7 +942,7 @@ ModelDefinition getObjectBoxModel() {
         toManyRelations: (Playlist object) => {
               RelInfo<PlaylistRecord>.toOneBacklink(4, object.id,
                       (PlaylistRecord srcObject) => srcObject.playlist):
-                  object.playlistRecords
+                  object.records
             },
         getId: (Playlist object) => object.id,
         setId: (Playlist object, int id) {
@@ -972,9 +972,9 @@ ModelDefinition getObjectBoxModel() {
               name: const fb.StringReader(asciiOptimization: true)
                   .vTableGet(buffer, rootOffset, 6, ''),
               rank: const fb.Int64Reader().vTableGet(buffer, rootOffset, 8, 0),
-              playlistRecords: ToMany());
+              records: ToMany());
           InternalToManyAccess.setRelInfo<Playlist>(
-              object.playlistRecords,
+              object.records,
               store,
               RelInfo<PlaylistRecord>.toOneBacklink(4, object.id,
                   (PlaylistRecord srcObject) => srcObject.playlist));

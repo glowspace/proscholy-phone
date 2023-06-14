@@ -72,19 +72,19 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
     context.read<PresentationProvider>().changeSongLyric(_lyricsController.parser);
 
     if (widget.playlist != null) {
-      _songLyricsSubscription =
-          context.read<DataProvider>().watchPlaylistRecordsChanges(widget.playlist!).listen((songLyrics) {
-        if (songLyrics.isEmpty) return;
+      // _songLyricsSubscription =
+      //     context.read<DataProvider>().watchPlaylistRecordsChanges(widget.playlist!).listen((songLyrics) {
+      //   if (songLyrics.isEmpty) return;
 
-        setState(() {
-          _currentIndex =
-              (_currentIndex % _lyricsControllers.length) + (songLyrics.length == 1 ? 0 : 10 * songLyrics.length);
-          _lyricsControllers = songLyrics.map((songLyric) => LyricsController(songLyric, context)).toList();
-          _pageController.jumpToPage(_currentIndex);
-        });
+      //   setState(() {
+      //     _currentIndex =
+      //         (_currentIndex % _lyricsControllers.length) + (songLyrics.length == 1 ? 0 : 10 * songLyrics.length);
+      //     _lyricsControllers = songLyrics.map((songLyric) => LyricsController(songLyric, context)).toList();
+      //     _pageController.jumpToPage(_currentIndex);
+      //   });
 
-        context.read<ValueNotifier<SongLyric?>>().value = _songLyric;
-      });
+      //   context.read<ValueNotifier<SongLyric?>>().value = _songLyric;
+      // });
     }
   }
 

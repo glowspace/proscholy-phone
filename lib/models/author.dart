@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:objectbox/objectbox.dart';
-import 'package:zpevnik/models/identifiable.dart';
+import 'package:zpevnik/models/model.dart';
 
 part 'author.freezed.dart';
 part 'author.g.dart';

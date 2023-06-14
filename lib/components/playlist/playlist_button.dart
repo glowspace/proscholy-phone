@@ -83,26 +83,26 @@ class PlaylistButton extends StatelessWidget {
   }
 
   void _sharePlaylist(BuildContext context, Playlist playlist) {
-    final songLyricsIds = context
-        .read<DataProvider>()
-        .getPlaylistsSongLyrics(playlist)
-        .map((songLyric) => songLyric.id)
-        .toList()
-        .join(',');
+    // final songLyricsIds = context
+    //     .read<DataProvider>()
+    //     .getPlaylistsSongLyrics(playlist)
+    //     .map((songLyric) => songLyric.id)
+    //     .toList()
+    //     .join(',');
 
-    final songLyricsTranspositions = context
-        .read<DataProvider>()
-        .getPlaylistsSongLyrics(playlist)
-        .map((songLyric) => songLyric.settings.target?.transposition ?? 0)
-        .toList()
-        .join(',');
+    // final songLyricsTranspositions = context
+    //     .read<DataProvider>()
+    //     .getPlaylistsSongLyrics(playlist)
+    //     .map((songLyric) => songLyric.settings.target?.transposition ?? 0)
+    //     .toList()
+    //     .join(',');
 
-    final box = context.findRenderObject() as RenderBox?;
+    // final box = context.findRenderObject() as RenderBox?;
 
-    Share.share(
-      Uri.encodeFull(
-          '$deepLinkUrl/add_playlist?name=${playlist.name}&ids=$songLyricsIds&transpositions=$songLyricsTranspositions'),
-      sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
-    );
+    // Share.share(
+    //   Uri.encodeFull(
+    //       '$deepLinkUrl/add_playlist?name=${playlist.name}&ids=$songLyricsIds&transpositions=$songLyricsTranspositions'),
+    //   sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
+    // );
   }
 }

@@ -6,11 +6,11 @@ part of 'playlists.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$favoritePlaylistHash() => r'e489a6e7488d1c65771aecfaaf731228a14c4608';
+String _$favoritePlaylistHash() => r'86ce2b76733ebb9acf54507bc1c4870bacaeae8c';
 
 /// See also [favoritePlaylist].
 @ProviderFor(favoritePlaylist)
-final favoritePlaylistProvider = Provider<Playlist>.internal(
+final favoritePlaylistProvider = AutoDisposeProvider<Playlist>.internal(
   favoritePlaylist,
   name: r'favoritePlaylistProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -20,12 +20,13 @@ final favoritePlaylistProvider = Provider<Playlist>.internal(
   allTransitiveDependencies: null,
 );
 
-typedef FavoritePlaylistRef = ProviderRef<Playlist>;
-String _$playlistsHash() => r'f168306dca48c413283dc75fc10302b9219375d4';
+typedef FavoritePlaylistRef = AutoDisposeProviderRef<Playlist>;
+String _$playlistsHash() => r'd4d095562ef2943862e7dad850163f73789b51a7';
 
 /// See also [Playlists].
 @ProviderFor(Playlists)
-final playlistsProvider = NotifierProvider<Playlists, List<Playlist>>.internal(
+final playlistsProvider =
+    AutoDisposeNotifierProvider<Playlists, List<Playlist>>.internal(
   Playlists.new,
   name: r'playlistsProvider',
   debugGetCreateSourceHash:
@@ -34,5 +35,5 @@ final playlistsProvider = NotifierProvider<Playlists, List<Playlist>>.internal(
   allTransitiveDependencies: null,
 );
 
-typedef _$Playlists = Notifier<List<Playlist>>;
+typedef _$Playlists = AutoDisposeNotifier<List<Playlist>>;
 // ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions

@@ -18,6 +18,7 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$AppDependencies {
   SharedPreferences get sharedPreferences => throw _privateConstructorUsedError;
   Store get store => throw _privateConstructorUsedError;
+  Database get ftsDatabase => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $AppDependenciesCopyWith<AppDependencies> get copyWith =>
@@ -30,7 +31,8 @@ abstract class $AppDependenciesCopyWith<$Res> {
           AppDependencies value, $Res Function(AppDependencies) then) =
       _$AppDependenciesCopyWithImpl<$Res, AppDependencies>;
   @useResult
-  $Res call({SharedPreferences sharedPreferences, Store store});
+  $Res call(
+      {SharedPreferences sharedPreferences, Store store, Database ftsDatabase});
 }
 
 /// @nodoc
@@ -48,6 +50,7 @@ class _$AppDependenciesCopyWithImpl<$Res, $Val extends AppDependencies>
   $Res call({
     Object? sharedPreferences = null,
     Object? store = null,
+    Object? ftsDatabase = null,
   }) {
     return _then(_value.copyWith(
       sharedPreferences: null == sharedPreferences
@@ -58,6 +61,10 @@ class _$AppDependenciesCopyWithImpl<$Res, $Val extends AppDependencies>
           ? _value.store
           : store // ignore: cast_nullable_to_non_nullable
               as Store,
+      ftsDatabase: null == ftsDatabase
+          ? _value.ftsDatabase
+          : ftsDatabase // ignore: cast_nullable_to_non_nullable
+              as Database,
     ) as $Val);
   }
 }
@@ -70,7 +77,8 @@ abstract class _$$_AppDependenciesCopyWith<$Res>
       __$$_AppDependenciesCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({SharedPreferences sharedPreferences, Store store});
+  $Res call(
+      {SharedPreferences sharedPreferences, Store store, Database ftsDatabase});
 }
 
 /// @nodoc
@@ -86,6 +94,7 @@ class __$$_AppDependenciesCopyWithImpl<$Res>
   $Res call({
     Object? sharedPreferences = null,
     Object? store = null,
+    Object? ftsDatabase = null,
   }) {
     return _then(_$_AppDependencies(
       sharedPreferences: null == sharedPreferences
@@ -96,6 +105,10 @@ class __$$_AppDependenciesCopyWithImpl<$Res>
           ? _value.store
           : store // ignore: cast_nullable_to_non_nullable
               as Store,
+      ftsDatabase: null == ftsDatabase
+          ? _value.ftsDatabase
+          : ftsDatabase // ignore: cast_nullable_to_non_nullable
+              as Database,
     ));
   }
 }
@@ -104,16 +117,20 @@ class __$$_AppDependenciesCopyWithImpl<$Res>
 
 class _$_AppDependencies implements _AppDependencies {
   const _$_AppDependencies(
-      {required this.sharedPreferences, required this.store});
+      {required this.sharedPreferences,
+      required this.store,
+      required this.ftsDatabase});
 
   @override
   final SharedPreferences sharedPreferences;
   @override
   final Store store;
+  @override
+  final Database ftsDatabase;
 
   @override
   String toString() {
-    return 'AppDependencies(sharedPreferences: $sharedPreferences, store: $store)';
+    return 'AppDependencies(sharedPreferences: $sharedPreferences, store: $store, ftsDatabase: $ftsDatabase)';
   }
 
   @override
@@ -123,11 +140,14 @@ class _$_AppDependencies implements _AppDependencies {
             other is _$_AppDependencies &&
             (identical(other.sharedPreferences, sharedPreferences) ||
                 other.sharedPreferences == sharedPreferences) &&
-            (identical(other.store, store) || other.store == store));
+            (identical(other.store, store) || other.store == store) &&
+            (identical(other.ftsDatabase, ftsDatabase) ||
+                other.ftsDatabase == ftsDatabase));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, sharedPreferences, store);
+  int get hashCode =>
+      Object.hash(runtimeType, sharedPreferences, store, ftsDatabase);
 
   @JsonKey(ignore: true)
   @override
@@ -139,12 +159,15 @@ class _$_AppDependencies implements _AppDependencies {
 abstract class _AppDependencies implements AppDependencies {
   const factory _AppDependencies(
       {required final SharedPreferences sharedPreferences,
-      required final Store store}) = _$_AppDependencies;
+      required final Store store,
+      required final Database ftsDatabase}) = _$_AppDependencies;
 
   @override
   SharedPreferences get sharedPreferences;
   @override
   Store get store;
+  @override
+  Database get ftsDatabase;
   @override
   @JsonKey(ignore: true)
   _$$_AppDependenciesCopyWith<_$_AppDependencies> get copyWith =>

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/tag.dart';
-import 'package:zpevnik/providers/song_lyrics.dart';
+import 'package:zpevnik/providers/tags.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
 const double _filterRadius = 7;
 
-class FilterTag extends StatelessWidget {
+class FilterTag extends ConsumerWidget {
   final Tag tag;
   final bool isToggable;
   final bool isRemovable;
@@ -20,14 +20,12 @@ class FilterTag extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
 
     final padding = isRemovable
         ? const EdgeInsets.only(left: kDefaultPadding)
         : const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2);
-
-    final songLyricsProvider = context.watch<AllSongLyricsProvider>();
 
     final backgroundColor = theme.brightness.isLight ? const Color(0xfff2f1f6) : const Color(0xff15131d);
     final selectedBackgroundColor = theme.brightness.isLight ? const Color(0xffe4e2ec) : const Color(0xff3c3653);
@@ -42,7 +40,7 @@ class FilterTag extends StatelessWidget {
           Material(
             color: removeBackgroundColor,
             child: InkWell(
-              onTap: () => songLyricsProvider.toggleSelectedTag(tag),
+              onTap: () => ref.read(selectedTagsByTypeProvider(tag.type).notifier).toggleSelection(tag),
               highlightColor: theme.colorScheme.primary.withAlpha(0x20),
               child: Padding(
                 padding: const EdgeInsets.all(kDefaultPadding / 2).copyWith(left: kDefaultPadding / 4),
@@ -56,7 +54,7 @@ class FilterTag extends StatelessWidget {
     if (isToggable) {
       child = InkWell(
         highlightColor: theme.colorScheme.primary.withAlpha(0x10),
-        onTap: () => songLyricsProvider.toggleSelectedTag(tag),
+        onTap: () => ref.read(selectedTagsByTypeProvider(tag.type).notifier).toggleSelection(tag),
         child: Padding(padding: padding, child: child),
       );
     }
@@ -67,7 +65,11 @@ class FilterTag extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(isRemovable ? _filterRadius : 32),
         border: isToggable ? Border.all(color: theme.hintColor, width: 0.5) : null,
-        color: isRemovable ? backgroundColor : (songLyricsProvider.isSelected(tag) ? selectedBackgroundColor : null),
+        color: isRemovable
+            ? backgroundColor
+            : (ref.watch(selectedTagsByTypeProvider(tag.type).select((selectedTags) => selectedTags.contains(tag)))
+                ? selectedBackgroundColor
+                : null),
       ),
       clipBehavior: Clip.antiAlias,
       child: child,

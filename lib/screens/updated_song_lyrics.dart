@@ -25,12 +25,8 @@ class UpdatedSongLyricsScreen extends StatelessWidget {
         centerTitle: false,
       ),
       backgroundColor: isTablet ? backgroundColor : null,
-      body: SafeArea(
-        child: ChangeNotifierProvider(
-          create: (context) => UpdatedSongLyricsProvider(context.read<DataProvider>()),
-          builder: (_, __) => const SongLyricsListView<UpdatedSongLyricsProvider>(allowRowHighlight: true),
-        ),
-      ),
+      // TODO: use updated song lyrics
+      body: SafeArea(child: SongLyricsListView(songLyrics: [])),
     );
   }
 }

@@ -53,27 +53,27 @@ class NavigationProvider extends ChangeNotifier {
     if (menuNavigatorKey == null) return navigatorKey.currentState?.pushNamed<T>(name, arguments: arguments);
 
     switch (name) {
-      case '/playlist':
-        final currentSettings = menuNavigatorObserver!.currentRoute?.settings;
-        if (currentSettings != null && currentSettings.name == '/playlist' && currentSettings.arguments == arguments) {
-          return null;
-        }
+      // case '/playlist':
+      //   final currentSettings = menuNavigatorObserver!.currentRoute?.settings;
+      //   if (currentSettings != null && currentSettings.name == '/playlist' && currentSettings.arguments == arguments) {
+      //     return null;
+      //   }
 
-        final dataProvider = navigatorKey.currentContext!.read<DataProvider>();
-        final songLyrics = dataProvider.getPlaylistsSongLyrics(arguments as Playlist);
+      //   final dataProvider = navigatorKey.currentContext!.read<DataProvider>();
+      //   final songLyrics = dataProvider.getPlaylistsSongLyrics(arguments as Playlist);
 
-        return _pushSongLyricsWithMenu(name, arguments, songLyrics, playlist: arguments, onSongLyricsEmpty: () {
-          navigatorKey.currentState
-              ?.pushNamed('/search', arguments: SearchScreenArguments(shouldReturnSongLyric: true))
-              .then((songLyric) {
-            if (songLyric != null && songLyric is SongLyric) {
-              // dataProvider.addToPlaylist(songLyric, arguments);
+      //   return _pushSongLyricsWithMenu(name, arguments, songLyrics, playlist: arguments, onSongLyricsEmpty: () {
+      //     navigatorKey.currentState
+      //         ?.pushNamed('/search', arguments: SearchScreenArguments(shouldReturnSongLyric: true))
+      //         .then((songLyric) {
+      //       if (songLyric != null && songLyric is SongLyric) {
+      //         // dataProvider.addToPlaylist(songLyric, arguments);
 
-              navigatorKey.currentState?.pushNamed('/song_lyric',
-                  arguments: SongLyricScreenArguments([songLyric], 0, isTablet: true, playlist: arguments));
-            }
-          });
-        });
+      //         navigatorKey.currentState?.pushNamed('/song_lyric',
+      //             arguments: SongLyricScreenArguments([songLyric], 0, isTablet: true, playlist: arguments));
+      //       }
+      //     });
+      //   });
       case '/song_lyric':
         final songLyricScreenArguments = arguments as SongLyricScreenArguments;
         navigatorKey.currentContext?.read<ValueNotifier<SongLyric?>>().value =
@@ -83,11 +83,11 @@ class NavigationProvider extends ChangeNotifier {
             ?.pushNamed<T>(name, arguments: songLyricScreenArguments.copyWith(isTablet: true));
       case '/song_lyric/translations':
         return _pushSongLyricsWithMenu(name, arguments, []);
-      case '/songbook':
-        final songLyrics =
-            navigatorKey.currentContext!.read<DataProvider>().getSongbooksSongLyrics(arguments as Songbook);
+      // case '/songbook':
+      //   final songLyrics =
+      //       navigatorKey.currentContext!.read<DataProvider>().getSongbooksSongLyrics(arguments as Songbook);
 
-        return _pushSongLyricsWithMenu(name, arguments, songLyrics);
+      //   return _pushSongLyricsWithMenu(name, arguments, songLyrics);
       case '/user':
         return menuNavigatorKey!.currentState?.pushNamed<T>(name, arguments: arguments);
       case '/updated_song_lyrics':

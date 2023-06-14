@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:presentation/presentation.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
@@ -183,7 +184,7 @@ class _SearchFieldState extends State<SearchField> {
     // prevent keyboard from showing up
     FocusScope.of(context).requestFocus(FocusNode());
 
-    NavigationProvider.of(context).pushNamed('/search');
+    context.push('/search');
   }
 
   void _clearOrPop() {

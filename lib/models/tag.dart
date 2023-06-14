@@ -1,30 +1,40 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:objectbox/objectbox.dart';
-import 'package:zpevnik/models/identifiable.dart';
+import 'package:zpevnik/models/model.dart';
 
 part 'tag.freezed.dart';
 part 'tag.g.dart';
 
+const List<TagType> supportedTagTypes = [
+  TagType.liturgyPart,
+  TagType.liturgyPeriod,
+  TagType.sacredOccasion,
+  TagType.generic,
+  TagType.saints,
+  TagType.songbook,
+  TagType.playlist,
+  TagType.language,
+];
+
 enum TagType {
   liturgyPart('Mše svatá'),
   liturgyPeriod('Liturgický rok'),
-  liturgyDay('', isSupported: false),
+  liturgyDay(''),
   sacredOccasion('Svátosti a pobožnosti'),
   saints('Ke svatým'),
-  historyPeriod('', isSupported: false),
-  instrumentation('', isSupported: false),
-  genre('', isSupported: false),
-  musicalForm('', isSupported: false),
-  generic('Příležitosti'),
+  historyPeriod(''),
+  instrumentation(''),
+  genre(''),
+  musicalForm(''),
+  generic('K příležitostem'),
   language('Jazyky'),
   songbook('Zpěvníky'),
   playlist('Playlisty'),
-  unknown('', isSupported: false);
+  unknown('');
 
   final String description;
-  final bool isSupported;
 
-  const TagType(this.description, {this.isSupported = true});
+  const TagType(this.description);
 
   static int rawValueFromString(String string) {
     switch (string) {
@@ -85,6 +95,39 @@ enum TagType {
         return TagType.playlist;
       default:
         return TagType.unknown;
+    }
+  }
+
+  int get rawValue {
+    switch (this) {
+      case TagType.liturgyPart:
+        return 0;
+      case TagType.liturgyPeriod:
+        return 1;
+      case TagType.generic:
+        return 2;
+      case TagType.historyPeriod:
+        return 3;
+      case TagType.instrumentation:
+        return 4;
+      case TagType.genre:
+        return 5;
+      case TagType.musicalForm:
+        return 6;
+      case TagType.sacredOccasion:
+        return 7;
+      case TagType.saints:
+        return 8;
+      case TagType.language:
+        return 9;
+      case TagType.liturgyDay:
+        return 10;
+      case TagType.songbook:
+        return 11;
+      case TagType.playlist:
+        return 12;
+      default:
+        return -1;
     }
   }
 }

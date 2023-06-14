@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/providers/navigation.dart';
@@ -81,6 +82,6 @@ class SongbookTile extends StatelessWidget {
   void _pushSongbook(BuildContext context) {
     FocusScope.of(context).unfocus();
 
-    NavigationProvider.of(context).pushNamed('/songbook', arguments: songbook);
+    context.push('/songbook', extra: songbook);
   }
 }

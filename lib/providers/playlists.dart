@@ -8,7 +8,7 @@ import 'package:zpevnik/providers/util.dart';
 
 part 'playlists.g.dart';
 
-@Riverpod(keepAlive: true)
+@riverpod
 Playlist favoritePlaylist(FavoritePlaylistRef ref) {
   final box = ref.read(appDependenciesProvider.select((appDependencies) => appDependencies.store)).box<Playlist>();
 
@@ -19,7 +19,7 @@ Playlist favoritePlaylist(FavoritePlaylistRef ref) {
   return box.get(favoritesPlaylistId)!;
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 class Playlists extends _$Playlists {
   Box<Playlist> get _playlistsBox {
     return ref.read(appDependenciesProvider.select((appDependencies) => appDependencies.store)).box<Playlist>();
@@ -44,7 +44,7 @@ class Playlists extends _$Playlists {
   }
 
   Playlist createPlaylist(String name, {List<SongLyric> songLyrics = const []}) {
-    final newPlaylist = Playlist(id: _nextPlaylistId++, name: name, rank: 0, playlistRecords: ToMany());
+    final newPlaylist = Playlist(id: _nextPlaylistId++, name: name, rank: 0, records: ToMany());
 
     int nextPlaylistRecordRank = 0;
 
@@ -69,7 +69,7 @@ class Playlists extends _$Playlists {
 
   Playlist duplicatePlaylist(Playlist playlist, String name) {
     // copy the records with new playlist id
-    final playlistRecords = playlist.playlistRecords
+    final playlistRecords = playlist.records
         .map((playlistRecord) => playlistRecord.copyWith(
               id: _nextPlaylistRecordId++,
               playlist: ToOne(targetId: _nextPlaylistId),
@@ -80,7 +80,7 @@ class Playlists extends _$Playlists {
       id: _nextPlaylistId++,
       name: name,
       rank: 0,
-      playlistRecords: ToMany(items: playlistRecords),
+      records: ToMany(items: playlistRecords),
     );
 
     // increase rank of all existing playlists and save them

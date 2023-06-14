@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:objectbox/internal.dart';
 import 'package:objectbox/objectbox.dart';
-import 'package:zpevnik/models/identifiable.dart';
+import 'package:zpevnik/models/model.dart';
 import 'package:zpevnik/providers/app_dependencies.dart';
 
 int nextId<T extends Identifiable, D>(Ref ref, QueryProperty<T, D> idProperty) {

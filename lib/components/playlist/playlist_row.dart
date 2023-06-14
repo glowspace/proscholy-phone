@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:zpevnik/components/playlist/playlist_button.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/playlist.dart';
@@ -69,6 +70,6 @@ class PlaylistRow extends ConsumerWidget {
   void _pushPlaylist(BuildContext context) {
     FocusScope.of(context).unfocus();
 
-    NavigationProvider.of(context).pushNamed('/playlist', arguments: playlist);
+    context.push('/playlist', extra: playlist);
   }
 }

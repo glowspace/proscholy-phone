@@ -22,8 +22,7 @@ mixin _$Playlist {
   String get name => throw _privateConstructorUsedError;
   int get rank => throw _privateConstructorUsedError;
   @Backlink()
-  ToMany<PlaylistRecord> get playlistRecords =>
-      throw _privateConstructorUsedError;
+  ToMany<PlaylistRecord> get records => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $PlaylistCopyWith<Playlist> get copyWith =>
@@ -39,7 +38,7 @@ abstract class $PlaylistCopyWith<$Res> {
       {@Id(assignable: true) int id,
       @Unique(onConflict: ConflictStrategy.fail) String name,
       int rank,
-      @Backlink() ToMany<PlaylistRecord> playlistRecords});
+      @Backlink() ToMany<PlaylistRecord> records});
 }
 
 /// @nodoc
@@ -58,7 +57,7 @@ class _$PlaylistCopyWithImpl<$Res, $Val extends Playlist>
     Object? id = null,
     Object? name = null,
     Object? rank = null,
-    Object? playlistRecords = null,
+    Object? records = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -73,9 +72,9 @@ class _$PlaylistCopyWithImpl<$Res, $Val extends Playlist>
           ? _value.rank
           : rank // ignore: cast_nullable_to_non_nullable
               as int,
-      playlistRecords: null == playlistRecords
-          ? _value.playlistRecords
-          : playlistRecords // ignore: cast_nullable_to_non_nullable
+      records: null == records
+          ? _value.records
+          : records // ignore: cast_nullable_to_non_nullable
               as ToMany<PlaylistRecord>,
     ) as $Val);
   }
@@ -92,7 +91,7 @@ abstract class _$$_PlaylistCopyWith<$Res> implements $PlaylistCopyWith<$Res> {
       {@Id(assignable: true) int id,
       @Unique(onConflict: ConflictStrategy.fail) String name,
       int rank,
-      @Backlink() ToMany<PlaylistRecord> playlistRecords});
+      @Backlink() ToMany<PlaylistRecord> records});
 }
 
 /// @nodoc
@@ -109,7 +108,7 @@ class __$$_PlaylistCopyWithImpl<$Res>
     Object? id = null,
     Object? name = null,
     Object? rank = null,
-    Object? playlistRecords = null,
+    Object? records = null,
   }) {
     return _then(_$_Playlist(
       id: null == id
@@ -124,9 +123,9 @@ class __$$_PlaylistCopyWithImpl<$Res>
           ? _value.rank
           : rank // ignore: cast_nullable_to_non_nullable
               as int,
-      playlistRecords: null == playlistRecords
-          ? _value.playlistRecords
-          : playlistRecords // ignore: cast_nullable_to_non_nullable
+      records: null == records
+          ? _value.records
+          : records // ignore: cast_nullable_to_non_nullable
               as ToMany<PlaylistRecord>,
     ));
   }
@@ -140,7 +139,7 @@ class _$_Playlist extends _Playlist {
       {@Id(assignable: true) required this.id,
       @Unique(onConflict: ConflictStrategy.fail) required this.name,
       required this.rank,
-      @Backlink() required this.playlistRecords})
+      @Backlink() required this.records})
       : super._();
 
   @override
@@ -153,11 +152,11 @@ class _$_Playlist extends _Playlist {
   final int rank;
   @override
   @Backlink()
-  final ToMany<PlaylistRecord> playlistRecords;
+  final ToMany<PlaylistRecord> records;
 
   @override
   String toString() {
-    return 'Playlist(id: $id, name: $name, rank: $rank, playlistRecords: $playlistRecords)';
+    return 'Playlist(id: $id, name: $name, rank: $rank, records: $records)';
   }
 
   @override
@@ -168,13 +167,12 @@ class _$_Playlist extends _Playlist {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.rank, rank) || other.rank == rank) &&
-            const DeepCollectionEquality()
-                .equals(other.playlistRecords, playlistRecords));
+            const DeepCollectionEquality().equals(other.records, records));
   }
 
   @override
   int get hashCode => Object.hash(runtimeType, id, name, rank,
-      const DeepCollectionEquality().hash(playlistRecords));
+      const DeepCollectionEquality().hash(records));
 
   @JsonKey(ignore: true)
   @override
@@ -185,11 +183,10 @@ class _$_Playlist extends _Playlist {
 
 abstract class _Playlist extends Playlist {
   const factory _Playlist(
-          {@Id(assignable: true) required final int id,
-          @Unique(onConflict: ConflictStrategy.fail) required final String name,
-          required final int rank,
-          @Backlink() required final ToMany<PlaylistRecord> playlistRecords}) =
-      _$_Playlist;
+      {@Id(assignable: true) required final int id,
+      @Unique(onConflict: ConflictStrategy.fail) required final String name,
+      required final int rank,
+      @Backlink() required final ToMany<PlaylistRecord> records}) = _$_Playlist;
   const _Playlist._() : super._();
 
   @override
@@ -202,7 +199,7 @@ abstract class _Playlist extends Playlist {
   int get rank;
   @override
   @Backlink()
-  ToMany<PlaylistRecord> get playlistRecords;
+  ToMany<PlaylistRecord> get records;
   @override
   @JsonKey(ignore: true)
   _$$_PlaylistCopyWith<_$_Playlist> get copyWith =>

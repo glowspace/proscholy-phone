@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/navigation.dart';
+import 'package:zpevnik/providers/search.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
 import 'package:zpevnik/routes/arguments/search.dart';
 import 'package:zpevnik/routes/arguments/song_lyric.dart';
@@ -37,20 +38,6 @@ class SongLyricRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
-
-    String? songbookName;
-
-    final searchText = context.read<AllSongLyricsProvider?>()?.searchText;
-
-    if (searchText != null && searchText.isNotEmpty) {
-      for (final songbookRecord in songLyric.songbookRecords) {
-        if (searchText == songbookRecord.number) {
-          songbookName = songbookRecord.songbook.target!.name;
-
-          break;
-        }
-      }
-    }
 
     const textMargin = EdgeInsets.only(top: 2);
 
@@ -85,8 +72,22 @@ class SongLyricRow extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(songLyric.name, style: textTheme.bodyMedium),
-                  if (songbookName != null)
-                    Container(margin: textMargin, child: Text(songbookName, style: textTheme.bodySmall)),
+                  Consumer(builder: (_, ref, __) {
+                    final searchText = ref.watch(searchTextProvider);
+
+                    if (searchText.isNotEmpty) {
+                      for (final songbookRecord in songLyric.songbookRecords) {
+                        if (searchText == songbookRecord.number) {
+                          return Container(
+                            margin: textMargin,
+                            child: Text(songbookRecord.songbook.target!.name, style: textTheme.bodySmall),
+                          );
+                        }
+                      }
+                    }
+
+                    return const SizedBox();
+                  }),
                   if (songLyric.secondaryName1 != null)
                     Container(margin: textMargin, child: Text(songLyric.secondaryName1!, style: textTheme.bodySmall)),
                   if (songLyric.secondaryName2 != null)
@@ -100,45 +101,45 @@ class SongLyricRow extends StatelessWidget {
       ),
     );
 
-    if (isTablet && allowHighlight) {
-      row = ValueListenableBuilder<SongLyric?>(
-        valueListenable: context.read<ValueNotifier<SongLyric?>>(),
-        builder: (_, activeSongLyric, child) => Container(
-          decoration: activeSongLyric == songLyric
-              ? BoxDecoration(color: hightlightColor, borderRadius: BorderRadius.circular(kDefaultRadius))
-              : BoxDecoration(borderRadius: BorderRadius.circular(kDefaultRadius)),
-          margin: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-          clipBehavior: Clip.antiAlias,
-          child: child!,
-        ),
-        child: row,
-      );
-    }
+    // if (isTablet && allowHighlight) {
+    //   row = ValueListenableBuilder<SongLyric?>(
+    //     valueListenable: context.read<ValueNotifier<SongLyric?>>(),
+    //     builder: (_, activeSongLyric, child) => Container(
+    //       decoration: activeSongLyric == songLyric
+    //           ? BoxDecoration(color: hightlightColor, borderRadius: BorderRadius.circular(kDefaultRadius))
+    //           : BoxDecoration(borderRadius: BorderRadius.circular(kDefaultRadius)),
+    //       margin: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+    //       clipBehavior: Clip.antiAlias,
+    //       child: child!,
+    //     ),
+    //     child: row,
+    //   );
+    // }
 
-    final songLyricsProvider = context.read<PlaylistSongLyricsProvider?>();
+    // final songLyricsProvider = context.read<PlaylistSongLyricsProvider?>();
 
-    // SlidableAuto
+    // // SlidableAuto
 
-    if (songLyricsProvider != null) {
-      return Slidable(
-        key: Key('${songLyric.id}'),
-        groupTag: 'song_lyric',
-        endActionPane: ActionPane(
-          motion: const DrawerMotion(),
-          extentRatio: 0.25,
-          children: [
-            SlidableAction(
-              onPressed: (_) => songLyricsProvider.removeSongLyric(songLyric),
-              backgroundColor: Colors.red,
-              foregroundColor: Colors.white,
-              icon: Icons.delete,
-              label: 'Odstranit',
-            ),
-          ],
-        ),
-        child: row,
-      );
-    }
+    // if (songLyricsProvider != null) {
+    //   return Slidable(
+    //     key: Key('${songLyric.id}'),
+    //     groupTag: 'song_lyric',
+    //     endActionPane: ActionPane(
+    //       motion: const DrawerMotion(),
+    //       extentRatio: 0.25,
+    //       children: [
+    //         SlidableAction(
+    //           onPressed: (_) => songLyricsProvider.removeSongLyric(songLyric),
+    //           backgroundColor: Colors.red,
+    //           foregroundColor: Colors.white,
+    //           icon: Icons.delete,
+    //           label: 'Odstranit',
+    //         ),
+    //       ],
+    //     ),
+    //     child: row,
+    //   );
+    // }
 
     if (isDraggable) {
       return Draggable(
@@ -200,7 +201,7 @@ class SongLyricRow extends StatelessWidget {
     if (arguments is SearchScreenArguments && arguments.shouldReturnSongLyric) {
       Navigator.of(context).pop(songLyric);
     } else {
-      context.read<AllSongLyricsProvider?>()?.addRecentSongLyric(songLyric);
+      // context.read<AllSongLyricsProvider?>()?.addRecentSongLyric(songLyric);
 
       final arguments = songLyricScreenArguments ?? SongLyricScreenArguments([songLyric], 0);
 

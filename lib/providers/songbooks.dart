@@ -9,7 +9,7 @@ part 'songbooks.g.dart';
 
 const _pinnedSongbookIdsKey = 'pinned_songbook_ids';
 
-@Riverpod(keepAlive: true)
+@riverpod
 class PinnedSongbookIds extends _$PinnedSongbookIds {
   SharedPreferences get _sharedPreferences {
     return ref.read(appDependenciesProvider.select((appDependencies) => appDependencies.sharedPreferences));
@@ -34,7 +34,7 @@ class PinnedSongbookIds extends _$PinnedSongbookIds {
   }
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 List<Songbook> songbooks(SongbooksRef ref) {
   final songbooks = queryStore(ref, condition: Songbook_.isPrivate.equals(false));
   final pinnedSongbookIds = ref.watch(pinnedSongbookIdsProvider);

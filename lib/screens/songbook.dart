@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:provider/provider.dart' hide Consumer;
 import 'package:zpevnik/components/bottom_navigation_bar.dart';
 import 'package:zpevnik/components/custom/back_button.dart';
 import 'package:zpevnik/components/highlightable.dart';
@@ -53,10 +54,8 @@ class SongbookScreen extends StatelessWidget {
       backgroundColor: isTablet ? backgroundColor : null,
       bottomNavigationBar: MediaQuery.of(context).isTablet ? null : const CustomBottomNavigationBar(),
       body: SafeArea(
-        child: ChangeNotifierProxyProvider<DataProvider, SongbookSongLyricsProvider>(
-          create: (context) => SongbookSongLyricsProvider(dataProvider, songbook),
-          update: (_, dataProvider, songbookSongLyricsProvider) => songbookSongLyricsProvider!..update(dataProvider),
-          builder: (_, __) => const SongLyricsListView<SongbookSongLyricsProvider>(allowRowHighlight: true),
+        child: Consumer(
+          builder: (_, ref, __) => SongLyricsListView(songLyrics: ref.watch(songsListSongLyricsProvider(songbook))),
         ),
       ),
     );
