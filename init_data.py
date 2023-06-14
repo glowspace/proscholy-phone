@@ -50,14 +50,14 @@ song_lyrics_data = {
                 }
                 songbook_records {
                     pivot {
-                    id
-                    number
-                    song_lyric {
                         id
-                    }
-                    songbook {
-                        id
-                    }
+                        number
+                        song_lyric {
+                            id
+                        }
+                        songbook {
+                            id
+                        }
                     }
                 }
                 externals {
@@ -69,9 +69,9 @@ song_lyrics_data = {
                 }
                 authors_pivot {
                     pivot {
-                    author {
-                        id
-                    }
+                        author {
+                            id
+                        }
                     }
                 }
                 tags {

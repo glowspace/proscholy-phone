@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/playlist/dialogs.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
-import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/navigation.dart';
+import 'package:zpevnik/providers/playlists.dart';
 
 class PlaylistsSheet extends StatelessWidget {
   final SongLyric selectedSongLyric;
@@ -15,8 +15,6 @@ class PlaylistsSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final playlists = context.watch<DataProvider>().playlists;
-
     return SafeArea(
       top: false,
       child: Wrap(
@@ -26,26 +24,32 @@ class PlaylistsSheet extends StatelessWidget {
             child: Text('Playlisty', style: Theme.of(context).textTheme.titleLarge),
           ),
           SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                HighlightableTextButton(
-                  onTap: () => showPlaylistDialog(context),
-                  padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
-                  icon: const Icon(Icons.add, size: 20),
-                  child: const Text('Nový playlist'),
-                ),
-                const Divider(height: kDefaultPadding),
-                ...playlists.map(
-                  (playlist) => HighlightableTextButton(
-                    onTap: () => _addToPlaylist(context, playlist),
+            child: Consumer(
+              builder: (_, ref, __) => Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  HighlightableTextButton(
+                    onTap: () => showPlaylistDialog(context),
                     padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
-                    icon: const Icon(Icons.playlist_play_rounded, size: 20),
-                    child: Text(playlist.name),
+                    icon: const Icon(Icons.add, size: 20),
+                    child: const Text('Nový playlist'),
                   ),
-                ),
-                const SizedBox(height: kDefaultPadding),
-              ],
+                  const Divider(height: kDefaultPadding),
+                  ...[
+                    for (final playlist in ref.watch(playlistsProvider))
+                      Consumer(
+                        builder: (context, ref, __) => HighlightableTextButton(
+                          onTap: () => _addToPlaylist(context, ref, playlist),
+                          padding:
+                              const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
+                          icon: const Icon(Icons.playlist_play_rounded, size: 20),
+                          child: Text(playlist.name),
+                        ),
+                      ),
+                  ],
+                  const SizedBox(height: kDefaultPadding),
+                ],
+              ),
             ),
           ),
         ],
@@ -53,8 +57,8 @@ class PlaylistsSheet extends StatelessWidget {
     );
   }
 
-  void _addToPlaylist(BuildContext context, Playlist playlist) {
-    context.read<DataProvider>().addToPlaylist(selectedSongLyric, playlist);
+  void _addToPlaylist(BuildContext context, WidgetRef ref, Playlist playlist) {
+    ref.read(playlistsProvider.notifier).addToPlaylist(playlist, selectedSongLyric);
 
     NavigationProvider.of(context).popAndPushNamed('/playlist', arguments: playlist);
   }

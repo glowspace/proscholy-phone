@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zpevnik/components/playlist/playlist_button.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
-import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/navigation.dart';
+import 'package:zpevnik/providers/playlists.dart';
 
 const double _iconSize = 20;
 
-class PlaylistRow extends StatelessWidget {
+class PlaylistRow extends ConsumerWidget {
   final Playlist playlist;
   final bool isReorderable;
   final bool showDragIndicator;
@@ -25,11 +25,9 @@ class PlaylistRow extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return DragTarget(
-      onAccept: (data) {
-        if (data is SongLyric) context.read<DataProvider>().addToPlaylist(data, playlist);
-      },
+  Widget build(BuildContext context, WidgetRef ref) {
+    return DragTarget<SongLyric>(
+      onAccept: (songLyric) => ref.read(playlistsProvider.notifier).addToPlaylist(playlist, songLyric),
       builder: (_, acceptList, __) => InkWell(
         onTap: () => _pushPlaylist(context),
         child: Container(

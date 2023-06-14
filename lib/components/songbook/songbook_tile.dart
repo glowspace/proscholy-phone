@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songbook.dart';
-import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/components/highlightable.dart';
+import 'package:zpevnik/providers/songbooks.dart';
 
 const _logosPath = '$imagesPath/songbooks';
 const _existingLogos = [
@@ -61,9 +61,13 @@ class SongbookTile extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(child: Text(songbook.name, maxLines: 2)),
-                  HighlightableIconButton(
-                    onTap: () => context.read<DataProvider>().togglePin(songbook),
-                    icon: Icon(songbook.isPinned ? Icons.push_pin : Icons.push_pin_outlined),
+                  Consumer(
+                    builder: (_, ref, __) => HighlightableIconButton(
+                      onTap: () => ref.read(pinnedSongbookIdsProvider.notifier).togglePin(songbook),
+                      icon: Icon(ref.watch(pinnedSongbookIdsProvider).contains(songbook.id)
+                          ? Icons.push_pin
+                          : Icons.push_pin_outlined),
+                    ),
                   )
                 ],
               ),

@@ -1,22 +1,21 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zpevnik/components/open_all_button.dart';
 import 'package:zpevnik/components/playlist/playlist_row.dart';
 import 'package:zpevnik/components/section.dart';
-import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/navigation.dart';
+import 'package:zpevnik/providers/playlists.dart';
 
 const _maxShowingPlaylists = 3;
 
-class SongListsSection extends StatelessWidget {
+class SongListsSection extends ConsumerWidget {
   const SongListsSection({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final dataProvider = context.watch<DataProvider>();
-    final playlists = [dataProvider.favorites] + dataProvider.playlists;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final playlists = [ref.read(favoritePlaylistProvider)] + ref.watch(playlistsProvider);
 
     return Section(
       title: Text('Moje seznamy', style: Theme.of(context).textTheme.titleLarge),

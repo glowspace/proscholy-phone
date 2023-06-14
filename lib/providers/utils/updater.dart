@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:objectbox/objectbox.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zpevnik/models/author.dart';
+import 'package:zpevnik/models/external.dart';
 import 'package:zpevnik/models/news_item.dart';
 import 'package:zpevnik/models/objectbox.g.dart';
 import 'package:zpevnik/models/song.dart';
@@ -94,7 +95,8 @@ class Updater {
     box.removeMany(existingSongLyricsIds.toList());
 
     try {
-      final songLyrics = SongLyric.fromMapList(await client.getSongLyrics(lastUpdate), store);
+      final json = await client.getSongLyrics(lastUpdate);
+      final songLyrics = readJsonList(json[SongLyric.fieldKey], mapper: SongLyric.fromJson);
 
       for (final songLyric in songLyrics) {
         songLyricsIds.remove(songLyric.id);
@@ -104,7 +106,7 @@ class Updater {
       final List<Future<SongLyric>> futures = [];
 
       for (final songLyricId in songLyricsIds) {
-        futures.add(client.getSongLyric(songLyricId).then((json) => SongLyric.fromJson(json, store)));
+        futures.add(client.getSongLyric(songLyricId).then((json) => SongLyric.fromJson(json)));
       }
 
       songLyrics.addAll(await Future.wait(futures));
@@ -147,16 +149,16 @@ class Updater {
 
   Future<void> _parse(Map<String, dynamic> json, {bool isSongLyricsFull = false}) async {
     final authors = readJsonList(json[Author.fieldKey], mapper: Author.fromJson);
-    final songs = Song.fromMapList(json);
-    final songbooks = Songbook.fromMapList(json);
+    final songs = readJsonList(json[Song.fieldKey], mapper: Song.fromJson);
+    final songbooks = readJsonList(json[Songbook.fieldKey], mapper: Songbook.fromJson);
     final tags = readJsonList(json[Tag.fieldKey], mapper: Tag.fromJson);
 
-    final query = store.box<Songbook>().query(Songbook_.isPinned.equals(true)).build();
-    final pinnedSongbooks = query.property(Songbook_.id).find().toSet();
+    // final query = store.box<Songbook>().query(Songbook_.isPinned.equals(true)).build();
+    // final pinnedSongbooks = query.property(Songbook_.id).find().toSet();
 
-    for (final songbook in songbooks) {
-      songbook.isPinned = pinnedSongbooks.contains(songbook.id);
-    }
+    // for (final songbook in songbooks) {
+    //   songbook.isPinned = pinnedSongbooks.contains(songbook.id);
+    // }
 
     await Future.wait([
       store.runInTransactionAsync<List<int>, List<Author>>(
@@ -182,11 +184,9 @@ class Updater {
     ]);
 
     if (isSongLyricsFull) {
-      final songLyrics = await store.runInTransactionAsync<List<SongLyric>, Map<String, dynamic>>(
-        TxMode.read,
-        (store, params) => SongLyric.fromMapList(params, store),
-        json,
-      );
+      final songLyrics = readJsonList(json[SongLyric.fieldKey], mapper: SongLyric.fromJson);
+
+      await store.box<External>().putManyAsync(songLyrics.firstWhere((element) => element.id == 149).externals);
 
       await store.runInTransactionAsync<List<int>, List<SongLyric>>(
         TxMode.write,

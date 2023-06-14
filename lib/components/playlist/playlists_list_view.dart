@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/components/playlist/playlist_row.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/data.dart';
+import 'package:zpevnik/providers/playlists.dart';
 
-class PlaylistsListView extends StatelessWidget {
+class PlaylistsListView extends ConsumerWidget {
   const PlaylistsListView({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final dataProvider = context.watch<DataProvider>();
-    final playlists = dataProvider.playlists;
+    final playlists = ref.watch(playlistsProvider);
 
     return SingleChildScrollView(
       child: Column(children: [
-        PlaylistRow(playlist: dataProvider.favorites),
+        PlaylistRow(playlist: ref.read(favoritePlaylistProvider)),
         Theme(
           data: Theme.of(context).copyWith(canvasColor: Colors.transparent),
           child: ReorderableListView.builder(

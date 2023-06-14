@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 // import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:provider/provider.dart';
+import 'package:provider/provider.dart' hide Consumer;
 import 'package:zpevnik/components/bottom_navigation_bar.dart';
 import 'package:zpevnik/components/custom/back_button.dart';
 import 'package:zpevnik/components/highlightable.dart';
@@ -13,6 +14,7 @@ import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/navigation.dart';
+import 'package:zpevnik/providers/playlists.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
 import 'package:zpevnik/routes/arguments/search.dart';
 import 'package:zpevnik/utils/extensions.dart';
@@ -34,10 +36,12 @@ class PlaylistScreen extends StatelessWidget {
     final Widget floatingActionButton;
 
     // if (playlist.isFavorites) {
-    floatingActionButton = FloatingActionButton(
-      backgroundColor: Theme.of(context).canvasColor,
-      child: const Icon(Icons.playlist_add),
-      onPressed: () => _addSongLyric(context),
+    floatingActionButton = Consumer(
+      builder: (context, ref, __) => FloatingActionButton(
+        backgroundColor: Theme.of(context).canvasColor,
+        child: const Icon(Icons.playlist_add),
+        onPressed: () => _addSongLyric(context, ref),
+      ),
     );
     // } else {
     //   floatingActionButton = SpeedDial(
@@ -106,12 +110,12 @@ class PlaylistScreen extends StatelessWidget {
   //   NavigationProvider.of(context).pushNamed('/playlist/custom_text');
   // }
 
-  void _addSongLyric(BuildContext context) async {
+  void _addSongLyric(BuildContext context, WidgetRef ref) async {
     final songLyric = await NavigationProvider.of(context).pushNamed(
       '/search',
       arguments: SearchScreenArguments(shouldReturnSongLyric: true),
     );
 
-    if (songLyric != null && songLyric is SongLyric) context.read<DataProvider>().addToPlaylist(songLyric, playlist);
+    if (songLyric is SongLyric) ref.read(playlistsProvider.notifier).addToPlaylist(playlist, songLyric);
   }
 }

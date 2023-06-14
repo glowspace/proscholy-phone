@@ -9,6 +9,17 @@ import 'package:zpevnik/providers/util.dart';
 part 'playlists.g.dart';
 
 @Riverpod(keepAlive: true)
+Playlist favoritePlaylist(FavoritePlaylistRef ref) {
+  final box = ref.read(appDependenciesProvider.select((appDependencies) => appDependencies.store)).box<Playlist>();
+
+  if (!box.contains(favoritesPlaylistId)) {
+    box.put(Playlist.favorites());
+  }
+
+  return box.get(favoritesPlaylistId)!;
+}
+
+@Riverpod(keepAlive: true)
 class Playlists extends _$Playlists {
   Box<Playlist> get _playlistsBox {
     return ref.read(appDependenciesProvider.select((appDependencies) => appDependencies.store)).box<Playlist>();
@@ -32,13 +43,26 @@ class Playlists extends _$Playlists {
     return playlists;
   }
 
-  Playlist createPlaylist(String name) {
+  Playlist createPlaylist(String name, {List<SongLyric> songLyrics = const []}) {
     final newPlaylist = Playlist(id: _nextPlaylistId++, name: name, rank: 0, playlistRecords: ToMany());
+
+    int nextPlaylistRecordRank = 0;
+
+    final newPlaylistRecords = [
+      for (final songLyric in songLyrics)
+        PlaylistRecord(
+          id: _nextPlaylistRecordId++,
+          rank: nextPlaylistRecordRank++,
+          songLyric: ToOne(target: songLyric),
+          playlist: ToOne(target: newPlaylist),
+        )
+    ];
 
     // increase rank of all existing playlists and save them
     state = [newPlaylist, for (final playlist in state) playlist.copyWith(rank: playlist.rank + 1)];
 
     _playlistsBox.putMany(state);
+    _playlistRecordsBox.putMany(newPlaylistRecords);
 
     return newPlaylist;
   }
@@ -87,7 +111,7 @@ class Playlists extends _$Playlists {
     _playlistsBox.remove(playlistToRemove.id);
   }
 
-  void addToPlaylist(Playlist playlist, SongLyric songLyric) {
+  void addToPlaylist(Playlist playlist, SongLyric songLyric, {int? nextRank}) {
     // first find next rank
     final queryBuilder = _playlistRecordsBox.query(PlaylistRecord_.playlist.equals(playlist.id));
 

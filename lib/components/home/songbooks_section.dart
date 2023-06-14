@@ -1,24 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zpevnik/components/open_all_button.dart';
 import 'package:zpevnik/components/section.dart';
 import 'package:zpevnik/components/songbook/songbooks_grid_view.dart';
 import 'package:zpevnik/components/songbook/songbooks_list_view.dart';
-import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/navigation.dart';
+import 'package:zpevnik/providers/songbooks.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
 const _maxShowingSongbooksPhone = 3;
 const _maxShowingSongbooksTablet = 4;
 
-class SongbooksSection extends StatelessWidget {
+class SongbooksSection extends ConsumerWidget {
   const SongbooksSection({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final dataProvider = context.watch<DataProvider>();
-
-    final showingSongbooks = dataProvider.songbooks
+  Widget build(BuildContext context, WidgetRef ref) {
+    final showingSongbooks = ref
+        .watch(songbooksProvider)
         .sublist(0, MediaQuery.of(context).isTablet ? _maxShowingSongbooksTablet : _maxShowingSongbooksPhone);
 
     return Section(
