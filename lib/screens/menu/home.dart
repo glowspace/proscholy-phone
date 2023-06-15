@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/home/top_section.dart';
 import 'package:zpevnik/components/menu/home/playlists_list_view.dart';
-import 'package:zpevnik/components/search_field.dart';
+import 'package:zpevnik/components/search/search_field.dart';
 import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/providers/navigation.dart';
 
 const _tipMessage = 'Tip: písně z hledání můžete prstem přetáhnout přímo do seznamu.';
 
@@ -16,7 +15,8 @@ class HomeMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final isSearch = context.select<NavigationProvider, bool>((provider) => provider.isSearch);
+    final isSearch = false;
+    //context.select<NavigationProvider, bool>((provider) => provider.isSearch);
 
     return Scaffold(
       body: SafeArea(
@@ -58,7 +58,7 @@ class HomeMenu extends StatelessWidget {
             ),
             const Divider(height: 0),
             HighlightableIconButton(
-              onTap: () => NavigationProvider.of(context).pushNamed('/user'),
+              onTap: () => context.push('/user'),
               padding: const EdgeInsets.all(1.5 * kDefaultPadding),
               icon: const Icon(Icons.settings, size: 28),
             ),

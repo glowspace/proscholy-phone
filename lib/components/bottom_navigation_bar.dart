@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:zpevnik/providers/navigation.dart';
+import 'package:go_router/go_router.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
 const double _navigationBarHeight = 64;
@@ -41,11 +41,14 @@ class CustomBottomNavigationBar extends StatelessWidget {
 
   void _onDestinationSelected(BuildContext context, int index) {
     if (index == 1) {
-      NavigationProvider.of(context).pushNamed('/search');
+      context.push('/search');
     } else if (index == 2) {
-      NavigationProvider.of(context).popToOrPushNamed('/playlists');
+      // TODO: should pop if already inside of playlists subtree
+      context.push('/playlists');
     } else {
-      Navigator.of(context).popUntil(ModalRoute.withName('/'));
+      while (GoRouter.of(context).location != '/') {
+        context.pop();
+      }
     }
   }
 }

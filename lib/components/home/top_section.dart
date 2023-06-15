@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/logo.dart';
 import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/providers/navigation.dart';
 
 // const double _avatarRadius = 19;
 
@@ -19,7 +19,7 @@ class TopSection extends StatelessWidget {
         const Spacer(),
         if (width <= kTabletSizeBreakpoint)
           HighlightableIconButton(
-            onTap: () => NavigationProvider.of(context).pushNamed('/user'),
+            onTap: () => context.push('/user'),
             padding: const EdgeInsets.all(kDefaultPadding / 2),
             icon: const Icon(Icons.settings, size: 28),
             // CircleAvatar(

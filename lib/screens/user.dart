@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:zpevnik/components/custom/close_button.dart';
 import 'package:zpevnik/components/font_size_slider.dart';
 import 'package:zpevnik/components/highlightable.dart';
@@ -7,7 +8,6 @@ import 'package:zpevnik/components/logo.dart';
 import 'package:zpevnik/components/section.dart';
 import 'package:zpevnik/components/selector_widget.dart';
 import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/providers/settings.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
@@ -51,7 +51,7 @@ class UserScreen extends StatelessWidget {
                   _buildAppSettings(context),
                   _buildSongSettings(context),
                   HighlightableTextButton(
-                    onTap: () => NavigationProvider.of(context).pushNamed('/about'),
+                    onTap: () => context.push('/about'),
                     textStyle: textTheme.bodySmall,
                     child: const Text('O projektu'),
                   ),

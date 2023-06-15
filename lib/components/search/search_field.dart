@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'package:presentation/presentation.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/extensions.dart';
 

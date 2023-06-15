@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart' hide PopupMenuEntry, PopupMenuItem;
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:zpevnik/components/custom/popup_menu_button.dart';
@@ -10,7 +11,6 @@ import 'package:zpevnik/custom/popup_menu.dart';
 import 'package:zpevnik/links.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/data.dart';
-import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/providers/presentation.dart';
 import 'package:zpevnik/utils/url_launcher.dart';
 
@@ -84,7 +84,8 @@ class SongLyricMenuButton extends StatelessWidget {
         if (presentationProvider.isPresenting) {
           presentationProvider.stop();
         } else {
-          NavigationProvider.of(context).pushNamed('/song_lyric/present', arguments: songLyricsParser);
+          // TODO: use arguments
+          context.push('/song_lyric/present');
         }
         break;
       case SongLyricMenuAction.share:

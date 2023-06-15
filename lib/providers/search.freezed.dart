@@ -19,7 +19,7 @@ mixin _$SearchedSongLyricsResult {
   List<SongLyric>? get songLyrics => throw _privateConstructorUsedError;
   String? get searchedNumber => throw _privateConstructorUsedError;
   SongLyric? get matchedById => throw _privateConstructorUsedError;
-  List<SongLyric>? get matchedBySongbookNumber =>
+  List<SongLyric> get matchedBySongbookNumber =>
       throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -37,7 +37,7 @@ abstract class $SearchedSongLyricsResultCopyWith<$Res> {
       {List<SongLyric>? songLyrics,
       String? searchedNumber,
       SongLyric? matchedById,
-      List<SongLyric>? matchedBySongbookNumber});
+      List<SongLyric> matchedBySongbookNumber});
 
   $SongLyricCopyWith<$Res>? get matchedById;
 }
@@ -59,7 +59,7 @@ class _$SearchedSongLyricsResultCopyWithImpl<$Res,
     Object? songLyrics = freezed,
     Object? searchedNumber = freezed,
     Object? matchedById = freezed,
-    Object? matchedBySongbookNumber = freezed,
+    Object? matchedBySongbookNumber = null,
   }) {
     return _then(_value.copyWith(
       songLyrics: freezed == songLyrics
@@ -74,10 +74,10 @@ class _$SearchedSongLyricsResultCopyWithImpl<$Res,
           ? _value.matchedById
           : matchedById // ignore: cast_nullable_to_non_nullable
               as SongLyric?,
-      matchedBySongbookNumber: freezed == matchedBySongbookNumber
+      matchedBySongbookNumber: null == matchedBySongbookNumber
           ? _value.matchedBySongbookNumber
           : matchedBySongbookNumber // ignore: cast_nullable_to_non_nullable
-              as List<SongLyric>?,
+              as List<SongLyric>,
     ) as $Val);
   }
 
@@ -107,7 +107,7 @@ abstract class _$$_SearchedSongLyricsResultCopyWith<$Res>
       {List<SongLyric>? songLyrics,
       String? searchedNumber,
       SongLyric? matchedById,
-      List<SongLyric>? matchedBySongbookNumber});
+      List<SongLyric> matchedBySongbookNumber});
 
   @override
   $SongLyricCopyWith<$Res>? get matchedById;
@@ -128,7 +128,7 @@ class __$$_SearchedSongLyricsResultCopyWithImpl<$Res>
     Object? songLyrics = freezed,
     Object? searchedNumber = freezed,
     Object? matchedById = freezed,
-    Object? matchedBySongbookNumber = freezed,
+    Object? matchedBySongbookNumber = null,
   }) {
     return _then(_$_SearchedSongLyricsResult(
       songLyrics: freezed == songLyrics
@@ -143,10 +143,10 @@ class __$$_SearchedSongLyricsResultCopyWithImpl<$Res>
           ? _value.matchedById
           : matchedById // ignore: cast_nullable_to_non_nullable
               as SongLyric?,
-      matchedBySongbookNumber: freezed == matchedBySongbookNumber
+      matchedBySongbookNumber: null == matchedBySongbookNumber
           ? _value._matchedBySongbookNumber
           : matchedBySongbookNumber // ignore: cast_nullable_to_non_nullable
-              as List<SongLyric>?,
+              as List<SongLyric>,
     ));
   }
 }
@@ -158,7 +158,7 @@ class _$_SearchedSongLyricsResult implements _SearchedSongLyricsResult {
       {final List<SongLyric>? songLyrics,
       this.searchedNumber,
       this.matchedById,
-      final List<SongLyric>? matchedBySongbookNumber})
+      final List<SongLyric> matchedBySongbookNumber = const []})
       : _songLyrics = songLyrics,
         _matchedBySongbookNumber = matchedBySongbookNumber;
 
@@ -176,15 +176,14 @@ class _$_SearchedSongLyricsResult implements _SearchedSongLyricsResult {
   final String? searchedNumber;
   @override
   final SongLyric? matchedById;
-  final List<SongLyric>? _matchedBySongbookNumber;
+  final List<SongLyric> _matchedBySongbookNumber;
   @override
-  List<SongLyric>? get matchedBySongbookNumber {
-    final value = _matchedBySongbookNumber;
-    if (value == null) return null;
+  @JsonKey()
+  List<SongLyric> get matchedBySongbookNumber {
     if (_matchedBySongbookNumber is EqualUnmodifiableListView)
       return _matchedBySongbookNumber;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(value);
+    return EqualUnmodifiableListView(_matchedBySongbookNumber);
   }
 
   @override
@@ -228,7 +227,7 @@ abstract class _SearchedSongLyricsResult implements SearchedSongLyricsResult {
           {final List<SongLyric>? songLyrics,
           final String? searchedNumber,
           final SongLyric? matchedById,
-          final List<SongLyric>? matchedBySongbookNumber}) =
+          final List<SongLyric> matchedBySongbookNumber}) =
       _$_SearchedSongLyricsResult;
 
   @override
@@ -238,7 +237,7 @@ abstract class _SearchedSongLyricsResult implements SearchedSongLyricsResult {
   @override
   SongLyric? get matchedById;
   @override
-  List<SongLyric>? get matchedBySongbookNumber;
+  List<SongLyric> get matchedBySongbookNumber;
   @override
   @JsonKey(ignore: true)
   _$$_SearchedSongLyricsResultCopyWith<_$_SearchedSongLyricsResult>

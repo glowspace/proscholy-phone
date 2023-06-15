@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 // import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 // import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart' hide Consumer;
@@ -13,7 +14,6 @@ import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/data.dart';
-import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/providers/playlists.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
 import 'package:zpevnik/routes/arguments/search.dart';
@@ -79,14 +79,7 @@ class PlaylistScreen extends StatelessWidget {
         centerTitle: false,
         actions: [
           HighlightableIconButton(
-            onTap: playlist.records.isEmpty
-                ? null
-                : () => NavigationProvider.of(context).pushNamed(
-                      '/search',
-                      arguments: SearchScreenArguments(
-                        initialTag: dataProvider.tags.firstWhere((tag) => tag.name == playlist.name),
-                      ),
-                    ),
+            onTap: playlist.records.isEmpty ? null : () => context.push('/search'), // TODO: use arguments
             padding: const EdgeInsets.all(kDefaultPadding),
             icon: const Icon(Icons.filter_alt),
           ),
@@ -109,10 +102,8 @@ class PlaylistScreen extends StatelessWidget {
   // }
 
   void _addSongLyric(BuildContext context, WidgetRef ref) async {
-    final songLyric = await NavigationProvider.of(context).pushNamed(
-      '/search',
-      arguments: SearchScreenArguments(shouldReturnSongLyric: true),
-    );
+    // TODO: use arguments
+    final songLyric = await context.push('/search');
 
     if (songLyric is SongLyric) ref.read(playlistsProvider.notifier).addToPlaylist(playlist, songLyric);
   }

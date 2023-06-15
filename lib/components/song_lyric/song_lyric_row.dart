@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
-import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/providers/search.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
 import 'package:zpevnik/routes/arguments/search.dart';
@@ -205,7 +205,8 @@ class SongLyricRow extends StatelessWidget {
 
       final arguments = songLyricScreenArguments ?? SongLyricScreenArguments([songLyric], 0);
 
-      NavigationProvider.of(context).pushNamed('/song_lyric', arguments: arguments);
+      // TODO: use arguments
+      context.push('/song_lyric');
     }
   }
 }

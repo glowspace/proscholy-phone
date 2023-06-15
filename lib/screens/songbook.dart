@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:provider/provider.dart' hide Consumer;
+import 'package:go_router/go_router.dart';
 import 'package:zpevnik/components/bottom_navigation_bar.dart';
 import 'package:zpevnik/components/custom/back_button.dart';
 import 'package:zpevnik/components/highlightable.dart';
@@ -8,8 +8,6 @@ import 'package:zpevnik/components/song_lyric/song_lyrics_list_view.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/models/tag.dart';
-import 'package:zpevnik/providers/data.dart';
-import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
 import 'package:zpevnik/routes/arguments/search.dart';
 import 'package:zpevnik/utils/extensions.dart';
@@ -26,8 +24,6 @@ class SongbookScreen extends StatelessWidget {
     final isTablet = MediaQuery.of(context).isTablet;
     final backgroundColor = theme.brightness.isLight ? theme.colorScheme.surface : theme.scaffoldBackgroundColor;
 
-    final dataProvider = context.watch<DataProvider>();
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: isTablet ? backgroundColor : null,
@@ -39,13 +35,7 @@ class SongbookScreen extends StatelessWidget {
         titleSpacing: 0,
         actions: [
           HighlightableIconButton(
-            onTap: () => NavigationProvider.of(context).pushNamed(
-              '/search',
-              arguments: SearchScreenArguments(
-                initialTag:
-                    dataProvider.tags.cast<Tag?>().firstWhere((tag) => tag?.name == songbook.name, orElse: () => null),
-              ),
-            ),
+            onTap: () => context.push('/search'), // TODO: add arguments
             padding: const EdgeInsets.all(kDefaultPadding),
             icon: const Icon(Icons.filter_alt),
           ),

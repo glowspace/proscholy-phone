@@ -5,7 +5,6 @@ import 'package:zpevnik/components/playlist/playlist_button.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
-import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/providers/playlists.dart';
 
 const double _iconSize = 20;

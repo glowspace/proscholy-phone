@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/playlist/dialogs.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
-import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/providers/playlists.dart';
 
 class PlaylistsSheet extends StatelessWidget {
@@ -60,6 +60,6 @@ class PlaylistsSheet extends StatelessWidget {
   void _addToPlaylist(BuildContext context, WidgetRef ref, Playlist playlist) {
     ref.read(playlistsProvider.notifier).addToPlaylist(playlist, selectedSongLyric);
 
-    NavigationProvider.of(context).popAndPushNamed('/playlist', arguments: playlist);
+    // NavigationProvider.of(context).popAndPushNamed('/playlist', arguments: playlist);
   }
 }

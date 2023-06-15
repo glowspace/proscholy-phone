@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songbook.dart';
-import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
 const _songbookColorBoxSize = 16.0;

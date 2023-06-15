@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart' hide PopupMenuEntry, PopupMenuItem;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/components/custom/back_button.dart';
 import 'package:zpevnik/components/highlightable.dart';
@@ -18,7 +19,6 @@ import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/components/song_lyric/utils/lyrics_controller.dart';
-import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/providers/presentation.dart';
 import 'package:zpevnik/providers/settings.dart';
 import 'package:zpevnik/utils/extensions.dart';
@@ -100,10 +100,10 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
     final theme = Theme.of(context);
     final mediaQuery = MediaQuery.of(context);
 
-    final navigationProvider = NavigationProvider.of(context);
+    // final navigationProvider = NavigationProvider.of(context);
 
     final backgroundColor = theme.brightness.isLight ? theme.colorScheme.surface : theme.scaffoldBackgroundColor;
-    final canPopIndividually = navigationProvider.songLyricCanPopIndividually;
+    // final canPopIndividually = navigationProvider.songLyricCanPopIndividually;
 
     AppBar? appBar;
     Widget? bottomBar;
@@ -118,20 +118,20 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
         ),
         title: Text('${_songLyric.id}', style: theme.textTheme.titleMedium),
         centerTitle: false,
-        leading: canPopIndividually
-            ? const CustomBackButton()
-            : HighlightableIconButton(
-                onTap: navigationProvider.toggleFullscreen,
-                padding: const EdgeInsets.all(kDefaultPadding).copyWith(left: 2.5 * kDefaultPadding),
-                icon: Icon(navigationProvider.isFullScreen ? Icons.close_fullscreen : Icons.open_in_full),
-              ),
+        // leading: canPopIndividually
+        //     ? const CustomBackButton()
+        //     : HighlightableIconButton(
+        //         onTap: navigationProvider.toggleFullscreen,
+        //         padding: const EdgeInsets.all(kDefaultPadding).copyWith(left: 2.5 * kDefaultPadding),
+        //         icon: Icon(navigationProvider.isFullScreen ? Icons.close_fullscreen : Icons.open_in_full),
+        //       ),
         actions: [
-          if (_songLyric.hasTranslations)
-            HighlightableIconButton(
-              onTap: () => navigationProvider.popToOrPushNamed('/song_lyric/translations', arguments: _songLyric),
-              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-              icon: const Icon(Icons.translate),
-            ),
+          // if (_songLyric.hasTranslations)
+          //   HighlightableIconButton(
+          //     onTap: () => navigationProvider.popToOrPushNamed('/song_lyric/translations', arguments: _songLyric),
+          //     padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+          //     icon: const Icon(Icons.translate),
+          //   ),
           StatefulBuilder(
             builder: (context, setState) => HighlightableIconButton(
               onTap: () => setState(() => _toggleFavorite(context)),
@@ -215,7 +215,7 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
                         ),
                         HighlightableIconButton(
                           padding: bottomBarActionPadding,
-                          onTap: () => navigationProvider.popToOrPushNamed('/search'),
+                          onTap: () => context.push('/search'), // TODO: should pop if search already in path
                           icon: const Icon(Icons.search),
                         ),
                       ],
@@ -267,7 +267,7 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
       ],
     );
 
-    if (canPopIndividually) return scaffold;
+    // if (canPopIndividually) return scaffold;
 
     return WillPopScope(onWillPop: () async => false, child: scaffold);
   }

@@ -9,7 +9,7 @@ import 'package:zpevnik/components/home/song_lists_section.dart';
 import 'package:zpevnik/components/home/songbooks_section.dart';
 import 'package:zpevnik/components/home/top_section.dart';
 import 'package:zpevnik/components/home/update_section.dart';
-import 'package:zpevnik/components/search_field.dart';
+import 'package:zpevnik/components/search/search_field.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/utils/extensions.dart';
 

@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/components/filters/filters_section.dart';
-import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/providers/tags.dart';
 
 class FiltersWidget extends ConsumerWidget {
@@ -14,9 +13,9 @@ class FiltersWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return OrientationBuilder(builder: (context, orientation) {
       // TODO: this should be handled when opening the bottom sheet
-      if (orientation == Orientation.landscape && NavigationProvider.of(context).isFiltersOpen) {
-        Navigator.of(context).pop();
-      }
+      // if (orientation == Orientation.landscape && NavigationProvider.of(context).isFiltersOpen) {
+      //   Navigator.of(context).pop();
+      // }
 
       return SafeArea(
         top: false,

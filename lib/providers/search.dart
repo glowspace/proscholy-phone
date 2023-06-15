@@ -79,7 +79,7 @@ class SearchedSongLyrics extends _$SearchedSongLyrics {
     final matchedIds = <int>{};
 
     SongLyric? matchedById;
-    List<SongLyric>? matchedBySongbookNumber;
+    final matchedBySongbookNumber = <SongLyric>[];
 
     if (searchedNumber == null) {
       searchText = '${searchText.replaceAll(' ', '* ')}*';
@@ -89,8 +89,8 @@ class SearchedSongLyrics extends _$SearchedSongLyrics {
       if (matchedById != null) matchedIds.add(matchedById.id);
 
       final songbookRecords = queryStore(ref, condition: SongbookRecord_.number.equals(searchedNumber));
+      songbookRecords.sort((a, b) => a.songbook.target!.compareTo(b.songbook.target!));
 
-      matchedBySongbookNumber = [];
       for (final songbookRecord in songbookRecords) {
         if (matchedIds.contains(songbookRecord.songLyric.targetId)) continue;
 
@@ -130,6 +130,6 @@ class SearchedSongLyricsResult with _$SearchedSongLyricsResult {
     List<SongLyric>? songLyrics,
     String? searchedNumber,
     SongLyric? matchedById,
-    List<SongLyric>? matchedBySongbookNumber,
+    @Default([]) List<SongLyric> matchedBySongbookNumber,
   }) = _SearchedSongLyricsResult;
 }

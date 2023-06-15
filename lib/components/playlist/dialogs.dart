@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/data.dart';
-import 'package:zpevnik/providers/navigation.dart';
 
 const _emptyPlaylistNameMessage = 'Název playlistu je prázdný';
 const _playlistWithSameNameMessage = 'Playlist s tímto názvem již existuje';

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/section.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/links.dart';
 import 'package:zpevnik/providers/data.dart';
-import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/utils/extensions.dart';
 import 'package:zpevnik/utils/url_launcher.dart';
 
@@ -77,7 +77,7 @@ class _UpdateSectionState extends State<UpdateSection> {
                             ),
                           if (snapshot.hasData && updatedCount > 0)
                             HighlightableTextButton(
-                              onTap: () => NavigationProvider.of(context).pushNamed('/updated_song_lyrics'),
+                              onTap: () => context.push('/updated_song_lyrics'),
                               foregroundColor: theme.colorScheme.primary,
                               child: const Text('Zobrazit'),
                             ),

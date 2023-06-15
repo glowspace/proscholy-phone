@@ -172,10 +172,14 @@ final appRouter = GoRouter(
     GoRoute(path: '/about', builder: (_, __) => const AboutScreen()),
     GoRoute(path: '/initial', builder: (_, __) => const InitialScreen()),
     GoRoute(path: '/playlist', builder: (_, state) => PlaylistScreen(playlist: state.extra as Playlist)),
+    GoRoute(path: '/playlists', builder: (_, __) => const PlaylistsScreen()),
     GoRoute(
       path: '/search',
       pageBuilder: (_, __) => const MaterialPage(fullscreenDialog: true, child: SearchScreen()),
     ),
     GoRoute(path: '/songbook', builder: (_, state) => SongbookScreen(songbook: state.extra as Songbook)),
+    GoRoute(path: '/songbooks', builder: (_, __) => const SongbooksScreen()),
+    GoRoute(path: '/user', builder: (_, __) => const UserScreen()),
+    GoRoute(path: '/updated_song_lyrics', builder: (_, __) => const UpdatedSongLyricsScreen()),
   ],
 );
