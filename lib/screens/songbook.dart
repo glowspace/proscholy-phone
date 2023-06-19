@@ -7,15 +7,13 @@ import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/song_lyric/song_lyrics_list_view.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songbook.dart';
-import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
-import 'package:zpevnik/routes/arguments/search.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
 class SongbookScreen extends StatelessWidget {
   final Songbook songbook;
 
-  const SongbookScreen({Key? key, required this.songbook}) : super(key: key);
+  const SongbookScreen({super.key, required this.songbook});
 
   @override
   Widget build(BuildContext context) {

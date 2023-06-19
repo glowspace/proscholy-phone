@@ -12,7 +12,7 @@ const _maxShowingSongbooksPhone = 3;
 const _maxShowingSongbooksTablet = 4;
 
 class SongbooksSection extends ConsumerWidget {
-  const SongbooksSection({Key? key}) : super(key: key);
+  const SongbooksSection({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

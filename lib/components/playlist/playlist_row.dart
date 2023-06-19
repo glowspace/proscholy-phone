@@ -17,12 +17,12 @@ class PlaylistRow extends ConsumerWidget {
   final VisualDensity visualDensity;
 
   const PlaylistRow({
-    Key? key,
+    super.key,
     required this.playlist,
     this.isReorderable = false,
     this.showDragIndicator = true,
     this.visualDensity = VisualDensity.standard,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

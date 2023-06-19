@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart' hide PopupMenuEntry, PopupMenuItem;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
-import 'package:zpevnik/components/custom/back_button.dart';
+import 'package:provider/provider.dart' hide Consumer;
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/presentation/settings.dart';
 import 'package:zpevnik/components/song_lyric/externals_player_wrapper.dart';
@@ -20,7 +20,7 @@ import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/components/song_lyric/utils/lyrics_controller.dart';
 import 'package:zpevnik/providers/presentation.dart';
-import 'package:zpevnik/providers/settings.dart';
+import 'package:zpevnik/routes/router.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
 class SongLyricScreen extends StatefulWidget {
@@ -32,12 +32,12 @@ class SongLyricScreen extends StatefulWidget {
   final Playlist? playlist;
 
   const SongLyricScreen({
-    Key? key,
+    super.key,
     required this.songLyrics,
     required this.initialIndex,
     this.shouldShowBanner = false,
     this.playlist,
-  }) : super(key: key);
+  });
 
   @override
   State<SongLyricScreen> createState() => _SongLyricScreenState();
@@ -213,10 +213,14 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
                               : null,
                           icon: const FaIcon(FontAwesomeIcons.tag),
                         ),
-                        HighlightableIconButton(
-                          padding: bottomBarActionPadding,
-                          onTap: () => context.push('/search'), // TODO: should pop if search already in path
-                          icon: const Icon(Icons.search),
+                        Consumer(
+                          builder: (context, ref, _) => HighlightableIconButton(
+                            padding: bottomBarActionPadding,
+                            onTap: () => ref.read(appNavigatorProvider).isSearchRouteInStack
+                                ? context.popUntil('/search')
+                                : context.push('/search'),
+                            icon: const Icon(Icons.search),
+                          ),
                         ),
                       ],
               ),

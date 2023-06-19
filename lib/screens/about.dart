@@ -6,7 +6,7 @@ import 'package:zpevnik/links.dart';
 import 'package:zpevnik/utils/url_launcher.dart';
 
 class AboutScreen extends StatelessWidget {
-  const AboutScreen({Key? key}) : super(key: key);
+  const AboutScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

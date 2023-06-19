@@ -11,13 +11,13 @@ class Section extends StatelessWidget {
   final EdgeInsets? padding;
 
   const Section({
-    Key? key,
+    super.key,
     this.title,
     required this.child,
     this.action,
     this.margin,
     this.padding,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

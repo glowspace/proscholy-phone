@@ -7,7 +7,7 @@ import 'package:zpevnik/utils/extensions.dart';
 const double _addFilterRadius = 7;
 
 class AddFilterTag extends StatelessWidget {
-  const AddFilterTag({Key? key}) : super(key: key);
+  const AddFilterTag({super.key});
 
   @override
   Widget build(BuildContext context) {

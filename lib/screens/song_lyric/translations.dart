@@ -8,7 +8,7 @@ import 'package:zpevnik/utils/extensions.dart';
 class TranslationsScreen extends StatelessWidget {
   final SongLyric songLyric;
 
-  const TranslationsScreen({Key? key, required this.songLyric}) : super(key: key);
+  const TranslationsScreen({super.key, required this.songLyric});
 
   @override
   Widget build(BuildContext context) {

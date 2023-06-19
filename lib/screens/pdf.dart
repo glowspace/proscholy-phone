@@ -12,7 +12,7 @@ const _noInternetMessage =
 class PdfScreen extends StatelessWidget {
   final External pdf;
 
-  const PdfScreen({Key? key, required this.pdf}) : super(key: key);
+  const PdfScreen({super.key, required this.pdf});
 
   @override
   Widget build(BuildContext context) {

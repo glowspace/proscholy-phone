@@ -9,7 +9,7 @@ const _songbookColorBoxSize = 16.0;
 class SongbookRow extends StatelessWidget {
   final Songbook songbook;
 
-  const SongbookRow({Key? key, required this.songbook}) : super(key: key);
+  const SongbookRow({super.key, required this.songbook});
 
   @override
   Widget build(BuildContext context) {

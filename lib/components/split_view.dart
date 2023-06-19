@@ -4,7 +4,7 @@ class SplitView extends StatelessWidget {
   final Widget child;
   final Widget subChild;
 
-  const SplitView({Key? key, required this.child, required this.subChild}) : super(key: key);
+  const SplitView({super.key, required this.child, required this.subChild});
 
   @override
   Widget build(BuildContext context) {

@@ -9,7 +9,7 @@ import 'package:zpevnik/utils/url_launcher.dart';
 const double _newsItemHeight = 18;
 
 class NewsSection extends StatefulWidget {
-  const NewsSection({Key? key}) : super(key: key);
+  const NewsSection({super.key});
 
   @override
   State<NewsSection> createState() => _NewsSectionState();

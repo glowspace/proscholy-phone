@@ -14,7 +14,7 @@ class NowPlayingSection extends StatefulWidget {
   final NowPlayingController? controller;
   final bool pushShouldReplace;
 
-  const NowPlayingSection({Key? key, this.controller, this.pushShouldReplace = false}) : super(key: key);
+  const NowPlayingSection({super.key, this.controller, this.pushShouldReplace = false});
 
   @override
   State<NowPlayingSection> createState() => _NowPlayingSectionState();
@@ -91,7 +91,7 @@ class _NowPlayingSectionState extends State<NowPlayingSection> {
   }
 
   void _pushSongLyric(BuildContext context, SongLyric songLyric) {
-    final arguments = SongLyricScreenArguments([songLyric], 0, shouldShowBanner: true);
+    final arguments = SongLyricScreenArguments(songLyrics: [songLyric]); //, shouldShowBanner: true);
 
     if (widget.pushShouldReplace) {
       Navigator.of(context).pushReplacementNamed('/song_lyric', arguments: arguments);

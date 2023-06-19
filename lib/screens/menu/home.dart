@@ -9,13 +9,13 @@ import 'package:zpevnik/constants.dart';
 const _tipMessage = 'Tip: písně z hledání můžete prstem přetáhnout přímo do seznamu.';
 
 class HomeMenu extends StatelessWidget {
-  const HomeMenu({Key? key}) : super(key: key);
+  const HomeMenu({super.key});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final isSearch = false;
+    const isSearch = false;
     //context.select<NavigationProvider, bool>((provider) => provider.isSearch);
 
     return Scaffold(
@@ -44,7 +44,7 @@ class HomeMenu extends StatelessWidget {
                             borderRadius: BorderRadius.circular(kDefaultRadius),
                           ),
                           padding: const EdgeInsets.all(kDefaultPadding),
-                          child: Text(_tipMessage, style: theme.textTheme.caption),
+                          child: Text(_tipMessage, style: theme.textTheme.bodySmall),
                         ),
                       ),
                     ),

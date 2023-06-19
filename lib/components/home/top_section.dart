@@ -7,7 +7,7 @@ import 'package:zpevnik/constants.dart';
 // const double _avatarRadius = 19;
 
 class TopSection extends StatelessWidget {
-  const TopSection({Key? key}) : super(key: key);
+  const TopSection({super.key});
 
   @override
   Widget build(BuildContext context) {

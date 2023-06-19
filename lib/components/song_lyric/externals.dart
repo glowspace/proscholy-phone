@@ -26,12 +26,12 @@ class ExternalsWidget extends StatefulWidget {
   final ValueNotifier<bool> isPlaying;
 
   const ExternalsWidget({
-    Key? key,
+    super.key,
     required this.songLyric,
     this.percentage = 0.0,
     required this.width,
     required this.isPlaying,
-  }) : super(key: key);
+  });
 
   @override
   State<ExternalsWidget> createState() => _ExternalsWidgetState();

@@ -11,13 +11,13 @@ class IconItem extends StatelessWidget {
   final double iconSize;
 
   const IconItem({
-    Key? key,
+    super.key,
     required this.icon,
     this.trailingIcon,
     required this.text,
     this.iconColor,
     this.iconSize = 24,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

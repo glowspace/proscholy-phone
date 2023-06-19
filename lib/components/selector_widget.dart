@@ -7,12 +7,12 @@ class SelectorWidget extends StatelessWidget {
   final double? width;
 
   const SelectorWidget({
-    Key? key,
+    super.key,
     required this.onSelected,
     this.options = const [],
     this.selected = 0,
     this.width,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

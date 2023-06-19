@@ -7,7 +7,7 @@ import 'package:zpevnik/providers/songbooks.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
 class SongbooksScreen extends StatelessWidget {
-  const SongbooksScreen({Key? key}) : super(key: key);
+  const SongbooksScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

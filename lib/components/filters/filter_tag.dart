@@ -13,11 +13,11 @@ class FilterTag extends ConsumerWidget {
   final bool isRemovable;
 
   const FilterTag({
-    Key? key,
+    super.key,
     required this.tag,
     this.isToggable = false,
     this.isRemovable = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

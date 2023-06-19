@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:zpevnik/components/custom/back_button.dart';
 import 'package:zpevnik/components/highlightable.dart';
@@ -59,7 +60,7 @@ class _StartPresentationScreenState extends State<StartPresentationScreen> with 
             onTap: _canPresent
                 ? () {
                     context.read<PresentationProvider>().start(widget.songLyricsParser);
-                    Navigator.of(context).pop();
+                    context.pop();
                   }
                 : null,
             padding: const EdgeInsets.all(kDefaultPadding),

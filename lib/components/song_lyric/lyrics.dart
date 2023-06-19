@@ -14,7 +14,7 @@ class LyricsWidget extends ConsumerStatefulWidget {
   final LyricsController controller;
   final ScrollController? scrollController;
 
-  const LyricsWidget({Key? key, required this.controller, this.scrollController}) : super(key: key);
+  const LyricsWidget({super.key, required this.controller, this.scrollController});
 
   @override
   ConsumerState<LyricsWidget> createState() => _LyricsWidgetState();

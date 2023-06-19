@@ -14,11 +14,11 @@ class SongbooksGridView extends StatelessWidget {
   final bool isCrossAxisCountMultipleOfTwo;
 
   const SongbooksGridView({
-    Key? key,
+    super.key,
     required this.songbooks,
     this.shrinkWrap = false,
     this.isCrossAxisCountMultipleOfTwo = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

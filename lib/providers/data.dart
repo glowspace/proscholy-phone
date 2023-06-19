@@ -4,21 +4,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_core_spotlight/flutter_core_spotlight.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:path/path.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:zpevnik/models/author.dart';
-import 'package:zpevnik/models/external.dart';
 import 'package:zpevnik/models/news_item.dart';
 import 'package:zpevnik/models/objectbox.g.dart';
-import 'package:zpevnik/models/playlist.dart';
-import 'package:zpevnik/models/playlist_record.dart';
-import 'package:zpevnik/models/settings.dart';
-import 'package:zpevnik/models/song.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/utils/song_lyrics_search.dart';
 import 'package:zpevnik/models/songbook.dart';
-import 'package:zpevnik/models/songbook_record.dart';
 import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/providers/utils/updater.dart';
 
@@ -35,16 +26,16 @@ class DataProvider extends ChangeNotifier {
   late final SongLyricsSearch songLyricsSearch;
 
   // using negative ids to distinguish from other tags
-  int _tagId = -1;
+  final int _tagId = -1;
 
-  List<NewsItem> _newsItems = [];
+  final List<NewsItem> _newsItems = [];
   List<SongLyric> _songLyrics = [];
-  List<Tag> _tags = [];
+  final List<Tag> _tags = [];
 
   List<SongLyric> _updatedSongLyrics = [];
 
   Map<int, SongLyric> _songLyricsById = {};
-  Map<int, Songbook> _songbooksById = {};
+  final Map<int, Songbook> _songbooksById = {};
   final Map<String, Tag> _tagsBySongbookName = {};
 
   List<NewsItem> get newsItems => _newsItems;

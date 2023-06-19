@@ -123,9 +123,9 @@ class UserScreen extends StatelessWidget {
           ]),
           const Divider(height: kDefaultPadding),
           const SizedBox(height: kDefaultPadding / 2),
-          Column(
+          const Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: const [Text('Velikost písma'), FontSizeSlider()],
+            children: [Text('Velikost písma'), FontSizeSlider()],
           ),
         ],
       ),

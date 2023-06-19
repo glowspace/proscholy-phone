@@ -16,7 +16,7 @@ import 'package:zpevnik/providers/app_dependencies.dart';
 import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/presentation.dart';
 import 'package:zpevnik/providers/settings.dart';
-import 'package:zpevnik/routes/route_generator.dart';
+import 'package:zpevnik/routes/router.dart';
 import 'package:zpevnik/screens/presentation.dart';
 import 'package:zpevnik/theme.dart';
 
@@ -51,7 +51,7 @@ Future<void> main() async {
 }
 
 class MainWidget extends ConsumerWidget {
-  const MainWidget({Key? key}) : super(key: key);
+  const MainWidget({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -73,7 +73,7 @@ class MainWidget extends ConsumerWidget {
       theme: AppTheme.light(),
       darkTheme: AppTheme.dark(),
       themeMode: themeMode,
-      routerConfig: appRouter,
+      routerConfig: ref.read(appNavigatorProvider).appRouter,
       builder: (context, child) => MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => DataProvider()),
@@ -89,7 +89,7 @@ class MainWidget extends ConsumerWidget {
 void mainPresentation() => runApp(const MainPresentation());
 
 class MainPresentation extends StatelessWidget {
-  const MainPresentation({Key? key}) : super(key: key);
+  const MainPresentation({super.key});
 
   @override
   Widget build(BuildContext context) {

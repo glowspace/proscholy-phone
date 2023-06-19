@@ -7,7 +7,7 @@ import 'package:zpevnik/utils/extensions.dart';
 import 'package:zpevnik/utils/url_launcher.dart';
 
 class AdditionalSection extends StatelessWidget {
-  const AdditionalSection({Key? key}) : super(key: key);
+  const AdditionalSection({super.key});
 
   @override
   Widget build(BuildContext context) {

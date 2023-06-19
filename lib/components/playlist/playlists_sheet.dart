@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/playlist/dialogs.dart';
 import 'package:zpevnik/constants.dart';
@@ -11,7 +10,7 @@ import 'package:zpevnik/providers/playlists.dart';
 class PlaylistsSheet extends StatelessWidget {
   final SongLyric selectedSongLyric;
 
-  const PlaylistsSheet({Key? key, required this.selectedSongLyric}) : super(key: key);
+  const PlaylistsSheet({super.key, required this.selectedSongLyric});
 
   @override
   Widget build(BuildContext context) {

@@ -7,12 +7,10 @@ import 'package:zpevnik/components/search/search_song_lyrics_list_view.dart';
 import 'package:zpevnik/components/split_view.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/search.dart';
-import 'package:zpevnik/providers/song_lyrics.dart';
-import 'package:zpevnik/routes/arguments/song_lyric.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
 class SearchScreen extends ConsumerWidget {
-  const SearchScreen({Key? key}) : super(key: key);
+  const SearchScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -26,7 +24,7 @@ class SearchScreen extends ConsumerWidget {
         SearchField(
           key: const Key('searchfield'),
           isInsideSearchScreen: true,
-          onChanged: (searchText) => ref.read(searchTextProvider.notifier).state = searchText,
+          onChanged: ref.read(searchTextProvider.notifier).change,
           onSubmitted: (_) => _maybePushMatchedSonglyric(context),
         ),
         Container(

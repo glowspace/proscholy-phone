@@ -11,12 +11,12 @@ class CustomPopupMenuButton<T> extends StatelessWidget {
   final EdgeInsets? padding;
 
   const CustomPopupMenuButton({
-    Key? key,
+    super.key,
     required this.items,
     required this.onSelected,
     this.padding,
     this.menuPosition = PopupMenuPosition.under,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

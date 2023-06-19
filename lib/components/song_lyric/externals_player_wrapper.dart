@@ -19,11 +19,11 @@ class ExternalsPlayerWrapper extends StatefulWidget {
   final double width;
 
   const ExternalsPlayerWrapper({
-    Key? key,
+    super.key,
     required this.songLyric,
     required this.isShowing,
     required this.width,
-  }) : super(key: key);
+  });
 
   @override
   State<ExternalsPlayerWrapper> createState() => _ExternalsPlayerWrapperState();

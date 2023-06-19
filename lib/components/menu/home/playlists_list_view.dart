@@ -9,7 +9,7 @@ import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/playlists.dart';
 
 class PlaylistsListView extends ConsumerWidget {
-  const PlaylistsListView({Key? key}) : super(key: key);
+  const PlaylistsListView({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

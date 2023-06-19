@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:zpevnik/components/bottom_navigation_bar.dart';
 import 'package:zpevnik/components/home/additional_section.dart';
 import 'package:zpevnik/components/home/news_section.dart';
@@ -14,7 +13,7 @@ import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +39,7 @@ class HomeScreen extends StatelessWidget {
 class _HomeScreenPhone extends StatelessWidget {
   final String greetings;
 
-  const _HomeScreenPhone({Key? key, required this.greetings}) : super(key: key);
+  const _HomeScreenPhone({required this.greetings});
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +81,7 @@ class _HomeScreenPhone extends StatelessWidget {
 class _HomeScreenTablet extends StatelessWidget {
   final String greetings;
 
-  const _HomeScreenTablet({Key? key, required this.greetings}) : super(key: key);
+  const _HomeScreenTablet({required this.greetings});
 
   @override
   Widget build(BuildContext context) {

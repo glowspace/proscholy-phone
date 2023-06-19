@@ -35,7 +35,7 @@ const _existingLogos = [
 class SongbookTile extends StatelessWidget {
   final Songbook songbook;
 
-  const SongbookTile({Key? key, required this.songbook}) : super(key: key);
+  const SongbookTile({super.key, required this.songbook});
 
   @override
   Widget build(BuildContext context) {

@@ -11,7 +11,6 @@ import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/components/custom/future_builder.dart';
 import 'package:zpevnik/providers/app_dependencies.dart';
 import 'package:zpevnik/providers/data.dart';
-import 'package:zpevnik/screens/content.dart';
 
 const _welcomeText = '''
 Ahoj. Vítej ve Zpěvníku!
@@ -25,14 +24,14 @@ const _animationDuration = Duration(milliseconds: 800);
 const _loggedInKey = 'loggedIn';
 
 class InitialScreen extends ConsumerStatefulWidget {
-  const InitialScreen({Key? key}) : super(key: key);
+  const InitialScreen({super.key});
 
   @override
   ConsumerState<InitialScreen> createState() => _InitialScreenState();
 }
 
 class _InitialScreenState extends ConsumerState<InitialScreen> {
-  bool _showSignInButtons = false;
+  final bool _showSignInButtons = false;
 
   @override
   void initState() {

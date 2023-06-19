@@ -15,7 +15,7 @@
 // class LinksHandlerWrapper extends StatefulWidget {
 //   final Widget? child;
 
-//   const LinksHandlerWrapper({Key? key, this.child}) : super(key: key);
+//   const LinksHandlerWrapper({super.key, this.child}) ;
 
 //   @override
 //   State<LinksHandlerWrapper> createState() => _LinksHandlerWrapperState();

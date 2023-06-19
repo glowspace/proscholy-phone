@@ -4,7 +4,7 @@ import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/settings.dart';
 
 class FontSizeSlider extends StatelessWidget {
-  const FontSizeSlider({Key? key}) : super(key: key);
+  const FontSizeSlider({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -9,7 +9,7 @@ import 'package:zpevnik/constants.dart';
 class AudioPlayerWidget extends StatelessWidget {
   final ActivePlayerController controller;
 
-  const AudioPlayerWidget({Key? key, required this.controller}) : super(key: key);
+  const AudioPlayerWidget({super.key, required this.controller});
 
   Stream<PositionData> get _positionDataStream => Rx.combineLatest2<Duration, Duration?, PositionData>(
       controller.audioPlayer!.positionStream,

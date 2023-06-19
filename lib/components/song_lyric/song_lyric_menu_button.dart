@@ -27,7 +27,7 @@ class SongLyricMenuButton extends StatelessWidget {
   // TODO: this is only temporary, remove it once better solution to pass this to presentation is found
   final SongLyricsParser songLyricsParser;
 
-  const SongLyricMenuButton({Key? key, required this.songLyric, required this.songLyricsParser}) : super(key: key);
+  const SongLyricMenuButton({super.key, required this.songLyric, required this.songLyricsParser});
 
   @override
   Widget build(BuildContext context) {

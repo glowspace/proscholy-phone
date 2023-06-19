@@ -7,7 +7,7 @@ class SongbooksListView extends StatelessWidget {
   final List<Songbook> songbooks;
   final bool shrinkWrap;
 
-  const SongbooksListView({Key? key, required this.songbooks, this.shrinkWrap = false}) : super(key: key);
+  const SongbooksListView({super.key, required this.songbooks, this.shrinkWrap = false});
 
   @override
   Widget build(BuildContext context) {

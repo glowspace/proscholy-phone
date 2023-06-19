@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:zpevnik/routes/router.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
 const double _navigationBarHeight = 64;
 
 class CustomBottomNavigationBar extends StatelessWidget {
-  const CustomBottomNavigationBar({Key? key}) : super(key: key);
+  const CustomBottomNavigationBar({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -46,9 +47,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
       // TODO: should pop if already inside of playlists subtree
       context.push('/playlists');
     } else {
-      while (GoRouter.of(context).location != '/') {
-        context.pop();
-      }
+      context.popUntil('/');
     }
   }
 }

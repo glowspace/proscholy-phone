@@ -11,9 +11,7 @@ class SongLyricTag extends StatelessWidget {
   final SongbookRecord? songbookRecord;
   final Tag? tag;
 
-  const SongLyricTag({Key? key, this.songbookRecord, this.tag})
-      : assert(songbookRecord != null || tag != null),
-        super(key: key);
+  const SongLyricTag({super.key, this.songbookRecord, this.tag}) : assert(songbookRecord != null || tag != null);
 
   @override
   Widget build(BuildContext context) {

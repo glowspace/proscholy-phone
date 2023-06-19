@@ -83,7 +83,7 @@ class SignInButton extends StatefulWidget {
   final SignInButtonType type;
   final Function()? onSignIn;
 
-  const SignInButton({Key? key, required this.type, this.onSignIn}) : super(key: key);
+  const SignInButton({super.key, required this.type, this.onSignIn});
 
   @override
   State<SignInButton> createState() => _SignInButtonState();

@@ -9,11 +9,11 @@ class FiltersSection extends StatelessWidget {
   final bool isLast;
 
   const FiltersSection({
-    Key? key,
+    super.key,
     required this.title,
     required this.tags,
     this.isLast = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

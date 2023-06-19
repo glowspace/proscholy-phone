@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:zpevnik/components/custom/back_button.dart';
 import 'package:zpevnik/components/song_lyric/song_lyrics_list_view.dart';
-import 'package:zpevnik/providers/data.dart';
-import 'package:zpevnik/providers/song_lyrics.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
 class UpdatedSongLyricsScreen extends StatelessWidget {
-  const UpdatedSongLyricsScreen({Key? key}) : super(key: key);
+  const UpdatedSongLyricsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +23,7 @@ class UpdatedSongLyricsScreen extends StatelessWidget {
       ),
       backgroundColor: isTablet ? backgroundColor : null,
       // TODO: use updated song lyrics
-      body: SafeArea(child: SongLyricsListView(songLyrics: [])),
+      body: const SafeArea(child: SongLyricsListView(songLyrics: [])),
     );
   }
 }

@@ -3,7 +3,7 @@ import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
 
 class CustomCloseButton extends StatelessWidget {
-  const CustomCloseButton({Key? key}) : super(key: key);
+  const CustomCloseButton({super.key});
 
   @override
   Widget build(BuildContext context) {

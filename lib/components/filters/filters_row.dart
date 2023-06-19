@@ -7,7 +7,7 @@ import 'package:zpevnik/providers/tags.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
 class FiltersRow extends ConsumerWidget {
-  const FiltersRow({Key? key}) : super(key: key);
+  const FiltersRow({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

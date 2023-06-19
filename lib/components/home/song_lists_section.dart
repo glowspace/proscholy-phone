@@ -11,7 +11,7 @@ import 'package:zpevnik/providers/playlists.dart';
 const _maxShowingPlaylists = 3;
 
 class SongListsSection extends ConsumerWidget {
-  const SongListsSection({Key? key}) : super(key: key);
+  const SongListsSection({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

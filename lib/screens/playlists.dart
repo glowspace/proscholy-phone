@@ -5,7 +5,7 @@ import 'package:zpevnik/components/playlist/playlists_list_view.dart';
 import 'package:zpevnik/components/playlist/dialogs.dart';
 
 class PlaylistsScreen extends StatelessWidget {
-  const PlaylistsScreen({Key? key}) : super(key: key);
+  const PlaylistsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

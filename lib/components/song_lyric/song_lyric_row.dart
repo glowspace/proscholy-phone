@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/search.dart';
-import 'package:zpevnik/providers/song_lyrics.dart';
 import 'package:zpevnik/routes/arguments/search.dart';
 import 'package:zpevnik/routes/arguments/song_lyric.dart';
 import 'package:zpevnik/utils/extensions.dart';
@@ -26,13 +24,13 @@ class SongLyricRow extends StatelessWidget {
   final SongLyricScreenArguments? songLyricScreenArguments;
 
   const SongLyricRow({
-    Key? key,
+    super.key,
     required this.songLyric,
     this.isReorderable = false,
     this.songLyricScreenArguments,
     this.isDraggable = false,
     this.allowHighlight = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -203,10 +201,9 @@ class SongLyricRow extends StatelessWidget {
     } else {
       // context.read<AllSongLyricsProvider?>()?.addRecentSongLyric(songLyric);
 
-      final arguments = songLyricScreenArguments ?? SongLyricScreenArguments([songLyric], 0);
+      final arguments = songLyricScreenArguments ?? SongLyricScreenArguments(songLyrics: [songLyric]);
 
-      // TODO: use arguments
-      context.push('/song_lyric');
+      context.push('/song_lyric', extra: arguments);
     }
   }
 }

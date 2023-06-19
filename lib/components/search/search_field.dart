@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:presentation/presentation.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/theme.dart';
@@ -10,9 +9,9 @@ class SearchFieldTransitionWidget extends AnimatedWidget {
   final Animation<double> animation;
 
   const SearchFieldTransitionWidget({
-    Key? key,
+    super.key,
     required this.animation,
-  }) : super(key: key, listenable: animation);
+  }) : super(listenable: animation);
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +76,7 @@ class SearchField extends StatefulWidget {
   final Function(String)? onChanged;
   final Function(String)? onSubmitted;
 
-  const SearchField({Key? key, this.isInsideSearchScreen = false, this.onChanged, this.onSubmitted}) : super(key: key);
+  const SearchField({super.key, this.isInsideSearchScreen = false, this.onChanged, this.onSubmitted});
 
   @override
   State<SearchField> createState() => _SearchFieldState();
@@ -188,7 +187,7 @@ class _SearchFieldState extends State<SearchField> {
 
   void _clearOrPop() {
     if (_controller.text.isEmpty) {
-      Navigator.of(context).pop();
+      context.pop();
     } else {
       _controller.clear();
       widget.onChanged?.call('');

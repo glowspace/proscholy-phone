@@ -13,7 +13,7 @@ const _noInternetMessage =
 class JpgScreen extends StatelessWidget {
   final External jpg;
 
-  const JpgScreen({Key? key, required this.jpg}) : super(key: key);
+  const JpgScreen({super.key, required this.jpg});
 
   @override
   Widget build(BuildContext context) {

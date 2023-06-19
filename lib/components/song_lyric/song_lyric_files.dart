@@ -7,7 +7,7 @@ import 'package:zpevnik/models/song_lyric.dart';
 class SongLyricFilesWidget extends StatelessWidget {
   final SongLyric songLyric;
 
-  const SongLyricFilesWidget({Key? key, required this.songLyric}) : super(key: key);
+  const SongLyricFilesWidget({super.key, required this.songLyric});
 
   @override
   Widget build(BuildContext context) {

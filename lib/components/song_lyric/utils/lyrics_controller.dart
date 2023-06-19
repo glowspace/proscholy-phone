@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:zpevnik/models/song_lyric.dart';
-import 'package:zpevnik/providers/data.dart';
-import 'package:zpevnik/providers/settings.dart';
 import 'package:zpevnik/components/song_lyric/utils/parser.dart';
 
 final _styleRE = RegExp(r'\<style[^\<]*\<\/style\>');

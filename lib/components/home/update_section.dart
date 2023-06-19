@@ -10,7 +10,7 @@ import 'package:zpevnik/utils/extensions.dart';
 import 'package:zpevnik/utils/url_launcher.dart';
 
 class UpdateSection extends StatefulWidget {
-  const UpdateSection({Key? key}) : super(key: key);
+  const UpdateSection({super.key});
 
   @override
   State<UpdateSection> createState() => _UpdateSectionState();

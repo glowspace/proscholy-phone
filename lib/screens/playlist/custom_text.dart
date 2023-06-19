@@ -4,7 +4,7 @@
 // import 'package:zpevnik/constants.dart';
 
 // class CustomTextScreen extends StatefulWidget {
-//   const CustomTextScreen({Key? key}) : super(key: key);
+//   const CustomTextScreen({super.key});
 
 //   @override
 //   State<CustomTextScreen> createState() => _CustomTextScreenState();

@@ -14,7 +14,7 @@ class FiltersWidget extends ConsumerWidget {
     return OrientationBuilder(builder: (context, orientation) {
       // TODO: this should be handled when opening the bottom sheet
       // if (orientation == Orientation.landscape && NavigationProvider.of(context).isFiltersOpen) {
-      //   Navigator.of(context).pop();
+      //   context.pop();
       // }
 
       return SafeArea(

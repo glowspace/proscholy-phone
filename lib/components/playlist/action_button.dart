@@ -4,12 +4,11 @@ import 'package:zpevnik/constants.dart';
 
 class PlaylistActionButton extends SpeedDialChild {
   PlaylistActionButton({
-    Key? key,
+    super.key,
     required String label,
     required IconData icon,
     Function()? onTap,
   }) : super(
-          key: key,
           onTap: onTap,
           label: label,
           labelWidget: Row(

@@ -1,9 +1,6 @@
-import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
-import 'package:zpevnik/providers/data.dart';
 
 const _emptyPlaylistNameMessage = 'Název playlistu je prázdný';
 const _playlistWithSameNameMessage = 'Playlist s tímto názvem již existuje';
@@ -114,7 +111,7 @@ void showRemovePlaylistDialog(BuildContext context, Playlist playlist) async {
   // if (result == OkCancelResult.ok) {
   //   dataProvider.removePlaylist(playlist);
 
-  //   if (ModalRoute.of(context)?.settings.name == '/playlist') Navigator.of(context).pop();
+  //   if (ModalRoute.of(context)?.settings.name == '/playlist') context.pop();
   // }
 }
 

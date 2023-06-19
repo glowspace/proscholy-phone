@@ -11,7 +11,7 @@ import 'package:zpevnik/providers/now_playing.dart';
 class NowPlayingBanner extends StatefulWidget {
   final SongLyric? currentSongLyric;
 
-  const NowPlayingBanner({Key? key, this.currentSongLyric}) : super(key: key);
+  const NowPlayingBanner({super.key, this.currentSongLyric});
 
   @override
   State<NowPlayingBanner> createState() => _NowPlayingBannerState();
