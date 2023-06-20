@@ -9,6 +9,18 @@ part 'songbooks.g.dart';
 
 const _pinnedSongbookIdsKey = 'pinned_songbook_ids';
 
+// TODO: remove this after some time, that all users have at least 3.1.0 version
+void migratePinnedSongbooks(Store store, SharedPreferences sharedPreferences) {
+  final query = store.box<Songbook>().query(Songbook_.isPinned.equals(true)).build();
+  final pinnedSongbookIds = query.findIds();
+
+  query.close();
+
+  if (pinnedSongbookIds.isNotEmpty) {
+    sharedPreferences.setStringList(_pinnedSongbookIdsKey, [for (final id in pinnedSongbookIds) '$id']);
+  }
+}
+
 @riverpod
 class PinnedSongbookIds extends _$PinnedSongbookIds {
   SharedPreferences get _sharedPreferences {

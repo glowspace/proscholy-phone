@@ -4,6 +4,7 @@ import 'package:objectbox/objectbox.dart';
 import 'package:zpevnik/models/author.dart';
 import 'package:zpevnik/models/external.dart';
 import 'package:zpevnik/models/model.dart';
+import 'package:zpevnik/models/objectbox.g.dart';
 import 'package:zpevnik/models/song.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/models/songbook.dart';
@@ -30,9 +31,19 @@ Future<List<SongLyric>> storeSongLyrics(Store store, List<SongLyric> songLyrics)
   final externals = <External>[];
   final songbookRecords = <SongbookRecord>[];
 
+  // query song lyrics with settings to preserve the relations after update
+  final query = store.box<SongLyric>().query(SongLyric_.settings.notNull()).build();
+  final songLyricsWithSettings = {for (final songLyric in query.find()) songLyric.id: songLyric};
+
+  query.close();
+
   for (final songLyric in songLyrics) {
     externals.addAll(songLyric.externals);
     songbookRecords.addAll(songLyric.songbookRecords);
+
+    if (songLyricsWithSettings.containsKey(songLyric.id)) {
+      songLyric.settings.targetId = songLyricsWithSettings[songLyric.id]!.settings.targetId;
+    }
   }
 
   final songLyricIds = await store.box<SongLyric>().putManyAsync(songLyrics);

@@ -9,10 +9,14 @@ import 'package:zpevnik/models/news_item.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/models/utils.dart';
 import 'package:zpevnik/providers/app_dependencies.dart';
+import 'package:zpevnik/providers/song_lyrics.dart';
+import 'package:zpevnik/providers/songbooks.dart';
 import 'package:zpevnik/providers/utils.dart';
 import 'package:zpevnik/utils/client.dart';
 
 part 'update.g.dart';
+
+const _versionKey = 'current_version';
 
 const _lastUpdateKey = 'last_update';
 const _initialLastUpdate = '2023-06-10 10:00:00';
@@ -36,19 +40,27 @@ class Updated extends UpdateStatus {
 }
 
 Future<void> loadInitial(WidgetRef ref) async {
-  // TODO: do this only when version changes
-
   final appDependencies = ref.read(appDependenciesProvider);
+
+  final lastVersion = appDependencies.sharedPreferences.getString(_versionKey);
+  final currentVersion = '${appDependencies.packageInfo.version}+${appDependencies.packageInfo.buildNumber}';
+
+  if (lastVersion == currentVersion) return;
+
+  // TODO: remove this after some time, that all users have at least 3.1.0 version
+  migratePinnedSongbooks(appDependencies.store, appDependencies.sharedPreferences);
+  migrateSongLyricSettings(appDependencies.store);
 
   // TODO: remove json file after loading, this is not possible right now
   final json = jsonDecode(await rootBundle.loadString('assets/data.json'));
-
-  appDependencies.sharedPreferences.remove(_lastUpdateKey);
 
   await Future.wait([
     parseAndStoreData(appDependencies.store, json['data']),
     storeSongLyrics(appDependencies.store, readJsonList(json['data'][SongLyric.fieldKey], mapper: SongLyric.fromJson)),
   ]);
+
+  appDependencies.sharedPreferences.remove(_lastUpdateKey);
+  appDependencies.sharedPreferences.setString(_versionKey, currentVersion);
 }
 
 @riverpod

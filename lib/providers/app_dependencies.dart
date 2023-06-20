@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:objectbox/objectbox.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
@@ -17,5 +18,6 @@ class AppDependencies with _$AppDependencies {
     required SharedPreferences sharedPreferences,
     required Store store,
     required Database ftsDatabase,
+    required PackageInfo packageInfo,
   }) = _AppDependencies;
 }

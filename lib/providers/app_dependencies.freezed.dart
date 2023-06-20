@@ -19,6 +19,7 @@ mixin _$AppDependencies {
   SharedPreferences get sharedPreferences => throw _privateConstructorUsedError;
   Store get store => throw _privateConstructorUsedError;
   Database get ftsDatabase => throw _privateConstructorUsedError;
+  PackageInfo get packageInfo => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $AppDependenciesCopyWith<AppDependencies> get copyWith =>
@@ -32,7 +33,10 @@ abstract class $AppDependenciesCopyWith<$Res> {
       _$AppDependenciesCopyWithImpl<$Res, AppDependencies>;
   @useResult
   $Res call(
-      {SharedPreferences sharedPreferences, Store store, Database ftsDatabase});
+      {SharedPreferences sharedPreferences,
+      Store store,
+      Database ftsDatabase,
+      PackageInfo packageInfo});
 }
 
 /// @nodoc
@@ -51,6 +55,7 @@ class _$AppDependenciesCopyWithImpl<$Res, $Val extends AppDependencies>
     Object? sharedPreferences = null,
     Object? store = null,
     Object? ftsDatabase = null,
+    Object? packageInfo = null,
   }) {
     return _then(_value.copyWith(
       sharedPreferences: null == sharedPreferences
@@ -65,6 +70,10 @@ class _$AppDependenciesCopyWithImpl<$Res, $Val extends AppDependencies>
           ? _value.ftsDatabase
           : ftsDatabase // ignore: cast_nullable_to_non_nullable
               as Database,
+      packageInfo: null == packageInfo
+          ? _value.packageInfo
+          : packageInfo // ignore: cast_nullable_to_non_nullable
+              as PackageInfo,
     ) as $Val);
   }
 }
@@ -78,7 +87,10 @@ abstract class _$$_AppDependenciesCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {SharedPreferences sharedPreferences, Store store, Database ftsDatabase});
+      {SharedPreferences sharedPreferences,
+      Store store,
+      Database ftsDatabase,
+      PackageInfo packageInfo});
 }
 
 /// @nodoc
@@ -95,6 +107,7 @@ class __$$_AppDependenciesCopyWithImpl<$Res>
     Object? sharedPreferences = null,
     Object? store = null,
     Object? ftsDatabase = null,
+    Object? packageInfo = null,
   }) {
     return _then(_$_AppDependencies(
       sharedPreferences: null == sharedPreferences
@@ -109,6 +122,10 @@ class __$$_AppDependenciesCopyWithImpl<$Res>
           ? _value.ftsDatabase
           : ftsDatabase // ignore: cast_nullable_to_non_nullable
               as Database,
+      packageInfo: null == packageInfo
+          ? _value.packageInfo
+          : packageInfo // ignore: cast_nullable_to_non_nullable
+              as PackageInfo,
     ));
   }
 }
@@ -119,7 +136,8 @@ class _$_AppDependencies implements _AppDependencies {
   const _$_AppDependencies(
       {required this.sharedPreferences,
       required this.store,
-      required this.ftsDatabase});
+      required this.ftsDatabase,
+      required this.packageInfo});
 
   @override
   final SharedPreferences sharedPreferences;
@@ -127,10 +145,12 @@ class _$_AppDependencies implements _AppDependencies {
   final Store store;
   @override
   final Database ftsDatabase;
+  @override
+  final PackageInfo packageInfo;
 
   @override
   String toString() {
-    return 'AppDependencies(sharedPreferences: $sharedPreferences, store: $store, ftsDatabase: $ftsDatabase)';
+    return 'AppDependencies(sharedPreferences: $sharedPreferences, store: $store, ftsDatabase: $ftsDatabase, packageInfo: $packageInfo)';
   }
 
   @override
@@ -142,12 +162,14 @@ class _$_AppDependencies implements _AppDependencies {
                 other.sharedPreferences == sharedPreferences) &&
             (identical(other.store, store) || other.store == store) &&
             (identical(other.ftsDatabase, ftsDatabase) ||
-                other.ftsDatabase == ftsDatabase));
+                other.ftsDatabase == ftsDatabase) &&
+            (identical(other.packageInfo, packageInfo) ||
+                other.packageInfo == packageInfo));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, sharedPreferences, store, ftsDatabase);
+  int get hashCode => Object.hash(
+      runtimeType, sharedPreferences, store, ftsDatabase, packageInfo);
 
   @JsonKey(ignore: true)
   @override
@@ -160,7 +182,8 @@ abstract class _AppDependencies implements AppDependencies {
   const factory _AppDependencies(
       {required final SharedPreferences sharedPreferences,
       required final Store store,
-      required final Database ftsDatabase}) = _$_AppDependencies;
+      required final Database ftsDatabase,
+      required final PackageInfo packageInfo}) = _$_AppDependencies;
 
   @override
   SharedPreferences get sharedPreferences;
@@ -168,6 +191,8 @@ abstract class _AppDependencies implements AppDependencies {
   Store get store;
   @override
   Database get ftsDatabase;
+  @override
+  PackageInfo get packageInfo;
   @override
   @JsonKey(ignore: true)
   _$$_AppDependenciesCopyWith<_$_AppDependencies> get copyWith =>

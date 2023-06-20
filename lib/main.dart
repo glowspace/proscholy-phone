@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' hide ChangeNotifierProvider;
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path/path.dart';
 // import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
@@ -30,6 +31,7 @@ Future<void> main() async {
     sharedPreferences: await SharedPreferences.getInstance(),
     store: await openStore(),
     ftsDatabase: await openDatabase(join(await getDatabasesPath(), 'zpevnik.db')),
+    packageInfo: await PackageInfo.fromPlatform(),
   );
 
   void appRunner() => runApp(ProviderScope(

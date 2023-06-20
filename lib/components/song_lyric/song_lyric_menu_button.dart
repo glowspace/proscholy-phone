@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart' hide PopupMenuEntry, PopupMenuItem;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -10,6 +11,7 @@ import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/custom/popup_menu.dart';
 import 'package:zpevnik/links.dart';
 import 'package:zpevnik/models/song_lyric.dart';
+import 'package:zpevnik/providers/app_dependencies.dart';
 import 'package:zpevnik/providers/presentation.dart';
 import 'package:zpevnik/utils/url_launcher.dart';
 
@@ -21,7 +23,7 @@ enum SongLyricMenuAction {
   report,
 }
 
-class SongLyricMenuButton extends StatelessWidget {
+class SongLyricMenuButton extends ConsumerWidget {
   final SongLyric songLyric;
   // TODO: this is only temporary, remove it once better solution to pass this to presentation is found
   final SongLyricsParser songLyricsParser;
@@ -29,10 +31,10 @@ class SongLyricMenuButton extends StatelessWidget {
   const SongLyricMenuButton({super.key, required this.songLyric, required this.songLyricsParser});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return CustomPopupMenuButton(
       items: _buildPopupMenuItems(context),
-      onSelected: _selectedAction,
+      onSelected: (context, action) => _selectedAction(context, ref, action),
       padding: const EdgeInsets.only(left: kDefaultPadding, right: 2 * kDefaultPadding),
     );
   }
@@ -67,10 +69,10 @@ class SongLyricMenuButton extends StatelessWidget {
     ];
   }
 
-  void _selectedAction(BuildContext context, SongLyricMenuAction? action) {
+  void _selectedAction(BuildContext context, WidgetRef ref, SongLyricMenuAction? action) {
     if (action == null) return;
 
-    final version = '';
+    final version = ref.read(appDependenciesProvider.select((appDependencies) => appDependencies.packageInfo.version));
     final platform = Theme.of(context).platform == TargetPlatform.iOS ? 'iOS' : 'android';
 
     switch (action) {

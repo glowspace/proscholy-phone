@@ -24,20 +24,21 @@ class _UpdateSectionState extends ConsumerState<UpdateSection> {
   @override
   Widget build(BuildContext context) {
     return ref.watch(updateProvider).when(
-        data: (updateStatus) {
-          final updatedSongLyrics = switch (updateStatus) {
-            Updating() => null,
-            Updated(songLyrics: final songLyrics) => songLyrics,
-          };
+          data: (updateStatus) {
+            final updatedSongLyrics = switch (updateStatus) {
+              Updating() => null,
+              Updated(songLyrics: final songLyrics) => songLyrics,
+            };
 
-          return _build(context, updatedSongLyrics: updatedSongLyrics);
-        },
-        error: (error, stackTrace) {
-          if (!kDebugMode) Sentry.captureException(error, stackTrace: stackTrace);
+            return _build(context, updatedSongLyrics: updatedSongLyrics);
+          },
+          error: (error, stackTrace) {
+            if (!kDebugMode) Sentry.captureException(error, stackTrace: stackTrace);
 
-          return _build(context, error: error);
-        },
-        loading: () => const SizedBox());
+            return _build(context, error: error);
+          },
+          loading: () => _build(context, updatedSongLyrics: []),
+        );
   }
 
   Widget _build(BuildContext context, {List<SongLyric>? updatedSongLyrics, Object? error}) {
@@ -55,47 +56,50 @@ class _UpdateSectionState extends ConsumerState<UpdateSection> {
     return AnimatedCrossFade(
       crossFadeState: isShowing ? CrossFadeState.showFirst : CrossFadeState.showSecond,
       duration: kDefaultAnimationDuration,
-      firstChild: Section(
-        padding: const EdgeInsets.all(kDefaultPadding),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(text, style: theme.textTheme.bodyMedium),
-                    if (hasSonglyrics)
-                      HighlightableTextButton(
-                        foregroundColor: theme.colorScheme.primary,
-                        padding: const EdgeInsets.only(top: 2 / 3 * kDefaultPadding),
-                        onTap: () => context.push('/updated_song_lyrics', extra: updatedSongLyrics),
-                        child: const Text('Zobrazit'),
-                      ),
-                    if (hasError)
-                      HighlightableTextButton(
-                        foregroundColor: red,
-                        padding: const EdgeInsets.only(top: 2 / 3 * kDefaultPadding),
-                        onTap: () =>
-                            launch(context, '$reportUrl?summary=Chyba při aktualizaci písní&description=$error'),
-                        child: const Text('Nahlásit chybu'),
-                      ),
-                  ],
+      firstChild: Padding(
+        padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
+        child: Section(
+          padding: const EdgeInsets.all(kDefaultPadding),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(text, style: theme.textTheme.bodyMedium),
+                      if (hasSonglyrics)
+                        HighlightableTextButton(
+                          foregroundColor: theme.colorScheme.primary,
+                          padding: const EdgeInsets.only(top: 2 / 3 * kDefaultPadding),
+                          onTap: () => context.push('/updated_song_lyrics', extra: updatedSongLyrics),
+                          child: const Text('Zobrazit'),
+                        ),
+                      if (hasError)
+                        HighlightableTextButton(
+                          foregroundColor: red,
+                          padding: const EdgeInsets.only(top: 2 / 3 * kDefaultPadding),
+                          onTap: () =>
+                              launch(context, '$reportUrl?summary=Chyba při aktualizaci písní&description=$error'),
+                          child: const Text('Nahlásit chybu'),
+                        ),
+                    ],
+                  ),
                 ),
-              ),
-              if (isShowing && (hasSonglyrics || hasError))
-                HighlightableIconButton(
-                  onTap: () => setState(() => _isHidden = true),
-                  icon: const Icon(Icons.close),
-                )
-            ]),
-            if (!hasSonglyrics && !hasError)
-              Container(
-                padding: const EdgeInsets.only(top: kDefaultPadding / 2),
-                child: const LinearProgressIndicator(),
-              ),
-          ],
+                if (isShowing && (hasSonglyrics || hasError))
+                  HighlightableIconButton(
+                    onTap: () => setState(() => _isHidden = true),
+                    icon: const Icon(Icons.close),
+                  )
+              ]),
+              if (!hasSonglyrics && !hasError)
+                Container(
+                  padding: const EdgeInsets.only(top: kDefaultPadding / 2),
+                  child: const LinearProgressIndicator(),
+                ),
+            ],
+          ),
         ),
       ),
       secondChild: const SizedBox(),
