@@ -68,6 +68,7 @@ class _ExternalsWidgetState extends State<ExternalsWidget> {
 
     return SafeArea(
       top: false,
+      bottom: false,
       child: Stack(
         fit: StackFit.expand,
         children: [

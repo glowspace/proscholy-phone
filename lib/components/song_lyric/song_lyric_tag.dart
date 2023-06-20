@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songbook_record.dart';
 import 'package:zpevnik/models/tag.dart';
-import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/routes/arguments/search.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
@@ -37,9 +35,9 @@ class SongLyricTag extends StatelessWidget {
         onTap: () => songbookRecord != null
             ? Navigator.of(context).popAndPushNamed(
                 '/search',
-                arguments: SearchScreenArguments(
-                  initialTag: context.read<DataProvider>().getTagBySongbookName(songbookRecord!.songbook.target!.name),
-                ),
+                // arguments: SearchScreenArguments(
+                //   initialTag: context.read<DataProvider>().getTagBySongbookName(songbookRecord!.songbook.target!.name),
+                // ),
               )
             : Navigator.of(context).popAndPushNamed('/search', arguments: SearchScreenArguments(initialTag: tag)),
         child: Row(

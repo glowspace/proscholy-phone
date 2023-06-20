@@ -4,7 +4,7 @@ import 'package:zpevnik/models/objectbox.g.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/providers/tags.dart';
-import 'package:zpevnik/providers/util.dart';
+import 'package:zpevnik/providers/utils.dart';
 
 part 'song_lyrics.g.dart';
 

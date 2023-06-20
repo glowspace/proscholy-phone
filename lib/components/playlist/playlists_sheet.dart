@@ -16,6 +16,7 @@ class PlaylistsSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       top: false,
+      bottom: false,
       child: Wrap(
         children: [
           Container(
@@ -46,7 +47,7 @@ class PlaylistsSheet extends StatelessWidget {
                         ),
                       ),
                   ],
-                  const SizedBox(height: kDefaultPadding),
+                  SizedBox(height: MediaQuery.of(context).padding.bottom),
                 ],
               ),
             ),

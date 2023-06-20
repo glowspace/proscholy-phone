@@ -15,6 +15,7 @@ class SongLyricFilesWidget extends StatelessWidget {
 
     return SafeArea(
       top: false,
+      bottom: false,
       child: Wrap(
         children: [
           Container(
@@ -23,7 +24,7 @@ class SongLyricFilesWidget extends StatelessWidget {
           ),
           SingleChildScrollView(
             child: ListView.builder(
-              padding: const EdgeInsets.only(bottom: kDefaultPadding),
+              padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
               itemCount: files.length,
               itemBuilder: (context, index) => _buildFileTile(context, files[index]),
               shrinkWrap: true,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:zpevnik/components/filters/filters.dart';
 import 'package:zpevnik/components/filters/filters_row.dart';
 import 'package:zpevnik/components/search/search_field.dart';
@@ -7,6 +8,7 @@ import 'package:zpevnik/components/search/search_song_lyrics_list_view.dart';
 import 'package:zpevnik/components/split_view.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/search.dart';
+import 'package:zpevnik/routes/arguments/song_lyric.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
 class SearchScreen extends ConsumerWidget {
@@ -25,7 +27,7 @@ class SearchScreen extends ConsumerWidget {
           key: const Key('searchfield'),
           isInsideSearchScreen: true,
           onChanged: ref.read(searchTextProvider.notifier).change,
-          onSubmitted: (_) => _maybePushMatchedSonglyric(context),
+          onSubmitted: (_) => _maybePushMatchedSonglyric(context, ref),
         ),
         Container(
           padding: const EdgeInsets.only(left: kDefaultPadding),
@@ -42,6 +44,7 @@ class SearchScreen extends ConsumerWidget {
       return Scaffold(
         backgroundColor: theme.brightness.isLight ? theme.colorScheme.surface : null,
         body: SafeArea(
+          bottom: false,
           child: SplitView(
             subChild: Scaffold(
               backgroundColor: theme.brightness.isLight ? theme.colorScheme.surface : null,
@@ -55,18 +58,14 @@ class SearchScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: theme.brightness.isLight ? theme.colorScheme.surface : null,
-      body: SafeArea(child: child),
+      body: SafeArea(bottom: false, child: child),
     );
   }
 
-  void _maybePushMatchedSonglyric(BuildContext context) {
-    // final songLyricsProvider = context.read<AllSongLyricsProvider>();
+  void _maybePushMatchedSonglyric(BuildContext context, WidgetRef ref) {
+    final matchedById = ref.read(
+        searchedSongLyricsProvider.select((searchedSongLyricsProvider) => searchedSongLyricsProvider.matchedById));
 
-    // if (songLyricsProvider.matchedById != null) {
-    //   songLyricsProvider.addRecentSongLyric(songLyricsProvider.matchedById!);
-
-    //   Navigator.of(context)
-    //       .pushNamed('/song_lyric', arguments: SongLyricScreenArguments([songLyricsProvider.matchedById!], 0));
-    // }
+    if (matchedById != null) context.push('/song_lyric', extra: SongLyricScreenArguments(songLyrics: [matchedById]));
   }
 }

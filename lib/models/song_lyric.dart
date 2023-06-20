@@ -83,6 +83,7 @@ class SongLyric with _$SongLyric implements Identifiable {
   bool get hasTranslations => song.target?.hasTranslations ?? false;
 
   bool get hasLyrics => lyrics != null && lyrics!.isNotEmpty;
+  bool get hasLilypond => lilypond != null && lilypond!.isNotEmpty;
 
   bool get hasFiles {
     return externals.any((external) => external.mediaType == MediaType.pdf || external.mediaType == MediaType.jpg);
@@ -135,7 +136,9 @@ class SongLyric with _$SongLyric implements Identifiable {
   List<External> get mp3s => externals.where((external) => external.mediaType == MediaType.mp3).toList();
 }
 
-ToOne<Song> _songFromJson(Map<String, dynamic> json) => ToOne(targetId: int.parse(json['id']));
+ToOne<Song> _songFromJson(Map<String, dynamic>? json) {
+  return json == null ? ToOne() : ToOne(targetId: int.parse(json['id']));
+}
 
 ToOne<SongLyricSettingsModel> _settingsFromJson(Map<String, dynamic>? json) => ToOne();
 

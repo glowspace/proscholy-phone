@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wakelock/wakelock.dart';
 import 'package:zpevnik/models/playlist.dart';
+import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/routes/arguments/song_lyric.dart';
 import 'package:zpevnik/screens/about.dart';
@@ -57,7 +58,10 @@ class AppNavigator extends NavigatorObserver {
         },
       ),
       GoRoute(path: '/user', builder: (_, __) => const UserScreen()),
-      GoRoute(path: '/updated_song_lyrics', builder: (_, __) => const UpdatedSongLyricsScreen()),
+      GoRoute(
+        path: '/updated_song_lyrics',
+        builder: (_, state) => UpdatedSongLyricsScreen(songLyrics: state.extra as List<SongLyric>),
+      ),
     ],
   );
 

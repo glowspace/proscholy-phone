@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart' hide Consumer;
+import 'package:zpevnik/components/custom/back_button.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/presentation/settings.dart';
 import 'package:zpevnik/components/song_lyric/externals_player_wrapper.dart';
@@ -17,7 +18,6 @@ import 'package:zpevnik/components/song_lyric/song_lyric_tags.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
-import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/components/song_lyric/utils/lyrics_controller.dart';
 import 'package:zpevnik/providers/presentation.dart';
 import 'package:zpevnik/routes/router.dart';
@@ -118,6 +118,7 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
         ),
         title: Text('${_songLyric.id}', style: theme.textTheme.titleMedium),
         centerTitle: false,
+        leading: const CustomBackButton(),
         // leading: canPopIndividually
         //     ? const CustomBackButton()
         //     : HighlightableIconButton(
@@ -308,7 +309,5 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
     );
   }
 
-  void _toggleFavorite(BuildContext context) {
-    context.read<DataProvider>().toggleFavorite(_songLyric);
-  }
+  void _toggleFavorite(BuildContext context) {}
 }

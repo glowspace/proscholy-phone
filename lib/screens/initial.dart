@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/logo.dart';
@@ -9,8 +8,7 @@ import 'package:zpevnik/components/section.dart';
 import 'package:zpevnik/components/sign_in_button.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/components/custom/future_builder.dart';
-import 'package:zpevnik/providers/app_dependencies.dart';
-import 'package:zpevnik/providers/data.dart';
+import 'package:zpevnik/providers/update.dart';
 
 const _welcomeText = '''
 Ahoj. Vítej ve Zpěvníku!
@@ -139,9 +137,7 @@ class _InitialScreenState extends ConsumerState<InitialScreen> {
   }
 
   Future<void> _init() async {
-    await context
-        .read<DataProvider>()
-        .init(ref.read(appDependenciesProvider.select((appDependencies) => appDependencies.store)));
+    await loadInitial(ref);
 
     _pushHomeScreen(context);
 
@@ -160,8 +156,6 @@ class _InitialScreenState extends ConsumerState<InitialScreen> {
   }
 
   void _pushHomeScreen(BuildContext context) {
-    context.read<DataProvider>().prefs.setBool(_loggedInKey, true);
-
     context.replace('/');
   }
 

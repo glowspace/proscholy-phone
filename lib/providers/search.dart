@@ -8,7 +8,7 @@ import 'package:zpevnik/custom/sqlite-bm25/bm25.dart';
 import 'package:zpevnik/models/objectbox.g.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/app_dependencies.dart';
-import 'package:zpevnik/providers/util.dart';
+import 'package:zpevnik/providers/utils.dart';
 
 part 'search.freezed.dart';
 part 'search.g.dart';

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
-import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/now_playing.dart';
 import 'package:zpevnik/routes/arguments/song_lyric.dart';
 import 'package:zpevnik/utils/extensions.dart';
@@ -27,7 +25,7 @@ class _NowPlayingSectionState extends State<NowPlayingSection> {
   void initState() {
     super.initState();
 
-    _controller = widget.controller ?? NowPlayingController(context.read<DataProvider>());
+    _controller = widget.controller ?? NowPlayingController();
   }
 
   @override

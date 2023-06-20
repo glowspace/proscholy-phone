@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:provider/provider.dart';
 import 'package:zpevnik/components/playlist/playlist_row.dart';
 import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/playlists.dart';
 
 class PlaylistsListView extends ConsumerWidget {
@@ -11,7 +9,6 @@ class PlaylistsListView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final dataProvider = context.watch<DataProvider>();
     final playlists = ref.watch(playlistsProvider);
 
     return SingleChildScrollView(
@@ -31,7 +28,7 @@ class PlaylistsListView extends ConsumerWidget {
 
               return PlaylistRow(key: Key('${playlist.id}'), playlist: playlist, isReorderable: true);
             },
-            onReorder: dataProvider.reorderedPlaylists,
+            onReorder: (_, __) {},
           ),
         ),
       ]),

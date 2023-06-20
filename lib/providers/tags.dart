@@ -3,7 +3,7 @@ import 'package:zpevnik/models/objectbox.g.dart';
 import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/providers/playlists.dart';
 import 'package:zpevnik/providers/songbooks.dart';
-import 'package:zpevnik/providers/util.dart';
+import 'package:zpevnik/providers/utils.dart';
 
 part 'tags.g.dart';
 

@@ -19,9 +19,15 @@ class FiltersWidget extends ConsumerWidget {
 
       return SafeArea(
         top: false,
+        bottom: false,
         child: ListView.builder(
           controller: PrimaryScrollController.of(context),
-          padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
+          padding: EdgeInsets.fromLTRB(
+            kDefaultPadding,
+            kDefaultPadding / 2,
+            kDefaultPadding,
+            MediaQuery.of(context).padding.bottom,
+          ),
           addRepaintBoundaries: false,
           itemCount: supportedTagTypes.length,
           itemBuilder: (_, index) => FiltersSection(

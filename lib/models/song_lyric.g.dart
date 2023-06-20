@@ -20,7 +20,7 @@ _$_SongLyric _$$_SongLyricFromJson(Map<String, dynamic> json) => _$_SongLyric(
       accidentals: json['accidentals'] as int?,
       showChords: json['show_chords'] as bool?,
       transposition: json['transposition'] as int?,
-      song: _songFromJson(json['song'] as Map<String, dynamic>),
+      song: _songFromJson(json['song'] as Map<String, dynamic>?),
       settings: _settingsFromJson(json['settings'] as Map<String, dynamic>?),
       authors: _authorsFromJson(json['authors_pivot'] as List),
       tags: _tagsFromJson(json['tags'] as List),

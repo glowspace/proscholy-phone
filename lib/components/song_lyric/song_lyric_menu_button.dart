@@ -10,7 +10,6 @@ import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/custom/popup_menu.dart';
 import 'package:zpevnik/links.dart';
 import 'package:zpevnik/models/song_lyric.dart';
-import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/presentation.dart';
 import 'package:zpevnik/utils/url_launcher.dart';
 
@@ -71,7 +70,7 @@ class SongLyricMenuButton extends StatelessWidget {
   void _selectedAction(BuildContext context, SongLyricMenuAction? action) {
     if (action == null) return;
 
-    final version = context.read<DataProvider>().packageInfo.version;
+    final version = '';
     final platform = Theme.of(context).platform == TargetPlatform.iOS ? 'iOS' : 'android';
 
     switch (action) {

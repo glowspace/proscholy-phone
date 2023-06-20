@@ -1,11 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:zpevnik/components/home/now_playing_section.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
-import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/now_playing.dart';
 
 class NowPlayingBanner extends StatefulWidget {
@@ -31,7 +29,7 @@ class _NowPlayingBannerState extends State<NowPlayingBanner> {
 
     _currentSongLyric = widget.currentSongLyric;
 
-    _controller = NowPlayingController(context.read<DataProvider>());
+    _controller = NowPlayingController();
 
     _controller.addListener(_nowPlayingChanged);
   }

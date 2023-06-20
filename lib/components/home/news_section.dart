@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/section.dart';
 import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/providers/data.dart';
+import 'package:zpevnik/providers/news_items.dart';
 import 'package:zpevnik/utils/url_launcher.dart';
 
 const double _newsItemHeight = 18;
 
-class NewsSection extends StatefulWidget {
+class NewsSection extends ConsumerStatefulWidget {
   const NewsSection({super.key});
 
   @override
-  State<NewsSection> createState() => _NewsSectionState();
+  ConsumerState<NewsSection> createState() => _NewsSectionState();
 }
 
-class _NewsSectionState extends State<NewsSection> {
+class _NewsSectionState extends ConsumerState<NewsSection> {
   final _pageController = PageController(initialPage: 0);
 
   int _currentIndex = 0;
@@ -24,7 +24,7 @@ class _NewsSectionState extends State<NewsSection> {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
 
-    final newsItems = context.watch<DataProvider>().newsItems;
+    final newsItems = ref.watch(newsItemsProvider);
 
     return Section(
       padding: const EdgeInsets.all(kDefaultPadding).copyWith(bottom: kDefaultPadding / 2),

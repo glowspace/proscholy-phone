@@ -13,7 +13,6 @@ import 'package:sqflite/sqflite.dart';
 import 'package:zpevnik/firebase_options.dart';
 import 'package:zpevnik/models/objectbox.g.dart';
 import 'package:zpevnik/providers/app_dependencies.dart';
-import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/presentation.dart';
 import 'package:zpevnik/providers/settings.dart';
 import 'package:zpevnik/routes/router.dart';
@@ -76,7 +75,6 @@ class MainWidget extends ConsumerWidget {
       routerConfig: ref.read(appNavigatorProvider).appRouter,
       builder: (context, child) => MultiProvider(
         providers: [
-          ChangeNotifierProvider(create: (_) => DataProvider()),
           ChangeNotifierProvider(create: (_) => PresentationProvider()),
         ],
         builder: (_, __) => child!,

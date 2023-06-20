@@ -25,7 +25,7 @@ class SearchSongLyricsListView extends ConsumerWidget {
 
     int itemCount = songLyrics.length;
 
-    if (hasMatchedResults) itemCount += 1;
+    if (hasMatchedResults && itemCount > 0) itemCount += 1;
 
     if (matchedById != null) itemCount += 1;
 
@@ -34,6 +34,7 @@ class SearchSongLyricsListView extends ConsumerWidget {
     }
 
     return ListView.builder(
+      padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
       itemCount: itemCount,
       itemBuilder: (_, index) {
         if (matchedById != null) {

@@ -4,7 +4,7 @@ import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/playlist_record.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/app_dependencies.dart';
-import 'package:zpevnik/providers/util.dart';
+import 'package:zpevnik/providers/utils.dart';
 
 part 'playlists.g.dart';
 
