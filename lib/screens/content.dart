@@ -4,7 +4,7 @@
 // import 'package:zpevnik/constants.dart';
 // import 'package:zpevnik/models/song_lyric.dart';
 // import 'package:zpevnik/providers/navigation.dart';
-// import 'package:zpevnik/routes/route_generator.dart';
+// import 'package:zpevnik/routing/route_generator.dart';
 // import 'package:zpevnik/utils/links.dart';
 
 // class ContentScreen extends StatelessWidget {

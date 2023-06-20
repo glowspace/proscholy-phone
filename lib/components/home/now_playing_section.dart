@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/now_playing.dart';
-import 'package:zpevnik/routes/arguments/song_lyric.dart';
+import 'package:zpevnik/routing/arguments/song_lyric.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
 const _backgroundColor = Color(0xff232380);

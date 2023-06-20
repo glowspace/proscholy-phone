@@ -7,7 +7,7 @@ import 'package:wakelock/wakelock.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/models/songbook.dart';
-import 'package:zpevnik/routes/arguments/song_lyric.dart';
+import 'package:zpevnik/routing/arguments/song_lyric.dart';
 import 'package:zpevnik/screens/about.dart';
 import 'package:zpevnik/screens/home.dart';
 import 'package:zpevnik/screens/initial.dart';

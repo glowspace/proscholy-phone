@@ -8,7 +8,7 @@ import 'package:zpevnik/components/search/search_song_lyrics_list_view.dart';
 import 'package:zpevnik/components/split_view.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/search.dart';
-import 'package:zpevnik/routes/arguments/song_lyric.dart';
+import 'package:zpevnik/routing/arguments/song_lyric.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
 class SearchScreen extends ConsumerWidget {

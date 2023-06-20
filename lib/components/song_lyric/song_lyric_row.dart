@@ -5,8 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/search.dart';
-import 'package:zpevnik/routes/arguments/search.dart';
-import 'package:zpevnik/routes/arguments/song_lyric.dart';
+import 'package:zpevnik/routing/arguments/search.dart';
+import 'package:zpevnik/routing/arguments/song_lyric.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
 const double _iconSize = 16;

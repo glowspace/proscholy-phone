@@ -7,7 +7,7 @@
 // import 'package:zpevnik/components/playlist/dialogs.dart';
 // import 'package:zpevnik/providers/data.dart';
 // import 'package:zpevnik/providers/navigation.dart';
-// import 'package:zpevnik/routes/arguments/song_lyric.dart';
+// import 'package:zpevnik/routing/arguments/song_lyric.dart';
 
 // final spotlightSongLyricRE = RegExp(r'^song_lyric_(\d+)$');
 // final uniLinkSongLyricRE = RegExp(r'pisen/(\d+)/');

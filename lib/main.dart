@@ -15,7 +15,7 @@ import 'package:zpevnik/models/objectbox.g.dart';
 import 'package:zpevnik/providers/app_dependencies.dart';
 import 'package:zpevnik/providers/presentation.dart';
 import 'package:zpevnik/providers/settings.dart';
-import 'package:zpevnik/routes/router.dart';
+import 'package:zpevnik/routing/router.dart';
 import 'package:zpevnik/screens/presentation.dart';
 import 'package:zpevnik/theme.dart';
 

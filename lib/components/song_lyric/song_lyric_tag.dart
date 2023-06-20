@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songbook_record.dart';
 import 'package:zpevnik/models/tag.dart';
-import 'package:zpevnik/routes/arguments/search.dart';
+import 'package:zpevnik/routing/arguments/search.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
 class SongLyricTag extends StatelessWidget {
