@@ -9,6 +9,8 @@ part 'news_item.g.dart';
 class NewsItem with _$NewsItem implements Identifiable {
   static const String fieldKey = 'news_items';
 
+  const NewsItem._();
+
   @Entity(realClass: NewsItem)
   @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
   const factory NewsItem({
@@ -19,4 +21,6 @@ class NewsItem with _$NewsItem implements Identifiable {
   }) = _NewsItem;
 
   factory NewsItem.fromJson(Map<String, Object?> json) => _$NewsItemFromJson(json);
+
+  bool get hasLink => link.isNotEmpty;
 }

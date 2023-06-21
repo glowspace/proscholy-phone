@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:zpevnik/models/objectbox.g.dart';
 import 'package:zpevnik/models/playlist.dart';
@@ -130,5 +131,12 @@ class Playlists extends _$Playlists {
     );
 
     _playlistRecordsBox.put(playlistRecord);
+  }
+
+  void removeFromPlaylist(Playlist playlist, SongLyric songLyric) {
+    final playlistRecord =
+        playlist.records.firstWhereOrNull((playlistRecord) => playlistRecord.songLyric.targetId == songLyric.id);
+
+    if (playlistRecord != null) _playlistRecordsBox.remove(playlistRecord.id);
   }
 }

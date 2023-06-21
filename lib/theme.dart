@@ -41,7 +41,7 @@ class AppTheme {
       textTheme: theme.textTheme.copyWith(
         titleLarge: GoogleFonts.roboto(fontSize: 22, color: lightTextColor, fontWeight: FontWeight.w500),
         titleMedium: const TextStyle(fontSize: 17, color: lightTextColor, fontWeight: FontWeight.w500),
-        titleSmall: const TextStyle(fontSize: 16, color: lightTextColor, fontWeight: FontWeight.w500),
+        titleSmall: const TextStyle(fontSize: 14, color: lightTextColor, fontWeight: FontWeight.w700),
         bodyMedium: const TextStyle(fontSize: 15, color: lightTextColor, fontWeight: FontWeight.w400),
         bodySmall: const TextStyle(fontSize: 14, color: lightCaptionColor, fontWeight: FontWeight.w400),
         labelLarge: GoogleFonts.roboto(fontSize: 14, color: lightCommentColor, fontWeight: FontWeight.w400),
@@ -73,7 +73,7 @@ class AppTheme {
       textTheme: theme.textTheme.copyWith(
         titleLarge: GoogleFonts.roboto(fontSize: 22, color: darkTextColor, fontWeight: FontWeight.w500),
         titleMedium: const TextStyle(fontSize: 17, color: darkTextColor, fontWeight: FontWeight.w500),
-        titleSmall: const TextStyle(fontSize: 16, color: darkTextColor, fontWeight: FontWeight.w500),
+        titleSmall: const TextStyle(fontSize: 14, color: darkTextColor, fontWeight: FontWeight.w700),
         bodyMedium: const TextStyle(fontSize: 15, color: darkTextColor, fontWeight: FontWeight.w400),
         bodySmall: const TextStyle(fontSize: 14, color: darkCaptionColor, fontWeight: FontWeight.w400),
         labelLarge: GoogleFonts.roboto(fontSize: 14, color: darkCommentColor, fontWeight: FontWeight.w400),

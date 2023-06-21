@@ -56,51 +56,45 @@ class _UpdateSectionState extends ConsumerState<UpdateSection> {
     return AnimatedCrossFade(
       crossFadeState: isShowing ? CrossFadeState.showFirst : CrossFadeState.showSecond,
       duration: kDefaultAnimationDuration,
-      firstChild: Padding(
-        padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
-        child: Section(
-          padding: const EdgeInsets.all(kDefaultPadding),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(text, style: theme.textTheme.bodyMedium),
-                      if (hasSonglyrics)
-                        HighlightableTextButton(
-                          foregroundColor: theme.colorScheme.primary,
-                          padding: const EdgeInsets.only(top: 2 / 3 * kDefaultPadding),
-                          onTap: () => context.push('/updated_song_lyrics', extra: updatedSongLyrics),
-                          child: const Text('Zobrazit'),
-                        ),
-                      if (hasError)
-                        HighlightableTextButton(
-                          foregroundColor: red,
-                          padding: const EdgeInsets.only(top: 2 / 3 * kDefaultPadding),
-                          onTap: () =>
-                              launch(context, '$reportUrl?summary=Chyba při aktualizaci písní&description=$error'),
-                          child: const Text('Nahlásit chybu'),
-                        ),
-                    ],
-                  ),
-                ),
-                if (isShowing && (hasSonglyrics || hasError))
-                  HighlightableIconButton(
-                    onTap: () => setState(() => _isHidden = true),
-                    icon: const Icon(Icons.close),
-                  )
-              ]),
-              if (!hasSonglyrics && !hasError)
-                Container(
-                  padding: const EdgeInsets.only(top: kDefaultPadding / 2),
-                  child: const LinearProgressIndicator(),
-                ),
-            ],
-          ),
-        ),
+      firstChild: Section(
+        padding: const EdgeInsets.all(kDefaultPadding),
+        margin: const EdgeInsets.symmetric(vertical: 2 / 3 * kDefaultPadding),
+        children: [
+          Row(children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(text, style: theme.textTheme.bodyMedium),
+                  if (hasSonglyrics)
+                    HighlightableTextButton(
+                      foregroundColor: theme.colorScheme.primary,
+                      padding: const EdgeInsets.only(top: 2 / 3 * kDefaultPadding),
+                      onTap: () => context.push('/updated_song_lyrics', extra: updatedSongLyrics),
+                      child: const Text('Zobrazit'),
+                    ),
+                  if (hasError)
+                    HighlightableTextButton(
+                      foregroundColor: red,
+                      padding: const EdgeInsets.only(top: 2 / 3 * kDefaultPadding),
+                      onTap: () => launch(context, '$reportUrl?summary=Chyba při aktualizaci písní&description=$error'),
+                      child: const Text('Nahlásit chybu'),
+                    ),
+                ],
+              ),
+            ),
+            if (isShowing && (hasSonglyrics || hasError))
+              HighlightableIconButton(
+                onTap: () => setState(() => _isHidden = true),
+                icon: const Icon(Icons.close),
+              )
+          ]),
+          if (!hasSonglyrics && !hasError)
+            Container(
+              padding: const EdgeInsets.only(top: kDefaultPadding / 2),
+              child: const LinearProgressIndicator(),
+            ),
+        ],
       ),
       secondChild: const SizedBox(),
     );

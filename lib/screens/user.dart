@@ -71,18 +71,21 @@ class UserScreen extends StatelessWidget {
     final systemDarkModeEnabled = MediaQuery.of(context).platformBrightness.isDark;
 
     return Section(
-      title: Text('Nastavení', style: textTheme.titleMedium),
+      outsideTitle: 'Nastavení',
       margin: const EdgeInsets.all(kDefaultPadding),
       padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-      child: Consumer(
-        builder: (_, ref, __) => SwitchListTile.adaptive(
-          title: Text('Tmavý mód', style: textTheme.bodyMedium),
-          value: ref.watch(settingsProvider.select((settings) => settings.darkModeEnabled)) ?? systemDarkModeEnabled,
-          onChanged: (value) =>
-              ref.read(settingsProvider.notifier).changeDarkModeEnabled(value == systemDarkModeEnabled ? null : value),
-          contentPadding: EdgeInsets.zero,
+      children: [
+        Consumer(
+          builder: (_, ref, __) => SwitchListTile.adaptive(
+            title: Text('Tmavý mód', style: textTheme.bodyMedium),
+            value: ref.watch(settingsProvider.select((settings) => settings.darkModeEnabled)) ?? systemDarkModeEnabled,
+            onChanged: (value) => ref
+                .read(settingsProvider.notifier)
+                .changeDarkModeEnabled(value == systemDarkModeEnabled ? null : value),
+            contentPadding: EdgeInsets.zero,
+          ),
         ),
-      ),
+      ],
     );
   }
 
@@ -90,45 +93,43 @@ class UserScreen extends StatelessWidget {
     final accidentalsStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(fontFamily: 'KaiseiHarunoUmi');
 
     return Section(
-      title: Text('Nastavení písní', style: Theme.of(context).textTheme.titleMedium),
+      outsideTitle: 'Nastavení písní',
       margin: const EdgeInsets.all(kDefaultPadding),
       padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding),
-      child: Column(
-        children: [
-          Row(children: [
-            const Expanded(child: Text('Posuvky')),
-            Consumer(
-              builder: (_, ref, __) => SelectorWidget(
-                onSelected: ref.read(settingsProvider.notifier).changeAccidentals,
-                options: [
-                  Text('#', style: accidentalsStyle, textAlign: TextAlign.center),
-                  Text('♭', style: accidentalsStyle, textAlign: TextAlign.center)
-                ],
-                selected: ref.watch(settingsProvider.select((settings) => settings.accidentals)),
-                width: _settingsOptionsWidth,
-              ),
+      children: [
+        Row(children: [
+          const Expanded(child: Text('Posuvky')),
+          Consumer(
+            builder: (_, ref, __) => SelectorWidget(
+              onSelected: ref.read(settingsProvider.notifier).changeAccidentals,
+              options: [
+                Text('#', style: accidentalsStyle, textAlign: TextAlign.center),
+                Text('♭', style: accidentalsStyle, textAlign: TextAlign.center)
+              ],
+              selected: ref.watch(settingsProvider.select((settings) => settings.accidentals)),
+              width: _settingsOptionsWidth,
             ),
-          ]),
-          const Divider(height: kDefaultPadding),
-          Row(children: [
-            const Expanded(child: Text('Akordy')),
-            Consumer(
-              builder: (context, ref, __) => SelectorWidget(
-                onSelected: (index) => ref.read(settingsProvider.notifier).changeShowChords(index == 1),
-                options: const [Icon(Icons.visibility_off, size: 20), Icon(Icons.visibility, size: 20)],
-                selected: ref.watch(settingsProvider.select((settings) => settings.showChords)) ? 1 : 0,
-                width: _settingsOptionsWidth,
-              ),
-            ),
-          ]),
-          const Divider(height: kDefaultPadding),
-          const SizedBox(height: kDefaultPadding / 2),
-          const Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [Text('Velikost písma'), FontSizeSlider()],
           ),
-        ],
-      ),
+        ]),
+        const Divider(height: kDefaultPadding),
+        Row(children: [
+          const Expanded(child: Text('Akordy')),
+          Consumer(
+            builder: (context, ref, __) => SelectorWidget(
+              onSelected: (index) => ref.read(settingsProvider.notifier).changeShowChords(index == 1),
+              options: const [Icon(Icons.visibility_off, size: 20), Icon(Icons.visibility, size: 20)],
+              selected: ref.watch(settingsProvider.select((settings) => settings.showChords)) ? 1 : 0,
+              width: _settingsOptionsWidth,
+            ),
+          ),
+        ]),
+        const Divider(height: kDefaultPadding),
+        const SizedBox(height: kDefaultPadding / 2),
+        const Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [Text('Velikost písma'), FontSizeSlider()],
+        ),
+      ],
     );
   }
 

@@ -27,10 +27,10 @@ class _PresentationSettingsState extends State<PresentationSettingsWidget> {
     final textTheme = Theme.of(context).textTheme;
 
     return Section(
-      title: Text('Nastavení', style: textTheme.titleMedium),
+      outsideTitle: 'Nastavení',
       margin: const EdgeInsets.all(kDefaultPadding),
       padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-      child: Column(children: [
+      children: [
         SwitchListTile.adaptive(
           title: Text('Zobrazovat pozadí', style: textTheme.bodyMedium),
           value: _presentationSettings.showBackground,
@@ -63,7 +63,7 @@ class _PresentationSettingsState extends State<PresentationSettingsWidget> {
           ),
           contentPadding: EdgeInsets.zero,
         ),
-      ]),
+      ],
     );
   }
 

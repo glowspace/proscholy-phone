@@ -93,23 +93,20 @@ class _InitialScreenState extends ConsumerState<InitialScreen> {
     return Section(
       margin: const EdgeInsets.all(2 * kDefaultPadding).copyWith(bottom: kDefaultPadding),
       padding: const EdgeInsets.all(2 * kDefaultPadding),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(_welcomeText, style: textTheme.bodyMedium),
-          const SizedBox(height: 2 * kDefaultPadding),
-          const SignInButton(type: SignInButtonType.google),
-          const SizedBox(height: kDefaultPadding),
-          CustomFutureBuilder<bool>(
-            future: SignInWithApple.isAvailable(),
-            builder: (_, isAvailable) => (isAvailable ?? false)
-                ? SignInButton(type: SignInButtonType.apple, onSignIn: () => _signInWithApple(context))
-                : Container(),
-          ),
-          const SizedBox(height: kDefaultPadding),
-          SignInButton(type: SignInButtonType.noSignIn, onSignIn: () => _pushHomeScreen(context)),
-        ],
-      ),
+      children: [
+        Text(_welcomeText, style: textTheme.bodyMedium),
+        const SizedBox(height: 2 * kDefaultPadding),
+        const SignInButton(type: SignInButtonType.google),
+        const SizedBox(height: kDefaultPadding),
+        CustomFutureBuilder<bool>(
+          future: SignInWithApple.isAvailable(),
+          builder: (_, isAvailable) => (isAvailable ?? false)
+              ? SignInButton(type: SignInButtonType.apple, onSignIn: () => _signInWithApple(context))
+              : Container(),
+        ),
+        const SizedBox(height: kDefaultPadding),
+        SignInButton(type: SignInButtonType.noSignIn, onSignIn: () => _pushHomeScreen(context)),
+      ],
     );
   }
 
@@ -120,19 +117,16 @@ class _InitialScreenState extends ConsumerState<InitialScreen> {
     return Section(
       margin: const EdgeInsets.all(2 * kDefaultPadding).copyWith(top: kDefaultPadding),
       padding: const EdgeInsets.all(kDefaultPadding).copyWith(bottom: 0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const GlowspaceLogo(showDescription: true),
-          const SizedBox(height: kDefaultPadding),
-          Text(_projectDescription, style: textTheme.bodyMedium),
-          HighlightableTextButton(
-            onTap: () => _learnMore(context),
-            foregroundColor: theme.colorScheme.primary,
-            child: const Text('Dozvědět se více'),
-          ),
-        ],
-      ),
+      children: [
+        const GlowspaceLogo(showDescription: true),
+        const SizedBox(height: kDefaultPadding),
+        Text(_projectDescription, style: textTheme.bodyMedium),
+        HighlightableTextButton(
+          onTap: () => _learnMore(context),
+          foregroundColor: theme.colorScheme.primary,
+          child: const Text('Dozvědět se více'),
+        ),
+      ],
     );
   }
 

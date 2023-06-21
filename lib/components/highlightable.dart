@@ -47,6 +47,7 @@ class HighlightableIconButton extends StatelessWidget {
 
 class HighlightableTextButton extends StatelessWidget {
   final EdgeInsets padding;
+  final AlignmentGeometry? alignment;
   final Color? foregroundColor;
   final TextStyle? textStyle;
   final Function()? onTap;
@@ -56,6 +57,7 @@ class HighlightableTextButton extends StatelessWidget {
   const HighlightableTextButton({
     super.key,
     this.padding = EdgeInsets.zero,
+    this.alignment,
     this.foregroundColor,
     this.textStyle,
     this.onTap,
@@ -73,6 +75,7 @@ class HighlightableTextButton extends StatelessWidget {
       padding: padding,
       textStyle: textStyle,
       minimumSize: const Size(0, 0),
+      alignment: alignment,
       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
     ).copyWith(
       foregroundColor: HighlightableForegroundColor(

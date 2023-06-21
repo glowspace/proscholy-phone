@@ -139,12 +139,13 @@ class __$$_NewsItemCopyWithImpl<$Res>
 
 @Entity(realClass: NewsItem)
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
-class _$_NewsItem implements _NewsItem {
+class _$_NewsItem extends _NewsItem {
   const _$_NewsItem(
       {@Id(assignable: true) @JsonKey(fromJson: int.parse) required this.id,
       required this.text,
       required this.link,
-      @Property(type: PropertyType.date) this.expiresAt});
+      @Property(type: PropertyType.date) this.expiresAt})
+      : super._();
 
   factory _$_NewsItem.fromJson(Map<String, dynamic> json) =>
       _$$_NewsItemFromJson(json);
@@ -189,7 +190,7 @@ class _$_NewsItem implements _NewsItem {
       __$$_NewsItemCopyWithImpl<_$_NewsItem>(this, _$identity);
 }
 
-abstract class _NewsItem implements NewsItem {
+abstract class _NewsItem extends NewsItem {
   const factory _NewsItem(
       {@Id(assignable: true)
       @JsonKey(fromJson: int.parse)
@@ -198,6 +199,7 @@ abstract class _NewsItem implements NewsItem {
       required final String link,
       @Property(type: PropertyType.date)
           final DateTime? expiresAt}) = _$_NewsItem;
+  const _NewsItem._() : super._();
 
   factory _NewsItem.fromJson(Map<String, dynamic> json) = _$_NewsItem.fromJson;
 
