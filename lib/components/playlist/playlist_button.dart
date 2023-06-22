@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart' hide PopupMenuEntry, PopupMenuItem, PopupMenuPosition;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zpevnik/components/custom/popup_menu_button.dart';
 import 'package:zpevnik/components/icon_item.dart';
 import 'package:zpevnik/components/playlist/dialogs.dart';
@@ -14,7 +15,7 @@ enum PlaylistAction {
   remove,
 }
 
-class PlaylistButton extends StatelessWidget {
+class PlaylistButton extends ConsumerWidget {
   final Playlist playlist;
   final bool isInAppBar;
   final bool extendPadding;
@@ -27,10 +28,10 @@ class PlaylistButton extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return CustomPopupMenuButton(
       items: _buildPopupMenuItems(context),
-      onSelected: _selectedAction,
+      onSelected: (context, action) => _selectedAction(context, ref, action),
       menuPosition: isInAppBar ? PopupMenuPosition.under : PopupMenuPosition.over,
       padding: extendPadding
           ? const EdgeInsets.fromLTRB(kDefaultPadding, kDefaultPadding / 2, 2 * kDefaultPadding, kDefaultPadding / 2)
@@ -59,26 +60,26 @@ class PlaylistButton extends StatelessWidget {
     ];
   }
 
-  void _selectedAction(BuildContext context, PlaylistAction? action) {
+  void _selectedAction(BuildContext context, WidgetRef ref, PlaylistAction? action) {
     if (action == null) return;
 
     switch (action) {
       case PlaylistAction.rename:
-        showRenamePlaylistDialog(context, playlist);
+        showRenamePlaylistDialog(context, ref, playlist);
         break;
       case PlaylistAction.share:
-        _sharePlaylist(context, playlist);
+        _sharePlaylist(context, ref, playlist);
         break;
       case PlaylistAction.duplicate:
-        showDuplicatePlaylistDialog(context, playlist);
+        showDuplicatePlaylistDialog(context, ref, playlist);
         break;
       case PlaylistAction.remove:
-        showRemovePlaylistDialog(context, playlist);
+        showRemovePlaylistDialog(context, ref, playlist);
         break;
     }
   }
 
-  void _sharePlaylist(BuildContext context, Playlist playlist) {
+  void _sharePlaylist(BuildContext context, WidgetRef ref, Playlist playlist) {
     // final songLyricsIds = context
     //     .read<DataProvider>()
     //     .getPlaylistsSongLyrics(playlist)

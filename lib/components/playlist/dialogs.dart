@@ -1,67 +1,71 @@
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
+import 'package:zpevnik/providers/playlists.dart';
+import 'package:zpevnik/routing/router.dart';
 
 const _emptyPlaylistNameMessage = 'Název playlistu je prázdný';
 const _playlistWithSameNameMessage = 'Playlist s tímto názvem již existuje';
 
-void showPlaylistDialog(BuildContext context, {SongLyric? selectedSongLyric, bool openPlaylist = false}) async {
-  // final dataProvider = context.read<DataProvider>();
-  // final playlists = dataProvider.playlists;
+void showPlaylistDialog(BuildContext context, WidgetRef ref, {SongLyric? selectedSongLyric}) async {
+  final results = await showTextInputDialog(
+    context: context,
+    title: 'Nový playlist',
+    okLabel: 'Vytvořit',
+    cancelLabel: 'Zrušit',
+    textFields: [DialogTextField(hintText: 'Název', validator: _validator(ref.read(playlistsProvider)))],
+  );
 
-  // final results = await showTextInputDialog(
-  //   context: context,
-  //   title: 'Nový playlist',
-  //   okLabel: 'Vytvořit',
-  //   cancelLabel: 'Zrušit',
-  //   textFields: [DialogTextField(hintText: 'Název', validator: _validator(playlists))],
-  // );
+  if (results != null) {
+    final playlist = ref
+        .read(playlistsProvider.notifier)
+        .createPlaylist(results.first, songLyrics: selectedSongLyric == null ? [] : [selectedSongLyric]);
 
-  // if (results != null) {
-  //   final playlist = dataProvider.createPlaylist(results[0]);
-
-  //   if (selectedSongLyric != null) dataProvider.addToPlaylist(selectedSongLyric, playlist);
-
-  //   if (openPlaylist) Navigator.of(context).popAndPushNamed('/playlist', arguments: playlist);
-  // }
+    if (context.mounted) context.popAndPush('/playlist', extra: playlist);
+  }
 }
 
-void showRenamePlaylistDialog(BuildContext context, Playlist playlist) async {
-  // final dataProvider = context.read<DataProvider>();
-  // final playlists = dataProvider.playlists;
+void showRenamePlaylistDialog(BuildContext context, WidgetRef ref, Playlist playlist) async {
+  final results = await showTextInputDialog(
+    context: context,
+    title: 'Přejmenovat playlist',
+    okLabel: 'Přejmenovat',
+    cancelLabel: 'Zrušit',
+    textFields: [
+      DialogTextField(
+        hintText: 'Název',
+        initialText: playlist.name,
+        validator: _validator(ref.read(playlistsProvider)),
+      )
+    ],
+  );
 
-  // final results = await showTextInputDialog(
-  //   context: context,
-  //   title: 'Přejmenovat playlist',
-  //   okLabel: 'Přejmenovat',
-  //   cancelLabel: 'Zrušit',
-  //   textFields: [DialogTextField(hintText: 'Název', initialText: playlist.name, validator: _validator(playlists))],
-  // );
-
-  // if (results != null) dataProvider.renamePlaylist(playlist, results[0]);
+  if (results != null) ref.read(playlistsProvider.notifier).renamePlaylist(playlist, results.first);
 }
 
-void showDuplicatePlaylistDialog(BuildContext context, Playlist playlist) async {
-  // final dataProvider = context.read<DataProvider>();
-  // final playlists = dataProvider.playlists;
+void showDuplicatePlaylistDialog(BuildContext context, WidgetRef ref, Playlist playlist) async {
+  final results = await showTextInputDialog(
+    context: context,
+    title: 'Duplikovat playlist',
+    okLabel: 'Vytvořit',
+    cancelLabel: 'Zrušit',
+    textFields: [
+      DialogTextField(
+        hintText: 'Název',
+        initialText: '${playlist.name} (kopie)',
+        validator: _validator(ref.read(playlistsProvider)),
+      ),
+    ],
+  );
 
-  // final results = await showTextInputDialog(
-  //   context: context,
-  //   title: 'Duplikovat playlist',
-  //   okLabel: 'Vytvořit',
-  //   cancelLabel: 'Zrušit',
-  //   textFields: [
-  //     DialogTextField(hintText: 'Název', initialText: '${playlist.name} (kopie)', validator: _validator(playlists)),
-  //   ],
-  // );
+  if (results != null) {
+    final duplicatedPlaylist = ref.read(playlistsProvider.notifier).duplicatePlaylist(playlist, results.first);
 
-  // if (results != null) {
-  //   final duplicatedPlaylist = dataProvider.duplicatePlaylist(playlist, results[0]);
-
-  //   if (ModalRoute.of(context)?.settings.name != '/playlists') {
-  //     NavigationProvider.of(context).pushNamed('/playlist', arguments: duplicatedPlaylist);
-  //   }
-  // }
+    if (context.mounted) context.push('/playlist', extra: duplicatedPlaylist);
+  }
 }
 
 void showAcceptSharedPlaylistDialog(
@@ -97,22 +101,20 @@ void showAcceptSharedPlaylistDialog(
   // }
 }
 
-void showRemovePlaylistDialog(BuildContext context, Playlist playlist) async {
-  // final dataProvider = context.read<DataProvider>();
+void showRemovePlaylistDialog(BuildContext context, WidgetRef ref, Playlist playlist) async {
+  final result = await showOkCancelAlertDialog(
+    context: context,
+    title: 'Smazat playlist',
+    okLabel: 'Smazat',
+    isDestructiveAction: true,
+    cancelLabel: 'Zrušit',
+  );
 
-  // final result = await showOkCancelAlertDialog(
-  //   context: context,
-  //   title: 'Smazat playlist',
-  //   okLabel: 'Smazat',
-  //   isDestructiveAction: true,
-  //   cancelLabel: 'Zrušit',
-  // );
+  if (result == OkCancelResult.ok) {
+    ref.read(playlistsProvider.notifier).removePlaylist(playlist);
 
-  // if (result == OkCancelResult.ok) {
-  //   dataProvider.removePlaylist(playlist);
-
-  //   if (ModalRoute.of(context)?.settings.name == '/playlist') context.pop();
-  // }
+    if (context.mounted && context.isPlaylist) context.pop();
+  }
 }
 
 String? Function(String?) _validator(List<Playlist> playlists) {

@@ -106,13 +106,17 @@ class Playlists extends _$Playlists {
   void removePlaylist(Playlist playlistToRemove) {
     state = [
       for (final playlist in state)
-        if (playlist != playlistToRemove) playlist
+        if (playlist.id != playlistToRemove.id) playlist
     ];
 
     _playlistsBox.remove(playlistToRemove.id);
+    _playlistRecordsBox.removeMany(playlistToRemove.records.map((playlistRecord) => playlistRecord.id).toList());
   }
 
   void addToPlaylist(Playlist playlist, SongLyric songLyric, {int? nextRank}) {
+    // prevent duplicates
+    if (playlist.records.any((playlistRecord) => playlistRecord.songLyric.target == songLyric)) return;
+
     // first find next rank
     final queryBuilder = _playlistRecordsBox.query(PlaylistRecord_.playlist.equals(playlist.id));
 
@@ -131,12 +135,30 @@ class Playlists extends _$Playlists {
     );
 
     _playlistRecordsBox.put(playlistRecord);
+
+    playlist.records.add(playlistRecord);
+    songLyric.playlistRecords.add(playlistRecord);
   }
 
   void removeFromPlaylist(Playlist playlist, SongLyric songLyric) {
-    final playlistRecord =
+    final playlistRecordToRemove =
         playlist.records.firstWhereOrNull((playlistRecord) => playlistRecord.songLyric.targetId == songLyric.id);
 
-    if (playlistRecord != null) _playlistRecordsBox.remove(playlistRecord.id);
+    if (playlistRecordToRemove != null) {
+      _playlistRecordsBox.remove(playlistRecordToRemove.id);
+
+      playlist.records.removeWhere((playlistRecord) => playlistRecord.id == playlistRecordToRemove.id);
+      songLyric.playlistRecords.removeWhere((playlistRecord) => playlistRecord.id == playlistRecordToRemove.id);
+    }
+  }
+
+  void toggleFavorite(SongLyric songLyric) {
+    final favoritePlaylist = ref.read(favoritePlaylistProvider);
+
+    if (songLyric.isFavorite) {
+      removeFromPlaylist(favoritePlaylist, songLyric);
+    } else {
+      addToPlaylist(favoritePlaylist, songLyric);
+    }
   }
 }

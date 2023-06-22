@@ -38,7 +38,7 @@ class PlaylistsListView extends ConsumerWidget {
             ),
           ),
           HighlightableTextButton(
-            onTap: () => showPlaylistDialog(context),
+            onTap: () => showPlaylistDialog(context, ref),
             padding: const EdgeInsets.all(kDefaultPadding),
             icon: const Icon(Icons.add, size: 20),
             child: const Text('Vytvořit nový seznam'),

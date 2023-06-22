@@ -25,12 +25,19 @@ part 'router.g.dart';
 
 extension AppNavigatorHelper on BuildContext {
   bool get isHome => GoRouter.of(this).location == '/';
+  bool get isPlaylist => GoRouter.of(this).location == '/playlist';
   bool get isSearching => GoRouter.of(this).location == '/search';
 
   void popUntil(String routeName) {
     while (GoRouter.of(this).location != routeName) {
       pop();
     }
+  }
+
+  void popAndPush(String routeName, {Object? extra}) {
+    pop();
+
+    push(routeName, extra: extra);
   }
 }
 
