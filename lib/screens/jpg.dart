@@ -18,11 +18,7 @@ class JpgScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: const CustomBackButton(),
-        title: Text(jpg.name, style: Theme.of(context).textTheme.titleMedium),
-        centerTitle: false,
-      ),
+      appBar: AppBar(leading: const CustomBackButton(), title: Text(jpg.name)),
       body: PhotoView(
         backgroundDecoration: BoxDecoration(color: Theme.of(context).scaffoldBackgroundColor),
         imageProvider: CachedNetworkImageProvider(jpg.url ?? ''),

@@ -110,34 +110,21 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
 
     if (!_fullscreen) {
       appBar = AppBar(
-        backgroundColor: backgroundColor,
-        elevation: 0,
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1.0),
-          child: Container(color: theme.colorScheme.outlineVariant, height: 1.0),
-        ),
         title: Text('${_songLyric.id}', style: theme.textTheme.titleMedium),
-        centerTitle: false,
         leading: const CustomBackButton(),
-        // leading: canPopIndividually
-        //     ? const CustomBackButton()
-        //     : HighlightableIconButton(
-        //         onTap: navigationProvider.toggleFullscreen,
-        //         padding: const EdgeInsets.all(kDefaultPadding).copyWith(left: 2.5 * kDefaultPadding),
-        //         icon: Icon(navigationProvider.isFullScreen ? Icons.close_fullscreen : Icons.open_in_full),
-        //       ),
         actions: [
-          // if (_songLyric.hasTranslations)
-          //   HighlightableIconButton(
-          //     onTap: () => navigationProvider.popToOrPushNamed('/song_lyric/translations', arguments: _songLyric),
-          //     padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-          //     icon: const Icon(Icons.translate),
-          //   ),
           StatefulBuilder(
             builder: (context, setState) => HighlightableIconButton(
               onTap: () => setState(() => _toggleFavorite(context)),
               padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
               icon: Icon(_songLyric.isFavorite ? Icons.star : Icons.star_outline),
+            ),
+          ),
+          StatefulBuilder(
+            builder: (context, setState) => HighlightableIconButton(
+              onTap: () => setState(() => _toggleFavorite(context)),
+              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+              icon: const Icon(Icons.playlist_add),
             ),
           ),
           SongLyricMenuButton(songLyric: _songLyric, songLyricsParser: _lyricsController.parser),
@@ -235,7 +222,6 @@ class _SongLyricScreenState extends State<SongLyricScreen> {
       children: [
         Scaffold(
           appBar: appBar,
-          backgroundColor: backgroundColor,
           body: SafeArea(
             child: GestureDetector(
               // TODO: handle this inside this widget

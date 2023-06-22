@@ -13,10 +13,11 @@ import 'package:zpevnik/components/home/song_lists_section.dart';
 import 'package:zpevnik/components/home/songbooks_section.dart';
 import 'package:zpevnik/components/home/top_section.dart';
 import 'package:zpevnik/components/home/update_section.dart';
-import 'package:zpevnik/components/icon_item.dart';
 import 'package:zpevnik/components/search/search_field.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/home.dart';
+import 'package:zpevnik/theme.dart';
+import 'package:zpevnik/utils/extensions.dart';
 
 const double _minColumnWidth = 400;
 
@@ -83,21 +84,25 @@ class HomeScreen extends ConsumerWidget {
     );
 
     return Scaffold(
+      backgroundColor: Theme.of(context).brightness.isLight ? lightBackgroundColor : darkBackgroundColor,
       bottomNavigationBar: const CustomBottomNavigationBar(),
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Row(children: [
-            for (final columnSection in columnSections)
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: columnSection,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              for (final columnSection in columnSections)
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: columnSection,
+                    ),
                   ),
                 ),
-              ),
-          ]),
+            ],
+          ),
         ),
       ),
     );

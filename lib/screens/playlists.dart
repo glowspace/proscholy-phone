@@ -10,11 +10,7 @@ class PlaylistsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: const CustomBackButton(),
-        title: Text('Moje seznamy', style: Theme.of(context).textTheme.titleMedium),
-        centerTitle: false,
-      ),
+      appBar: AppBar(leading: const CustomBackButton(), title: const Text('Moje seznamy')),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Theme.of(context).canvasColor,
         child: const Icon(Icons.add),

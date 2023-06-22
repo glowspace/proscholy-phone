@@ -30,7 +30,7 @@ class SongbooksSection extends ConsumerWidget {
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           itemCount: showingSongbooks.length,
           itemBuilder: (_, index) => SongbookRow(songbook: showingSongbooks[index]),
-          separatorBuilder: (_, __) => const Divider(height: 0),
+          separatorBuilder: (_, __) => const Divider(),
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
         ),

@@ -21,8 +21,7 @@ class UpdatedSongLyricsScreen extends StatelessWidget {
         backgroundColor: isTablet ? backgroundColor : null,
         elevation: isTablet ? 0 : null,
         leading: const CustomBackButton(),
-        title: Text('Naposledy aktualizované', style: Theme.of(context).textTheme.titleMedium),
-        centerTitle: false,
+        title: const Text('Naposledy aktualizované'),
       ),
       backgroundColor: isTablet ? backgroundColor : null,
       body: SafeArea(

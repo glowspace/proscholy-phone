@@ -27,10 +27,8 @@ class SongbookScreen extends StatelessWidget {
         backgroundColor: isTablet ? backgroundColor : null,
         elevation: isTablet ? 0 : null,
         leading: const CustomBackButton(),
-        title: Text(songbook.name, style: Theme.of(context).textTheme.titleMedium),
-        centerTitle: false,
+        title: Text(songbook.name),
         leadingWidth: 24 + 4 * kDefaultPadding,
-        titleSpacing: 0,
         actions: [
           HighlightableIconButton(
             onTap: () => context.push('/search'), // TODO: add arguments

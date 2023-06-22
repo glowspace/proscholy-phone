@@ -24,6 +24,9 @@ import 'package:zpevnik/screens/user.dart';
 part 'router.g.dart';
 
 extension AppNavigatorHelper on BuildContext {
+  bool get isHome => GoRouter.of(this).location == '/';
+  bool get isSearching => GoRouter.of(this).location == '/search';
+
   void popUntil(String routeName) {
     while (GoRouter.of(this).location != routeName) {
       pop();

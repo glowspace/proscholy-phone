@@ -32,8 +32,7 @@ class TranslationsScreen extends StatelessWidget {
         backgroundColor: isTablet ? backgroundColor : null,
         elevation: isTablet ? 0 : null,
         leading: const CustomBackButton(),
-        title: Text('Překlady', style: Theme.of(context).textTheme.titleMedium),
-        centerTitle: false,
+        title: const Text('Překlady'),
       ),
       backgroundColor: isTablet ? backgroundColor : null,
       body: SafeArea(

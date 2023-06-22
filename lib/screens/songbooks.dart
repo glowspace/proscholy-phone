@@ -12,11 +12,7 @@ class SongbooksScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: const CustomBackButton(),
-        title: Text('Zpěvníky', style: Theme.of(context).textTheme.titleMedium),
-        centerTitle: false,
-      ),
+      appBar: AppBar(leading: const CustomBackButton(), title: const Text('Zpěvníky')),
       bottomNavigationBar: MediaQuery.of(context).isTablet ? null : const CustomBottomNavigationBar(),
       body: SafeArea(
         child: Consumer(builder: (_, ref, __) => SongbooksGridView(songbooks: ref.watch(songbooksProvider))),

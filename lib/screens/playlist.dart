@@ -68,10 +68,8 @@ class PlaylistScreen extends StatelessWidget {
         backgroundColor: isTablet ? backgroundColor : null,
         elevation: isTablet ? 0 : null,
         leading: const CustomBackButton(),
-        title: Text(playlist.name, style: Theme.of(context).textTheme.titleMedium),
+        title: Text(playlist.name),
         leadingWidth: 24 + 4 * kDefaultPadding,
-        titleSpacing: 0,
-        centerTitle: false,
         actions: [
           HighlightableIconButton(
             onTap: playlist.records.isEmpty ? null : () => context.push('/search'), // TODO: use arguments

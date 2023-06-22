@@ -51,10 +51,8 @@ class _StartPresentationScreenState extends State<StartPresentationScreen> with 
     return Scaffold(
       appBar: AppBar(
         leading: const CustomBackButton(),
-        title: Text('Prezentovat', style: Theme.of(context).textTheme.titleMedium),
-        centerTitle: false,
+        title: const Text('Prezentovat'),
         leadingWidth: 24 + 4 * kDefaultPadding,
-        titleSpacing: 0,
         actions: [
           HighlightableIconButton(
             onTap: _canPresent

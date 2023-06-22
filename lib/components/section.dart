@@ -52,7 +52,7 @@ class Section extends StatelessWidget {
           Container(
             padding: padding,
             decoration: BoxDecoration(
-              color: theme.colorScheme.surface,
+              color: theme.canvasColor,
               borderRadius: BorderRadius.circular(kDefaultRadius),
             ),
             clipBehavior: Clip.antiAlias,

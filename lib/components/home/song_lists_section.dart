@@ -30,7 +30,7 @@ class SongListsSection extends ConsumerWidget {
         ListView.separated(
           itemCount: min(_maxShowingPlaylists, playlists.length),
           itemBuilder: (_, index) => PlaylistRow(playlist: playlists[index], visualDensity: VisualDensity.comfortable),
-          separatorBuilder: (_, __) => const Divider(height: 0),
+          separatorBuilder: (_, __) => const Divider(),
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
         ),

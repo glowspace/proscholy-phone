@@ -28,7 +28,7 @@ class AdditionalSection extends StatelessWidget {
             child: IconItem(icon: Icons.person, text: 'Uživatelský účet', trailingtext: 'Patrik Dobiáš'),
           ),
         ),
-        const Divider(height: 0),
+        const Divider(),
         InkWell(
           onTap: () => context.push('/user'),
           child: Padding(
@@ -44,7 +44,7 @@ class AdditionalSection extends StatelessWidget {
             ),
           ),
         ),
-        const Divider(height: 0),
+        const Divider(),
         InkWell(
           onTap: () => launch(context, proscholyUrl),
           child: const Padding(
@@ -52,7 +52,7 @@ class AdditionalSection extends StatelessWidget {
             child: IconItem(icon: Icons.language, text: 'Webová verze', trailingIcon: Icons.open_in_new),
           ),
         ),
-        const Divider(height: 0),
+        const Divider(),
         InkWell(
           onTap: () => launch(context, theme.platform.isIos ? feedbackIOSUrl : feedbackAndroidUrl),
           child: const Padding(
@@ -60,7 +60,7 @@ class AdditionalSection extends StatelessWidget {
             child: IconItem(icon: Icons.feedback, text: 'Zpětná vazba', trailingIcon: Icons.open_in_new),
           ),
         ),
-        const Divider(height: 0),
+        const Divider(),
         InkWell(
           onTap: () => launch(context, addSongUrl),
           child: const Padding(
@@ -68,7 +68,7 @@ class AdditionalSection extends StatelessWidget {
             child: IconItem(icon: Icons.add, text: 'Přidat píseň', trailingIcon: Icons.open_in_new),
           ),
         ),
-        const Divider(height: 0),
+        const Divider(),
         InkWell(
           onTap: () => launch(context, dontaionsUrl),
           child: const Padding(

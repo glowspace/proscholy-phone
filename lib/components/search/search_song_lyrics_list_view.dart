@@ -34,7 +34,7 @@ class SearchSongLyricsListView extends ConsumerWidget {
     }
 
     return ListView.builder(
-      padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
+      // padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
       itemCount: itemCount,
       itemBuilder: (_, index) {
         if (matchedById != null) {

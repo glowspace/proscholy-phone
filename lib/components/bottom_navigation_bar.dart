@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:zpevnik/routing/router.dart';
-import 'package:zpevnik/utils/extensions.dart';
 
 const double _navigationBarHeight = 64;
 
@@ -10,15 +9,15 @@ class CustomBottomNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isLight = Theme.of(context).brightness.isLight;
+    final theme = Theme.of(context);
 
     return Hero(
       tag: 'bottomNavigationBar',
       transitionOnUserGestures: true,
       child: NavigationBar(
-        backgroundColor: isLight ? const Color(0xfffffbfe) : const Color(0xff1e1e1e),
-        surfaceTintColor: isLight ? const Color(0xfffffbfe) : const Color(0xff1e1e1e),
-        selectedIndex: ModalRoute.of(context)?.settings.name == '/' ? 0 : 2,
+        backgroundColor: context.isHome ? theme.canvasColor : null,
+        surfaceTintColor: context.isHome ? theme.canvasColor : null,
+        selectedIndex: context.isHome ? 0 : (context.isSearching ? 1 : 2),
         height: _navigationBarHeight,
         onDestinationSelected: (index) => _onDestinationSelected(context, index),
         destinations: const [

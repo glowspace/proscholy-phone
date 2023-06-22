@@ -17,11 +17,7 @@ class PdfScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: const CustomBackButton(),
-        title: Text(pdf.name, style: Theme.of(context).textTheme.titleMedium),
-        centerTitle: false,
-      ),
+      appBar: AppBar(leading: const CustomBackButton(), title: Text(pdf.name)),
       body: const PDF().cachedFromUrl(
         pdf.url ?? '',
         placeholder: (progress) => Center(child: Text('$progress %')),

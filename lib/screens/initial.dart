@@ -9,6 +9,8 @@ import 'package:zpevnik/components/sign_in_button.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/components/custom/future_builder.dart';
 import 'package:zpevnik/providers/update.dart';
+import 'package:zpevnik/theme.dart';
+import 'package:zpevnik/utils/extensions.dart';
 
 const _welcomeText = '''
 Ahoj. Vítej ve Zpěvníku!
@@ -45,6 +47,7 @@ class _InitialScreenState extends ConsumerState<InitialScreen> {
     final height = mediaQuery.size.height - mediaQuery.padding.top;
 
     return Scaffold(
+      backgroundColor: Theme.of(context).brightness.isLight ? lightBackgroundColor : darkBackgroundColor,
       body: SafeArea(
         child: Stack(
           alignment: Alignment.bottomCenter,
