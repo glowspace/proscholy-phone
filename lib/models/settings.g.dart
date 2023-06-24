@@ -11,7 +11,9 @@ _$_GlobalSettings _$$_GlobalSettingsFromJson(Map<String, dynamic> json) =>
       darkModeEnabled: json['darkModeEnabled'] as bool?,
       fontSizeScale: (json['fontSizeScale'] as num).toDouble(),
       showChords: json['showChords'] as bool,
+      showMusicalNotes: json['showMusicalNotes'] as bool,
       accidentals: json['accidentals'] as int,
+      autoScrollSpeedIndex: json['autoScrollSpeedIndex'] as int,
     );
 
 Map<String, dynamic> _$$_GlobalSettingsToJson(_$_GlobalSettings instance) =>
@@ -19,5 +21,7 @@ Map<String, dynamic> _$$_GlobalSettingsToJson(_$_GlobalSettings instance) =>
       'darkModeEnabled': instance.darkModeEnabled,
       'fontSizeScale': instance.fontSizeScale,
       'showChords': instance.showChords,
+      'showMusicalNotes': instance.showMusicalNotes,
       'accidentals': instance.accidentals,
+      'autoScrollSpeedIndex': instance.autoScrollSpeedIndex,
     };

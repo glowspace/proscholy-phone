@@ -59,7 +59,7 @@ class SongLyric with _$SongLyric implements Identifiable {
     @JsonKey(name: 'secondary_name_1') String? secondaryName1,
     @JsonKey(name: 'secondary_name_2') String? secondaryName2,
     String? lyrics,
-    String? lilypond,
+    @JsonKey(name: 'lilypond_svg') String? lilypond,
     String? lang,
     @JsonKey(name: 'lang_string') String? langDescription,
     @JsonKey(name: 'type_enum', fromJson: SongLyricType.rawValueFromString) required int dbType,
@@ -100,27 +100,21 @@ class SongLyric with _$SongLyric implements Identifiable {
       if (authors.isEmpty) {
         return 'Autor neznámý';
       } else if (authors.length == 1) {
-        return 'Autor: ${authors[0].name}';
+        return authors.first.name;
       } else {
-        return 'Autoři: ${authors.map((author) => author.name).toList().join(", ")}';
+        return authors.map((author) => author.name).join(", ");
       }
     } else {
-      String originalText = '';
-
       final original = song.target?.original;
 
-      if (original != null) {
-        originalText = 'Originál: ${original.name}\n';
-
-        originalText += '${original.authorsText}\n';
-      }
+      String originalText = original != null ? 'Originál: ${original.name} - ${original.authorsText}, ' : '';
 
       if (authors.isEmpty) {
         return '${originalText}Autor překladu neznámý';
       } else if (authors.length == 1) {
-        return '${originalText}Autor překladu: ${authors[0].name}';
+        return '${originalText}Autor překladu: ${authors.first.name}';
       } else {
-        return '${originalText}Autoři překladu: ${authors.map((author) => author.name).toList().join(", ")}';
+        return '${originalText}Autoři překladu: ${authors.map((author) => author.name).join(", ")}';
       }
     }
   }

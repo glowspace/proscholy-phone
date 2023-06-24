@@ -40,6 +40,7 @@ void migrateSongLyricSettings(Store store) {
     final songLyricSettings = SongLyricSettingsModel(
         id: id++,
         showChords: songLyric.showChords ?? true,
+        showMusicalNotes: true,
         accidentals: songLyric.accidentals ?? 1,
         transposition: songLyric.transposition ?? 0);
 

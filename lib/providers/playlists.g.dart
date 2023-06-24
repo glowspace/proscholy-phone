@@ -21,7 +21,7 @@ final favoritePlaylistProvider = AutoDisposeProvider<Playlist>.internal(
 );
 
 typedef FavoritePlaylistRef = AutoDisposeProviderRef<Playlist>;
-String _$playlistsHash() => r'8e019809db7b81d5b9684923648fee54408403a8';
+String _$playlistsHash() => r'ece45a6af61f419d736f33703eb6dec56eff70ff';
 
 /// See also [Playlists].
 @ProviderFor(Playlists)

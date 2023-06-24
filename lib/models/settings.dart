@@ -5,8 +5,23 @@ import 'package:zpevnik/models/model.dart';
 part 'settings.freezed.dart';
 part 'settings.g.dart';
 
-const defaultGlobalSettings = GlobalSettings(fontSizeScale: 1, showChords: true, accidentals: 1);
-const defaultSongLyricSettings = SongLyricSettingsModel(id: 0, showChords: true, accidentals: 1, transposition: 0);
+// in ms per pixel
+const autoScrollSpeeds = [40, 30, 24, 20, 17, 15, 13, 12, 11, 10, 9, 8];
+
+const defaultGlobalSettings = GlobalSettings(
+  fontSizeScale: 1,
+  showChords: true,
+  showMusicalNotes: true,
+  accidentals: 1,
+  autoScrollSpeedIndex: 6,
+);
+const defaultSongLyricSettings = SongLyricSettingsModel(
+  id: 0,
+  showChords: true,
+  showMusicalNotes: true,
+  accidentals: 1,
+  transposition: 0,
+);
 
 @freezed
 class GlobalSettings with _$GlobalSettings {
@@ -14,7 +29,9 @@ class GlobalSettings with _$GlobalSettings {
     bool? darkModeEnabled,
     required double fontSizeScale,
     required bool showChords,
+    required bool showMusicalNotes,
     required int accidentals,
+    required int autoScrollSpeedIndex,
   }) = _GlobalSettings;
 
   factory GlobalSettings.fromJson(Map<String, Object?> json) => _$GlobalSettingsFromJson(json);
@@ -26,6 +43,7 @@ class SongLyricSettingsModel with _$SongLyricSettingsModel implements Identifiab
   const factory SongLyricSettingsModel({
     @Id(assignable: true) required int id,
     required bool showChords,
+    required bool showMusicalNotes,
     required int accidentals,
     required int transposition,
   }) = _SongLyricSettingsModel;

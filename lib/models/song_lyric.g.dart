@@ -12,7 +12,7 @@ _$_SongLyric _$$_SongLyricFromJson(Map<String, dynamic> json) => _$_SongLyric(
       secondaryName1: json['secondary_name_1'] as String?,
       secondaryName2: json['secondary_name_2'] as String?,
       lyrics: json['lyrics'] as String?,
-      lilypond: json['lilypond'] as String?,
+      lilypond: json['lilypond_svg'] as String?,
       lang: json['lang'] as String?,
       langDescription: json['lang_string'] as String?,
       dbType: SongLyricType.rawValueFromString(json['type_enum'] as String?),

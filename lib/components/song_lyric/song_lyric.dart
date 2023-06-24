@@ -3,43 +3,48 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:zpevnik/components/song_lyric/song_lyric_chips.dart';
+import 'package:zpevnik/components/song_lyric/utils/auto_scroll.dart';
 import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/settings.dart';
 import 'package:zpevnik/components/song_lyric/utils/converter.dart';
 import 'package:zpevnik/components/song_lyric/utils/lyrics_controller.dart';
 import 'package:zpevnik/components/song_lyric/utils/parser.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
-class LyricsWidget extends ConsumerStatefulWidget {
-  final LyricsController controller;
-  final ScrollController? scrollController;
+class SongLyricWidget extends ConsumerStatefulWidget {
+  final SongLyric songLyric;
+  final AutoScrollController autoScrollController;
 
-  const LyricsWidget({super.key, required this.controller, this.scrollController});
+  const SongLyricWidget({super.key, required this.songLyric, required this.autoScrollController});
 
   @override
-  ConsumerState<LyricsWidget> createState() => _LyricsWidgetState();
+  ConsumerState<SongLyricWidget> createState() => _SongLyricWidgetState();
 }
 
-class _LyricsWidgetState extends ConsumerState<LyricsWidget> {
+class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
+  late final controller = LyricsController(widget.songLyric, context);
+
   @override
   void initState() {
     super.initState();
 
-    widget.controller.addListener(_update);
+    controller.addListener(_update);
   }
 
   @override
   void dispose() {
     super.dispose();
 
-    widget.controller.removeListener(_update);
+    controller.removeListener(_update);
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    widget.controller.updateLilypondColor(Theme.of(context).colorScheme.onBackground.hex);
+    controller.updateLilypondColor(Theme.of(context).colorScheme.onBackground.hex);
   }
 
   @override
@@ -49,36 +54,47 @@ class _LyricsWidgetState extends ConsumerState<LyricsWidget> {
 
     final fontSizeScale = ref.watch(settingsProvider.select((settings) => settings.fontSizeScale));
 
+    final showLilypond = ref.watch(
+        songLyricSettingsProvider(widget.songLyric).select((songLyricSettings) => songLyricSettings.showMusicalNotes));
+
     return SingleChildScrollView(
-      controller: widget.scrollController,
+      controller: widget.autoScrollController,
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Container(
+            Padding(
               padding: const EdgeInsets.symmetric(horizontal: 2 * kDefaultPadding),
               child: Text(
-                widget.controller.songLyric.name,
+                controller.songLyric.name,
                 style: theme.textTheme.titleLarge,
                 textScaleFactor: fontSizeScale,
               ),
             ),
-            if (widget.controller.hasLilypond)
+            SizedBox(height: kDefaultPadding / 2 * fontSizeScale),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 2 * kDefaultPadding),
+              child: Text(
+                controller.songLyric.authorsText,
+                style: theme.textTheme.labelSmall,
+                textScaleFactor: fontSizeScale,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 2 * kDefaultPadding),
+              child: SongLyricChips(songLyric: widget.songLyric),
+            ),
+            if (controller.hasLilypond && showLilypond)
               SvgPicture.string(
                 alignment: Alignment.centerLeft,
-                widget.controller.lilypond(theme.colorScheme.onBackground.hex),
-                width: min(width, widget.controller.lilypondWidth),
+                controller.lilypond(theme.colorScheme.onBackground.hex),
+                width: min(width, controller.lilypondWidth),
               ),
             SizedBox(height: kDefaultPadding * fontSizeScale),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 2 * kDefaultPadding),
               child: _buildLyrics(context),
-            ),
-            SizedBox(height: kDefaultPadding * fontSizeScale),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 2 * kDefaultPadding),
-              child: _buildAuthors(context),
             ),
             SizedBox(height: kDefaultPadding * fontSizeScale),
           ],
@@ -92,17 +108,17 @@ class _LyricsWidgetState extends ConsumerState<LyricsWidget> {
 
     final List<Widget> children = [];
 
-    Token? currentToken = widget.controller.parser.nextToken;
+    Token? currentToken = controller.parser.nextToken;
     while (currentToken != null) {
       if (currentToken is Comment) {
         children.add(_buildComment(context, currentToken, false));
       } else if (currentToken is Interlude) {
-        if (ref.watch(songLyricSettingsProvider(widget.controller.songLyric)
+        if (ref.watch(songLyricSettingsProvider(controller.songLyric)
             .select((songLyricSettings) => songLyricSettings.showChords))) {
           children.add(_buildInterlude(context, currentToken));
         } else {
           while (currentToken != null && currentToken is! InterludeEnd) {
-            currentToken = widget.controller.parser.nextToken;
+            currentToken = controller.parser.nextToken;
           }
         }
       } else if (currentToken is VerseNumber) {
@@ -111,7 +127,7 @@ class _LyricsWidgetState extends ConsumerState<LyricsWidget> {
         children.add(SizedBox(height: kDefaultPadding * fontSizeScale));
       }
 
-      currentToken = widget.controller.parser.nextToken;
+      currentToken = controller.parser.nextToken;
     }
 
     return Column(
@@ -124,7 +140,7 @@ class _LyricsWidgetState extends ConsumerState<LyricsWidget> {
     final fontSizeScale = ref.watch(settingsProvider.select((settings) => settings.fontSizeScale));
 
     final List<Widget> children = [];
-    Token? currentToken = widget.controller.parser.nextToken;
+    Token? currentToken = controller.parser.nextToken;
     while (currentToken != null && currentToken is! InterludeEnd) {
       if (currentToken is Chord) {
         children.add(_buildLine(context, currentToken, _textStyle(context, false), isInterlude: true));
@@ -132,7 +148,7 @@ class _LyricsWidgetState extends ConsumerState<LyricsWidget> {
         children.add(SizedBox(height: kDefaultPadding * fontSizeScale));
       }
 
-      currentToken = widget.controller.parser.nextToken;
+      currentToken = controller.parser.nextToken;
     }
 
     return Row(
@@ -157,7 +173,7 @@ class _LyricsWidgetState extends ConsumerState<LyricsWidget> {
     final textStyle = _textStyle(context, number.verseHasChord);
 
     final List<Widget> children = [];
-    Token? currentToken = widget.controller.parser.nextToken;
+    Token? currentToken = controller.parser.nextToken;
     while (currentToken != null && currentToken is! VerseEnd) {
       if (currentToken is VersePart || currentToken is Chord) {
         children.add(_buildLine(context, currentToken, textStyle));
@@ -167,7 +183,7 @@ class _LyricsWidgetState extends ConsumerState<LyricsWidget> {
         children.add(SizedBox(height: kDefaultPadding * fontSizeScale));
       }
 
-      currentToken = widget.controller.parser.nextToken;
+      currentToken = controller.parser.nextToken;
     }
 
     return Row(
@@ -193,7 +209,7 @@ class _LyricsWidgetState extends ConsumerState<LyricsWidget> {
     while (currentToken != null && currentToken is! NewLine) {
       if (currentToken is VersePart) {
         if (currentChord == null ||
-            ref.watch(songLyricSettingsProvider(widget.controller.songLyric)
+            ref.watch(songLyricSettingsProvider(controller.songLyric)
                 .select((songLyricSettings) => !songLyricSettings.showChords))) {
           children.add(WidgetSpan(child: Text(currentToken.value, style: textStyle)));
         } else {
@@ -201,7 +217,7 @@ class _LyricsWidgetState extends ConsumerState<LyricsWidget> {
           currentChord = null;
         }
       } else if (currentToken is Chord &&
-          ref.watch(songLyricSettingsProvider(widget.controller.songLyric)
+          ref.watch(songLyricSettingsProvider(controller.songLyric)
               .select((songLyricSettings) => songLyricSettings.showChords))) {
         if (isInterlude) {
           children.add(_buildChord(context, currentToken, textStyle, isInterlude: true));
@@ -212,12 +228,12 @@ class _LyricsWidgetState extends ConsumerState<LyricsWidget> {
         currentChord = currentToken;
       }
 
-      currentToken = widget.controller.parser.nextToken;
+      currentToken = controller.parser.nextToken;
     }
 
     if (!isInterlude &&
         currentChord != null &&
-        ref.watch(songLyricSettingsProvider(widget.controller.songLyric)
+        ref.watch(songLyricSettingsProvider(controller.songLyric)
             .select((songLyricSettings) => songLyricSettings.showChords))) {
       children.add(_buildChord(context, currentChord, textStyle));
     }
@@ -232,7 +248,7 @@ class _LyricsWidgetState extends ConsumerState<LyricsWidget> {
     final fontSizeScale = ref.watch(settingsProvider.select((settings) => settings.fontSizeScale));
 
     final showChords = hasChords &&
-        ref.watch(songLyricSettingsProvider(widget.controller.songLyric)
+        ref.watch(songLyricSettingsProvider(controller.songLyric)
             .select((songLyricSettings) => songLyricSettings.showChords));
     final textStyle = Theme.of(context).textTheme.labelLarge?.copyWith(
           fontStyle: FontStyle.italic,
@@ -251,9 +267,9 @@ class _LyricsWidgetState extends ConsumerState<LyricsWidget> {
     String chordText = convertAccidentals(
         transpose(
             chord.value,
-            ref.watch(songLyricSettingsProvider(widget.controller.songLyric)
+            ref.watch(songLyricSettingsProvider(controller.songLyric)
                 .select((songLyricSettings) => songLyricSettings.transposition))),
-        ref.watch(songLyricSettingsProvider(widget.controller.songLyric)
+        ref.watch(songLyricSettingsProvider(controller.songLyric)
             .select((songLyricSettings) => songLyricSettings.accidentals)));
 
     int chordNumberIndex = chordText.indexOf('maj');
@@ -297,19 +313,9 @@ class _LyricsWidgetState extends ConsumerState<LyricsWidget> {
     );
   }
 
-  Widget _buildAuthors(BuildContext context) {
-    final fontSizeScale = ref.watch(settingsProvider.select((settings) => settings.fontSizeScale));
-
-    return Text(
-      widget.controller.songLyric.authorsText,
-      style: Theme.of(context).textTheme.labelMedium,
-      textScaleFactor: fontSizeScale,
-    );
-  }
-
   TextStyle? _textStyle(BuildContext context, bool hasChords) {
     final showChords = hasChords &&
-        ref.watch(songLyricSettingsProvider(widget.controller.songLyric)
+        ref.watch(songLyricSettingsProvider(controller.songLyric)
             .select((songLyricSettings) => songLyricSettings.showChords));
 
     return Theme.of(context).textTheme.bodyMedium?.copyWith(height: showChords ? 2.5 : 1.5);

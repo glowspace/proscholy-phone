@@ -376,7 +376,7 @@
     },
     {
       "id": "26:2579025596415757190",
-      "lastPropertyId": "4:2158821106708501781",
+      "lastPropertyId": "5:644250521797483899",
       "name": "SongLyricSettingsModel",
       "properties": [
         {
@@ -399,6 +399,11 @@
           "id": "4:2158821106708501781",
           "name": "transposition",
           "type": 6
+        },
+        {
+          "id": "5:644250521797483899",
+          "name": "showMusicalNotes",
+          "type": 1
         }
       ],
       "relations": []

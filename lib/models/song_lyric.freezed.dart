@@ -29,6 +29,7 @@ mixin _$SongLyric {
   @JsonKey(name: 'secondary_name_2')
   String? get secondaryName2 => throw _privateConstructorUsedError;
   String? get lyrics => throw _privateConstructorUsedError;
+  @JsonKey(name: 'lilypond_svg')
   String? get lilypond => throw _privateConstructorUsedError;
   String? get lang => throw _privateConstructorUsedError;
   @JsonKey(name: 'lang_string')
@@ -82,7 +83,8 @@ abstract class $SongLyricCopyWith<$Res> {
       @JsonKey(name: 'secondary_name_2')
           String? secondaryName2,
       String? lyrics,
-      String? lilypond,
+      @JsonKey(name: 'lilypond_svg')
+          String? lilypond,
       String? lang,
       @JsonKey(name: 'lang_string')
           String? langDescription,
@@ -249,7 +251,8 @@ abstract class _$$_SongLyricCopyWith<$Res> implements $SongLyricCopyWith<$Res> {
       @JsonKey(name: 'secondary_name_2')
           String? secondaryName2,
       String? lyrics,
-      String? lilypond,
+      @JsonKey(name: 'lilypond_svg')
+          String? lilypond,
       String? lang,
       @JsonKey(name: 'lang_string')
           String? langDescription,
@@ -412,7 +415,8 @@ class _$_SongLyric extends _SongLyric {
       @JsonKey(name: 'secondary_name_2')
           this.secondaryName2,
       this.lyrics,
-      this.lilypond,
+      @JsonKey(name: 'lilypond_svg')
+          this.lilypond,
       this.lang,
       @JsonKey(name: 'lang_string')
           this.langDescription,
@@ -461,6 +465,7 @@ class _$_SongLyric extends _SongLyric {
   @override
   final String? lyrics;
   @override
+  @JsonKey(name: 'lilypond_svg')
   final String? lilypond;
   @override
   final String? lang;
@@ -592,7 +597,8 @@ abstract class _SongLyric extends SongLyric {
       @JsonKey(name: 'secondary_name_2')
           final String? secondaryName2,
       final String? lyrics,
-      final String? lilypond,
+      @JsonKey(name: 'lilypond_svg')
+          final String? lilypond,
       final String? lang,
       @JsonKey(name: 'lang_string')
           final String? langDescription,
@@ -642,6 +648,7 @@ abstract class _SongLyric extends SongLyric {
   @override
   String? get lyrics;
   @override
+  @JsonKey(name: 'lilypond_svg')
   String? get lilypond;
   @override
   String? get lang;

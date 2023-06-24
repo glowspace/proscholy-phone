@@ -34,33 +34,38 @@ class SongLyricSettingsWidget extends ConsumerWidget {
                 const SizedBox(height: kDefaultPadding / 2),
                 Row(children: [
                   const Expanded(child: Text('Posuvky')),
-                  Consumer(
-                    builder: (_, ref, __) => SelectorWidget(
-                      onSelected: ref.read(songLyricSettingsProvider(songLyric).notifier).changeAccidentals,
-                      options: [
-                        Text('#', style: accidentalsStyle, textAlign: TextAlign.center),
-                        Text('♭', style: accidentalsStyle, textAlign: TextAlign.center)
-                      ],
-                      selected: ref.watch(songLyricSettingsProvider(songLyric)
-                          .select((songLyricSettings) => songLyricSettings.accidentals)),
-                      width: _settingsOptionsWidth,
-                    ),
+                  SelectorWidget(
+                    onSelected: ref.read(songLyricSettingsProvider(songLyric).notifier).changeAccidentals,
+                    options: [
+                      Text('#', style: accidentalsStyle, textAlign: TextAlign.center),
+                      Text('♭', style: accidentalsStyle, textAlign: TextAlign.center)
+                    ],
+                    selected: ref.watch(songLyricSettingsProvider(songLyric)
+                        .select((songLyricSettings) => songLyricSettings.accidentals)),
+                    width: _settingsOptionsWidth,
                   ),
                 ]),
                 const SizedBox(height: kDefaultPadding / 2),
                 Row(children: [
                   const Expanded(child: Text('Akordy')),
-                  Consumer(
-                    builder: (_, ref, __) => SelectorWidget(
-                      onSelected: (index) =>
-                          ref.read(songLyricSettingsProvider(songLyric).notifier).changeShowChords(index == 1),
-                      options: const [Icon(Icons.visibility_off, size: 20), Icon(Icons.visibility, size: 20)],
-                      selected: ref.watch(songLyricSettingsProvider(songLyric)
-                          .select((songLyricSettings) => songLyricSettings.showChords ? 1 : 0)),
-                      width: _settingsOptionsWidth,
-                    ),
+                  SelectorWidget(
+                    onSelected: (index) =>
+                        ref.read(songLyricSettingsProvider(songLyric).notifier).changeShowChords(index == 1),
+                    options: const [Icon(Icons.visibility_off, size: 20), Icon(Icons.visibility, size: 20)],
+                    selected: ref.watch(songLyricSettingsProvider(songLyric)
+                        .select((songLyricSettings) => songLyricSettings.showChords ? 1 : 0)),
+                    width: _settingsOptionsWidth,
                   ),
                 ]),
+                const SizedBox(height: kDefaultPadding / 2),
+                SwitchListTile.adaptive(
+                  title: Text('Zobrazit noty', style: theme.textTheme.bodyMedium),
+                  activeColor: theme.colorScheme.primary,
+                  contentPadding: EdgeInsets.zero,
+                  value: ref.watch(songLyricSettingsProvider(songLyric)
+                      .select((songLyricSettings) => songLyricSettings.showMusicalNotes)),
+                  onChanged: ref.read(songLyricSettingsProvider(songLyric).notifier).changeShowMusicalNotes,
+                ),
                 const SizedBox(height: kDefaultPadding / 2),
               ]),
             ),

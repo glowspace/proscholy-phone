@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
@@ -118,5 +119,13 @@ class MyProviderObserver extends ProviderObserver {
     super.didDisposeProvider(provider, container);
 
     log('disposed provider: $provider');
+  }
+
+  @override
+  void providerDidFail(
+      ProviderBase<Object?> provider, Object error, StackTrace stackTrace, ProviderContainer container) {
+    super.providerDidFail(provider, error, stackTrace, container);
+
+    log('provider failed: $provider, $error, $stackTrace');
   }
 }

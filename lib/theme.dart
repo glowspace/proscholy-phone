@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:zpevnik/constants.dart';
 
 const Color primary = Color(0xff9747FF);
@@ -54,10 +52,12 @@ class AppTheme {
         bodyMedium: TextStyle(fontSize: 15, color: lightTextColor, fontWeight: FontWeight.w400),
         bodySmall: TextStyle(fontSize: 14, color: lightCaptionColor, fontWeight: FontWeight.w400),
         labelLarge: TextStyle(fontSize: 14, color: lightCommentColor, fontWeight: FontWeight.w400),
-        labelMedium: TextStyle(fontSize: 12, color: lightCaptionColor, fontWeight: FontWeight.w400),
       ),
+      bottomSheetTheme: const BottomSheetThemeData(backgroundColor: Colors.white),
       iconTheme: iconTheme,
       splashFactory: NoSplash.splashFactory,
+      // splashColor: Colors.transparent,
+      // highlightColor: Colors.transparent,
       useMaterial3: true,
     );
   }
@@ -85,10 +85,11 @@ class AppTheme {
         bodyMedium: TextStyle(fontSize: 15, color: darkTextColor, fontWeight: FontWeight.w400),
         bodySmall: TextStyle(fontSize: 14, color: darkCaptionColor, fontWeight: FontWeight.w400),
         labelLarge: TextStyle(fontSize: 14, color: darkCommentColor, fontWeight: FontWeight.w400),
-        labelMedium: TextStyle(fontSize: 12, color: darkCaptionColor, fontWeight: FontWeight.w400),
       ),
       iconTheme: iconTheme,
       splashFactory: NoSplash.splashFactory,
+      // splashColor: Colors.transparent,
+      // highlightColor: Colors.transparent,
       useMaterial3: true,
     );
   }

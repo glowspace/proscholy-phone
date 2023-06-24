@@ -7,293 +7,105 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart' hide Consumer;
 import 'package:zpevnik/components/custom/back_button.dart';
 import 'package:zpevnik/components/highlightable.dart';
+import 'package:zpevnik/components/playlist/playlists_sheet.dart';
 import 'package:zpevnik/components/presentation/settings.dart';
+import 'package:zpevnik/components/song_lyric/bottom_bar.dart';
 import 'package:zpevnik/components/song_lyric/externals_player_wrapper.dart';
-import 'package:zpevnik/components/song_lyric/lyrics.dart';
+import 'package:zpevnik/components/song_lyric/song_lyric.dart';
 import 'package:zpevnik/components/song_lyric/now_playing_banner.dart';
 import 'package:zpevnik/components/song_lyric/song_lyric_files.dart';
 import 'package:zpevnik/components/song_lyric/song_lyric_menu_button.dart';
 import 'package:zpevnik/components/song_lyric/song_lyric_settings.dart';
 import 'package:zpevnik/components/song_lyric/song_lyric_tags.dart';
+import 'package:zpevnik/components/song_lyric/utils/auto_scroll.dart';
+import 'package:zpevnik/components/song_lyric/utils/parser.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/components/song_lyric/utils/lyrics_controller.dart';
+import 'package:zpevnik/providers/full_screen.dart';
+import 'package:zpevnik/providers/playlists.dart';
 import 'package:zpevnik/providers/presentation.dart';
 import 'package:zpevnik/routing/router.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
-class SongLyricScreen extends StatefulWidget {
+class SongLyricScreen extends ConsumerStatefulWidget {
   final List<SongLyric> songLyrics;
   final int initialIndex;
 
-  final bool shouldShowBanner;
-
-  final Playlist? playlist;
-
-  const SongLyricScreen({
-    super.key,
-    required this.songLyrics,
-    required this.initialIndex,
-    this.shouldShowBanner = false,
-    this.playlist,
-  });
+  const SongLyricScreen({super.key, required this.songLyrics, required this.initialIndex});
 
   @override
-  State<SongLyricScreen> createState() => _SongLyricScreenState();
+  ConsumerState<SongLyricScreen> createState() => _SongLyricScreenState();
 }
 
-class _SongLyricScreenState extends State<SongLyricScreen> {
-  late final PageController _pageController;
-  late final ValueNotifier<bool> _showingExternals;
+class _SongLyricScreenState extends ConsumerState<SongLyricScreen> {
+  // make sure it is possible to swipe to previous song lyric
+  late final _pageController = PageController(initialPage: widget.initialIndex + 100 * widget.songLyrics.length);
 
-  StreamSubscription<List<SongLyric>>? _songLyricsSubscription;
+  // FIXME: will need to change with page change
+  final autoScrollController = AutoScrollController();
 
-  late List<LyricsController> _lyricsControllers;
-
-  late int _currentIndex;
-
-  bool _fullscreen = false;
-
-  SongLyric get _songLyric => _lyricsController.songLyric;
-  LyricsController get _lyricsController => _lyricsControllers[_currentIndex % _lyricsControllers.length];
-
-  @override
-  void initState() {
-    super.initState();
-
-    // make sure it is possible to swipe to previous song lyric
-    _currentIndex = widget.initialIndex + (widget.songLyrics.length == 1 ? 0 : 10 * widget.songLyrics.length);
-    _lyricsControllers = widget.songLyrics.map((songLyric) => LyricsController(songLyric, context)).toList();
-
-    _pageController = PageController(initialPage: _currentIndex);
-    _showingExternals = ValueNotifier(false);
-
-    context.read<PresentationProvider>().changeSongLyric(_lyricsController.parser);
-
-    if (widget.playlist != null) {
-      // _songLyricsSubscription =
-      //     context.read<DataProvider>().watchPlaylistRecordsChanges(widget.playlist!).listen((songLyrics) {
-      //   if (songLyrics.isEmpty) return;
-
-      //   setState(() {
-      //     _currentIndex =
-      //         (_currentIndex % _lyricsControllers.length) + (songLyrics.length == 1 ? 0 : 10 * songLyrics.length);
-      //     _lyricsControllers = songLyrics.map((songLyric) => LyricsController(songLyric, context)).toList();
-      //     _pageController.jumpToPage(_currentIndex);
-      //   });
-
-      //   context.read<ValueNotifier<SongLyric?>>().value = _songLyric;
-      // });
-    }
-  }
-
-  @override
-  void dispose() {
-    _songLyricsSubscription?.cancel();
-
-    super.dispose();
-  }
+  int get _currentIndex =>
+      _pageController.positions.isNotEmpty ? _pageController.page?.round() ?? widget.initialIndex : widget.initialIndex;
+  SongLyric get songLyric => widget.songLyrics[_currentIndex % widget.songLyrics.length];
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final mediaQuery = MediaQuery.of(context);
-
-    // final navigationProvider = NavigationProvider.of(context);
-
-    final backgroundColor = theme.brightness.isLight ? theme.colorScheme.surface : theme.scaffoldBackgroundColor;
-    // final canPopIndividually = navigationProvider.songLyricCanPopIndividually;
-
-    AppBar? appBar;
-    Widget? bottomBar;
-
-    if (!_fullscreen) {
-      appBar = AppBar(
-        title: Text('${_songLyric.id}', style: theme.textTheme.titleMedium),
-        leading: const CustomBackButton(),
-        actions: [
-          StatefulBuilder(
-            builder: (context, setState) => HighlightableIconButton(
-              onTap: () => setState(() => _toggleFavorite(context)),
-              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-              icon: Icon(_songLyric.isFavorite ? Icons.star : Icons.star_outline),
-            ),
-          ),
-          StatefulBuilder(
-            builder: (context, setState) => HighlightableIconButton(
-              onTap: () => setState(() => _toggleFavorite(context)),
-              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-              icon: const Icon(Icons.playlist_add),
-            ),
-          ),
-          SongLyricMenuButton(songLyric: _songLyric, songLyricsParser: _lyricsController.parser),
-        ],
-      );
-
-      final bottomBarActionPadding = mediaQuery.isTablet
-          ? const EdgeInsets.symmetric(vertical: kDefaultPadding, horizontal: 3 * kDefaultPadding)
-          : const EdgeInsets.all(kDefaultPadding);
-
-      final presentationProvider = context.watch<PresentationProvider>();
-
-      bottomBar = Container(
-        decoration: BoxDecoration(border: Border(top: BorderSide(color: theme.colorScheme.outlineVariant, width: 1))),
-        child: Theme(
-          // TODO: remove this when the bottom app bar works with material3 correctly (can't change color, small padding)
-          data: theme.copyWith(useMaterial3: false),
-          child: BottomAppBar(
-            color: backgroundColor,
-            elevation: 0,
-            child: Theme(
-              // TODO: remove this when the bottom app bar works with material3 correctly (can't change color, small padding)
-              data: theme,
-              child: Row(
-                mainAxisAlignment: mediaQuery.isTablet ? MainAxisAlignment.end : MainAxisAlignment.spaceAround,
-                children: presentationProvider.isPresenting
-                    ? [
-                        HighlightableIconButton(
-                          padding: bottomBarActionPadding,
-                          onTap: presentationProvider.prevVerse,
-                          icon: Icon(Icons.adaptive.arrow_back),
-                        ),
-                        HighlightableIconButton(
-                          padding: bottomBarActionPadding,
-                          onTap: presentationProvider.togglePause,
-                          icon: Icon(presentationProvider.isPaused ? Icons.play_arrow : Icons.pause),
-                        ),
-                        HighlightableIconButton(
-                          padding: bottomBarActionPadding,
-                          onTap: presentationProvider.nextVerse,
-                          icon: Icon(Icons.adaptive.arrow_forward),
-                        ),
-                        HighlightableIconButton(
-                          padding: bottomBarActionPadding,
-                          onTap: () => _showSettings(context),
-                          icon: const Icon(Icons.tune),
-                        ),
-                        HighlightableIconButton(
-                          padding: bottomBarActionPadding,
-                          onTap: () => presentationProvider.stop(),
-                          icon: const Icon(Icons.close),
-                        ),
-                      ]
-                    : [
-                        HighlightableIconButton(
-                          padding: bottomBarActionPadding,
-                          onTap: _songLyric.hasRecordings ? () => _showingExternals.value = true : null,
-                          icon: const Icon(FontAwesomeIcons.headphones),
-                        ),
-                        HighlightableIconButton(
-                          padding: bottomBarActionPadding,
-                          onTap: _songLyric.hasFiles ? () => _showFiles(context) : null,
-                          icon: const Icon(Icons.insert_drive_file),
-                        ),
-                        HighlightableIconButton(
-                          padding: bottomBarActionPadding,
-                          onTap: _songLyric.hasChords ? () => _showSettings(context) : null,
-                          icon: const Icon(Icons.tune),
-                        ),
-                        HighlightableIconButton(
-                          padding: bottomBarActionPadding,
-                          onTap: _songLyric.tags.isNotEmpty || _songLyric.songbookRecords.isNotEmpty
-                              ? () => _showTags(context)
-                              : null,
-                          icon: const FaIcon(FontAwesomeIcons.tag),
-                        ),
-                        Consumer(
-                          builder: (context, ref, _) => HighlightableIconButton(
-                            padding: bottomBarActionPadding,
-                            onTap: () => ref.read(appNavigatorProvider).isSearchRouteInStack
-                                ? context.popUntil('/search')
-                                : context.push('/search'),
-                            icon: const Icon(Icons.search),
-                          ),
-                        ),
-                      ],
+    return ListenableBuilder(
+      listenable: _pageController,
+      builder: (_, __) => Scaffold(
+        appBar: ref.watch(fullScreenProvider)
+            ? null
+            : AppBar(
+                title: Text('${songLyric.id}'),
+                leading: const CustomBackButton(),
+                actions: [
+                  StatefulBuilder(
+                    builder: (context, setState) => HighlightableIconButton(
+                      onTap: () => setState(() => ref.read(playlistsProvider.notifier).toggleFavorite(songLyric)),
+                      padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+                      icon: Icon(songLyric.isFavorite ? Icons.star : Icons.star_outline),
+                    ),
+                  ),
+                  HighlightableIconButton(
+                    onTap: () => _showPlaylists(context),
+                    padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+                    icon: const Icon(Icons.playlist_add),
+                  ),
+                  SongLyricMenuButton(songLyric: songLyric, songLyricsParser: SongLyricsParser(songLyric)),
+                ],
+              ),
+        bottomNavigationBar: ref.watch(fullScreenProvider)
+            ? null
+            : SongLyricBottomBar(
+                songLyric: songLyric,
+                autoScrollController: autoScrollController,
+              ),
+        body: SafeArea(
+          bottom: false,
+          child: GestureDetector(
+            onTap: ref.read(fullScreenProvider.notifier).disable,
+            child: PageView.builder(
+              controller: _pageController,
+              // disable scrolling when there is only one song lyric
+              physics: widget.songLyrics.length == 1 ? const NeverScrollableScrollPhysics() : null,
+              itemBuilder: (_, index) => SongLyricWidget(
+                songLyric: widget.songLyrics[index % widget.songLyrics.length],
+                autoScrollController: autoScrollController,
               ),
             ),
           ),
         ),
-      );
-    }
-
-    final scaffold = Stack(
-      children: [
-        Scaffold(
-          appBar: appBar,
-          body: SafeArea(
-            child: GestureDetector(
-              // TODO: handle this inside this widget
-              // onScaleStart: settingsProvider.fontScaleStarted,
-              // onScaleUpdate: settingsProvider.fontScaleUpdated,
-              onTap: () => setState(() => _fullscreen = !_fullscreen),
-              behavior: HitTestBehavior.translucent,
-              child: PageView.builder(
-                controller: _pageController,
-                itemCount: _lyricsControllers.length == 1 ? 1 : null,
-                onPageChanged: (value) => setState(() {
-                  _showingExternals.value = false;
-                  _currentIndex = value;
-                  context.read<PresentationProvider>().changeSongLyric(_lyricsController.parser);
-                  context.read<ValueNotifier<SongLyric?>>().value = _songLyric;
-                }),
-                itemBuilder: (_, index) => LyricsWidget(
-                  controller: _lyricsControllers[index % _lyricsControllers.length],
-                ),
-              ),
-            ),
-          ),
-          bottomNavigationBar: bottomBar,
-        ),
-        LayoutBuilder(
-          builder: (_, constraints) => ExternalsPlayerWrapper(
-            key: Key('${_songLyric.id}'),
-            songLyric: _songLyric,
-            isShowing: _showingExternals,
-            width: constraints.maxWidth,
-          ),
-        ),
-        if (widget.shouldShowBanner) NowPlayingBanner(currentSongLyric: _songLyric),
-      ],
+      ),
     );
-
-    // if (canPopIndividually) return scaffold;
-
-    return WillPopScope(onWillPop: () async => false, child: scaffold);
   }
 
-  void _showFiles(BuildContext context) {
+  void _showPlaylists(BuildContext context) {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(kDefaultRadius))),
-      builder: (context) => SongLyricFilesWidget(songLyric: _songLyric),
+      builder: (context) => PlaylistsSheet(selectedSongLyric: songLyric),
     );
   }
-
-  void _showSettings(BuildContext context) {
-    if (context.read<PresentationProvider>().isPresenting) {
-      showModalBottomSheet(
-        context: context,
-        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(kDefaultRadius))),
-        builder: (context) => const PresentationSettingsWidget(),
-      );
-    } else {
-      showModalBottomSheet(
-        context: context,
-        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(kDefaultRadius))),
-        builder: (context) => SongLyricSettingsWidget(songLyric: _songLyric),
-      );
-    }
-  }
-
-  void _showTags(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(kDefaultRadius))),
-      builder: (context) => SongLyricTags(songLyric: _songLyric),
-    );
-  }
-
-  void _toggleFavorite(BuildContext context) {}
 }

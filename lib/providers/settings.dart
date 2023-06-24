@@ -43,7 +43,12 @@ class Settings extends _$Settings {
 
   void changeShowChords(bool showChords) => state = state.copyWith(showChords: showChords);
 
+  void changeShowMusicalNotes(bool showMusicalNotes) => state = state.copyWith(showMusicalNotes: showMusicalNotes);
+
   void changeAccidentals(int accidentals) => state = state.copyWith(accidentals: accidentals);
+
+  void changeAutoScrollSpeedIndex(int diff) =>
+      state = state.copyWith(autoScrollSpeedIndex: state.autoScrollSpeedIndex + diff);
 }
 
 @riverpod
@@ -66,6 +71,9 @@ class SongLyricSettings extends _$SongLyricSettings {
   }
 
   void changeShowChords(bool showChords) => _updateState(state.copyWith(showChords: showChords));
+
+  void changeShowMusicalNotes(bool showMusicalNotes) =>
+      _updateState(state.copyWith(showMusicalNotes: showMusicalNotes));
 
   void changeAccidentals(int accidentals) => _updateState(state.copyWith(accidentals: accidentals));
 

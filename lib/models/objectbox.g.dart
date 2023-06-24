@@ -406,7 +406,7 @@ final _entities = <ModelEntity>[
   ModelEntity(
       id: const IdUid(26, 2579025596415757190),
       name: 'SongLyricSettingsModel',
-      lastPropertyId: const IdUid(4, 2158821106708501781),
+      lastPropertyId: const IdUid(5, 644250521797483899),
       flags: 0,
       properties: <ModelProperty>[
         ModelProperty(
@@ -428,6 +428,11 @@ final _entities = <ModelEntity>[
             id: const IdUid(4, 2158821106708501781),
             name: 'transposition',
             type: 6,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(5, 644250521797483899),
+            name: 'showMusicalNotes',
+            type: 1,
             flags: 0)
       ],
       relations: <ModelRelation>[],
@@ -1121,11 +1126,12 @@ ModelDefinition getObjectBoxModel() {
           }
         },
         objectToFB: (SongLyricSettingsModel object, fb.Builder fbb) {
-          fbb.startTable(5);
+          fbb.startTable(6);
           fbb.addInt64(0, object.id);
           fbb.addBool(1, object.showChords);
           fbb.addInt64(2, object.accidentals);
           fbb.addInt64(3, object.transposition);
+          fbb.addBool(4, object.showMusicalNotes);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -1137,6 +1143,8 @@ ModelDefinition getObjectBoxModel() {
               id: const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0),
               showChords:
                   const fb.BoolReader().vTableGet(buffer, rootOffset, 6, false),
+              showMusicalNotes: const fb.BoolReader()
+                  .vTableGet(buffer, rootOffset, 12, false),
               accidentals:
                   const fb.Int64Reader().vTableGet(buffer, rootOffset, 8, 0),
               transposition:
@@ -1387,4 +1395,8 @@ class SongLyricSettingsModel_ {
   /// see [SongLyricSettingsModel.transposition]
   static final transposition =
       QueryIntegerProperty<SongLyricSettingsModel>(_entities[10].properties[3]);
+
+  /// see [SongLyricSettingsModel.showMusicalNotes]
+  static final showMusicalNotes =
+      QueryBooleanProperty<SongLyricSettingsModel>(_entities[10].properties[4]);
 }

@@ -16,7 +16,6 @@ import 'package:zpevnik/providers/presentation.dart';
 import 'package:zpevnik/utils/url_launcher.dart';
 
 enum SongLyricMenuAction {
-  addToPlaylist,
   present,
   share,
   openInBrowser,
@@ -41,13 +40,6 @@ class SongLyricMenuButton extends ConsumerWidget {
 
   List<PopupMenuEntry<SongLyricMenuAction>> _buildPopupMenuItems(BuildContext context) {
     return [
-      const PopupMenuItem(
-        value: SongLyricMenuAction.addToPlaylist,
-        child: IconItem(icon: Icons.playlist_add, text: 'Přidat do seznamu'),
-      ),
-      // PopupMenuItem(
-      //   child: _buildItem(context, Icons.tap_and_play, 'Připojit k zařízením v okolí'),
-      // ),
       PopupMenuItem(
         value: SongLyricMenuAction.present,
         child: IconItem(
@@ -76,9 +68,6 @@ class SongLyricMenuButton extends ConsumerWidget {
     final platform = Theme.of(context).platform == TargetPlatform.iOS ? 'iOS' : 'android';
 
     switch (action) {
-      case SongLyricMenuAction.addToPlaylist:
-        _showPlaylists(context);
-        break;
       case SongLyricMenuAction.present:
         final presentationProvider = context.read<PresentationProvider>();
 
@@ -101,13 +90,5 @@ class SongLyricMenuButton extends ConsumerWidget {
         launch(context, '$reportSongLyricUrl?customfield_10056=${songLyric.id}+$version+$platform');
         break;
     }
-  }
-
-  void _showPlaylists(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(kDefaultRadius))),
-      builder: (context) => PlaylistsSheet(selectedSongLyric: songLyric),
-    );
   }
 }

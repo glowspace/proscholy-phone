@@ -23,7 +23,9 @@ mixin _$GlobalSettings {
   bool? get darkModeEnabled => throw _privateConstructorUsedError;
   double get fontSizeScale => throw _privateConstructorUsedError;
   bool get showChords => throw _privateConstructorUsedError;
+  bool get showMusicalNotes => throw _privateConstructorUsedError;
   int get accidentals => throw _privateConstructorUsedError;
+  int get autoScrollSpeedIndex => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -41,7 +43,9 @@ abstract class $GlobalSettingsCopyWith<$Res> {
       {bool? darkModeEnabled,
       double fontSizeScale,
       bool showChords,
-      int accidentals});
+      bool showMusicalNotes,
+      int accidentals,
+      int autoScrollSpeedIndex});
 }
 
 /// @nodoc
@@ -60,7 +64,9 @@ class _$GlobalSettingsCopyWithImpl<$Res, $Val extends GlobalSettings>
     Object? darkModeEnabled = freezed,
     Object? fontSizeScale = null,
     Object? showChords = null,
+    Object? showMusicalNotes = null,
     Object? accidentals = null,
+    Object? autoScrollSpeedIndex = null,
   }) {
     return _then(_value.copyWith(
       darkModeEnabled: freezed == darkModeEnabled
@@ -75,9 +81,17 @@ class _$GlobalSettingsCopyWithImpl<$Res, $Val extends GlobalSettings>
           ? _value.showChords
           : showChords // ignore: cast_nullable_to_non_nullable
               as bool,
+      showMusicalNotes: null == showMusicalNotes
+          ? _value.showMusicalNotes
+          : showMusicalNotes // ignore: cast_nullable_to_non_nullable
+              as bool,
       accidentals: null == accidentals
           ? _value.accidentals
           : accidentals // ignore: cast_nullable_to_non_nullable
+              as int,
+      autoScrollSpeedIndex: null == autoScrollSpeedIndex
+          ? _value.autoScrollSpeedIndex
+          : autoScrollSpeedIndex // ignore: cast_nullable_to_non_nullable
               as int,
     ) as $Val);
   }
@@ -95,7 +109,9 @@ abstract class _$$_GlobalSettingsCopyWith<$Res>
       {bool? darkModeEnabled,
       double fontSizeScale,
       bool showChords,
-      int accidentals});
+      bool showMusicalNotes,
+      int accidentals,
+      int autoScrollSpeedIndex});
 }
 
 /// @nodoc
@@ -112,7 +128,9 @@ class __$$_GlobalSettingsCopyWithImpl<$Res>
     Object? darkModeEnabled = freezed,
     Object? fontSizeScale = null,
     Object? showChords = null,
+    Object? showMusicalNotes = null,
     Object? accidentals = null,
+    Object? autoScrollSpeedIndex = null,
   }) {
     return _then(_$_GlobalSettings(
       darkModeEnabled: freezed == darkModeEnabled
@@ -127,9 +145,17 @@ class __$$_GlobalSettingsCopyWithImpl<$Res>
           ? _value.showChords
           : showChords // ignore: cast_nullable_to_non_nullable
               as bool,
+      showMusicalNotes: null == showMusicalNotes
+          ? _value.showMusicalNotes
+          : showMusicalNotes // ignore: cast_nullable_to_non_nullable
+              as bool,
       accidentals: null == accidentals
           ? _value.accidentals
           : accidentals // ignore: cast_nullable_to_non_nullable
+              as int,
+      autoScrollSpeedIndex: null == autoScrollSpeedIndex
+          ? _value.autoScrollSpeedIndex
+          : autoScrollSpeedIndex // ignore: cast_nullable_to_non_nullable
               as int,
     ));
   }
@@ -142,7 +168,9 @@ class _$_GlobalSettings implements _GlobalSettings {
       {this.darkModeEnabled,
       required this.fontSizeScale,
       required this.showChords,
-      required this.accidentals});
+      required this.showMusicalNotes,
+      required this.accidentals,
+      required this.autoScrollSpeedIndex});
 
   factory _$_GlobalSettings.fromJson(Map<String, dynamic> json) =>
       _$$_GlobalSettingsFromJson(json);
@@ -154,11 +182,15 @@ class _$_GlobalSettings implements _GlobalSettings {
   @override
   final bool showChords;
   @override
+  final bool showMusicalNotes;
+  @override
   final int accidentals;
+  @override
+  final int autoScrollSpeedIndex;
 
   @override
   String toString() {
-    return 'GlobalSettings(darkModeEnabled: $darkModeEnabled, fontSizeScale: $fontSizeScale, showChords: $showChords, accidentals: $accidentals)';
+    return 'GlobalSettings(darkModeEnabled: $darkModeEnabled, fontSizeScale: $fontSizeScale, showChords: $showChords, showMusicalNotes: $showMusicalNotes, accidentals: $accidentals, autoScrollSpeedIndex: $autoScrollSpeedIndex)';
   }
 
   @override
@@ -172,14 +204,18 @@ class _$_GlobalSettings implements _GlobalSettings {
                 other.fontSizeScale == fontSizeScale) &&
             (identical(other.showChords, showChords) ||
                 other.showChords == showChords) &&
+            (identical(other.showMusicalNotes, showMusicalNotes) ||
+                other.showMusicalNotes == showMusicalNotes) &&
             (identical(other.accidentals, accidentals) ||
-                other.accidentals == accidentals));
+                other.accidentals == accidentals) &&
+            (identical(other.autoScrollSpeedIndex, autoScrollSpeedIndex) ||
+                other.autoScrollSpeedIndex == autoScrollSpeedIndex));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, darkModeEnabled, fontSizeScale, showChords, accidentals);
+  int get hashCode => Object.hash(runtimeType, darkModeEnabled, fontSizeScale,
+      showChords, showMusicalNotes, accidentals, autoScrollSpeedIndex);
 
   @JsonKey(ignore: true)
   @override
@@ -200,7 +236,9 @@ abstract class _GlobalSettings implements GlobalSettings {
       {final bool? darkModeEnabled,
       required final double fontSizeScale,
       required final bool showChords,
-      required final int accidentals}) = _$_GlobalSettings;
+      required final bool showMusicalNotes,
+      required final int accidentals,
+      required final int autoScrollSpeedIndex}) = _$_GlobalSettings;
 
   factory _GlobalSettings.fromJson(Map<String, dynamic> json) =
       _$_GlobalSettings.fromJson;
@@ -212,7 +250,11 @@ abstract class _GlobalSettings implements GlobalSettings {
   @override
   bool get showChords;
   @override
+  bool get showMusicalNotes;
+  @override
   int get accidentals;
+  @override
+  int get autoScrollSpeedIndex;
   @override
   @JsonKey(ignore: true)
   _$$_GlobalSettingsCopyWith<_$_GlobalSettings> get copyWith =>
@@ -224,6 +266,7 @@ mixin _$SongLyricSettingsModel {
   @Id(assignable: true)
   int get id => throw _privateConstructorUsedError;
   bool get showChords => throw _privateConstructorUsedError;
+  bool get showMusicalNotes => throw _privateConstructorUsedError;
   int get accidentals => throw _privateConstructorUsedError;
   int get transposition => throw _privateConstructorUsedError;
 
@@ -241,6 +284,7 @@ abstract class $SongLyricSettingsModelCopyWith<$Res> {
   $Res call(
       {@Id(assignable: true) int id,
       bool showChords,
+      bool showMusicalNotes,
       int accidentals,
       int transposition});
 }
@@ -261,6 +305,7 @@ class _$SongLyricSettingsModelCopyWithImpl<$Res,
   $Res call({
     Object? id = null,
     Object? showChords = null,
+    Object? showMusicalNotes = null,
     Object? accidentals = null,
     Object? transposition = null,
   }) {
@@ -272,6 +317,10 @@ class _$SongLyricSettingsModelCopyWithImpl<$Res,
       showChords: null == showChords
           ? _value.showChords
           : showChords // ignore: cast_nullable_to_non_nullable
+              as bool,
+      showMusicalNotes: null == showMusicalNotes
+          ? _value.showMusicalNotes
+          : showMusicalNotes // ignore: cast_nullable_to_non_nullable
               as bool,
       accidentals: null == accidentals
           ? _value.accidentals
@@ -296,6 +345,7 @@ abstract class _$$_SongLyricSettingsModelCopyWith<$Res>
   $Res call(
       {@Id(assignable: true) int id,
       bool showChords,
+      bool showMusicalNotes,
       int accidentals,
       int transposition});
 }
@@ -314,6 +364,7 @@ class __$$_SongLyricSettingsModelCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? showChords = null,
+    Object? showMusicalNotes = null,
     Object? accidentals = null,
     Object? transposition = null,
   }) {
@@ -325,6 +376,10 @@ class __$$_SongLyricSettingsModelCopyWithImpl<$Res>
       showChords: null == showChords
           ? _value.showChords
           : showChords // ignore: cast_nullable_to_non_nullable
+              as bool,
+      showMusicalNotes: null == showMusicalNotes
+          ? _value.showMusicalNotes
+          : showMusicalNotes // ignore: cast_nullable_to_non_nullable
               as bool,
       accidentals: null == accidentals
           ? _value.accidentals
@@ -345,6 +400,7 @@ class _$_SongLyricSettingsModel implements _SongLyricSettingsModel {
   const _$_SongLyricSettingsModel(
       {@Id(assignable: true) required this.id,
       required this.showChords,
+      required this.showMusicalNotes,
       required this.accidentals,
       required this.transposition});
 
@@ -354,13 +410,15 @@ class _$_SongLyricSettingsModel implements _SongLyricSettingsModel {
   @override
   final bool showChords;
   @override
+  final bool showMusicalNotes;
+  @override
   final int accidentals;
   @override
   final int transposition;
 
   @override
   String toString() {
-    return 'SongLyricSettingsModel(id: $id, showChords: $showChords, accidentals: $accidentals, transposition: $transposition)';
+    return 'SongLyricSettingsModel(id: $id, showChords: $showChords, showMusicalNotes: $showMusicalNotes, accidentals: $accidentals, transposition: $transposition)';
   }
 
   @override
@@ -371,6 +429,8 @@ class _$_SongLyricSettingsModel implements _SongLyricSettingsModel {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.showChords, showChords) ||
                 other.showChords == showChords) &&
+            (identical(other.showMusicalNotes, showMusicalNotes) ||
+                other.showMusicalNotes == showMusicalNotes) &&
             (identical(other.accidentals, accidentals) ||
                 other.accidentals == accidentals) &&
             (identical(other.transposition, transposition) ||
@@ -378,8 +438,8 @@ class _$_SongLyricSettingsModel implements _SongLyricSettingsModel {
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, showChords, accidentals, transposition);
+  int get hashCode => Object.hash(runtimeType, id, showChords, showMusicalNotes,
+      accidentals, transposition);
 
   @JsonKey(ignore: true)
   @override
@@ -393,6 +453,7 @@ abstract class _SongLyricSettingsModel implements SongLyricSettingsModel {
   const factory _SongLyricSettingsModel(
       {@Id(assignable: true) required final int id,
       required final bool showChords,
+      required final bool showMusicalNotes,
       required final int accidentals,
       required final int transposition}) = _$_SongLyricSettingsModel;
 
@@ -401,6 +462,8 @@ abstract class _SongLyricSettingsModel implements SongLyricSettingsModel {
   int get id;
   @override
   bool get showChords;
+  @override
+  bool get showMusicalNotes;
   @override
   int get accidentals;
   @override

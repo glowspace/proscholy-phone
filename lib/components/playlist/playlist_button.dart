@@ -1,5 +1,10 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart' hide PopupMenuEntry, PopupMenuItem, PopupMenuPosition;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:zpevnik/components/custom/popup_menu_button.dart';
 import 'package:zpevnik/components/icon_item.dart';
 import 'package:zpevnik/components/playlist/dialogs.dart';
@@ -79,7 +84,7 @@ class PlaylistButton extends ConsumerWidget {
     }
   }
 
-  void _sharePlaylist(BuildContext context, WidgetRef ref, Playlist playlist) {
+  void _sharePlaylist(BuildContext context, WidgetRef ref, Playlist playlist) async {
     // final songLyricsIds = context
     //     .read<DataProvider>()
     //     .getPlaylistsSongLyrics(playlist)
@@ -95,6 +100,16 @@ class PlaylistButton extends ConsumerWidget {
     //     .join(',');
 
     // final box = context.findRenderObject() as RenderBox?;
+
+    final file = File('${(await getApplicationDocumentsDirectory()).path}/playlist.proscholy');
+
+    file.writeAsString('test');
+
+    await Share.shareXFiles(
+      [XFile('${(await getApplicationDocumentsDirectory()).path}/playlist.proscholy')],
+    );
+
+    file.delete();
 
     // Share.share(
     //   Uri.encodeFull(
