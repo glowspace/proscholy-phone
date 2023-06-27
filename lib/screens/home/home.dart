@@ -1,11 +1,13 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:zpevnik/components/bottom_navigation_bar.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/home/additional_section.dart';
+import 'package:zpevnik/components/home/flexible_top_section.dart';
 import 'package:zpevnik/components/home/news_section.dart';
 import 'package:zpevnik/components/home/recent_section.dart';
 import 'package:zpevnik/components/home/shared_with_me_section.dart';
@@ -53,7 +55,8 @@ class HomeScreen extends ConsumerWidget {
       const AdditionalSection(),
     ];
 
-    final columns = max(1, (MediaQuery.of(context).size.width / _minColumnWidth).floor());
+    final mediaQuery = MediaQuery.of(context);
+    final columns = max(1, (mediaQuery.size.width / _minColumnWidth).floor());
     final sectionsPerColumn = (sections.length / columns).ceil();
     final columnSections = [
       for (int i = 0; i < columns; i++)
@@ -61,8 +64,8 @@ class HomeScreen extends ConsumerWidget {
     ];
 
     columnSections.first = [
-      const TopSection(),
-      const SearchField(key: Key('searchfield')),
+      if (columns > 1) const TopSection(),
+      if (columns > 1) const SearchField(key: Key('searchfield')),
       Text(greetings, style: Theme.of(context).textTheme.titleLarge),
       const UpdateSection(),
       ...columnSections.first
@@ -83,27 +86,44 @@ class HomeScreen extends ConsumerWidget {
       ),
     );
 
+    final theme = Theme.of(context);
+    final backgroundColor = theme.brightness.isLight ? lightBackgroundColor : darkBackgroundColor;
+
     return Scaffold(
-      backgroundColor: Theme.of(context).brightness.isLight ? lightBackgroundColor : darkBackgroundColor,
+      backgroundColor: backgroundColor,
       bottomNavigationBar: const CustomBottomNavigationBar(),
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              for (final columnSection in columnSections)
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: columnSection,
-                    ),
-                  ),
+        child: columns == 1
+            ? CustomScrollView(slivers: [
+                SliverAppBar(
+                  systemOverlayStyle: theme.brightness.isLight ? SystemUiOverlayStyle.dark : SystemUiOverlayStyle.light,
+                  backgroundColor: Colors.transparent,
+                  surfaceTintColor: Colors.transparent,
+                  shadowColor: Colors.transparent,
+                  expandedHeight: 2 * (kToolbarHeight + kDefaultPadding),
+                  toolbarHeight: kToolbarHeight + 2 * kDefaultPadding,
+                  pinned: true,
+                  flexibleSpace: const FlexibleTopSection(),
                 ),
-            ],
-          ),
-        ),
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+                  sliver: SliverList.list(children: columnSections.first),
+                ),
+              ])
+            : SingleChildScrollView(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    for (final columnSection in columnSections)
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
+                          child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: columnSection),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
       ),
     );
   }

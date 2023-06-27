@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
@@ -8,14 +7,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart' hide ChangeNotifierProvi
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path/path.dart';
 // import 'package:flutter/rendering.dart';
-import 'package:provider/provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:zpevnik/firebase_options.dart';
 import 'package:zpevnik/models/objectbox.g.dart';
 import 'package:zpevnik/providers/app_dependencies.dart';
-import 'package:zpevnik/providers/presentation.dart';
 import 'package:zpevnik/providers/settings.dart';
 import 'package:zpevnik/routing/router.dart';
 import 'package:zpevnik/screens/presentation.dart';
@@ -76,12 +73,6 @@ class MainWidget extends ConsumerWidget {
       darkTheme: AppTheme.dark(),
       themeMode: themeMode,
       routerConfig: ref.read(appNavigatorProvider).appRouter,
-      builder: (context, child) => MultiProvider(
-        providers: [
-          ChangeNotifierProvider(create: (_) => PresentationProvider()),
-        ],
-        builder: (_, __) => child!,
-      ),
     );
   }
 }

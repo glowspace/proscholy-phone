@@ -14,6 +14,7 @@ class Logo extends StatelessWidget {
     final textColor = Theme.of(context).brightness.isLight ? lightTitleColor : darkTitleColor;
 
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
         Image.asset('assets/images/logos/logo.png'),

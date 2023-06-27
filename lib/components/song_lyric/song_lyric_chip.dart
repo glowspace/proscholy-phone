@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:zpevnik/constants.dart';
 
+const double _chipRadius = 8;
+
 class SongLyricChip extends StatelessWidget {
   final String text;
   final IconData icon;
@@ -14,12 +16,12 @@ class SongLyricChip extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(kDefaultRadius),
+        borderRadius: BorderRadius.circular(_chipRadius),
         border: Border.all(color: theme.dividerColor, width: 0.5),
       ),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(kDefaultRadius),
+        borderRadius: BorderRadius.circular(_chipRadius),
         child: Padding(
           padding: const EdgeInsets.all(kDefaultPadding / 2),
           child: Row(

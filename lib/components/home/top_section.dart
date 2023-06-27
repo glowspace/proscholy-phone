@@ -14,6 +14,7 @@ class TopSection extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 2 / 3 * kDefaultPadding),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Logo(showFullName: false),
           const Spacer(),
