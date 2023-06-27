@@ -1,9 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:presentation/presentation.dart';
 import 'package:zpevnik/components/song_lyric/utils/parser.dart';
 import 'package:zpevnik/models/presentation.dart';
+
+final presentationProvider = ChangeNotifierProvider((ref) => PresentationProvider());
 
 class PresentationProvider extends ChangeNotifier {
   final presentation = Presentation();
@@ -91,6 +94,8 @@ class PresentationProvider extends ChangeNotifier {
 
   void changeSettings(PresentationSettings settings) {
     _changeShowingData(_showingData.copyWith(settings: settings));
+
+    notifyListeners();
   }
 
   void changeSongLyric(SongLyricsParser songLyricsParser) {

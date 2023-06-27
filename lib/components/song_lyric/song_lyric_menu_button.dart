@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart' hide PopupMenuEntry, PopupMenuItem;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:zpevnik/components/custom/popup_menu_button.dart';
 import 'package:zpevnik/components/icon_item.dart';
-import 'package:zpevnik/components/playlist/playlists_sheet.dart';
 import 'package:zpevnik/components/song_lyric/utils/parser.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/custom/popup_menu.dart';
@@ -32,19 +30,21 @@ class SongLyricMenuButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return CustomPopupMenuButton(
-      items: _buildPopupMenuItems(context),
+      items: _buildPopupMenuItems(context, ref),
       onSelected: (context, action) => _selectedAction(context, ref, action),
       padding: const EdgeInsets.only(left: kDefaultPadding, right: 2 * kDefaultPadding),
     );
   }
 
-  List<PopupMenuEntry<SongLyricMenuAction>> _buildPopupMenuItems(BuildContext context) {
+  List<PopupMenuEntry<SongLyricMenuAction>> _buildPopupMenuItems(BuildContext context, WidgetRef ref) {
     return [
       PopupMenuItem(
         value: SongLyricMenuAction.present,
         child: IconItem(
             icon: Icons.cast,
-            text: context.watch<PresentationProvider>().isPresenting ? 'Ukončit promítání' : 'Spustit promítání'),
+            text: ref.watch(presentationProvider.select((presentationProvider) => presentationProvider.isPresenting))
+                ? 'Ukončit promítání'
+                : 'Spustit promítání'),
       ),
       const PopupMenuItem(
         value: SongLyricMenuAction.share,
@@ -69,10 +69,10 @@ class SongLyricMenuButton extends ConsumerWidget {
 
     switch (action) {
       case SongLyricMenuAction.present:
-        final presentationProvider = context.read<PresentationProvider>();
+        final presentationNotifier = ref.read(presentationProvider.notifier);
 
-        if (presentationProvider.isPresenting) {
-          presentationProvider.stop();
+        if (presentationNotifier.isPresenting) {
+          presentationNotifier.stop();
         } else {
           // TODO: use arguments
           context.push('/song_lyric/present');

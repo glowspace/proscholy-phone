@@ -4,7 +4,6 @@ import 'package:flutter/material.dart' hide PopupMenuEntry, PopupMenuItem;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart' hide Consumer;
 import 'package:zpevnik/components/custom/back_button.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/playlist/playlists_sheet.dart';

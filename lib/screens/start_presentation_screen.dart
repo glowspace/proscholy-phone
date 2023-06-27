@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 import 'package:zpevnik/components/custom/back_button.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/presentation/settings.dart';
@@ -11,28 +11,28 @@ import 'package:zpevnik/providers/presentation.dart';
 const _noExternalDisplayText =
     'Není připojen žádný externí displej. Aplikace v současné době nepodporuje žádné způsoby připojení a je proto nutné, abyste se k externímu displeji připojili pomocí jiné aplikace (např. airplay, chromecast). Poté bude promítání povoleno.';
 
-class StartPresentationScreen extends StatefulWidget {
+class StartPresentationScreen extends ConsumerStatefulWidget {
   final SongLyricsParser songLyricsParser;
 
   const StartPresentationScreen({super.key, required this.songLyricsParser});
 
   @override
-  State<StartPresentationScreen> createState() => _StartPresentationScreenState();
+  ConsumerState<StartPresentationScreen> createState() => _StartPresentationScreenState();
 }
 
-class _StartPresentationScreenState extends State<StartPresentationScreen> with WidgetsBindingObserver {
+class _StartPresentationScreenState extends ConsumerState<StartPresentationScreen> with WidgetsBindingObserver {
   bool _canPresent = false;
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    context.read<PresentationProvider>().canPresent.then((canPresent) => setState(() => _canPresent = canPresent));
+    ref.read(presentationProvider).canPresent.then((canPresent) => setState(() => _canPresent = canPresent));
   }
 
   @override
   void initState() {
     super.initState();
 
-    context.read<PresentationProvider>().canPresent.then((canPresent) => setState(() => _canPresent = canPresent));
+    ref.read(presentationProvider).canPresent.then((canPresent) => setState(() => _canPresent = canPresent));
 
     WidgetsBinding.instance.addObserver(this);
   }
@@ -57,7 +57,7 @@ class _StartPresentationScreenState extends State<StartPresentationScreen> with 
           HighlightableIconButton(
             onTap: _canPresent
                 ? () {
-                    context.read<PresentationProvider>().start(widget.songLyricsParser);
+                    ref.read(presentationProvider).start(widget.songLyricsParser);
                     context.pop();
                   }
                 : null,
