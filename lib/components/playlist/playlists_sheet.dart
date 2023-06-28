@@ -27,7 +27,7 @@ class PlaylistsSheet extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 HighlightableTextButton(
-                  onTap: () => showPlaylistDialog(context, ref),
+                  onTap: () => showPlaylistDialog(context, ref, selectedSongLyric: selectedSongLyric),
                   padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
                   icon: const Icon(Icons.add, size: 20),
                   child: const Text('Nový playlist'),
@@ -54,7 +54,7 @@ class PlaylistsSheet extends StatelessWidget {
   }
 
   void _addToPlaylist(BuildContext context, WidgetRef ref, Playlist playlist) {
-    ref.read(playlistsProvider.notifier).addToPlaylist(playlist, selectedSongLyric);
+    ref.read(playlistsProvider.notifier).addToPlaylist(playlist, songLyric: selectedSongLyric);
 
     context.popAndPush('/playlist', extra: playlist);
   }

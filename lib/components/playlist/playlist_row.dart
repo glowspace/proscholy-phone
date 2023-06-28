@@ -27,7 +27,7 @@ class PlaylistRow extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return DragTarget<SongLyric>(
-      onAccept: (songLyric) => ref.read(playlistsProvider.notifier).addToPlaylist(playlist, songLyric),
+      onAccept: (songLyric) => ref.read(playlistsProvider.notifier).addToPlaylist(playlist, songLyric: songLyric),
       builder: (_, acceptList, __) => InkWell(
         onTap: () => _pushPlaylist(context),
         child: Container(

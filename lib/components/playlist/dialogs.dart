@@ -24,7 +24,7 @@ void showPlaylistDialog(BuildContext context, WidgetRef ref, {SongLyric? selecte
         .read(playlistsProvider.notifier)
         .createPlaylist(results.first, songLyrics: selectedSongLyric == null ? [] : [selectedSongLyric]);
 
-    if (context.mounted) context.popAndPush('/playlist', extra: playlist);
+    if (context.mounted && selectedSongLyric != null) context.popAndPush('/playlist', extra: playlist);
   }
 }
 

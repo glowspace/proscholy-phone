@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wakelock/wakelock.dart';
+import 'package:zpevnik/models/bible_verse.dart';
+import 'package:zpevnik/models/custom_text.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/models/songbook.dart';
@@ -13,6 +15,8 @@ import 'package:zpevnik/screens/home/edit_home_sections.dart';
 import 'package:zpevnik/screens/home/home.dart';
 import 'package:zpevnik/screens/initial.dart';
 import 'package:zpevnik/screens/playlist.dart';
+import 'package:zpevnik/screens/playlist/bible_verse.dart';
+import 'package:zpevnik/screens/playlist/custom_text.dart';
 import 'package:zpevnik/screens/playlists.dart';
 import 'package:zpevnik/screens/search.dart';
 import 'package:zpevnik/screens/song_lyric.dart';
@@ -63,6 +67,14 @@ class AppNavigator extends NavigatorObserver {
       GoRoute(path: '/about', builder: (_, __) => const AboutScreen()),
       GoRoute(path: '/initial', builder: (_, __) => const InitialScreen()),
       GoRoute(path: '/playlist', builder: (_, state) => PlaylistScreen(playlist: state.extra as Playlist)),
+      GoRoute(
+        path: '/playlist/bible_verse',
+        builder: (_, state) => BibleVerseScreen(bibleVerse: state.extra as BibleVerse?),
+      ),
+      GoRoute(
+        path: '/playlist/custom_text',
+        builder: (_, state) => CustomTextScreen(customText: state.extra as CustomText?),
+      ),
       GoRoute(path: '/playlists', builder: (_, __) => const PlaylistsScreen()),
       GoRoute(
         path: '/search',

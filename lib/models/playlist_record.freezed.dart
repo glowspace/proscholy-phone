@@ -20,6 +20,8 @@ mixin _$PlaylistRecord {
   int get id => throw _privateConstructorUsedError;
   int get rank => throw _privateConstructorUsedError;
   ToOne<SongLyric> get songLyric => throw _privateConstructorUsedError;
+  ToOne<CustomText> get customText => throw _privateConstructorUsedError;
+  ToOne<BibleVerse> get bibleVerse => throw _privateConstructorUsedError;
   ToOne<Playlist> get playlist => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -37,6 +39,8 @@ abstract class $PlaylistRecordCopyWith<$Res> {
       {@Id(assignable: true) int id,
       int rank,
       ToOne<SongLyric> songLyric,
+      ToOne<CustomText> customText,
+      ToOne<BibleVerse> bibleVerse,
       ToOne<Playlist> playlist});
 }
 
@@ -56,6 +60,8 @@ class _$PlaylistRecordCopyWithImpl<$Res, $Val extends PlaylistRecord>
     Object? id = null,
     Object? rank = null,
     Object? songLyric = null,
+    Object? customText = null,
+    Object? bibleVerse = null,
     Object? playlist = null,
   }) {
     return _then(_value.copyWith(
@@ -71,6 +77,14 @@ class _$PlaylistRecordCopyWithImpl<$Res, $Val extends PlaylistRecord>
           ? _value.songLyric
           : songLyric // ignore: cast_nullable_to_non_nullable
               as ToOne<SongLyric>,
+      customText: null == customText
+          ? _value.customText
+          : customText // ignore: cast_nullable_to_non_nullable
+              as ToOne<CustomText>,
+      bibleVerse: null == bibleVerse
+          ? _value.bibleVerse
+          : bibleVerse // ignore: cast_nullable_to_non_nullable
+              as ToOne<BibleVerse>,
       playlist: null == playlist
           ? _value.playlist
           : playlist // ignore: cast_nullable_to_non_nullable
@@ -91,6 +105,8 @@ abstract class _$$_PlaylistRecordCopyWith<$Res>
       {@Id(assignable: true) int id,
       int rank,
       ToOne<SongLyric> songLyric,
+      ToOne<CustomText> customText,
+      ToOne<BibleVerse> bibleVerse,
       ToOne<Playlist> playlist});
 }
 
@@ -108,6 +124,8 @@ class __$$_PlaylistRecordCopyWithImpl<$Res>
     Object? id = null,
     Object? rank = null,
     Object? songLyric = null,
+    Object? customText = null,
+    Object? bibleVerse = null,
     Object? playlist = null,
   }) {
     return _then(_$_PlaylistRecord(
@@ -123,6 +141,14 @@ class __$$_PlaylistRecordCopyWithImpl<$Res>
           ? _value.songLyric
           : songLyric // ignore: cast_nullable_to_non_nullable
               as ToOne<SongLyric>,
+      customText: null == customText
+          ? _value.customText
+          : customText // ignore: cast_nullable_to_non_nullable
+              as ToOne<CustomText>,
+      bibleVerse: null == bibleVerse
+          ? _value.bibleVerse
+          : bibleVerse // ignore: cast_nullable_to_non_nullable
+              as ToOne<BibleVerse>,
       playlist: null == playlist
           ? _value.playlist
           : playlist // ignore: cast_nullable_to_non_nullable
@@ -134,13 +160,14 @@ class __$$_PlaylistRecordCopyWithImpl<$Res>
 /// @nodoc
 
 @Entity(realClass: PlaylistRecord)
-class _$_PlaylistRecord extends _PlaylistRecord {
+class _$_PlaylistRecord implements _PlaylistRecord {
   const _$_PlaylistRecord(
       {@Id(assignable: true) required this.id,
       required this.rank,
       required this.songLyric,
-      required this.playlist})
-      : super._();
+      required this.customText,
+      required this.bibleVerse,
+      required this.playlist});
 
   @override
   @Id(assignable: true)
@@ -150,11 +177,15 @@ class _$_PlaylistRecord extends _PlaylistRecord {
   @override
   final ToOne<SongLyric> songLyric;
   @override
+  final ToOne<CustomText> customText;
+  @override
+  final ToOne<BibleVerse> bibleVerse;
+  @override
   final ToOne<Playlist> playlist;
 
   @override
   String toString() {
-    return 'PlaylistRecord(id: $id, rank: $rank, songLyric: $songLyric, playlist: $playlist)';
+    return 'PlaylistRecord(id: $id, rank: $rank, songLyric: $songLyric, customText: $customText, bibleVerse: $bibleVerse, playlist: $playlist)';
   }
 
   @override
@@ -166,12 +197,17 @@ class _$_PlaylistRecord extends _PlaylistRecord {
             (identical(other.rank, rank) || other.rank == rank) &&
             (identical(other.songLyric, songLyric) ||
                 other.songLyric == songLyric) &&
+            (identical(other.customText, customText) ||
+                other.customText == customText) &&
+            (identical(other.bibleVerse, bibleVerse) ||
+                other.bibleVerse == bibleVerse) &&
             (identical(other.playlist, playlist) ||
                 other.playlist == playlist));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, id, rank, songLyric, playlist);
+  int get hashCode => Object.hash(
+      runtimeType, id, rank, songLyric, customText, bibleVerse, playlist);
 
   @JsonKey(ignore: true)
   @override
@@ -180,13 +216,14 @@ class _$_PlaylistRecord extends _PlaylistRecord {
       __$$_PlaylistRecordCopyWithImpl<_$_PlaylistRecord>(this, _$identity);
 }
 
-abstract class _PlaylistRecord extends PlaylistRecord {
+abstract class _PlaylistRecord implements PlaylistRecord {
   const factory _PlaylistRecord(
       {@Id(assignable: true) required final int id,
       required final int rank,
       required final ToOne<SongLyric> songLyric,
+      required final ToOne<CustomText> customText,
+      required final ToOne<BibleVerse> bibleVerse,
       required final ToOne<Playlist> playlist}) = _$_PlaylistRecord;
-  const _PlaylistRecord._() : super._();
 
   @override
   @Id(assignable: true)
@@ -195,6 +232,10 @@ abstract class _PlaylistRecord extends PlaylistRecord {
   int get rank;
   @override
   ToOne<SongLyric> get songLyric;
+  @override
+  ToOne<CustomText> get customText;
+  @override
+  ToOne<BibleVerse> get bibleVerse;
   @override
   ToOne<Playlist> get playlist;
   @override

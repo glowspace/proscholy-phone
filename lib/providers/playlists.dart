@@ -1,5 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:zpevnik/models/bible_verse.dart';
+import 'package:zpevnik/models/custom_text.dart';
 import 'package:zpevnik/models/objectbox.g.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/playlist_record.dart';
@@ -30,14 +32,27 @@ class Playlists extends _$Playlists {
     return ref.read(appDependenciesProvider.select((appDependencies) => appDependencies.store)).box<PlaylistRecord>();
   }
 
+  Box<BibleVerse> get _bibleVerseBox {
+    return ref.read(appDependenciesProvider.select((appDependencies) => appDependencies.store)).box<BibleVerse>();
+  }
+
+  Box<CustomText> get _customTextBox {
+    return ref.read(appDependenciesProvider.select((appDependencies) => appDependencies.store)).box<CustomText>();
+  }
+
   late int _nextPlaylistId;
   late int _nextPlaylistRecordId;
+
+  late int _nextBibleVerseId;
+  late int _nextCustomTextId;
 
   @override
   List<Playlist> build() {
     // initialize next ids needed when creating new objects
     _nextPlaylistId = nextId(ref, Playlist_.id);
     _nextPlaylistRecordId = nextId(ref, PlaylistRecord_.id);
+    _nextBibleVerseId = nextId(ref, BibleVerse_.id);
+    _nextCustomTextId = nextId(ref, CustomText_.id);
 
     final playlists = queryStore(ref, condition: Playlist_.id.notEquals(favoritesPlaylistId), orderBy: Playlist_.rank);
 
@@ -45,8 +60,6 @@ class Playlists extends _$Playlists {
   }
 
   Playlist createPlaylist(String name, {List<SongLyric> songLyrics = const []}) {
-    final newPlaylist = Playlist(id: _nextPlaylistId++, name: name, rank: 0, records: ToMany());
-
     int nextPlaylistRecordRank = 0;
 
     final newPlaylistRecords = [
@@ -55,9 +68,18 @@ class Playlists extends _$Playlists {
           id: _nextPlaylistRecordId++,
           rank: nextPlaylistRecordRank++,
           songLyric: ToOne(target: songLyric),
-          playlist: ToOne(target: newPlaylist),
+          customText: ToOne(),
+          bibleVerse: ToOne(),
+          playlist: ToOne(targetId: _nextPlaylistId),
         )
     ];
+
+    final newPlaylist = Playlist(
+      id: _nextPlaylistId++,
+      name: name,
+      rank: 0,
+      records: ToMany(items: newPlaylistRecords),
+    );
 
     // increase rank of all existing playlists and save them
     state = [newPlaylist, for (final playlist in state) playlist.copyWith(rank: playlist.rank + 1)];
@@ -113,9 +135,18 @@ class Playlists extends _$Playlists {
     _playlistRecordsBox.removeMany(playlistToRemove.records.map((playlistRecord) => playlistRecord.id).toList());
   }
 
-  void addToPlaylist(Playlist playlist, SongLyric songLyric, {int? nextRank}) {
+  void addToPlaylist(
+    Playlist playlist, {
+    SongLyric? songLyric,
+    CustomText? customText,
+    BibleVerse? bibleVerse,
+    int? nextRank,
+  }) {
     // prevent duplicates
-    if (playlist.records.any((playlistRecord) => playlistRecord.songLyric.target == songLyric)) return;
+    if (playlist.records.any((playlistRecord) =>
+        playlistRecord.songLyric.targetId == songLyric?.id ||
+        playlistRecord.customText.targetId == customText?.id ||
+        playlistRecord.bibleVerse.targetId == bibleVerse?.id)) return;
 
     // first find next rank
     final queryBuilder = _playlistRecordsBox.query(PlaylistRecord_.playlist.equals(playlist.id));
@@ -131,13 +162,15 @@ class Playlists extends _$Playlists {
       id: _nextPlaylistRecordId++,
       rank: lastRank + 1,
       songLyric: ToOne(target: songLyric),
+      customText: ToOne(target: customText),
+      bibleVerse: ToOne(target: bibleVerse),
       playlist: ToOne(target: playlist),
     );
 
     _playlistRecordsBox.put(playlistRecord);
 
     playlist.records.add(playlistRecord);
-    songLyric.playlistRecords.add(playlistRecord);
+    songLyric?.playlistRecords.add(playlistRecord);
   }
 
   void removeFromPlaylist(Playlist playlist, SongLyric songLyric) {
@@ -158,7 +191,45 @@ class Playlists extends _$Playlists {
     if (songLyric.isFavorite) {
       removeFromPlaylist(favoritePlaylist, songLyric);
     } else {
-      addToPlaylist(favoritePlaylist, songLyric);
+      addToPlaylist(favoritePlaylist, songLyric: songLyric);
     }
+  }
+
+  void createBibleVerse(
+    Playlist playlist,
+    ({
+      int book,
+      int chapter,
+      int startVerse,
+      int? endVerse,
+      String text,
+    }) bibleVerseRecord,
+  ) {
+    final bibleVerse = BibleVerse(
+      id: _nextBibleVerseId++,
+      book: bibleVerseRecord.book,
+      chapter: bibleVerseRecord.chapter,
+      startVerse: bibleVerseRecord.startVerse,
+      endVerse: bibleVerseRecord.endVerse,
+      text: bibleVerseRecord.text,
+      playlistRecords: ToMany(),
+    );
+
+    _bibleVerseBox.put(bibleVerse);
+
+    addToPlaylist(playlist, bibleVerse: bibleVerse);
+  }
+
+  void createCustomText(Playlist playlist, ({String name, String content}) customTextRecord) {
+    final customText = CustomText(
+      id: _nextCustomTextId++,
+      name: customTextRecord.name,
+      content: customTextRecord.content,
+      playlistRecords: ToMany(),
+    );
+
+    _customTextBox.put(customText);
+
+    addToPlaylist(playlist, customText: customText);
   }
 }

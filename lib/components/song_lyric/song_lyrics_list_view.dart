@@ -10,6 +10,7 @@ class SongLyricsListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+      primary: false,
       itemCount: songLyrics.length,
       itemBuilder: (_, index) => SongLyricRow(songLyric: songLyrics[index]),
     );

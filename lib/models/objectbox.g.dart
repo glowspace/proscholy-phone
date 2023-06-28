@@ -15,6 +15,8 @@ import 'package:objectbox/objectbox.dart';
 import 'package:objectbox_flutter_libs/objectbox_flutter_libs.dart';
 
 import '../models/author.dart';
+import '../models/bible_verse.dart';
+import '../models/custom_text.dart';
 import '../models/external.dart';
 import '../models/news_item.dart';
 import '../models/playlist.dart';
@@ -311,7 +313,7 @@ final _entities = <ModelEntity>[
   ModelEntity(
       id: const IdUid(17, 7654860777539205773),
       name: 'PlaylistRecord',
-      lastPropertyId: const IdUid(5, 287030318006723005),
+      lastPropertyId: const IdUid(7, 7647966126095704391),
       flags: 0,
       properties: <ModelProperty>[
         ModelProperty(
@@ -337,7 +339,21 @@ final _entities = <ModelEntity>[
             id: const IdUid(5, 287030318006723005),
             name: 'rank',
             type: 6,
-            flags: 0)
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(6, 8645749286764623433),
+            name: 'customTextId',
+            type: 11,
+            flags: 520,
+            indexId: const IdUid(25, 2885704981645869410),
+            relationTarget: 'CustomText'),
+        ModelProperty(
+            id: const IdUid(7, 7647966126095704391),
+            name: 'bibleVerseId',
+            type: 11,
+            flags: 520,
+            indexId: const IdUid(26, 7085692031369188249),
+            relationTarget: 'BibleVerse')
       ],
       relations: <ModelRelation>[],
       backlinks: <ModelBacklink>[]),
@@ -436,7 +452,76 @@ final _entities = <ModelEntity>[
             flags: 0)
       ],
       relations: <ModelRelation>[],
-      backlinks: <ModelBacklink>[])
+      backlinks: <ModelBacklink>[]),
+  ModelEntity(
+      id: const IdUid(27, 6549128678806995145),
+      name: 'BibleVerse',
+      lastPropertyId: const IdUid(6, 3904069958565168174),
+      flags: 0,
+      properties: <ModelProperty>[
+        ModelProperty(
+            id: const IdUid(1, 4817617211910706324),
+            name: 'id',
+            type: 6,
+            flags: 129),
+        ModelProperty(
+            id: const IdUid(2, 7391037358317762823),
+            name: 'book',
+            type: 6,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(3, 8516760876356556400),
+            name: 'chapter',
+            type: 6,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(4, 1599130077885976788),
+            name: 'startVerse',
+            type: 6,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(5, 1391347418120432386),
+            name: 'endVerse',
+            type: 6,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(6, 3904069958565168174),
+            name: 'text',
+            type: 9,
+            flags: 0)
+      ],
+      relations: <ModelRelation>[],
+      backlinks: <ModelBacklink>[
+        ModelBacklink(
+            name: 'playlistRecords', srcEntity: 'PlaylistRecord', srcField: '')
+      ]),
+  ModelEntity(
+      id: const IdUid(28, 5622420100477652726),
+      name: 'CustomText',
+      lastPropertyId: const IdUid(3, 8042106361561039550),
+      flags: 0,
+      properties: <ModelProperty>[
+        ModelProperty(
+            id: const IdUid(1, 2830401840186712029),
+            name: 'id',
+            type: 6,
+            flags: 129),
+        ModelProperty(
+            id: const IdUid(2, 7868159213784833603),
+            name: 'name',
+            type: 9,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(3, 8042106361561039550),
+            name: 'content',
+            type: 9,
+            flags: 0)
+      ],
+      relations: <ModelRelation>[],
+      backlinks: <ModelBacklink>[
+        ModelBacklink(
+            name: 'playlistRecords', srcEntity: 'PlaylistRecord', srcField: '')
+      ])
 ];
 
 /// Open an ObjectBox store with the model declared in this file.
@@ -459,8 +544,8 @@ Future<Store> openStore(
 ModelDefinition getObjectBoxModel() {
   final model = ModelInfo(
       entities: _entities,
-      lastEntityId: const IdUid(26, 2579025596415757190),
-      lastIndexId: const IdUid(24, 3194090501901701737),
+      lastEntityId: const IdUid(28, 5622420100477652726),
+      lastIndexId: const IdUid(26, 7085692031369188249),
       lastRelationId: const IdUid(9, 8422971963228606271),
       lastSequenceId: const IdUid(0, 0),
       retiredEntityUids: const [
@@ -987,8 +1072,12 @@ ModelDefinition getObjectBoxModel() {
         }),
     PlaylistRecord: EntityDefinition<PlaylistRecord>(
         model: _entities[7],
-        toOneRelations: (PlaylistRecord object) =>
-            [object.songLyric, object.playlist],
+        toOneRelations: (PlaylistRecord object) => [
+              object.songLyric,
+              object.playlist,
+              object.customText,
+              object.bibleVerse
+            ],
         toManyRelations: (PlaylistRecord object) => {},
         getId: (PlaylistRecord object) => object.id,
         setId: (PlaylistRecord object, int id) {
@@ -1001,11 +1090,13 @@ ModelDefinition getObjectBoxModel() {
           }
         },
         objectToFB: (PlaylistRecord object, fb.Builder fbb) {
-          fbb.startTable(6);
+          fbb.startTable(8);
           fbb.addInt64(0, object.id);
           fbb.addInt64(2, object.songLyric.targetId);
           fbb.addInt64(3, object.playlist.targetId);
           fbb.addInt64(4, object.rank);
+          fbb.addInt64(5, object.customText.targetId);
+          fbb.addInt64(6, object.bibleVerse.targetId);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -1019,11 +1110,19 @@ ModelDefinition getObjectBoxModel() {
               songLyric: ToOne(
                   targetId: const fb.Int64Reader()
                       .vTableGet(buffer, rootOffset, 8, 0)),
+              customText: ToOne(
+                  targetId: const fb.Int64Reader()
+                      .vTableGet(buffer, rootOffset, 14, 0)),
+              bibleVerse: ToOne(
+                  targetId: const fb.Int64Reader()
+                      .vTableGet(buffer, rootOffset, 16, 0)),
               playlist: ToOne(
                   targetId: const fb.Int64Reader()
                       .vTableGet(buffer, rootOffset, 10, 0)));
           object.songLyric.attach(store);
           object.playlist.attach(store);
+          object.customText.attach(store);
+          object.bibleVerse.attach(store);
           return object;
         }),
     NewsItem: EntityDefinition<NewsItem>(
@@ -1150,6 +1249,105 @@ ModelDefinition getObjectBoxModel() {
               transposition:
                   const fb.Int64Reader().vTableGet(buffer, rootOffset, 10, 0));
 
+          return object;
+        }),
+    BibleVerse: EntityDefinition<BibleVerse>(
+        model: _entities[11],
+        toOneRelations: (BibleVerse object) => [],
+        toManyRelations: (BibleVerse object) => {
+              RelInfo<PlaylistRecord>.toOneBacklink(7, object.id,
+                      (PlaylistRecord srcObject) => srcObject.bibleVerse):
+                  object.playlistRecords
+            },
+        getId: (BibleVerse object) => object.id,
+        setId: (BibleVerse object, int id) {
+          if (object.id != id) {
+            throw ArgumentError('Field BibleVerse.id is read-only '
+                '(final or getter-only) and it was declared to be self-assigned. '
+                'However, the currently inserted object (.id=${object.id}) '
+                "doesn't match the inserted ID (ID $id). "
+                'You must assign an ID before calling [box.put()].');
+          }
+        },
+        objectToFB: (BibleVerse object, fb.Builder fbb) {
+          final textOffset = fbb.writeString(object.text);
+          fbb.startTable(7);
+          fbb.addInt64(0, object.id);
+          fbb.addInt64(1, object.book);
+          fbb.addInt64(2, object.chapter);
+          fbb.addInt64(3, object.startVerse);
+          fbb.addInt64(4, object.endVerse);
+          fbb.addOffset(5, textOffset);
+          fbb.finish(fbb.endTable());
+          return object.id;
+        },
+        objectFromFB: (Store store, ByteData fbData) {
+          final buffer = fb.BufferContext(fbData);
+          final rootOffset = buffer.derefObject(0);
+
+          final object = BibleVerse(
+              id: const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0),
+              book: const fb.Int64Reader().vTableGet(buffer, rootOffset, 6, 0),
+              chapter:
+                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 8, 0),
+              startVerse:
+                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 10, 0),
+              endVerse: const fb.Int64Reader()
+                  .vTableGetNullable(buffer, rootOffset, 12),
+              text: const fb.StringReader(asciiOptimization: true)
+                  .vTableGet(buffer, rootOffset, 14, ''),
+              playlistRecords: ToMany());
+          InternalToManyAccess.setRelInfo<BibleVerse>(
+              object.playlistRecords,
+              store,
+              RelInfo<PlaylistRecord>.toOneBacklink(7, object.id,
+                  (PlaylistRecord srcObject) => srcObject.bibleVerse));
+          return object;
+        }),
+    CustomText: EntityDefinition<CustomText>(
+        model: _entities[12],
+        toOneRelations: (CustomText object) => [],
+        toManyRelations: (CustomText object) => {
+              RelInfo<PlaylistRecord>.toOneBacklink(6, object.id,
+                      (PlaylistRecord srcObject) => srcObject.customText):
+                  object.playlistRecords
+            },
+        getId: (CustomText object) => object.id,
+        setId: (CustomText object, int id) {
+          if (object.id != id) {
+            throw ArgumentError('Field CustomText.id is read-only '
+                '(final or getter-only) and it was declared to be self-assigned. '
+                'However, the currently inserted object (.id=${object.id}) '
+                "doesn't match the inserted ID (ID $id). "
+                'You must assign an ID before calling [box.put()].');
+          }
+        },
+        objectToFB: (CustomText object, fb.Builder fbb) {
+          final nameOffset = fbb.writeString(object.name);
+          final contentOffset = fbb.writeString(object.content);
+          fbb.startTable(4);
+          fbb.addInt64(0, object.id);
+          fbb.addOffset(1, nameOffset);
+          fbb.addOffset(2, contentOffset);
+          fbb.finish(fbb.endTable());
+          return object.id;
+        },
+        objectFromFB: (Store store, ByteData fbData) {
+          final buffer = fb.BufferContext(fbData);
+          final rootOffset = buffer.derefObject(0);
+
+          final object = CustomText(
+              id: const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0),
+              name: const fb.StringReader(asciiOptimization: true)
+                  .vTableGet(buffer, rootOffset, 6, ''),
+              content: const fb.StringReader(asciiOptimization: true)
+                  .vTableGet(buffer, rootOffset, 8, ''),
+              playlistRecords: ToMany());
+          InternalToManyAccess.setRelInfo<CustomText>(
+              object.playlistRecords,
+              store,
+              RelInfo<PlaylistRecord>.toOneBacklink(6, object.id,
+                  (PlaylistRecord srcObject) => srcObject.customText));
           return object;
         })
   };
@@ -1341,6 +1539,14 @@ class PlaylistRecord_ {
   /// see [PlaylistRecord.rank]
   static final rank =
       QueryIntegerProperty<PlaylistRecord>(_entities[7].properties[3]);
+
+  /// see [PlaylistRecord.customText]
+  static final customText = QueryRelationToOne<PlaylistRecord, CustomText>(
+      _entities[7].properties[4]);
+
+  /// see [PlaylistRecord.bibleVerse]
+  static final bibleVerse = QueryRelationToOne<PlaylistRecord, BibleVerse>(
+      _entities[7].properties[5]);
 }
 
 /// [NewsItem] entity fields to define ObjectBox queries.
@@ -1399,4 +1605,46 @@ class SongLyricSettingsModel_ {
   /// see [SongLyricSettingsModel.showMusicalNotes]
   static final showMusicalNotes =
       QueryBooleanProperty<SongLyricSettingsModel>(_entities[10].properties[4]);
+}
+
+/// [BibleVerse] entity fields to define ObjectBox queries.
+class BibleVerse_ {
+  /// see [BibleVerse.id]
+  static final id =
+      QueryIntegerProperty<BibleVerse>(_entities[11].properties[0]);
+
+  /// see [BibleVerse.book]
+  static final book =
+      QueryIntegerProperty<BibleVerse>(_entities[11].properties[1]);
+
+  /// see [BibleVerse.chapter]
+  static final chapter =
+      QueryIntegerProperty<BibleVerse>(_entities[11].properties[2]);
+
+  /// see [BibleVerse.startVerse]
+  static final startVerse =
+      QueryIntegerProperty<BibleVerse>(_entities[11].properties[3]);
+
+  /// see [BibleVerse.endVerse]
+  static final endVerse =
+      QueryIntegerProperty<BibleVerse>(_entities[11].properties[4]);
+
+  /// see [BibleVerse.text]
+  static final text =
+      QueryStringProperty<BibleVerse>(_entities[11].properties[5]);
+}
+
+/// [CustomText] entity fields to define ObjectBox queries.
+class CustomText_ {
+  /// see [CustomText.id]
+  static final id =
+      QueryIntegerProperty<CustomText>(_entities[12].properties[0]);
+
+  /// see [CustomText.name]
+  static final name =
+      QueryStringProperty<CustomText>(_entities[12].properties[1]);
+
+  /// see [CustomText.content]
+  static final content =
+      QueryStringProperty<CustomText>(_entities[12].properties[2]);
 }

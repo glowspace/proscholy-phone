@@ -277,7 +277,7 @@
     },
     {
       "id": "17:7654860777539205773",
-      "lastPropertyId": "5:287030318006723005",
+      "lastPropertyId": "7:7647966126095704391",
       "name": "PlaylistRecord",
       "properties": [
         {
@@ -306,6 +306,22 @@
           "id": "5:287030318006723005",
           "name": "rank",
           "type": 6
+        },
+        {
+          "id": "6:8645749286764623433",
+          "name": "customTextId",
+          "type": 11,
+          "flags": 520,
+          "indexId": "25:2885704981645869410",
+          "relationTarget": "CustomText"
+        },
+        {
+          "id": "7:7647966126095704391",
+          "name": "bibleVerseId",
+          "type": 11,
+          "flags": 520,
+          "indexId": "26:7085692031369188249",
+          "relationTarget": "BibleVerse"
         }
       ],
       "relations": []
@@ -407,10 +423,73 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "27:6549128678806995145",
+      "lastPropertyId": "6:3904069958565168174",
+      "name": "BibleVerse",
+      "properties": [
+        {
+          "id": "1:4817617211910706324",
+          "name": "id",
+          "type": 6,
+          "flags": 129
+        },
+        {
+          "id": "2:7391037358317762823",
+          "name": "book",
+          "type": 6
+        },
+        {
+          "id": "3:8516760876356556400",
+          "name": "chapter",
+          "type": 6
+        },
+        {
+          "id": "4:1599130077885976788",
+          "name": "startVerse",
+          "type": 6
+        },
+        {
+          "id": "5:1391347418120432386",
+          "name": "endVerse",
+          "type": 6
+        },
+        {
+          "id": "6:3904069958565168174",
+          "name": "text",
+          "type": 9
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "28:5622420100477652726",
+      "lastPropertyId": "3:8042106361561039550",
+      "name": "CustomText",
+      "properties": [
+        {
+          "id": "1:2830401840186712029",
+          "name": "id",
+          "type": 6,
+          "flags": 129
+        },
+        {
+          "id": "2:7868159213784833603",
+          "name": "name",
+          "type": 9
+        },
+        {
+          "id": "3:8042106361561039550",
+          "name": "content",
+          "type": 9
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "26:2579025596415757190",
-  "lastIndexId": "24:3194090501901701737",
+  "lastEntityId": "28:5622420100477652726",
+  "lastIndexId": "26:7085692031369188249",
   "lastRelationId": "9:8422971963228606271",
   "lastSequenceId": "0:0",
   "modelVersion": 5,
