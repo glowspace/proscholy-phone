@@ -42,7 +42,7 @@ class _NewsSectionState extends ConsumerState<NewsSection> {
             child: PageView.builder(
               controller: _pageController,
               itemCount: newsItems.length,
-              itemBuilder: (_, index) => HighlightableTextButton(
+              itemBuilder: (_, index) => Highlightable(
                 alignment: Alignment.centerLeft,
                 textStyle: textTheme.bodyMedium,
                 onTap: newsItems[index].hasLink ? () => launch(context, newsItems[index].link) : null,
@@ -62,7 +62,8 @@ class _NewsSectionState extends ConsumerState<NewsSection> {
             for (int i = 0; i < newsItems.length; i++)
               Padding(
                 padding: const EdgeInsets.only(right: 4),
-                child: InkWell(
+                child: Highlightable(
+                  highlightBackground: true,
                   onTap: () =>
                       _pageController.animateToPage(i, duration: kDefaultAnimationDuration, curve: Curves.easeInOut),
                   child: ListenableBuilder(

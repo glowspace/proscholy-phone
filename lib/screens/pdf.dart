@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
 import 'package:zpevnik/components/custom/back_button.dart';
+import 'package:zpevnik/components/navigation/scaffold.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/external.dart';
 
@@ -16,7 +17,7 @@ class PdfScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return CustomScaffold(
       appBar: AppBar(leading: const CustomBackButton(), title: Text(pdf.name)),
       body: const PDF().cachedFromUrl(
         pdf.url ?? '',

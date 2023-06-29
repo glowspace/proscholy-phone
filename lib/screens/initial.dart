@@ -124,7 +124,7 @@ class _InitialScreenState extends ConsumerState<InitialScreen> {
         const GlowspaceLogo(showDescription: true),
         const SizedBox(height: kDefaultPadding),
         Text(_projectDescription, style: textTheme.bodyMedium),
-        HighlightableTextButton(
+        Highlightable(
           onTap: () => _learnMore(context),
           foregroundColor: theme.colorScheme.primary,
           child: const Text('Dozvědět se více'),

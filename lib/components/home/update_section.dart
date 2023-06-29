@@ -67,14 +67,14 @@ class _UpdateSectionState extends ConsumerState<UpdateSection> {
                 children: [
                   Text(text, style: theme.textTheme.bodyMedium),
                   if (hasSonglyrics)
-                    HighlightableTextButton(
+                    Highlightable(
                       foregroundColor: theme.colorScheme.primary,
                       padding: const EdgeInsets.only(top: 2 / 3 * kDefaultPadding),
                       onTap: () => context.push('/updated_song_lyrics', extra: updatedSongLyrics),
                       child: const Text('Zobrazit'),
                     ),
                   if (hasError)
-                    HighlightableTextButton(
+                    Highlightable(
                       foregroundColor: red,
                       padding: const EdgeInsets.only(top: 2 / 3 * kDefaultPadding),
                       onTap: () => launch(context, '$reportUrl?summary=Chyba při aktualizaci písní&description=$error'),
@@ -84,7 +84,7 @@ class _UpdateSectionState extends ConsumerState<UpdateSection> {
               ),
             ),
             if (isShowing && (hasSonglyrics || hasError))
-              HighlightableIconButton(
+              Highlightable(
                 onTap: () => setState(() => _isHidden = true),
                 icon: const Icon(Icons.close),
               )

@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:zpevnik/components/custom/back_button.dart';
+import 'package:zpevnik/components/navigation/scaffold.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/external.dart';
 
@@ -17,7 +18,7 @@ class JpgScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return CustomScaffold(
       appBar: AppBar(leading: const CustomBackButton(), title: Text(jpg.name)),
       body: PhotoView(
         backgroundDecoration: BoxDecoration(color: Theme.of(context).scaffoldBackgroundColor),

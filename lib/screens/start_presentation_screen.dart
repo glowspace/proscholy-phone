@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:zpevnik/components/custom/back_button.dart';
 import 'package:zpevnik/components/highlightable.dart';
+import 'package:zpevnik/components/navigation/scaffold.dart';
 import 'package:zpevnik/components/presentation/settings.dart';
 import 'package:zpevnik/components/song_lyric/utils/parser.dart';
 import 'package:zpevnik/constants.dart';
@@ -48,13 +49,13 @@ class _StartPresentationScreenState extends ConsumerState<StartPresentationScree
   Widget build(BuildContext context) {
     final infoColorScheme = ColorScheme.fromSeed(seedColor: blue, brightness: Theme.of(context).brightness);
 
-    return Scaffold(
+    return CustomScaffold(
       appBar: AppBar(
         leading: const CustomBackButton(),
         title: const Text('Prezentovat'),
         leadingWidth: 24 + 4 * kDefaultPadding,
         actions: [
-          HighlightableIconButton(
+          Highlightable(
             onTap: _canPresent
                 ? () {
                     ref.read(presentationProvider).start(widget.songLyricsParser);

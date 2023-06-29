@@ -20,20 +20,20 @@ class AudioPlayerWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        HighlightableIconButton(
+        Highlightable(
           onTap: controller.rewind,
           padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
           icon: const Icon(Icons.fast_rewind),
         ),
         StreamBuilder<PlayerState>(
           stream: controller.audioPlayer!.playerStateStream,
-          builder: (_, __) => HighlightableIconButton(
+          builder: (_, __) => Highlightable(
             onTap: controller.isPlaying ? controller.pause : controller.play,
             padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
             icon: Icon(controller.isPlaying ? Icons.pause : Icons.play_arrow),
           ),
         ),
-        HighlightableIconButton(
+        Highlightable(
           onTap: controller.forward,
           padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
           icon: const Icon(Icons.fast_forward),

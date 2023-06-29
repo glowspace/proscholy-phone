@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/providers/tags.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
-const double _filterRadius = 7;
+const double _removablefilterRadius = 7;
+const double _filterRadius = 32;
 
 class FilterTag extends ConsumerWidget {
   final Tag tag;
@@ -39,23 +41,25 @@ class FilterTag extends ConsumerWidget {
         if (isRemovable)
           Material(
             color: removeBackgroundColor,
-            child: InkWell(
+            child: Highlightable(
               onTap: () => ref.read(selectedTagsByTypeProvider(tag.type).notifier).toggleSelection(tag),
+              highlightBackground: true,
               highlightColor: theme.colorScheme.primary.withAlpha(0x20),
-              child: Padding(
-                padding: const EdgeInsets.all(kDefaultPadding / 2).copyWith(left: kDefaultPadding / 4),
-                child: const Icon(Icons.close, size: 14),
-              ),
+              padding: const EdgeInsets.all(kDefaultPadding / 2).copyWith(left: kDefaultPadding / 4),
+              child: const Icon(Icons.close, size: 14),
             ),
           ),
       ],
     );
 
     if (isToggable) {
-      child = InkWell(
+      child = Highlightable(
+        highlightBackground: true,
         highlightColor: theme.colorScheme.primary.withAlpha(0x10),
+        borderRadius: BorderRadius.circular(_filterRadius),
         onTap: () => ref.read(selectedTagsByTypeProvider(tag.type).notifier).toggleSelection(tag),
-        child: Padding(padding: padding, child: child),
+        padding: padding,
+        child: child,
       );
     }
 
@@ -63,7 +67,7 @@ class FilterTag extends ConsumerWidget {
       margin: isToggable ? null : const EdgeInsets.symmetric(horizontal: kDefaultPadding / 4),
       padding: isToggable ? null : padding,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(isRemovable ? _filterRadius : 32),
+        borderRadius: BorderRadius.circular(isRemovable ? _removablefilterRadius : _filterRadius),
         border: isToggable ? Border.all(color: theme.hintColor, width: 0.5) : null,
         color: isRemovable
             ? backgroundColor

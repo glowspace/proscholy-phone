@@ -106,7 +106,7 @@ class _SearchFieldState extends State<SearchField> {
     Widget? suffixIcon;
     if (widget.isInsideSearchScreen) {
       // FIXME: highlight does not work, also there is some grey line when search text is empty
-      suffixIcon = HighlightableIconButton(
+      suffixIcon = Highlightable(
         padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
         onTap: _clearOrPop,
         icon: Icon(Icons.clear, color: theme.iconTheme.color),
@@ -162,7 +162,7 @@ class _SearchFieldState extends State<SearchField> {
                 ),
               ),
               if (widget.isInsideSearchScreen)
-                HighlightableTextButton(
+                Highlightable(
                   onTap: () => Navigator.of(context).pop(),
                   padding: const EdgeInsets.all(kDefaultPadding),
                   textStyle: theme.textTheme.bodyMedium,

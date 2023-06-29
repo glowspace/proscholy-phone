@@ -37,7 +37,7 @@ class PlaylistsListView extends ConsumerWidget {
               onReorder: (_, __) {},
             ),
           ),
-          HighlightableTextButton(
+          Highlightable(
             onTap: () => showPlaylistDialog(context, ref),
             padding: const EdgeInsets.all(kDefaultPadding),
             icon: const Icon(Icons.add, size: 20),

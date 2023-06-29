@@ -13,12 +13,7 @@ class FiltersRow extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
 
-    final mediaQuery = MediaQuery.of(context);
-    final showingThreeSections = mediaQuery.isTablet && mediaQuery.isLandscape;
-
     final selectedTags = ref.watch(selectedTagsProvider);
-
-    if (selectedTags.isEmpty && showingThreeSections) return Container();
 
     return Container(
       margin: const EdgeInsets.only(top: kDefaultPadding),
@@ -32,7 +27,7 @@ class FiltersRow extends ConsumerWidget {
               scrollDirection: Axis.horizontal,
               child: Row(children: [
                 ...selectedTags.map((tag) => FilterTag(tag: tag, isRemovable: true)),
-                if (!showingThreeSections) const AddFilterTag(),
+                const AddFilterTag(),
               ]),
             ),
           ),

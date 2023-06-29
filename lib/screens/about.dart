@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:zpevnik/components/custom/back_button.dart';
+import 'package:zpevnik/components/navigation/scaffold.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/links.dart';
 import 'package:zpevnik/utils/url_launcher.dart';
@@ -18,7 +19,7 @@ class AboutScreen extends StatelessWidget {
 
     final linkOpener = TapGestureRecognizer()..onTap = () => launch(context, proscholyUrl);
 
-    return Scaffold(
+    return CustomScaffold(
       appBar: AppBar(leading: const CustomBackButton(), title: const Text('O projektu')),
       body: SafeArea(
         child: Container(

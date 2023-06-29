@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/playlist/playlist_button.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/playlist.dart';
@@ -28,13 +29,14 @@ class PlaylistRow extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return DragTarget<SongLyric>(
       onAccept: (songLyric) => ref.read(playlistsProvider.notifier).addToPlaylist(playlist, songLyric: songLyric),
-      builder: (_, acceptList, __) => InkWell(
+      builder: (_, acceptList, __) => Highlightable(
+        highlightBackground: true,
         onTap: () => _pushPlaylist(context),
+        padding: visualDensity == VisualDensity.comfortable
+            ? const EdgeInsets.symmetric(vertical: kDefaultPadding / 2)
+            : null,
         child: Container(
           color: acceptList.isEmpty ? null : Theme.of(context).highlightColor,
-          padding: visualDensity == VisualDensity.comfortable
-              ? const EdgeInsets.symmetric(vertical: kDefaultPadding / 2)
-              : null,
           child: Row(
             children: [
               if (isReorderable && showDragIndicator)

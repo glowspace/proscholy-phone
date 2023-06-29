@@ -57,7 +57,7 @@ class HomeMenu extends StatelessWidget {
               ),
             ),
             const Divider(),
-            HighlightableIconButton(
+            Highlightable(
               onTap: () => context.push('/user'),
               padding: const EdgeInsets.all(1.5 * kDefaultPadding),
               icon: const Icon(Icons.settings, size: 28),

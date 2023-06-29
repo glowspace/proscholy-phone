@@ -20,7 +20,7 @@ class _EditHomeSectionsScreenState extends ConsumerState<EditHomeSectionsScreen>
       appBar: AppBar(
         title: const Text('Úprava nástěnky'),
         actions: [
-          HighlightableIconButton(
+          Highlightable(
             onTap: () {
               ref.read(homeSectionSettingsProvider.notifier).save();
 

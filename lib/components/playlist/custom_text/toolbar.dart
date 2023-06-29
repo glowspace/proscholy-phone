@@ -87,7 +87,7 @@ class ToolbarButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return HighlightableIconButton(
+    return Highlightable(
       onTap: onTap,
       icon: Icon(icon, color: isActive ? Theme.of(context).colorScheme.primary : color),
     );

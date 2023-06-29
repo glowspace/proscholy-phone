@@ -6,6 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:zpevnik/components/custom/back_button.dart';
 import 'package:zpevnik/components/highlightable.dart';
+import 'package:zpevnik/components/navigation/scaffold.dart';
 import 'package:zpevnik/components/playlist/playlists_sheet.dart';
 import 'package:zpevnik/components/presentation/settings.dart';
 import 'package:zpevnik/components/song_lyric/bottom_bar.dart';
@@ -53,7 +54,7 @@ class _SongLyricScreenState extends ConsumerState<SongLyricScreen> {
   Widget build(BuildContext context) {
     return ListenableBuilder(
       listenable: _pageController,
-      builder: (_, __) => Scaffold(
+      builder: (_, __) => CustomScaffold(
         appBar: ref.watch(fullScreenProvider)
             ? null
             : AppBar(
@@ -61,13 +62,13 @@ class _SongLyricScreenState extends ConsumerState<SongLyricScreen> {
                 leading: const CustomBackButton(),
                 actions: [
                   StatefulBuilder(
-                    builder: (context, setState) => HighlightableIconButton(
+                    builder: (context, setState) => Highlightable(
                       onTap: () => setState(() => ref.read(playlistsProvider.notifier).toggleFavorite(songLyric)),
                       padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
                       icon: Icon(songLyric.isFavorite ? Icons.star : Icons.star_outline),
                     ),
                   ),
-                  HighlightableIconButton(
+                  Highlightable(
                     onTap: () => _showPlaylists(context),
                     padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
                     icon: const Icon(Icons.playlist_add),

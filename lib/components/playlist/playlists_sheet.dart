@@ -26,7 +26,7 @@ class PlaylistsSheet extends StatelessWidget {
             builder: (context, ref, __) => Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                HighlightableTextButton(
+                Highlightable(
                   onTap: () => showPlaylistDialog(context, ref, selectedSongLyric: selectedSongLyric),
                   padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
                   icon: const Icon(Icons.add, size: 20),
@@ -36,7 +36,7 @@ class PlaylistsSheet extends StatelessWidget {
                 ...[
                   for (final playlist in ref.watch(playlistsProvider))
                     Consumer(
-                      builder: (context, ref, __) => HighlightableTextButton(
+                      builder: (context, ref, __) => Highlightable(
                         onTap: () => _addToPlaylist(context, ref, playlist),
                         padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
                         icon: const Icon(Icons.playlist_play_rounded, size: 20),

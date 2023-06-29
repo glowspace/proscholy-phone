@@ -18,7 +18,7 @@ class TopSection extends StatelessWidget {
         children: [
           const Logo(showFullName: false),
           const Spacer(),
-          HighlightableIconButton(
+          Highlightable(
             onTap: () => context.push('/user'),
             padding: const EdgeInsets.all(kDefaultPadding / 2),
             icon: CircleAvatar(

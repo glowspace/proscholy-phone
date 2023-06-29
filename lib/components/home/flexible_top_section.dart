@@ -39,7 +39,7 @@ class FlexibleTopSection extends StatelessWidget {
         ),
         Align(
           alignment: Alignment(1, -expansion),
-          child: HighlightableIconButton(
+          child: Highlightable(
             onTap: () => context.push('/user'),
             padding: const EdgeInsets.all(kDefaultPadding / 2),
             icon: const CircleAvatar(radius: _avatarRadius, child: Icon(Icons.person)),

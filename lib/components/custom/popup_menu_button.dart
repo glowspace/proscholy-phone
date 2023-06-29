@@ -20,7 +20,7 @@ class CustomPopupMenuButton<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return HighlightableIconButton(
+    return Highlightable(
       onTap: () => _showMenu(context),
       shrinkWrap: menuPosition == PopupMenuPosition.over,
       padding: padding ?? const EdgeInsets.symmetric(vertical: kDefaultPadding / 2, horizontal: kDefaultPadding),

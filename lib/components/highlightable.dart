@@ -15,59 +15,67 @@ class HighlightableForegroundColor extends MaterialStateProperty<Color?> {
   }
 }
 
-class HighlightableIconButton extends StatelessWidget {
-  final EdgeInsets? padding;
-  final Function()? onTap;
-  final Widget icon;
-  final bool shrinkWrap;
-
-  const HighlightableIconButton({super.key, this.padding, this.onTap, required this.icon, this.shrinkWrap = false});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return IconButton(
-      constraints: shrinkWrap ? const BoxConstraints() : null,
-      style: IconButton.styleFrom(
-        padding: padding,
-        highlightColor: Colors.transparent,
-        tapTargetSize: shrinkWrap ? MaterialTapTargetSize.shrinkWrap : null,
-      ).copyWith(
-        foregroundColor: HighlightableForegroundColor(
-          foregroundColor: theme.iconTheme.color,
-          disabledColor: theme.disabledColor,
-        ),
-      ),
-      onPressed: onTap,
-      icon: icon,
-    );
-  }
-}
-
-class HighlightableTextButton extends StatelessWidget {
-  final EdgeInsets padding;
-  final AlignmentGeometry? alignment;
+class Highlightable extends StatelessWidget {
   final Color? foregroundColor;
+  final Color? highlightColor;
+  final EdgeInsets? padding;
+  final AlignmentGeometry? alignment;
   final TextStyle? textStyle;
-  final Function()? onTap;
-  final Widget child;
-  final Widget? icon;
+  final BorderRadius? borderRadius;
 
-  const HighlightableTextButton({
+  final bool shrinkWrap;
+  final bool highlightBackground;
+
+  final Function()? onTap;
+
+  final Widget? icon;
+  final Widget? child;
+
+  const Highlightable({
     super.key,
-    this.padding = EdgeInsets.zero,
-    this.alignment,
     this.foregroundColor,
+    this.highlightColor,
+    this.padding,
+    this.alignment,
     this.textStyle,
+    this.borderRadius,
+    this.shrinkWrap = false,
+    this.highlightBackground = false,
     this.onTap,
-    required this.child,
     this.icon,
+    this.child,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+    if (highlightBackground) {
+      return InkWell(
+        borderRadius: borderRadius,
+        highlightColor: highlightColor,
+        onTap: onTap,
+        child: Padding(padding: padding ?? EdgeInsets.zero, child: child),
+      );
+    }
+
+    if (icon != null && child == null) {
+      return IconButton(
+        constraints: shrinkWrap ? const BoxConstraints() : null,
+        style: IconButton.styleFrom(
+          padding: padding,
+          highlightColor: Colors.transparent,
+          tapTargetSize: shrinkWrap ? MaterialTapTargetSize.shrinkWrap : null,
+        ).copyWith(
+          foregroundColor: HighlightableForegroundColor(
+            foregroundColor: theme.iconTheme.color,
+            disabledColor: theme.disabledColor,
+          ),
+        ),
+        onPressed: onTap,
+        icon: icon!,
+      );
+    }
 
     final textStyle = this.textStyle ?? theme.textTheme.bodyMedium;
 
@@ -77,6 +85,8 @@ class HighlightableTextButton extends StatelessWidget {
       minimumSize: const Size(0, 0),
       alignment: alignment,
       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      // set animation duration to zero, so the text and icon colors are synced
+      animationDuration: const Duration(),
     ).copyWith(
       foregroundColor: HighlightableForegroundColor(
         foregroundColor: foregroundColor ?? textStyle?.color,
@@ -85,15 +95,8 @@ class HighlightableTextButton extends StatelessWidget {
       overlayColor: const MaterialStatePropertyAll(Colors.transparent),
     );
 
-    if (icon != null) {
-      return TextButton.icon(
-        style: style,
-        onPressed: onTap,
-        icon: icon!,
-        label: child,
-      );
-    }
+    if (icon != null) return TextButton.icon(style: style, onPressed: onTap, icon: icon!, label: child!);
 
-    return TextButton(style: style, onPressed: onTap, child: child);
+    return TextButton(style: style, onPressed: onTap, child: child!);
   }
 }

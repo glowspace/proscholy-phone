@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:zpevnik/components/bottom_navigation_bar.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/home/additional_section.dart';
 import 'package:zpevnik/components/home/flexible_top_section.dart';
@@ -15,6 +14,7 @@ import 'package:zpevnik/components/home/song_lists_section.dart';
 import 'package:zpevnik/components/home/songbooks_section.dart';
 import 'package:zpevnik/components/home/top_section.dart';
 import 'package:zpevnik/components/home/update_section.dart';
+import 'package:zpevnik/components/navigation/scaffold.dart';
 import 'package:zpevnik/components/search/search_field.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/home.dart';
@@ -72,7 +72,7 @@ class HomeScreen extends ConsumerWidget {
     ];
 
     columnSections.last.add(
-      HighlightableTextButton(
+      Highlightable(
         padding: const EdgeInsets.only(top: 2 / 3 * kDefaultPadding, bottom: 2 * kDefaultPadding),
         onTap: () => context.push('/edit_sections'),
         child: const Row(
@@ -89,41 +89,42 @@ class HomeScreen extends ConsumerWidget {
     final theme = Theme.of(context);
     final backgroundColor = theme.brightness.isLight ? lightBackgroundColor : darkBackgroundColor;
 
-    return Scaffold(
-      backgroundColor: backgroundColor,
-      bottomNavigationBar: const CustomBottomNavigationBar(),
-      body: SafeArea(
-        child: columns == 1
-            ? CustomScrollView(slivers: [
-                SliverAppBar(
-                  systemOverlayStyle: theme.brightness.isLight ? SystemUiOverlayStyle.dark : SystemUiOverlayStyle.light,
-                  backgroundColor: Colors.transparent,
-                  surfaceTintColor: Colors.transparent,
-                  shadowColor: Colors.transparent,
-                  expandedHeight: 2 * (kToolbarHeight + kDefaultPadding),
-                  toolbarHeight: kToolbarHeight + 2 * kDefaultPadding,
-                  pinned: true,
-                  flexibleSpace: const FlexibleTopSection(),
-                ),
-                SliverPadding(
-                  padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-                  sliver: SliverList.list(children: columnSections.first),
-                ),
-              ])
-            : SingleChildScrollView(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    for (final columnSection in columnSections)
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
-                          child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: columnSection),
+    return AnnotatedRegion(
+      value: theme.brightness.isLight ? SystemUiOverlayStyle.dark : SystemUiOverlayStyle.light,
+      child: CustomScaffold(
+        backgroundColor: backgroundColor,
+        body: SafeArea(
+          child: columns == 1
+              ? CustomScrollView(slivers: [
+                  const SliverAppBar(
+                    backgroundColor: Colors.transparent,
+                    surfaceTintColor: Colors.transparent,
+                    shadowColor: Colors.transparent,
+                    expandedHeight: 2 * (kToolbarHeight + kDefaultPadding),
+                    toolbarHeight: kToolbarHeight + 2 * kDefaultPadding,
+                    pinned: true,
+                    flexibleSpace: FlexibleTopSection(),
+                  ),
+                  SliverPadding(
+                    padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+                    sliver: SliverList.list(children: columnSections.first),
+                  ),
+                ])
+              : SingleChildScrollView(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      for (final columnSection in columnSections)
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
+                            child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: columnSection),
+                          ),
                         ),
-                      ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
+        ),
       ),
     );
   }

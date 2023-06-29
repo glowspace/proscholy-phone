@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:zpevnik/components/navigation/utils.dart';
 import 'package:zpevnik/routing/router.dart';
 
 const double _navigationBarHeight = 64;
@@ -19,7 +19,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
         surfaceTintColor: context.isHome ? theme.canvasColor : null,
         selectedIndex: context.isHome ? 0 : (context.isSearching ? 1 : 2),
         height: _navigationBarHeight,
-        onDestinationSelected: (index) => _onDestinationSelected(context, index),
+        onDestinationSelected: (index) => onDestinationSelected(context, index),
         destinations: const [
           NavigationDestination(
             selectedIcon: Icon(Icons.home),
@@ -37,16 +37,5 @@ class CustomBottomNavigationBar extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  void _onDestinationSelected(BuildContext context, int index) {
-    if (index == 1) {
-      context.push('/search');
-    } else if (index == 2) {
-      // TODO: should pop if already inside of playlists subtree
-      context.push('/playlists');
-    } else {
-      context.popUntil('/');
-    }
   }
 }

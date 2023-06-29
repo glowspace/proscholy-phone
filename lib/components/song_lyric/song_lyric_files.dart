@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/external.dart';
 import 'package:zpevnik/models/song_lyric.dart';
@@ -37,16 +38,15 @@ class SongLyricFilesWidget extends StatelessWidget {
   }
 
   Widget _buildFileTile(BuildContext context, External file) {
-    return InkWell(
+    return Highlightable(
+      highlightBackground: true,
       onTap: () => file.mediaType == MediaType.pdf ? _pushPdf(context, file) : _pushJpg(context, file),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
-        child: Row(children: [
-          const FaIcon(FontAwesomeIcons.filePdf),
-          const SizedBox(width: kDefaultPadding),
-          Expanded(child: Text(file.name)),
-        ]),
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
+      child: Row(children: [
+        const FaIcon(FontAwesomeIcons.filePdf),
+        const SizedBox(width: kDefaultPadding),
+        Expanded(child: Text(file.name)),
+      ]),
     );
   }
 

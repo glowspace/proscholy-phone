@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/playlist/custom_text/utils/controller.dart';
 import 'package:zpevnik/constants.dart';
 
@@ -52,12 +53,11 @@ class FloatingToolbarButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return Highlightable(
+      highlightBackground: true,
+      padding: const EdgeInsets.all(kDefaultPadding),
       onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.all(kDefaultPadding),
-        child: Text(text),
-      ),
+      child: Text(text),
     );
   }
 }

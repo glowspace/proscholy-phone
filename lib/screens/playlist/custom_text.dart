@@ -56,7 +56,7 @@ class _CustomTextScreenState extends State<CustomTextScreen> {
           Consumer(
             builder: (_, ref, __) => ValueListenableBuilder<TextEditingValue>(
               valueListenable: _nameController,
-              builder: (_, value, __) => HighlightableIconButton(
+              builder: (_, value, __) => Highlightable(
                 onTap: value.text.isEmpty
                     ? null
                     : () => context.pop((name: value.text, content: serializeDocumentToMarkdown(_editor.document))),

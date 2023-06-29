@@ -161,23 +161,23 @@ class _ExternalsWidgetState extends State<ExternalsWidget> {
               width: width / 3,
               child: Text(playerController.external.name, overflow: TextOverflow.fade),
             ),
-            HighlightableIconButton(
+            Highlightable(
               onTap: playerController.rewind,
               padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
               icon: const Icon(Icons.fast_rewind),
             ),
-            HighlightableIconButton(
+            Highlightable(
               onTap: playerController.isPlaying ? playerController.pause : playerController.play,
               padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
               icon: Icon(playerController.isPlaying ? Icons.pause : Icons.play_arrow),
             ),
-            HighlightableIconButton(
+            Highlightable(
               onTap: playerController.forward,
               padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
               icon: const Icon(Icons.fast_forward),
             ),
             const Spacer(),
-            HighlightableIconButton(
+            Highlightable(
               onTap: _dismiss,
               padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
               icon: const Icon(Icons.close),

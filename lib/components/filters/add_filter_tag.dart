@@ -1,6 +1,7 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:zpevnik/components/filters/filters.dart';
+import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
@@ -23,7 +24,8 @@ class AddFilterTag extends StatelessWidget {
         borderType: BorderType.RRect,
         radius: const Radius.circular(_addFilterRadius),
         padding: EdgeInsets.zero,
-        child: InkWell(
+        child: Highlightable(
+          highlightBackground: true,
           borderRadius: BorderRadius.circular(_addFilterRadius),
           onTap: () => _showFilters(context),
           child: Padding(

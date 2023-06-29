@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/song_lyric/song_lyric_row.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/playlist_record.dart';
@@ -33,22 +34,21 @@ class PlaylistRecordRow extends StatelessWidget {
       throw UnimplementedError('unsupported playlist record');
     }
 
-    return InkWell(
+    return Highlightable(
+      highlightBackground: true,
+      padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
       onTap: () => _pushPlaylistRecord(context),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
-        child: Row(children: [
-          const ReorderableDragStartListener(
-            index: 0,
-            child: Padding(
-              padding: EdgeInsets.only(left: kDefaultPadding, right: 2 * kDefaultPadding),
-              child: Icon(Icons.drag_indicator),
-            ),
+      child: Row(children: [
+        const ReorderableDragStartListener(
+          index: 0,
+          child: Padding(
+            padding: EdgeInsets.only(left: kDefaultPadding, right: 2 * kDefaultPadding),
+            child: Icon(Icons.drag_indicator),
           ),
-          Expanded(child: Text(title)),
-          Icon(icon),
-        ]),
-      ),
+        ),
+        Expanded(child: Text(title)),
+        Icon(icon),
+      ]),
     );
   }
 

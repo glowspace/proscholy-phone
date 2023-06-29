@@ -12,7 +12,7 @@ class SplitView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(flex: 4, child: child),
-        const VerticalDivider(width: 0),
+        VerticalDivider(width: 0.3, color: Theme.of(context).dividerColor),
         Flexible(flex: 3, child: subChild),
       ],
     );

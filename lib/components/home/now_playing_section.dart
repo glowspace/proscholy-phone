@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/now_playing.dart';
@@ -49,13 +50,13 @@ class _NowPlayingSectionState extends State<NowPlayingSection> {
           margin: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
           clipBehavior: Clip.antiAlias,
-          child: InkWell(
-            onTap: () => _pushSongLyric(context, songLyric!),
+          child: Highlightable(
+            highlightBackground: true,
             highlightColor: theme.brightness.isLight ? _backgroundHighlightColor : _backgroundColor,
+            padding: const EdgeInsets.fromLTRB(2 * kDefaultPadding, kDefaultPadding, kDefaultPadding, kDefaultPadding),
+            onTap: () => _pushSongLyric(context, songLyric!),
             child: Container(
               color: theme.brightness.isLight ? _backgroundColor : _backgroundHighlightColor,
-              padding:
-                  const EdgeInsets.fromLTRB(2 * kDefaultPadding, kDefaultPadding, kDefaultPadding, kDefaultPadding),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

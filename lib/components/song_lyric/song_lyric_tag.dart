@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songbook_record.dart';
 import 'package:zpevnik/models/tag.dart';
@@ -29,7 +30,8 @@ class SongLyricTag extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       borderRadius: BorderRadius.circular(32),
       color: backgroundColor,
-      child: InkWell(
+      child: Highlightable(
+        highlightBackground: true,
         borderRadius: BorderRadius.circular(32),
         highlightColor: theme.colorScheme.primary.withAlpha(0x20),
         onTap: () => songbookRecord != null

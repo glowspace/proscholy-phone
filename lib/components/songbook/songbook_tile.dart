@@ -42,37 +42,36 @@ class SongbookTile extends StatelessWidget {
     final shortcut = songbook.shortcut.toLowerCase();
     final imagePath = _existingLogos.contains(shortcut) ? '$_logosPath/$shortcut.png' : '$_logosPath/default.png';
 
-    return InkWell(
+    return Highlightable(
+      highlightBackground: true,
+      padding: const EdgeInsets.all(kDefaultPadding),
       onTap: () => _pushSongbook(context),
-      child: Padding(
-        padding: const EdgeInsets.all(kDefaultPadding),
-        child: IntrinsicWidth(
-          child: Column(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(15),
-                child: AspectRatio(
-                  aspectRatio: 4 / 3,
-                  child: FittedBox(child: Image.asset(imagePath)),
-                ),
+      child: IntrinsicWidth(
+        child: Column(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(15),
+              child: AspectRatio(
+                aspectRatio: 4 / 3,
+                child: FittedBox(child: Image.asset(imagePath)),
               ),
-              const SizedBox(height: kDefaultPadding / 2),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(child: Text(songbook.name, maxLines: 2)),
-                  Consumer(
-                    builder: (_, ref, __) => HighlightableIconButton(
-                      onTap: () => ref.read(pinnedSongbookIdsProvider.notifier).togglePin(songbook),
-                      icon: Icon(ref.watch(pinnedSongbookIdsProvider).contains(songbook.id)
-                          ? Icons.push_pin
-                          : Icons.push_pin_outlined),
-                    ),
-                  )
-                ],
-              ),
-            ],
-          ),
+            ),
+            const SizedBox(height: kDefaultPadding / 2),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(child: Text(songbook.name, maxLines: 2)),
+                Consumer(
+                  builder: (_, ref, __) => Highlightable(
+                    onTap: () => ref.read(pinnedSongbookIdsProvider.notifier).togglePin(songbook),
+                    icon: Icon(ref.watch(pinnedSongbookIdsProvider).contains(songbook.id)
+                        ? Icons.push_pin
+                        : Icons.push_pin_outlined),
+                  ),
+                )
+              ],
+            ),
+          ],
         ),
       ),
     );

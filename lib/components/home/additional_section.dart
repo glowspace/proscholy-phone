@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/icon_item.dart';
 import 'package:zpevnik/components/section.dart';
 import 'package:zpevnik/constants.dart';
@@ -21,60 +22,54 @@ class AdditionalSection extends StatelessWidget {
       outsideTitleLarge: true,
       margin: const EdgeInsets.symmetric(vertical: 2 / 3 * kDefaultPadding),
       children: [
-        InkWell(
+        Highlightable(
+          highlightBackground: true,
+          padding: const EdgeInsets.all(kDefaultPadding),
           onTap: () => context.push('/user'),
-          child: const Padding(
-            padding: EdgeInsets.all(kDefaultPadding),
-            child: IconItem(icon: Icons.person, text: 'Uživatelský účet', trailingtext: 'Patrik Dobiáš'),
-          ),
+          child: const IconItem(icon: Icons.person, text: 'Uživatelský účet', trailingtext: 'Patrik Dobiáš'),
         ),
         const Divider(),
-        InkWell(
+        Highlightable(
+          highlightBackground: true,
+          padding: const EdgeInsets.all(kDefaultPadding),
           onTap: () => context.push('/user'),
-          child: Padding(
-            padding: const EdgeInsets.all(kDefaultPadding),
-            child: Consumer(
-              builder: (_, ref, __) => IconItem(
-                icon: Icons.settings,
-                text: 'Nastavení aplikace',
-                trailingtext: ref.read(
-                  appDependenciesProvider.select((appDependencies) => appDependencies.packageInfo.version),
-                ),
+          child: Consumer(
+            builder: (_, ref, __) => IconItem(
+              icon: Icons.settings,
+              text: 'Nastavení aplikace',
+              trailingtext: ref.read(
+                appDependenciesProvider.select((appDependencies) => appDependencies.packageInfo.version),
               ),
             ),
           ),
         ),
         const Divider(),
-        InkWell(
+        Highlightable(
+          highlightBackground: true,
+          padding: const EdgeInsets.all(kDefaultPadding),
           onTap: () => launch(context, proscholyUrl),
-          child: const Padding(
-            padding: EdgeInsets.all(kDefaultPadding),
-            child: IconItem(icon: Icons.language, text: 'Webová verze', trailingIcon: Icons.open_in_new),
-          ),
+          child: const IconItem(icon: Icons.language, text: 'Webová verze', trailingIcon: Icons.open_in_new),
         ),
         const Divider(),
-        InkWell(
+        Highlightable(
+          highlightBackground: true,
+          padding: const EdgeInsets.all(kDefaultPadding),
           onTap: () => launch(context, theme.platform.isIos ? feedbackIOSUrl : feedbackAndroidUrl),
-          child: const Padding(
-            padding: EdgeInsets.all(kDefaultPadding),
-            child: IconItem(icon: Icons.feedback, text: 'Zpětná vazba', trailingIcon: Icons.open_in_new),
-          ),
+          child: const IconItem(icon: Icons.feedback, text: 'Zpětná vazba', trailingIcon: Icons.open_in_new),
         ),
         const Divider(),
-        InkWell(
+        Highlightable(
+          highlightBackground: true,
+          padding: const EdgeInsets.all(kDefaultPadding),
           onTap: () => launch(context, addSongUrl),
-          child: const Padding(
-            padding: EdgeInsets.all(kDefaultPadding),
-            child: IconItem(icon: Icons.add, text: 'Přidat píseň', trailingIcon: Icons.open_in_new),
-          ),
+          child: const IconItem(icon: Icons.add, text: 'Přidat píseň', trailingIcon: Icons.open_in_new),
         ),
         const Divider(),
-        InkWell(
+        Highlightable(
+          highlightBackground: true,
+          padding: const EdgeInsets.all(kDefaultPadding),
           onTap: () => launch(context, dontaionsUrl),
-          child: const Padding(
-            padding: EdgeInsets.all(kDefaultPadding),
-            child: IconItem(icon: Icons.favorite, text: 'Darovat', trailingIcon: Icons.open_in_new, iconColor: red),
-          ),
+          child: const IconItem(icon: Icons.favorite, text: 'Darovat', trailingIcon: Icons.open_in_new, iconColor: red),
         ),
       ],
     );

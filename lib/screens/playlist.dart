@@ -2,21 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:go_router/go_router.dart';
-// import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-// import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:zpevnik/components/bottom_navigation_bar.dart';
 import 'package:zpevnik/components/custom/back_button.dart';
 import 'package:zpevnik/components/highlightable.dart';
+import 'package:zpevnik/components/navigation/scaffold.dart';
 import 'package:zpevnik/components/playlist/action_button.dart';
-// import 'package:zpevnik/components/playlist/action_button.dart';
 import 'package:zpevnik/components/playlist/playlist_button.dart';
 import 'package:zpevnik/components/playlist/playlist_records_list_view.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/playlists.dart';
-import 'package:zpevnik/utils/client.dart';
-import 'package:zpevnik/utils/extensions.dart';
 
 class PlaylistScreen extends ConsumerWidget {
   final Playlist playlist;
@@ -26,9 +21,6 @@ class PlaylistScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-
-    final isTablet = MediaQuery.of(context).isTablet;
-    final backgroundColor = theme.brightness.isLight ? theme.colorScheme.surface : theme.scaffoldBackgroundColor;
 
     final Widget floatingActionButton;
 
@@ -64,15 +56,12 @@ class PlaylistScreen extends ConsumerWidget {
       );
     }
 
-    return Scaffold(
+    return CustomScaffold(
       appBar: AppBar(
-        backgroundColor: isTablet ? backgroundColor : null,
-        elevation: isTablet ? 0 : null,
         leading: const CustomBackButton(),
         title: Text(playlist.name),
-        leadingWidth: 24 + 4 * kDefaultPadding,
         actions: [
-          HighlightableIconButton(
+          Highlightable(
             onTap: playlist.records.isEmpty ? null : () => context.push('/search'), // TODO: use arguments
             padding: const EdgeInsets.all(kDefaultPadding),
             icon: const Icon(Icons.filter_alt),
@@ -80,9 +69,7 @@ class PlaylistScreen extends ConsumerWidget {
           if (!playlist.isFavorites) PlaylistButton(playlist: playlist, isInAppBar: true, extendPadding: true),
         ],
       ),
-      backgroundColor: isTablet ? backgroundColor : null,
-      floatingActionButton: isTablet && playlist.records.isEmpty ? null : floatingActionButton,
-      bottomNavigationBar: MediaQuery.of(context).isTablet ? null : const CustomBottomNavigationBar(),
+      floatingActionButton: playlist.records.isEmpty ? null : floatingActionButton,
       body: SafeArea(child: PlaylistRecordsListView(playlist: playlist)),
     );
   }

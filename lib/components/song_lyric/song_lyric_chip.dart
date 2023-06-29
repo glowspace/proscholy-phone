@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
 
 const double _chipRadius = 8;
@@ -19,19 +20,18 @@ class SongLyricChip extends StatelessWidget {
         borderRadius: BorderRadius.circular(_chipRadius),
         border: Border.all(color: theme.dividerColor, width: 0.5),
       ),
-      child: InkWell(
-        onTap: onTap,
+      child: Highlightable(
+        highlightBackground: true,
         borderRadius: BorderRadius.circular(_chipRadius),
-        child: Padding(
-          padding: const EdgeInsets.all(kDefaultPadding / 2),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(icon, color: theme.colorScheme.primary, size: 14),
-              const SizedBox(width: kDefaultPadding / 2),
-              Text(text, style: theme.textTheme.labelMedium),
-            ],
-          ),
+        padding: const EdgeInsets.all(kDefaultPadding / 2),
+        onTap: onTap,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, color: theme.colorScheme.primary, size: 14),
+            const SizedBox(width: kDefaultPadding / 2),
+            Text(text, style: theme.textTheme.labelMedium),
+          ],
         ),
       ),
     );

@@ -9,6 +9,7 @@ import 'package:zpevnik/models/settings.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/full_screen.dart';
 import 'package:zpevnik/providers/settings.dart';
+import 'package:zpevnik/utils/extensions.dart';
 
 class SongLyricBottomBar extends ConsumerWidget {
   final SongLyric songLyric;
@@ -20,30 +21,34 @@ class SongLyricBottomBar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final autoScrollSpeedIndex = ref.watch(settingsProvider.select((settings) => settings.autoScrollSpeedIndex));
 
+    final showLabels = MediaQuery.of(context).isTablet;
+
     return ListenableBuilder(
       listenable: autoScrollController,
       builder: (_, __) => BottomAppBar(
         height: 44,
-        padding: const EdgeInsets.fromLTRB(kDefaultPadding, kDefaultPadding / 4, kDefaultPadding, kDefaultPadding),
+        padding: const EdgeInsets.fromLTRB(kDefaultPadding, kDefaultPadding / 4, kDefaultPadding, 0),
         child: Row(children: [
-          HighlightableIconButton(
+          Highlightable(
             padding: const EdgeInsets.all(kDefaultPadding),
             onTap: songLyric.hasChords ? () => _showSettings(context) : null,
             icon: const Icon(Icons.tune),
+            child: showLabels ? const Text('Nástroje') : null,
           ),
-          HighlightableIconButton(
+          Highlightable(
             padding: const EdgeInsets.all(kDefaultPadding),
             // onTap: _songLyric.hasRecordings ? () => _showingExternals.value = true : null,
             icon: const Icon(FontAwesomeIcons.headphones),
+            child: showLabels ? const Text('Nahrávky') : null,
           ),
-          HighlightableIconButton(
+          Highlightable(
             padding: const EdgeInsets.all(kDefaultPadding),
             onTap: ref.read(fullScreenProvider.notifier).toggle,
             icon: const Icon(Icons.fullscreen),
           ),
           const Spacer(),
           if (autoScrollController.isScrolling)
-            HighlightableIconButton(
+            Highlightable(
               padding: const EdgeInsets.all(kDefaultPadding),
               onTap: autoScrollSpeedIndex == 0
                   ? null
@@ -51,17 +56,19 @@ class SongLyricBottomBar extends ConsumerWidget {
               icon: const Icon(Icons.remove),
             ),
           if (autoScrollController.isScrolling)
-            HighlightableIconButton(
+            Highlightable(
               padding: const EdgeInsets.all(kDefaultPadding),
               onTap: autoScrollSpeedIndex == autoScrollSpeeds.length - 1
                   ? null
                   : () => ref.read(settingsProvider.notifier).changeAutoScrollSpeedIndex(1),
               icon: const Icon(Icons.add),
             ),
-          HighlightableIconButton(
+          Highlightable(
             padding: const EdgeInsets.all(kDefaultPadding),
             onTap: autoScrollController.canScroll ? () => autoScrollController.toggle(ref) : null,
             icon: autoScrollController.isScrolling ? const Icon(Icons.stop) : const Icon(Icons.arrow_downward),
+            child:
+                showLabels ? (autoScrollController.isScrolling ? const Text('Zastavit') : const Text('Rolovat')) : null,
           ),
         ]),
       ),

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:zpevnik/components/custom/back_button.dart';
 import 'package:zpevnik/components/highlightable.dart';
+import 'package:zpevnik/components/navigation/scaffold.dart';
 import 'package:zpevnik/models/bible_verse.dart';
 import 'package:zpevnik/utils/bible_api_client.dart';
 
@@ -25,11 +26,11 @@ class _BibleVerseScreenState extends State<BibleVerseScreen> {
   @override
   Widget build(BuildContext context) {
     return Consumer(
-      builder: (_, ref, __) => Scaffold(
+      builder: (_, ref, __) => CustomScaffold(
         appBar: AppBar(
           leading: const CustomBackButton(),
           actions: [
-            HighlightableIconButton(
+            Highlightable(
               onTap: () async => context.pop((
                 book: _bibleBook!.number - 1,
                 chapter: _chapter,

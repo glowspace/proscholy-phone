@@ -70,7 +70,7 @@ class SongLyricSettingsWidget extends ConsumerWidget {
               ]),
             ),
           ),
-          HighlightableTextButton(
+          Highlightable(
             onTap: ref.read(songLyricSettingsProvider(songLyric).notifier).reset,
             padding: const EdgeInsets.all(kDefaultPadding),
             textStyle: theme.textTheme.bodySmall,
@@ -86,7 +86,7 @@ class SongLyricSettingsWidget extends ConsumerWidget {
       width: _settingsOptionsWidth,
       child: Consumer(
         builder: (_, ref, __) => Row(children: [
-          HighlightableIconButton(
+          Highlightable(
             padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 4),
             onTap: () => ref.read(songLyricSettingsProvider(songLyric).notifier).changeTransposition(-1),
             icon: const Icon(Icons.remove),
@@ -97,7 +97,7 @@ class SongLyricSettingsWidget extends ConsumerWidget {
               textAlign: TextAlign.center,
             ),
           ),
-          HighlightableIconButton(
+          Highlightable(
             padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 4),
             onTap: () => ref.read(songLyricSettingsProvider(songLyric).notifier).changeTransposition(1),
             icon: const Icon(Icons.add),

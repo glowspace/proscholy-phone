@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:zpevnik/components/custom/close_button.dart';
 import 'package:zpevnik/components/font_size_slider.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/logo.dart';
+import 'package:zpevnik/components/navigation/scaffold.dart';
 import 'package:zpevnik/components/section.dart';
 import 'package:zpevnik/components/selector_widget.dart';
 import 'package:zpevnik/constants.dart';
@@ -19,18 +21,24 @@ class UserScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
 
     // final width = MediaQuery.of(context).size.width;
 
-    return Scaffold(
+    return CustomScaffold(
+      appBar: AppBar(
+        leading: const CustomCloseButton(),
+        title: const Logo(),
+        centerTitle: true,
+        systemOverlayStyle: theme.brightness.isLight ? SystemUiOverlayStyle.dark : SystemUiOverlayStyle.light,
+      ),
       body: SafeArea(
         child: Stack(
           children: [
             SingleChildScrollView(
               child: Column(
                 children: [
-                  const Logo(),
                   // Center(
                   //   child: Container(
                   //     padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
@@ -50,7 +58,7 @@ class UserScreen extends StatelessWidget {
                   // const SizedBox(height: kDefaultPadding),
                   _buildAppSettings(context),
                   _buildSongSettings(context),
-                  HighlightableTextButton(
+                  Highlightable(
                     onTap: () => context.push('/about'),
                     textStyle: textTheme.bodySmall,
                     child: const Text('O projektu'),
@@ -59,7 +67,6 @@ class UserScreen extends StatelessWidget {
                 ],
               ),
             ),
-            const CustomCloseButton(),
           ],
         ),
       ),

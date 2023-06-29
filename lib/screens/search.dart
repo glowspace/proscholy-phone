@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:zpevnik/components/bottom_navigation_bar.dart';
 import 'package:zpevnik/components/filters/filters.dart';
 import 'package:zpevnik/components/filters/filters_row.dart';
+import 'package:zpevnik/components/navigation/scaffold.dart';
 import 'package:zpevnik/components/search/search_field.dart';
 import 'package:zpevnik/components/search/search_song_lyrics_list_view.dart';
 import 'package:zpevnik/components/split_view.dart';
@@ -17,7 +17,6 @@ class SearchScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
     final mediaQuery = MediaQuery.of(context);
 
     final appBar = AppBar(
@@ -47,26 +46,13 @@ class SearchScreen extends ConsumerWidget {
     );
 
     if (mediaQuery.isTablet && mediaQuery.isLandscape) {
-      return Scaffold(
-        appBar: appBar,
-        body: SafeArea(
-          top: false,
-          bottom: false,
-          child: SplitView(
-            subChild: Scaffold(
-              backgroundColor: theme.brightness.isLight ? theme.colorScheme.surface : null,
-              body: const SafeArea(child: FiltersWidget()),
-            ),
-            child: const SearchSongLyricsListView(),
-          ),
-        ),
+      return SplitView(
+        subChild: const Scaffold(body: SafeArea(child: FiltersWidget())),
+        child: CustomScaffold(appBar: appBar, body: const SearchSongLyricsListView()),
       );
     }
 
-    return Scaffold(
-      appBar: appBar,
-      body: const SafeArea(bottom: false, child: SearchSongLyricsListView()),
-    );
+    return CustomScaffold(appBar: appBar, body: const SearchSongLyricsListView());
   }
 
   void _maybePushMatchedSonglyric(BuildContext context, WidgetRef ref) {
