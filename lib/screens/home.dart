@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/home/additional_section.dart';
 import 'package:zpevnik/components/home/flexible_top_section.dart';
@@ -18,6 +17,7 @@ import 'package:zpevnik/components/navigation/scaffold.dart';
 import 'package:zpevnik/components/search/search_field.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/home.dart';
+import 'package:zpevnik/components/home/edit_home_sections_sheet.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
@@ -74,7 +74,7 @@ class HomeScreen extends ConsumerWidget {
     columnSections.last.add(
       Highlightable(
         padding: const EdgeInsets.only(top: 2 / 3 * kDefaultPadding, bottom: 2 * kDefaultPadding),
-        onTap: () => context.push('/edit_sections'),
+        onTap: () => _showEditSections(context),
         child: const Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -126,6 +126,14 @@ class HomeScreen extends ConsumerWidget {
                 ),
         ),
       ),
+    );
+  }
+
+  void _showEditSections(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(kDefaultRadius))),
+      builder: (context) => const EditHomeSectionsSheet(),
     );
   }
 }

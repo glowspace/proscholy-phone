@@ -1,7 +1,9 @@
+import 'package:collection/collection.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:zpevnik/models/objectbox.g.dart';
 import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/providers/playlists.dart';
+import 'package:zpevnik/providers/song_lyrics.dart';
 import 'package:zpevnik/providers/songbooks.dart';
 import 'package:zpevnik/providers/utils.dart';
 
@@ -21,7 +23,17 @@ List<Tag> tags(TagsRef ref, TagType tagType) {
       int id = -2000;
       return [for (final playlist in playlists) Tag(id: id--, name: playlist.name, dbType: tagType.rawValue)];
     case TagType.language:
-      return [];
+      final languageCounts = <String, int>{};
+
+      for (final songLyric in ref.read(songLyricsProvider)) {
+        languageCounts[songLyric.langDescription] = (languageCounts[songLyric.langDescription] ?? 0) + 1;
+      }
+
+      final languages = languageCounts.keys.sorted((a, b) => languageCounts[b]!.compareTo(languageCounts[a]!));
+
+      int id = -1;
+
+      return [for (final language in languages) Tag(id: id--, name: language, dbType: tagType.rawValue)];
     default:
       final tags = queryStore(ref, condition: Tag_.dbType.equals(tagType.rawValue));
 

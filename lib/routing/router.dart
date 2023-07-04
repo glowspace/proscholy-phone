@@ -11,8 +11,8 @@ import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/routing/arguments/song_lyric.dart';
 import 'package:zpevnik/screens/about.dart';
-import 'package:zpevnik/screens/home/edit_home_sections.dart';
-import 'package:zpevnik/screens/home/home.dart';
+import 'package:zpevnik/components/home/edit_home_sections_sheet.dart';
+import 'package:zpevnik/screens/home.dart';
 import 'package:zpevnik/screens/initial.dart';
 import 'package:zpevnik/screens/playlist.dart';
 import 'package:zpevnik/screens/playlist/bible_verse.dart';
@@ -54,17 +54,7 @@ class AppNavigator extends NavigatorObserver {
     initialLocation: '/initial',
     observers: [this],
     routes: [
-      GoRoute(
-        path: '/',
-        builder: (_, __) => const HomeScreen(),
-        routes: [
-          GoRoute(
-            path: 'edit_sections',
-            pageBuilder: (_, __) =>
-                const MaterialPage(name: '/edit_sections', fullscreenDialog: true, child: EditHomeSectionsScreen()),
-          )
-        ],
-      ),
+      GoRoute(path: '/', builder: (_, __) => const HomeScreen()),
       GoRoute(path: '/about', builder: (_, __) => const AboutScreen()),
       GoRoute(path: '/initial', builder: (_, __) => const InitialScreen()),
       GoRoute(path: '/playlist', builder: (_, state) => PlaylistScreen(playlist: state.extra as Playlist)),

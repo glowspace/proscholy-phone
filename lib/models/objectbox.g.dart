@@ -903,11 +903,8 @@ ModelDefinition getObjectBoxModel() {
           final lilypondOffset = object.lilypond == null
               ? null
               : fbb.writeString(object.lilypond!);
-          final langOffset =
-              object.lang == null ? null : fbb.writeString(object.lang!);
-          final langDescriptionOffset = object.langDescription == null
-              ? null
-              : fbb.writeString(object.langDescription!);
+          final langOffset = fbb.writeString(object.lang);
+          final langDescriptionOffset = fbb.writeString(object.langDescription);
           fbb.startTable(31);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, nameOffset);
@@ -944,9 +941,9 @@ ModelDefinition getObjectBoxModel() {
               lilypond: const fb.StringReader(asciiOptimization: true)
                   .vTableGetNullable(buffer, rootOffset, 14),
               lang: const fb.StringReader(asciiOptimization: true)
-                  .vTableGetNullable(buffer, rootOffset, 16),
+                  .vTableGet(buffer, rootOffset, 16, ''),
               langDescription: const fb.StringReader(asciiOptimization: true)
-                  .vTableGetNullable(buffer, rootOffset, 18),
+                  .vTableGet(buffer, rootOffset, 18, ''),
               dbType:
                   const fb.Int64Reader().vTableGet(buffer, rootOffset, 24, 0),
               hasChords: const fb.BoolReader().vTableGet(buffer, rootOffset, 26, false),

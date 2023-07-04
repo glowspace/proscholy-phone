@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/search.dart';
 import 'package:zpevnik/routing/arguments/search.dart';
@@ -24,6 +26,8 @@ class SongLyricRow extends StatelessWidget {
   // arguments that hold song lyrics that are accessible through swiping on song lyrics screen
   final SongLyricScreenArguments? songLyricScreenArguments;
 
+  final Playlist? playlist;
+
   const SongLyricRow({
     super.key,
     required this.songLyric,
@@ -31,6 +35,7 @@ class SongLyricRow extends StatelessWidget {
     this.songLyricScreenArguments,
     this.isDraggable = false,
     this.allowHighlight = false,
+    this.playlist,
   });
 
   @override
@@ -116,11 +121,7 @@ class SongLyricRow extends StatelessWidget {
     //   );
     // }
 
-    // final songLyricsProvider = context.read<PlaylistSongLyricsProvider?>();
-
-    // // SlidableAuto
-
-    // if (songLyricsProvider != null) {
+    // if (playlist != null) {
     //   return Slidable(
     //     key: Key('${songLyric.id}'),
     //     groupTag: 'song_lyric',

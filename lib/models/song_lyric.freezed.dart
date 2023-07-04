@@ -31,9 +31,9 @@ mixin _$SongLyric {
   String? get lyrics => throw _privateConstructorUsedError;
   @JsonKey(name: 'lilypond_svg')
   String? get lilypond => throw _privateConstructorUsedError;
-  String? get lang => throw _privateConstructorUsedError;
+  String get lang => throw _privateConstructorUsedError;
   @JsonKey(name: 'lang_string')
-  String? get langDescription => throw _privateConstructorUsedError;
+  String get langDescription => throw _privateConstructorUsedError;
   @JsonKey(name: 'type_enum', fromJson: SongLyricType.rawValueFromString)
   int get dbType => throw _privateConstructorUsedError;
   bool get hasChords => throw _privateConstructorUsedError;
@@ -85,9 +85,9 @@ abstract class $SongLyricCopyWith<$Res> {
       String? lyrics,
       @JsonKey(name: 'lilypond_svg')
           String? lilypond,
-      String? lang,
+      String lang,
       @JsonKey(name: 'lang_string')
-          String? langDescription,
+          String langDescription,
       @JsonKey(name: 'type_enum', fromJson: SongLyricType.rawValueFromString)
           int dbType,
       bool hasChords,
@@ -134,8 +134,8 @@ class _$SongLyricCopyWithImpl<$Res, $Val extends SongLyric>
     Object? secondaryName2 = freezed,
     Object? lyrics = freezed,
     Object? lilypond = freezed,
-    Object? lang = freezed,
-    Object? langDescription = freezed,
+    Object? lang = null,
+    Object? langDescription = null,
     Object? dbType = null,
     Object? hasChords = null,
     Object? accidentals = freezed,
@@ -174,14 +174,14 @@ class _$SongLyricCopyWithImpl<$Res, $Val extends SongLyric>
           ? _value.lilypond
           : lilypond // ignore: cast_nullable_to_non_nullable
               as String?,
-      lang: freezed == lang
+      lang: null == lang
           ? _value.lang
           : lang // ignore: cast_nullable_to_non_nullable
-              as String?,
-      langDescription: freezed == langDescription
+              as String,
+      langDescription: null == langDescription
           ? _value.langDescription
           : langDescription // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as String,
       dbType: null == dbType
           ? _value.dbType
           : dbType // ignore: cast_nullable_to_non_nullable
@@ -253,9 +253,9 @@ abstract class _$$_SongLyricCopyWith<$Res> implements $SongLyricCopyWith<$Res> {
       String? lyrics,
       @JsonKey(name: 'lilypond_svg')
           String? lilypond,
-      String? lang,
+      String lang,
       @JsonKey(name: 'lang_string')
-          String? langDescription,
+          String langDescription,
       @JsonKey(name: 'type_enum', fromJson: SongLyricType.rawValueFromString)
           int dbType,
       bool hasChords,
@@ -300,8 +300,8 @@ class __$$_SongLyricCopyWithImpl<$Res>
     Object? secondaryName2 = freezed,
     Object? lyrics = freezed,
     Object? lilypond = freezed,
-    Object? lang = freezed,
-    Object? langDescription = freezed,
+    Object? lang = null,
+    Object? langDescription = null,
     Object? dbType = null,
     Object? hasChords = null,
     Object? accidentals = freezed,
@@ -340,14 +340,14 @@ class __$$_SongLyricCopyWithImpl<$Res>
           ? _value.lilypond
           : lilypond // ignore: cast_nullable_to_non_nullable
               as String?,
-      lang: freezed == lang
+      lang: null == lang
           ? _value.lang
           : lang // ignore: cast_nullable_to_non_nullable
-              as String?,
-      langDescription: freezed == langDescription
+              as String,
+      langDescription: null == langDescription
           ? _value.langDescription
           : langDescription // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as String,
       dbType: null == dbType
           ? _value.dbType
           : dbType // ignore: cast_nullable_to_non_nullable
@@ -417,9 +417,9 @@ class _$_SongLyric extends _SongLyric {
       this.lyrics,
       @JsonKey(name: 'lilypond_svg')
           this.lilypond,
-      this.lang,
+      required this.lang,
       @JsonKey(name: 'lang_string')
-          this.langDescription,
+          required this.langDescription,
       @JsonKey(name: 'type_enum', fromJson: SongLyricType.rawValueFromString)
           required this.dbType,
       required this.hasChords,
@@ -468,10 +468,10 @@ class _$_SongLyric extends _SongLyric {
   @JsonKey(name: 'lilypond_svg')
   final String? lilypond;
   @override
-  final String? lang;
+  final String lang;
   @override
   @JsonKey(name: 'lang_string')
-  final String? langDescription;
+  final String langDescription;
   @override
   @JsonKey(name: 'type_enum', fromJson: SongLyricType.rawValueFromString)
   final int dbType;
@@ -599,9 +599,9 @@ abstract class _SongLyric extends SongLyric {
       final String? lyrics,
       @JsonKey(name: 'lilypond_svg')
           final String? lilypond,
-      final String? lang,
+      required final String lang,
       @JsonKey(name: 'lang_string')
-          final String? langDescription,
+          required final String langDescription,
       @JsonKey(name: 'type_enum', fromJson: SongLyricType.rawValueFromString)
           required final int dbType,
       required final bool hasChords,
@@ -651,10 +651,10 @@ abstract class _SongLyric extends SongLyric {
   @JsonKey(name: 'lilypond_svg')
   String? get lilypond;
   @override
-  String? get lang;
+  String get lang;
   @override
   @JsonKey(name: 'lang_string')
-  String? get langDescription;
+  String get langDescription;
   @override
   @JsonKey(name: 'type_enum', fromJson: SongLyricType.rawValueFromString)
   int get dbType;

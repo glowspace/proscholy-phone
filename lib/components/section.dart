@@ -38,7 +38,7 @@ class Section extends StatelessWidget {
         children: [
           if (outsideTitle != null)
             Padding(
-              padding: const EdgeInsets.only(bottom: kDefaultPadding / 2),
+              padding: const EdgeInsets.only(bottom: 2 / 3 * kDefaultPadding),
               child: Row(children: [
                 Expanded(
                   child: Text(

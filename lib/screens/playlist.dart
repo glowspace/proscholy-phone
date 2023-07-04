@@ -93,6 +93,6 @@ class PlaylistScreen extends ConsumerWidget {
     // TODO: use arguments
     final songLyric = await context.push<SongLyric>('/search');
 
-    ref.read(playlistsProvider.notifier).addToPlaylist(playlist, songLyric: songLyric);
+    if (songLyric != null) ref.read(playlistsProvider.notifier).addToPlaylist(playlist, songLyric: songLyric);
   }
 }

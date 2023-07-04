@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:zpevnik/components/playlist/playlist_record_row.dart';
-import 'package:zpevnik/components/utils/proxy_decorator.dart';
 import 'package:zpevnik/models/playlist.dart';
 
 class PlaylistRecordsListView extends StatelessWidget {
@@ -12,7 +11,6 @@ class PlaylistRecordsListView extends StatelessWidget {
   Widget build(BuildContext context) {
     return ReorderableListView.builder(
       primary: false,
-      proxyDecorator: transparentBackgroundProxyDecorator,
       itemCount: playlist.records.length,
       itemBuilder: (_, index) => PlaylistRecordRow(
         key: Key('${playlist.records[index].id}'),

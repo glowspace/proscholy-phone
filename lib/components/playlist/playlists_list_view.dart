@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zpevnik/components/playlist/playlist_row.dart';
-import 'package:zpevnik/components/utils/proxy_decorator.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/playlists.dart';
 
@@ -19,7 +18,6 @@ class PlaylistsListView extends ConsumerWidget {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           padding: const EdgeInsets.only(top: kDefaultPadding / 2, bottom: 2 * kDefaultPadding),
-          proxyDecorator: transparentBackgroundProxyDecorator,
           itemCount: playlists.length,
           itemBuilder: (_, index) {
             final playlist = playlists[index];
