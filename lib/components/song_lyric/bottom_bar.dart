@@ -11,6 +11,8 @@ import 'package:zpevnik/providers/full_screen.dart';
 import 'package:zpevnik/providers/settings.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
+const double _bottomBarHeight = 64;
+
 class SongLyricBottomBar extends ConsumerWidget {
   final SongLyric songLyric;
   final AutoScrollController autoScrollController;
@@ -26,7 +28,7 @@ class SongLyricBottomBar extends ConsumerWidget {
     return ListenableBuilder(
       listenable: autoScrollController,
       builder: (_, __) => BottomAppBar(
-        height: 44,
+        height: _bottomBarHeight,
         padding: const EdgeInsets.fromLTRB(kDefaultPadding, kDefaultPadding / 4, kDefaultPadding, 0),
         child: Row(children: [
           Highlightable(

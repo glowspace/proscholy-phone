@@ -1,13 +1,19 @@
+import 'dart:math';
+
+import 'package:collection/collection.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:zpevnik/models/model.dart';
 import 'package:zpevnik/models/objectbox.g.dart';
 import 'package:zpevnik/models/settings.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/models/tag.dart';
+import 'package:zpevnik/providers/app_dependencies.dart';
 import 'package:zpevnik/providers/tags.dart';
 import 'package:zpevnik/providers/utils.dart';
 
 part 'song_lyrics.g.dart';
+
+const _recentSongLyricsKey = 'recent_song_lyrics';
 
 // TODO: remove this after some time, that all users have at least 3.1.0 version
 void migrateSongLyricSettings(Store store) {
@@ -53,7 +59,7 @@ void migrateSongLyricSettings(Store store) {
   store.box<SongLyric>().putMany(songLyricsWithSettings);
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 List<SongLyric> songLyrics(SongLyricsRef ref) {
   final songLyrics = queryStore(
     ref,
@@ -113,4 +119,25 @@ List<SongLyric> songsListSongLyrics(SongsListSongLyricsRef ref, SongsList songsL
     for (final record in songsList.records)
       if (record.songLyric.target != null) record.songLyric.target!
   ];
+}
+
+@riverpod
+class RecentSongLyrics extends _$RecentSongLyrics {
+  @override
+  List<SongLyric> build() {
+    final appDependencies = ref.read(appDependenciesProvider);
+    final ids = (appDependencies.sharedPreferences.getStringList(_recentSongLyricsKey) ?? [])
+        .map((id) => int.parse(id))
+        .toList();
+
+    return appDependencies.store.box<SongLyric>().getMany(ids).whereNotNull().toList();
+  }
+
+  void add(SongLyric songLyric) {
+    state = [songLyric, ...state.where((element) => element != songLyric).toList().sublist(0, min(4, state.length))];
+
+    ref
+        .read(appDependenciesProvider.select((appDependencies) => appDependencies.sharedPreferences))
+        .setStringList(_recentSongLyricsKey, state.map((songLyric) => '${songLyric.id}').toList());
+  }
 }

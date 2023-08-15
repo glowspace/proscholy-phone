@@ -9,6 +9,7 @@ import 'package:zpevnik/models/news_item.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/models/utils.dart';
 import 'package:zpevnik/providers/app_dependencies.dart';
+import 'package:zpevnik/providers/search.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
 import 'package:zpevnik/providers/songbooks.dart';
 import 'package:zpevnik/providers/utils.dart';
@@ -45,7 +46,7 @@ Future<void> loadInitial(WidgetRef ref) async {
   final lastVersion = appDependencies.sharedPreferences.getString(_versionKey);
   final currentVersion = '${appDependencies.packageInfo.version}+${appDependencies.packageInfo.buildNumber}';
 
-  if (lastVersion == currentVersion) return;
+  // if (lastVersion == currentVersion) return;
 
   // TODO: remove this after some time, that all users have at least 3.1.0 version
   migratePinnedSongbooks(appDependencies.store, appDependencies.sharedPreferences);
@@ -54,10 +55,14 @@ Future<void> loadInitial(WidgetRef ref) async {
   // TODO: remove json file after loading, this is not possible right now
   final json = jsonDecode(await rootBundle.loadString('assets/data.json'));
 
-  await Future.wait([
-    parseAndStoreData(appDependencies.store, json['data']),
-    storeSongLyrics(appDependencies.store, readJsonList(json['data'][SongLyric.fieldKey], mapper: SongLyric.fromJson)),
-  ]);
+  await parseAndStoreData(appDependencies.store, json['data']);
+
+  final songLyrics = await storeSongLyrics(
+    appDependencies.store,
+    readJsonList(json['data'][SongLyric.fieldKey], mapper: SongLyric.fromJson),
+  );
+
+  ref.read(searchedSongLyricsProvider.notifier).update(songLyrics);
 
   appDependencies.sharedPreferences.remove(_lastUpdateKey);
   appDependencies.sharedPreferences.setString(_versionKey, currentVersion);
@@ -131,7 +136,11 @@ Stream<UpdateStatus> update(UpdateRef ref) async* {
 
   songLyrics.addAll(await Future.wait(futures));
 
-  yield Updated(await storeSongLyrics(appDependencies.store, songLyrics));
+  final updatedSongLyrics = await storeSongLyrics(appDependencies.store, songLyrics);
+
+  ref.read(searchedSongLyricsProvider.notifier).update(updatedSongLyrics);
+
+  yield Updated(updatedSongLyrics);
 
   appDependencies.sharedPreferences.setString(_lastUpdateKey, _dateFormat.format(now));
 }

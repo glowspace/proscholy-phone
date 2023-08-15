@@ -6,11 +6,11 @@ part of 'song_lyrics.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$songLyricsHash() => r'18510f11d7f7332f5bb18909e5ab7cda0ac11269';
+String _$songLyricsHash() => r'3fd6d38283929d11d0aa3e6da91d224335044034';
 
 /// See also [songLyrics].
 @ProviderFor(songLyrics)
-final songLyricsProvider = AutoDisposeProvider<List<SongLyric>>.internal(
+final songLyricsProvider = Provider<List<SongLyric>>.internal(
   songLyrics,
   name: r'songLyricsProvider',
   debugGetCreateSourceHash:
@@ -19,7 +19,7 @@ final songLyricsProvider = AutoDisposeProvider<List<SongLyric>>.internal(
   allTransitiveDependencies: null,
 );
 
-typedef SongLyricsRef = AutoDisposeProviderRef<List<SongLyric>>;
+typedef SongLyricsRef = ProviderRef<List<SongLyric>>;
 String _$filteredSongLyricsHash() =>
     r'1b17747dbe67c621e42c542fcb3ec8b8af5f5681';
 
@@ -208,4 +208,21 @@ class SongsListSongLyricsProvider extends AutoDisposeProvider<List<SongLyric>> {
     return _SystemHash.finish(hash);
   }
 }
+
+String _$recentSongLyricsHash() => r'76f10d9ea4ca1ed503692dfbd0a2e3023e796307';
+
+/// See also [RecentSongLyrics].
+@ProviderFor(RecentSongLyrics)
+final recentSongLyricsProvider =
+    AutoDisposeNotifierProvider<RecentSongLyrics, List<SongLyric>>.internal(
+  RecentSongLyrics.new,
+  name: r'recentSongLyricsProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$recentSongLyricsHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$RecentSongLyrics = AutoDisposeNotifier<List<SongLyric>>;
 // ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions

@@ -77,7 +77,7 @@ class _SongLyricScreenState extends ConsumerState<SongLyricScreen> {
                 ],
               ),
         bottomNavigationBar: ref.watch(fullScreenProvider)
-            ? null
+            ? const SizedBox()
             : SongLyricBottomBar(
                 songLyric: songLyric,
                 autoScrollController: autoScrollController,

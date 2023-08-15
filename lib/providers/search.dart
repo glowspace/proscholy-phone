@@ -25,7 +25,7 @@ const _upsertQuery =
     'INSERT OR REPLACE INTO song_lyrics_search(rowid, name, secondary_name_1, secondary_name_2, lyrics) VALUES(?, ?, ?, ?, ?);';
 
 const _selectQuery =
-    'SELECT id, matchinfo(song_lyrics_search, "pcnalx") as info FROM song_lyrics_search WHERE song_lyrics_search MATCH ?;';
+    'SELECT rowid, matchinfo(song_lyrics_search, "pcnalx") as info FROM song_lyrics_search WHERE song_lyrics_search MATCH ?;';
 
 @riverpod
 class SearchText extends _$SearchText {
@@ -37,13 +37,21 @@ class SearchText extends _$SearchText {
 
 @riverpod
 class SearchedSongLyrics extends _$SearchedSongLyrics {
+  String? _currentSearchText;
+
   Database get ftsDatabase {
     return ref.read(appDependenciesProvider.select((appDependencies) => appDependencies.ftsDatabase));
   }
 
   @override
   SearchedSongLyricsResult build() {
-    ref.listen(searchTextProvider, _search);
+    ref.listen(searchTextProvider, (_, searchText) async {
+      _currentSearchText = searchText;
+
+      final result = await _search(searchText);
+
+      if (_currentSearchText == searchText) state = result;
+    });
 
     return const SearchedSongLyricsResult();
   }
@@ -66,14 +74,10 @@ class SearchedSongLyrics extends _$SearchedSongLyrics {
     await batch.commit();
   }
 
-  void _search(String? _, String searchText) async {
+  Future<SearchedSongLyricsResult> _search(String searchText) async {
     searchText = searchText.trim();
 
-    if (searchText.isEmpty) {
-      state = const SearchedSongLyricsResult();
-
-      return;
-    }
+    if (searchText.isEmpty) return const SearchedSongLyricsResult();
 
     final searchedNumber = _numberRE.firstMatch(searchText)?.group(0);
     final songLyricBox =
@@ -105,7 +109,7 @@ class SearchedSongLyrics extends _$SearchedSongLyrics {
     final searchResults = <int>[];
 
     for (final value in await ftsDatabase.rawQuery(_selectQuery, [searchText])) {
-      final songLyricId = value['id'] as int;
+      final songLyricId = value['rowid'] as int;
 
       if (!matchedIds.contains(songLyricId)) {
         searchResults.add(songLyricId);
@@ -117,7 +121,7 @@ class SearchedSongLyrics extends _$SearchedSongLyrics {
 
     final songLyrics = await songLyricBox.getManyAsync(searchResults);
 
-    state = SearchedSongLyricsResult(
+    return SearchedSongLyricsResult(
       songLyrics: songLyrics.whereNotNull().toList(),
       searchedNumber: searchedNumber,
       matchedById: matchedById,

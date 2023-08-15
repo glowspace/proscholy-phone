@@ -57,7 +57,8 @@ class SearchScreen extends ConsumerWidget {
 
   void _maybePushMatchedSonglyric(BuildContext context, WidgetRef ref) {
     final matchedById = ref.read(
-        searchedSongLyricsProvider.select((searchedSongLyricsProvider) => searchedSongLyricsProvider.matchedById));
+      searchedSongLyricsProvider.select((searchedSongLyricsProvider) => searchedSongLyricsProvider.matchedById),
+    );
 
     if (matchedById != null) context.push('/song_lyric', extra: SongLyricScreenArguments(songLyrics: [matchedById]));
   }
