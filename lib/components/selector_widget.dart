@@ -1,15 +1,15 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class SelectorWidget extends StatelessWidget {
   final Function(int) onSelected;
-  final List<Widget> options;
+  final List<ButtonSegment<int>> segments;
   final int selected;
   final double? width;
 
   const SelectorWidget({
     super.key,
     required this.onSelected,
-    this.options = const [],
+    required this.segments,
     this.selected = 0,
     this.width,
   });
@@ -18,17 +18,13 @@ class SelectorWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: width,
-      child: CupertinoSlidingSegmentedControl(
-        children: options.asMap(),
-        groupValue: selected,
-        onValueChanged: _selectedChanged,
+      child: SegmentedButton(
+        style: const ButtonStyle(visualDensity: VisualDensity.compact),
+        segments: segments,
+        selected: {selected},
+        onSelectionChanged: (selected) => onSelected(selected.first),
+        showSelectedIcon: false,
       ),
     );
-  }
-
-  void _selectedChanged(int? index) {
-    if (index == null) return;
-
-    onSelected(index);
   }
 }

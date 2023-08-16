@@ -12,14 +12,14 @@ const defaultGlobalSettings = GlobalSettings(
   fontSizeScale: 1,
   showChords: true,
   showMusicalNotes: true,
-  accidentals: 1,
+  accidentals: 0,
   autoScrollSpeedIndex: 6,
 );
 const defaultSongLyricSettings = SongLyricSettingsModel(
   id: 0,
   showChords: true,
   showMusicalNotes: true,
-  accidentals: 1,
+  accidentals: 0,
   transposition: 0,
 );
 

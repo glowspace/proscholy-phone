@@ -11,7 +11,6 @@ import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/routing/arguments/song_lyric.dart';
 import 'package:zpevnik/screens/about.dart';
-import 'package:zpevnik/components/home/edit_home_sections_sheet.dart';
 import 'package:zpevnik/screens/home.dart';
 import 'package:zpevnik/screens/initial.dart';
 import 'package:zpevnik/screens/playlist.dart';
@@ -20,7 +19,6 @@ import 'package:zpevnik/screens/playlist/custom_text.dart';
 import 'package:zpevnik/screens/playlists.dart';
 import 'package:zpevnik/screens/search.dart';
 import 'package:zpevnik/screens/song_lyric.dart';
-import 'package:zpevnik/screens/song_lyric/translations.dart';
 import 'package:zpevnik/screens/songbook.dart';
 import 'package:zpevnik/screens/songbooks.dart';
 import 'package:zpevnik/screens/updated_song_lyrics.dart';
@@ -80,10 +78,6 @@ class AppNavigator extends NavigatorObserver {
 
           return SongLyricScreen(songLyrics: arguments.songLyrics, initialIndex: arguments.index);
         },
-      ),
-      GoRoute(
-        path: '/song_lyric/translations',
-        builder: (_, state) => TranslationsScreen(songLyric: state.extra as SongLyric),
       ),
       GoRoute(path: '/user', builder: (_, __) => const UserScreen()),
       GoRoute(

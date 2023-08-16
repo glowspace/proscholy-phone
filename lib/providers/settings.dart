@@ -77,8 +77,12 @@ class SongLyricSettings extends _$SongLyricSettings {
 
   void changeAccidentals(int accidentals) => _updateState(state.copyWith(accidentals: accidentals));
 
-  void changeTransposition(int transposition) =>
-      _updateState(state.copyWith(transposition: state.transposition + transposition));
+  void changeTransposition(int transposition) {
+    transposition = state.transposition + transposition;
+    if (transposition % 12 == 0) transposition = 0;
+
+    _updateState(state.copyWith(transposition: transposition));
+  }
 
   void reset() => _updateState(defaultSongLyricSettings);
 
@@ -87,7 +91,7 @@ class SongLyricSettings extends _$SongLyricSettings {
         .read(appDependenciesProvider.select((appDependencies) => appDependencies.store))
         .box<SongLyricSettingsModel>();
 
-    if (songLyricSettings == defaultSongLyricSettings) {
+    if (songLyricSettings == defaultSongLyricSettings && state != defaultSongLyricSettings) {
       songLyricSettingsBox.remove(state.id);
     } else {
       // decide id for new objects

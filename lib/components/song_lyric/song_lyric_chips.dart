@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:go_router/go_router.dart';
 import 'package:zpevnik/components/song_lyric/song_lyric_chip.dart';
 import 'package:zpevnik/components/song_lyric/song_lyric_files.dart';
 import 'package:zpevnik/components/song_lyric/song_lyric_tags.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
+import 'package:zpevnik/screens/song_lyric/translations.dart';
 
 class SongLyricChips extends StatelessWidget {
   final SongLyric songLyric;
@@ -23,11 +23,7 @@ class SongLyricChips extends StatelessWidget {
           if (songLyric.hasFiles)
             SongLyricChip(text: 'Noty, materiály', icon: FontAwesomeIcons.music, onTap: () => _showFiles(context)),
           if (songLyric.hasTranslations)
-            SongLyricChip(
-              text: 'Aranže, překlady',
-              icon: Icons.translate,
-              onTap: () => context.push('/song_lyric/translations', extra: songLyric),
-            ),
+            SongLyricChip(text: 'Aranže, překlady', icon: Icons.translate, onTap: () => _showTranslations(context)),
           SongLyricChip(text: 'Štítky, zpěvníky', icon: FontAwesomeIcons.tags, onTap: () => _showTags(context)),
         ],
       ),
@@ -39,6 +35,14 @@ class SongLyricChips extends StatelessWidget {
       context: context,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(kDefaultRadius))),
       builder: (context) => SongLyricFilesWidget(songLyric: songLyric),
+    );
+  }
+
+  void _showTranslations(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(kDefaultRadius))),
+      builder: (context) => TranslationsScreen(songLyric: songLyric),
     );
   }
 

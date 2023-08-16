@@ -109,9 +109,9 @@ class UserScreen extends StatelessWidget {
           Consumer(
             builder: (_, ref, __) => SelectorWidget(
               onSelected: ref.read(settingsProvider.notifier).changeAccidentals,
-              options: [
-                Text('#', style: accidentalsStyle, textAlign: TextAlign.center),
-                Text('♭', style: accidentalsStyle, textAlign: TextAlign.center)
+              segments: [
+                ButtonSegment(value: 0, label: Text('#', style: accidentalsStyle, textAlign: TextAlign.center)),
+                ButtonSegment(value: 1, label: Text('♭', style: accidentalsStyle, textAlign: TextAlign.center)),
               ],
               selected: ref.watch(settingsProvider.select((settings) => settings.accidentals)),
               width: _settingsOptionsWidth,
@@ -124,7 +124,10 @@ class UserScreen extends StatelessWidget {
           Consumer(
             builder: (context, ref, __) => SelectorWidget(
               onSelected: (index) => ref.read(settingsProvider.notifier).changeShowChords(index == 1),
-              options: const [Icon(Icons.visibility_off, size: 20), Icon(Icons.visibility, size: 20)],
+              segments: const [
+                ButtonSegment(value: 0, icon: Icon(Icons.visibility_off, size: 20)),
+                ButtonSegment(value: 1, icon: Icon(Icons.visibility, size: 20)),
+              ],
               selected: ref.watch(settingsProvider.select((settings) => settings.showChords)) ? 1 : 0,
               width: _settingsOptionsWidth,
             ),
