@@ -11,7 +11,7 @@ import 'package:zpevnik/providers/utils.dart';
 
 part 'playlists.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 Playlist favoritePlaylist(FavoritePlaylistRef ref) {
   final box = ref.read(appDependenciesProvider.select((appDependencies) => appDependencies.store)).box<Playlist>();
 
@@ -22,7 +22,7 @@ Playlist favoritePlaylist(FavoritePlaylistRef ref) {
   return box.get(favoritesPlaylistId)!;
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 class Playlists extends _$Playlists {
   Box<Playlist> get _playlistsBox {
     return ref.read(appDependenciesProvider.select((appDependencies) => appDependencies.store)).box<Playlist>();

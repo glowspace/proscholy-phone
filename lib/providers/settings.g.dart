@@ -21,7 +21,7 @@ final settingsProvider =
 );
 
 typedef _$Settings = AutoDisposeNotifier<GlobalSettings>;
-String _$songLyricSettingsHash() => r'868a8a1206f461812b404b5f0306e9690ea72075';
+String _$songLyricSettingsHash() => r'2807ebce5ee05511309f83bb4be7cf66d3ac6749';
 
 /// Copied from Dart SDK
 class _SystemHash {

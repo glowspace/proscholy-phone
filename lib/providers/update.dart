@@ -46,7 +46,7 @@ Future<void> loadInitial(WidgetRef ref) async {
   final lastVersion = appDependencies.sharedPreferences.getString(_versionKey);
   final currentVersion = '${appDependencies.packageInfo.version}+${appDependencies.packageInfo.buildNumber}';
 
-  // if (lastVersion == currentVersion) return;
+  if (lastVersion == currentVersion) return;
 
   // TODO: remove this after some time, that all users have at least 3.1.0 version
   migratePinnedSongbooks(appDependencies.store, appDependencies.sharedPreferences);
