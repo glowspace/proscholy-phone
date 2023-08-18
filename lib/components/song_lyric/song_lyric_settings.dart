@@ -51,16 +51,17 @@ class SongLyricSettingsWidget extends ConsumerWidget {
             width: _settingsOptionsWidth,
           ),
         ]),
-        SwitchListTile.adaptive(
-          title: Text('Zobrazit noty', style: theme.textTheme.bodyMedium),
-          activeColor: theme.colorScheme.primary,
-          contentPadding: EdgeInsets.zero,
-          visualDensity: VisualDensity.compact,
-          value: ref.watch(
-              songLyricSettingsProvider(songLyric).select((songLyricSettings) => songLyricSettings.showMusicalNotes)),
-          onChanged: ref.read(songLyricSettingsProvider(songLyric).notifier).changeShowMusicalNotes,
-        ),
-        const SizedBox(height: kDefaultPadding / 2),
+        if (songLyric.hasLilypond)
+          SwitchListTile.adaptive(
+            title: Text('Zobrazit noty', style: theme.textTheme.bodyMedium),
+            activeColor: theme.colorScheme.primary,
+            contentPadding: EdgeInsets.zero,
+            visualDensity: VisualDensity.compact,
+            value: ref.watch(
+                songLyricSettingsProvider(songLyric).select((songLyricSettings) => songLyricSettings.showMusicalNotes)),
+            onChanged: ref.read(songLyricSettingsProvider(songLyric).notifier).changeShowMusicalNotes,
+          ),
+        const SizedBox(height: kDefaultPadding),
         Highlightable(
           onTap: ref.read(songLyricSettingsProvider(songLyric).notifier).reset,
           padding: const EdgeInsets.all(kDefaultPadding / 2),
