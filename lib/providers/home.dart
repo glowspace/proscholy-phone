@@ -38,6 +38,21 @@ class HomeSectionSettings extends _$HomeSectionSettings {
     return homeSections ?? _defaultHomeSections;
   }
 
+  void add(HomeSection homeSection) {
+    state = [...state, homeSection];
+
+    _save();
+  }
+
+  void remove(HomeSection homeSection) {
+    state = [
+      for (final section in state)
+        if (section != homeSection) section
+    ];
+
+    _save();
+  }
+
   void onReorder(int oldIndex, int newIndex) {
     if (oldIndex < newIndex) newIndex--;
 
@@ -52,9 +67,11 @@ class HomeSectionSettings extends _$HomeSectionSettings {
         else
           state[i]
     ];
+
+    _save();
   }
 
-  void save() {
+  void _save() {
     _sharedPreferences.setStringList(_homeSectionsKey, [for (final homeSection in state) '${homeSection.index}']);
   }
 }

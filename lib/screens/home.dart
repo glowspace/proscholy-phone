@@ -95,21 +95,24 @@ class HomeScreen extends ConsumerWidget {
         backgroundColor: backgroundColor,
         body: SafeArea(
           child: columns == 1
-              ? CustomScrollView(slivers: [
-                  const SliverAppBar(
-                    backgroundColor: Colors.transparent,
-                    surfaceTintColor: Colors.transparent,
-                    shadowColor: Colors.transparent,
-                    expandedHeight: 2 * (kToolbarHeight + kDefaultPadding),
-                    toolbarHeight: kToolbarHeight + 2 * kDefaultPadding,
-                    pinned: true,
-                    flexibleSpace: FlexibleTopSection(),
-                  ),
-                  SliverPadding(
-                    padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-                    sliver: SliverList.list(children: columnSections.first),
-                  ),
-                ])
+              ? CustomScrollView(
+                  primary: false,
+                  slivers: [
+                    const SliverAppBar(
+                      backgroundColor: Colors.transparent,
+                      surfaceTintColor: Colors.transparent,
+                      shadowColor: Colors.transparent,
+                      expandedHeight: 2 * (kToolbarHeight + kDefaultPadding),
+                      toolbarHeight: kToolbarHeight + 2 * kDefaultPadding,
+                      pinned: true,
+                      flexibleSpace: FlexibleTopSection(),
+                    ),
+                    SliverPadding(
+                      padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+                      sliver: SliverList.list(children: columnSections.first),
+                    ),
+                  ],
+                )
               : SingleChildScrollView(
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,

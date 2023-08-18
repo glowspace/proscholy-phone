@@ -1,5 +1,8 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:zpevnik/components/bottom_sheet_section.dart';
+import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/home.dart';
 
@@ -9,33 +12,64 @@ class EditHomeSectionsSheet extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final homeSections = ref.watch(homeSectionSettingsProvider);
+    final disabledHomeSections = HomeSection.values.whereNot((homeSection) => homeSections.contains(homeSection));
 
-    return Column(
+    return BottomSheetSection(
+      title: 'Úprava nástěnky',
+      childrenPadding: false,
       children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(kDefaultPadding, kDefaultPadding, kDefaultPadding, kDefaultPadding / 2),
-          child: Text('Úprava nástěnky', style: Theme.of(context).textTheme.titleLarge),
-        ),
-        Expanded(
-          child: ReorderableListView.builder(
-            itemCount: homeSections.length,
-            itemBuilder: (_, index) => Padding(
-              key: Key(homeSections[index].description),
-              padding: const EdgeInsets.all(kDefaultPadding / 2),
-              child: Row(children: [
-                const ReorderableDragStartListener(
-                  index: 0,
-                  child: Padding(
-                    padding: EdgeInsets.only(left: kDefaultPadding, right: 2 * kDefaultPadding),
-                    child: Icon(Icons.drag_indicator),
-                  ),
+        const SizedBox(height: kDefaultPadding),
+        ReorderableListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: homeSections.length,
+          itemBuilder: (_, index) => Padding(
+            key: Key(homeSections[index].description),
+            padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding, vertical: kDefaultPadding / 2),
+            child: Row(children: [
+              const ReorderableDragStartListener(
+                index: 0,
+                child: Padding(
+                  padding: EdgeInsets.only(right: 2 * kDefaultPadding),
+                  child: Icon(Icons.drag_indicator),
                 ),
-                Text(homeSections[index].description),
-              ]),
-            ),
-            onReorder: ref.read(homeSectionSettingsProvider.notifier).onReorder,
+              ),
+              Text(homeSections[index].description),
+              const Spacer(),
+              Highlightable(
+                icon: const Icon(Icons.remove),
+                shrinkWrap: true,
+                padding: EdgeInsets.zero,
+                onTap: () => ref.read(homeSectionSettingsProvider.notifier).remove(homeSections[index]),
+              ),
+            ]),
           ),
-        )
+          onReorder: ref.read(homeSectionSettingsProvider.notifier).onReorder,
+        ),
+        const Divider(height: kDefaultPadding),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Neaktivní sekce', style: Theme.of(context).textTheme.labelLarge),
+              for (final homeSection in disabledHomeSections)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
+                  child: Row(children: [
+                    Text(homeSection.description),
+                    const Spacer(),
+                    Highlightable(
+                      icon: const Icon(Icons.add),
+                      shrinkWrap: true,
+                      padding: EdgeInsets.zero,
+                      onTap: () => ref.read(homeSectionSettingsProvider.notifier).add(homeSection),
+                    ),
+                  ]),
+                ),
+            ],
+          ),
+        ),
       ],
     );
   }
