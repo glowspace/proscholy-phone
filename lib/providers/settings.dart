@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/objectbox.g.dart';
 import 'package:zpevnik/models/settings.dart';
 import 'package:zpevnik/models/song_lyric.dart';
@@ -39,7 +40,15 @@ class Settings extends _$Settings {
 
   void changeDarkModeEnabled(bool? darkModeEnabled) => state = state.copyWith(darkModeEnabled: darkModeEnabled);
 
-  void changeFontSizeScale(double fontSizeScale) => state = state.copyWith(fontSizeScale: fontSizeScale);
+  void changeFontSizeScale(double fontSizeScale) {
+    if (fontSizeScale < kMinimumFontSizeScale) {
+      fontSizeScale = kMinimumFontSizeScale;
+    } else if (fontSizeScale > kMaximumFontSizeScale) {
+      fontSizeScale = kMaximumFontSizeScale;
+    }
+
+    state = state.copyWith(fontSizeScale: fontSizeScale);
+  }
 
   void changeShowChords(bool showChords) => state = state.copyWith(showChords: showChords);
 

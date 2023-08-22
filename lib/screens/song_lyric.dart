@@ -13,6 +13,7 @@ import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/full_screen.dart';
 import 'package:zpevnik/providers/playlists.dart';
+import 'package:zpevnik/providers/settings.dart';
 
 class SongLyricScreen extends ConsumerStatefulWidget {
   final List<SongLyric> songLyrics;
@@ -27,6 +28,8 @@ class SongLyricScreen extends ConsumerStatefulWidget {
 class _SongLyricScreenState extends ConsumerState<SongLyricScreen> {
   // make sure it is possible to swipe to previous song lyric
   late final _pageController = PageController(initialPage: widget.initialIndex + 100 * widget.songLyrics.length);
+
+  late double _fontSizeScaleBeforeScale;
 
   // FIXME: will need to change with page change
   final autoScrollController = AutoScrollController();
@@ -70,7 +73,10 @@ class _SongLyricScreenState extends ConsumerState<SongLyricScreen> {
         body: SafeArea(
           bottom: false,
           child: GestureDetector(
+            onScaleStart: _fontScaleStarted,
+            onScaleUpdate: _fontScaleUpdated,
             onTap: ref.read(fullScreenProvider.notifier).disable,
+            behavior: HitTestBehavior.translucent,
             child: PageView.builder(
               controller: _pageController,
               // disable scrolling when there is only one song lyric
@@ -84,6 +90,14 @@ class _SongLyricScreenState extends ConsumerState<SongLyricScreen> {
         ),
       ),
     );
+  }
+
+  void _fontScaleStarted(ScaleStartDetails _) {
+    _fontSizeScaleBeforeScale = ref.read(settingsProvider.select((settings) => settings.fontSizeScale));
+  }
+
+  void _fontScaleUpdated(ScaleUpdateDetails details) {
+    ref.read(settingsProvider.notifier).changeFontSizeScale(_fontSizeScaleBeforeScale * details.scale);
   }
 
   void _showPlaylists(BuildContext context) {
