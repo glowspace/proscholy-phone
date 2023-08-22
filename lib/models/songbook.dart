@@ -2,12 +2,15 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:objectbox/objectbox.dart';
 import 'package:zpevnik/models/model.dart';
 import 'package:zpevnik/models/songbook_record.dart';
+import 'package:zpevnik/models/tag.dart';
 
 part 'songbook.freezed.dart';
 part 'songbook.g.dart';
 
 // prioritized songbook shortcuts in sorting
 const prioritized = {'H1': 0, 'H2': 1, 'K': 2, 'Kan': 3};
+
+const _songbookIdOffset = -1000;
 
 @Freezed(toJson: false)
 class Songbook with _$Songbook implements Comparable<Songbook>, Identifiable, SongsList {
@@ -29,6 +32,8 @@ class Songbook with _$Songbook implements Comparable<Songbook>, Identifiable, So
   }) = _Songbook;
 
   factory Songbook.fromJson(Map<String, Object?> json) => _$SongbookFromJson(json);
+
+  Tag get tag => Tag(id: id + _songbookIdOffset, name: name, dbType: TagType.songbook.rawValue);
 
   @override
   int compareTo(Songbook other) {

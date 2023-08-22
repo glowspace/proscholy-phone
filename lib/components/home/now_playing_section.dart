@@ -3,7 +3,6 @@ import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/now_playing.dart';
-import 'package:zpevnik/routing/arguments/song_lyric.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
 const _backgroundColor = Color(0xff232380);
@@ -90,12 +89,10 @@ class _NowPlayingSectionState extends State<NowPlayingSection> {
   }
 
   void _pushSongLyric(BuildContext context, SongLyric songLyric) {
-    final arguments = SongLyricScreenArguments(songLyrics: [songLyric]); //, shouldShowBanner: true);
-
     if (widget.pushShouldReplace) {
-      Navigator.of(context).pushReplacementNamed('/song_lyric', arguments: arguments);
+      Navigator.of(context).pushReplacementNamed('/song_lyric', arguments: songLyric);
     } else {
-      Navigator.of(context).pushNamed('/song_lyric', arguments: arguments);
+      Navigator.of(context).pushNamed('/song_lyric', arguments: songLyric);
     }
   }
 }

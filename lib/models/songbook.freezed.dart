@@ -46,20 +46,16 @@ abstract class $SongbookCopyWith<$Res> {
       _$SongbookCopyWithImpl<$Res, Songbook>;
   @useResult
   $Res call(
-      {@Id(assignable: true)
-      @JsonKey(fromJson: int.parse)
-          int id,
+      {@Id(assignable: true) @JsonKey(fromJson: int.parse) int id,
       String name,
-      @JsonKey(defaultValue: '')
-          String shortcut,
+      @JsonKey(defaultValue: '') String shortcut,
       String? color,
       String? colorText,
       bool isPrivate,
-      @Deprecated('is handled independently on model')
-          bool? isPinned,
+      @Deprecated('is handled independently on model') bool? isPinned,
       @Backlink()
       @JsonKey(fromJson: _songbookRecordsFromJson)
-          ToMany<SongbookRecord> records});
+      ToMany<SongbookRecord> records});
 }
 
 /// @nodoc
@@ -129,20 +125,16 @@ abstract class _$$_SongbookCopyWith<$Res> implements $SongbookCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {@Id(assignable: true)
-      @JsonKey(fromJson: int.parse)
-          int id,
+      {@Id(assignable: true) @JsonKey(fromJson: int.parse) int id,
       String name,
-      @JsonKey(defaultValue: '')
-          String shortcut,
+      @JsonKey(defaultValue: '') String shortcut,
       String? color,
       String? colorText,
       bool isPrivate,
-      @Deprecated('is handled independently on model')
-          bool? isPinned,
+      @Deprecated('is handled independently on model') bool? isPinned,
       @Backlink()
       @JsonKey(fromJson: _songbookRecordsFromJson)
-          ToMany<SongbookRecord> records});
+      ToMany<SongbookRecord> records});
 }
 
 /// @nodoc
@@ -208,20 +200,16 @@ class __$$_SongbookCopyWithImpl<$Res>
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
 class _$_Songbook extends _Songbook {
   const _$_Songbook(
-      {@Id(assignable: true)
-      @JsonKey(fromJson: int.parse)
-          required this.id,
+      {@Id(assignable: true) @JsonKey(fromJson: int.parse) required this.id,
       required this.name,
-      @JsonKey(defaultValue: '')
-          required this.shortcut,
+      @JsonKey(defaultValue: '') required this.shortcut,
       this.color,
       this.colorText,
       required this.isPrivate,
-      @Deprecated('is handled independently on model')
-          this.isPinned,
+      @Deprecated('is handled independently on model') this.isPinned,
       @Backlink()
       @JsonKey(fromJson: _songbookRecordsFromJson)
-          required this.records})
+      required this.records})
       : super._();
 
   factory _$_Songbook.fromJson(Map<String, dynamic> json) =>
@@ -298,18 +286,16 @@ abstract class _Songbook extends Songbook {
   const factory _Songbook(
       {@Id(assignable: true)
       @JsonKey(fromJson: int.parse)
-          required final int id,
+      required final int id,
       required final String name,
-      @JsonKey(defaultValue: '')
-          required final String shortcut,
+      @JsonKey(defaultValue: '') required final String shortcut,
       final String? color,
       final String? colorText,
       required final bool isPrivate,
-      @Deprecated('is handled independently on model')
-          final bool? isPinned,
+      @Deprecated('is handled independently on model') final bool? isPinned,
       @Backlink()
       @JsonKey(fromJson: _songbookRecordsFromJson)
-          required final ToMany<SongbookRecord> records}) = _$_Songbook;
+      required final ToMany<SongbookRecord> records}) = _$_Songbook;
   const _Songbook._() : super._();
 
   factory _Songbook.fromJson(Map<String, dynamic> json) = _$_Songbook.fromJson;

@@ -8,15 +8,38 @@ import 'package:zpevnik/components/search/search_field.dart';
 import 'package:zpevnik/components/search/search_song_lyrics_list_view.dart';
 import 'package:zpevnik/components/split_view.dart';
 import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/providers/search.dart';
-import 'package:zpevnik/routing/arguments/song_lyric.dart';
+import 'package:zpevnik/providers/tags.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
-class SearchScreen extends ConsumerWidget {
-  const SearchScreen({super.key});
+class SearchScreen extends ConsumerStatefulWidget {
+  final Tag? initialTag;
+
+  const SearchScreen({super.key, this.initialTag});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<SearchScreen> createState() => _SearchScreenState();
+}
+
+class _SearchScreenState extends ConsumerState<SearchScreen> {
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.initialTag != null) {
+      // FIXME: there should be better way of doing this, now it will build with all song lyrics and after frame rebuild with only given tag
+      // must be done with delay, as it forces rebuild
+      Future.delayed(
+          const Duration(milliseconds: 20),
+          () => ref
+              .read(selectedTagsByTypeProvider(widget.initialTag!.type).notifier)
+              .toggleSelection(widget.initialTag!));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
 
     final appBar = AppBar(
@@ -60,6 +83,6 @@ class SearchScreen extends ConsumerWidget {
       searchedSongLyricsProvider.select((searchedSongLyricsProvider) => searchedSongLyricsProvider.matchedById),
     );
 
-    if (matchedById != null) context.push('/song_lyric', extra: SongLyricScreenArguments(songLyrics: [matchedById]));
+    if (matchedById != null) context.push('/song_lyric', extra: matchedById);
   }
 }

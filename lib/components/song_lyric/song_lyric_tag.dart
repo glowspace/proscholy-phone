@@ -3,7 +3,7 @@ import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songbook_record.dart';
 import 'package:zpevnik/models/tag.dart';
-import 'package:zpevnik/routing/arguments/search.dart';
+import 'package:zpevnik/routing/router.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
 class SongLyricTag extends StatelessWidget {
@@ -35,13 +35,8 @@ class SongLyricTag extends StatelessWidget {
         borderRadius: BorderRadius.circular(32),
         highlightColor: theme.colorScheme.primary.withAlpha(0x20),
         onTap: () => songbookRecord != null
-            ? Navigator.of(context).popAndPushNamed(
-                '/search',
-                // arguments: SearchScreenArguments(
-                //   initialTag: context.read<DataProvider>().getTagBySongbookName(songbookRecord!.songbook.target!.name),
-                // ),
-              )
-            : Navigator.of(context).popAndPushNamed('/search', arguments: SearchScreenArguments(initialTag: tag)),
+            ? context.popAndPush('/search', extra: songbookRecord!.songbook.target)
+            : context.popAndPush('/search', extra: tag),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [

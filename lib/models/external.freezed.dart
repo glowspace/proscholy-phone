@@ -40,14 +40,12 @@ abstract class $ExternalCopyWith<$Res> {
       _$ExternalCopyWithImpl<$Res, External>;
   @useResult
   $Res call(
-      {@Id(assignable: true)
-      @JsonKey(fromJson: int.parse)
-          int id,
+      {@Id(assignable: true) @JsonKey(fromJson: int.parse) int id,
       String publicName,
       String? mediaId,
       String? url,
       @JsonKey(name: 'media_type', fromJson: MediaType.rawValueFromString)
-          int dbMediaType});
+      int dbMediaType});
 }
 
 /// @nodoc
@@ -102,14 +100,12 @@ abstract class _$$_ExternalCopyWith<$Res> implements $ExternalCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {@Id(assignable: true)
-      @JsonKey(fromJson: int.parse)
-          int id,
+      {@Id(assignable: true) @JsonKey(fromJson: int.parse) int id,
       String publicName,
       String? mediaId,
       String? url,
       @JsonKey(name: 'media_type', fromJson: MediaType.rawValueFromString)
-          int dbMediaType});
+      int dbMediaType});
 }
 
 /// @nodoc
@@ -160,14 +156,12 @@ class __$$_ExternalCopyWithImpl<$Res>
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
 class _$_External extends _External {
   const _$_External(
-      {@Id(assignable: true)
-      @JsonKey(fromJson: int.parse)
-          required this.id,
+      {@Id(assignable: true) @JsonKey(fromJson: int.parse) required this.id,
       required this.publicName,
       this.mediaId,
       this.url,
       @JsonKey(name: 'media_type', fromJson: MediaType.rawValueFromString)
-          required this.dbMediaType})
+      required this.dbMediaType})
       : super._();
 
   factory _$_External.fromJson(Map<String, dynamic> json) =>
@@ -222,12 +216,12 @@ abstract class _External extends External {
   const factory _External(
       {@Id(assignable: true)
       @JsonKey(fromJson: int.parse)
-          required final int id,
+      required final int id,
       required final String publicName,
       final String? mediaId,
       final String? url,
       @JsonKey(name: 'media_type', fromJson: MediaType.rawValueFromString)
-          required final int dbMediaType}) = _$_External;
+      required final int dbMediaType}) = _$_External;
   const _External._() : super._();
 
   factory _External.fromJson(Map<String, dynamic> json) = _$_External.fromJson;

@@ -18,7 +18,7 @@ class SongLyricTags extends StatelessWidget {
         Wrap(
           spacing: kDefaultPadding / 2,
           runSpacing: kDefaultPadding / 2,
-          children: songLyric.tags.map((tag) => SongLyricTag(tag: tag)).toList(),
+          children: songLyric.tags.where((tag) => tag.type.isSupported).map((tag) => SongLyricTag(tag: tag)).toList(),
         ),
         const SizedBox(height: kDefaultPadding / 2),
         Wrap(

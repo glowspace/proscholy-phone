@@ -7,7 +7,7 @@ part of 'home.dart';
 // **************************************************************************
 
 String _$homeSectionSettingsHash() =>
-    r'513ee55d5909f85c171c33ca6e1545e8ce4580cf';
+    r'ff8403322c71442bbe3a2b0dda673ebbe3133fc2';
 
 /// See also [HomeSectionSettings].
 @ProviderFor(HomeSectionSettings)
@@ -23,4 +23,5 @@ final homeSectionSettingsProvider = AutoDisposeNotifierProvider<
 );
 
 typedef _$HomeSectionSettings = AutoDisposeNotifier<List<HomeSection>>;
-// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions
+// ignore_for_file: type=lint
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member

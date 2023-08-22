@@ -38,13 +38,11 @@ abstract class $SongCopyWith<$Res> {
       _$SongCopyWithImpl<$Res, Song>;
   @useResult
   $Res call(
-      {@Id(assignable: true)
-      @JsonKey(fromJson: int.parse)
-          int id,
+      {@Id(assignable: true) @JsonKey(fromJson: int.parse) int id,
       String name,
       @Backlink()
       @JsonKey(fromJson: _songLyricsFromJson)
-          ToMany<SongLyric> songLyrics});
+      ToMany<SongLyric> songLyrics});
 }
 
 /// @nodoc
@@ -88,13 +86,11 @@ abstract class _$$_SongCopyWith<$Res> implements $SongCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {@Id(assignable: true)
-      @JsonKey(fromJson: int.parse)
-          int id,
+      {@Id(assignable: true) @JsonKey(fromJson: int.parse) int id,
       String name,
       @Backlink()
       @JsonKey(fromJson: _songLyricsFromJson)
-          ToMany<SongLyric> songLyrics});
+      ToMany<SongLyric> songLyrics});
 }
 
 /// @nodoc
@@ -133,13 +129,11 @@ class __$$_SongCopyWithImpl<$Res> extends _$SongCopyWithImpl<$Res, _$_Song>
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
 class _$_Song extends _Song {
   const _$_Song(
-      {@Id(assignable: true)
-      @JsonKey(fromJson: int.parse)
-          required this.id,
+      {@Id(assignable: true) @JsonKey(fromJson: int.parse) required this.id,
       required this.name,
       @Backlink()
       @JsonKey(fromJson: _songLyricsFromJson)
-          required this.songLyrics})
+      required this.songLyrics})
       : super._();
 
   factory _$_Song.fromJson(Map<String, dynamic> json) => _$$_SongFromJson(json);
@@ -187,11 +181,11 @@ abstract class _Song extends Song {
   const factory _Song(
       {@Id(assignable: true)
       @JsonKey(fromJson: int.parse)
-          required final int id,
+      required final int id,
       required final String name,
       @Backlink()
       @JsonKey(fromJson: _songLyricsFromJson)
-          required final ToMany<SongLyric> songLyrics}) = _$_Song;
+      required final ToMany<SongLyric> songLyrics}) = _$_Song;
   const _Song._() : super._();
 
   factory _Song.fromJson(Map<String, dynamic> json) = _$_Song.fromJson;

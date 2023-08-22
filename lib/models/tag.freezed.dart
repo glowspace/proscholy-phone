@@ -37,12 +37,10 @@ abstract class $TagCopyWith<$Res> {
       _$TagCopyWithImpl<$Res, Tag>;
   @useResult
   $Res call(
-      {@Id(assignable: true)
-      @JsonKey(fromJson: int.parse)
-          int id,
+      {@Id(assignable: true) @JsonKey(fromJson: int.parse) int id,
       String name,
       @JsonKey(name: 'type_enum', fromJson: TagType.rawValueFromString)
-          int dbType});
+      int dbType});
 }
 
 /// @nodoc
@@ -85,12 +83,10 @@ abstract class _$$_TagCopyWith<$Res> implements $TagCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {@Id(assignable: true)
-      @JsonKey(fromJson: int.parse)
-          int id,
+      {@Id(assignable: true) @JsonKey(fromJson: int.parse) int id,
       String name,
       @JsonKey(name: 'type_enum', fromJson: TagType.rawValueFromString)
-          int dbType});
+      int dbType});
 }
 
 /// @nodoc
@@ -129,12 +125,10 @@ class __$$_TagCopyWithImpl<$Res> extends _$TagCopyWithImpl<$Res, _$_Tag>
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
 class _$_Tag extends _Tag {
   const _$_Tag(
-      {@Id(assignable: true)
-      @JsonKey(fromJson: int.parse)
-          required this.id,
+      {@Id(assignable: true) @JsonKey(fromJson: int.parse) required this.id,
       required this.name,
       @JsonKey(name: 'type_enum', fromJson: TagType.rawValueFromString)
-          required this.dbType})
+      required this.dbType})
       : super._();
 
   factory _$_Tag.fromJson(Map<String, dynamic> json) => _$$_TagFromJson(json);
@@ -179,10 +173,10 @@ abstract class _Tag extends Tag {
   const factory _Tag(
       {@Id(assignable: true)
       @JsonKey(fromJson: int.parse)
-          required final int id,
+      required final int id,
       required final String name,
       @JsonKey(name: 'type_enum', fromJson: TagType.rawValueFromString)
-          required final int dbType}) = _$_Tag;
+      required final int dbType}) = _$_Tag;
   const _Tag._() : super._();
 
   factory _Tag.fromJson(Map<String, dynamic> json) = _$_Tag.fromJson;

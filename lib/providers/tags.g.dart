@@ -6,7 +6,7 @@ part of 'tags.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$tagsHash() => r'77d7d128a54c78fbb767edd84a84a5e53ec131c9';
+String _$tagsHash() => r'074b72e023b471447eb00d117361b526195381af';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -218,4 +218,5 @@ class SelectedTagsByTypeProvider
     );
   }
 }
-// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions
+// ignore_for_file: type=lint
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member

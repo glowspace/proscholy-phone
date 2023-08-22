@@ -9,13 +9,13 @@ import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
 
-class SongbookScreen extends StatelessWidget {
+class SongbookScreen extends ConsumerWidget {
   final Songbook songbook;
 
   const SongbookScreen({super.key, required this.songbook});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return CustomScaffold(
       appBar: AppBar(
         leading: const CustomBackButton(),
@@ -23,7 +23,7 @@ class SongbookScreen extends StatelessWidget {
         leadingWidth: 24 + 4 * kDefaultPadding,
         actions: [
           Highlightable(
-            onTap: () => context.push('/search'), // TODO: add arguments
+            onTap: () => context.push('/search', extra: songbook),
             padding: const EdgeInsets.all(kDefaultPadding),
             icon: const Icon(Icons.filter_alt),
           ),

@@ -62,7 +62,7 @@ class PlaylistScreen extends ConsumerWidget {
         title: Text(playlist.name),
         actions: [
           Highlightable(
-            onTap: playlist.records.isEmpty ? null : () => context.push('/search'), // TODO: use arguments
+            onTap: playlist.records.isEmpty ? null : () => context.push('/search', extra: playlist),
             padding: const EdgeInsets.all(kDefaultPadding),
             icon: const Icon(Icons.filter_alt),
           ),

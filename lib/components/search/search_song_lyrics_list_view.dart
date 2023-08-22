@@ -25,7 +25,8 @@ class SearchSongLyricsListView extends ConsumerWidget {
 
     // if any song lyric is matched by id or songbook number show title for remaining results section
     final hasMatchedResults = matchedById != null || (matchedBySongbookNumber.isNotEmpty);
-    final showRecentSongLyrics = ref.read(searchTextProvider).isEmpty && recentSongLyrics.isNotEmpty;
+    final showRecentSongLyrics =
+        ref.read(searchTextProvider).isEmpty && ref.read(selectedTagsProvider).isEmpty && recentSongLyrics.isNotEmpty;
 
     int itemCount = songLyrics.length;
 

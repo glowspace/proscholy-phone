@@ -192,13 +192,13 @@ class _$_NewsItem extends _NewsItem {
 
 abstract class _NewsItem extends NewsItem {
   const factory _NewsItem(
-      {@Id(assignable: true)
-      @JsonKey(fromJson: int.parse)
+          {@Id(assignable: true)
+          @JsonKey(fromJson: int.parse)
           required final int id,
-      required final String text,
-      required final String link,
-      @Property(type: PropertyType.date)
-          final DateTime? expiresAt}) = _$_NewsItem;
+          required final String text,
+          required final String link,
+          @Property(type: PropertyType.date) final DateTime? expiresAt}) =
+      _$_NewsItem;
   const _NewsItem._() : super._();
 
   factory _NewsItem.fromJson(Map<String, dynamic> json) = _$_NewsItem.fromJson;

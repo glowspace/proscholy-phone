@@ -74,45 +74,33 @@ abstract class $SongLyricCopyWith<$Res> {
       _$SongLyricCopyWithImpl<$Res, SongLyric>;
   @useResult
   $Res call(
-      {@Id(assignable: true)
-      @JsonKey(fromJson: int.parse)
-          int id,
+      {@Id(assignable: true) @JsonKey(fromJson: int.parse) int id,
       String name,
-      @JsonKey(name: 'secondary_name_1')
-          String? secondaryName1,
-      @JsonKey(name: 'secondary_name_2')
-          String? secondaryName2,
+      @JsonKey(name: 'secondary_name_1') String? secondaryName1,
+      @JsonKey(name: 'secondary_name_2') String? secondaryName2,
       String? lyrics,
-      @JsonKey(name: 'lilypond_svg')
-          String? lilypond,
+      @JsonKey(name: 'lilypond_svg') String? lilypond,
       String lang,
-      @JsonKey(name: 'lang_string')
-          String langDescription,
+      @JsonKey(name: 'lang_string') String langDescription,
       @JsonKey(name: 'type_enum', fromJson: SongLyricType.rawValueFromString)
-          int dbType,
+      int dbType,
       bool hasChords,
-      @Deprecated('is handled independently on model')
-          int? accidentals,
-      @Deprecated('is handled independently on model')
-          bool? showChords,
-      @Deprecated('is handled independently on model')
-          int? transposition,
-      @JsonKey(fromJson: _songFromJson)
-          ToOne<Song> song,
+      @Deprecated('is handled independently on model') int? accidentals,
+      @Deprecated('is handled independently on model') bool? showChords,
+      @Deprecated('is handled independently on model') int? transposition,
+      @JsonKey(fromJson: _songFromJson) ToOne<Song> song,
       @JsonKey(fromJson: _settingsFromJson)
-          ToOne<SongLyricSettingsModel> settings,
+      ToOne<SongLyricSettingsModel> settings,
       @JsonKey(name: 'authors_pivot', fromJson: _authorsFromJson)
-          ToMany<Author> authors,
-      @JsonKey(fromJson: _tagsFromJson)
-          ToMany<Tag> tags,
-      @JsonKey(fromJson: _externalsFromJson)
-          ToMany<External> externals,
+      ToMany<Author> authors,
+      @JsonKey(fromJson: _tagsFromJson) ToMany<Tag> tags,
+      @JsonKey(fromJson: _externalsFromJson) ToMany<External> externals,
       @Backlink()
       @JsonKey(fromJson: _songbookRecordsFromJson)
-          ToMany<SongbookRecord> songbookRecords,
+      ToMany<SongbookRecord> songbookRecords,
       @Backlink()
       @JsonKey(fromJson: _playlistRecordsFromJson)
-          ToMany<PlaylistRecord> playlistRecords});
+      ToMany<PlaylistRecord> playlistRecords});
 }
 
 /// @nodoc
@@ -242,45 +230,33 @@ abstract class _$$_SongLyricCopyWith<$Res> implements $SongLyricCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {@Id(assignable: true)
-      @JsonKey(fromJson: int.parse)
-          int id,
+      {@Id(assignable: true) @JsonKey(fromJson: int.parse) int id,
       String name,
-      @JsonKey(name: 'secondary_name_1')
-          String? secondaryName1,
-      @JsonKey(name: 'secondary_name_2')
-          String? secondaryName2,
+      @JsonKey(name: 'secondary_name_1') String? secondaryName1,
+      @JsonKey(name: 'secondary_name_2') String? secondaryName2,
       String? lyrics,
-      @JsonKey(name: 'lilypond_svg')
-          String? lilypond,
+      @JsonKey(name: 'lilypond_svg') String? lilypond,
       String lang,
-      @JsonKey(name: 'lang_string')
-          String langDescription,
+      @JsonKey(name: 'lang_string') String langDescription,
       @JsonKey(name: 'type_enum', fromJson: SongLyricType.rawValueFromString)
-          int dbType,
+      int dbType,
       bool hasChords,
-      @Deprecated('is handled independently on model')
-          int? accidentals,
-      @Deprecated('is handled independently on model')
-          bool? showChords,
-      @Deprecated('is handled independently on model')
-          int? transposition,
-      @JsonKey(fromJson: _songFromJson)
-          ToOne<Song> song,
+      @Deprecated('is handled independently on model') int? accidentals,
+      @Deprecated('is handled independently on model') bool? showChords,
+      @Deprecated('is handled independently on model') int? transposition,
+      @JsonKey(fromJson: _songFromJson) ToOne<Song> song,
       @JsonKey(fromJson: _settingsFromJson)
-          ToOne<SongLyricSettingsModel> settings,
+      ToOne<SongLyricSettingsModel> settings,
       @JsonKey(name: 'authors_pivot', fromJson: _authorsFromJson)
-          ToMany<Author> authors,
-      @JsonKey(fromJson: _tagsFromJson)
-          ToMany<Tag> tags,
-      @JsonKey(fromJson: _externalsFromJson)
-          ToMany<External> externals,
+      ToMany<Author> authors,
+      @JsonKey(fromJson: _tagsFromJson) ToMany<Tag> tags,
+      @JsonKey(fromJson: _externalsFromJson) ToMany<External> externals,
       @Backlink()
       @JsonKey(fromJson: _songbookRecordsFromJson)
-          ToMany<SongbookRecord> songbookRecords,
+      ToMany<SongbookRecord> songbookRecords,
       @Backlink()
       @JsonKey(fromJson: _playlistRecordsFromJson)
-          ToMany<PlaylistRecord> playlistRecords});
+      ToMany<PlaylistRecord> playlistRecords});
 }
 
 /// @nodoc
@@ -406,45 +382,32 @@ class __$$_SongLyricCopyWithImpl<$Res>
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
 class _$_SongLyric extends _SongLyric {
   const _$_SongLyric(
-      {@Id(assignable: true)
-      @JsonKey(fromJson: int.parse)
-          required this.id,
+      {@Id(assignable: true) @JsonKey(fromJson: int.parse) required this.id,
       required this.name,
-      @JsonKey(name: 'secondary_name_1')
-          this.secondaryName1,
-      @JsonKey(name: 'secondary_name_2')
-          this.secondaryName2,
+      @JsonKey(name: 'secondary_name_1') this.secondaryName1,
+      @JsonKey(name: 'secondary_name_2') this.secondaryName2,
       this.lyrics,
-      @JsonKey(name: 'lilypond_svg')
-          this.lilypond,
+      @JsonKey(name: 'lilypond_svg') this.lilypond,
       required this.lang,
-      @JsonKey(name: 'lang_string')
-          required this.langDescription,
+      @JsonKey(name: 'lang_string') required this.langDescription,
       @JsonKey(name: 'type_enum', fromJson: SongLyricType.rawValueFromString)
-          required this.dbType,
+      required this.dbType,
       required this.hasChords,
-      @Deprecated('is handled independently on model')
-          this.accidentals,
-      @Deprecated('is handled independently on model')
-          this.showChords,
-      @Deprecated('is handled independently on model')
-          this.transposition,
-      @JsonKey(fromJson: _songFromJson)
-          required this.song,
-      @JsonKey(fromJson: _settingsFromJson)
-          required this.settings,
+      @Deprecated('is handled independently on model') this.accidentals,
+      @Deprecated('is handled independently on model') this.showChords,
+      @Deprecated('is handled independently on model') this.transposition,
+      @JsonKey(fromJson: _songFromJson) required this.song,
+      @JsonKey(fromJson: _settingsFromJson) required this.settings,
       @JsonKey(name: 'authors_pivot', fromJson: _authorsFromJson)
-          required this.authors,
-      @JsonKey(fromJson: _tagsFromJson)
-          required this.tags,
-      @JsonKey(fromJson: _externalsFromJson)
-          required this.externals,
+      required this.authors,
+      @JsonKey(fromJson: _tagsFromJson) required this.tags,
+      @JsonKey(fromJson: _externalsFromJson) required this.externals,
       @Backlink()
       @JsonKey(fromJson: _songbookRecordsFromJson)
-          required this.songbookRecords,
+      required this.songbookRecords,
       @Backlink()
       @JsonKey(fromJson: _playlistRecordsFromJson)
-          required this.playlistRecords})
+      required this.playlistRecords})
       : super._();
 
   factory _$_SongLyric.fromJson(Map<String, dynamic> json) =>
@@ -590,44 +553,34 @@ abstract class _SongLyric extends SongLyric {
   const factory _SongLyric(
       {@Id(assignable: true)
       @JsonKey(fromJson: int.parse)
-          required final int id,
+      required final int id,
       required final String name,
-      @JsonKey(name: 'secondary_name_1')
-          final String? secondaryName1,
-      @JsonKey(name: 'secondary_name_2')
-          final String? secondaryName2,
+      @JsonKey(name: 'secondary_name_1') final String? secondaryName1,
+      @JsonKey(name: 'secondary_name_2') final String? secondaryName2,
       final String? lyrics,
-      @JsonKey(name: 'lilypond_svg')
-          final String? lilypond,
+      @JsonKey(name: 'lilypond_svg') final String? lilypond,
       required final String lang,
-      @JsonKey(name: 'lang_string')
-          required final String langDescription,
+      @JsonKey(name: 'lang_string') required final String langDescription,
       @JsonKey(name: 'type_enum', fromJson: SongLyricType.rawValueFromString)
-          required final int dbType,
+      required final int dbType,
       required final bool hasChords,
-      @Deprecated('is handled independently on model')
-          final int? accidentals,
-      @Deprecated('is handled independently on model')
-          final bool? showChords,
-      @Deprecated('is handled independently on model')
-          final int? transposition,
-      @JsonKey(fromJson: _songFromJson)
-          required final ToOne<Song> song,
+      @Deprecated('is handled independently on model') final int? accidentals,
+      @Deprecated('is handled independently on model') final bool? showChords,
+      @Deprecated('is handled independently on model') final int? transposition,
+      @JsonKey(fromJson: _songFromJson) required final ToOne<Song> song,
       @JsonKey(fromJson: _settingsFromJson)
-          required final ToOne<SongLyricSettingsModel> settings,
+      required final ToOne<SongLyricSettingsModel> settings,
       @JsonKey(name: 'authors_pivot', fromJson: _authorsFromJson)
-          required final ToMany<Author> authors,
-      @JsonKey(fromJson: _tagsFromJson)
-          required final ToMany<Tag> tags,
+      required final ToMany<Author> authors,
+      @JsonKey(fromJson: _tagsFromJson) required final ToMany<Tag> tags,
       @JsonKey(fromJson: _externalsFromJson)
-          required final ToMany<External> externals,
+      required final ToMany<External> externals,
       @Backlink()
       @JsonKey(fromJson: _songbookRecordsFromJson)
-          required final ToMany<SongbookRecord> songbookRecords,
+      required final ToMany<SongbookRecord> songbookRecords,
       @Backlink()
       @JsonKey(fromJson: _playlistRecordsFromJson)
-          required final ToMany<PlaylistRecord>
-              playlistRecords}) = _$_SongLyric;
+      required final ToMany<PlaylistRecord> playlistRecords}) = _$_SongLyric;
   const _SongLyric._() : super._();
 
   factory _SongLyric.fromJson(Map<String, dynamic> json) =

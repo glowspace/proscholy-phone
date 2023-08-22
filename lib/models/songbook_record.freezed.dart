@@ -199,12 +199,12 @@ abstract class _SongbookRecord extends SongbookRecord {
   const factory _SongbookRecord(
       {@Id(assignable: true)
       @JsonKey(fromJson: int.parse)
-          required final int id,
+      required final int id,
       required final String number,
       @JsonKey(fromJson: _songLyricFromJson)
-          required final ToOne<SongLyric> songLyric,
+      required final ToOne<SongLyric> songLyric,
       @JsonKey(fromJson: _songbookFromJson)
-          required final ToOne<Songbook> songbook}) = _$_SongbookRecord;
+      required final ToOne<Songbook> songbook}) = _$_SongbookRecord;
   const _SongbookRecord._() : super._();
 
   factory _SongbookRecord.fromJson(Map<String, dynamic> json) =

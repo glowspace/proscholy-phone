@@ -15,13 +15,11 @@ List<Tag> tags(TagsRef ref, TagType tagType) {
     case TagType.songbook:
       final songbooks = ref.watch(songbooksProvider);
 
-      int id = -1000;
-      return [for (final songbook in songbooks) Tag(id: id--, name: songbook.name, dbType: tagType.rawValue)];
+      return songbooks.map((songbook) => songbook.tag).toList();
     case TagType.playlist:
       final playlists = [ref.read(favoritePlaylistProvider)] + ref.watch(playlistsProvider);
 
-      int id = -2000;
-      return [for (final playlist in playlists) Tag(id: id--, name: playlist.name, dbType: tagType.rawValue)];
+      return playlists.map((playlist) => playlist.tag).toList();
     case TagType.language:
       final languageCounts = <String, int>{};
 

@@ -36,6 +36,8 @@ enum TagType {
 
   const TagType(this.description);
 
+  bool get isSupported => description.isNotEmpty;
+
   static int rawValueFromString(String string) {
     switch (string) {
       case 'LITURGY_PART':

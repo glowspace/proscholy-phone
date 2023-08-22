@@ -524,7 +524,13 @@ final _entities = <ModelEntity>[
       ])
 ];
 
-/// Open an ObjectBox store with the model declared in this file.
+/// Shortcut for [Store.new] that passes [getObjectBoxModel] and for Flutter
+/// apps by default a [directory] using `defaultStoreDirectory()` from the
+/// ObjectBox Flutter library.
+///
+/// Note: for desktop apps it is recommended to specify a unique [directory].
+///
+/// See [Store.new] for an explanation of all parameters.
 Future<Store> openStore(
         {String? directory,
         int? maxDBSizeInKB,
@@ -540,7 +546,8 @@ Future<Store> openStore(
         queriesCaseSensitiveDefault: queriesCaseSensitiveDefault,
         macosApplicationGroup: macosApplicationGroup);
 
-/// ObjectBox model definition, pass it to [Store] - Store(getObjectBoxModel())
+/// Returns the ObjectBox model definition for this project for use with
+/// [Store.new].
 ModelDefinition getObjectBoxModel() {
   final model = ModelInfo(
       entities: _entities,
@@ -718,13 +725,13 @@ ModelDefinition getObjectBoxModel() {
         objectFromFB: (Store store, ByteData fbData) {
           final buffer = fb.BufferContext(fbData);
           final rootOffset = buffer.derefObject(0);
-
-          final object = Tag(
-              id: const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0),
-              name: const fb.StringReader(asciiOptimization: true)
-                  .vTableGet(buffer, rootOffset, 18, ''),
-              dbType:
-                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 20, 0));
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          final nameParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 18, '');
+          final dbTypeParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 20, 0);
+          final object = Tag(id: idParam, name: nameParam, dbType: dbTypeParam);
 
           return object;
         }),
@@ -757,12 +764,13 @@ ModelDefinition getObjectBoxModel() {
         objectFromFB: (Store store, ByteData fbData) {
           final buffer = fb.BufferContext(fbData);
           final rootOffset = buffer.derefObject(0);
-
-          final object = Song(
-              id: const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0),
-              name: const fb.StringReader(asciiOptimization: true)
-                  .vTableGet(buffer, rootOffset, 6, ''),
-              songLyrics: ToMany());
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          final nameParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 6, '');
+          final songLyricsParam = ToMany<SongLyric>();
+          final object =
+              Song(id: idParam, name: nameParam, songLyrics: songLyricsParam);
           InternalToManyAccess.setRelInfo<Song>(
               object.songLyrics,
               store,
@@ -795,11 +803,11 @@ ModelDefinition getObjectBoxModel() {
         objectFromFB: (Store store, ByteData fbData) {
           final buffer = fb.BufferContext(fbData);
           final rootOffset = buffer.derefObject(0);
-
-          final object = Author(
-              id: const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0),
-              name: const fb.StringReader(asciiOptimization: true)
-                  .vTableGet(buffer, rootOffset, 6, ''));
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          final nameParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 6, '');
+          final object = Author(id: idParam, name: nameParam);
 
           return object;
         }),
@@ -843,22 +851,30 @@ ModelDefinition getObjectBoxModel() {
         objectFromFB: (Store store, ByteData fbData) {
           final buffer = fb.BufferContext(fbData);
           final rootOffset = buffer.derefObject(0);
-
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          final nameParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 6, '');
+          final shortcutParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 8, '');
+          final colorParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGetNullable(buffer, rootOffset, 10);
+          final colorTextParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGetNullable(buffer, rootOffset, 12);
+          final isPrivateParam =
+              const fb.BoolReader().vTableGet(buffer, rootOffset, 14, false);
+          final isPinnedParam =
+              const fb.BoolReader().vTableGetNullable(buffer, rootOffset, 16);
+          final recordsParam = ToMany<SongbookRecord>();
           final object = Songbook(
-              id: const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0),
-              name: const fb.StringReader(asciiOptimization: true)
-                  .vTableGet(buffer, rootOffset, 6, ''),
-              shortcut: const fb.StringReader(asciiOptimization: true)
-                  .vTableGet(buffer, rootOffset, 8, ''),
-              color: const fb.StringReader(asciiOptimization: true)
-                  .vTableGetNullable(buffer, rootOffset, 10),
-              colorText: const fb.StringReader(asciiOptimization: true)
-                  .vTableGetNullable(buffer, rootOffset, 12),
-              isPrivate: const fb.BoolReader()
-                  .vTableGet(buffer, rootOffset, 14, false),
-              isPinned: const fb.BoolReader()
-                  .vTableGetNullable(buffer, rootOffset, 16),
-              records: ToMany());
+              id: idParam,
+              name: nameParam,
+              shortcut: shortcutParam,
+              color: colorParam,
+              colorText: colorTextParam,
+              isPrivate: isPrivateParam,
+              isPinned: isPinnedParam,
+              records: recordsParam);
           InternalToManyAccess.setRelInfo<Songbook>(
               object.records,
               store,
@@ -927,36 +943,67 @@ ModelDefinition getObjectBoxModel() {
         objectFromFB: (Store store, ByteData fbData) {
           final buffer = fb.BufferContext(fbData);
           final rootOffset = buffer.derefObject(0);
-
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          final nameParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 6, '');
+          final secondaryName1Param =
+              const fb.StringReader(asciiOptimization: true)
+                  .vTableGetNullable(buffer, rootOffset, 8);
+          final secondaryName2Param =
+              const fb.StringReader(asciiOptimization: true)
+                  .vTableGetNullable(buffer, rootOffset, 10);
+          final lyricsParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGetNullable(buffer, rootOffset, 12);
+          final lilypondParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGetNullable(buffer, rootOffset, 14);
+          final langParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 16, '');
+          final langDescriptionParam =
+              const fb.StringReader(asciiOptimization: true)
+                  .vTableGet(buffer, rootOffset, 18, '');
+          final dbTypeParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 24, 0);
+          final hasChordsParam =
+              const fb.BoolReader().vTableGet(buffer, rootOffset, 26, false);
+          final accidentalsParam =
+              const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 58);
+          final showChordsParam =
+              const fb.BoolReader().vTableGetNullable(buffer, rootOffset, 60);
+          final transpositionParam =
+              const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 62);
+          final songParam = ToOne<Song>(
+              targetId:
+                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 20, 0));
+          final settingsParam = ToOne<SongLyricSettingsModel>(
+              targetId:
+                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 56, 0));
+          final authorsParam = ToMany<Author>();
+          final tagsParam = ToMany<Tag>();
+          final externalsParam = ToMany<External>();
+          final songbookRecordsParam = ToMany<SongbookRecord>();
+          final playlistRecordsParam = ToMany<PlaylistRecord>();
           final object = SongLyric(
-              id: const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0),
-              name: const fb.StringReader(asciiOptimization: true)
-                  .vTableGet(buffer, rootOffset, 6, ''),
-              secondaryName1: const fb.StringReader(asciiOptimization: true)
-                  .vTableGetNullable(buffer, rootOffset, 8),
-              secondaryName2: const fb.StringReader(asciiOptimization: true)
-                  .vTableGetNullable(buffer, rootOffset, 10),
-              lyrics: const fb.StringReader(asciiOptimization: true)
-                  .vTableGetNullable(buffer, rootOffset, 12),
-              lilypond: const fb.StringReader(asciiOptimization: true)
-                  .vTableGetNullable(buffer, rootOffset, 14),
-              lang: const fb.StringReader(asciiOptimization: true)
-                  .vTableGet(buffer, rootOffset, 16, ''),
-              langDescription: const fb.StringReader(asciiOptimization: true)
-                  .vTableGet(buffer, rootOffset, 18, ''),
-              dbType:
-                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 24, 0),
-              hasChords: const fb.BoolReader().vTableGet(buffer, rootOffset, 26, false),
-              accidentals: const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 58),
-              showChords: const fb.BoolReader().vTableGetNullable(buffer, rootOffset, 60),
-              transposition: const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 62),
-              song: ToOne(targetId: const fb.Int64Reader().vTableGet(buffer, rootOffset, 20, 0)),
-              settings: ToOne(targetId: const fb.Int64Reader().vTableGet(buffer, rootOffset, 56, 0)),
-              authors: ToMany(),
-              tags: ToMany(),
-              externals: ToMany(),
-              songbookRecords: ToMany(),
-              playlistRecords: ToMany());
+              id: idParam,
+              name: nameParam,
+              secondaryName1: secondaryName1Param,
+              secondaryName2: secondaryName2Param,
+              lyrics: lyricsParam,
+              lilypond: lilypondParam,
+              lang: langParam,
+              langDescription: langDescriptionParam,
+              dbType: dbTypeParam,
+              hasChords: hasChordsParam,
+              accidentals: accidentalsParam,
+              showChords: showChordsParam,
+              transposition: transpositionParam,
+              song: songParam,
+              settings: settingsParam,
+              authors: authorsParam,
+              tags: tagsParam,
+              externals: externalsParam,
+              songbookRecords: songbookRecordsParam,
+              playlistRecords: playlistRecordsParam);
           object.song.attach(store);
           object.settings.attach(store);
           InternalToManyAccess.setRelInfo<SongLyric>(
@@ -1009,17 +1056,22 @@ ModelDefinition getObjectBoxModel() {
         objectFromFB: (Store store, ByteData fbData) {
           final buffer = fb.BufferContext(fbData);
           final rootOffset = buffer.derefObject(0);
-
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          final publicNameParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 6, '');
+          final mediaIdParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGetNullable(buffer, rootOffset, 8);
+          final urlParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGetNullable(buffer, rootOffset, 14);
+          final dbMediaTypeParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 10, 0);
           final object = External(
-              id: const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0),
-              publicName: const fb.StringReader(asciiOptimization: true)
-                  .vTableGet(buffer, rootOffset, 6, ''),
-              mediaId: const fb.StringReader(asciiOptimization: true)
-                  .vTableGetNullable(buffer, rootOffset, 8),
-              url: const fb.StringReader(asciiOptimization: true)
-                  .vTableGetNullable(buffer, rootOffset, 14),
-              dbMediaType:
-                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 10, 0));
+              id: idParam,
+              publicName: publicNameParam,
+              mediaId: mediaIdParam,
+              url: urlParam,
+              dbMediaType: dbMediaTypeParam);
 
           return object;
         }),
@@ -1053,13 +1105,18 @@ ModelDefinition getObjectBoxModel() {
         objectFromFB: (Store store, ByteData fbData) {
           final buffer = fb.BufferContext(fbData);
           final rootOffset = buffer.derefObject(0);
-
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          final nameParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 6, '');
+          final rankParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 8, 0);
+          final recordsParam = ToMany<PlaylistRecord>();
           final object = Playlist(
-              id: const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0),
-              name: const fb.StringReader(asciiOptimization: true)
-                  .vTableGet(buffer, rootOffset, 6, ''),
-              rank: const fb.Int64Reader().vTableGet(buffer, rootOffset, 8, 0),
-              records: ToMany());
+              id: idParam,
+              name: nameParam,
+              rank: rankParam,
+              records: recordsParam);
           InternalToManyAccess.setRelInfo<Playlist>(
               object.records,
               store,
@@ -1100,22 +1157,29 @@ ModelDefinition getObjectBoxModel() {
         objectFromFB: (Store store, ByteData fbData) {
           final buffer = fb.BufferContext(fbData);
           final rootOffset = buffer.derefObject(0);
-
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          final rankParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 12, 0);
+          final songLyricParam = ToOne<SongLyric>(
+              targetId:
+                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 8, 0));
+          final customTextParam = ToOne<CustomText>(
+              targetId:
+                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 14, 0));
+          final bibleVerseParam = ToOne<BibleVerse>(
+              targetId:
+                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 16, 0));
+          final playlistParam = ToOne<Playlist>(
+              targetId:
+                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 10, 0));
           final object = PlaylistRecord(
-              id: const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0),
-              rank: const fb.Int64Reader().vTableGet(buffer, rootOffset, 12, 0),
-              songLyric: ToOne(
-                  targetId: const fb.Int64Reader()
-                      .vTableGet(buffer, rootOffset, 8, 0)),
-              customText: ToOne(
-                  targetId: const fb.Int64Reader()
-                      .vTableGet(buffer, rootOffset, 14, 0)),
-              bibleVerse: ToOne(
-                  targetId: const fb.Int64Reader()
-                      .vTableGet(buffer, rootOffset, 16, 0)),
-              playlist: ToOne(
-                  targetId: const fb.Int64Reader()
-                      .vTableGet(buffer, rootOffset, 10, 0)));
+              id: idParam,
+              rank: rankParam,
+              songLyric: songLyricParam,
+              customText: customTextParam,
+              bibleVerse: bibleVerseParam,
+              playlist: playlistParam);
           object.songLyric.attach(store);
           object.playlist.attach(store);
           object.customText.attach(store);
@@ -1152,15 +1216,20 @@ ModelDefinition getObjectBoxModel() {
           final rootOffset = buffer.derefObject(0);
           final expiresAtValue =
               const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 12);
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          final textParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 8, '');
+          final linkParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 10, '');
+          final expiresAtParam = expiresAtValue == null
+              ? null
+              : DateTime.fromMillisecondsSinceEpoch(expiresAtValue);
           final object = NewsItem(
-              id: const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0),
-              text: const fb.StringReader(asciiOptimization: true)
-                  .vTableGet(buffer, rootOffset, 8, ''),
-              link: const fb.StringReader(asciiOptimization: true)
-                  .vTableGet(buffer, rootOffset, 10, ''),
-              expiresAt: expiresAtValue == null
-                  ? null
-                  : DateTime.fromMillisecondsSinceEpoch(expiresAtValue));
+              id: idParam,
+              text: textParam,
+              link: linkParam,
+              expiresAt: expiresAtParam);
 
           return object;
         }),
@@ -1192,17 +1261,21 @@ ModelDefinition getObjectBoxModel() {
         objectFromFB: (Store store, ByteData fbData) {
           final buffer = fb.BufferContext(fbData);
           final rootOffset = buffer.derefObject(0);
-
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          final numberParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 6, '');
+          final songLyricParam = ToOne<SongLyric>(
+              targetId:
+                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 8, 0));
+          final songbookParam = ToOne<Songbook>(
+              targetId:
+                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 10, 0));
           final object = SongbookRecord(
-              id: const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0),
-              number: const fb.StringReader(asciiOptimization: true)
-                  .vTableGet(buffer, rootOffset, 6, ''),
-              songLyric: ToOne(
-                  targetId: const fb.Int64Reader()
-                      .vTableGet(buffer, rootOffset, 8, 0)),
-              songbook: ToOne(
-                  targetId: const fb.Int64Reader()
-                      .vTableGet(buffer, rootOffset, 10, 0)));
+              id: idParam,
+              number: numberParam,
+              songLyric: songLyricParam,
+              songbook: songbookParam);
           object.songLyric.attach(store);
           object.songbook.attach(store);
           return object;
@@ -1234,17 +1307,22 @@ ModelDefinition getObjectBoxModel() {
         objectFromFB: (Store store, ByteData fbData) {
           final buffer = fb.BufferContext(fbData);
           final rootOffset = buffer.derefObject(0);
-
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          final showChordsParam =
+              const fb.BoolReader().vTableGet(buffer, rootOffset, 6, false);
+          final showMusicalNotesParam =
+              const fb.BoolReader().vTableGet(buffer, rootOffset, 12, false);
+          final accidentalsParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 8, 0);
+          final transpositionParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 10, 0);
           final object = SongLyricSettingsModel(
-              id: const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0),
-              showChords:
-                  const fb.BoolReader().vTableGet(buffer, rootOffset, 6, false),
-              showMusicalNotes: const fb.BoolReader()
-                  .vTableGet(buffer, rootOffset, 12, false),
-              accidentals:
-                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 8, 0),
-              transposition:
-                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 10, 0));
+              id: idParam,
+              showChords: showChordsParam,
+              showMusicalNotes: showMusicalNotesParam,
+              accidentals: accidentalsParam,
+              transposition: transpositionParam);
 
           return object;
         }),
@@ -1281,19 +1359,27 @@ ModelDefinition getObjectBoxModel() {
         objectFromFB: (Store store, ByteData fbData) {
           final buffer = fb.BufferContext(fbData);
           final rootOffset = buffer.derefObject(0);
-
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          final bookParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 6, 0);
+          final chapterParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 8, 0);
+          final startVerseParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 10, 0);
+          final endVerseParam =
+              const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 12);
+          final textParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 14, '');
+          final playlistRecordsParam = ToMany<PlaylistRecord>();
           final object = BibleVerse(
-              id: const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0),
-              book: const fb.Int64Reader().vTableGet(buffer, rootOffset, 6, 0),
-              chapter:
-                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 8, 0),
-              startVerse:
-                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 10, 0),
-              endVerse: const fb.Int64Reader()
-                  .vTableGetNullable(buffer, rootOffset, 12),
-              text: const fb.StringReader(asciiOptimization: true)
-                  .vTableGet(buffer, rootOffset, 14, ''),
-              playlistRecords: ToMany());
+              id: idParam,
+              book: bookParam,
+              chapter: chapterParam,
+              startVerse: startVerseParam,
+              endVerse: endVerseParam,
+              text: textParam,
+              playlistRecords: playlistRecordsParam);
           InternalToManyAccess.setRelInfo<BibleVerse>(
               object.playlistRecords,
               store,
@@ -1332,14 +1418,18 @@ ModelDefinition getObjectBoxModel() {
         objectFromFB: (Store store, ByteData fbData) {
           final buffer = fb.BufferContext(fbData);
           final rootOffset = buffer.derefObject(0);
-
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          final nameParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 6, '');
+          final contentParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 8, '');
+          final playlistRecordsParam = ToMany<PlaylistRecord>();
           final object = CustomText(
-              id: const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0),
-              name: const fb.StringReader(asciiOptimization: true)
-                  .vTableGet(buffer, rootOffset, 6, ''),
-              content: const fb.StringReader(asciiOptimization: true)
-                  .vTableGet(buffer, rootOffset, 8, ''),
-              playlistRecords: ToMany());
+              id: idParam,
+              name: nameParam,
+              content: contentParam,
+              playlistRecords: playlistRecordsParam);
           InternalToManyAccess.setRelInfo<CustomText>(
               object.playlistRecords,
               store,

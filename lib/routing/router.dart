@@ -9,7 +9,7 @@ import 'package:zpevnik/models/custom_text.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/models/songbook.dart';
-import 'package:zpevnik/routing/arguments/song_lyric.dart';
+import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/screens/about.dart';
 import 'package:zpevnik/screens/home.dart';
 import 'package:zpevnik/screens/initial.dart';
@@ -67,16 +67,29 @@ class AppNavigator extends NavigatorObserver {
       GoRoute(path: '/playlists', builder: (_, __) => const PlaylistsScreen()),
       GoRoute(
         path: '/search',
-        pageBuilder: (_, __) => const MaterialPage(name: '/search', fullscreenDialog: true, child: SearchScreen()),
+        pageBuilder: (_, state) {
+          final initialTag = switch (state.extra) {
+            (Tag tag) => tag,
+            (Songbook songbook) => songbook.tag,
+            (Playlist playlist) => playlist.tag,
+            _ => null,
+          };
+
+          return MaterialPage(
+            name: '/search',
+            fullscreenDialog: true,
+            child: SearchScreen(initialTag: initialTag),
+          );
+        },
       ),
       GoRoute(path: '/songbook', builder: (_, state) => SongbookScreen(songbook: state.extra as Songbook)),
       GoRoute(path: '/songbooks', builder: (_, __) => const SongbooksScreen()),
       GoRoute(
         path: '/song_lyric',
         builder: (_, state) {
-          final arguments = state.extra as SongLyricScreenArguments;
+          final arguments = state.extra as SongLyric;
 
-          return SongLyricScreen(songLyrics: arguments.songLyrics, initialIndex: arguments.index);
+          return SongLyricScreen(songLyrics: [arguments], initialIndex: 0);
         },
       ),
       GoRoute(path: '/user', builder: (_, __) => const UserScreen()),
