@@ -38,7 +38,7 @@ void showRenamePlaylistDialog(BuildContext context, WidgetRef ref, Playlist play
       DialogTextField(
         hintText: 'Název',
         initialText: playlist.name,
-        validator: _validator(ref.read(playlistsProvider)),
+        validator: _validator(ref.read(playlistsProvider), originalPlaylist: playlist),
       )
     ],
   );
@@ -117,8 +117,10 @@ void showRemovePlaylistDialog(BuildContext context, WidgetRef ref, Playlist play
   }
 }
 
-String? Function(String?) _validator(List<Playlist> playlists) {
+String? Function(String?) _validator(List<Playlist> playlists, {Playlist? originalPlaylist}) {
   return (text) => (text?.isEmpty ?? true)
       ? _emptyPlaylistNameMessage
-      : (playlists.any((playlist) => playlist.name == text) ? _playlistWithSameNameMessage : null);
+      : (playlists.any((playlist) => playlist.name == text && playlist != originalPlaylist)
+          ? _playlistWithSameNameMessage
+          : null);
 }
