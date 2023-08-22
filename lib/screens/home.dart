@@ -99,12 +99,10 @@ class HomeScreen extends ConsumerWidget {
                   primary: false,
                   slivers: [
                     const SliverAppBar(
-                      backgroundColor: Colors.transparent,
-                      surfaceTintColor: Colors.transparent,
-                      shadowColor: Colors.transparent,
                       expandedHeight: 2 * (kToolbarHeight + kDefaultPadding),
                       toolbarHeight: kToolbarHeight + 2 * kDefaultPadding,
                       pinned: true,
+                      forceMaterialTransparency: true,
                       flexibleSpace: FlexibleTopSection(),
                     ),
                     SliverPadding(

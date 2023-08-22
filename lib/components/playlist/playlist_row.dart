@@ -42,9 +42,9 @@ class PlaylistRow extends ConsumerWidget {
               if (isReorderable && showDragIndicator)
                 ReorderableDragStartListener(
                   index: playlist.rank,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 2 * kDefaultPadding),
-                    child: const Icon(Icons.drag_indicator),
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 2 * kDefaultPadding),
+                    child: Icon(Icons.drag_indicator),
                   ),
                 )
               else

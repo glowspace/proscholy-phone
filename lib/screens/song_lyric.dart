@@ -1,33 +1,18 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart' hide PopupMenuEntry, PopupMenuItem;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:go_router/go_router.dart';
 import 'package:zpevnik/components/custom/back_button.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/navigation/scaffold.dart';
 import 'package:zpevnik/components/playlist/playlists_sheet.dart';
-import 'package:zpevnik/components/presentation/settings.dart';
 import 'package:zpevnik/components/song_lyric/bottom_bar.dart';
-import 'package:zpevnik/components/song_lyric/externals_player_wrapper.dart';
 import 'package:zpevnik/components/song_lyric/song_lyric.dart';
-import 'package:zpevnik/components/song_lyric/now_playing_banner.dart';
-import 'package:zpevnik/components/song_lyric/song_lyric_files.dart';
 import 'package:zpevnik/components/song_lyric/song_lyric_menu_button.dart';
-import 'package:zpevnik/components/song_lyric/song_lyric_settings.dart';
-import 'package:zpevnik/components/song_lyric/song_lyric_tags.dart';
 import 'package:zpevnik/components/song_lyric/utils/auto_scroll.dart';
 import 'package:zpevnik/components/song_lyric/utils/parser.dart';
 import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
-import 'package:zpevnik/components/song_lyric/utils/lyrics_controller.dart';
 import 'package:zpevnik/providers/full_screen.dart';
 import 'package:zpevnik/providers/playlists.dart';
-import 'package:zpevnik/providers/presentation.dart';
-import 'package:zpevnik/routing/router.dart';
-import 'package:zpevnik/utils/extensions.dart';
 
 class SongLyricScreen extends ConsumerStatefulWidget {
   final List<SongLyric> songLyrics;

@@ -173,23 +173,24 @@ class Playlists extends _$Playlists {
     songLyric?.playlistRecords.add(playlistRecord);
   }
 
-  void removeFromPlaylist(Playlist playlist, SongLyric songLyric) {
-    final playlistRecordToRemove =
-        playlist.records.firstWhereOrNull((playlistRecord) => playlistRecord.songLyric.targetId == songLyric.id);
+  void removeFromPlaylist(Playlist playlist, PlaylistRecord playlistRecordToRemove) {
+    _playlistRecordsBox.remove(playlistRecordToRemove.id);
 
-    if (playlistRecordToRemove != null) {
-      _playlistRecordsBox.remove(playlistRecordToRemove.id);
-
-      playlist.records.removeWhere((playlistRecord) => playlistRecord.id == playlistRecordToRemove.id);
-      songLyric.playlistRecords.removeWhere((playlistRecord) => playlistRecord.id == playlistRecordToRemove.id);
-    }
+    playlist.records.removeWhere((playlistRecord) => playlistRecord.id == playlistRecordToRemove.id);
   }
 
   void toggleFavorite(SongLyric songLyric) {
     final favoritePlaylist = ref.read(favoritePlaylistProvider);
 
     if (songLyric.isFavorite) {
-      removeFromPlaylist(favoritePlaylist, songLyric);
+      final playlistRecordToRemove = favoritePlaylist.records
+          .firstWhereOrNull((playlistRecord) => playlistRecord.songLyric.targetId == songLyric.id);
+
+      if (playlistRecordToRemove != null) {
+        removeFromPlaylist(favoritePlaylist, playlistRecordToRemove);
+
+        songLyric.playlistRecords.removeWhere((playlistRecord) => playlistRecord.id == playlistRecordToRemove.id);
+      }
     } else {
       addToPlaylist(favoritePlaylist, songLyric: songLyric);
     }
