@@ -105,11 +105,10 @@ class _SearchFieldState extends State<SearchField> {
 
     Widget? suffixIcon;
     if (widget.isInsideSearchScreen) {
-      // FIXME: highlight does not work, also there is some grey line when search text is empty
       suffixIcon = Highlightable(
         padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
         onTap: _clearOrPop,
-        icon: Icon(Icons.clear, color: theme.iconTheme.color),
+        icon: const Icon(Icons.clear),
       );
     }
 
@@ -153,6 +152,8 @@ class _SearchFieldState extends State<SearchField> {
                       suffixIconConstraints: const BoxConstraints(),
                       contentPadding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
                     ),
+                    // disable pasting to search field on home screen, as it should only open search screen
+                    enableInteractiveSelection: widget.isInsideSearchScreen,
                     onTap: _showSearchScreen,
                     onChanged: widget.onChanged,
                     onSubmitted: widget.onSubmitted,

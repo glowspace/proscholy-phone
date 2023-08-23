@@ -36,7 +36,7 @@ enum TagType {
 
   const TagType(this.description);
 
-  bool get isSupported => description.isNotEmpty;
+  bool get isSupported => supportedTagTypes.contains(this);
 
   static int rawValueFromString(String string) {
     switch (string) {
