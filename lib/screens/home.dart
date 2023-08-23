@@ -22,12 +22,20 @@ import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
 const double _minColumnWidth = 400;
+const double _collapsedAppBarHeight = 44;
 
-class HomeScreen extends ConsumerWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  late final _scrollController = ScrollController();
+
+  @override
+  Widget build(BuildContext context) {
     final String greetings;
     final now = DateTime.now();
 
@@ -95,21 +103,25 @@ class HomeScreen extends ConsumerWidget {
         backgroundColor: backgroundColor,
         body: SafeArea(
           child: columns == 1
-              ? CustomScrollView(
-                  primary: false,
-                  slivers: [
-                    const SliverAppBar(
-                      expandedHeight: 2 * (kToolbarHeight + kDefaultPadding),
-                      toolbarHeight: kToolbarHeight + 2 * kDefaultPadding,
-                      pinned: true,
-                      forceMaterialTransparency: true,
-                      flexibleSpace: FlexibleTopSection(),
-                    ),
-                    SliverPadding(
-                      padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-                      sliver: SliverList.list(children: columnSections.first),
-                    ),
-                  ],
+              ? NotificationListener<ScrollEndNotification>(
+                  onNotification: _snapCollapseAnimation,
+                  child: CustomScrollView(
+                    controller: _scrollController,
+                    primary: false,
+                    slivers: [
+                      const SliverAppBar(
+                        expandedHeight: 2 * kToolbarHeight + kDefaultPadding,
+                        toolbarHeight: kToolbarHeight + 2 * kDefaultPadding,
+                        pinned: true,
+                        forceMaterialTransparency: true,
+                        flexibleSpace: FlexibleTopSection(),
+                      ),
+                      SliverPadding(
+                        padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+                        sliver: SliverList.list(children: columnSections.first),
+                      ),
+                    ],
+                  ),
                 )
               : SingleChildScrollView(
                   child: Row(
@@ -128,6 +140,23 @@ class HomeScreen extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  bool _snapCollapseAnimation(ScrollEndNotification notification) {
+    final scrollDistance = _collapsedAppBarHeight - _scrollController.offset;
+
+    if (scrollDistance > 0) {
+      Future.delayed(
+        const Duration(milliseconds: 10),
+        () => _scrollController.animateTo(
+          scrollDistance < _collapsedAppBarHeight / 2 ? _collapsedAppBarHeight : 0,
+          duration: kDefaultAnimationDuration,
+          curve: Curves.decelerate,
+        ),
+      );
+    }
+
+    return false;
   }
 
   void _showEditSections(BuildContext context) {
