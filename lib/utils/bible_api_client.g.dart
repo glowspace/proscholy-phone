@@ -127,7 +127,7 @@ class BibleVersesProvider extends FutureProvider<List<dynamic>> {
   }
 }
 
-String _$bibleVerseHash() => r'53a6aef920214c2266f162c27e36a407a3707c2c';
+String _$bibleVerseHash() => r'3233ee174f46b928566a059e30486ca749c7f1f6';
 typedef BibleVerseRef = AutoDisposeFutureProviderRef<String>;
 
 /// See also [bibleVerse].

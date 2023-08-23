@@ -27,20 +27,6 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
   late final controller = LyricsController(widget.songLyric, context);
 
   @override
-  void initState() {
-    super.initState();
-
-    controller.addListener(_update);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-
-    controller.removeListener(_update);
-  }
-
-  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 

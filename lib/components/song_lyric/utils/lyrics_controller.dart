@@ -6,7 +6,7 @@ final _styleRE = RegExp(r'\<style[^\<]*\<\/style\>');
 final _heightRE = RegExp(r'height="([\d\.]+)mm"');
 final _widthRE = RegExp(r'width="([\d\.]+)"');
 
-class LyricsController extends ChangeNotifier {
+class LyricsController {
   final SongLyric songLyric;
   final SongLyricsParser parser;
 

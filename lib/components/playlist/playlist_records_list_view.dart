@@ -11,6 +11,8 @@ import 'package:zpevnik/models/playlist_record.dart';
 import 'package:zpevnik/providers/app_dependencies.dart';
 import 'package:zpevnik/providers/playlists.dart';
 
+const _noPlaylistRecordText = 'V tomto seznamu nemáte žádné písně. Klikněte na tlačítko níže pro přidání nové písně.';
+
 class PlaylistRecordsListView extends ConsumerStatefulWidget {
   final Playlist playlist;
 
@@ -44,6 +46,13 @@ class _PlaylistRecordsListViewState extends ConsumerState<PlaylistRecordsListVie
 
   @override
   Widget build(BuildContext context) {
+    if (widget.playlist.records.isEmpty) {
+      return const Padding(
+        padding: EdgeInsets.all(2 * kDefaultPadding),
+        child: Center(child: Text(_noPlaylistRecordText)),
+      );
+    }
+
     return ReorderableListView.builder(
       primary: false,
       itemCount: widget.playlist.records.length,

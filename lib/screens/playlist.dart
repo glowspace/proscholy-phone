@@ -69,7 +69,7 @@ class PlaylistScreen extends ConsumerWidget {
           if (!playlist.isFavorites) PlaylistButton(playlist: playlist, isInAppBar: true, extendPadding: true),
         ],
       ),
-      floatingActionButton: playlist.records.isEmpty ? null : floatingActionButton,
+      floatingActionButton: floatingActionButton,
       body: SafeArea(child: PlaylistRecordsListView(playlist: playlist)),
     );
   }
