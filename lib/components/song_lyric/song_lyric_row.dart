@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:go_router/go_router.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/search.dart';
+import 'package:zpevnik/routing/router.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
 const double _iconSize = 16;
@@ -159,7 +159,7 @@ class SongLyricRow extends StatelessWidget {
     // } else {
     // context.read<AllSongLyricsProvider?>()?.addRecentSongLyric(songLyric);
 
-    context.push('/song_lyric', extra: songLyric);
+    context.push('/song_lyric', arguments: songLyric);
     // }
   }
 }

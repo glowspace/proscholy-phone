@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/logo.dart';
 import 'package:zpevnik/components/search/search_field.dart';
 import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/routing/router.dart';
 
 const double _avatarRadius = 16;
 

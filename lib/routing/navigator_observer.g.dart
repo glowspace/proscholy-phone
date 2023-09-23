@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'router.dart';
+part of 'navigator_observer.dart';
 
 // **************************************************************************
 // RiverpodGenerator

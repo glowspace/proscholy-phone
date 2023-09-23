@@ -1,7 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart' hide ListenableBuilder;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:super_editor/super_editor.dart';
 import 'package:super_editor_markdown/super_editor_markdown.dart';
 import 'package:zpevnik/components/highlightable.dart';
@@ -10,6 +9,7 @@ import 'package:zpevnik/components/playlist/custom_text/utils/controller.dart';
 import 'package:zpevnik/components/playlist/custom_text/floating_toolbar.dart';
 import 'package:zpevnik/components/playlist/custom_text/toolbar.dart';
 import 'package:zpevnik/models/custom_text.dart';
+import 'package:zpevnik/routing/router.dart';
 
 class CustomTextScreen extends StatefulWidget {
   final CustomText? customText;

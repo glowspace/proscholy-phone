@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:zpevnik/components/custom/close_button.dart';
 import 'package:zpevnik/components/font_size_slider.dart';
 import 'package:zpevnik/components/highlightable.dart';
@@ -11,6 +10,7 @@ import 'package:zpevnik/components/section.dart';
 import 'package:zpevnik/components/selector_widget.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/settings.dart';
+import 'package:zpevnik/routing/router.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
 // const double _avatarRadius = 48;

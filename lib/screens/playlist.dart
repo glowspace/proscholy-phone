@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:go_router/go_router.dart';
 import 'package:zpevnik/components/custom/back_button.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/navigation/scaffold.dart';
@@ -12,6 +11,7 @@ import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/playlists.dart';
+import 'package:zpevnik/routing/router.dart';
 
 class PlaylistScreen extends ConsumerWidget {
   final Playlist playlist;
@@ -62,7 +62,7 @@ class PlaylistScreen extends ConsumerWidget {
         title: Text(playlist.name),
         actions: [
           Highlightable(
-            onTap: playlist.records.isEmpty ? null : () => context.push('/search', extra: playlist),
+            onTap: playlist.records.isEmpty ? null : () => context.push('/search', arguments: playlist),
             padding: const EdgeInsets.all(kDefaultPadding),
             icon: const Icon(Icons.filter_alt),
           ),

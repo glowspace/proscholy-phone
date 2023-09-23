@@ -23,8 +23,8 @@ class SongLyricFilesWidget extends StatelessWidget {
         for (final file in files)
           Highlightable(
             onTap: () => file.mediaType == MediaType.pdf
-                ? context.popAndPush('/pdf', extra: file)
-                : context.popAndPush('/jpg', extra: file),
+                ? context.popAndPush('/pdf', arguments: file)
+                : context.popAndPush('/jpg', arguments: file),
             padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding, vertical: kDefaultPadding / 2),
             child: Row(children: [
               const FaIcon(FontAwesomeIcons.filePdf),

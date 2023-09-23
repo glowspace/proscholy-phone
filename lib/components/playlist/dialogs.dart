@@ -1,7 +1,6 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/playlists.dart';
@@ -24,7 +23,7 @@ void showPlaylistDialog(BuildContext context, WidgetRef ref, {SongLyric? selecte
         .read(playlistsProvider.notifier)
         .createPlaylist(results.first, songLyrics: selectedSongLyric == null ? [] : [selectedSongLyric]);
 
-    if (context.mounted && selectedSongLyric != null) context.popAndPush('/playlist', extra: playlist);
+    if (context.mounted && selectedSongLyric != null) context.popAndPush('/playlist', arguments: playlist);
   }
 }
 
@@ -64,7 +63,7 @@ void showDuplicatePlaylistDialog(BuildContext context, WidgetRef ref, Playlist p
   if (results != null) {
     final duplicatedPlaylist = ref.read(playlistsProvider.notifier).duplicatePlaylist(playlist, results.first);
 
-    if (context.mounted) context.push('/playlist', extra: duplicatedPlaylist);
+    if (context.mounted) context.push('/playlist', arguments: duplicatedPlaylist);
   }
 }
 

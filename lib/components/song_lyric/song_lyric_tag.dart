@@ -35,8 +35,8 @@ class SongLyricTag extends StatelessWidget {
         borderRadius: BorderRadius.circular(32),
         highlightColor: theme.colorScheme.primary.withAlpha(0x20),
         onTap: () => songbookRecord != null
-            ? context.popAndPush('/search', extra: songbookRecord!.songbook.target)
-            : context.popAndPush('/search', extra: tag),
+            ? context.popAndPush('/search', arguments: songbookRecord!.songbook.target)
+            : context.popAndPush('/search', arguments: tag),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [

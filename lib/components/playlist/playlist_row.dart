@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/playlist/playlist_button.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/playlists.dart';
+import 'package:zpevnik/routing/router.dart';
 
 const double _iconSize = 20;
 
@@ -71,6 +71,6 @@ class PlaylistRow extends ConsumerWidget {
   void _pushPlaylist(BuildContext context) {
     FocusScope.of(context).unfocus();
 
-    context.push('/playlist', extra: playlist);
+    context.push('/playlist', arguments: playlist);
   }
 }

@@ -56,6 +56,6 @@ class PlaylistsSheet extends StatelessWidget {
   void _addToPlaylist(BuildContext context, WidgetRef ref, Playlist playlist) {
     ref.read(playlistsProvider.notifier).addToPlaylist(playlist, songLyric: selectedSongLyric);
 
-    context.popAndPush('/playlist', extra: playlist);
+    context.popAndPush('/playlist', arguments: playlist);
   }
 }

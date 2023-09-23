@@ -1,9 +1,4 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:wakelock/wakelock.dart';
 import 'package:zpevnik/models/bible_verse.dart';
 import 'package:zpevnik/models/custom_text.dart';
 import 'package:zpevnik/models/playlist.dart';
@@ -24,132 +19,72 @@ import 'package:zpevnik/screens/songbooks.dart';
 import 'package:zpevnik/screens/updated_song_lyrics.dart';
 import 'package:zpevnik/screens/user.dart';
 
-part 'router.g.dart';
-
 extension AppNavigatorHelper on BuildContext {
-  bool get isHome => GoRouter.of(this).location == '/';
-  bool get isPlaylist => GoRouter.of(this).location == '/playlist';
-  bool get isSearching => GoRouter.of(this).location == '/search';
+  bool get isHome => ModalRoute.of(this)?.settings.name == '/';
+  bool get isPlaylist => ModalRoute.of(this)?.settings.name == '/playlist';
+  bool get isSearching => ModalRoute.of(this)?.settings.name == '/search';
 
-  void popUntil(String routeName) {
-    while (GoRouter.of(this).location != routeName) {
-      pop();
-    }
+  Future<T?> push<T extends Object?>(String routeName, {Object? arguments}) {
+    return Navigator.of(this).pushNamed(routeName, arguments: arguments);
   }
 
-  void popAndPush(String routeName, {Object? extra}) {
-    pop();
+  void pop<T>([T? result]) {
+    Navigator.of(this).pop(result);
+  }
 
-    push(routeName, extra: extra);
+  void popUntil(String routeName) {
+    Navigator.of(this).popUntil((route) => route.settings.name == routeName);
+  }
+
+  Future<T?> popAndPush<T extends Object?>(String routeName, {Object? arguments}) {
+    return Navigator.of(this).popAndPushNamed(routeName, arguments: arguments);
+  }
+
+  void maybePop<T>([T? result]) {
+    Navigator.of(this).maybePop(result);
+  }
+
+  void replace(String routeName) {
+    Navigator.of(this).pushReplacementNamed(routeName);
   }
 }
 
-@Riverpod(keepAlive: true)
-AppNavigator appNavigator(AppNavigatorRef ref) => AppNavigator();
+final class AppRouter {
+  static Route<dynamic> generateRoute(RouteSettings settings) {
+    final (builder, fullScreenDialog) = switch (settings.name) {
+      '/' => ((_) => const HomeScreen(), false),
+      '/about' => ((_) => const AboutScreen(), false),
+      'initial' => ((_) => const InitialScreen(), false),
+      '/playlist' => ((_) => PlaylistScreen(playlist: settings.arguments as Playlist), false),
+      '/playlist/bible_verse' => ((_) => BibleVerseScreen(bibleVerse: settings.arguments as BibleVerse), false),
+      '/playlist/custom_text' => ((_) => CustomTextScreen(customText: settings.arguments as CustomText), false),
+      '/playlists' => ((_) => const PlaylistsScreen(), false),
+      '/search' => (
+          (_) => SearchScreen(
+                initialTag: switch (settings.arguments) {
+                  (Tag tag) => tag,
+                  (Songbook songbook) => songbook.tag,
+                  (Playlist playlist) => playlist.tag,
+                  _ => null,
+                },
+              ),
+          true
+        ),
+      '/songbook' => ((_) => SongbookScreen(songbook: settings.arguments as Songbook), false),
+      '/songbooks' => ((_) => const SongbooksScreen(), false),
+      '/song_lyric' => ((_) => SongLyricScreen(songLyrics: [settings.arguments as SongLyric], initialIndex: 0), false),
+      '/user' => ((_) => const UserScreen(), false),
+      '/updated_song_lyrics' => (
+          (_) => UpdatedSongLyricsScreen(songLyrics: settings.arguments as List<SongLyric>),
+          false,
+        ),
+      _ => throw 'Unknown route: ${settings.name}',
+    };
 
-class AppNavigator extends NavigatorObserver {
-  late final appRouter = GoRouter(
-    initialLocation: '/initial',
-    observers: [this],
-    routes: [
-      GoRoute(path: '/', builder: (_, __) => const HomeScreen()),
-      GoRoute(path: '/about', builder: (_, __) => const AboutScreen()),
-      GoRoute(path: '/initial', builder: (_, __) => const InitialScreen()),
-      GoRoute(path: '/playlist', builder: (_, state) => PlaylistScreen(playlist: state.extra as Playlist)),
-      GoRoute(
-        path: '/playlist/bible_verse',
-        builder: (_, state) => BibleVerseScreen(bibleVerse: state.extra as BibleVerse?),
-      ),
-      GoRoute(
-        path: '/playlist/custom_text',
-        builder: (_, state) => CustomTextScreen(customText: state.extra as CustomText?),
-      ),
-      GoRoute(path: '/playlists', builder: (_, __) => const PlaylistsScreen()),
-      GoRoute(
-        path: '/search',
-        pageBuilder: (_, state) {
-          final initialTag = switch (state.extra) {
-            (Tag tag) => tag,
-            (Songbook songbook) => songbook.tag,
-            (Playlist playlist) => playlist.tag,
-            _ => null,
-          };
-
-          return MaterialPage(
-            name: '/search',
-            fullscreenDialog: true,
-            child: SearchScreen(initialTag: initialTag),
-          );
-        },
-      ),
-      GoRoute(path: '/songbook', builder: (_, state) => SongbookScreen(songbook: state.extra as Songbook)),
-      GoRoute(path: '/songbooks', builder: (_, __) => const SongbooksScreen()),
-      GoRoute(
-        path: '/song_lyric',
-        builder: (_, state) {
-          final arguments = state.extra as SongLyric;
-
-          return SongLyricScreen(songLyrics: [arguments], initialIndex: 0);
-        },
-      ),
-      GoRoute(path: '/user', builder: (_, __) => const UserScreen()),
-      GoRoute(
-        path: '/updated_song_lyrics',
-        builder: (_, state) => UpdatedSongLyricsScreen(songLyrics: state.extra as List<SongLyric>),
-      ),
-    ],
-  );
-
-  bool _isSearchRouteInStack = false;
-
-  bool get isSearchRouteInStack => _isSearchRouteInStack;
-
-  @override
-  void didPush(Route route, Route? previousRoute) {
-    super.didPush(route, previousRoute);
-
-    log('[APP_NAVIGATOR] pushed: $route from: $previousRoute');
-
-    final name = route.settings.name;
-
-    if (name == '/search') _isSearchRouteInStack = true;
-
-    _handleWakeLock(name);
-  }
-
-  @override
-  void didPop(Route route, Route? previousRoute) {
-    super.didPop(route, previousRoute);
-
-    final name = route.settings.name;
-
-    if (name == '/search') _isSearchRouteInStack = false;
-
-    _handleWakeLock(previousRoute?.settings.name);
-
-    log('[APP_NAVIGATOR] popped: $route to: $previousRoute');
-  }
-
-  @override
-  void didReplace({Route? newRoute, Route? oldRoute}) {
-    super.didReplace(newRoute: newRoute, oldRoute: oldRoute);
-
-    log('[APP_NAVIGATOR] replaced: $oldRoute to: $newRoute');
-  }
-
-  @override
-  void didRemove(Route route, Route? previousRoute) {
-    super.didRemove(route, previousRoute);
-
-    log('[APP_NAVIGATOR] removed: $route to: $previousRoute');
-  }
-
-  // enable wakelock for `SongLyricScreen` disable for other screens
-  void _handleWakeLock(String? routeName) {
-    if (routeName == '/song_lyric') {
-      Wakelock.enable();
-    } else {
-      Wakelock.disable();
-    }
+    return MaterialPageRoute(
+      settings: settings,
+      builder: builder,
+      fullscreenDialog: fullScreenDialog,
+    );
   }
 }

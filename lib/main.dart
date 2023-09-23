@@ -11,6 +11,7 @@ import 'package:zpevnik/firebase_options.dart';
 import 'package:zpevnik/models/objectbox.g.dart';
 import 'package:zpevnik/providers/app_dependencies.dart';
 import 'package:zpevnik/providers/settings.dart';
+import 'package:zpevnik/routing/navigator_observer.dart';
 import 'package:zpevnik/routing/router.dart';
 import 'package:zpevnik/screens/presentation.dart';
 import 'package:zpevnik/theme.dart';
@@ -53,13 +54,18 @@ class MainWidget extends ConsumerWidget {
       }
     }
 
-    return MaterialApp.router(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: _title,
       theme: AppTheme.light(),
       darkTheme: AppTheme.dark(),
       themeMode: themeMode,
-      routerConfig: ref.read(appNavigatorProvider).appRouter,
+      // must be without leading '/', otherwise navigation stack will be `HomeScreen` > `InitialScreen`
+      // and when replacing `InitialScreen` it will result to `HomeScreen` > `HomeScreen`
+      // this is because of deeplinking, when all screens in path are pushed to stack as well
+      initialRoute: 'initial',
+      onGenerateRoute: AppRouter.generateRoute,
+      navigatorObservers: [ref.read(appNavigatorProvider)],
     );
   }
 }

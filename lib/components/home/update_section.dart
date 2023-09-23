@@ -1,13 +1,12 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/section.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/links.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/update.dart';
+import 'package:zpevnik/routing/router.dart';
 import 'package:zpevnik/utils/url_launcher.dart';
 
 class UpdateSection extends ConsumerStatefulWidget {
@@ -65,7 +64,7 @@ class _UpdateSectionState extends ConsumerState<UpdateSection> {
                     Highlightable(
                       foregroundColor: theme.colorScheme.primary,
                       padding: const EdgeInsets.only(top: 2 / 3 * kDefaultPadding),
-                      onTap: () => context.push('/updated_song_lyrics', extra: updatedSongLyrics),
+                      onTap: () => context.push('/updated_song_lyrics', arguments: updatedSongLyrics),
                       child: const Text('Zobrazit'),
                     ),
                   if (hasError)

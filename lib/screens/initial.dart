@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/logo.dart';
@@ -9,6 +8,7 @@ import 'package:zpevnik/components/sign_in_button.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/components/custom/future_builder.dart';
 import 'package:zpevnik/providers/update.dart';
+import 'package:zpevnik/routing/router.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/extensions.dart';
 

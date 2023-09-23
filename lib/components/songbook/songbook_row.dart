@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songbook.dart';
+import 'package:zpevnik/routing/router.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
 const _songbookColorBoxSize = 16.0;
@@ -39,6 +39,6 @@ class SongbookRow extends StatelessWidget {
   void _pushSongbook(BuildContext context) {
     FocusScope.of(context).unfocus();
 
-    context.push('/songbook', extra: songbook);
+    context.push('/songbook', arguments: songbook);
   }
 }

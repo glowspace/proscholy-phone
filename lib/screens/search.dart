@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:zpevnik/components/filters/filters.dart';
 import 'package:zpevnik/components/filters/filters_row.dart';
 import 'package:zpevnik/components/navigation/scaffold.dart';
@@ -11,6 +10,7 @@ import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/providers/search.dart';
 import 'package:zpevnik/providers/tags.dart';
+import 'package:zpevnik/routing/router.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
 class SearchScreen extends ConsumerStatefulWidget {
@@ -87,6 +87,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       searchedSongLyricsProvider.select((searchedSongLyricsProvider) => searchedSongLyricsProvider.matchedById),
     );
 
-    if (matchedById != null) context.push('/song_lyric', extra: matchedById);
+    if (matchedById != null) context.push('/song_lyric', arguments: matchedById);
   }
 }

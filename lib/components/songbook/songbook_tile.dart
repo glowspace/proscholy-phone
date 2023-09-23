@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/providers/songbooks.dart';
+import 'package:zpevnik/routing/router.dart';
 
 const _logosPath = '$imagesPath/songbooks';
 const _existingLogos = [
@@ -80,6 +80,6 @@ class SongbookTile extends StatelessWidget {
   void _pushSongbook(BuildContext context) {
     FocusScope.of(context).unfocus();
 
-    context.push('/songbook', extra: songbook);
+    context.push('/songbook', arguments: songbook);
   }
 }

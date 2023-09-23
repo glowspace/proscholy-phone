@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/song_lyric/song_lyric_row.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/playlist_record.dart';
+import 'package:zpevnik/routing/router.dart';
 import 'package:zpevnik/utils/bible_api_client.dart';
 
 class PlaylistRecordRow extends StatelessWidget {
@@ -56,10 +56,10 @@ class PlaylistRecordRow extends StatelessWidget {
     final bibleVerse = playlistRecord.bibleVerse.target;
 
     if (bibleVerse != null) {
-      context.push('/playlist/bible_verse', extra: bibleVerse);
+      context.push('/playlist/bible_verse', arguments: bibleVerse);
       return;
     }
 
-    context.push('/playlist/custom_text', extra: playlistRecord.customText.target);
+    context.push('/playlist/custom_text', arguments: playlistRecord.customText.target);
   }
 }

@@ -71,7 +71,6 @@ dependencies:
   json_annotation: ^4.8.1
   flutter_riverpod: ^2.3.6
   riverpod_annotation: ^2.1.1
-  go_router: ^8.0.3
   path_provider: ^2.0.15
   super_editor: ^0.2.6
   super_editor_markdown: ^0.1.5

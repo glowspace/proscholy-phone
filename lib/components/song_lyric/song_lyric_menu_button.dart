@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart' hide PopupMenuEntry, PopupMenuItem;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:zpevnik/components/custom/popup_menu_button.dart';
 import 'package:zpevnik/components/icon_item.dart';
@@ -11,6 +10,7 @@ import 'package:zpevnik/links.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/app_dependencies.dart';
 import 'package:zpevnik/providers/presentation.dart';
+import 'package:zpevnik/routing/router.dart';
 import 'package:zpevnik/utils/url_launcher.dart';
 
 enum SongLyricMenuAction {
