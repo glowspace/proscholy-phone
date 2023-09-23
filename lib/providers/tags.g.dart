@@ -107,12 +107,13 @@ class TagsProvider extends AutoDisposeProvider<List<Tag>> {
   }
 }
 
-String _$selectedTagsHash() => r'8218b2ad0b5415ead91171e665120503994fffaa';
+String _$selectedTagsHash() => r'234e8ee7fb1abf6aac608b2f2340aaf2fdc77f68';
 
-/// See also [selectedTags].
-@ProviderFor(selectedTags)
-final selectedTagsProvider = AutoDisposeProvider<Set<Tag>>.internal(
-  selectedTags,
+/// See also [SelectedTags].
+@ProviderFor(SelectedTags)
+final selectedTagsProvider =
+    AutoDisposeNotifierProvider<SelectedTags, Set<Tag>>.internal(
+  SelectedTags.new,
   name: r'selectedTagsProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$selectedTagsHash,
@@ -120,9 +121,9 @@ final selectedTagsProvider = AutoDisposeProvider<Set<Tag>>.internal(
   allTransitiveDependencies: null,
 );
 
-typedef SelectedTagsRef = AutoDisposeProviderRef<Set<Tag>>;
+typedef _$SelectedTags = AutoDisposeNotifier<Set<Tag>>;
 String _$selectedTagsByTypeHash() =>
-    r'e57dd3bcbb0924f0b2a7d147f955ede1755a7c07';
+    r'7fe1982268c908600e9bb6fca1b2cac70c657756';
 
 abstract class _$SelectedTagsByType
     extends BuildlessAutoDisposeNotifier<Set<Tag>> {

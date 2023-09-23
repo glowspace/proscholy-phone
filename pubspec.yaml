@@ -54,8 +54,6 @@ dependencies:
 
   cupertino_icons: ^1.0.3
 
-  sentry_flutter: ^7.4.0
-
   package_info_plus: ^3.0.3
   web_socket_channel: ^2.2.0
   flutter_slidable: ^3.0.0

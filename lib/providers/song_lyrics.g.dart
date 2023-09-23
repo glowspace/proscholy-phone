@@ -20,8 +20,8 @@ final songLyricsProvider = Provider<List<SongLyric>>.internal(
 );
 
 typedef SongLyricsRef = ProviderRef<List<SongLyric>>;
-String _$filteredSongLyricsHash() =>
-    r'1b17747dbe67c621e42c542fcb3ec8b8af5f5681';
+String _$songsListSongLyricsHash() =>
+    r'5be5b2d1ea1000c78c94c7133639aa835b0eefae';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -44,90 +44,6 @@ class _SystemHash {
   }
 }
 
-typedef FilteredSongLyricsRef = AutoDisposeProviderRef<List<SongLyric>>;
-
-/// See also [filteredSongLyrics].
-@ProviderFor(filteredSongLyrics)
-const filteredSongLyricsProvider = FilteredSongLyricsFamily();
-
-/// See also [filteredSongLyrics].
-class FilteredSongLyricsFamily extends Family<List<SongLyric>> {
-  /// See also [filteredSongLyrics].
-  const FilteredSongLyricsFamily();
-
-  /// See also [filteredSongLyrics].
-  FilteredSongLyricsProvider call(
-    List<SongLyric> songLyrics,
-  ) {
-    return FilteredSongLyricsProvider(
-      songLyrics,
-    );
-  }
-
-  @override
-  FilteredSongLyricsProvider getProviderOverride(
-    covariant FilteredSongLyricsProvider provider,
-  ) {
-    return call(
-      provider.songLyrics,
-    );
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'filteredSongLyricsProvider';
-}
-
-/// See also [filteredSongLyrics].
-class FilteredSongLyricsProvider extends AutoDisposeProvider<List<SongLyric>> {
-  /// See also [filteredSongLyrics].
-  FilteredSongLyricsProvider(
-    this.songLyrics,
-  ) : super.internal(
-          (ref) => filteredSongLyrics(
-            ref,
-            songLyrics,
-          ),
-          from: filteredSongLyricsProvider,
-          name: r'filteredSongLyricsProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$filteredSongLyricsHash,
-          dependencies: FilteredSongLyricsFamily._dependencies,
-          allTransitiveDependencies:
-              FilteredSongLyricsFamily._allTransitiveDependencies,
-        );
-
-  final List<SongLyric> songLyrics;
-
-  @override
-  bool operator ==(Object other) {
-    return other is FilteredSongLyricsProvider &&
-        other.songLyrics == songLyrics;
-  }
-
-  @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, songLyrics.hashCode);
-
-    return _SystemHash.finish(hash);
-  }
-}
-
-String _$songsListSongLyricsHash() =>
-    r'5be5b2d1ea1000c78c94c7133639aa835b0eefae';
 typedef SongsListSongLyricsRef = AutoDisposeProviderRef<List<SongLyric>>;
 
 /// See also [songsListSongLyrics].

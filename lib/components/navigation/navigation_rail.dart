@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/navigation/utils.dart';
-import 'package:zpevnik/providers/menu.dart';
 import 'package:zpevnik/routing/router.dart';
 
 class CustomNavigationRail extends StatelessWidget {
@@ -44,12 +43,12 @@ class CustomNavigationRail extends StatelessWidget {
                   : Column(
                       children: [
                         Image.asset('assets/images/logos/logo.png'),
-                        Consumer(
-                          builder: (_, ref, __) => Highlightable(
-                            onTap: ref.read(menuCollapsedProvider.notifier).toggle,
-                            icon: Icon(ref.watch(menuCollapsedProvider) ? Icons.menu : Icons.menu_open),
-                          ),
-                        ),
+                        // StatefulBuilder(
+                        //   builder: () => Highlightable(
+                        //     onTap: ref.read(menuCollapsedProvider.notifier).toggle,
+                        //     icon: Icon(ref.watch(menuCollapsedProvider) ? Icons.menu : Icons.menu_open),
+                        //   ),
+                        // ),
                       ],
                     ),
               destinations: const [

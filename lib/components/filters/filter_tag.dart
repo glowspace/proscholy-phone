@@ -42,7 +42,7 @@ class FilterTag extends ConsumerWidget {
           Material(
             color: removeBackgroundColor,
             child: Highlightable(
-              onTap: () => ref.read(selectedTagsByTypeProvider(tag.type).notifier).toggleSelection(tag),
+              onTap: () => ref.read(selectedTagsProvider.notifier).toggleSelection(tag),
               highlightBackground: true,
               highlightColor: theme.colorScheme.primary.withAlpha(0x20),
               padding: const EdgeInsets.all(kDefaultPadding / 2).copyWith(left: kDefaultPadding / 4),
@@ -57,7 +57,7 @@ class FilterTag extends ConsumerWidget {
         highlightBackground: true,
         highlightColor: theme.colorScheme.primary.withAlpha(0x10),
         borderRadius: BorderRadius.circular(_filterRadius),
-        onTap: () => ref.read(selectedTagsByTypeProvider(tag.type).notifier).toggleSelection(tag),
+        onTap: () => ref.read(selectedTagsProvider.notifier).toggleSelection(tag),
         padding: padding,
         child: child,
       );

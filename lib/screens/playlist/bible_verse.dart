@@ -28,6 +28,8 @@ class _BibleVerseScreenState extends State<BibleVerseScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // ExpansionPanel
+
     return Consumer(
       builder: (_, ref, __) => CustomScaffold(
         appBar: AppBar(

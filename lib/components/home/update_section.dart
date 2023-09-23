@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/section.dart';
 import 'package:zpevnik/constants.dart';
@@ -32,11 +31,7 @@ class _UpdateSectionState extends ConsumerState<UpdateSection> {
 
             return _build(context, updatedSongLyrics: updatedSongLyrics);
           },
-          error: (error, stackTrace) {
-            if (!kDebugMode) Sentry.captureException(error, stackTrace: stackTrace);
-
-            return _build(context, error: error);
-          },
+          error: (error, _) => _build(context, error: error),
           loading: () => _build(context, updatedSongLyrics: []),
         );
   }

@@ -1,7 +1,10 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zpevnik/components/song_lyric/song_lyrics_section_title.dart';
 import 'package:zpevnik/components/song_lyric/song_lyric_row.dart';
+import 'package:zpevnik/models/song_lyric.dart';
+import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/providers/search.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
 import 'package:zpevnik/providers/tags.dart';
@@ -13,13 +16,11 @@ class SearchSongLyricsListView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final searchedSongLyricsResult = ref.watch(searchedSongLyricsProvider);
 
-    final songLyrics =
-        ref.watch(filteredSongLyricsProvider(searchedSongLyricsResult.songLyrics ?? ref.watch(songLyricsProvider)));
+    final songLyrics = filterSongLyrics(searchedSongLyricsResult.songLyrics ?? ref.watch(songLyricsProvider), ref);
     final matchedById = searchedSongLyricsResult.matchedById == null
         ? null
-        : ref.watch(filteredSongLyricsProvider([searchedSongLyricsResult.matchedById!])).firstOrNull;
-    final matchedBySongbookNumber =
-        ref.watch(filteredSongLyricsProvider(searchedSongLyricsResult.matchedBySongbookNumber));
+        : filterSongLyrics([searchedSongLyricsResult.matchedById!], ref).firstOrNull;
+    final matchedBySongbookNumber = filterSongLyrics(searchedSongLyricsResult.matchedBySongbookNumber, ref);
 
     final recentSongLyrics = ref.watch(recentSongLyricsProvider);
 
@@ -85,5 +86,37 @@ class SearchSongLyricsListView extends ConsumerWidget {
         return SongLyricRow(songLyric: songLyrics[index]);
       },
     );
+  }
+
+  List<SongLyric> filterSongLyrics(List<SongLyric> songLyrics, WidgetRef ref) {
+    final filteredSongLyrics = <SongLyric>[...songLyrics];
+
+    for (int i = filteredSongLyrics.length - 1; i >= 0; i--) {
+      final songLyric = filteredSongLyrics[i];
+
+      for (final tagType in supportedTagTypes) {
+        final selectedTags = ref.watch(selectedTagsByTypeProvider(tagType));
+
+        if (selectedTags.isEmpty) continue;
+
+        final shouldRemove = switch (tagType) {
+          TagType.language => selectedTags.none((tag) => tag.name == songLyric.langDescription),
+          TagType.playlist => selectedTags.none((tag) => songLyric.playlistRecords
+              .map((playlistRecord) => playlistRecord.playlist.target!)
+              .any((playlist) => tag.name == playlist.name)),
+          TagType.songbook => selectedTags.none((tag) => songLyric.songbookRecords
+              .map((songbookRecord) => songbookRecord.songbook.target!)
+              .any((songbook) => tag.name == songbook.name)),
+          _ => songLyric.tags.none((tag) => selectedTags.contains(tag))
+        };
+
+        if (shouldRemove) {
+          filteredSongLyrics.removeAt(i);
+          break;
+        }
+      }
+    }
+
+    return filteredSongLyrics;
   }
 }

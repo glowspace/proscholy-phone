@@ -30,12 +30,16 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     if (widget.initialTag != null) {
       // FIXME: there should be better way of doing this, now it will build with all song lyrics and after frame rebuild with only given tag
       // must be done with delay, as it forces rebuild
-      Future.delayed(
-          const Duration(milliseconds: 20),
-          () => ref
-              .read(selectedTagsByTypeProvider(widget.initialTag!.type).notifier)
-              .toggleSelection(widget.initialTag!));
+      Future.delayed(const Duration(milliseconds: 20),
+          () => ref.read(selectedTagsProvider.notifier).toggleSelection(widget.initialTag!));
     }
+  }
+
+  @override
+  void dispose() {
+    ref.read(selectedTagsProvider.notifier).pop();
+
+    super.dispose();
   }
 
   @override

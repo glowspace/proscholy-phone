@@ -16,9 +16,13 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$AppDependencies {
-  SharedPreferences get sharedPreferences => throw _privateConstructorUsedError;
-  Store get store => throw _privateConstructorUsedError;
-  Database get ftsDatabase => throw _privateConstructorUsedError;
+// reference to simple key-value storage
+  SharedPreferences get sharedPreferences =>
+      throw _privateConstructorUsedError; // objectbox store used as NoSQL database
+  Store get store =>
+      throw _privateConstructorUsedError; // FTS4 database that is used during song lyrics search
+  Database get ftsDatabase =>
+      throw _privateConstructorUsedError; // info about application (used for version and build number)
   PackageInfo get packageInfo => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -139,12 +143,16 @@ class _$_AppDependencies implements _AppDependencies {
       required this.ftsDatabase,
       required this.packageInfo});
 
+// reference to simple key-value storage
   @override
   final SharedPreferences sharedPreferences;
+// objectbox store used as NoSQL database
   @override
   final Store store;
+// FTS4 database that is used during song lyrics search
   @override
   final Database ftsDatabase;
+// info about application (used for version and build number)
   @override
   final PackageInfo packageInfo;
 
@@ -185,13 +193,13 @@ abstract class _AppDependencies implements AppDependencies {
       required final Database ftsDatabase,
       required final PackageInfo packageInfo}) = _$_AppDependencies;
 
-  @override
+  @override // reference to simple key-value storage
   SharedPreferences get sharedPreferences;
-  @override
+  @override // objectbox store used as NoSQL database
   Store get store;
-  @override
+  @override // FTS4 database that is used during song lyrics search
   Database get ftsDatabase;
-  @override
+  @override // info about application (used for version and build number)
   PackageInfo get packageInfo;
   @override
   @JsonKey(ignore: true)

@@ -11,7 +11,6 @@ import 'package:zpevnik/components/song_lyric/utils/auto_scroll.dart';
 import 'package:zpevnik/components/song_lyric/utils/parser.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
-import 'package:zpevnik/providers/full_screen.dart';
 import 'package:zpevnik/providers/playlists.dart';
 import 'package:zpevnik/providers/settings.dart';
 
@@ -34,6 +33,8 @@ class _SongLyricScreenState extends ConsumerState<SongLyricScreen> {
   // FIXME: will need to change with page change
   final autoScrollController = AutoScrollController();
 
+  bool _fullScreen = false;
+
   int get _currentIndex =>
       _pageController.positions.isNotEmpty ? _pageController.page?.round() ?? widget.initialIndex : widget.initialIndex;
   SongLyric get songLyric => widget.songLyrics[_currentIndex % widget.songLyrics.length];
@@ -43,7 +44,7 @@ class _SongLyricScreenState extends ConsumerState<SongLyricScreen> {
     return ListenableBuilder(
       listenable: _pageController,
       builder: (_, __) => CustomScaffold(
-        appBar: ref.watch(fullScreenProvider)
+        appBar: _fullScreen
             ? null
             : AppBar(
                 title: Text('${songLyric.id}'),
@@ -64,18 +65,19 @@ class _SongLyricScreenState extends ConsumerState<SongLyricScreen> {
                   SongLyricMenuButton(songLyric: songLyric, songLyricsParser: SongLyricsParser(songLyric)),
                 ],
               ),
-        bottomNavigationBar: ref.watch(fullScreenProvider)
+        bottomNavigationBar: _fullScreen
             ? const SizedBox()
             : SongLyricBottomBar(
                 songLyric: songLyric,
                 autoScrollController: autoScrollController,
+                toggleFullScreen: () => setState(() => _fullScreen = !_fullScreen),
               ),
         body: SafeArea(
           bottom: false,
           child: GestureDetector(
             onScaleStart: _fontScaleStarted,
             onScaleUpdate: _fontScaleUpdated,
-            onTap: ref.read(fullScreenProvider.notifier).disable,
+            onTap: () => setState(() => _fullScreen = false),
             behavior: HitTestBehavior.translucent,
             child: PageView.builder(
               controller: _pageController,

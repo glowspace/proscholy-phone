@@ -15,9 +15,13 @@ AppDependencies appDependencies(AppDependenciesRef ref) => throw UnimplementedEr
 @freezed
 class AppDependencies with _$AppDependencies {
   const factory AppDependencies({
+    // reference to simple key-value storage
     required SharedPreferences sharedPreferences,
+    // objectbox store used as NoSQL database
     required Store store,
+    // FTS4 database that is used during song lyrics search
     required Database ftsDatabase,
+    // info about application (used for version and build number)
     required PackageInfo packageInfo,
   }) = _AppDependencies;
 }

@@ -56,10 +56,6 @@ class Playlists extends _$Playlists {
 
     final playlists = queryStore(ref, condition: Playlist_.id.notEquals(favoritesPlaylistId), orderBy: Playlist_.rank);
 
-    print(_playlistRecordsBox.count());
-    print(_customTextBox.count());
-    print(_bibleVerseBox.count());
-
     return playlists;
   }
 

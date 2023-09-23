@@ -9,6 +9,7 @@ part 'playlist.freezed.dart';
 const favoritesPlaylistId = 1;
 const _favoritesName = 'Písně s hvězdičkou';
 
+// offset for songbook tags, tags from API have id > 0, songbook tags have negative id starting from -1000, so offset -2000 should be enough
 const _playlistIdOffset = -2000;
 
 @freezed

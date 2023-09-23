@@ -9,6 +9,9 @@ import 'package:zpevnik/providers/utils.dart';
 
 part 'tags.g.dart';
 
+// provides tags for given `tagType`
+// for songbooks, playlists and languages it creates corresponding tags,
+// remaining tags are queried from objectbox store
 @riverpod
 List<Tag> tags(TagsRef ref, TagType tagType) {
   switch (tagType) {
@@ -40,11 +43,47 @@ List<Tag> tags(TagsRef ref, TagType tagType) {
 }
 
 @riverpod
+class SelectedTags extends _$SelectedTags {
+  final List<Set<Tag>> selectedTagsStack = [];
+
+  @override
+  Set<Tag> build() {
+    return {for (final tagType in supportedTagTypes) ...ref.watch(selectedTagsByTypeProvider(tagType))};
+  }
+
+  void push({Tag? initialTag}) {
+    selectedTagsStack.add({for (final tagType in supportedTagTypes) ...ref.read(selectedTagsByTypeProvider(tagType))});
+
+    for (final tagType in supportedTagTypes) {
+      ref.invalidate(selectedTagsByTypeProvider(tagType));
+    }
+
+    if (initialTag != null) toggleSelection(initialTag);
+  }
+
+  void pop() {
+    for (final tagType in supportedTagTypes) {
+      ref.invalidate(selectedTagsByTypeProvider(tagType));
+    }
+
+    if (selectedTagsStack.isNotEmpty) {
+      for (final tag in selectedTagsStack.removeLast()) {
+        toggleSelection(tag);
+      }
+    }
+  }
+
+  void toggleSelection(Tag tagToToggle) {
+    ref.read(selectedTagsByTypeProvider(tagToToggle.type).notifier)._toggleSelection(tagToToggle);
+  }
+}
+
+@riverpod
 class SelectedTagsByType extends _$SelectedTagsByType {
   @override
   Set<Tag> build(TagType tagType) => {};
 
-  void toggleSelection(Tag tagToToggle) {
+  void _toggleSelection(Tag tagToToggle) {
     if (state.contains(tagToToggle)) {
       state = {
         for (final tag in state)
@@ -54,9 +93,4 @@ class SelectedTagsByType extends _$SelectedTagsByType {
       state = {tagToToggle, ...state};
     }
   }
-}
-
-@riverpod
-Set<Tag> selectedTags(SelectedTagsRef ref) {
-  return {for (final tagType in supportedTagTypes) ...ref.watch(selectedTagsByTypeProvider(tagType))};
 }

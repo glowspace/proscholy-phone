@@ -7,7 +7,6 @@ import 'package:zpevnik/components/song_lyric/utils/auto_scroll.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/settings.dart';
 import 'package:zpevnik/models/song_lyric.dart';
-import 'package:zpevnik/providers/full_screen.dart';
 import 'package:zpevnik/providers/settings.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
@@ -17,7 +16,14 @@ class SongLyricBottomBar extends ConsumerWidget {
   final SongLyric songLyric;
   final AutoScrollController autoScrollController;
 
-  const SongLyricBottomBar({super.key, required this.songLyric, required this.autoScrollController});
+  final Function()? toggleFullScreen;
+
+  const SongLyricBottomBar({
+    super.key,
+    required this.songLyric,
+    required this.autoScrollController,
+    this.toggleFullScreen,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -33,41 +39,42 @@ class SongLyricBottomBar extends ConsumerWidget {
         child: Row(children: [
           Highlightable(
             padding: const EdgeInsets.all(kDefaultPadding),
-            onTap: songLyric.hasChords ? () => _showSettings(context) : null,
+            isEnabled: songLyric.hasChords,
+            onTap: () => _showSettings(context),
             icon: const Icon(Icons.tune),
             child: showLabels ? const Text('Nástroje') : null,
           ),
           Highlightable(
             padding: const EdgeInsets.all(kDefaultPadding),
+            isEnabled: songLyric.hasRecordings,
             // onTap: _songLyric.hasRecordings ? () => _showingExternals.value = true : null,
             icon: const Icon(FontAwesomeIcons.headphones),
             child: showLabels ? const Text('Nahrávky') : null,
           ),
           Highlightable(
             padding: const EdgeInsets.all(kDefaultPadding),
-            onTap: ref.read(fullScreenProvider.notifier).toggle,
+            onTap: toggleFullScreen,
             icon: const Icon(Icons.fullscreen),
           ),
           const Spacer(),
           if (autoScrollController.isScrolling)
             Highlightable(
               padding: const EdgeInsets.all(kDefaultPadding),
-              onTap: autoScrollSpeedIndex == 0
-                  ? null
-                  : () => ref.read(settingsProvider.notifier).changeAutoScrollSpeedIndex(-1),
+              isEnabled: autoScrollSpeedIndex != 0,
+              onTap: ref.read(settingsProvider.notifier).decreaseAutoScrollSpeedIndex,
               icon: const Icon(Icons.remove),
             ),
           if (autoScrollController.isScrolling)
             Highlightable(
               padding: const EdgeInsets.all(kDefaultPadding),
-              onTap: autoScrollSpeedIndex == autoScrollSpeeds.length - 1
-                  ? null
-                  : () => ref.read(settingsProvider.notifier).changeAutoScrollSpeedIndex(1),
+              isEnabled: autoScrollSpeedIndex != autoScrollSpeeds.length - 1,
+              onTap: ref.read(settingsProvider.notifier).increaseAutoScrollSpeedIndex,
               icon: const Icon(Icons.add),
             ),
           Highlightable(
             padding: const EdgeInsets.all(kDefaultPadding),
-            onTap: autoScrollController.canScroll ? () => autoScrollController.toggle(ref) : null,
+            isEnabled: autoScrollController.canScroll,
+            onTap: () => autoScrollController.toggle(ref),
             icon: autoScrollController.isScrolling ? const Icon(Icons.stop) : const Icon(Icons.arrow_downward),
             child:
                 showLabels ? (autoScrollController.isScrolling ? const Text('Zastavit') : const Text('Rolovat')) : null,

@@ -1,6 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:objectbox/internal.dart';
-import 'package:objectbox/objectbox.dart';
 import 'package:zpevnik/models/author.dart';
 import 'package:zpevnik/models/external.dart';
 import 'package:zpevnik/models/model.dart';
@@ -72,6 +70,7 @@ List<T> queryStore<T, D>(
   Ref ref, {
   Condition<T>? condition,
   QueryProperty<T, D>? orderBy,
+  // default ascending
   int orderFlags = 0,
 }) {
   final box = ref.read(appDependenciesProvider.select((appDependencies) => appDependencies.store)).box<T>();

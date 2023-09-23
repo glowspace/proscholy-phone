@@ -26,6 +26,7 @@ class Highlightable extends StatelessWidget {
   final bool shrinkWrap;
   final bool highlightBackground;
 
+  final bool isEnabled;
   final Function()? onTap;
 
   final Widget? icon;
@@ -41,6 +42,7 @@ class Highlightable extends StatelessWidget {
     this.borderRadius,
     this.shrinkWrap = false,
     this.highlightBackground = false,
+    this.isEnabled = true,
     this.onTap,
     this.icon,
     this.child,
@@ -54,7 +56,7 @@ class Highlightable extends StatelessWidget {
       return InkWell(
         borderRadius: borderRadius,
         highlightColor: highlightColor,
-        onTap: onTap,
+        onTap: isEnabled ? onTap : null,
         child: Padding(padding: padding ?? EdgeInsets.zero, child: child),
       );
     }
@@ -72,7 +74,7 @@ class Highlightable extends StatelessWidget {
             disabledColor: theme.disabledColor,
           ),
         ),
-        onPressed: onTap,
+        onPressed: isEnabled ? onTap : null,
         icon: icon!,
       );
     }
@@ -95,8 +97,10 @@ class Highlightable extends StatelessWidget {
       overlayColor: const MaterialStatePropertyAll(Colors.transparent),
     );
 
-    if (icon != null) return TextButton.icon(style: style, onPressed: onTap, icon: icon!, label: child!);
+    if (icon != null) {
+      return TextButton.icon(style: style, onPressed: isEnabled ? onTap : null, icon: icon!, label: child!);
+    }
 
-    return TextButton(style: style, onPressed: onTap, child: child!);
+    return TextButton(style: style, onPressed: isEnabled ? onTap : null, child: child!);
   }
 }

@@ -56,8 +56,9 @@ class Settings extends _$Settings {
 
   void changeAccidentals(int accidentals) => state = state.copyWith(accidentals: accidentals);
 
-  void changeAutoScrollSpeedIndex(int diff) =>
-      state = state.copyWith(autoScrollSpeedIndex: state.autoScrollSpeedIndex + diff);
+  void decreaseAutoScrollSpeedIndex() => state = state.copyWith(autoScrollSpeedIndex: state.autoScrollSpeedIndex - 1);
+
+  void increaseAutoScrollSpeedIndex() => state = state.copyWith(autoScrollSpeedIndex: state.autoScrollSpeedIndex + 1);
 }
 
 @riverpod
