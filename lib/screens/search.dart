@@ -7,43 +7,16 @@ import 'package:zpevnik/components/search/search_field.dart';
 import 'package:zpevnik/components/search/search_song_lyrics_list_view.dart';
 import 'package:zpevnik/components/split_view.dart';
 import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/providers/search.dart';
 import 'package:zpevnik/providers/tags.dart';
 import 'package:zpevnik/routing/router.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
-class SearchScreen extends ConsumerStatefulWidget {
-  final Tag? initialTag;
-
-  const SearchScreen({super.key, this.initialTag});
+class SearchScreen extends ConsumerWidget {
+  const SearchScreen({super.key});
 
   @override
-  ConsumerState<SearchScreen> createState() => _SearchScreenState();
-}
-
-class _SearchScreenState extends ConsumerState<SearchScreen> {
-  @override
-  void initState() {
-    super.initState();
-
-    if (widget.initialTag != null) {
-      // FIXME: there should be better way of doing this, now it will build with all song lyrics and after frame rebuild with only given tag
-      // must be done with delay, as it forces rebuild
-      Future.delayed(const Duration(milliseconds: 20),
-          () => ref.read(selectedTagsProvider.notifier).toggleSelection(widget.initialTag!));
-    }
-  }
-
-  @override
-  void dispose() {
-    ref.read(selectedTagsProvider.notifier).pop();
-
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final mediaQuery = MediaQuery.of(context);
 
     final appBar = AppBar(
@@ -73,13 +46,27 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     );
 
     if (mediaQuery.isTablet && mediaQuery.isLandscape) {
-      return SplitView(
-        subChild: const Scaffold(body: SafeArea(child: FiltersWidget())),
-        child: CustomScaffold(appBar: appBar, body: const SearchSongLyricsListView()),
+      return WillPopScope(
+        onWillPop: () async {
+          // this is called with delay, so the change is not visible while popping from this screen
+          Future.delayed(const Duration(milliseconds: 20), ref.read(selectedTagsProvider.notifier).pop);
+          return true;
+        },
+        child: SplitView(
+          subChild: const Scaffold(body: SafeArea(child: FiltersWidget())),
+          child: CustomScaffold(appBar: appBar, body: const SearchSongLyricsListView()),
+        ),
       );
     }
 
-    return CustomScaffold(appBar: appBar, body: const SearchSongLyricsListView());
+    return WillPopScope(
+      onWillPop: () async {
+        // this is called with delay, so the change is not visible while popping from this screen
+        Future.delayed(const Duration(milliseconds: 20), ref.read(selectedTagsProvider.notifier).pop);
+        return true;
+      },
+      child: CustomScaffold(appBar: appBar, body: const SearchSongLyricsListView()),
+    );
   }
 
   void _maybePushMatchedSonglyric(BuildContext context, WidgetRef ref) {

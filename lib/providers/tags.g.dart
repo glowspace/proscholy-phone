@@ -107,12 +107,11 @@ class TagsProvider extends AutoDisposeProvider<List<Tag>> {
   }
 }
 
-String _$selectedTagsHash() => r'234e8ee7fb1abf6aac608b2f2340aaf2fdc77f68';
+String _$selectedTagsHash() => r'34f8261278fc3879ef3d18390732b4f5f7b10016';
 
 /// See also [SelectedTags].
 @ProviderFor(SelectedTags)
-final selectedTagsProvider =
-    AutoDisposeNotifierProvider<SelectedTags, Set<Tag>>.internal(
+final selectedTagsProvider = NotifierProvider<SelectedTags, Set<Tag>>.internal(
   SelectedTags.new,
   name: r'selectedTagsProvider',
   debugGetCreateSourceHash:
@@ -121,12 +120,11 @@ final selectedTagsProvider =
   allTransitiveDependencies: null,
 );
 
-typedef _$SelectedTags = AutoDisposeNotifier<Set<Tag>>;
+typedef _$SelectedTags = Notifier<Set<Tag>>;
 String _$selectedTagsByTypeHash() =>
-    r'7fe1982268c908600e9bb6fca1b2cac70c657756';
+    r'4de8cf236965b0cb7288b9c7170f47e4fb96fc95';
 
-abstract class _$SelectedTagsByType
-    extends BuildlessAutoDisposeNotifier<Set<Tag>> {
+abstract class _$SelectedTagsByType extends BuildlessNotifier<Set<Tag>> {
   late final TagType tagType;
 
   Set<Tag> build(
@@ -178,7 +176,7 @@ class SelectedTagsByTypeFamily extends Family<Set<Tag>> {
 
 /// See also [SelectedTagsByType].
 class SelectedTagsByTypeProvider
-    extends AutoDisposeNotifierProviderImpl<SelectedTagsByType, Set<Tag>> {
+    extends NotifierProviderImpl<SelectedTagsByType, Set<Tag>> {
   /// See also [SelectedTagsByType].
   SelectedTagsByTypeProvider(
     this.tagType,

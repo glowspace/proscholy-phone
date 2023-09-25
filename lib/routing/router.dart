@@ -4,7 +4,6 @@ import 'package:zpevnik/models/custom_text.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/models/songbook.dart';
-import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/screens/about.dart';
 import 'package:zpevnik/screens/home.dart';
 import 'package:zpevnik/screens/initial.dart';
@@ -59,17 +58,7 @@ final class AppRouter {
       '/playlist/bible_verse' => ((_) => BibleVerseScreen(bibleVerse: settings.arguments as BibleVerse), false),
       '/playlist/custom_text' => ((_) => CustomTextScreen(customText: settings.arguments as CustomText), false),
       '/playlists' => ((_) => const PlaylistsScreen(), false),
-      '/search' => (
-          (_) => SearchScreen(
-                initialTag: switch (settings.arguments) {
-                  (Tag tag) => tag,
-                  (Songbook songbook) => songbook.tag,
-                  (Playlist playlist) => playlist.tag,
-                  _ => null,
-                },
-              ),
-          true
-        ),
+      '/search' => ((_) => const SearchScreen(), true),
       '/songbook' => ((_) => SongbookScreen(songbook: settings.arguments as Songbook), false),
       '/songbooks' => ((_) => const SongbooksScreen(), false),
       '/song_lyric' => ((_) => SongLyricScreen(songLyrics: [settings.arguments as SongLyric], initialIndex: 0), false),

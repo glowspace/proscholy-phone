@@ -164,7 +164,7 @@ class _SearchFieldState extends State<SearchField> {
               ),
               if (widget.isInsideSearchScreen)
                 Highlightable(
-                  onTap: () => Navigator.of(context).pop(),
+                  onTap: () => context.maybePop(),
                   padding: const EdgeInsets.all(kDefaultPadding),
                   textStyle: theme.textTheme.bodyMedium,
                   foregroundColor: theme.colorScheme.primary,
@@ -188,7 +188,7 @@ class _SearchFieldState extends State<SearchField> {
 
   void _clearOrPop() {
     if (_controller.text.isEmpty) {
-      context.pop();
+      context.maybePop();
     } else {
       _controller.clear();
       widget.onChanged?.call('');

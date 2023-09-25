@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songbook_record.dart';
 import 'package:zpevnik/models/tag.dart';
+import 'package:zpevnik/providers/tags.dart';
 import 'package:zpevnik/routing/router.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
-class SongLyricTag extends StatelessWidget {
+class SongLyricTag extends ConsumerWidget {
   final SongbookRecord? songbookRecord;
   final Tag? tag;
 
   const SongLyricTag({super.key, this.songbookRecord, this.tag}) : assert(songbookRecord != null || tag != null);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
 
     final String text;
@@ -35,8 +37,8 @@ class SongLyricTag extends StatelessWidget {
         borderRadius: BorderRadius.circular(32),
         highlightColor: theme.colorScheme.primary.withAlpha(0x20),
         onTap: () => songbookRecord != null
-            ? context.popAndPush('/search', arguments: songbookRecord!.songbook.target)
-            : context.popAndPush('/search', arguments: tag),
+            ? _pushSearch(context, ref, songbookRecord!.songbook.target!.tag)
+            : _pushSearch(context, ref, tag!),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -55,5 +57,10 @@ class SongLyricTag extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _pushSearch(BuildContext context, WidgetRef ref, Tag tag) {
+    ref.read(selectedTagsProvider.notifier).push(initialTag: tag);
+    context.popAndPush('/search', arguments: tag);
   }
 }

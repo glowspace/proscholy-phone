@@ -11,6 +11,7 @@ import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/playlists.dart';
+import 'package:zpevnik/providers/tags.dart';
 import 'package:zpevnik/routing/router.dart';
 
 class PlaylistScreen extends ConsumerWidget {
@@ -62,7 +63,7 @@ class PlaylistScreen extends ConsumerWidget {
         title: Text(playlist.name),
         actions: [
           Highlightable(
-            onTap: playlist.records.isEmpty ? null : () => context.push('/search', arguments: playlist),
+            onTap: playlist.records.isEmpty ? null : () => _pushSearch(context, ref),
             padding: const EdgeInsets.all(kDefaultPadding),
             icon: const Icon(Icons.filter_alt),
           ),
@@ -72,6 +73,11 @@ class PlaylistScreen extends ConsumerWidget {
       floatingActionButton: floatingActionButton,
       body: SafeArea(child: PlaylistRecordsListView(playlist: playlist)),
     );
+  }
+
+  void _pushSearch(BuildContext context, WidgetRef ref) {
+    ref.read(selectedTagsProvider.notifier).push(initialTag: playlist.tag);
+    context.push('/search');
   }
 
   void _addText(BuildContext context, WidgetRef ref) async {

@@ -7,6 +7,7 @@ import 'package:zpevnik/components/song_lyric/song_lyrics_list_view.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
+import 'package:zpevnik/providers/tags.dart';
 import 'package:zpevnik/routing/router.dart';
 
 class SongbookScreen extends ConsumerWidget {
@@ -23,7 +24,7 @@ class SongbookScreen extends ConsumerWidget {
         leadingWidth: 24 + 4 * kDefaultPadding,
         actions: [
           Highlightable(
-            onTap: () => context.push('/search', arguments: songbook),
+            onTap: () => _pushSearch(context, ref),
             padding: const EdgeInsets.all(kDefaultPadding),
             icon: const Icon(Icons.filter_alt),
           ),
@@ -35,5 +36,10 @@ class SongbookScreen extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  void _pushSearch(BuildContext context, WidgetRef ref) {
+    ref.read(selectedTagsProvider.notifier).push(initialTag: songbook.tag);
+    context.push('/search');
   }
 }

@@ -42,7 +42,9 @@ List<Tag> tags(TagsRef ref, TagType tagType) {
   }
 }
 
-@riverpod
+// provides set of selected tags
+// because there might be multiple search screens in stack that use this provider, it is keeping info about selected tags for different screens
+@Riverpod(keepAlive: true)
 class SelectedTags extends _$SelectedTags {
   final List<Set<Tag>> selectedTagsStack = [];
 
@@ -51,8 +53,10 @@ class SelectedTags extends _$SelectedTags {
     return {for (final tagType in supportedTagTypes) ...ref.watch(selectedTagsByTypeProvider(tagType))};
   }
 
+  // prepares state for new search screen with optional `initialTag` by storing current state and invalidating all providers
+  // is called when starting search from `PlaylistScreen`, `SongbookScreen` or `SongLyricTag`
   void push({Tag? initialTag}) {
-    selectedTagsStack.add({for (final tagType in supportedTagTypes) ...ref.read(selectedTagsByTypeProvider(tagType))});
+    if (state.isNotEmpty) selectedTagsStack.add(state);
 
     for (final tagType in supportedTagTypes) {
       ref.invalidate(selectedTagsByTypeProvider(tagType));
@@ -61,6 +65,8 @@ class SelectedTags extends _$SelectedTags {
     if (initialTag != null) toggleSelection(initialTag);
   }
 
+  // restores state of previous search screen
+  // is called in `onWillPop` function in `SearchScreen`
   void pop() {
     for (final tagType in supportedTagTypes) {
       ref.invalidate(selectedTagsByTypeProvider(tagType));
@@ -78,7 +84,7 @@ class SelectedTags extends _$SelectedTags {
   }
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 class SelectedTagsByType extends _$SelectedTagsByType {
   @override
   Set<Tag> build(TagType tagType) => {};
