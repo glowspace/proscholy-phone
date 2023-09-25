@@ -4,11 +4,11 @@ import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/navigation/utils.dart';
 import 'package:zpevnik/routing/router.dart';
 
-class CustomNavigationRail extends StatelessWidget {
+class CustomNavigationRail extends ConsumerWidget {
   const CustomNavigationRail({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
 
     return Hero(
@@ -37,7 +37,7 @@ class CustomNavigationRail extends StatelessWidget {
               labelType: NavigationRailLabelType.all,
               groupAlignment: context.isHome ? 0 : -0.155,
               selectedIndex: context.isHome ? 0 : (context.isSearching ? 1 : 2),
-              onDestinationSelected: (index) => onDestinationSelected(context, index),
+              onDestinationSelected: (index) => onDestinationSelected(context, ref, index),
               leading: context.isHome
                   ? null
                   : Column(

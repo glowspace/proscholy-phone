@@ -7,11 +7,13 @@ import 'package:wakelock/wakelock.dart';
 part 'navigator_observer.g.dart';
 
 @Riverpod(keepAlive: true)
-AppNavigator appNavigator(AppNavigatorRef ref) => AppNavigator();
+AppNavigatorObserver appNavigatorObserver(AppNavigatorObserverRef ref) => AppNavigatorObserver();
 
-class AppNavigator extends NavigatorObserver {
+class AppNavigatorObserver extends NavigatorObserver {
+  bool _isPlaylistsRouteInStack = false;
   bool _isSearchRouteInStack = false;
 
+  bool get isPlaylistsRouteInStack => _isPlaylistsRouteInStack;
   bool get isSearchRouteInStack => _isSearchRouteInStack;
 
   @override
@@ -22,8 +24,7 @@ class AppNavigator extends NavigatorObserver {
 
     final name = route.settings.name;
 
-    if (name == '/search') _isSearchRouteInStack = true;
-
+    _changeRouteStack(name, true);
     _handleWakeLock(name);
   }
 
@@ -31,10 +32,7 @@ class AppNavigator extends NavigatorObserver {
   void didPop(Route route, Route? previousRoute) {
     super.didPop(route, previousRoute);
 
-    final name = route.settings.name;
-
-    if (name == '/search') _isSearchRouteInStack = false;
-
+    _changeRouteStack(route.settings.name, false);
     _handleWakeLock(previousRoute?.settings.name);
 
     log('popped: $route to: $previousRoute', name: 'APP_NAVIGATOR');
@@ -52,6 +50,17 @@ class AppNavigator extends NavigatorObserver {
     super.didRemove(route, previousRoute);
 
     log('removed: $route to: $previousRoute', name: 'APP_NAVIGATOR');
+  }
+
+  void _changeRouteStack(String? routeName, bool isPushing) {
+    switch (routeName) {
+      case '/search':
+        _isSearchRouteInStack = isPushing;
+        break;
+      case '/playlists':
+        _isPlaylistsRouteInStack = isPushing;
+        break;
+    }
   }
 
   // enable wakelock for `SongLyricScreen` disable for other screens

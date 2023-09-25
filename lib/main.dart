@@ -65,7 +65,7 @@ class MainWidget extends ConsumerWidget {
       // this is because of deeplinking, when all screens in path are pushed to stack as well
       initialRoute: 'initial',
       onGenerateRoute: AppRouter.generateRoute,
-      navigatorObservers: [ref.read(appNavigatorProvider)],
+      navigatorObservers: [ref.read(appNavigatorObserverProvider)],
     );
   }
 }
