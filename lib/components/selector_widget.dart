@@ -8,6 +8,8 @@ class SelectorWidget extends StatelessWidget {
   final List<ButtonSegment<int>> segments;
   final int selected;
 
+  final bool isEnabled;
+
   final EdgeInsets padding;
 
   const SelectorWidget({
@@ -16,25 +18,29 @@ class SelectorWidget extends StatelessWidget {
     required this.onSelected,
     required this.segments,
     this.selected = 0,
-    this.padding = const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+    this.isEnabled = true,
+    this.padding = const EdgeInsets.all(kDefaultPadding),
   });
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
 
     return Padding(
       padding: padding,
       child: Row(children: [
-        Expanded(child: Text(title, style: textTheme.bodyMedium)),
-        SegmentedButton(
+        Expanded(
+          child: Text(title, style: textTheme.bodyMedium?.copyWith(color: isEnabled ? null : theme.disabledColor)),
+        ),
+        SegmentedButton<int>(
           style: const ButtonStyle(
             visualDensity: VisualDensity.compact,
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
           ),
           segments: segments,
           selected: {selected},
-          onSelectionChanged: (selected) => onSelected(selected.first),
+          onSelectionChanged: isEnabled ? (selected) => onSelected(selected.first) : null,
           showSelectedIcon: false,
         ),
       ]),

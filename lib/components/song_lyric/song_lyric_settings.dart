@@ -1,6 +1,7 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Stepper;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zpevnik/components/bottom_sheet_section.dart';
+import 'package:zpevnik/components/stepper.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/selector_widget.dart';
@@ -15,15 +16,28 @@ class SongLyricSettingsWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final accidentalsStyle = theme.textTheme.bodyMedium?.copyWith(fontSize: 20, fontFamily: 'Hiragino Sans');
+
+    final showChords =
+        ref.watch(songLyricSettingsProvider(songLyric).select((songLyricSettings) => songLyricSettings.showChords));
+
+    final accidentalsStyle = theme.textTheme.bodyMedium?.copyWith(
+      fontFamily: 'KaiseiHarunoUmi',
+      color: showChords ? null : theme.disabledColor,
+    );
 
     return BottomSheetSection(
       title: 'Nastavení zobrazení',
+      childrenPadding: false,
       children: [
         const SizedBox(height: kDefaultPadding),
-        Row(children: [const Expanded(child: Text('Transpozice')), _buildTranspositionStepper(context)]),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
+          child: Stepper(title: 'Transpozice', songLyric: songLyric, isEnabled: showChords),
+        ),
         SelectorWidget(
           title: 'Posuvky',
+          padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
+          isEnabled: showChords,
           onSelected: ref.read(songLyricSettingsProvider(songLyric).notifier).changeAccidentals,
           segments: [
             ButtonSegment(value: 0, label: Text('#', style: accidentalsStyle, textAlign: TextAlign.center)),
@@ -32,20 +46,20 @@ class SongLyricSettingsWidget extends ConsumerWidget {
           selected: ref
               .watch(songLyricSettingsProvider(songLyric).select((songLyricSettings) => songLyricSettings.accidentals)),
         ),
-        const SizedBox(height: kDefaultPadding / 2),
         SwitchListTile.adaptive(
           title: Text('Akordy', style: theme.textTheme.bodyMedium),
-          value: ref
-              .watch(songLyricSettingsProvider(songLyric).select((songLyricSettings) => songLyricSettings.showChords)),
+          activeColor: theme.colorScheme.primary,
+          value: showChords,
           onChanged: (value) => ref.read(songLyricSettingsProvider(songLyric).notifier).changeShowChords(value),
+          dense: true,
           contentPadding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
         ),
         if (songLyric.hasLilypond)
           SwitchListTile.adaptive(
             title: Text('Zobrazit noty', style: theme.textTheme.bodyMedium),
             activeColor: theme.colorScheme.primary,
-            contentPadding: EdgeInsets.zero,
-            visualDensity: VisualDensity.compact,
+            contentPadding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+            dense: true,
             value: ref.watch(
                 songLyricSettingsProvider(songLyric).select((songLyricSettings) => songLyricSettings.showMusicalNotes)),
             onChanged: ref.read(songLyricSettingsProvider(songLyric).notifier).changeShowMusicalNotes,
@@ -58,32 +72,6 @@ class SongLyricSettingsWidget extends ConsumerWidget {
           child: const Text('Resetovat nastavení'),
         ),
       ],
-    );
-  }
-
-  Widget _buildTranspositionStepper(BuildContext context) {
-    return SizedBox(
-      width: 128,
-      child: Consumer(
-        builder: (_, ref, __) => Row(children: [
-          Highlightable(
-            padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 4),
-            onTap: () => ref.read(songLyricSettingsProvider(songLyric).notifier).changeTransposition(-1),
-            icon: const Icon(Icons.remove),
-          ),
-          Expanded(
-            child: Text(
-              '${ref.watch(songLyricSettingsProvider(songLyric).select((songLyricSettings) => songLyricSettings.transposition))}',
-              textAlign: TextAlign.center,
-            ),
-          ),
-          Highlightable(
-            padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 4),
-            onTap: () => ref.read(songLyricSettingsProvider(songLyric).notifier).changeTransposition(1),
-            icon: const Icon(Icons.add),
-          ),
-        ]),
-      ),
     );
   }
 }
