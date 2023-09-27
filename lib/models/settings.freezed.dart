@@ -21,7 +21,7 @@ GlobalSettings _$GlobalSettingsFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$GlobalSettings {
   bool? get darkModeEnabled => throw _privateConstructorUsedError;
-  int get primaryColor => throw _privateConstructorUsedError;
+  int get seedColor => throw _privateConstructorUsedError;
   double get fontSizeScale => throw _privateConstructorUsedError;
   bool get showChords => throw _privateConstructorUsedError;
   bool get showMusicalNotes => throw _privateConstructorUsedError;
@@ -42,7 +42,7 @@ abstract class $GlobalSettingsCopyWith<$Res> {
   @useResult
   $Res call(
       {bool? darkModeEnabled,
-      int primaryColor,
+      int seedColor,
       double fontSizeScale,
       bool showChords,
       bool showMusicalNotes,
@@ -64,7 +64,7 @@ class _$GlobalSettingsCopyWithImpl<$Res, $Val extends GlobalSettings>
   @override
   $Res call({
     Object? darkModeEnabled = freezed,
-    Object? primaryColor = null,
+    Object? seedColor = null,
     Object? fontSizeScale = null,
     Object? showChords = null,
     Object? showMusicalNotes = null,
@@ -76,9 +76,9 @@ class _$GlobalSettingsCopyWithImpl<$Res, $Val extends GlobalSettings>
           ? _value.darkModeEnabled
           : darkModeEnabled // ignore: cast_nullable_to_non_nullable
               as bool?,
-      primaryColor: null == primaryColor
-          ? _value.primaryColor
-          : primaryColor // ignore: cast_nullable_to_non_nullable
+      seedColor: null == seedColor
+          ? _value.seedColor
+          : seedColor // ignore: cast_nullable_to_non_nullable
               as int,
       fontSizeScale: null == fontSizeScale
           ? _value.fontSizeScale
@@ -114,7 +114,7 @@ abstract class _$$_GlobalSettingsCopyWith<$Res>
   @useResult
   $Res call(
       {bool? darkModeEnabled,
-      int primaryColor,
+      int seedColor,
       double fontSizeScale,
       bool showChords,
       bool showMusicalNotes,
@@ -134,7 +134,7 @@ class __$$_GlobalSettingsCopyWithImpl<$Res>
   @override
   $Res call({
     Object? darkModeEnabled = freezed,
-    Object? primaryColor = null,
+    Object? seedColor = null,
     Object? fontSizeScale = null,
     Object? showChords = null,
     Object? showMusicalNotes = null,
@@ -146,9 +146,9 @@ class __$$_GlobalSettingsCopyWithImpl<$Res>
           ? _value.darkModeEnabled
           : darkModeEnabled // ignore: cast_nullable_to_non_nullable
               as bool?,
-      primaryColor: null == primaryColor
-          ? _value.primaryColor
-          : primaryColor // ignore: cast_nullable_to_non_nullable
+      seedColor: null == seedColor
+          ? _value.seedColor
+          : seedColor // ignore: cast_nullable_to_non_nullable
               as int,
       fontSizeScale: null == fontSizeScale
           ? _value.fontSizeScale
@@ -179,7 +179,7 @@ class __$$_GlobalSettingsCopyWithImpl<$Res>
 class _$_GlobalSettings implements _GlobalSettings {
   const _$_GlobalSettings(
       {this.darkModeEnabled,
-      required this.primaryColor,
+      required this.seedColor,
       required this.fontSizeScale,
       required this.showChords,
       required this.showMusicalNotes,
@@ -192,7 +192,7 @@ class _$_GlobalSettings implements _GlobalSettings {
   @override
   final bool? darkModeEnabled;
   @override
-  final int primaryColor;
+  final int seedColor;
   @override
   final double fontSizeScale;
   @override
@@ -206,7 +206,7 @@ class _$_GlobalSettings implements _GlobalSettings {
 
   @override
   String toString() {
-    return 'GlobalSettings(darkModeEnabled: $darkModeEnabled, primaryColor: $primaryColor, fontSizeScale: $fontSizeScale, showChords: $showChords, showMusicalNotes: $showMusicalNotes, accidentals: $accidentals, autoScrollSpeedIndex: $autoScrollSpeedIndex)';
+    return 'GlobalSettings(darkModeEnabled: $darkModeEnabled, seedColor: $seedColor, fontSizeScale: $fontSizeScale, showChords: $showChords, showMusicalNotes: $showMusicalNotes, accidentals: $accidentals, autoScrollSpeedIndex: $autoScrollSpeedIndex)';
   }
 
   @override
@@ -216,8 +216,8 @@ class _$_GlobalSettings implements _GlobalSettings {
             other is _$_GlobalSettings &&
             (identical(other.darkModeEnabled, darkModeEnabled) ||
                 other.darkModeEnabled == darkModeEnabled) &&
-            (identical(other.primaryColor, primaryColor) ||
-                other.primaryColor == primaryColor) &&
+            (identical(other.seedColor, seedColor) ||
+                other.seedColor == seedColor) &&
             (identical(other.fontSizeScale, fontSizeScale) ||
                 other.fontSizeScale == fontSizeScale) &&
             (identical(other.showChords, showChords) ||
@@ -235,7 +235,7 @@ class _$_GlobalSettings implements _GlobalSettings {
   int get hashCode => Object.hash(
       runtimeType,
       darkModeEnabled,
-      primaryColor,
+      seedColor,
       fontSizeScale,
       showChords,
       showMusicalNotes,
@@ -259,7 +259,7 @@ class _$_GlobalSettings implements _GlobalSettings {
 abstract class _GlobalSettings implements GlobalSettings {
   const factory _GlobalSettings(
       {final bool? darkModeEnabled,
-      required final int primaryColor,
+      required final int seedColor,
       required final double fontSizeScale,
       required final bool showChords,
       required final bool showMusicalNotes,
@@ -272,7 +272,7 @@ abstract class _GlobalSettings implements GlobalSettings {
   @override
   bool? get darkModeEnabled;
   @override
-  int get primaryColor;
+  int get seedColor;
   @override
   double get fontSizeScale;
   @override

@@ -66,20 +66,20 @@ class SettingsScreen extends StatelessWidget {
             padding: const EdgeInsets.all(kDefaultPadding).copyWith(right: 1.5 * kDefaultPadding),
             child: Row(
               children: [
-                Expanded(child: Text('Primární barva', style: textTheme.bodyMedium)),
+                Expanded(child: Text('Barevné schéma', style: textTheme.bodyMedium)),
                 Highlightable(
                   highlightBackground: true,
                   borderRadius: BorderRadius.circular(kDefaultRadius),
                   onTap: () => showColorPickerDialog(
                     context,
-                    ref.watch(settingsProvider.select((settings) => Color(settings.primaryColor))),
+                    ref.watch(settingsProvider.select((settings) => Color(settings.seedColor))),
                     pickersEnabled: {ColorPickerType.primary: true, ColorPickerType.accent: false},
-                  ).then((color) => ref.read(settingsProvider.notifier).changePrimaryColor(color.value)),
+                  ).then((color) => ref.read(settingsProvider.notifier).changeSeedColor(color.value)),
                   child: Ink(
                     width: 24,
                     height: 24,
                     decoration: BoxDecoration(
-                      color: theme.colorScheme.primary,
+                      color: ref.watch(settingsProvider.select((settings) => Color(settings.seedColor))),
                       borderRadius: BorderRadius.circular(kDefaultRadius),
                     ),
                   ),

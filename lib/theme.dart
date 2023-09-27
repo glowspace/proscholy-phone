@@ -26,12 +26,12 @@ const Color lightShadowColor = Color(0xfff3edf7);
 const Color darkShadowColor = Color(0xff341d43);
 
 class AppTheme {
-  static ThemeData light(Color primary) {
+  static ThemeData light(Color seedColor) {
     const iconTheme = IconThemeData(color: lightIconColor);
 
     return ThemeData(
       brightness: Brightness.light,
-      colorScheme: ColorScheme.fromSeed(seedColor: primary, background: lightBackgroundColor),
+      colorScheme: ColorScheme.fromSeed(seedColor: seedColor, background: lightBackgroundColor),
       canvasColor: Colors.white,
       scaffoldBackgroundColor: Colors.white,
       appBarTheme: const AppBarTheme(
@@ -60,13 +60,13 @@ class AppTheme {
     );
   }
 
-  static ThemeData dark(Color primary) {
+  static ThemeData dark(Color seedColor) {
     const iconTheme = IconThemeData(color: darkIconColor);
 
     return ThemeData(
       brightness: Brightness.dark,
       colorScheme: ColorScheme.fromSeed(
-        seedColor: primary,
+        seedColor: seedColor,
         brightness: Brightness.dark,
         background: darkBackgroundColor,
       ),
