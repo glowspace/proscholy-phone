@@ -18,7 +18,6 @@ import 'package:zpevnik/components/search/search_field.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/home.dart';
 import 'package:zpevnik/components/home/edit_home_sections_sheet.dart';
-import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
 const double _minColumnWidth = 400;
@@ -95,12 +94,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
 
     final theme = Theme.of(context);
-    final backgroundColor = theme.brightness.isLight ? lightBackgroundColor : darkBackgroundColor;
 
     return AnnotatedRegion(
       value: theme.brightness.isLight ? SystemUiOverlayStyle.dark : SystemUiOverlayStyle.light,
       child: CustomScaffold(
-        backgroundColor: backgroundColor,
+        backgroundColor: theme.colorScheme.background,
         body: SafeArea(
           child: columns == 1
               ? NotificationListener<ScrollEndNotification>(

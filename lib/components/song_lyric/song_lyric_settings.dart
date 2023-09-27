@@ -7,8 +7,6 @@ import 'package:zpevnik/components/selector_widget.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/settings.dart';
 
-const double _settingsOptionsWidth = 128;
-
 class SongLyricSettingsWidget extends ConsumerWidget {
   final SongLyric songLyric;
 
@@ -24,33 +22,24 @@ class SongLyricSettingsWidget extends ConsumerWidget {
       children: [
         const SizedBox(height: kDefaultPadding),
         Row(children: [const Expanded(child: Text('Transpozice')), _buildTranspositionStepper(context)]),
-        Row(children: [
-          const Expanded(child: Text('Posuvky')),
-          SelectorWidget(
-            onSelected: ref.read(songLyricSettingsProvider(songLyric).notifier).changeAccidentals,
-            segments: [
-              ButtonSegment(value: 0, label: Text('#', style: accidentalsStyle, textAlign: TextAlign.center)),
-              ButtonSegment(value: 1, label: Text('♭', style: accidentalsStyle, textAlign: TextAlign.center)),
-            ],
-            selected: ref.watch(
-                songLyricSettingsProvider(songLyric).select((songLyricSettings) => songLyricSettings.accidentals)),
-            width: _settingsOptionsWidth,
-          ),
-        ]),
+        SelectorWidget(
+          title: 'Posuvky',
+          onSelected: ref.read(songLyricSettingsProvider(songLyric).notifier).changeAccidentals,
+          segments: [
+            ButtonSegment(value: 0, label: Text('#', style: accidentalsStyle, textAlign: TextAlign.center)),
+            ButtonSegment(value: 1, label: Text('♭', style: accidentalsStyle, textAlign: TextAlign.center)),
+          ],
+          selected: ref
+              .watch(songLyricSettingsProvider(songLyric).select((songLyricSettings) => songLyricSettings.accidentals)),
+        ),
         const SizedBox(height: kDefaultPadding / 2),
-        Row(children: [
-          const Expanded(child: Text('Akordy')),
-          SelectorWidget(
-            onSelected: (index) => ref.read(songLyricSettingsProvider(songLyric).notifier).changeShowChords(index == 1),
-            segments: const [
-              ButtonSegment(value: 0, icon: Icon(Icons.visibility_off, size: 20)),
-              ButtonSegment(value: 1, icon: Icon(Icons.visibility, size: 20)),
-            ],
-            selected: ref.watch(songLyricSettingsProvider(songLyric)
-                .select((songLyricSettings) => songLyricSettings.showChords ? 1 : 0)),
-            width: _settingsOptionsWidth,
-          ),
-        ]),
+        SwitchListTile.adaptive(
+          title: Text('Akordy', style: theme.textTheme.bodyMedium),
+          value: ref
+              .watch(songLyricSettingsProvider(songLyric).select((songLyricSettings) => songLyricSettings.showChords)),
+          onChanged: (value) => ref.read(songLyricSettingsProvider(songLyric).notifier).changeShowChords(value),
+          contentPadding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+        ),
         if (songLyric.hasLilypond)
           SwitchListTile.adaptive(
             title: Text('Zobrazit noty', style: theme.textTheme.bodyMedium),
@@ -74,7 +63,7 @@ class SongLyricSettingsWidget extends ConsumerWidget {
 
   Widget _buildTranspositionStepper(BuildContext context) {
     return SizedBox(
-      width: _settingsOptionsWidth,
+      width: 128,
       child: Consumer(
         builder: (_, ref, __) => Row(children: [
           Highlightable(

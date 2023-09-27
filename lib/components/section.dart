@@ -52,12 +52,13 @@ class Section extends StatelessWidget {
           Container(
             padding: padding,
             decoration: BoxDecoration(
-              color: theme.canvasColor,
+              color: theme.colorScheme.surface,
               borderRadius: BorderRadius.circular(kDefaultRadius),
             ),
             clipBehavior: Clip.antiAlias,
             // needs another wrapping in material widget, so inkwell highlight is visible
             child: Material(
+              color: theme.colorScheme.surface,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [

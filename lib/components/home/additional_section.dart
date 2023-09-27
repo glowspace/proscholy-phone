@@ -22,17 +22,17 @@ class AdditionalSection extends StatelessWidget {
       outsideTitleLarge: true,
       margin: const EdgeInsets.symmetric(vertical: 2 / 3 * kDefaultPadding),
       children: [
+        // Highlightable(
+        //   highlightBackground: true,
+        //   padding: const EdgeInsets.all(kDefaultPadding),
+        //   onTap: () => context.push('/user'),
+        //   child: const IconItem(icon: Icons.person, text: 'Uživatelský účet', trailingtext: 'Patrik Dobiáš'),
+        // ),
+        // const Divider(),
         Highlightable(
           highlightBackground: true,
           padding: const EdgeInsets.all(kDefaultPadding),
-          onTap: () => context.push('/user'),
-          child: const IconItem(icon: Icons.person, text: 'Uživatelský účet', trailingtext: 'Patrik Dobiáš'),
-        ),
-        const Divider(),
-        Highlightable(
-          highlightBackground: true,
-          padding: const EdgeInsets.all(kDefaultPadding),
-          onTap: () => context.push('/user'),
+          onTap: () => context.push('/settings'),
           child: Consumer(
             builder: (_, ref, __) => IconItem(
               icon: Icons.settings,

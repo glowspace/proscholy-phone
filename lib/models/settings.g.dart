@@ -9,6 +9,7 @@ part of 'settings.dart';
 _$_GlobalSettings _$$_GlobalSettingsFromJson(Map<String, dynamic> json) =>
     _$_GlobalSettings(
       darkModeEnabled: json['darkModeEnabled'] as bool?,
+      primaryColor: json['primaryColor'] as int,
       fontSizeScale: (json['fontSizeScale'] as num).toDouble(),
       showChords: json['showChords'] as bool,
       showMusicalNotes: json['showMusicalNotes'] as bool,
@@ -19,6 +20,7 @@ _$_GlobalSettings _$$_GlobalSettingsFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$$_GlobalSettingsToJson(_$_GlobalSettings instance) =>
     <String, dynamic>{
       'darkModeEnabled': instance.darkModeEnabled,
+      'primaryColor': instance.primaryColor,
       'fontSizeScale': instance.fontSizeScale,
       'showChords': instance.showChords,
       'showMusicalNotes': instance.showMusicalNotes,

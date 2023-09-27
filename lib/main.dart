@@ -43,6 +43,7 @@ class MainWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final darkModeEnabled = ref.watch(settingsProvider.select((settings) => settings.darkModeEnabled));
+    final primaryColor = ref.watch(settingsProvider.select((settings) => Color(settings.primaryColor)));
 
     ThemeMode? themeMode;
 
@@ -57,8 +58,8 @@ class MainWidget extends ConsumerWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: _title,
-      theme: AppTheme.light(),
-      darkTheme: AppTheme.dark(),
+      theme: AppTheme.light(primaryColor),
+      darkTheme: AppTheme.dark(primaryColor),
       themeMode: themeMode,
       // must be without leading '/', otherwise navigation stack will be `HomeScreen` > `InitialScreen`
       // and when replacing `InitialScreen` it will result to `HomeScreen` > `HomeScreen`

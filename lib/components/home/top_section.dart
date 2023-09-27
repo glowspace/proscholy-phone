@@ -19,12 +19,12 @@ class TopSection extends StatelessWidget {
           const Logo(showFullName: false),
           const Spacer(),
           Highlightable(
-            onTap: () => context.push('/user'),
+            onTap: () => context.push('/settings'),
             padding: const EdgeInsets.all(kDefaultPadding / 2),
             icon: CircleAvatar(
               backgroundColor: Theme.of(context).colorScheme.surface,
               radius: _avatarRadius,
-              child: const Icon(Icons.person),
+              child: const Icon(Icons.settings),
             ),
           ),
         ],

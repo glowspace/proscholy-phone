@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zpevnik/constants.dart';
 
-const Color primary = Color(0xff9747FF);
-
 const Color lightBackgroundColor = Color(0xfff2f1f6);
 const Color darkBackgroundColor = Color(0xff000000);
 
@@ -28,12 +26,12 @@ const Color lightShadowColor = Color(0xfff3edf7);
 const Color darkShadowColor = Color(0xff341d43);
 
 class AppTheme {
-  static ThemeData light() {
+  static ThemeData light(Color primary) {
     const iconTheme = IconThemeData(color: lightIconColor);
 
     return ThemeData(
       brightness: Brightness.light,
-      colorSchemeSeed: primary,
+      colorScheme: ColorScheme.fromSeed(seedColor: primary, background: lightBackgroundColor),
       canvasColor: Colors.white,
       scaffoldBackgroundColor: Colors.white,
       appBarTheme: const AppBarTheme(
@@ -62,12 +60,16 @@ class AppTheme {
     );
   }
 
-  static ThemeData dark() {
+  static ThemeData dark(Color primary) {
     const iconTheme = IconThemeData(color: darkIconColor);
 
     return ThemeData(
       brightness: Brightness.dark,
-      colorSchemeSeed: primary,
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: primary,
+        brightness: Brightness.dark,
+        background: darkBackgroundColor,
+      ),
       scaffoldBackgroundColor: darkBackgroundColor,
       appBarTheme: const AppBarTheme(
         iconTheme: iconTheme,

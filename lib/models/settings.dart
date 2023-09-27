@@ -9,6 +9,7 @@ part 'settings.g.dart';
 const autoScrollSpeeds = [40, 30, 24, 20, 17, 15, 13, 12, 11, 10, 9, 8];
 
 const defaultGlobalSettings = GlobalSettings(
+  primaryColor: 0xFF673AB7, // Colors.deepPurlple
   fontSizeScale: 1,
   showChords: true,
   showMusicalNotes: true,
@@ -27,6 +28,7 @@ const defaultSongLyricSettings = SongLyricSettingsModel(
 class GlobalSettings with _$GlobalSettings {
   const factory GlobalSettings({
     bool? darkModeEnabled,
+    required int primaryColor,
     required double fontSizeScale,
     required bool showChords,
     required bool showMusicalNotes,

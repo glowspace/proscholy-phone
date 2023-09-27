@@ -16,7 +16,7 @@ import 'package:zpevnik/screens/song_lyric.dart';
 import 'package:zpevnik/screens/songbook.dart';
 import 'package:zpevnik/screens/songbooks.dart';
 import 'package:zpevnik/screens/updated_song_lyrics.dart';
-import 'package:zpevnik/screens/user.dart';
+import 'package:zpevnik/screens/settings.dart';
 
 extension AppNavigatorHelper on BuildContext {
   bool get isHome => ModalRoute.of(this)?.settings.name == '/';
@@ -59,10 +59,10 @@ final class AppRouter {
       '/playlist/custom_text' => ((_) => CustomTextScreen(customText: settings.arguments as CustomText), false),
       '/playlists' => ((_) => const PlaylistsScreen(), false),
       '/search' => ((_) => const SearchScreen(), true),
+      '/settings' => ((_) => const SettingsScreen(), false),
       '/songbook' => ((_) => SongbookScreen(songbook: settings.arguments as Songbook), false),
       '/songbooks' => ((_) => const SongbooksScreen(), false),
       '/song_lyric' => ((_) => SongLyricScreen(songLyrics: [settings.arguments as SongLyric], initialIndex: 0), false),
-      '/user' => ((_) => const UserScreen(), false),
       '/updated_song_lyrics' => (
           (_) => UpdatedSongLyricsScreen(songLyrics: settings.arguments as List<SongLyric>),
           false,
