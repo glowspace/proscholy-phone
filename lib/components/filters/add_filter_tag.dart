@@ -29,10 +29,7 @@ class AddFilterTag extends StatelessWidget {
           borderRadius: BorderRadius.circular(_addFilterRadius),
           onTap: () => _showFilters(context),
           child: Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: kDefaultPadding / 3,
-              horizontal: kDefaultPadding / 2,
-            ),
+            padding: const EdgeInsets.all(kDefaultPadding / 2),
             child: Row(children: [
               Icon(Icons.add, size: 12, color: addFilterButtonColor),
               const SizedBox(width: kDefaultPadding / 4),

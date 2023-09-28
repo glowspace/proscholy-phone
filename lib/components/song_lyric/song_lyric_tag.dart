@@ -6,7 +6,6 @@ import 'package:zpevnik/models/songbook_record.dart';
 import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/providers/tags.dart';
 import 'package:zpevnik/routing/router.dart';
-import 'package:zpevnik/utils/extensions.dart';
 
 class SongLyricTag extends ConsumerWidget {
   final SongbookRecord? songbookRecord;
@@ -25,8 +24,8 @@ class SongLyricTag extends ConsumerWidget {
       text = tag!.name;
     }
 
-    final backgroundColor = theme.brightness.isLight ? const Color(0xfff2f1f6) : const Color(0xff15131d);
-    final numberBackgroundColor = theme.brightness.isLight ? const Color(0xffe9e4f5) : const Color(0xff1c1333);
+    final backgroundColor = theme.colorScheme.secondaryContainer;
+    final numberBackgroundColor = theme.colorScheme.primaryContainer;
 
     return Material(
       clipBehavior: Clip.antiAlias,
