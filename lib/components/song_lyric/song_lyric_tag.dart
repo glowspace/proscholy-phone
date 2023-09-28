@@ -27,32 +27,38 @@ class SongLyricTag extends ConsumerWidget {
     final backgroundColor = theme.colorScheme.secondaryContainer;
     final numberBackgroundColor = theme.colorScheme.primaryContainer;
 
-    return Material(
-      clipBehavior: Clip.antiAlias,
-      borderRadius: BorderRadius.circular(32),
-      color: backgroundColor,
-      child: Highlightable(
-        highlightBackground: true,
+    return Container(
+      decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(32),
-        highlightColor: theme.colorScheme.primary.withAlpha(0x20),
-        onTap: () => songbookRecord != null
-            ? _pushSearch(context, ref, songbookRecord!.songbook.target!.tag)
-            : _pushSearch(context, ref, tag!),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2)
-                  .copyWith(right: songbookRecord == null ? kDefaultPadding : kDefaultPadding / 2),
-              child: Text(text),
-            ),
-            if (songbookRecord != null)
+        border: Border.all(color: theme.hintColor, width: 0.5),
+      ),
+      child: Material(
+        clipBehavior: Clip.antiAlias,
+        borderRadius: BorderRadius.circular(32),
+        color: backgroundColor,
+        child: Highlightable(
+          highlightBackground: true,
+          borderRadius: BorderRadius.circular(32),
+          highlightColor: theme.colorScheme.primary.withAlpha(0x20),
+          onTap: () => songbookRecord != null
+              ? _pushSearch(context, ref, songbookRecord!.songbook.target!.tag)
+              : _pushSearch(context, ref, tag!),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
               Container(
-                padding: const EdgeInsets.all(kDefaultPadding / 2).copyWith(right: 3 * kDefaultPadding / 4),
-                color: numberBackgroundColor,
-                child: Text(songbookRecord!.number),
+                padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2)
+                    .copyWith(right: songbookRecord == null ? kDefaultPadding : kDefaultPadding / 2),
+                child: Text(text),
               ),
-          ],
+              if (songbookRecord != null)
+                Container(
+                  padding: const EdgeInsets.all(kDefaultPadding / 2).copyWith(right: 3 * kDefaultPadding / 4),
+                  color: numberBackgroundColor,
+                  child: Text(songbookRecord!.number),
+                ),
+            ],
+          ),
         ),
       ),
     );

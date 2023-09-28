@@ -22,18 +22,12 @@ class FiltersWidget extends ConsumerWidget {
         bottom: false,
         child: ListView.builder(
           controller: PrimaryScrollController.of(context),
-          padding: EdgeInsets.fromLTRB(
-            kDefaultPadding,
-            kDefaultPadding / 2,
-            kDefaultPadding,
-            MediaQuery.of(context).padding.bottom,
-          ),
+          padding: EdgeInsets.only(top: kDefaultPadding, bottom: MediaQuery.of(context).padding.bottom),
           addRepaintBoundaries: false,
           itemCount: supportedTagTypes.length,
           itemBuilder: (_, index) => FiltersSection(
             title: supportedTagTypes[index].description,
             tags: ref.watch(tagsProvider(supportedTagTypes[index])),
-            isLast: index == supportedTagTypes.length - 1,
           ),
         ),
       );
