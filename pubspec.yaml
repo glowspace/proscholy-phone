@@ -92,17 +92,9 @@ flutter:
       fonts:
         - asset: assets/fonts/CustomIcon.ttf
 
-    - family: Amiri
-      fonts:
-        - asset: assets/fonts/Amiri-Regular.ttf
-
     - family: KaiseiHarunoUmi
       fonts:
         - asset: assets/fonts/KaiseiHarunoUmi-Regular.ttf
-
-    - family: Nunito
-      fonts:
-        - asset: assets/fonts/Nunito-Regular.ttf
 
   assets:
     - assets/data.json
