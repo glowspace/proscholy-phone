@@ -4,6 +4,7 @@ import 'package:zpevnik/models/custom_text.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/models/songbook.dart';
+import 'package:zpevnik/routing/arguments.dart';
 import 'package:zpevnik/screens/about.dart';
 import 'package:zpevnik/screens/home.dart';
 import 'package:zpevnik/screens/initial.dart';
@@ -51,9 +52,9 @@ extension AppNavigatorHelper on BuildContext {
 final class AppRouter {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     final (builder, fullScreenDialog) = switch (settings.name) {
+      'initial' => ((_) => const InitialScreen(), false),
       '/' => ((_) => const HomeScreen(), false),
       '/about' => ((_) => const AboutScreen(), false),
-      'initial' => ((_) => const InitialScreen(), false),
       '/playlist' => ((_) => PlaylistScreen(playlist: settings.arguments as Playlist), false),
       '/playlist/bible_verse' => ((_) => BibleVerseScreen(bibleVerse: settings.arguments as BibleVerse), false),
       '/playlist/custom_text' => ((_) => CustomTextScreen(customText: settings.arguments as CustomText), false),
@@ -62,7 +63,14 @@ final class AppRouter {
       '/settings' => ((_) => const SettingsScreen(), false),
       '/songbook' => ((_) => SongbookScreen(songbook: settings.arguments as Songbook), false),
       '/songbooks' => ((_) => const SongbooksScreen(), false),
-      '/song_lyric' => ((_) => SongLyricScreen(songLyrics: [settings.arguments as SongLyric], initialIndex: 0), false),
+      '/song_lyric' => (
+          (_) {
+            final arguments = settings.arguments as SongLyricScreenArguments;
+
+            return SongLyricScreen(songLyrics: arguments.songLyrics, initialIndex: arguments.initialIndex);
+          },
+          false
+        ),
       '/updated_song_lyrics' => (
           (_) => UpdatedSongLyricsScreen(songLyrics: settings.arguments as List<SongLyric>),
           false,

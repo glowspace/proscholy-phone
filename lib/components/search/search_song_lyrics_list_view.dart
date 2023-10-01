@@ -8,6 +8,7 @@ import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/providers/search.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
 import 'package:zpevnik/providers/tags.dart';
+import 'package:zpevnik/routing/arguments.dart';
 
 class SearchSongLyricsListView extends ConsumerWidget {
   const SearchSongLyricsListView({super.key});
@@ -50,7 +51,15 @@ class SearchSongLyricsListView extends ConsumerWidget {
 
           index -= 1;
 
-          if (index < recentSongLyrics.length) return SongLyricRow(songLyric: recentSongLyrics[index]);
+          if (index < recentSongLyrics.length) {
+            return SongLyricRow(
+              songLyric: recentSongLyrics[index],
+              songLyricScreenArguments: SongLyricScreenArguments(
+                songLyrics: recentSongLyrics,
+                initialIndex: index,
+              ),
+            );
+          }
 
           index -= recentSongLyrics.length;
         }
@@ -68,7 +77,15 @@ class SearchSongLyricsListView extends ConsumerWidget {
 
           index -= 1;
 
-          if (index < matchedBySongbookNumber.length) return SongLyricRow(songLyric: matchedBySongbookNumber[index]);
+          if (index < matchedBySongbookNumber.length) {
+            return SongLyricRow(
+              songLyric: matchedBySongbookNumber[index],
+              songLyricScreenArguments: SongLyricScreenArguments(
+                songLyrics: matchedBySongbookNumber,
+                initialIndex: index,
+              ),
+            );
+          }
 
           index -= matchedBySongbookNumber.length;
         }
@@ -83,7 +100,13 @@ class SearchSongLyricsListView extends ConsumerWidget {
           index -= 1;
         }
 
-        return SongLyricRow(songLyric: songLyrics[index]);
+        return SongLyricRow(
+          songLyric: songLyrics[index],
+          songLyricScreenArguments: SongLyricScreenArguments(
+            songLyrics: songLyrics,
+            initialIndex: index,
+          ),
+        );
       },
     );
   }

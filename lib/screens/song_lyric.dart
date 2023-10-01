@@ -7,10 +7,10 @@ import 'package:zpevnik/components/playlist/playlists_sheet.dart';
 import 'package:zpevnik/components/song_lyric/bottom_bar.dart';
 import 'package:zpevnik/components/song_lyric/song_lyric.dart';
 import 'package:zpevnik/components/song_lyric/song_lyric_menu_button.dart';
-import 'package:zpevnik/components/song_lyric/utils/auto_scroll.dart';
 import 'package:zpevnik/components/song_lyric/utils/parser.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
+import 'package:zpevnik/providers/auto_scroll.dart';
 import 'package:zpevnik/providers/playlists.dart';
 import 'package:zpevnik/providers/settings.dart';
 
@@ -29,9 +29,6 @@ class _SongLyricScreenState extends ConsumerState<SongLyricScreen> {
   late final _pageController = PageController(initialPage: widget.initialIndex + 100 * widget.songLyrics.length);
 
   late double _fontSizeScaleBeforeScale;
-
-  // FIXME: will need to change with page change
-  final autoScrollController = AutoScrollController();
 
   bool _fullScreen = false;
 
@@ -69,7 +66,7 @@ class _SongLyricScreenState extends ConsumerState<SongLyricScreen> {
             ? const SizedBox()
             : SongLyricBottomBar(
                 songLyric: songLyric,
-                autoScrollController: autoScrollController,
+                autoScrollController: ref.read(autoScrollControllerProvider(songLyric)),
                 toggleFullScreen: () => setState(() => _fullScreen = !_fullScreen),
               ),
         body: SafeArea(
@@ -85,7 +82,8 @@ class _SongLyricScreenState extends ConsumerState<SongLyricScreen> {
               physics: widget.songLyrics.length == 1 ? const NeverScrollableScrollPhysics() : null,
               itemBuilder: (_, index) => SongLyricWidget(
                 songLyric: widget.songLyrics[index % widget.songLyrics.length],
-                autoScrollController: autoScrollController,
+                autoScrollController:
+                    ref.read(autoScrollControllerProvider(widget.songLyrics[index % widget.songLyrics.length])),
               ),
             ),
           ),

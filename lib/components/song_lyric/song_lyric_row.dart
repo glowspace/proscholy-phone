@@ -5,6 +5,7 @@ import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/search.dart';
+import 'package:zpevnik/routing/arguments.dart';
 import 'package:zpevnik/routing/router.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
@@ -18,11 +19,14 @@ class SongLyricRow extends StatelessWidget {
   final bool isReorderable;
   final bool allowHighlight;
 
+  final SongLyricScreenArguments? songLyricScreenArguments;
+
   const SongLyricRow({
     super.key,
     required this.songLyric,
     this.isReorderable = false,
     this.allowHighlight = false,
+    this.songLyricScreenArguments,
   });
 
   @override
@@ -159,7 +163,7 @@ class SongLyricRow extends StatelessWidget {
     // } else {
     // context.read<AllSongLyricsProvider?>()?.addRecentSongLyric(songLyric);
 
-    context.push('/song_lyric', arguments: songLyric);
+    context.push('/song_lyric', arguments: songLyricScreenArguments);
     // }
   }
 }
