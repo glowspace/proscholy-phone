@@ -12,6 +12,7 @@ class FiltersRow extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final mediaQuery = MediaQuery.of(context);
 
     final selectedTags = ref.watch(selectedTagsProvider);
 
@@ -27,7 +28,7 @@ class FiltersRow extends ConsumerWidget {
               scrollDirection: Axis.horizontal,
               child: Row(children: [
                 ...selectedTags.map((tag) => FilterTag(tag: tag, isRemovable: true)),
-                const AddFilterTag(),
+                if (!mediaQuery.isTablet || !mediaQuery.isLandscape) const AddFilterTag(),
               ]),
             ),
           ),

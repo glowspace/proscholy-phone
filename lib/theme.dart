@@ -53,9 +53,6 @@ class AppTheme {
       ),
       bottomSheetTheme: const BottomSheetThemeData(backgroundColor: Colors.white),
       iconTheme: iconTheme,
-      splashFactory: NoSplash.splashFactory,
-      // splashColor: Colors.transparent,
-      // highlightColor: Colors.transparent,
       useMaterial3: true,
     );
   }
@@ -89,9 +86,6 @@ class AppTheme {
         labelLarge: TextStyle(fontSize: 14, color: darkCommentColor, fontWeight: FontWeight.w400),
       ),
       iconTheme: iconTheme,
-      splashFactory: NoSplash.splashFactory,
-      // splashColor: Colors.transparent,
-      // highlightColor: Colors.transparent,
       useMaterial3: true,
     );
   }

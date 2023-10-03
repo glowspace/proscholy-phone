@@ -55,6 +55,7 @@ class SongLyricBottomBar extends ConsumerWidget {
             padding: const EdgeInsets.all(kDefaultPadding),
             onTap: toggleFullScreen,
             icon: const Icon(Icons.fullscreen),
+            child: showLabels ? const Text('Celá obrazovka') : null,
           ),
           const Spacer(),
           if (autoScrollController.isScrolling)

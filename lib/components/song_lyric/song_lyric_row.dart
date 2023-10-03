@@ -12,7 +12,7 @@ import 'package:zpevnik/utils/extensions.dart';
 const double _iconSize = 16;
 const _disabledAlpha = 0x20;
 
-const double _minSize = 34;
+const double _minSize = 44;
 
 class SongLyricRow extends StatelessWidget {
   final SongLyric songLyric;
