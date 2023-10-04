@@ -16,8 +16,9 @@ import 'package:zpevnik/routing/router.dart';
 
 class PlaylistScreen extends ConsumerWidget {
   final Playlist playlist;
+  final bool isInsideSplitView;
 
-  const PlaylistScreen({super.key, required this.playlist});
+  const PlaylistScreen({super.key, required this.playlist, this.isInsideSplitView = false});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -67,10 +68,11 @@ class PlaylistScreen extends ConsumerWidget {
             padding: const EdgeInsets.all(kDefaultPadding),
             icon: const Icon(Icons.filter_alt),
           ),
-          if (!playlist.isFavorites) PlaylistButton(playlist: playlist, isInAppBar: true, extendPadding: true),
+          if (!playlist.isFavorites) PlaylistButton(playlist: playlist, isInAppBar: true),
         ],
       ),
       floatingActionButton: floatingActionButton,
+      hideNavigationRail: isInsideSplitView,
       body: SafeArea(child: PlaylistRecordsListView(playlist: playlist)),
     );
   }

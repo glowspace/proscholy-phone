@@ -4,8 +4,6 @@ import 'package:zpevnik/components/logo.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/routing/router.dart';
 
-const double _avatarRadius = 19;
-
 class TopSection extends StatelessWidget {
   const TopSection({super.key});
 
@@ -21,11 +19,7 @@ class TopSection extends StatelessWidget {
           Highlightable(
             onTap: () => context.push('/settings'),
             padding: const EdgeInsets.all(kDefaultPadding / 2),
-            icon: CircleAvatar(
-              backgroundColor: Theme.of(context).colorScheme.surface,
-              radius: _avatarRadius,
-              child: const Icon(Icons.settings),
-            ),
+            icon: const Icon(Icons.settings),
           ),
         ],
       ),

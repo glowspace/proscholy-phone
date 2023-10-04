@@ -10,12 +10,15 @@ class CustomScaffold extends StatelessWidget {
   final Widget? floatingActionButton;
   final Widget body;
 
+  final bool hideNavigationRail;
+
   const CustomScaffold({
     super.key,
     this.backgroundColor,
     this.appBar,
     this.bottomNavigationBar,
     this.floatingActionButton,
+    this.hideNavigationRail = false,
     required this.body,
   });
 
@@ -24,20 +27,22 @@ class CustomScaffold extends StatelessWidget {
     final mediaQuery = MediaQuery.of(context);
 
     if (mediaQuery.isTablet) {
+      final scaffold = Scaffold(
+        backgroundColor: backgroundColor,
+        appBar: appBar,
+        bottomNavigationBar: bottomNavigationBar,
+        floatingActionButton: floatingActionButton,
+        body: body,
+      );
+
+      if (hideNavigationRail) return scaffold;
+
       return Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         // make the widget display from right to left, so the navigation rail shadow is visible
         textDirection: TextDirection.rtl,
         children: [
-          Expanded(
-            child: Scaffold(
-              backgroundColor: backgroundColor,
-              appBar: appBar,
-              bottomNavigationBar: bottomNavigationBar,
-              floatingActionButton: floatingActionButton,
-              body: body,
-            ),
-          ),
+          Expanded(child: scaffold),
           const CustomNavigationRail(),
         ],
       );

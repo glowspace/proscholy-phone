@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/navigation/utils.dart';
+import 'package:zpevnik/providers/menu_collapsed.dart';
 import 'package:zpevnik/routing/router.dart';
 
 class CustomNavigationRail extends ConsumerWidget {
@@ -40,17 +41,13 @@ class CustomNavigationRail extends ConsumerWidget {
               onDestinationSelected: (index) => onDestinationSelected(context, ref, index),
               leading: context.isHome
                   ? null
-                  : Column(
-                      children: [
-                        Image.asset('assets/images/logos/logo.png'),
-                        // StatefulBuilder(
-                        //   builder: () => Highlightable(
-                        //     onTap: ref.read(menuCollapsedProvider.notifier).toggle,
-                        //     icon: Icon(ref.watch(menuCollapsedProvider) ? Icons.menu : Icons.menu_open),
-                        //   ),
-                        // ),
-                      ],
-                    ),
+                  : Column(children: [
+                      Image.asset('assets/images/logos/logo.png'),
+                      Highlightable(
+                        onTap: ref.read(menuCollapsedProvider.notifier).toggle,
+                        icon: Icon(ref.watch(menuCollapsedProvider) ? Icons.menu : Icons.menu_open),
+                      ),
+                    ]),
               destinations: const [
                 NavigationRailDestination(
                   selectedIcon: Icon(Icons.home),

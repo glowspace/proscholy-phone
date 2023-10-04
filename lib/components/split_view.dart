@@ -4,16 +4,25 @@ class SplitView extends StatelessWidget {
   final Widget child;
   final Widget subChild;
 
-  const SplitView({super.key, required this.child, required this.subChild});
+  final int childFlex;
+  final int subChildFlex;
+
+  const SplitView({
+    super.key,
+    required this.child,
+    required this.subChild,
+    this.childFlex = 1,
+    this.subChildFlex = 1,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(flex: 4, child: child),
+        Expanded(flex: childFlex, child: child),
         VerticalDivider(width: 0.3, color: Theme.of(context).dividerColor),
-        Flexible(flex: 3, child: subChild),
+        Flexible(flex: subChildFlex, child: subChild),
       ],
     );
   }

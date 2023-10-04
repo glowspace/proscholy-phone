@@ -22,13 +22,11 @@ enum PlaylistAction {
 class PlaylistButton extends ConsumerWidget {
   final Playlist playlist;
   final bool isInAppBar;
-  final bool extendPadding;
 
   const PlaylistButton({
     super.key,
     required this.playlist,
     this.isInAppBar = false,
-    this.extendPadding = false,
   });
 
   @override
@@ -37,9 +35,7 @@ class PlaylistButton extends ConsumerWidget {
       items: _buildPopupMenuItems(context),
       onSelected: (context, action) => _selectedAction(context, ref, action),
       menuPosition: isInAppBar ? PopupMenuPosition.under : PopupMenuPosition.over,
-      padding: extendPadding
-          ? const EdgeInsets.fromLTRB(kDefaultPadding, kDefaultPadding / 2, 2 * kDefaultPadding, kDefaultPadding / 2)
-          : null,
+      padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
     );
   }
 

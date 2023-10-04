@@ -53,6 +53,8 @@ class SearchScreen extends ConsumerWidget {
           return true;
         },
         child: SplitView(
+          childFlex: 4,
+          subChildFlex: 3,
           subChild: const Scaffold(body: SafeArea(child: FiltersWidget())),
           child: CustomScaffold(appBar: appBar, body: const SearchSongLyricsListView()),
         ),

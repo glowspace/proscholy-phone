@@ -52,6 +52,7 @@ class AppTheme {
         labelLarge: TextStyle(fontSize: 14, color: lightCommentColor, fontWeight: FontWeight.w400),
       ),
       bottomSheetTheme: const BottomSheetThemeData(backgroundColor: Colors.white),
+      splashFactory: NoSplash.splashFactory,
       iconTheme: iconTheme,
       useMaterial3: true,
     );
@@ -85,6 +86,7 @@ class AppTheme {
         bodySmall: TextStyle(fontSize: 14, color: darkCaptionColor, fontWeight: FontWeight.w400),
         labelLarge: TextStyle(fontSize: 14, color: darkCommentColor, fontWeight: FontWeight.w400),
       ),
+      splashFactory: NoSplash.splashFactory,
       iconTheme: iconTheme,
       useMaterial3: true,
     );
