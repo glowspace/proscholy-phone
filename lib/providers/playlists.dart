@@ -15,9 +15,12 @@ part 'playlists.g.dart';
 Playlist favoritePlaylist(FavoritePlaylistRef ref) {
   final box = ref.read(appDependenciesProvider.select((appDependencies) => appDependencies.store)).box<Playlist>();
 
-  if (!box.contains(favoritesPlaylistId)) {
-    box.put(Playlist.favorites());
-  }
+  if (!box.contains(favoritesPlaylistId)) box.put(Playlist.favorites());
+
+  print(ref
+      .read(appDependenciesProvider.select((appDependencies) => appDependencies.store))
+      .box<PlaylistRecord>()
+      .count());
 
   return box.get(favoritesPlaylistId)!;
 }
@@ -210,6 +213,18 @@ class Playlists extends _$Playlists {
     } else {
       addToPlaylist(favoritePlaylist, songLyric: songLyric);
     }
+  }
+
+  void reorderPlaylists(int oldIndex, int newIndex) {
+    if (oldIndex < newIndex) newIndex -= 1;
+
+    final playlists = state;
+
+    playlists.insert(newIndex, playlists.removeAt(oldIndex));
+
+    state = playlists.mapIndexed((index, playlist) => playlist.copyWith(rank: index)).toList();
+
+    _playlistsBox.putMany(state);
   }
 
   void createBibleVerse(

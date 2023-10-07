@@ -32,7 +32,6 @@ class AppTheme {
     return ThemeData(
       brightness: Brightness.light,
       colorScheme: ColorScheme.fromSeed(seedColor: seedColor, background: lightBackgroundColor),
-      canvasColor: Colors.white,
       scaffoldBackgroundColor: Colors.white,
       appBarTheme: const AppBarTheme(
         iconTheme: iconTheme,
@@ -51,7 +50,7 @@ class AppTheme {
         bodySmall: TextStyle(fontSize: 14, color: lightCaptionColor, fontWeight: FontWeight.w400),
         labelLarge: TextStyle(fontSize: 14, color: lightCommentColor, fontWeight: FontWeight.w400),
       ),
-      bottomSheetTheme: const BottomSheetThemeData(backgroundColor: Colors.white),
+      bottomSheetTheme: const BottomSheetThemeData(surfaceTintColor: Colors.transparent),
       splashFactory: NoSplash.splashFactory,
       iconTheme: iconTheme,
       useMaterial3: true,

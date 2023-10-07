@@ -6,7 +6,7 @@ part of 'menu_collapsed.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$menuCollapsedHash() => r'6f9c592ec4c5d7755626758ea9eeac2380caf2b5';
+String _$menuCollapsedHash() => r'd4c5e7e1d4c9c199bfd91164648773e0ce1fdd2c';
 
 /// See also [MenuCollapsed].
 @ProviderFor(MenuCollapsed)

@@ -6,7 +6,7 @@ part 'menu_collapsed.g.dart';
 class MenuCollapsed extends _$MenuCollapsed {
   // TODO: load and store this in shared preferences
   @override
-  bool build() => true;
+  bool build() => false;
 
   void toggle() {
     state = !state;

@@ -16,8 +16,8 @@ class CustomBottomNavigationBar extends ConsumerWidget {
       tag: 'bottomNavigationBar',
       transitionOnUserGestures: true,
       child: NavigationBar(
-        backgroundColor: context.isHome ? theme.canvasColor : null,
-        surfaceTintColor: context.isHome ? theme.canvasColor : null,
+        backgroundColor: context.isHome ? theme.colorScheme.surface : null,
+        surfaceTintColor: context.isHome ? theme.colorScheme.surface : null,
         selectedIndex: context.isHome ? 0 : (context.isSearching ? 1 : 2),
         height: _navigationBarHeight,
         onDestinationSelected: (index) => onDestinationSelected(context, ref, index),

@@ -38,7 +38,7 @@ class TranslationsScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SongLyricsSectionTitle(title: songLyricType.description),
-        for (final songLyric in songLyrics) SongLyricRow(songLyric: songLyric, allowHighlight: true)
+        for (final songLyric in songLyrics) SongLyricRow(songLyric: songLyric)
       ],
     );
   }

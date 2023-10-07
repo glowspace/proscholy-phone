@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/playlist/playlist_button.dart';
+import 'package:zpevnik/components/playlist/selected_playlist.dart';
+import 'package:zpevnik/components/selected_row_highlight.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
@@ -11,52 +13,44 @@ import 'package:zpevnik/routing/router.dart';
 class PlaylistRow extends ConsumerWidget {
   final Playlist playlist;
   final bool isReorderable;
-  final bool showDragIndicator;
 
-  final ValueNotifier<Playlist>? selectedPlaylist;
-
-  const PlaylistRow({
-    super.key,
-    required this.playlist,
-    this.isReorderable = false,
-    this.showDragIndicator = true,
-    this.selectedPlaylist,
-  });
+  const PlaylistRow({super.key, required this.playlist, this.isReorderable = false});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
 
+    final leadingIcon = Padding(
+      padding: EdgeInsets.fromLTRB(
+        context.isHome ? 0.5 * kDefaultPadding : 1.5 * kDefaultPadding,
+        kDefaultPadding / 2,
+        context.isHome ? 0 : kDefaultPadding,
+        kDefaultPadding / 2,
+      ),
+      child: Icon(
+        playlist.isFavorites ? Icons.star : (isReorderable ? Icons.drag_indicator : Icons.playlist_play_rounded),
+      ),
+    );
+
     return DragTarget<SongLyric>(
       onAccept: (songLyric) => ref.read(playlistsProvider.notifier).addToPlaylist(playlist, songLyric: songLyric),
       builder: (_, acceptList, __) => Highlightable(
         highlightBackground: true,
+        padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2, vertical: kDefaultPadding / 3),
         onTap: () => _pushPlaylist(context, ref),
         child: Container(
           color: acceptList.isEmpty ? null : theme.highlightColor,
-          padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
-          child: Ink(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(kDefaultRadius),
-              color: selectedPlaylist?.value == playlist ? theme.colorScheme.secondaryContainer : null,
-            ),
+          child: SelectedRowHighlight(
+            selectedObjectNotifier: SelectedPlaylist.of(context),
+            object: playlist,
             child: Row(children: [
-              if (isReorderable && showDragIndicator)
-                ReorderableDragStartListener(
-                  index: playlist.rank,
-                  child: const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
-                    child: Icon(Icons.drag_indicator),
-                  ),
-                )
+              if (isReorderable)
+                ReorderableDragStartListener(index: playlist.rank, child: leadingIcon)
               else
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
-                  child: Icon(playlist.isFavorites ? Icons.star : Icons.playlist_play_rounded),
-                ),
+                leadingIcon,
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+                  padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
                   child: Text(playlist.name),
                 ),
               ),
@@ -69,8 +63,10 @@ class PlaylistRow extends ConsumerWidget {
   }
 
   void _pushPlaylist(BuildContext context, WidgetRef ref) {
-    if (selectedPlaylist != null) {
-      selectedPlaylist!.value = playlist;
+    final selectedPlaylistNotifier = SelectedPlaylist.of(context);
+
+    if (selectedPlaylistNotifier != null) {
+      selectedPlaylistNotifier.value = playlist;
     } else {
       context.push('/playlist', arguments: playlist);
     }

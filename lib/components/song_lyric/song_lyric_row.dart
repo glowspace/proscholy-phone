@@ -7,27 +7,16 @@ import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/search.dart';
 import 'package:zpevnik/routing/arguments.dart';
 import 'package:zpevnik/routing/router.dart';
-import 'package:zpevnik/utils/extensions.dart';
 
 const double _iconSize = 16;
 const _disabledAlpha = 0x20;
 
-const double _minSize = 44;
-
 class SongLyricRow extends StatelessWidget {
   final SongLyric songLyric;
-  final bool isReorderable;
-  final bool allowHighlight;
 
   final SongLyricScreenArguments? songLyricScreenArguments;
 
-  const SongLyricRow({
-    super.key,
-    required this.songLyric,
-    this.isReorderable = false,
-    this.allowHighlight = false,
-    this.songLyricScreenArguments,
-  });
+  const SongLyricRow({super.key, required this.songLyric, this.songLyricScreenArguments});
 
   @override
   Widget build(BuildContext context) {
@@ -40,28 +29,13 @@ class SongLyricRow extends StatelessWidget {
 
     const textMargin = EdgeInsets.only(top: 2);
 
-    final hightlightColor = theme.brightness.isLight ? const Color(0xffe8e6ef) : const Color(0xff15131d);
-
-    final isTablet = MediaQuery.of(context).isTablet;
-
     Widget row = Highlightable(
       highlightBackground: true,
       onTap: () => _pushSongLyric(context),
-      child: Container(
-        constraints: const BoxConstraints(minHeight: _minSize),
-        padding: isTablet && allowHighlight
-            ? const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 3)
-            : const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding, vertical: kDefaultPadding / 3),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding, vertical: kDefaultPadding / 2),
         child: Row(
           children: [
-            if (isReorderable)
-              const ReorderableDragStartListener(
-                index: 0,
-                child: Padding(
-                  padding: EdgeInsets.only(left: 0.5 * kDefaultPadding, right: 2 * kDefaultPadding),
-                  child: Icon(Icons.drag_indicator),
-                ),
-              ),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -90,45 +64,28 @@ class SongLyricRow extends StatelessWidget {
                 ],
               ),
             ),
-            if (!isReorderable) ...[
-              const SizedBox(width: kDefaultPadding),
-              FaIcon(
-                songLyric.hasChords ? FontAwesomeIcons.guitar : FontAwesomeIcons.alignLeft,
-                size: _iconSize,
-                color: blueScheme.primary.withAlpha(songLyric.hasLyrics ? 0xFF : _disabledAlpha),
-              ),
-              const SizedBox(width: kDefaultPadding),
-              FaIcon(
-                FontAwesomeIcons.solidFileLines,
-                size: _iconSize,
-                color: redScheme.primary.withAlpha(songLyric.hasFiles ? 0xFF : _disabledAlpha),
-              ),
-              const SizedBox(width: kDefaultPadding),
-              FaIcon(
-                FontAwesomeIcons.headphones,
-                size: _iconSize,
-                color: greenScheme.primary.withAlpha(songLyric.hasRecordings ? 0xFF : _disabledAlpha),
-              ),
-            ],
+            const SizedBox(width: kDefaultPadding),
+            FaIcon(
+              songLyric.hasChords ? FontAwesomeIcons.guitar : FontAwesomeIcons.alignLeft,
+              size: _iconSize,
+              color: blueScheme.primary.withAlpha(songLyric.hasLyrics ? 0xFF : _disabledAlpha),
+            ),
+            const SizedBox(width: kDefaultPadding),
+            FaIcon(
+              FontAwesomeIcons.solidFileLines,
+              size: _iconSize,
+              color: redScheme.primary.withAlpha(songLyric.hasFiles ? 0xFF : _disabledAlpha),
+            ),
+            const SizedBox(width: kDefaultPadding),
+            FaIcon(
+              FontAwesomeIcons.headphones,
+              size: _iconSize,
+              color: greenScheme.primary.withAlpha(songLyric.hasRecordings ? 0xFF : _disabledAlpha),
+            ),
           ],
         ),
       ),
     );
-
-    // if (isTablet && allowHighlight) {
-    //   row = ValueListenableBuilder<SongLyric?>(
-    //     valueListenable: context.read<ValueNotifier<SongLyric?>>(),
-    //     builder: (_, activeSongLyric, child) => Container(
-    //       decoration: activeSongLyric == songLyric
-    //           ? BoxDecoration(color: hightlightColor, borderRadius: BorderRadius.circular(kDefaultRadius))
-    //           : BoxDecoration(borderRadius: BorderRadius.circular(kDefaultRadius)),
-    //       margin: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-    //       clipBehavior: Clip.antiAlias,
-    //       child: child!,
-    //     ),
-    //     child: row,
-    //   );
-    // }
 
     // if (isDraggable) {
     //   return Draggable(
@@ -163,7 +120,7 @@ class SongLyricRow extends StatelessWidget {
     // } else {
     // context.read<AllSongLyricsProvider?>()?.addRecentSongLyric(songLyric);
 
-    context.push('/song_lyric', arguments: songLyricScreenArguments);
+    context.push('/song_lyric', arguments: songLyricScreenArguments ?? SongLyricScreenArguments.songLyric(songLyric));
     // }
   }
 }

@@ -17,7 +17,7 @@ class FloatingToolbar extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: theme.canvasColor,
+        color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(kDefaultRadius),
         boxShadow: [BoxShadow(color: theme.shadowColor.withAlpha(0x80), spreadRadius: 0.1, blurRadius: 5)],
       ),

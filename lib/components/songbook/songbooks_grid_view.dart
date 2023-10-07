@@ -28,18 +28,15 @@ class SongbooksGridView extends StatelessWidget {
 
     if (isCrossAxisCountMultipleOfTwo && crossAxisCount % 2 != 0) crossAxisCount--;
 
-    return Theme(
-      data: Theme.of(context).copyWith(canvasColor: Colors.transparent),
-      child: AlignedGridView.count(
-        crossAxisCount: crossAxisCount,
-        primary: false,
-        padding: shrinkWrap ? null : const EdgeInsets.only(top: kDefaultPadding / 2, bottom: 2 * kDefaultPadding),
-        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-        itemCount: songbooks.length,
-        itemBuilder: (context, index) => SongbookTile(songbook: songbooks[index]),
-        shrinkWrap: shrinkWrap,
-        physics: shrinkWrap ? const NeverScrollableScrollPhysics() : null,
-      ),
+    return AlignedGridView.count(
+      crossAxisCount: crossAxisCount,
+      primary: false,
+      padding: shrinkWrap ? null : const EdgeInsets.only(top: kDefaultPadding / 2, bottom: 2 * kDefaultPadding),
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+      itemCount: songbooks.length,
+      itemBuilder: (context, index) => SongbookTile(songbook: songbooks[index]),
+      shrinkWrap: shrinkWrap,
+      physics: shrinkWrap ? const NeverScrollableScrollPhysics() : null,
     );
   }
 }

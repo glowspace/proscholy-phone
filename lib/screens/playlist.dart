@@ -7,18 +7,91 @@ import 'package:zpevnik/components/navigation/scaffold.dart';
 import 'package:zpevnik/components/playlist/action_button.dart';
 import 'package:zpevnik/components/playlist/playlist_button.dart';
 import 'package:zpevnik/components/playlist/playlist_records_list_view.dart';
+import 'package:zpevnik/components/playlist/selected_playlist_record.dart';
+import 'package:zpevnik/components/split_view.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/playlist.dart';
+import 'package:zpevnik/models/playlist_record.dart';
 import 'package:zpevnik/models/song_lyric.dart';
+import 'package:zpevnik/providers/menu_collapsed.dart';
 import 'package:zpevnik/providers/playlists.dart';
 import 'package:zpevnik/providers/tags.dart';
 import 'package:zpevnik/routing/router.dart';
+import 'package:zpevnik/screens/playlist/bible_verse.dart';
+import 'package:zpevnik/screens/playlist/custom_text.dart';
+import 'package:zpevnik/screens/song_lyric.dart';
+import 'package:zpevnik/utils/extensions.dart';
 
-class PlaylistScreen extends ConsumerWidget {
+class PlaylistScreen extends StatelessWidget {
   final Playlist playlist;
-  final bool isInsideSplitView;
 
-  const PlaylistScreen({super.key, required this.playlist, this.isInsideSplitView = false});
+  const PlaylistScreen({super.key, required this.playlist});
+
+  @override
+  Widget build(BuildContext context) {
+    if (MediaQuery.of(context).isTablet && context.isPlaylist) return _PlaylistScaffoldTablet(playlist: playlist);
+
+    return _PlaylistScaffold(playlist: playlist);
+  }
+}
+
+class _PlaylistScaffoldTablet extends ConsumerStatefulWidget {
+  final Playlist playlist;
+
+  const _PlaylistScaffoldTablet({required this.playlist});
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _PlaylistScaffoldTabletState();
+}
+
+class _PlaylistScaffoldTabletState extends ConsumerState<_PlaylistScaffoldTablet> {
+  late ValueNotifier<PlaylistRecord?> _selectedPlaylistRecordNotifier;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _selectedPlaylistRecordNotifier = ValueNotifier(widget.playlist.records.firstOrNull);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder(
+      valueListenable: _selectedPlaylistRecordNotifier,
+      builder: (_, selectedPlaylistRecord, child) {
+        if (ref.watch(menuCollapsedProvider)) return _PlaylistScaffold(playlist: widget.playlist);
+
+        final Widget detailScreen;
+        if (selectedPlaylistRecord == null) {
+          detailScreen = const Placeholder();
+        } else if (selectedPlaylistRecord.songLyric.target != null) {
+          detailScreen = SongLyricScreen(songLyrics: [selectedPlaylistRecord.songLyric.target!]);
+        } else if (selectedPlaylistRecord.bibleVerse.target != null) {
+          detailScreen = BibleVerseScreen(bibleVerse: selectedPlaylistRecord.bibleVerse.target!);
+        } else {
+          detailScreen = CustomTextScreen(customText: selectedPlaylistRecord.customText.target!);
+        }
+
+        return SplitView(
+          childFlex: 3,
+          subChildFlex: 7,
+          subChild: detailScreen,
+          child: child!,
+        );
+      },
+      child: SelectedPlaylistRecord(
+        playlistRecordNotifier: _selectedPlaylistRecordNotifier,
+        child: _PlaylistScaffold(playlist: widget.playlist, showBackButton: false),
+      ),
+    );
+  }
+}
+
+class _PlaylistScaffold extends ConsumerWidget {
+  final Playlist playlist;
+  final bool showBackButton;
+
+  const _PlaylistScaffold({required this.playlist, this.showBackButton = true});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -28,14 +101,16 @@ class PlaylistScreen extends ConsumerWidget {
 
     if (playlist.isFavorites) {
       floatingActionButton = FloatingActionButton(
-        backgroundColor: theme.canvasColor,
+        heroTag: 'playlist',
+        backgroundColor: theme.colorScheme.surface,
         child: const Icon(Icons.playlist_add),
         onPressed: () => _addSongLyric(context, ref),
       );
     } else {
       floatingActionButton = SpeedDial(
+        heroTag: 'playlist',
         icon: Icons.playlist_add,
-        backgroundColor: theme.canvasColor,
+        backgroundColor: theme.colorScheme.surface,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(kDefaultRadius)),
         overlayOpacity: 0.0, // overlay will be invisible, but will allow closing the dial by tapping anywhere on screen
         children: [
@@ -60,7 +135,9 @@ class PlaylistScreen extends ConsumerWidget {
 
     return CustomScaffold(
       appBar: AppBar(
-        leading: const CustomBackButton(),
+        automaticallyImplyLeading: false,
+        leading: showBackButton ? const CustomBackButton() : null,
+        titleSpacing: showBackButton ? null : 2 * kDefaultPadding,
         title: Text(playlist.name),
         actions: [
           Highlightable(
@@ -72,7 +149,7 @@ class PlaylistScreen extends ConsumerWidget {
         ],
       ),
       floatingActionButton: floatingActionButton,
-      hideNavigationRail: isInsideSplitView,
+      hideNavigationRail: context.isPlaylists,
       body: SafeArea(child: PlaylistRecordsListView(playlist: playlist)),
     );
   }
@@ -89,8 +166,13 @@ class PlaylistScreen extends ConsumerWidget {
   }
 
   void _addBibleVerse(BuildContext context, WidgetRef ref) async {
-    final bibleVerseRecord = await context
-        .push<({int book, int chapter, int startVerse, int? endVerse, String text})>('/playlist/bible_verse');
+    final bibleVerseRecord = (await context.push('/playlist/bible_verse')) as ({
+      int book,
+      int chapter,
+      int startVerse,
+      int? endVerse,
+      String text
+    })?;
 
     if (bibleVerseRecord != null) {
       ref.read(playlistsProvider.notifier).createBibleVerse(playlist, bibleVerseRecord);

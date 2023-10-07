@@ -22,6 +22,7 @@ import 'package:zpevnik/screens/settings.dart';
 extension AppNavigatorHelper on BuildContext {
   bool get isHome => ModalRoute.of(this)?.settings.name == '/';
   bool get isPlaylist => ModalRoute.of(this)?.settings.name == '/playlist';
+  bool get isPlaylists => ModalRoute.of(this)?.settings.name == '/playlists';
   bool get isSearching => ModalRoute.of(this)?.settings.name == '/search';
 
   Future<T?> push<T extends Object?>(String routeName, {Object? arguments}) {
@@ -56,8 +57,8 @@ final class AppRouter {
       '/' => ((_) => const HomeScreen(), false),
       '/about' => ((_) => const AboutScreen(), false),
       '/playlist' => ((_) => PlaylistScreen(playlist: settings.arguments as Playlist), false),
-      '/playlist/bible_verse' => ((_) => BibleVerseScreen(bibleVerse: settings.arguments as BibleVerse), false),
-      '/playlist/custom_text' => ((_) => CustomTextScreen(customText: settings.arguments as CustomText), false),
+      '/playlist/bible_verse' => ((_) => BibleVerseScreen(bibleVerse: settings.arguments as BibleVerse?), false),
+      '/playlist/custom_text' => ((_) => CustomTextScreen(customText: settings.arguments as CustomText?), false),
       '/playlists' => ((_) => const PlaylistsScreen(), false),
       '/search' => ((_) => const SearchScreen(), true),
       '/settings' => ((_) => const SettingsScreen(), true),

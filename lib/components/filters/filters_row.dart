@@ -21,7 +21,13 @@ class FiltersRow extends ConsumerWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.filter_alt, color: theme.brightness.isLight ? const Color(0xff50555c) : const Color(0xffafaaa3)),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
+            child: Icon(
+              Icons.filter_alt,
+              color: theme.brightness.isLight ? const Color(0xff50555c) : const Color(0xffafaaa3),
+            ),
+          ),
           const SizedBox(width: kDefaultPadding / 2),
           Expanded(
             child: SingleChildScrollView(

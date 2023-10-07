@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -25,16 +26,21 @@ class PlaylistRecordsListView extends ConsumerStatefulWidget {
 class _PlaylistRecordsListViewState extends ConsumerState<PlaylistRecordsListView> {
   late StreamSubscription<Query<PlaylistRecord>> _playlistChangesSubscription;
 
+  // it is not possible to sort relations yet, so sort it here when displaying
+  late List<PlaylistRecord> _recordsOrdered = widget.playlist.records.sorted((a, b) => a.rank.compareTo(b.rank));
+
   @override
   void initState() {
     super.initState();
 
+    // subscribe to changes, so this widget redraws when removing record from playlist
     _playlistChangesSubscription = ref
         .read(appDependenciesProvider.select((appDependencies) => appDependencies.store))
         .box<PlaylistRecord>()
         .query(PlaylistRecord_.playlist.equals(widget.playlist.id))
         .watch()
-        .listen((_) => setState(() {}));
+        .listen((_) =>
+            setState(() => _recordsOrdered = widget.playlist.records.sorted((a, b) => a.rank.compareTo(b.rank))));
   }
 
   @override
@@ -46,7 +52,7 @@ class _PlaylistRecordsListViewState extends ConsumerState<PlaylistRecordsListVie
 
   @override
   Widget build(BuildContext context) {
-    if (widget.playlist.records.isEmpty) {
+    if (_recordsOrdered.isEmpty) {
       return const Padding(
         padding: EdgeInsets.all(2 * kDefaultPadding),
         child: Center(child: Text(_noPlaylistRecordText)),
@@ -55,9 +61,10 @@ class _PlaylistRecordsListViewState extends ConsumerState<PlaylistRecordsListVie
 
     return ReorderableListView.builder(
       primary: false,
-      itemCount: widget.playlist.records.length,
+      padding: const EdgeInsets.only(top: kDefaultPadding / 2),
+      itemCount: _recordsOrdered.length,
       itemBuilder: (_, index) => Slidable(
-        key: Key('${widget.playlist.records[index].id}'),
+        key: Key('${_recordsOrdered[index].id}'),
         groupTag: 'playlist_record',
         endActionPane: ActionPane(
           motion: const DrawerMotion(),
@@ -65,9 +72,8 @@ class _PlaylistRecordsListViewState extends ConsumerState<PlaylistRecordsListVie
           children: [
             Consumer(
               builder: (_, ref, __) => SlidableAction(
-                onPressed: (_) => ref
-                    .read(playlistsProvider.notifier)
-                    .removeFromPlaylist(widget.playlist, widget.playlist.records[index]),
+                onPressed: (_) =>
+                    ref.read(playlistsProvider.notifier).removeFromPlaylist(widget.playlist, _recordsOrdered[index]),
                 backgroundColor: red,
                 foregroundColor: Colors.white,
                 icon: Icons.delete,
@@ -76,11 +82,23 @@ class _PlaylistRecordsListViewState extends ConsumerState<PlaylistRecordsListVie
             )
           ],
         ),
-        child: PlaylistRecordRow(
-          playlistRecord: widget.playlist.records[index],
-        ),
+        child: PlaylistRecordRow(playlistRecord: _recordsOrdered[index]),
       ),
-      onReorder: (_, __) {},
+      onReorder: _reorder,
     );
+  }
+
+  void _reorder(int oldIndex, int newIndex) {
+    if (oldIndex < newIndex) newIndex -= 1;
+
+    _recordsOrdered.insert(newIndex, _recordsOrdered.removeAt(oldIndex));
+
+    widget.playlist.records.setAll(0, _recordsOrdered.mapIndexed((index, record) => record.copyWith(rank: index)));
+
+    // `widget.playlist.records.applyToDb` saves sometimes incorrectly new ranks, so save it using `putMany`
+    ref
+        .read(appDependenciesProvider.select((appDependencies) => appDependencies.store))
+        .box<PlaylistRecord>()
+        .putMany(widget.playlist.records);
   }
 }

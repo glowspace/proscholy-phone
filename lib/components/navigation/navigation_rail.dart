@@ -29,7 +29,7 @@ class CustomNavigationRail extends ConsumerWidget {
           ],
         ),
         child: Material(
-          color: context.isHome ? theme.canvasColor : theme.colorScheme.surface,
+          color: context.isHome ? theme.colorScheme.surface : theme.colorScheme.surface,
           elevation: 1,
           surfaceTintColor: context.isHome ? null : theme.colorScheme.surfaceTint,
           child: SafeArea(

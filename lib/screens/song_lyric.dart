@@ -13,12 +13,13 @@ import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/auto_scroll.dart';
 import 'package:zpevnik/providers/playlists.dart';
 import 'package:zpevnik/providers/settings.dart';
+import 'package:zpevnik/routing/router.dart';
 
 class SongLyricScreen extends ConsumerStatefulWidget {
   final List<SongLyric> songLyrics;
   final int initialIndex;
 
-  const SongLyricScreen({super.key, required this.songLyrics, required this.initialIndex});
+  const SongLyricScreen({super.key, required this.songLyrics, this.initialIndex = 0});
 
   @override
   ConsumerState<SongLyricScreen> createState() => _SongLyricScreenState();
@@ -69,6 +70,7 @@ class _SongLyricScreenState extends ConsumerState<SongLyricScreen> {
                 autoScrollController: ref.read(autoScrollControllerProvider(songLyric)),
                 toggleFullScreen: () => setState(() => _fullScreen = !_fullScreen),
               ),
+        hideNavigationRail: context.isPlaylist,
         body: SafeArea(
           bottom: false,
           child: GestureDetector(

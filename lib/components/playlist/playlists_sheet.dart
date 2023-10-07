@@ -29,17 +29,17 @@ class PlaylistsSheet extends StatelessWidget {
                 Highlightable(
                   onTap: () => showPlaylistDialog(context, ref, selectedSongLyric: selectedSongLyric),
                   padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
-                  icon: const Icon(Icons.add, size: 20),
+                  icon: const Icon(Icons.add),
                   child: const Text('Nový playlist'),
                 ),
-                const Divider(height: kDefaultPadding),
+                const Divider(height: kDefaultPadding / 2),
                 ...[
                   for (final playlist in ref.watch(playlistsProvider))
                     Consumer(
                       builder: (context, ref, __) => Highlightable(
                         onTap: () => _addToPlaylist(context, ref, playlist),
                         padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
-                        icon: const Icon(Icons.playlist_play_rounded, size: 20),
+                        icon: const Icon(Icons.playlist_play_rounded),
                         child: Text(playlist.name),
                       ),
                     ),

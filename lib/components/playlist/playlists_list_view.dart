@@ -2,13 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zpevnik/components/playlist/playlist_row.dart';
 import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/providers/playlists.dart';
 
 class PlaylistsListView extends ConsumerWidget {
-  final ValueNotifier<Playlist>? selectedPlaylist;
-
-  const PlaylistsListView({super.key, this.selectedPlaylist});
+  const PlaylistsListView({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -16,7 +13,8 @@ class PlaylistsListView extends ConsumerWidget {
 
     return SingleChildScrollView(
       child: Column(children: [
-        PlaylistRow(playlist: ref.read(favoritePlaylistProvider), selectedPlaylist: selectedPlaylist),
+        const SizedBox(height: kDefaultPadding / 2),
+        PlaylistRow(playlist: ref.read(favoritePlaylistProvider)),
         ReorderableListView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -25,14 +23,9 @@ class PlaylistsListView extends ConsumerWidget {
           itemBuilder: (_, index) {
             final playlist = playlists[index];
 
-            return PlaylistRow(
-              key: Key('${playlist.id}'),
-              playlist: playlist,
-              isReorderable: true,
-              selectedPlaylist: selectedPlaylist,
-            );
+            return PlaylistRow(key: Key('${playlist.id}'), playlist: playlist, isReorderable: true);
           },
-          onReorder: (_, __) {},
+          onReorder: ref.read(playlistsProvider.notifier).reorderPlaylists,
         ),
       ]),
     );
