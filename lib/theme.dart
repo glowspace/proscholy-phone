@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:zpevnik/constants.dart';
 
@@ -86,6 +87,8 @@ class AppTheme {
         labelLarge: TextStyle(fontSize: 14, color: darkCommentColor, fontWeight: FontWeight.w400),
       ),
       splashFactory: NoSplash.splashFactory,
+      // needed, so text in alert dialogs on iOS has correct color
+      cupertinoOverrideTheme: const CupertinoThemeData(textTheme: CupertinoTextThemeData()),
       iconTheme: iconTheme,
       useMaterial3: true,
     );

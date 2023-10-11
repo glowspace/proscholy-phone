@@ -115,12 +115,10 @@ class SongLyricRow extends StatelessWidget {
 
     final arguments = ModalRoute.of(context)?.settings.arguments;
 
-    // if (arguments is SearchScreenArguments && arguments.shouldReturnSongLyric) {
-    //   Navigator.of(context).pop(songLyric);
-    // } else {
-    // context.read<AllSongLyricsProvider?>()?.addRecentSongLyric(songLyric);
-
-    context.push('/song_lyric', arguments: songLyricScreenArguments ?? SongLyricScreenArguments.songLyric(songLyric));
-    // }
+    if (arguments is SearchScreenArguments && arguments.shouldReturnSongLyric) {
+      Navigator.of(context).pop(songLyric);
+    } else {
+      context.push('/song_lyric', arguments: songLyricScreenArguments ?? SongLyricScreenArguments.songLyric(songLyric));
+    }
   }
 }

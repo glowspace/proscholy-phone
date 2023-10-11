@@ -24,6 +24,8 @@ class _NewsSectionState extends ConsumerState<NewsSection> {
 
     final newsItems = ref.watch(newsItemsProvider);
 
+    if (newsItems.isEmpty) return const SizedBox();
+
     return Section(
       insideTitle: 'NOVINKY',
       insideTitleIcon: Icons.info_outline,

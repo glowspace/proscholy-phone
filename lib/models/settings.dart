@@ -16,13 +16,6 @@ const defaultGlobalSettings = GlobalSettings(
   accidentals: 0,
   autoScrollSpeedIndex: 6,
 );
-const defaultSongLyricSettings = SongLyricSettingsModel(
-  id: 0,
-  showChords: true,
-  showMusicalNotes: true,
-  accidentals: 0,
-  transposition: 0,
-);
 
 @freezed
 class GlobalSettings with _$GlobalSettings {
@@ -49,4 +42,14 @@ class SongLyricSettingsModel with _$SongLyricSettingsModel implements Identifiab
     required int accidentals,
     required int transposition,
   }) = _SongLyricSettingsModel;
+
+  factory SongLyricSettingsModel.defaultFromGlobalSettings(GlobalSettings globalSettings) {
+    return SongLyricSettingsModel(
+      id: 0,
+      showChords: globalSettings.showChords,
+      showMusicalNotes: globalSettings.showMusicalNotes,
+      accidentals: 0,
+      transposition: 0,
+    );
+  }
 }

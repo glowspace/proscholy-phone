@@ -65,13 +65,16 @@ class Settings extends _$Settings {
 
 @riverpod
 class SongLyricSettings extends _$SongLyricSettings {
+  SongLyricSettingsModel get _defaultSongLyricSettings =>
+      SongLyricSettingsModel.defaultFromGlobalSettings(ref.read(settingsProvider));
+
   // TODO: support individual settings also for playlist records
   @override
   SongLyricSettingsModel build(SongLyric songLyric) {
     ref.listenSelf((previous, next) {
       if (previous == null || previous == next) return;
 
-      songLyric.settings.target = next == defaultSongLyricSettings ? null : next;
+      songLyric.settings.target = next == _defaultSongLyricSettings ? null : next;
 
       ref
           .read(appDependenciesProvider.select((appDependencies) => appDependencies.store))
@@ -79,7 +82,7 @@ class SongLyricSettings extends _$SongLyricSettings {
           .put(songLyric);
     });
 
-    return songLyric.settings.target ?? defaultSongLyricSettings;
+    return songLyric.settings.target ?? _defaultSongLyricSettings;
   }
 
   void changeShowChords(bool showChords) => _updateState(state.copyWith(showChords: showChords));
@@ -96,14 +99,14 @@ class SongLyricSettings extends _$SongLyricSettings {
     _updateState(state.copyWith(transposition: transposition));
   }
 
-  void reset() => _updateState(defaultSongLyricSettings);
+  void reset() => _updateState(_defaultSongLyricSettings);
 
   void _updateState(SongLyricSettingsModel songLyricSettings) {
     final songLyricSettingsBox = ref
         .read(appDependenciesProvider.select((appDependencies) => appDependencies.store))
         .box<SongLyricSettingsModel>();
 
-    if (songLyricSettings == defaultSongLyricSettings && state != defaultSongLyricSettings) {
+    if (songLyricSettings == _defaultSongLyricSettings && state != _defaultSongLyricSettings) {
       songLyricSettingsBox.remove(state.id);
     } else {
       // decide id for new objects

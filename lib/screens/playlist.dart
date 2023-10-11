@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+
 import 'package:zpevnik/components/custom/back_button.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/navigation/scaffold.dart';
-import 'package:zpevnik/components/playlist/action_button.dart';
 import 'package:zpevnik/components/playlist/playlist_button.dart';
 import 'package:zpevnik/components/playlist/playlist_records_list_view.dart';
 import 'package:zpevnik/components/playlist/selected_playlist_record.dart';
@@ -16,6 +15,7 @@ import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/menu_collapsed.dart';
 import 'package:zpevnik/providers/playlists.dart';
 import 'package:zpevnik/providers/tags.dart';
+import 'package:zpevnik/routing/arguments.dart';
 import 'package:zpevnik/routing/router.dart';
 import 'package:zpevnik/screens/playlist/bible_verse.dart';
 import 'package:zpevnik/screens/playlist/custom_text.dart';
@@ -99,39 +99,41 @@ class _PlaylistScaffold extends ConsumerWidget {
 
     final Widget floatingActionButton;
 
-    if (playlist.isFavorites) {
-      floatingActionButton = FloatingActionButton(
-        heroTag: 'playlist',
-        backgroundColor: theme.colorScheme.surface,
-        child: const Icon(Icons.playlist_add),
-        onPressed: () => _addSongLyric(context, ref),
-      );
-    } else {
-      floatingActionButton = SpeedDial(
-        heroTag: 'playlist',
-        icon: Icons.playlist_add,
-        backgroundColor: theme.colorScheme.surface,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(kDefaultRadius)),
-        overlayOpacity: 0.0, // overlay will be invisible, but will allow closing the dial by tapping anywhere on screen
-        children: [
-          PlaylistActionButton(
-            label: 'vlastní text',
-            icon: Icons.edit_note,
-            onTap: () => _addText(context, ref),
-          ),
-          PlaylistActionButton(
-            label: 'biblický úryvek',
-            icon: Icons.book_outlined,
-            onTap: () => _addBibleVerse(context, ref),
-          ),
-          PlaylistActionButton(
-            label: 'píseň',
-            icon: Icons.music_note,
-            onTap: () => _addSongLyric(context, ref),
-          ),
-        ],
-      );
-    }
+    // only song lyrics are supported now, as it would not be possible to share other record types
+
+    // if (playlist.isFavorites) {
+    floatingActionButton = FloatingActionButton(
+      heroTag: 'playlist',
+      backgroundColor: theme.colorScheme.surface,
+      child: const Icon(Icons.playlist_add),
+      onPressed: () => _addSongLyric(context, ref),
+    );
+    // } else {
+    //   floatingActionButton = SpeedDial(
+    //     heroTag: 'playlist',
+    //     icon: Icons.playlist_add,
+    //     backgroundColor: theme.colorScheme.surface,
+    //     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(kDefaultRadius)),
+    //     overlayOpacity: 0.0, // overlay will be invisible, but will allow closing the dial by tapping anywhere on screen
+    //     children: [
+    //       PlaylistActionButton(
+    //         label: 'vlastní text',
+    //         icon: Icons.edit_note,
+    //         onTap: () => _addText(context, ref),
+    //       ),
+    //       PlaylistActionButton(
+    //         label: 'biblický úryvek',
+    //         icon: Icons.book_outlined,
+    //         onTap: () => _addBibleVerse(context, ref),
+    //       ),
+    //       PlaylistActionButton(
+    //         label: 'píseň',
+    //         icon: Icons.music_note,
+    //         onTap: () => _addSongLyric(context, ref),
+    //       ),
+    //     ],
+    //   );
+    // }
 
     return CustomScaffold(
       appBar: AppBar(
@@ -156,32 +158,32 @@ class _PlaylistScaffold extends ConsumerWidget {
 
   void _pushSearch(BuildContext context, WidgetRef ref) {
     ref.read(selectedTagsProvider.notifier).push(initialTag: playlist.tag);
+
     context.push('/search');
   }
 
-  void _addText(BuildContext context, WidgetRef ref) async {
-    final customTextRecord = await context.push<({String name, String content})>('/playlist/custom_text');
+  // void _addText(BuildContext context, WidgetRef ref) async {
+  //   final customTextRecord = await context.push<({String name, String content})>('/playlist/custom_text');
 
-    if (customTextRecord != null) ref.read(playlistsProvider.notifier).createCustomText(playlist, customTextRecord);
-  }
+  //   if (customTextRecord != null) ref.read(playlistsProvider.notifier).createCustomText(playlist, customTextRecord);
+  // }
 
-  void _addBibleVerse(BuildContext context, WidgetRef ref) async {
-    final bibleVerseRecord = (await context.push('/playlist/bible_verse')) as ({
-      int book,
-      int chapter,
-      int startVerse,
-      int? endVerse,
-      String text
-    })?;
+  // void _addBibleVerse(BuildContext context, WidgetRef ref) async {
+  //   final bibleVerseRecord = (await context.push('/playlist/bible_verse')) as ({
+  //     int book,
+  //     int chapter,
+  //     int startVerse,
+  //     int? endVerse,
+  //     String text
+  //   })?;
 
-    if (bibleVerseRecord != null) {
-      ref.read(playlistsProvider.notifier).createBibleVerse(playlist, bibleVerseRecord);
-    }
-  }
+  //   if (bibleVerseRecord != null) {
+  //     ref.read(playlistsProvider.notifier).createBibleVerse(playlist, bibleVerseRecord);
+  //   }
+  // }
 
   void _addSongLyric(BuildContext context, WidgetRef ref) async {
-    // TODO: use arguments
-    final songLyric = await context.push<SongLyric>('/search');
+    final songLyric = (await context.push('/search', arguments: SearchScreenArguments.returnSongLyric())) as SongLyric?;
 
     if (songLyric != null) ref.read(playlistsProvider.notifier).addToPlaylist(playlist, songLyric: songLyric);
   }

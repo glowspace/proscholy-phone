@@ -61,7 +61,6 @@ class _PlaylistRecordsListViewState extends ConsumerState<PlaylistRecordsListVie
 
     return ReorderableListView.builder(
       primary: false,
-      padding: const EdgeInsets.only(top: kDefaultPadding / 2),
       itemCount: _recordsOrdered.length,
       itemBuilder: (_, index) => Slidable(
         key: Key('${_recordsOrdered[index].id}'),

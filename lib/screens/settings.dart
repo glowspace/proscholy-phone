@@ -5,7 +5,6 @@ import 'package:zpevnik/components/custom/close_button.dart';
 import 'package:zpevnik/components/font_size_slider.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/logo.dart';
-import 'package:zpevnik/components/navigation/scaffold.dart';
 import 'package:zpevnik/components/section.dart';
 import 'package:zpevnik/components/selector_widget.dart';
 import 'package:zpevnik/constants.dart';
@@ -21,7 +20,7 @@ class SettingsScreen extends ConsumerWidget {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
 
-    return CustomScaffold(
+    return Scaffold(
       backgroundColor: theme.colorScheme.background,
       appBar: AppBar(leading: const CustomCloseButton(), title: const Logo(), centerTitle: true),
       body: SafeArea(

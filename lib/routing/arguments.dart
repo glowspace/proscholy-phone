@@ -10,3 +10,12 @@ class SongLyricScreenArguments {
 
   factory SongLyricScreenArguments.songLyric(SongLyric songLyric) => SongLyricScreenArguments(songLyrics: [songLyric]);
 }
+
+@immutable
+class SearchScreenArguments {
+  final bool shouldReturnSongLyric;
+
+  const SearchScreenArguments({required this.shouldReturnSongLyric});
+
+  factory SearchScreenArguments.returnSongLyric() => const SearchScreenArguments(shouldReturnSongLyric: true);
+}

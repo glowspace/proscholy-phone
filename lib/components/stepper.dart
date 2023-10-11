@@ -35,6 +35,8 @@ class Stepper extends StatelessWidget {
       bottomRight: Radius.circular(_stepperBorderRadius),
     );
 
+    final disabledColor = theme.disabledColor.withAlpha(0x28);
+
     return Row(
       children: [
         Expanded(
@@ -50,7 +52,7 @@ class Stepper extends StatelessWidget {
                   Container(
                     decoration: BoxDecoration(
                       borderRadius: leftButtonBorderRadius,
-                      border: Border.all(color: isEnabled ? theme.dividerColor : theme.disabledColor),
+                      border: Border.all(color: isEnabled ? theme.dividerColor : disabledColor),
                     ),
                     child: Highlightable(
                       padding: const EdgeInsets.symmetric(
@@ -61,21 +63,21 @@ class Stepper extends StatelessWidget {
                       highlightBackground: true,
                       isEnabled: isEnabled,
                       onTap: () => ref.read(songLyricSettingsProvider(songLyric).notifier).changeTransposition(-1),
-                      child: Icon(Icons.remove, color: isEnabled ? null : theme.disabledColor),
+                      child: Icon(Icons.remove, color: isEnabled ? null : disabledColor),
                     ),
                   ),
                   Expanded(
                     child: Container(
                       decoration: BoxDecoration(
                         border: Border.symmetric(
-                          horizontal: BorderSide(color: isEnabled ? theme.dividerColor : theme.disabledColor),
+                          horizontal: BorderSide(color: isEnabled ? theme.dividerColor : disabledColor),
                         ),
                       ),
                       alignment: Alignment.center,
                       child: Text(
                         '${ref.watch(songLyricSettingsProvider(songLyric).select((songLyricSettings) => songLyricSettings.transposition))}',
                         textAlign: TextAlign.center,
-                        style: textTheme.bodyMedium?.copyWith(color: isEnabled ? null : theme.disabledColor),
+                        style: textTheme.bodyMedium?.copyWith(color: isEnabled ? null : disabledColor),
                       ),
                     ),
                   ),
@@ -83,7 +85,7 @@ class Stepper extends StatelessWidget {
                   Container(
                     decoration: BoxDecoration(
                       borderRadius: rightButtonBorderRadius,
-                      border: Border.all(color: isEnabled ? theme.dividerColor : theme.disabledColor),
+                      border: Border.all(color: isEnabled ? theme.dividerColor : disabledColor),
                     ),
                     child: Highlightable(
                       padding: const EdgeInsets.symmetric(
@@ -94,7 +96,7 @@ class Stepper extends StatelessWidget {
                       highlightBackground: true,
                       isEnabled: isEnabled,
                       onTap: () => ref.read(songLyricSettingsProvider(songLyric).notifier).changeTransposition(1),
-                      child: Icon(Icons.add, color: isEnabled ? null : theme.disabledColor),
+                      child: Icon(Icons.add, color: isEnabled ? null : disabledColor),
                     ),
                   ),
                 ],

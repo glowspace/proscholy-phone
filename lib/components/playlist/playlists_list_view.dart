@@ -13,7 +13,6 @@ class PlaylistsListView extends ConsumerWidget {
 
     return SingleChildScrollView(
       child: Column(children: [
-        const SizedBox(height: kDefaultPadding / 2),
         PlaylistRow(playlist: ref.read(favoritePlaylistProvider)),
         ReorderableListView.builder(
           shrinkWrap: true,
