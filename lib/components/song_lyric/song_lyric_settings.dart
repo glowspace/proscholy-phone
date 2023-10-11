@@ -31,12 +31,12 @@ class SongLyricSettingsWidget extends ConsumerWidget {
       children: [
         const SizedBox(height: kDefaultPadding),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
+          padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding, vertical: kDefaultPadding / 2),
           child: Stepper(title: 'Transpozice', songLyric: songLyric, isEnabled: showChords),
         ),
         SelectorWidget(
           title: 'Posuvky',
-          padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
+          padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding, vertical: kDefaultPadding / 2),
           isEnabled: showChords,
           onSelected: ref.read(songLyricSettingsProvider(songLyric).notifier).changeAccidentals,
           segments: [
@@ -52,13 +52,13 @@ class SongLyricSettingsWidget extends ConsumerWidget {
           value: showChords,
           onChanged: (value) => ref.read(songLyricSettingsProvider(songLyric).notifier).changeShowChords(value),
           dense: true,
-          contentPadding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
         ),
         if (songLyric.hasLilypond)
           SwitchListTile.adaptive(
             title: Text('Zobrazit noty', style: theme.textTheme.bodyMedium),
             activeColor: theme.colorScheme.primary,
-            contentPadding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
             dense: true,
             value: ref.watch(
                 songLyricSettingsProvider(songLyric).select((songLyricSettings) => songLyricSettings.showMusicalNotes)),

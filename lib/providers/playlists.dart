@@ -17,11 +17,6 @@ Playlist favoritePlaylist(FavoritePlaylistRef ref) {
 
   if (!box.contains(favoritesPlaylistId)) box.put(Playlist.favorites());
 
-  print(ref
-      .read(appDependenciesProvider.select((appDependencies) => appDependencies.store))
-      .box<PlaylistRecord>()
-      .count());
-
   return box.get(favoritesPlaylistId)!;
 }
 

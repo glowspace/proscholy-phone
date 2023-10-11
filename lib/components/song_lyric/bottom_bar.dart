@@ -17,12 +17,14 @@ class SongLyricBottomBar extends ConsumerWidget {
   final AutoScrollController autoScrollController;
 
   final Function()? toggleFullScreen;
+  final Function()? showExternals;
 
   const SongLyricBottomBar({
     super.key,
     required this.songLyric,
     required this.autoScrollController,
     this.toggleFullScreen,
+    this.showExternals,
   });
 
   @override
@@ -47,7 +49,7 @@ class SongLyricBottomBar extends ConsumerWidget {
           Highlightable(
             padding: const EdgeInsets.all(kDefaultPadding),
             isEnabled: songLyric.hasRecordings,
-            // onTap: _songLyric.hasRecordings ? () => _showingExternals.value = true : null,
+            onTap: showExternals,
             icon: const Icon(FontAwesomeIcons.headphones),
             child: showLabels ? const Text('Nahrávky') : null,
           ),

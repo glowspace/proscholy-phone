@@ -9,6 +9,7 @@ import 'package:zpevnik/components/split_view.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/search.dart';
 import 'package:zpevnik/providers/tags.dart';
+import 'package:zpevnik/routing/arguments.dart';
 import 'package:zpevnik/routing/router.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
@@ -36,9 +37,9 @@ class SearchScreen extends ConsumerWidget {
               onChanged: ref.read(searchTextProvider.notifier).change,
               onSubmitted: (_) => _maybePushMatchedSonglyric(context, ref),
             ),
-            Container(
-              padding: const EdgeInsets.only(left: kDefaultPadding),
-              child: const FiltersRow(),
+            const Padding(
+              padding: EdgeInsets.only(left: kDefaultPadding),
+              child: FiltersRow(),
             ),
           ],
         ),
@@ -56,7 +57,7 @@ class SearchScreen extends ConsumerWidget {
           childFlex: 4,
           subChildFlex: 3,
           subChild: const Scaffold(body: SafeArea(child: FiltersWidget())),
-          child: CustomScaffold(appBar: appBar, body: const SearchSongLyricsListView()),
+          child: CustomScaffold(appBar: appBar, body: const SafeArea(child: SearchSongLyricsListView())),
         ),
       );
     }
@@ -67,7 +68,7 @@ class SearchScreen extends ConsumerWidget {
         Future.delayed(const Duration(milliseconds: 20), ref.read(selectedTagsProvider.notifier).pop);
         return true;
       },
-      child: CustomScaffold(appBar: appBar, body: const SearchSongLyricsListView()),
+      child: CustomScaffold(appBar: appBar, body: const SafeArea(child: SearchSongLyricsListView())),
     );
   }
 
@@ -76,6 +77,6 @@ class SearchScreen extends ConsumerWidget {
       searchedSongLyricsProvider.select((searchedSongLyricsProvider) => searchedSongLyricsProvider.matchedById),
     );
 
-    if (matchedById != null) context.push('/song_lyric', arguments: matchedById);
+    if (matchedById != null) context.push('/song_lyric', arguments: SongLyricScreenArguments.songLyric(matchedById));
   }
 }
