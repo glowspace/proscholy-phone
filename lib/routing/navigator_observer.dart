@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:wakelock/wakelock.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 part 'navigator_observer.g.dart';
 
@@ -66,9 +66,9 @@ class AppNavigatorObserver extends NavigatorObserver {
   // enable wakelock for `SongLyricScreen` disable for other screens
   void _handleWakeLock(String? routeName) {
     if (routeName == '/song_lyric') {
-      Wakelock.enable();
+      WakelockPlus.enable();
     } else {
-      Wakelock.disable();
+      WakelockPlus.disable();
     }
   }
 }

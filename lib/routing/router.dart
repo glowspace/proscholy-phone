@@ -58,7 +58,7 @@ final class AppRouter {
       '/about' => ((_) => const AboutScreen(), false),
       '/playlist' => ((_) => PlaylistScreen(playlist: settings.arguments as Playlist), false),
       '/playlist/bible_verse' => ((_) => BibleVerseScreen(bibleVerse: settings.arguments as BibleVerse?), false),
-      '/playlist/custom_text' => ((_) => CustomTextScreen(customText: settings.arguments as CustomText?), false),
+      // '/playlist/custom_text' => ((_) => CustomTextScreen(customText: settings.arguments as CustomText?), false),
       '/playlists' => ((_) => const PlaylistsScreen(), false),
       '/search' => ((_) => const SearchScreen(), true),
       '/settings' => ((_) => const SettingsScreen(), true),

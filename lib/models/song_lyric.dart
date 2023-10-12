@@ -100,14 +100,14 @@ class SongLyric with _$SongLyric implements Identifiable {
       if (authors.isEmpty) {
         return 'Autor neznámý';
       } else if (authors.length == 1) {
-        return authors.first.name;
+        return 'Autor: ${authors.first.name}';
       } else {
-        return authors.map((author) => author.name).join(", ");
+        return 'Autor: ${authors.map((author) => author.name).join(", ")}';
       }
     } else {
       final original = song.target?.original;
 
-      String originalText = original != null ? 'Originál: ${original.name} - ${original.authorsText}, ' : '';
+      String originalText = original != null ? 'Originál: ${original.name}\n${original.authorsText}, ' : '';
 
       if (authors.isEmpty) {
         return '${originalText}Autor překladu neznámý';

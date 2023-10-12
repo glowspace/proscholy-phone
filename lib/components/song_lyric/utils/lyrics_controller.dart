@@ -23,23 +23,18 @@ class LyricsController {
 
   double get lilypondWidth => _lilypondWidth ?? 0;
 
-  String lilypond(String hexColor) {
+  String get lilypond {
     if (_lilypond != null) return _lilypond!;
 
-    updateLilypondColor(hexColor);
-
-    return _lilypond!;
-  }
-
-  void updateLilypondColor(String hexColor) {
     _lilypond = (songLyric.lilypond ?? '')
         .replaceAll(_styleRE, '')
-        .replaceAll('currentColor', hexColor)
-        .replaceFirst(_heightRE, '')
+        .replaceAll(_heightRE, '')
         .replaceFirstMapped(_widthRE, (match) {
       _lilypondWidth = double.tryParse(match.group(1) ?? '');
 
       return '';
     });
+
+    return _lilypond!;
   }
 }

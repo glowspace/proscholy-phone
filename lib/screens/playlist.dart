@@ -69,7 +69,8 @@ class _PlaylistScaffoldTabletState extends ConsumerState<_PlaylistScaffoldTablet
         } else if (selectedPlaylistRecord.bibleVerse.target != null) {
           detailScreen = BibleVerseScreen(bibleVerse: selectedPlaylistRecord.bibleVerse.target!);
         } else {
-          detailScreen = CustomTextScreen(customText: selectedPlaylistRecord.customText.target!);
+          throw UnimplementedError();
+          // detailScreen = CustomTextScreen(customText: selectedPlaylistRecord.customText.target!);
         }
 
         return SplitView(

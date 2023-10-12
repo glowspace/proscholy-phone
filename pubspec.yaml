@@ -19,12 +19,12 @@ dependencies:
 
   shared_preferences: ^2.0.6
   intl: ^0.18.0
-  connectivity_plus: ^4.0.1
+  connectivity_plus: ^5.0.0
   diacritic: ^0.1.3
-  wakelock: ^0.6.1+2
+  wakelock_plus: ^1.1.2
 
   url_launcher: ^6.0.6
-  share_plus: ^6.3.0
+  share_plus: ^7.1.0
 
   youtube_player_flutter: ^8.0.0
   just_audio: ^0.9.27
@@ -32,17 +32,17 @@ dependencies:
   flutter_cached_pdfview: ^0.4.1
 
   flutter_svg: ^2.0.6
-  flutter_staggered_grid_view: ^0.6.1
+  flutter_staggered_grid_view: ^0.7.0
 
   adaptive_dialog: ^1.9.0-no-macos.2
 
   flutter_speed_dial: ^7.0.0
 
-  sign_in_with_apple: ^4.0.0
+  sign_in_with_apple: ^5.0.0
 
   uni_links: ^0.5.1
 
-  device_info_plus: ^8.0.0
+  device_info_plus: ^9.0.3
 
   flutter_core_spotlight: ^1.0.4
 
@@ -50,11 +50,11 @@ dependencies:
 
   font_awesome_flutter: ^10.1.0
 
-  google_fonts: ^4.0.3
+  google_fonts: ^6.1.0
 
   cupertino_icons: ^1.0.3
 
-  package_info_plus: ^3.0.3
+  package_info_plus: ^4.1.0
   web_socket_channel: ^2.2.0
   flutter_slidable: ^3.0.0
   firebase_core: ^2.4.1
@@ -64,7 +64,7 @@ dependencies:
   rxdart: ^0.27.7
   flat_buffers: ^2.0.5
   collection: ^1.16.0
-  http: ^0.13.5
+  http: ^1.0.0
   presentation:
     path: ../presentation
   freezed_annotation: ^2.2.0
@@ -72,8 +72,8 @@ dependencies:
   flutter_riverpod: ^2.3.6
   riverpod_annotation: ^2.1.1
   path_provider: ^2.0.15
-  super_editor: ^0.2.6
-  super_editor_markdown: ^0.1.5
+  # super_editor: ^0.2.6
+  # super_editor_markdown: ^0.1.5
   flex_color_picker: ^3.3.0
 
 dev_dependencies:
@@ -95,6 +95,10 @@ flutter:
     - family: KaiseiHarunoUmi
       fonts:
         - asset: assets/fonts/KaiseiHarunoUmi-Regular.ttf
+
+    - family: Amiri
+      fonts:
+        - asset: assets/fonts/Amiri-Regular.ttf
 
   assets:
     - assets/data.json

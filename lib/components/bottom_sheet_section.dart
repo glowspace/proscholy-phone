@@ -30,7 +30,7 @@ class BottomSheetSection extends StatelessWidget {
             ),
             Flexible(
               child: SingleChildScrollView(
-                child: Column(children: children),
+                child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: children),
               ),
             ),
           ],

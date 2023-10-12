@@ -27,13 +27,6 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
   late final controller = LyricsController(widget.songLyric, context);
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    controller.updateLilypondColor(Theme.of(context).colorScheme.onBackground.hex);
-  }
-
-  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final width = MediaQuery.of(context).size.width;
@@ -74,11 +67,12 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
             if (controller.hasLilypond && showLilypond)
               SvgPicture.string(
                 alignment: Alignment.centerLeft,
-                controller.lilypond(theme.colorScheme.onBackground.hex),
-                width: min(width, controller.lilypondWidth),
+                controller.lilypond,
+                theme: SvgTheme(currentColor: theme.colorScheme.onBackground),
+                width: min(width, ref.read(settingsProvider).fontSizeScale * controller.lilypondWidth),
               ),
             SizedBox(height: kDefaultPadding * fontSizeScale),
-            Container(
+            Padding(
               padding: const EdgeInsets.symmetric(horizontal: 2 * kDefaultPadding),
               child: _buildLyrics(context),
             ),
@@ -306,6 +300,4 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
 
     return Theme.of(context).textTheme.bodyMedium?.copyWith(height: showChords ? 2.5 : 1.5);
   }
-
-  void _update() => setState(() {});
 }

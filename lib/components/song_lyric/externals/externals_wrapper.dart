@@ -40,7 +40,7 @@ class _ExternalsWrapperState extends State<ExternalsWrapper> {
               onTap: () => widget.showingExternals.value = false,
               child: AnimatedContainer(
                 duration: kDefaultAnimationDuration,
-                color: isShowing ? Theme.of(context).disabledColor : Colors.transparent,
+                color: isShowing ? Colors.black.withAlpha(0x80) : Colors.transparent,
               ),
             ),
           ),
