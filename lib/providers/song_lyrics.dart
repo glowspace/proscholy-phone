@@ -50,11 +50,15 @@ void migrateSongLyricSettings(Store store) {
 
     songLyricsSettings.add(songLyricSettings);
     songLyricsWithSettings[i] = songLyric.copyWith(
-        transposition: 0, accidentals: null, showChords: null, settings: ToOne(target: songLyricSettings));
+      transposition: 0,
+      accidentals: null,
+      showChords: null,
+      settings: ToOne(target: songLyricSettings),
+    );
   }
 
-  store.box<SongLyricSettingsModel>().putMany(songLyricsSettings);
   store.box<SongLyric>().putMany(songLyricsWithSettings);
+  store.box<SongLyricSettingsModel>().putMany(songLyricsSettings);
 }
 
 @Riverpod(keepAlive: true)

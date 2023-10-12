@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart' hide PopupMenuEntry, PopupMenuItem;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zpevnik/components/custom/back_button.dart';
@@ -16,6 +18,7 @@ import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/auto_scroll.dart';
 import 'package:zpevnik/providers/playlists.dart';
 import 'package:zpevnik/providers/settings.dart';
+import 'package:zpevnik/providers/song_lyrics.dart';
 import 'package:zpevnik/routing/router.dart';
 
 class SongLyricScreen extends ConsumerStatefulWidget {
@@ -38,9 +41,25 @@ class _SongLyricScreenState extends ConsumerState<SongLyricScreen> {
 
   bool _fullScreen = false;
 
+  Timer? _addRecentSongLyricTimer;
+
   int get _currentIndex =>
       _pageController.positions.isNotEmpty ? _pageController.page?.round() ?? widget.initialIndex : widget.initialIndex;
   SongLyric get _songLyric => widget.songLyrics[_currentIndex % widget.songLyrics.length];
+
+  @override
+  void initState() {
+    super.initState();
+
+    _addRecentSongLyricAfterDelay();
+  }
+
+  @override
+  void dispose() {
+    _addRecentSongLyricTimer?.cancel();
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -101,7 +120,10 @@ class _SongLyricScreenState extends ConsumerState<SongLyricScreen> {
               bottom: false,
               child: PageView.builder(
                 controller: _pageController,
-                onPageChanged: (_) => ref.read(activePlayerProvider.notifier).dismiss(),
+                onPageChanged: (_) {
+                  _addRecentSongLyricAfterDelay();
+                  ref.read(activePlayerProvider.notifier).dismiss();
+                },
                 // disable scrolling when there is only one song lyric
                 physics: widget.songLyrics.length == 1 ? const NeverScrollableScrollPhysics() : null,
                 itemBuilder: (_, index) => SongLyricWidget(
@@ -131,5 +153,12 @@ class _SongLyricScreenState extends ConsumerState<SongLyricScreen> {
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(kDefaultRadius))),
       builder: (context) => PlaylistsSheet(selectedSongLyric: _songLyric),
     );
+  }
+
+  // saves song lyric as recent if it was at least for 2 seconds on screen
+  void _addRecentSongLyricAfterDelay() {
+    _addRecentSongLyricTimer?.cancel();
+    _addRecentSongLyricTimer =
+        Timer(const Duration(seconds: 2), () => ref.read(recentSongLyricsProvider.notifier).add(_songLyric));
   }
 }
