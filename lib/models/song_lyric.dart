@@ -46,7 +46,7 @@ enum SongLyricType {
 }
 
 @Freezed(toJson: false)
-class SongLyric with _$SongLyric implements Identifiable {
+class SongLyric with _$SongLyric implements Identifiable, RecentItem {
   static const String fieldKey = 'song_lyrics';
 
   const SongLyric._();
@@ -125,9 +125,8 @@ class SongLyric with _$SongLyric implements Identifiable {
         .toList();
   }
 
-  List<External> get youtubes => externals.where((external) => external.mediaType == MediaType.youtube).toList();
-
-  List<External> get mp3s => externals.where((external) => external.mediaType == MediaType.mp3).toList();
+  @override
+  RecentItemType get recentItemType => RecentItemType.songLyric;
 }
 
 ToOne<Song> _songFromJson(Map<String, dynamic>? json) {

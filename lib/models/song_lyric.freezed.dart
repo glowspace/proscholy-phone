@@ -223,10 +223,11 @@ class _$SongLyricCopyWithImpl<$Res, $Val extends SongLyric>
 }
 
 /// @nodoc
-abstract class _$$_SongLyricCopyWith<$Res> implements $SongLyricCopyWith<$Res> {
-  factory _$$_SongLyricCopyWith(
-          _$_SongLyric value, $Res Function(_$_SongLyric) then) =
-      __$$_SongLyricCopyWithImpl<$Res>;
+abstract class _$$SongLyricImplCopyWith<$Res>
+    implements $SongLyricCopyWith<$Res> {
+  factory _$$SongLyricImplCopyWith(
+          _$SongLyricImpl value, $Res Function(_$SongLyricImpl) then) =
+      __$$SongLyricImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -260,11 +261,11 @@ abstract class _$$_SongLyricCopyWith<$Res> implements $SongLyricCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$_SongLyricCopyWithImpl<$Res>
-    extends _$SongLyricCopyWithImpl<$Res, _$_SongLyric>
-    implements _$$_SongLyricCopyWith<$Res> {
-  __$$_SongLyricCopyWithImpl(
-      _$_SongLyric _value, $Res Function(_$_SongLyric) _then)
+class __$$SongLyricImplCopyWithImpl<$Res>
+    extends _$SongLyricCopyWithImpl<$Res, _$SongLyricImpl>
+    implements _$$SongLyricImplCopyWith<$Res> {
+  __$$SongLyricImplCopyWithImpl(
+      _$SongLyricImpl _value, $Res Function(_$SongLyricImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -291,7 +292,7 @@ class __$$_SongLyricCopyWithImpl<$Res>
     Object? songbookRecords = null,
     Object? playlistRecords = null,
   }) {
-    return _then(_$_SongLyric(
+    return _then(_$SongLyricImpl(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -380,8 +381,8 @@ class __$$_SongLyricCopyWithImpl<$Res>
 
 @Entity(realClass: SongLyric)
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
-class _$_SongLyric extends _SongLyric {
-  const _$_SongLyric(
+class _$SongLyricImpl extends _SongLyric {
+  const _$SongLyricImpl(
       {@Id(assignable: true) @JsonKey(fromJson: int.parse) required this.id,
       required this.name,
       @JsonKey(name: 'secondary_name_1') this.secondaryName1,
@@ -410,8 +411,8 @@ class _$_SongLyric extends _SongLyric {
       required this.playlistRecords})
       : super._();
 
-  factory _$_SongLyric.fromJson(Map<String, dynamic> json) =>
-      _$$_SongLyricFromJson(json);
+  factory _$SongLyricImpl.fromJson(Map<String, dynamic> json) =>
+      _$$SongLyricImplFromJson(json);
 
   @override
   @Id(assignable: true)
@@ -482,7 +483,7 @@ class _$_SongLyric extends _SongLyric {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_SongLyric &&
+            other is _$SongLyricImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.secondaryName1, secondaryName1) ||
@@ -545,8 +546,8 @@ class _$_SongLyric extends _SongLyric {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_SongLyricCopyWith<_$_SongLyric> get copyWith =>
-      __$$_SongLyricCopyWithImpl<_$_SongLyric>(this, _$identity);
+  _$$SongLyricImplCopyWith<_$SongLyricImpl> get copyWith =>
+      __$$SongLyricImplCopyWithImpl<_$SongLyricImpl>(this, _$identity);
 }
 
 abstract class _SongLyric extends SongLyric {
@@ -580,11 +581,11 @@ abstract class _SongLyric extends SongLyric {
       required final ToMany<SongbookRecord> songbookRecords,
       @Backlink()
       @JsonKey(fromJson: _playlistRecordsFromJson)
-      required final ToMany<PlaylistRecord> playlistRecords}) = _$_SongLyric;
+      required final ToMany<PlaylistRecord> playlistRecords}) = _$SongLyricImpl;
   const _SongLyric._() : super._();
 
   factory _SongLyric.fromJson(Map<String, dynamic> json) =
-      _$_SongLyric.fromJson;
+      _$SongLyricImpl.fromJson;
 
   @override
   @Id(assignable: true)
@@ -647,6 +648,6 @@ abstract class _SongLyric extends SongLyric {
   ToMany<PlaylistRecord> get playlistRecords;
   @override
   @JsonKey(ignore: true)
-  _$$_SongLyricCopyWith<_$_SongLyric> get copyWith =>
+  _$$SongLyricImplCopyWith<_$SongLyricImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

@@ -94,11 +94,11 @@ class _$PlaylistRecordCopyWithImpl<$Res, $Val extends PlaylistRecord>
 }
 
 /// @nodoc
-abstract class _$$_PlaylistRecordCopyWith<$Res>
+abstract class _$$PlaylistRecordImplCopyWith<$Res>
     implements $PlaylistRecordCopyWith<$Res> {
-  factory _$$_PlaylistRecordCopyWith(
-          _$_PlaylistRecord value, $Res Function(_$_PlaylistRecord) then) =
-      __$$_PlaylistRecordCopyWithImpl<$Res>;
+  factory _$$PlaylistRecordImplCopyWith(_$PlaylistRecordImpl value,
+          $Res Function(_$PlaylistRecordImpl) then) =
+      __$$PlaylistRecordImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -111,11 +111,11 @@ abstract class _$$_PlaylistRecordCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_PlaylistRecordCopyWithImpl<$Res>
-    extends _$PlaylistRecordCopyWithImpl<$Res, _$_PlaylistRecord>
-    implements _$$_PlaylistRecordCopyWith<$Res> {
-  __$$_PlaylistRecordCopyWithImpl(
-      _$_PlaylistRecord _value, $Res Function(_$_PlaylistRecord) _then)
+class __$$PlaylistRecordImplCopyWithImpl<$Res>
+    extends _$PlaylistRecordCopyWithImpl<$Res, _$PlaylistRecordImpl>
+    implements _$$PlaylistRecordImplCopyWith<$Res> {
+  __$$PlaylistRecordImplCopyWithImpl(
+      _$PlaylistRecordImpl _value, $Res Function(_$PlaylistRecordImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -128,7 +128,7 @@ class __$$_PlaylistRecordCopyWithImpl<$Res>
     Object? bibleVerse = null,
     Object? playlist = null,
   }) {
-    return _then(_$_PlaylistRecord(
+    return _then(_$PlaylistRecordImpl(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -160,8 +160,8 @@ class __$$_PlaylistRecordCopyWithImpl<$Res>
 /// @nodoc
 
 @Entity(realClass: PlaylistRecord)
-class _$_PlaylistRecord implements _PlaylistRecord {
-  const _$_PlaylistRecord(
+class _$PlaylistRecordImpl implements _PlaylistRecord {
+  const _$PlaylistRecordImpl(
       {@Id(assignable: true) required this.id,
       required this.rank,
       required this.songLyric,
@@ -192,7 +192,7 @@ class _$_PlaylistRecord implements _PlaylistRecord {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_PlaylistRecord &&
+            other is _$PlaylistRecordImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.rank, rank) || other.rank == rank) &&
             (identical(other.songLyric, songLyric) ||
@@ -212,8 +212,9 @@ class _$_PlaylistRecord implements _PlaylistRecord {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_PlaylistRecordCopyWith<_$_PlaylistRecord> get copyWith =>
-      __$$_PlaylistRecordCopyWithImpl<_$_PlaylistRecord>(this, _$identity);
+  _$$PlaylistRecordImplCopyWith<_$PlaylistRecordImpl> get copyWith =>
+      __$$PlaylistRecordImplCopyWithImpl<_$PlaylistRecordImpl>(
+          this, _$identity);
 }
 
 abstract class _PlaylistRecord implements PlaylistRecord {
@@ -223,7 +224,7 @@ abstract class _PlaylistRecord implements PlaylistRecord {
       required final ToOne<SongLyric> songLyric,
       required final ToOne<CustomText> customText,
       required final ToOne<BibleVerse> bibleVerse,
-      required final ToOne<Playlist> playlist}) = _$_PlaylistRecord;
+      required final ToOne<Playlist> playlist}) = _$PlaylistRecordImpl;
 
   @override
   @Id(assignable: true)
@@ -240,6 +241,6 @@ abstract class _PlaylistRecord implements PlaylistRecord {
   ToOne<Playlist> get playlist;
   @override
   @JsonKey(ignore: true)
-  _$$_PlaylistRecordCopyWith<_$_PlaylistRecord> get copyWith =>
+  _$$PlaylistRecordImplCopyWith<_$PlaylistRecordImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

@@ -8,6 +8,7 @@ import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/settings.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/settings.dart';
+import 'package:zpevnik/providers/song_lyric_screen_status.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
 const double _bottomBarHeight = 64;
@@ -16,16 +17,7 @@ class SongLyricBottomBar extends ConsumerWidget {
   final SongLyric songLyric;
   final AutoScrollController autoScrollController;
 
-  final Function()? toggleFullScreen;
-  final Function()? showExternals;
-
-  const SongLyricBottomBar({
-    super.key,
-    required this.songLyric,
-    required this.autoScrollController,
-    this.toggleFullScreen,
-    this.showExternals,
-  });
+  const SongLyricBottomBar({super.key, required this.songLyric, required this.autoScrollController});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -42,20 +34,23 @@ class SongLyricBottomBar extends ConsumerWidget {
           Highlightable(
             padding: const EdgeInsets.all(kDefaultPadding),
             isEnabled: songLyric.hasChords,
-            onTap: () => _showSettings(context),
+            onTap: () => showModalBottomSheet(
+              context: context,
+              builder: (context) => SongLyricSettingsModelWidget(songLyric: songLyric),
+            ),
             icon: const Icon(Icons.tune),
             child: showLabels ? const Text('Nástroje') : null,
           ),
           Highlightable(
             padding: const EdgeInsets.all(kDefaultPadding),
             isEnabled: songLyric.hasRecordings,
-            onTap: showExternals,
+            onTap: ref.read(songLyricScreenStatusProvider.notifier).showExternals,
             icon: const Icon(FontAwesomeIcons.headphones),
             child: showLabels ? const Text('Nahrávky') : null,
           ),
           Highlightable(
             padding: const EdgeInsets.all(kDefaultPadding),
-            onTap: toggleFullScreen,
+            onTap: ref.read(songLyricScreenStatusProvider.notifier).enableFullScreen,
             icon: const Icon(Icons.fullscreen),
             child: showLabels ? const Text('Celá obrazovka') : null,
           ),
@@ -84,14 +79,6 @@ class SongLyricBottomBar extends ConsumerWidget {
           ),
         ]),
       ),
-    );
-  }
-
-  void _showSettings(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(kDefaultRadius))),
-      builder: (context) => SongLyricSettingsWidget(songLyric: songLyric),
     );
   }
 }

@@ -29,8 +29,6 @@ class _SystemHash {
   }
 }
 
-typedef TagsRef = AutoDisposeProviderRef<List<Tag>>;
-
 /// See also [tags].
 @ProviderFor(tags)
 const tagsProvider = TagsFamily();
@@ -77,10 +75,10 @@ class TagsFamily extends Family<List<Tag>> {
 class TagsProvider extends AutoDisposeProvider<List<Tag>> {
   /// See also [tags].
   TagsProvider(
-    this.tagType,
-  ) : super.internal(
+    TagType tagType,
+  ) : this._internal(
           (ref) => tags(
-            ref,
+            ref as TagsRef,
             tagType,
           ),
           from: tagsProvider,
@@ -89,9 +87,43 @@ class TagsProvider extends AutoDisposeProvider<List<Tag>> {
               const bool.fromEnvironment('dart.vm.product') ? null : _$tagsHash,
           dependencies: TagsFamily._dependencies,
           allTransitiveDependencies: TagsFamily._allTransitiveDependencies,
+          tagType: tagType,
         );
 
+  TagsProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.tagType,
+  }) : super.internal();
+
   final TagType tagType;
+
+  @override
+  Override overrideWith(
+    List<Tag> Function(TagsRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: TagsProvider._internal(
+        (ref) => create(ref as TagsRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        tagType: tagType,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<List<Tag>> createElement() {
+    return _TagsProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -105,6 +137,19 @@ class TagsProvider extends AutoDisposeProvider<List<Tag>> {
 
     return _SystemHash.finish(hash);
   }
+}
+
+mixin TagsRef on AutoDisposeProviderRef<List<Tag>> {
+  /// The parameter `tagType` of this provider.
+  TagType get tagType;
+}
+
+class _TagsProviderElement extends AutoDisposeProviderElement<List<Tag>>
+    with TagsRef {
+  _TagsProviderElement(super.provider);
+
+  @override
+  TagType get tagType => (origin as TagsProvider).tagType;
 }
 
 String _$selectedTagsHash() => r'34f8261278fc3879ef3d18390732b4f5f7b10016';
@@ -179,8 +224,8 @@ class SelectedTagsByTypeProvider
     extends NotifierProviderImpl<SelectedTagsByType, Set<Tag>> {
   /// See also [SelectedTagsByType].
   SelectedTagsByTypeProvider(
-    this.tagType,
-  ) : super.internal(
+    TagType tagType,
+  ) : this._internal(
           () => SelectedTagsByType()..tagType = tagType,
           from: selectedTagsByTypeProvider,
           name: r'selectedTagsByTypeProvider',
@@ -191,9 +236,50 @@ class SelectedTagsByTypeProvider
           dependencies: SelectedTagsByTypeFamily._dependencies,
           allTransitiveDependencies:
               SelectedTagsByTypeFamily._allTransitiveDependencies,
+          tagType: tagType,
         );
 
+  SelectedTagsByTypeProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.tagType,
+  }) : super.internal();
+
   final TagType tagType;
+
+  @override
+  Set<Tag> runNotifierBuild(
+    covariant SelectedTagsByType notifier,
+  ) {
+    return notifier.build(
+      tagType,
+    );
+  }
+
+  @override
+  Override overrideWith(SelectedTagsByType Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: SelectedTagsByTypeProvider._internal(
+        () => create()..tagType = tagType,
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        tagType: tagType,
+      ),
+    );
+  }
+
+  @override
+  NotifierProviderElement<SelectedTagsByType, Set<Tag>> createElement() {
+    return _SelectedTagsByTypeProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -207,15 +293,20 @@ class SelectedTagsByTypeProvider
 
     return _SystemHash.finish(hash);
   }
+}
+
+mixin SelectedTagsByTypeRef on NotifierProviderRef<Set<Tag>> {
+  /// The parameter `tagType` of this provider.
+  TagType get tagType;
+}
+
+class _SelectedTagsByTypeProviderElement
+    extends NotifierProviderElement<SelectedTagsByType, Set<Tag>>
+    with SelectedTagsByTypeRef {
+  _SelectedTagsByTypeProviderElement(super.provider);
 
   @override
-  Set<Tag> runNotifierBuild(
-    covariant SelectedTagsByType notifier,
-  ) {
-    return notifier.build(
-      tagType,
-    );
-  }
+  TagType get tagType => (origin as SelectedTagsByTypeProvider).tagType;
 }
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

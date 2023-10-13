@@ -64,10 +64,10 @@ class Section extends StatelessWidget {
                 children: [
                   if (insideTitle != null)
                     Padding(
-                      padding: const EdgeInsets.only(bottom: kDefaultPadding / 2),
+                      padding: const EdgeInsets.all(kDefaultPadding),
                       child: Row(children: [
-                        Icon(insideTitleIcon, color: insideTitleIconColor, size: kDefaultIconSize),
-                        const SizedBox(width: kDefaultPadding / 2),
+                        Icon(insideTitleIcon, color: insideTitleIconColor),
+                        const SizedBox(width: kDefaultPadding),
                         Text(insideTitle!, style: theme.textTheme.titleSmall),
                       ]),
                     ),

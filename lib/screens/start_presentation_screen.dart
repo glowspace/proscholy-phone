@@ -6,6 +6,7 @@ import 'package:zpevnik/components/navigation/scaffold.dart';
 import 'package:zpevnik/components/presentation/settings.dart';
 import 'package:zpevnik/components/song_lyric/utils/parser.dart';
 import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/presentation.dart';
 import 'package:zpevnik/routing/router.dart';
 
@@ -13,9 +14,9 @@ const _noExternalDisplayText =
     'Není připojen žádný externí displej. Aplikace v současné době nepodporuje žádné způsoby připojení a je proto nutné, abyste se k externímu displeji připojili pomocí jiné aplikace (např. airplay, chromecast). Poté bude promítání povoleno.';
 
 class StartPresentationScreen extends ConsumerStatefulWidget {
-  final SongLyricsParser songLyricsParser;
+  final SongLyric songLyric;
 
-  const StartPresentationScreen({super.key, required this.songLyricsParser});
+  const StartPresentationScreen({super.key, required this.songLyric});
 
   @override
   ConsumerState<StartPresentationScreen> createState() => _StartPresentationScreenState();
@@ -56,12 +57,11 @@ class _StartPresentationScreenState extends ConsumerState<StartPresentationScree
         leadingWidth: 24 + 4 * kDefaultPadding,
         actions: [
           Highlightable(
-            onTap: _canPresent
-                ? () {
-                    ref.read(presentationProvider).start(widget.songLyricsParser);
-                    context.pop();
-                  }
-                : null,
+            onTap: () {
+              ref.read(presentationProvider).start(SongLyricsParser(widget.songLyric));
+              context.pop();
+            },
+            // isEnabled: _canPresent,
             padding: const EdgeInsets.all(kDefaultPadding),
             icon: const Icon(Icons.check),
           ),

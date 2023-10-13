@@ -6,7 +6,7 @@ part of 'author.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_Author _$$_AuthorFromJson(Map<String, dynamic> json) => _$_Author(
+_$AuthorImpl _$$AuthorImplFromJson(Map<String, dynamic> json) => _$AuthorImpl(
       id: int.parse(json['id'] as String),
       name: json['name'] as String,
     );

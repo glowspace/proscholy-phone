@@ -8,10 +8,10 @@ import 'package:zpevnik/components/selector_widget.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/settings.dart';
 
-class SongLyricSettingsWidget extends ConsumerWidget {
+class SongLyricSettingsModelWidget extends ConsumerWidget {
   final SongLyric songLyric;
 
-  const SongLyricSettingsWidget({super.key, required this.songLyric});
+  const SongLyricSettingsModelWidget({super.key, required this.songLyric});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

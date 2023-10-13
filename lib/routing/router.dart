@@ -16,6 +16,7 @@ import 'package:zpevnik/screens/search.dart';
 import 'package:zpevnik/screens/song_lyric.dart';
 import 'package:zpevnik/screens/songbook.dart';
 import 'package:zpevnik/screens/songbooks.dart';
+import 'package:zpevnik/screens/start_presentation_screen.dart';
 import 'package:zpevnik/screens/updated_song_lyrics.dart';
 import 'package:zpevnik/screens/settings.dart';
 
@@ -72,6 +73,7 @@ final class AppRouter {
           },
           false
         ),
+      '/song_lyric/present' => ((_) => StartPresentationScreen(songLyric: settings.arguments as SongLyric), true),
       '/updated_song_lyrics' => (
           (_) => UpdatedSongLyricsScreen(songLyrics: settings.arguments as List<SongLyric>),
           false,

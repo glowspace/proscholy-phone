@@ -61,6 +61,8 @@ class Settings extends _$Settings {
   void increaseAutoScrollSpeedIndex() => state = state.copyWith(autoScrollSpeedIndex: state.autoScrollSpeedIndex + 1);
 
   void changeSeedColor(int color) => state = state.copyWith(seedColor: color);
+
+  void reset() => state = defaultGlobalSettings;
 }
 
 @riverpod

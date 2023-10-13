@@ -6,7 +6,7 @@ part 'settings.freezed.dart';
 part 'settings.g.dart';
 
 // in ms per pixel
-const autoScrollSpeeds = [40, 30, 24, 20, 17, 15, 13, 12, 11, 10, 9, 8];
+const autoScrollSpeeds = [120, 90, 72, 60, 54, 45, 39, 36, 33, 30, 27, 24];
 
 const defaultGlobalSettings = GlobalSettings(
   seedColor: 0xFF673AB7, // Colors.deepPurlple

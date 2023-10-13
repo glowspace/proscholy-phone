@@ -14,39 +14,37 @@ class CollapsedPlayer extends StatelessWidget {
     final width = MediaQuery.of(context).size.width;
 
     return Padding(
-      padding: const EdgeInsets.all(kDefaultPadding),
-      child: Row(
-        children: [
-          SizedBox(
-            width: width / 3,
-            child: Text(controller.external.name, overflow: TextOverflow.fade),
-          ),
-          Highlightable(
-            onTap: controller.rewind,
+      padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding, vertical: kDefaultPadding),
+      child: Row(children: [
+        SizedBox(
+          width: width / 3,
+          child: Text(controller.external.name, overflow: TextOverflow.fade),
+        ),
+        Highlightable(
+          onTap: controller.rewind,
+          padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+          icon: const Icon(Icons.fast_rewind),
+        ),
+        ValueListenableBuilder(
+          valueListenable: controller.isPlaying,
+          builder: (_, isPlaying, __) => Highlightable(
+            onTap: isPlaying ? controller.pause : controller.play,
             padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-            icon: const Icon(Icons.fast_rewind),
+            icon: Icon(isPlaying ? Icons.pause : Icons.play_arrow),
           ),
-          ValueListenableBuilder(
-            valueListenable: controller.isPlaying,
-            builder: (_, isPlaying, __) => Highlightable(
-              onTap: isPlaying ? controller.pause : controller.play,
-              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-              icon: Icon(isPlaying ? Icons.pause : Icons.play_arrow),
-            ),
-          ),
-          Highlightable(
-            onTap: controller.forward,
-            padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-            icon: const Icon(Icons.fast_forward),
-          ),
-          const Spacer(),
-          Highlightable(
-            onTap: onDismiss,
-            padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-            icon: const Icon(Icons.close),
-          )
-        ],
-      ),
+        ),
+        Highlightable(
+          onTap: controller.forward,
+          padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+          icon: const Icon(Icons.fast_forward),
+        ),
+        const Spacer(),
+        Highlightable(
+          onTap: onDismiss,
+          padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+          icon: const Icon(Icons.close),
+        )
+      ]),
     );
   }
 }

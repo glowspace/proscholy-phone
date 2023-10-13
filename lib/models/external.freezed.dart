@@ -93,10 +93,11 @@ class _$ExternalCopyWithImpl<$Res, $Val extends External>
 }
 
 /// @nodoc
-abstract class _$$_ExternalCopyWith<$Res> implements $ExternalCopyWith<$Res> {
-  factory _$$_ExternalCopyWith(
-          _$_External value, $Res Function(_$_External) then) =
-      __$$_ExternalCopyWithImpl<$Res>;
+abstract class _$$ExternalImplCopyWith<$Res>
+    implements $ExternalCopyWith<$Res> {
+  factory _$$ExternalImplCopyWith(
+          _$ExternalImpl value, $Res Function(_$ExternalImpl) then) =
+      __$$ExternalImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -109,11 +110,11 @@ abstract class _$$_ExternalCopyWith<$Res> implements $ExternalCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$_ExternalCopyWithImpl<$Res>
-    extends _$ExternalCopyWithImpl<$Res, _$_External>
-    implements _$$_ExternalCopyWith<$Res> {
-  __$$_ExternalCopyWithImpl(
-      _$_External _value, $Res Function(_$_External) _then)
+class __$$ExternalImplCopyWithImpl<$Res>
+    extends _$ExternalCopyWithImpl<$Res, _$ExternalImpl>
+    implements _$$ExternalImplCopyWith<$Res> {
+  __$$ExternalImplCopyWithImpl(
+      _$ExternalImpl _value, $Res Function(_$ExternalImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -125,7 +126,7 @@ class __$$_ExternalCopyWithImpl<$Res>
     Object? url = freezed,
     Object? dbMediaType = null,
   }) {
-    return _then(_$_External(
+    return _then(_$ExternalImpl(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -154,8 +155,8 @@ class __$$_ExternalCopyWithImpl<$Res>
 
 @Entity(realClass: External)
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
-class _$_External extends _External {
-  const _$_External(
+class _$ExternalImpl extends _External {
+  const _$ExternalImpl(
       {@Id(assignable: true) @JsonKey(fromJson: int.parse) required this.id,
       required this.publicName,
       this.mediaId,
@@ -164,8 +165,8 @@ class _$_External extends _External {
       required this.dbMediaType})
       : super._();
 
-  factory _$_External.fromJson(Map<String, dynamic> json) =>
-      _$$_ExternalFromJson(json);
+  factory _$ExternalImpl.fromJson(Map<String, dynamic> json) =>
+      _$$ExternalImplFromJson(json);
 
   @override
   @Id(assignable: true)
@@ -190,7 +191,7 @@ class _$_External extends _External {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_External &&
+            other is _$ExternalImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.publicName, publicName) ||
                 other.publicName == publicName) &&
@@ -208,8 +209,8 @@ class _$_External extends _External {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_ExternalCopyWith<_$_External> get copyWith =>
-      __$$_ExternalCopyWithImpl<_$_External>(this, _$identity);
+  _$$ExternalImplCopyWith<_$ExternalImpl> get copyWith =>
+      __$$ExternalImplCopyWithImpl<_$ExternalImpl>(this, _$identity);
 }
 
 abstract class _External extends External {
@@ -221,10 +222,11 @@ abstract class _External extends External {
       final String? mediaId,
       final String? url,
       @JsonKey(name: 'media_type', fromJson: MediaType.rawValueFromString)
-      required final int dbMediaType}) = _$_External;
+      required final int dbMediaType}) = _$ExternalImpl;
   const _External._() : super._();
 
-  factory _External.fromJson(Map<String, dynamic> json) = _$_External.fromJson;
+  factory _External.fromJson(Map<String, dynamic> json) =
+      _$ExternalImpl.fromJson;
 
   @override
   @Id(assignable: true)
@@ -241,6 +243,6 @@ abstract class _External extends External {
   int get dbMediaType;
   @override
   @JsonKey(ignore: true)
-  _$$_ExternalCopyWith<_$_External> get copyWith =>
+  _$$ExternalImplCopyWith<_$ExternalImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

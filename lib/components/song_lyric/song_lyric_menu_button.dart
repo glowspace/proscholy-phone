@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:zpevnik/components/custom/popup_menu_button.dart';
 import 'package:zpevnik/components/icon_item.dart';
-import 'package:zpevnik/components/song_lyric/utils/parser.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/custom/popup_menu.dart';
 import 'package:zpevnik/links.dart';
@@ -22,10 +21,8 @@ enum SongLyricMenuAction {
 
 class SongLyricMenuButton extends ConsumerWidget {
   final SongLyric songLyric;
-  // TODO: this is only temporary, remove it once better solution to pass this to presentation is found
-  final SongLyricsParser songLyricsParser;
 
-  const SongLyricMenuButton({super.key, required this.songLyric, required this.songLyricsParser});
+  const SongLyricMenuButton({super.key, required this.songLyric});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -41,10 +38,11 @@ class SongLyricMenuButton extends ConsumerWidget {
       PopupMenuItem(
         value: SongLyricMenuAction.present,
         child: IconItem(
-            icon: Icons.cast,
-            text: ref.watch(presentationProvider.select((presentationProvider) => presentationProvider.isPresenting))
-                ? 'Ukončit promítání'
-                : 'Spustit promítání'),
+          icon: Icons.cast,
+          text: ref.watch(presentationProvider.select((presentationProvider) => presentationProvider.isPresenting))
+              ? 'Ukončit promítání'
+              : 'Spustit promítání',
+        ),
       ),
       const PopupMenuItem(
         value: SongLyricMenuAction.share,
@@ -74,8 +72,7 @@ class SongLyricMenuButton extends ConsumerWidget {
         if (presentationNotifier.isPresenting) {
           presentationNotifier.stop();
         } else {
-          // TODO: use arguments
-          context.push('/song_lyric/present');
+          context.push('/song_lyric/present', arguments: songLyric);
         }
         break;
       case SongLyricMenuAction.share:

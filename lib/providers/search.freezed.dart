@@ -95,12 +95,12 @@ class _$SearchedSongLyricsResultCopyWithImpl<$Res,
 }
 
 /// @nodoc
-abstract class _$$_SearchedSongLyricsResultCopyWith<$Res>
+abstract class _$$SearchedSongLyricsResultImplCopyWith<$Res>
     implements $SearchedSongLyricsResultCopyWith<$Res> {
-  factory _$$_SearchedSongLyricsResultCopyWith(
-          _$_SearchedSongLyricsResult value,
-          $Res Function(_$_SearchedSongLyricsResult) then) =
-      __$$_SearchedSongLyricsResultCopyWithImpl<$Res>;
+  factory _$$SearchedSongLyricsResultImplCopyWith(
+          _$SearchedSongLyricsResultImpl value,
+          $Res Function(_$SearchedSongLyricsResultImpl) then) =
+      __$$SearchedSongLyricsResultImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -114,12 +114,13 @@ abstract class _$$_SearchedSongLyricsResultCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_SearchedSongLyricsResultCopyWithImpl<$Res>
+class __$$SearchedSongLyricsResultImplCopyWithImpl<$Res>
     extends _$SearchedSongLyricsResultCopyWithImpl<$Res,
-        _$_SearchedSongLyricsResult>
-    implements _$$_SearchedSongLyricsResultCopyWith<$Res> {
-  __$$_SearchedSongLyricsResultCopyWithImpl(_$_SearchedSongLyricsResult _value,
-      $Res Function(_$_SearchedSongLyricsResult) _then)
+        _$SearchedSongLyricsResultImpl>
+    implements _$$SearchedSongLyricsResultImplCopyWith<$Res> {
+  __$$SearchedSongLyricsResultImplCopyWithImpl(
+      _$SearchedSongLyricsResultImpl _value,
+      $Res Function(_$SearchedSongLyricsResultImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -130,7 +131,7 @@ class __$$_SearchedSongLyricsResultCopyWithImpl<$Res>
     Object? matchedById = freezed,
     Object? matchedBySongbookNumber = null,
   }) {
-    return _then(_$_SearchedSongLyricsResult(
+    return _then(_$SearchedSongLyricsResultImpl(
       songLyrics: freezed == songLyrics
           ? _value._songLyrics
           : songLyrics // ignore: cast_nullable_to_non_nullable
@@ -153,8 +154,8 @@ class __$$_SearchedSongLyricsResultCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_SearchedSongLyricsResult implements _SearchedSongLyricsResult {
-  const _$_SearchedSongLyricsResult(
+class _$SearchedSongLyricsResultImpl implements _SearchedSongLyricsResult {
+  const _$SearchedSongLyricsResultImpl(
       {final List<SongLyric>? songLyrics,
       this.searchedNumber,
       this.matchedById,
@@ -195,7 +196,7 @@ class _$_SearchedSongLyricsResult implements _SearchedSongLyricsResult {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_SearchedSongLyricsResult &&
+            other is _$SearchedSongLyricsResultImpl &&
             const DeepCollectionEquality()
                 .equals(other._songLyrics, _songLyrics) &&
             (identical(other.searchedNumber, searchedNumber) ||
@@ -217,9 +218,9 @@ class _$_SearchedSongLyricsResult implements _SearchedSongLyricsResult {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_SearchedSongLyricsResultCopyWith<_$_SearchedSongLyricsResult>
-      get copyWith => __$$_SearchedSongLyricsResultCopyWithImpl<
-          _$_SearchedSongLyricsResult>(this, _$identity);
+  _$$SearchedSongLyricsResultImplCopyWith<_$SearchedSongLyricsResultImpl>
+      get copyWith => __$$SearchedSongLyricsResultImplCopyWithImpl<
+          _$SearchedSongLyricsResultImpl>(this, _$identity);
 }
 
 abstract class _SearchedSongLyricsResult implements SearchedSongLyricsResult {
@@ -228,7 +229,7 @@ abstract class _SearchedSongLyricsResult implements SearchedSongLyricsResult {
           final String? searchedNumber,
           final SongLyric? matchedById,
           final List<SongLyric> matchedBySongbookNumber}) =
-      _$_SearchedSongLyricsResult;
+      _$SearchedSongLyricsResultImpl;
 
   @override
   List<SongLyric>? get songLyrics;
@@ -240,6 +241,6 @@ abstract class _SearchedSongLyricsResult implements SearchedSongLyricsResult {
   List<SongLyric> get matchedBySongbookNumber;
   @override
   @JsonKey(ignore: true)
-  _$$_SearchedSongLyricsResultCopyWith<_$_SearchedSongLyricsResult>
+  _$$SearchedSongLyricsResultImplCopyWith<_$SearchedSongLyricsResultImpl>
       get copyWith => throw _privateConstructorUsedError;
 }

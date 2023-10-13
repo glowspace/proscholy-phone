@@ -6,8 +6,9 @@ part of 'presentation.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_PresentationData _$$_PresentationDataFromJson(Map<String, dynamic> json) =>
-    _$_PresentationData(
+_$PresentationDataImpl _$$PresentationDataImplFromJson(
+        Map<String, dynamic> json) =>
+    _$PresentationDataImpl(
       songLyricId: json['songLyricId'] as int,
       songLyricName: json['songLyricName'] as String,
       lyrics: json['lyrics'] as String,
@@ -15,7 +16,8 @@ _$_PresentationData _$$_PresentationDataFromJson(Map<String, dynamic> json) =>
           json['settings'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$$_PresentationDataToJson(_$_PresentationData instance) =>
+Map<String, dynamic> _$$PresentationDataImplToJson(
+        _$PresentationDataImpl instance) =>
     <String, dynamic>{
       'songLyricId': instance.songLyricId,
       'songLyricName': instance.songLyricName,
@@ -23,17 +25,17 @@ Map<String, dynamic> _$$_PresentationDataToJson(_$_PresentationData instance) =>
       'settings': instance.settings,
     };
 
-_$_PresentationSettings _$$_PresentationSettingsFromJson(
+_$PresentationSettingsImpl _$$PresentationSettingsImplFromJson(
         Map<String, dynamic> json) =>
-    _$_PresentationSettings(
+    _$PresentationSettingsImpl(
       showBackground: json['showBackground'] as bool,
       darkMode: json['darkMode'] as bool,
       showName: json['showName'] as bool,
       allCapital: json['allCapital'] as bool,
     );
 
-Map<String, dynamic> _$$_PresentationSettingsToJson(
-        _$_PresentationSettings instance) =>
+Map<String, dynamic> _$$PresentationSettingsImplToJson(
+        _$PresentationSettingsImpl instance) =>
     <String, dynamic>{
       'showBackground': instance.showBackground,
       'darkMode': instance.darkMode,

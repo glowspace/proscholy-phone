@@ -118,10 +118,11 @@ class _$SongbookCopyWithImpl<$Res, $Val extends Songbook>
 }
 
 /// @nodoc
-abstract class _$$_SongbookCopyWith<$Res> implements $SongbookCopyWith<$Res> {
-  factory _$$_SongbookCopyWith(
-          _$_Songbook value, $Res Function(_$_Songbook) then) =
-      __$$_SongbookCopyWithImpl<$Res>;
+abstract class _$$SongbookImplCopyWith<$Res>
+    implements $SongbookCopyWith<$Res> {
+  factory _$$SongbookImplCopyWith(
+          _$SongbookImpl value, $Res Function(_$SongbookImpl) then) =
+      __$$SongbookImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -138,11 +139,11 @@ abstract class _$$_SongbookCopyWith<$Res> implements $SongbookCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$_SongbookCopyWithImpl<$Res>
-    extends _$SongbookCopyWithImpl<$Res, _$_Songbook>
-    implements _$$_SongbookCopyWith<$Res> {
-  __$$_SongbookCopyWithImpl(
-      _$_Songbook _value, $Res Function(_$_Songbook) _then)
+class __$$SongbookImplCopyWithImpl<$Res>
+    extends _$SongbookCopyWithImpl<$Res, _$SongbookImpl>
+    implements _$$SongbookImplCopyWith<$Res> {
+  __$$SongbookImplCopyWithImpl(
+      _$SongbookImpl _value, $Res Function(_$SongbookImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -157,7 +158,7 @@ class __$$_SongbookCopyWithImpl<$Res>
     Object? isPinned = freezed,
     Object? records = null,
   }) {
-    return _then(_$_Songbook(
+    return _then(_$SongbookImpl(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -198,8 +199,8 @@ class __$$_SongbookCopyWithImpl<$Res>
 
 @Entity(realClass: Songbook)
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
-class _$_Songbook extends _Songbook {
-  const _$_Songbook(
+class _$SongbookImpl extends _Songbook {
+  const _$SongbookImpl(
       {@Id(assignable: true) @JsonKey(fromJson: int.parse) required this.id,
       required this.name,
       @JsonKey(defaultValue: '') required this.shortcut,
@@ -212,8 +213,8 @@ class _$_Songbook extends _Songbook {
       required this.records})
       : super._();
 
-  factory _$_Songbook.fromJson(Map<String, dynamic> json) =>
-      _$$_SongbookFromJson(json);
+  factory _$SongbookImpl.fromJson(Map<String, dynamic> json) =>
+      _$$SongbookImplFromJson(json);
 
   @override
   @Id(assignable: true)
@@ -247,7 +248,7 @@ class _$_Songbook extends _Songbook {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_Songbook &&
+            other is _$SongbookImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.shortcut, shortcut) ||
@@ -278,8 +279,8 @@ class _$_Songbook extends _Songbook {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_SongbookCopyWith<_$_Songbook> get copyWith =>
-      __$$_SongbookCopyWithImpl<_$_Songbook>(this, _$identity);
+  _$$SongbookImplCopyWith<_$SongbookImpl> get copyWith =>
+      __$$SongbookImplCopyWithImpl<_$SongbookImpl>(this, _$identity);
 }
 
 abstract class _Songbook extends Songbook {
@@ -295,10 +296,11 @@ abstract class _Songbook extends Songbook {
       @Deprecated('is handled independently on model') final bool? isPinned,
       @Backlink()
       @JsonKey(fromJson: _songbookRecordsFromJson)
-      required final ToMany<SongbookRecord> records}) = _$_Songbook;
+      required final ToMany<SongbookRecord> records}) = _$SongbookImpl;
   const _Songbook._() : super._();
 
-  factory _Songbook.fromJson(Map<String, dynamic> json) = _$_Songbook.fromJson;
+  factory _Songbook.fromJson(Map<String, dynamic> json) =
+      _$SongbookImpl.fromJson;
 
   @override
   @Id(assignable: true)
@@ -324,6 +326,6 @@ abstract class _Songbook extends Songbook {
   ToMany<SongbookRecord> get records;
   @override
   @JsonKey(ignore: true)
-  _$$_SongbookCopyWith<_$_Songbook> get copyWith =>
+  _$$SongbookImplCopyWith<_$SongbookImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

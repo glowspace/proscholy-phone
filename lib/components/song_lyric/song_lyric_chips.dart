@@ -21,36 +21,33 @@ class SongLyricChips extends StatelessWidget {
         runSpacing: kDefaultPadding / 4,
         children: [
           if (songLyric.hasFiles)
-            SongLyricChip(text: 'Noty, materiály', icon: FontAwesomeIcons.music, onTap: () => _showFiles(context)),
+            SongLyricChip(
+              text: 'Noty, materiály',
+              icon: FontAwesomeIcons.music,
+              onTap: () => showModalBottomSheet(
+                context: context,
+                builder: (context) => SongLyricFilesWidget(songLyric: songLyric),
+              ),
+            ),
           if (songLyric.hasTranslations)
-            SongLyricChip(text: 'Aranže, překlady', icon: Icons.translate, onTap: () => _showTranslations(context)),
-          SongLyricChip(text: 'Štítky, zpěvníky', icon: FontAwesomeIcons.tags, onTap: () => _showTags(context)),
+            SongLyricChip(
+              text: 'Aranže, překlady',
+              icon: Icons.translate,
+              onTap: () => showModalBottomSheet(
+                context: context,
+                builder: (context) => TranslationsScreen(songLyric: songLyric),
+              ),
+            ),
+          SongLyricChip(
+            text: 'Štítky, zpěvníky',
+            icon: FontAwesomeIcons.tags,
+            onTap: () => showModalBottomSheet(
+              context: context,
+              builder: (context) => SongLyricTags(songLyric: songLyric),
+            ),
+          ),
         ],
       ),
-    );
-  }
-
-  void _showFiles(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(kDefaultRadius))),
-      builder: (context) => SongLyricFilesWidget(songLyric: songLyric),
-    );
-  }
-
-  void _showTranslations(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(kDefaultRadius))),
-      builder: (context) => TranslationsScreen(songLyric: songLyric),
-    );
-  }
-
-  void _showTags(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(kDefaultRadius))),
-      builder: (context) => SongLyricTags(songLyric: songLyric),
     );
   }
 }

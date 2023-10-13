@@ -6,7 +6,7 @@ part of 'settings.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$settingsHash() => r'8b331d372906062986850a74c4493cfcf239b51e';
+String _$settingsHash() => r'4fa2b2e521941ad6a21d80f26fb76589cf8001a8';
 
 /// See also [Settings].
 @ProviderFor(Settings)
@@ -21,7 +21,7 @@ final settingsProvider =
 );
 
 typedef _$Settings = AutoDisposeNotifier<GlobalSettings>;
-String _$songLyricSettingsHash() => r'2807ebce5ee05511309f83bb4be7cf66d3ac6749';
+String _$songLyricSettingsHash() => r'3f9de5eda5c5d9eef14066b8725c21a4ce6de3c2';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -100,8 +100,8 @@ class SongLyricSettingsProvider extends AutoDisposeNotifierProviderImpl<
     SongLyricSettings, SongLyricSettingsModel> {
   /// See also [SongLyricSettings].
   SongLyricSettingsProvider(
-    this.songLyric,
-  ) : super.internal(
+    SongLyric songLyric,
+  ) : this._internal(
           () => SongLyricSettings()..songLyric = songLyric,
           from: songLyricSettingsProvider,
           name: r'songLyricSettingsProvider',
@@ -112,9 +112,51 @@ class SongLyricSettingsProvider extends AutoDisposeNotifierProviderImpl<
           dependencies: SongLyricSettingsFamily._dependencies,
           allTransitiveDependencies:
               SongLyricSettingsFamily._allTransitiveDependencies,
+          songLyric: songLyric,
         );
 
+  SongLyricSettingsProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.songLyric,
+  }) : super.internal();
+
   final SongLyric songLyric;
+
+  @override
+  SongLyricSettingsModel runNotifierBuild(
+    covariant SongLyricSettings notifier,
+  ) {
+    return notifier.build(
+      songLyric,
+    );
+  }
+
+  @override
+  Override overrideWith(SongLyricSettings Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: SongLyricSettingsProvider._internal(
+        () => create()..songLyric = songLyric,
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        songLyric: songLyric,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeNotifierProviderElement<SongLyricSettings, SongLyricSettingsModel>
+      createElement() {
+    return _SongLyricSettingsProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -128,15 +170,21 @@ class SongLyricSettingsProvider extends AutoDisposeNotifierProviderImpl<
 
     return _SystemHash.finish(hash);
   }
+}
+
+mixin SongLyricSettingsRef
+    on AutoDisposeNotifierProviderRef<SongLyricSettingsModel> {
+  /// The parameter `songLyric` of this provider.
+  SongLyric get songLyric;
+}
+
+class _SongLyricSettingsProviderElement
+    extends AutoDisposeNotifierProviderElement<SongLyricSettings,
+        SongLyricSettingsModel> with SongLyricSettingsRef {
+  _SongLyricSettingsProviderElement(super.provider);
 
   @override
-  SongLyricSettingsModel runNotifierBuild(
-    covariant SongLyricSettings notifier,
-  ) {
-    return notifier.build(
-      songLyric,
-    );
-  }
+  SongLyric get songLyric => (origin as SongLyricSettingsProvider).songLyric;
 }
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

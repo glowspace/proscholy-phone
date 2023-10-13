@@ -5,8 +5,6 @@ import 'package:zpevnik/components/search/search_field.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/routing/router.dart';
 
-const double _avatarRadius = 16;
-
 class FlexibleTopSection extends StatelessWidget {
   const FlexibleTopSection({super.key});
 

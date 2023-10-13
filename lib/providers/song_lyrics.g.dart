@@ -44,8 +44,6 @@ class _SystemHash {
   }
 }
 
-typedef SongsListSongLyricsRef = AutoDisposeProviderRef<List<SongLyric>>;
-
 /// See also [songsListSongLyrics].
 @ProviderFor(songsListSongLyrics)
 const songsListSongLyricsProvider = SongsListSongLyricsFamily();
@@ -92,10 +90,10 @@ class SongsListSongLyricsFamily extends Family<List<SongLyric>> {
 class SongsListSongLyricsProvider extends AutoDisposeProvider<List<SongLyric>> {
   /// See also [songsListSongLyrics].
   SongsListSongLyricsProvider(
-    this.songsList,
-  ) : super.internal(
+    SongsList songsList,
+  ) : this._internal(
           (ref) => songsListSongLyrics(
-            ref,
+            ref as SongsListSongLyricsRef,
             songsList,
           ),
           from: songsListSongLyricsProvider,
@@ -107,9 +105,43 @@ class SongsListSongLyricsProvider extends AutoDisposeProvider<List<SongLyric>> {
           dependencies: SongsListSongLyricsFamily._dependencies,
           allTransitiveDependencies:
               SongsListSongLyricsFamily._allTransitiveDependencies,
+          songsList: songsList,
         );
 
+  SongsListSongLyricsProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.songsList,
+  }) : super.internal();
+
   final SongsList songsList;
+
+  @override
+  Override overrideWith(
+    List<SongLyric> Function(SongsListSongLyricsRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: SongsListSongLyricsProvider._internal(
+        (ref) => create(ref as SongsListSongLyricsRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        songsList: songsList,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<List<SongLyric>> createElement() {
+    return _SongsListSongLyricsProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -125,21 +157,18 @@ class SongsListSongLyricsProvider extends AutoDisposeProvider<List<SongLyric>> {
   }
 }
 
-String _$recentSongLyricsHash() => r'76f10d9ea4ca1ed503692dfbd0a2e3023e796307';
+mixin SongsListSongLyricsRef on AutoDisposeProviderRef<List<SongLyric>> {
+  /// The parameter `songsList` of this provider.
+  SongsList get songsList;
+}
 
-/// See also [RecentSongLyrics].
-@ProviderFor(RecentSongLyrics)
-final recentSongLyricsProvider =
-    AutoDisposeNotifierProvider<RecentSongLyrics, List<SongLyric>>.internal(
-  RecentSongLyrics.new,
-  name: r'recentSongLyricsProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$recentSongLyricsHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+class _SongsListSongLyricsProviderElement
+    extends AutoDisposeProviderElement<List<SongLyric>>
+    with SongsListSongLyricsRef {
+  _SongsListSongLyricsProviderElement(super.provider);
 
-typedef _$RecentSongLyrics = AutoDisposeNotifier<List<SongLyric>>;
+  @override
+  SongsList get songsList => (origin as SongsListSongLyricsProvider).songsList;
+}
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

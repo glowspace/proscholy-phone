@@ -8,7 +8,6 @@ import 'package:zpevnik/components/home/additional_section.dart';
 import 'package:zpevnik/components/home/flexible_top_section.dart';
 import 'package:zpevnik/components/home/news_section.dart';
 import 'package:zpevnik/components/home/recent_section.dart';
-import 'package:zpevnik/components/home/shared_with_me_section.dart';
 import 'package:zpevnik/components/home/song_lists_section.dart';
 import 'package:zpevnik/components/home/songbooks_section.dart';
 import 'package:zpevnik/components/home/top_section.dart';
@@ -54,9 +53,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           HomeSection.news => const NewsSection(),
           HomeSection.recent => const RecentSection(),
           HomeSection.playlists => const SongListsSection(),
-          HomeSection.sharedWithMe => const SharedWithMeSection(),
-          HomeSection.group => const NewsSection(),
-          HomeSection.shared => const NewsSection(),
           HomeSection.songbooks => const SongbooksSection(),
         },
       const AdditionalSection(),
@@ -81,7 +77,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     columnSections.last.add(
       Highlightable(
         padding: const EdgeInsets.only(top: 2 / 3 * kDefaultPadding, bottom: 2 * kDefaultPadding),
-        onTap: () => _showEditSections(context),
+        onTap: () => showModalBottomSheet(context: context, builder: (context) => const EditHomeSectionsSheet()),
         child: const Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -155,13 +151,5 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
 
     return false;
-  }
-
-  void _showEditSections(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(kDefaultRadius))),
-      builder: (context) => const EditHomeSectionsSheet(),
-    );
   }
 }

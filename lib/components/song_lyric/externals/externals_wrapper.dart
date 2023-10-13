@@ -1,23 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zpevnik/components/song_lyric/externals/externals.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
+import 'package:zpevnik/providers/song_lyric_screen_status.dart';
 
 const _dragSpeedScale = 0.01;
 const _collapseThresholdOffset = 150;
 
 class ExternalsWrapper extends StatefulWidget {
   final SongLyric songLyric;
-  final ValueNotifier<bool> showingExternals;
 
   final Widget child;
 
-  const ExternalsWrapper({
-    super.key,
-    required this.songLyric,
-    required this.showingExternals,
-    required this.child,
-  });
+  const ExternalsWrapper({super.key, required this.songLyric, required this.child});
 
   @override
   State<ExternalsWrapper> createState() => _ExternalsWrapperState();
@@ -31,37 +27,38 @@ class _ExternalsWrapperState extends State<ExternalsWrapper> {
     return Stack(
       children: [
         widget.child,
-        ValueListenableBuilder(
-          valueListenable: widget.showingExternals,
-          builder: (_, isShowing, child) => IgnorePointer(
-            ignoring: !isShowing,
+        Consumer(
+          builder: (_, ref, child) => IgnorePointer(
+            ignoring: !ref.watch(songLyricScreenStatusProvider.select((status) => status.showingExternals)),
             child: GestureDetector(
               behavior: HitTestBehavior.translucent,
-              onTap: () => widget.showingExternals.value = false,
+              onTap: ref.read(songLyricScreenStatusProvider.notifier).hideExternals,
               child: AnimatedContainer(
                 duration: kDefaultAnimationDuration,
-                color: isShowing ? Colors.black.withAlpha(0x80) : Colors.transparent,
+                color: ref.watch(songLyricScreenStatusProvider.select((status) => status.showingExternals))
+                    ? Colors.black.withAlpha(0x80)
+                    : Colors.transparent,
               ),
             ),
           ),
         ),
-        ValueListenableBuilder(
-          valueListenable: widget.showingExternals,
-          builder: (_, isShowing, child) => AnimatedPositioned(
+        Consumer(
+          builder: (_, ref, child) => AnimatedPositioned(
             duration: kDefaultAnimationDuration,
-            bottom: isShowing ? 0 : -MediaQuery.of(context).size.height,
-            child: child!,
-          ),
-          child: StatefulBuilder(
-            builder: (_, setState) => Transform.translate(
-              offset: Offset(0, _bottomOffset),
-              child: GestureDetector(
-                onPanUpdate: (details) => setState(() => _updateOffset(details)),
-                onPanEnd: (details) => _snapOffset(details, setState),
-                child: ExternalsWidget(songLyric: widget.songLyric),
+            bottom: ref.watch(songLyricScreenStatusProvider.select((status) => status.showingExternals))
+                ? 0
+                : -MediaQuery.of(context).size.height,
+            child: StatefulBuilder(
+              builder: (_, setState) => Transform.translate(
+                offset: Offset(0, _bottomOffset),
+                child: GestureDetector(
+                    onPanUpdate: (details) => setState(() => _updateOffset(details)),
+                    onPanEnd: (details) => _snapOffset(details, setState, ref),
+                    child: child!),
               ),
             ),
           ),
+          child: ExternalsWidget(songLyric: widget.songLyric),
         )
       ],
     );
@@ -73,9 +70,9 @@ class _ExternalsWrapperState extends State<ExternalsWrapper> {
     if (_bottomOffset < 0) _bottomOffset = 0;
   }
 
-  void _snapOffset(DragEndDetails details, void Function(void Function()) setState) {
+  void _snapOffset(DragEndDetails details, void Function(void Function()) setState, WidgetRef ref) {
     if (_bottomOffset + _dragSpeedScale * details.velocity.pixelsPerSecond.dy > _collapseThresholdOffset) {
-      widget.showingExternals.value = false;
+      ref.read(songLyricScreenStatusProvider.notifier).hideExternals();
       // reset offset with delay
       Future.delayed(kDefaultAnimationDuration, () => setState(() => _bottomOffset = 0));
     } else {

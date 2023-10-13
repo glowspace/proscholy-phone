@@ -1,19 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/song_lyric/externals/audio_player.dart';
 import 'package:zpevnik/components/song_lyric/externals/youtube_player.dart';
+import 'package:zpevnik/components/song_lyric/utils/active_player_controller.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/external.dart';
+import 'package:zpevnik/providers/song_lyric_screen_status.dart';
 import 'package:zpevnik/utils/url_launcher.dart';
 
-class ExternalWidget extends StatelessWidget {
+class ExternalWidget extends ConsumerWidget {
   final External external;
 
   const ExternalWidget({super.key, required this.external});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isVisible = ref.watch(songLyricScreenStatusProvider.select((status) => status.showingExternals));
+    final isPlaying = ref.watch(activePlayerProvider.select((activePlayer) => activePlayer?.external == external));
+
     return Card(
       child: Column(
         children: [
@@ -35,11 +41,12 @@ class ExternalWidget extends StatelessWidget {
               ],
             ),
           ),
-          switch (external.mediaType) {
-            MediaType.mp3 => AudioPlayerWrapper(external: external),
-            MediaType.youtube => YoutubePlayerWrapper(external: external),
-            _ => throw UnimplementedError('media type is not supported for `ExternalWidget`'),
-          },
+          if (isVisible || isPlaying)
+            switch (external.mediaType) {
+              MediaType.mp3 => AudioPlayerWrapper(external: external),
+              MediaType.youtube => YoutubePlayerWrapper(key: const Key('test'), external: external),
+              _ => throw UnimplementedError('media type is not supported for `ExternalWidget`'),
+            },
         ],
       ),
     );

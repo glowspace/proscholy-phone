@@ -30,8 +30,6 @@ class _SystemHash {
   }
 }
 
-typedef AutoScrollControllerRef = AutoDisposeProviderRef<AutoScrollController>;
-
 /// See also [autoScrollController].
 @ProviderFor(autoScrollController)
 const autoScrollControllerProvider = AutoScrollControllerFamily();
@@ -79,10 +77,10 @@ class AutoScrollControllerProvider
     extends AutoDisposeProvider<AutoScrollController> {
   /// See also [autoScrollController].
   AutoScrollControllerProvider(
-    this.songLyric,
-  ) : super.internal(
+    SongLyric songLyric,
+  ) : this._internal(
           (ref) => autoScrollController(
-            ref,
+            ref as AutoScrollControllerRef,
             songLyric,
           ),
           from: autoScrollControllerProvider,
@@ -94,9 +92,43 @@ class AutoScrollControllerProvider
           dependencies: AutoScrollControllerFamily._dependencies,
           allTransitiveDependencies:
               AutoScrollControllerFamily._allTransitiveDependencies,
+          songLyric: songLyric,
         );
 
+  AutoScrollControllerProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.songLyric,
+  }) : super.internal();
+
   final SongLyric songLyric;
+
+  @override
+  Override overrideWith(
+    AutoScrollController Function(AutoScrollControllerRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: AutoScrollControllerProvider._internal(
+        (ref) => create(ref as AutoScrollControllerRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        songLyric: songLyric,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<AutoScrollController> createElement() {
+    return _AutoScrollControllerProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -112,5 +144,19 @@ class AutoScrollControllerProvider
     return _SystemHash.finish(hash);
   }
 }
+
+mixin AutoScrollControllerRef on AutoDisposeProviderRef<AutoScrollController> {
+  /// The parameter `songLyric` of this provider.
+  SongLyric get songLyric;
+}
+
+class _AutoScrollControllerProviderElement
+    extends AutoDisposeProviderElement<AutoScrollController>
+    with AutoScrollControllerRef {
+  _AutoScrollControllerProviderElement(super.provider);
+
+  @override
+  SongLyric get songLyric => (origin as AutoScrollControllerProvider).songLyric;
+}
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

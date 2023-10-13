@@ -51,7 +51,10 @@ class AppTheme {
         bodySmall: TextStyle(fontSize: 14, color: lightCaptionColor, fontWeight: FontWeight.w400),
         labelLarge: TextStyle(fontSize: 14, color: lightCommentColor, fontWeight: FontWeight.w400),
       ),
-      bottomSheetTheme: const BottomSheetThemeData(surfaceTintColor: Colors.transparent),
+      bottomSheetTheme: const BottomSheetThemeData(
+        surfaceTintColor: Colors.transparent,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(kDefaultRadius))),
+      ),
       splashFactory: NoSplash.splashFactory,
       iconTheme: iconTheme,
       useMaterial3: true,
@@ -85,6 +88,9 @@ class AppTheme {
         bodyMedium: TextStyle(fontSize: 15, color: darkTextColor, fontWeight: FontWeight.w400),
         bodySmall: TextStyle(fontSize: 14, color: darkCaptionColor, fontWeight: FontWeight.w400),
         labelLarge: TextStyle(fontSize: 14, color: darkCommentColor, fontWeight: FontWeight.w400),
+      ),
+      bottomSheetTheme: const BottomSheetThemeData(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(kDefaultRadius))),
       ),
       splashFactory: NoSplash.splashFactory,
       // needed, so text in alert dialogs on iOS has correct color

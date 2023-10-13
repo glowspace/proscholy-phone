@@ -6,7 +6,8 @@ part of 'songbook.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_Songbook _$$_SongbookFromJson(Map<String, dynamic> json) => _$_Songbook(
+_$SongbookImpl _$$SongbookImplFromJson(Map<String, dynamic> json) =>
+    _$SongbookImpl(
       id: int.parse(json['id'] as String),
       name: json['name'] as String,
       shortcut: json['shortcut'] as String? ?? '',

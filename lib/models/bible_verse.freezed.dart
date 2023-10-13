@@ -103,11 +103,11 @@ class _$BibleVerseCopyWithImpl<$Res, $Val extends BibleVerse>
 }
 
 /// @nodoc
-abstract class _$$_BibleVerseCopyWith<$Res>
+abstract class _$$BibleVerseImplCopyWith<$Res>
     implements $BibleVerseCopyWith<$Res> {
-  factory _$$_BibleVerseCopyWith(
-          _$_BibleVerse value, $Res Function(_$_BibleVerse) then) =
-      __$$_BibleVerseCopyWithImpl<$Res>;
+  factory _$$BibleVerseImplCopyWith(
+          _$BibleVerseImpl value, $Res Function(_$BibleVerseImpl) then) =
+      __$$BibleVerseImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -121,11 +121,11 @@ abstract class _$$_BibleVerseCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_BibleVerseCopyWithImpl<$Res>
-    extends _$BibleVerseCopyWithImpl<$Res, _$_BibleVerse>
-    implements _$$_BibleVerseCopyWith<$Res> {
-  __$$_BibleVerseCopyWithImpl(
-      _$_BibleVerse _value, $Res Function(_$_BibleVerse) _then)
+class __$$BibleVerseImplCopyWithImpl<$Res>
+    extends _$BibleVerseCopyWithImpl<$Res, _$BibleVerseImpl>
+    implements _$$BibleVerseImplCopyWith<$Res> {
+  __$$BibleVerseImplCopyWithImpl(
+      _$BibleVerseImpl _value, $Res Function(_$BibleVerseImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -139,7 +139,7 @@ class __$$_BibleVerseCopyWithImpl<$Res>
     Object? text = null,
     Object? playlistRecords = null,
   }) {
-    return _then(_$_BibleVerse(
+    return _then(_$BibleVerseImpl(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -175,8 +175,8 @@ class __$$_BibleVerseCopyWithImpl<$Res>
 /// @nodoc
 
 @Entity(realClass: BibleVerse)
-class _$_BibleVerse implements _BibleVerse {
-  const _$_BibleVerse(
+class _$BibleVerseImpl implements _BibleVerse {
+  const _$BibleVerseImpl(
       {@Id(assignable: true) required this.id,
       required this.book,
       required this.chapter,
@@ -211,7 +211,7 @@ class _$_BibleVerse implements _BibleVerse {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_BibleVerse &&
+            other is _$BibleVerseImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.book, book) || other.book == book) &&
             (identical(other.chapter, chapter) || other.chapter == chapter) &&
@@ -231,8 +231,8 @@ class _$_BibleVerse implements _BibleVerse {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_BibleVerseCopyWith<_$_BibleVerse> get copyWith =>
-      __$$_BibleVerseCopyWithImpl<_$_BibleVerse>(this, _$identity);
+  _$$BibleVerseImplCopyWith<_$BibleVerseImpl> get copyWith =>
+      __$$BibleVerseImplCopyWithImpl<_$BibleVerseImpl>(this, _$identity);
 }
 
 abstract class _BibleVerse implements BibleVerse {
@@ -244,7 +244,7 @@ abstract class _BibleVerse implements BibleVerse {
           final int? endVerse,
           required final String text,
           @Backlink() required final ToMany<PlaylistRecord> playlistRecords}) =
-      _$_BibleVerse;
+      _$BibleVerseImpl;
 
   @override
   @Id(assignable: true)
@@ -264,6 +264,6 @@ abstract class _BibleVerse implements BibleVerse {
   ToMany<PlaylistRecord> get playlistRecords;
   @override
   @JsonKey(ignore: true)
-  _$$_BibleVerseCopyWith<_$_BibleVerse> get copyWith =>
+  _$$BibleVerseImplCopyWith<_$BibleVerseImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

@@ -83,11 +83,11 @@ class _$AppDependenciesCopyWithImpl<$Res, $Val extends AppDependencies>
 }
 
 /// @nodoc
-abstract class _$$_AppDependenciesCopyWith<$Res>
+abstract class _$$AppDependenciesImplCopyWith<$Res>
     implements $AppDependenciesCopyWith<$Res> {
-  factory _$$_AppDependenciesCopyWith(
-          _$_AppDependencies value, $Res Function(_$_AppDependencies) then) =
-      __$$_AppDependenciesCopyWithImpl<$Res>;
+  factory _$$AppDependenciesImplCopyWith(_$AppDependenciesImpl value,
+          $Res Function(_$AppDependenciesImpl) then) =
+      __$$AppDependenciesImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -98,11 +98,11 @@ abstract class _$$_AppDependenciesCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_AppDependenciesCopyWithImpl<$Res>
-    extends _$AppDependenciesCopyWithImpl<$Res, _$_AppDependencies>
-    implements _$$_AppDependenciesCopyWith<$Res> {
-  __$$_AppDependenciesCopyWithImpl(
-      _$_AppDependencies _value, $Res Function(_$_AppDependencies) _then)
+class __$$AppDependenciesImplCopyWithImpl<$Res>
+    extends _$AppDependenciesCopyWithImpl<$Res, _$AppDependenciesImpl>
+    implements _$$AppDependenciesImplCopyWith<$Res> {
+  __$$AppDependenciesImplCopyWithImpl(
+      _$AppDependenciesImpl _value, $Res Function(_$AppDependenciesImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -113,7 +113,7 @@ class __$$_AppDependenciesCopyWithImpl<$Res>
     Object? ftsDatabase = null,
     Object? packageInfo = null,
   }) {
-    return _then(_$_AppDependencies(
+    return _then(_$AppDependenciesImpl(
       sharedPreferences: null == sharedPreferences
           ? _value.sharedPreferences
           : sharedPreferences // ignore: cast_nullable_to_non_nullable
@@ -136,8 +136,8 @@ class __$$_AppDependenciesCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_AppDependencies implements _AppDependencies {
-  const _$_AppDependencies(
+class _$AppDependenciesImpl implements _AppDependencies {
+  const _$AppDependenciesImpl(
       {required this.sharedPreferences,
       required this.store,
       required this.ftsDatabase,
@@ -165,7 +165,7 @@ class _$_AppDependencies implements _AppDependencies {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_AppDependencies &&
+            other is _$AppDependenciesImpl &&
             (identical(other.sharedPreferences, sharedPreferences) ||
                 other.sharedPreferences == sharedPreferences) &&
             (identical(other.store, store) || other.store == store) &&
@@ -182,8 +182,9 @@ class _$_AppDependencies implements _AppDependencies {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_AppDependenciesCopyWith<_$_AppDependencies> get copyWith =>
-      __$$_AppDependenciesCopyWithImpl<_$_AppDependencies>(this, _$identity);
+  _$$AppDependenciesImplCopyWith<_$AppDependenciesImpl> get copyWith =>
+      __$$AppDependenciesImplCopyWithImpl<_$AppDependenciesImpl>(
+          this, _$identity);
 }
 
 abstract class _AppDependencies implements AppDependencies {
@@ -191,7 +192,7 @@ abstract class _AppDependencies implements AppDependencies {
       {required final SharedPreferences sharedPreferences,
       required final Store store,
       required final Database ftsDatabase,
-      required final PackageInfo packageInfo}) = _$_AppDependencies;
+      required final PackageInfo packageInfo}) = _$AppDependenciesImpl;
 
   @override // reference to simple key-value storage
   SharedPreferences get sharedPreferences;
@@ -203,6 +204,6 @@ abstract class _AppDependencies implements AppDependencies {
   PackageInfo get packageInfo;
   @override
   @JsonKey(ignore: true)
-  _$$_AppDependenciesCopyWith<_$_AppDependencies> get copyWith =>
+  _$$AppDependenciesImplCopyWith<_$AppDependenciesImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

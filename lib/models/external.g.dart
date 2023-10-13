@@ -6,7 +6,8 @@ part of 'external.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_External _$$_ExternalFromJson(Map<String, dynamic> json) => _$_External(
+_$ExternalImpl _$$ExternalImplFromJson(Map<String, dynamic> json) =>
+    _$ExternalImpl(
       id: int.parse(json['id'] as String),
       publicName: json['public_name'] as String,
       mediaId: json['media_id'] as String?,

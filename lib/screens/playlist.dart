@@ -14,24 +14,39 @@ import 'package:zpevnik/models/playlist_record.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/menu_collapsed.dart';
 import 'package:zpevnik/providers/playlists.dart';
+import 'package:zpevnik/providers/recent_items.dart';
 import 'package:zpevnik/providers/tags.dart';
 import 'package:zpevnik/routing/arguments.dart';
 import 'package:zpevnik/routing/router.dart';
 import 'package:zpevnik/screens/playlist/bible_verse.dart';
-import 'package:zpevnik/screens/playlist/custom_text.dart';
 import 'package:zpevnik/screens/song_lyric.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
-class PlaylistScreen extends StatelessWidget {
+class PlaylistScreen extends ConsumerStatefulWidget {
   final Playlist playlist;
 
   const PlaylistScreen({super.key, required this.playlist});
 
   @override
-  Widget build(BuildContext context) {
-    if (MediaQuery.of(context).isTablet && context.isPlaylist) return _PlaylistScaffoldTablet(playlist: playlist);
+  ConsumerState<PlaylistScreen> createState() => _PlaylistScreenState();
+}
 
-    return _PlaylistScaffold(playlist: playlist);
+class _PlaylistScreenState extends ConsumerState<PlaylistScreen> {
+  @override
+  void initState() {
+    super.initState();
+
+    // TODO: find better place to do this, for example some observer
+    Future.delayed(const Duration(milliseconds: 20), () => ref.read(recentItemsProvider.notifier).add(widget.playlist));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (MediaQuery.of(context).isTablet && context.isPlaylist) {
+      return _PlaylistScaffoldTablet(playlist: widget.playlist);
+    }
+
+    return _PlaylistScaffold(playlist: widget.playlist);
   }
 }
 
@@ -145,7 +160,7 @@ class _PlaylistScaffold extends ConsumerWidget {
         actions: [
           Highlightable(
             onTap: playlist.records.isEmpty ? null : () => _pushSearch(context, ref),
-            padding: const EdgeInsets.all(kDefaultPadding),
+            padding: EdgeInsets.all((playlist.isFavorites ? 1.5 : 1) * kDefaultPadding),
             icon: const Icon(Icons.filter_alt),
           ),
           if (!playlist.isFavorites) PlaylistButton(playlist: playlist, isInAppBar: true),

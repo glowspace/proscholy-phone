@@ -12,9 +12,6 @@ enum HomeSection {
   news('Novinky'),
   recent('Poslední položky'),
   playlists('Moje seznamy'),
-  sharedWithMe('Sdíleno se mnou'),
-  group('-'),
-  shared('Sdílení'),
   songbooks('Zpěvníky');
 
   final String description;

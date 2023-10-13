@@ -29,8 +29,6 @@ class _SystemHash {
   }
 }
 
-typedef BibleVersesRef = FutureProviderRef<List<dynamic>>;
-
 /// See also [bibleVerses].
 @ProviderFor(bibleVerses)
 const bibleVersesProvider = BibleVersesFamily();
@@ -83,12 +81,12 @@ class BibleVersesFamily extends Family<AsyncValue<List<dynamic>>> {
 class BibleVersesProvider extends FutureProvider<List<dynamic>> {
   /// See also [bibleVerses].
   BibleVersesProvider(
-    this.translation,
-    this.book,
-    this.chapter,
-  ) : super.internal(
+    BibleTranslation translation,
+    BibleBook book,
+    int chapter,
+  ) : this._internal(
           (ref) => bibleVerses(
-            ref,
+            ref as BibleVersesRef,
             translation,
             book,
             chapter,
@@ -102,11 +100,51 @@ class BibleVersesProvider extends FutureProvider<List<dynamic>> {
           dependencies: BibleVersesFamily._dependencies,
           allTransitiveDependencies:
               BibleVersesFamily._allTransitiveDependencies,
+          translation: translation,
+          book: book,
+          chapter: chapter,
         );
+
+  BibleVersesProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.translation,
+    required this.book,
+    required this.chapter,
+  }) : super.internal();
 
   final BibleTranslation translation;
   final BibleBook book;
   final int chapter;
+
+  @override
+  Override overrideWith(
+    FutureOr<List<dynamic>> Function(BibleVersesRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: BibleVersesProvider._internal(
+        (ref) => create(ref as BibleVersesRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        translation: translation,
+        book: book,
+        chapter: chapter,
+      ),
+    );
+  }
+
+  @override
+  FutureProviderElement<List<dynamic>> createElement() {
+    return _BibleVersesProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -127,8 +165,31 @@ class BibleVersesProvider extends FutureProvider<List<dynamic>> {
   }
 }
 
+mixin BibleVersesRef on FutureProviderRef<List<dynamic>> {
+  /// The parameter `translation` of this provider.
+  BibleTranslation get translation;
+
+  /// The parameter `book` of this provider.
+  BibleBook get book;
+
+  /// The parameter `chapter` of this provider.
+  int get chapter;
+}
+
+class _BibleVersesProviderElement extends FutureProviderElement<List<dynamic>>
+    with BibleVersesRef {
+  _BibleVersesProviderElement(super.provider);
+
+  @override
+  BibleTranslation get translation =>
+      (origin as BibleVersesProvider).translation;
+  @override
+  BibleBook get book => (origin as BibleVersesProvider).book;
+  @override
+  int get chapter => (origin as BibleVersesProvider).chapter;
+}
+
 String _$bibleVerseHash() => r'3233ee174f46b928566a059e30486ca749c7f1f6';
-typedef BibleVerseRef = AutoDisposeFutureProviderRef<String>;
 
 /// See also [bibleVerse].
 @ProviderFor(bibleVerse)
@@ -188,14 +249,14 @@ class BibleVerseFamily extends Family<AsyncValue<String>> {
 class BibleVerseProvider extends AutoDisposeFutureProvider<String> {
   /// See also [bibleVerse].
   BibleVerseProvider(
-    this.translation,
-    this.book,
-    this.chapter,
-    this.startVerse, {
-    this.endVerse,
-  }) : super.internal(
+    BibleTranslation translation,
+    BibleBook book,
+    int chapter,
+    int startVerse, {
+    int? endVerse,
+  }) : this._internal(
           (ref) => bibleVerse(
-            ref,
+            ref as BibleVerseRef,
             translation,
             book,
             chapter,
@@ -211,13 +272,59 @@ class BibleVerseProvider extends AutoDisposeFutureProvider<String> {
           dependencies: BibleVerseFamily._dependencies,
           allTransitiveDependencies:
               BibleVerseFamily._allTransitiveDependencies,
+          translation: translation,
+          book: book,
+          chapter: chapter,
+          startVerse: startVerse,
+          endVerse: endVerse,
         );
+
+  BibleVerseProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.translation,
+    required this.book,
+    required this.chapter,
+    required this.startVerse,
+    required this.endVerse,
+  }) : super.internal();
 
   final BibleTranslation translation;
   final BibleBook book;
   final int chapter;
   final int startVerse;
   final int? endVerse;
+
+  @override
+  Override overrideWith(
+    FutureOr<String> Function(BibleVerseRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: BibleVerseProvider._internal(
+        (ref) => create(ref as BibleVerseRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        translation: translation,
+        book: book,
+        chapter: chapter,
+        startVerse: startVerse,
+        endVerse: endVerse,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<String> createElement() {
+    return _BibleVerseProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -241,5 +348,39 @@ class BibleVerseProvider extends AutoDisposeFutureProvider<String> {
     return _SystemHash.finish(hash);
   }
 }
+
+mixin BibleVerseRef on AutoDisposeFutureProviderRef<String> {
+  /// The parameter `translation` of this provider.
+  BibleTranslation get translation;
+
+  /// The parameter `book` of this provider.
+  BibleBook get book;
+
+  /// The parameter `chapter` of this provider.
+  int get chapter;
+
+  /// The parameter `startVerse` of this provider.
+  int get startVerse;
+
+  /// The parameter `endVerse` of this provider.
+  int? get endVerse;
+}
+
+class _BibleVerseProviderElement
+    extends AutoDisposeFutureProviderElement<String> with BibleVerseRef {
+  _BibleVerseProviderElement(super.provider);
+
+  @override
+  BibleTranslation get translation =>
+      (origin as BibleVerseProvider).translation;
+  @override
+  BibleBook get book => (origin as BibleVerseProvider).book;
+  @override
+  int get chapter => (origin as BibleVerseProvider).chapter;
+  @override
+  int get startVerse => (origin as BibleVerseProvider).startVerse;
+  @override
+  int? get endVerse => (origin as BibleVerseProvider).endVerse;
+}
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

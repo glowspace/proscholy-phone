@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:zpevnik/components/section.dart';
+import 'package:zpevnik/components/bottom_sheet_section.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/presentation.dart';
 
@@ -13,38 +13,41 @@ class PresentationSettingsWidget extends ConsumerWidget {
 
     final settings = ref.watch(presentationProvider.select((presentationProvider) => presentationProvider.settings));
 
-    return Section(
-      outsideTitle: 'Nastavení',
-      margin: const EdgeInsets.all(kDefaultPadding),
-      padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+    return BottomSheetSection(
+      title: 'Nastavení promítání',
+      childrenPadding: false,
       children: [
         SwitchListTile.adaptive(
           title: Text('Zobrazovat pozadí', style: textTheme.bodyMedium),
           value: settings.showBackground,
+          dense: true,
           onChanged: (value) =>
               ref.read(presentationProvider.notifier).changeSettings(settings.copyWith(showBackground: value)),
-          contentPadding: EdgeInsets.zero,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
         ),
         SwitchListTile.adaptive(
           title: Text('Světlé písmo', style: textTheme.bodyMedium),
           value: settings.darkMode,
+          dense: true,
           onChanged: (value) =>
               ref.read(presentationProvider.notifier).changeSettings(settings.copyWith(darkMode: value)),
-          contentPadding: EdgeInsets.zero,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
         ),
         SwitchListTile.adaptive(
           title: Text('Zobrazovat název písně', style: textTheme.bodyMedium),
           value: settings.showName,
+          dense: true,
           onChanged: (value) =>
               ref.read(presentationProvider.notifier).changeSettings(settings.copyWith(showName: value)),
-          contentPadding: EdgeInsets.zero,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
         ),
         SwitchListTile.adaptive(
           title: Text('Zobrazovat všechna písmena velká', style: textTheme.bodyMedium),
           value: settings.allCapital,
+          dense: true,
           onChanged: (value) =>
               ref.read(presentationProvider.notifier).changeSettings(settings.copyWith(allCapital: value)),
-          contentPadding: EdgeInsets.zero,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
         ),
       ],
     );

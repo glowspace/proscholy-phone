@@ -94,11 +94,11 @@ class _$PresentationDataCopyWithImpl<$Res, $Val extends PresentationData>
 }
 
 /// @nodoc
-abstract class _$$_PresentationDataCopyWith<$Res>
+abstract class _$$PresentationDataImplCopyWith<$Res>
     implements $PresentationDataCopyWith<$Res> {
-  factory _$$_PresentationDataCopyWith(
-          _$_PresentationData value, $Res Function(_$_PresentationData) then) =
-      __$$_PresentationDataCopyWithImpl<$Res>;
+  factory _$$PresentationDataImplCopyWith(_$PresentationDataImpl value,
+          $Res Function(_$PresentationDataImpl) then) =
+      __$$PresentationDataImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -112,11 +112,11 @@ abstract class _$$_PresentationDataCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_PresentationDataCopyWithImpl<$Res>
-    extends _$PresentationDataCopyWithImpl<$Res, _$_PresentationData>
-    implements _$$_PresentationDataCopyWith<$Res> {
-  __$$_PresentationDataCopyWithImpl(
-      _$_PresentationData _value, $Res Function(_$_PresentationData) _then)
+class __$$PresentationDataImplCopyWithImpl<$Res>
+    extends _$PresentationDataCopyWithImpl<$Res, _$PresentationDataImpl>
+    implements _$$PresentationDataImplCopyWith<$Res> {
+  __$$PresentationDataImplCopyWithImpl(_$PresentationDataImpl _value,
+      $Res Function(_$PresentationDataImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -127,7 +127,7 @@ class __$$_PresentationDataCopyWithImpl<$Res>
     Object? lyrics = null,
     Object? settings = null,
   }) {
-    return _then(_$_PresentationData(
+    return _then(_$PresentationDataImpl(
       songLyricId: null == songLyricId
           ? _value.songLyricId
           : songLyricId // ignore: cast_nullable_to_non_nullable
@@ -150,15 +150,15 @@ class __$$_PresentationDataCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_PresentationData implements _PresentationData {
-  const _$_PresentationData(
+class _$PresentationDataImpl implements _PresentationData {
+  const _$PresentationDataImpl(
       {required this.songLyricId,
       required this.songLyricName,
       required this.lyrics,
       required this.settings});
 
-  factory _$_PresentationData.fromJson(Map<String, dynamic> json) =>
-      _$$_PresentationDataFromJson(json);
+  factory _$PresentationDataImpl.fromJson(Map<String, dynamic> json) =>
+      _$$PresentationDataImplFromJson(json);
 
   @override
   final int songLyricId;
@@ -178,7 +178,7 @@ class _$_PresentationData implements _PresentationData {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_PresentationData &&
+            other is _$PresentationDataImpl &&
             (identical(other.songLyricId, songLyricId) ||
                 other.songLyricId == songLyricId) &&
             (identical(other.songLyricName, songLyricName) ||
@@ -196,12 +196,13 @@ class _$_PresentationData implements _PresentationData {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_PresentationDataCopyWith<_$_PresentationData> get copyWith =>
-      __$$_PresentationDataCopyWithImpl<_$_PresentationData>(this, _$identity);
+  _$$PresentationDataImplCopyWith<_$PresentationDataImpl> get copyWith =>
+      __$$PresentationDataImplCopyWithImpl<_$PresentationDataImpl>(
+          this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_PresentationDataToJson(
+    return _$$PresentationDataImplToJson(
       this,
     );
   }
@@ -212,10 +213,10 @@ abstract class _PresentationData implements PresentationData {
       {required final int songLyricId,
       required final String songLyricName,
       required final String lyrics,
-      required final PresentationSettings settings}) = _$_PresentationData;
+      required final PresentationSettings settings}) = _$PresentationDataImpl;
 
   factory _PresentationData.fromJson(Map<String, dynamic> json) =
-      _$_PresentationData.fromJson;
+      _$PresentationDataImpl.fromJson;
 
   @override
   int get songLyricId;
@@ -227,7 +228,7 @@ abstract class _PresentationData implements PresentationData {
   PresentationSettings get settings;
   @override
   @JsonKey(ignore: true)
-  _$$_PresentationDataCopyWith<_$_PresentationData> get copyWith =>
+  _$$PresentationDataImplCopyWith<_$PresentationDataImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -299,11 +300,11 @@ class _$PresentationSettingsCopyWithImpl<$Res,
 }
 
 /// @nodoc
-abstract class _$$_PresentationSettingsCopyWith<$Res>
+abstract class _$$PresentationSettingsImplCopyWith<$Res>
     implements $PresentationSettingsCopyWith<$Res> {
-  factory _$$_PresentationSettingsCopyWith(_$_PresentationSettings value,
-          $Res Function(_$_PresentationSettings) then) =
-      __$$_PresentationSettingsCopyWithImpl<$Res>;
+  factory _$$PresentationSettingsImplCopyWith(_$PresentationSettingsImpl value,
+          $Res Function(_$PresentationSettingsImpl) then) =
+      __$$PresentationSettingsImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -311,11 +312,11 @@ abstract class _$$_PresentationSettingsCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_PresentationSettingsCopyWithImpl<$Res>
-    extends _$PresentationSettingsCopyWithImpl<$Res, _$_PresentationSettings>
-    implements _$$_PresentationSettingsCopyWith<$Res> {
-  __$$_PresentationSettingsCopyWithImpl(_$_PresentationSettings _value,
-      $Res Function(_$_PresentationSettings) _then)
+class __$$PresentationSettingsImplCopyWithImpl<$Res>
+    extends _$PresentationSettingsCopyWithImpl<$Res, _$PresentationSettingsImpl>
+    implements _$$PresentationSettingsImplCopyWith<$Res> {
+  __$$PresentationSettingsImplCopyWithImpl(_$PresentationSettingsImpl _value,
+      $Res Function(_$PresentationSettingsImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -326,7 +327,7 @@ class __$$_PresentationSettingsCopyWithImpl<$Res>
     Object? showName = null,
     Object? allCapital = null,
   }) {
-    return _then(_$_PresentationSettings(
+    return _then(_$PresentationSettingsImpl(
       showBackground: null == showBackground
           ? _value.showBackground
           : showBackground // ignore: cast_nullable_to_non_nullable
@@ -349,15 +350,15 @@ class __$$_PresentationSettingsCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_PresentationSettings implements _PresentationSettings {
-  const _$_PresentationSettings(
+class _$PresentationSettingsImpl implements _PresentationSettings {
+  const _$PresentationSettingsImpl(
       {required this.showBackground,
       required this.darkMode,
       required this.showName,
       required this.allCapital});
 
-  factory _$_PresentationSettings.fromJson(Map<String, dynamic> json) =>
-      _$$_PresentationSettingsFromJson(json);
+  factory _$PresentationSettingsImpl.fromJson(Map<String, dynamic> json) =>
+      _$$PresentationSettingsImplFromJson(json);
 
   @override
   final bool showBackground;
@@ -377,7 +378,7 @@ class _$_PresentationSettings implements _PresentationSettings {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_PresentationSettings &&
+            other is _$PresentationSettingsImpl &&
             (identical(other.showBackground, showBackground) ||
                 other.showBackground == showBackground) &&
             (identical(other.darkMode, darkMode) ||
@@ -396,13 +397,14 @@ class _$_PresentationSettings implements _PresentationSettings {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_PresentationSettingsCopyWith<_$_PresentationSettings> get copyWith =>
-      __$$_PresentationSettingsCopyWithImpl<_$_PresentationSettings>(
-          this, _$identity);
+  _$$PresentationSettingsImplCopyWith<_$PresentationSettingsImpl>
+      get copyWith =>
+          __$$PresentationSettingsImplCopyWithImpl<_$PresentationSettingsImpl>(
+              this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_PresentationSettingsToJson(
+    return _$$PresentationSettingsImplToJson(
       this,
     );
   }
@@ -413,10 +415,10 @@ abstract class _PresentationSettings implements PresentationSettings {
       {required final bool showBackground,
       required final bool darkMode,
       required final bool showName,
-      required final bool allCapital}) = _$_PresentationSettings;
+      required final bool allCapital}) = _$PresentationSettingsImpl;
 
   factory _PresentationSettings.fromJson(Map<String, dynamic> json) =
-      _$_PresentationSettings.fromJson;
+      _$PresentationSettingsImpl.fromJson;
 
   @override
   bool get showBackground;
@@ -428,6 +430,6 @@ abstract class _PresentationSettings implements PresentationSettings {
   bool get allCapital;
   @override
   @JsonKey(ignore: true)
-  _$$_PresentationSettingsCopyWith<_$_PresentationSettings> get copyWith =>
-      throw _privateConstructorUsedError;
+  _$$PresentationSettingsImplCopyWith<_$PresentationSettingsImpl>
+      get copyWith => throw _privateConstructorUsedError;
 }

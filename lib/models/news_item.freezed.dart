@@ -85,10 +85,11 @@ class _$NewsItemCopyWithImpl<$Res, $Val extends NewsItem>
 }
 
 /// @nodoc
-abstract class _$$_NewsItemCopyWith<$Res> implements $NewsItemCopyWith<$Res> {
-  factory _$$_NewsItemCopyWith(
-          _$_NewsItem value, $Res Function(_$_NewsItem) then) =
-      __$$_NewsItemCopyWithImpl<$Res>;
+abstract class _$$NewsItemImplCopyWith<$Res>
+    implements $NewsItemCopyWith<$Res> {
+  factory _$$NewsItemImplCopyWith(
+          _$NewsItemImpl value, $Res Function(_$NewsItemImpl) then) =
+      __$$NewsItemImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -99,11 +100,11 @@ abstract class _$$_NewsItemCopyWith<$Res> implements $NewsItemCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$_NewsItemCopyWithImpl<$Res>
-    extends _$NewsItemCopyWithImpl<$Res, _$_NewsItem>
-    implements _$$_NewsItemCopyWith<$Res> {
-  __$$_NewsItemCopyWithImpl(
-      _$_NewsItem _value, $Res Function(_$_NewsItem) _then)
+class __$$NewsItemImplCopyWithImpl<$Res>
+    extends _$NewsItemCopyWithImpl<$Res, _$NewsItemImpl>
+    implements _$$NewsItemImplCopyWith<$Res> {
+  __$$NewsItemImplCopyWithImpl(
+      _$NewsItemImpl _value, $Res Function(_$NewsItemImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -114,7 +115,7 @@ class __$$_NewsItemCopyWithImpl<$Res>
     Object? link = null,
     Object? expiresAt = freezed,
   }) {
-    return _then(_$_NewsItem(
+    return _then(_$NewsItemImpl(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -139,16 +140,16 @@ class __$$_NewsItemCopyWithImpl<$Res>
 
 @Entity(realClass: NewsItem)
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
-class _$_NewsItem extends _NewsItem {
-  const _$_NewsItem(
+class _$NewsItemImpl extends _NewsItem {
+  const _$NewsItemImpl(
       {@Id(assignable: true) @JsonKey(fromJson: int.parse) required this.id,
       required this.text,
       required this.link,
       @Property(type: PropertyType.date) this.expiresAt})
       : super._();
 
-  factory _$_NewsItem.fromJson(Map<String, dynamic> json) =>
-      _$$_NewsItemFromJson(json);
+  factory _$NewsItemImpl.fromJson(Map<String, dynamic> json) =>
+      _$$NewsItemImplFromJson(json);
 
   @override
   @Id(assignable: true)
@@ -171,7 +172,7 @@ class _$_NewsItem extends _NewsItem {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_NewsItem &&
+            other is _$NewsItemImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.text, text) || other.text == text) &&
             (identical(other.link, link) || other.link == link) &&
@@ -186,8 +187,8 @@ class _$_NewsItem extends _NewsItem {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_NewsItemCopyWith<_$_NewsItem> get copyWith =>
-      __$$_NewsItemCopyWithImpl<_$_NewsItem>(this, _$identity);
+  _$$NewsItemImplCopyWith<_$NewsItemImpl> get copyWith =>
+      __$$NewsItemImplCopyWithImpl<_$NewsItemImpl>(this, _$identity);
 }
 
 abstract class _NewsItem extends NewsItem {
@@ -198,10 +199,11 @@ abstract class _NewsItem extends NewsItem {
           required final String text,
           required final String link,
           @Property(type: PropertyType.date) final DateTime? expiresAt}) =
-      _$_NewsItem;
+      _$NewsItemImpl;
   const _NewsItem._() : super._();
 
-  factory _NewsItem.fromJson(Map<String, dynamic> json) = _$_NewsItem.fromJson;
+  factory _NewsItem.fromJson(Map<String, dynamic> json) =
+      _$NewsItemImpl.fromJson;
 
   @override
   @Id(assignable: true)
@@ -216,6 +218,6 @@ abstract class _NewsItem extends NewsItem {
   DateTime? get expiresAt;
   @override
   @JsonKey(ignore: true)
-  _$$_NewsItemCopyWith<_$_NewsItem> get copyWith =>
+  _$$NewsItemImplCopyWith<_$NewsItemImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

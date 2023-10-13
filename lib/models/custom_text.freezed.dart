@@ -82,11 +82,11 @@ class _$CustomTextCopyWithImpl<$Res, $Val extends CustomText>
 }
 
 /// @nodoc
-abstract class _$$_CustomTextCopyWith<$Res>
+abstract class _$$CustomTextImplCopyWith<$Res>
     implements $CustomTextCopyWith<$Res> {
-  factory _$$_CustomTextCopyWith(
-          _$_CustomText value, $Res Function(_$_CustomText) then) =
-      __$$_CustomTextCopyWithImpl<$Res>;
+  factory _$$CustomTextImplCopyWith(
+          _$CustomTextImpl value, $Res Function(_$CustomTextImpl) then) =
+      __$$CustomTextImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -97,11 +97,11 @@ abstract class _$$_CustomTextCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_CustomTextCopyWithImpl<$Res>
-    extends _$CustomTextCopyWithImpl<$Res, _$_CustomText>
-    implements _$$_CustomTextCopyWith<$Res> {
-  __$$_CustomTextCopyWithImpl(
-      _$_CustomText _value, $Res Function(_$_CustomText) _then)
+class __$$CustomTextImplCopyWithImpl<$Res>
+    extends _$CustomTextCopyWithImpl<$Res, _$CustomTextImpl>
+    implements _$$CustomTextImplCopyWith<$Res> {
+  __$$CustomTextImplCopyWithImpl(
+      _$CustomTextImpl _value, $Res Function(_$CustomTextImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -112,7 +112,7 @@ class __$$_CustomTextCopyWithImpl<$Res>
     Object? content = null,
     Object? playlistRecords = null,
   }) {
-    return _then(_$_CustomText(
+    return _then(_$CustomTextImpl(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -136,8 +136,8 @@ class __$$_CustomTextCopyWithImpl<$Res>
 /// @nodoc
 
 @Entity(realClass: CustomText)
-class _$_CustomText implements _CustomText {
-  const _$_CustomText(
+class _$CustomTextImpl implements _CustomText {
+  const _$CustomTextImpl(
       {@Id(assignable: true) required this.id,
       required this.name,
       required this.content,
@@ -163,7 +163,7 @@ class _$_CustomText implements _CustomText {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_CustomText &&
+            other is _$CustomTextImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.content, content) || other.content == content) &&
@@ -178,8 +178,8 @@ class _$_CustomText implements _CustomText {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_CustomTextCopyWith<_$_CustomText> get copyWith =>
-      __$$_CustomTextCopyWithImpl<_$_CustomText>(this, _$identity);
+  _$$CustomTextImplCopyWith<_$CustomTextImpl> get copyWith =>
+      __$$CustomTextImplCopyWithImpl<_$CustomTextImpl>(this, _$identity);
 }
 
 abstract class _CustomText implements CustomText {
@@ -188,7 +188,7 @@ abstract class _CustomText implements CustomText {
           required final String name,
           required final String content,
           @Backlink() required final ToMany<PlaylistRecord> playlistRecords}) =
-      _$_CustomText;
+      _$CustomTextImpl;
 
   @override
   @Id(assignable: true)
@@ -202,6 +202,6 @@ abstract class _CustomText implements CustomText {
   ToMany<PlaylistRecord> get playlistRecords;
   @override
   @JsonKey(ignore: true)
-  _$$_CustomTextCopyWith<_$_CustomText> get copyWith =>
+  _$$CustomTextImplCopyWith<_$CustomTextImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

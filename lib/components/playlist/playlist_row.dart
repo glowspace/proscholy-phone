@@ -22,7 +22,7 @@ class PlaylistRow extends ConsumerWidget {
 
     final leadingIcon = Padding(
       padding: EdgeInsets.fromLTRB(
-        context.isHome ? 0.5 * kDefaultPadding : 1.5 * kDefaultPadding,
+        context.isHome ? kDefaultPadding / 2 : 1.5 * kDefaultPadding,
         kDefaultPadding / 2,
         context.isHome ? 0 : kDefaultPadding,
         kDefaultPadding / 2,

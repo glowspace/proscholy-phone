@@ -30,7 +30,15 @@ class SettingsScreen extends ConsumerWidget {
               _buildAppSettings(context, ref),
               _buildSongSettings(context, ref),
               Highlightable(
+                onTap: ref.read(settingsProvider.notifier).reset,
+                padding: const EdgeInsets.all(kDefaultPadding / 2),
+                textStyle: theme.textTheme.bodySmall,
+                child: const Text('Resetovat nastavení'),
+              ),
+              const SizedBox(height: kDefaultPadding),
+              Highlightable(
                 onTap: () => context.push('/about'),
+                padding: const EdgeInsets.all(kDefaultPadding / 2),
                 textStyle: textTheme.bodySmall,
                 child: const Text('O projektu'),
               ),
@@ -71,6 +79,7 @@ class SettingsScreen extends ConsumerWidget {
                   context,
                   ref.watch(settingsProvider.select((settings) => Color(settings.seedColor))),
                   pickersEnabled: {ColorPickerType.primary: true, ColorPickerType.accent: false},
+                  enableShadesSelection: false,
                 ).then((color) => ref.read(settingsProvider.notifier).changeSeedColor(color.value)),
                 child: Ink(
                   width: 24,
@@ -93,6 +102,8 @@ class SettingsScreen extends ConsumerWidget {
     final textTheme = theme.textTheme;
 
     final showChords = ref.watch(settingsProvider.select((settings) => settings.showChords));
+    final showMusicalNotes = ref.watch(settingsProvider.select((settings) => settings.showMusicalNotes));
+
     final accidentalsStyle = textTheme.bodyMedium?.copyWith(
       fontFamily: 'KaiseiHarunoUmi',
       color: showChords ? null : theme.disabledColor,
@@ -118,6 +129,14 @@ class SettingsScreen extends ConsumerWidget {
           activeColor: theme.colorScheme.primary,
           value: showChords,
           onChanged: (value) => ref.read(settingsProvider.notifier).changeShowChords(value),
+          contentPadding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+        ),
+        const Divider(),
+        SwitchListTile.adaptive(
+          title: Text('Zobrazit noty', style: textTheme.bodyMedium),
+          activeColor: theme.colorScheme.primary,
+          value: showMusicalNotes,
+          onChanged: (value) => ref.read(settingsProvider.notifier).changeShowMusicalNotes(value),
           contentPadding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
         ),
         const Divider(),

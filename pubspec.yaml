@@ -2,7 +2,7 @@ name: zpevnik
 
 publish_to: 'none'
 
-version: 3.1.0+132
+version: 3.1.0+133
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
@@ -102,6 +102,7 @@ flutter:
 
   assets:
     - assets/data.json
+    - assets/icons/
     - assets/images/
     - assets/images/logos/
     - assets/images/songbooks/

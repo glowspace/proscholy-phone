@@ -13,7 +13,7 @@ const _favoritesName = 'Písně s hvězdičkou';
 const _playlistIdOffset = -2000;
 
 @freezed
-class Playlist with _$Playlist implements Identifiable, SongsList {
+class Playlist with _$Playlist implements Identifiable, RecentItem, SongsList {
   const Playlist._();
 
   @Entity(realClass: Playlist)
@@ -34,4 +34,7 @@ class Playlist with _$Playlist implements Identifiable, SongsList {
   Tag get tag => Tag(id: id + _playlistIdOffset, name: name, dbType: TagType.playlist.rawValue);
 
   bool get isFavorites => id == favoritesPlaylistId;
+
+  @override
+  RecentItemType get recentItemType => RecentItemType.playlist;
 }

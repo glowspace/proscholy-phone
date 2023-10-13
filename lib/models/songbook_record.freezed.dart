@@ -87,11 +87,11 @@ class _$SongbookRecordCopyWithImpl<$Res, $Val extends SongbookRecord>
 }
 
 /// @nodoc
-abstract class _$$_SongbookRecordCopyWith<$Res>
+abstract class _$$SongbookRecordImplCopyWith<$Res>
     implements $SongbookRecordCopyWith<$Res> {
-  factory _$$_SongbookRecordCopyWith(
-          _$_SongbookRecord value, $Res Function(_$_SongbookRecord) then) =
-      __$$_SongbookRecordCopyWithImpl<$Res>;
+  factory _$$SongbookRecordImplCopyWith(_$SongbookRecordImpl value,
+          $Res Function(_$SongbookRecordImpl) then) =
+      __$$SongbookRecordImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -102,11 +102,11 @@ abstract class _$$_SongbookRecordCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_SongbookRecordCopyWithImpl<$Res>
-    extends _$SongbookRecordCopyWithImpl<$Res, _$_SongbookRecord>
-    implements _$$_SongbookRecordCopyWith<$Res> {
-  __$$_SongbookRecordCopyWithImpl(
-      _$_SongbookRecord _value, $Res Function(_$_SongbookRecord) _then)
+class __$$SongbookRecordImplCopyWithImpl<$Res>
+    extends _$SongbookRecordCopyWithImpl<$Res, _$SongbookRecordImpl>
+    implements _$$SongbookRecordImplCopyWith<$Res> {
+  __$$SongbookRecordImplCopyWithImpl(
+      _$SongbookRecordImpl _value, $Res Function(_$SongbookRecordImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -117,7 +117,7 @@ class __$$_SongbookRecordCopyWithImpl<$Res>
     Object? songLyric = null,
     Object? songbook = null,
   }) {
-    return _then(_$_SongbookRecord(
+    return _then(_$SongbookRecordImpl(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -142,16 +142,16 @@ class __$$_SongbookRecordCopyWithImpl<$Res>
 
 @Entity(realClass: SongbookRecord)
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
-class _$_SongbookRecord extends _SongbookRecord {
-  const _$_SongbookRecord(
+class _$SongbookRecordImpl extends _SongbookRecord {
+  const _$SongbookRecordImpl(
       {@Id(assignable: true) @JsonKey(fromJson: int.parse) required this.id,
       required this.number,
       @JsonKey(fromJson: _songLyricFromJson) required this.songLyric,
       @JsonKey(fromJson: _songbookFromJson) required this.songbook})
       : super._();
 
-  factory _$_SongbookRecord.fromJson(Map<String, dynamic> json) =>
-      _$$_SongbookRecordFromJson(json);
+  factory _$SongbookRecordImpl.fromJson(Map<String, dynamic> json) =>
+      _$$SongbookRecordImplFromJson(json);
 
   @override
   @Id(assignable: true)
@@ -175,7 +175,7 @@ class _$_SongbookRecord extends _SongbookRecord {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_SongbookRecord &&
+            other is _$SongbookRecordImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.number, number) || other.number == number) &&
             (identical(other.songLyric, songLyric) ||
@@ -191,8 +191,9 @@ class _$_SongbookRecord extends _SongbookRecord {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_SongbookRecordCopyWith<_$_SongbookRecord> get copyWith =>
-      __$$_SongbookRecordCopyWithImpl<_$_SongbookRecord>(this, _$identity);
+  _$$SongbookRecordImplCopyWith<_$SongbookRecordImpl> get copyWith =>
+      __$$SongbookRecordImplCopyWithImpl<_$SongbookRecordImpl>(
+          this, _$identity);
 }
 
 abstract class _SongbookRecord extends SongbookRecord {
@@ -204,11 +205,11 @@ abstract class _SongbookRecord extends SongbookRecord {
       @JsonKey(fromJson: _songLyricFromJson)
       required final ToOne<SongLyric> songLyric,
       @JsonKey(fromJson: _songbookFromJson)
-      required final ToOne<Songbook> songbook}) = _$_SongbookRecord;
+      required final ToOne<Songbook> songbook}) = _$SongbookRecordImpl;
   const _SongbookRecord._() : super._();
 
   factory _SongbookRecord.fromJson(Map<String, dynamic> json) =
-      _$_SongbookRecord.fromJson;
+      _$SongbookRecordImpl.fromJson;
 
   @override
   @Id(assignable: true)
@@ -224,6 +225,6 @@ abstract class _SongbookRecord extends SongbookRecord {
   ToOne<Songbook> get songbook;
   @override
   @JsonKey(ignore: true)
-  _$$_SongbookRecordCopyWith<_$_SongbookRecord> get copyWith =>
+  _$$SongbookRecordImplCopyWith<_$SongbookRecordImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

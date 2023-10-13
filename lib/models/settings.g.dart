@@ -6,8 +6,8 @@ part of 'settings.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_GlobalSettings _$$_GlobalSettingsFromJson(Map<String, dynamic> json) =>
-    _$_GlobalSettings(
+_$GlobalSettingsImpl _$$GlobalSettingsImplFromJson(Map<String, dynamic> json) =>
+    _$GlobalSettingsImpl(
       darkModeEnabled: json['darkModeEnabled'] as bool?,
       seedColor: json['seedColor'] as int,
       fontSizeScale: (json['fontSizeScale'] as num).toDouble(),
@@ -17,7 +17,8 @@ _$_GlobalSettings _$$_GlobalSettingsFromJson(Map<String, dynamic> json) =>
       autoScrollSpeedIndex: json['autoScrollSpeedIndex'] as int,
     );
 
-Map<String, dynamic> _$$_GlobalSettingsToJson(_$_GlobalSettings instance) =>
+Map<String, dynamic> _$$GlobalSettingsImplToJson(
+        _$GlobalSettingsImpl instance) =>
     <String, dynamic>{
       'darkModeEnabled': instance.darkModeEnabled,
       'seedColor': instance.seedColor,

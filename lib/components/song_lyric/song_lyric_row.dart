@@ -33,7 +33,7 @@ class SongLyricRow extends StatelessWidget {
       highlightBackground: true,
       onTap: () => _pushSongLyric(context),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding, vertical: kDefaultPadding / 2),
+        padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding, vertical: 2 * kDefaultPadding / 3),
         child: Row(
           children: [
             Expanded(

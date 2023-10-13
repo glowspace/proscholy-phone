@@ -46,7 +46,6 @@ class AddFilterTag extends StatelessWidget {
 
     showModalBottomSheet(
       context: context,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(kDefaultRadius))),
       builder: (context) => SizedBox(
         height: 2 / 3 * MediaQuery.of(context).size.height,
         child: const FiltersWidget(),

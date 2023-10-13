@@ -105,11 +105,11 @@ class _$GlobalSettingsCopyWithImpl<$Res, $Val extends GlobalSettings>
 }
 
 /// @nodoc
-abstract class _$$_GlobalSettingsCopyWith<$Res>
+abstract class _$$GlobalSettingsImplCopyWith<$Res>
     implements $GlobalSettingsCopyWith<$Res> {
-  factory _$$_GlobalSettingsCopyWith(
-          _$_GlobalSettings value, $Res Function(_$_GlobalSettings) then) =
-      __$$_GlobalSettingsCopyWithImpl<$Res>;
+  factory _$$GlobalSettingsImplCopyWith(_$GlobalSettingsImpl value,
+          $Res Function(_$GlobalSettingsImpl) then) =
+      __$$GlobalSettingsImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -123,11 +123,11 @@ abstract class _$$_GlobalSettingsCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_GlobalSettingsCopyWithImpl<$Res>
-    extends _$GlobalSettingsCopyWithImpl<$Res, _$_GlobalSettings>
-    implements _$$_GlobalSettingsCopyWith<$Res> {
-  __$$_GlobalSettingsCopyWithImpl(
-      _$_GlobalSettings _value, $Res Function(_$_GlobalSettings) _then)
+class __$$GlobalSettingsImplCopyWithImpl<$Res>
+    extends _$GlobalSettingsCopyWithImpl<$Res, _$GlobalSettingsImpl>
+    implements _$$GlobalSettingsImplCopyWith<$Res> {
+  __$$GlobalSettingsImplCopyWithImpl(
+      _$GlobalSettingsImpl _value, $Res Function(_$GlobalSettingsImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -141,7 +141,7 @@ class __$$_GlobalSettingsCopyWithImpl<$Res>
     Object? accidentals = null,
     Object? autoScrollSpeedIndex = null,
   }) {
-    return _then(_$_GlobalSettings(
+    return _then(_$GlobalSettingsImpl(
       darkModeEnabled: freezed == darkModeEnabled
           ? _value.darkModeEnabled
           : darkModeEnabled // ignore: cast_nullable_to_non_nullable
@@ -176,8 +176,8 @@ class __$$_GlobalSettingsCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_GlobalSettings implements _GlobalSettings {
-  const _$_GlobalSettings(
+class _$GlobalSettingsImpl implements _GlobalSettings {
+  const _$GlobalSettingsImpl(
       {this.darkModeEnabled,
       required this.seedColor,
       required this.fontSizeScale,
@@ -186,8 +186,8 @@ class _$_GlobalSettings implements _GlobalSettings {
       required this.accidentals,
       required this.autoScrollSpeedIndex});
 
-  factory _$_GlobalSettings.fromJson(Map<String, dynamic> json) =>
-      _$$_GlobalSettingsFromJson(json);
+  factory _$GlobalSettingsImpl.fromJson(Map<String, dynamic> json) =>
+      _$$GlobalSettingsImplFromJson(json);
 
   @override
   final bool? darkModeEnabled;
@@ -213,7 +213,7 @@ class _$_GlobalSettings implements _GlobalSettings {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_GlobalSettings &&
+            other is _$GlobalSettingsImpl &&
             (identical(other.darkModeEnabled, darkModeEnabled) ||
                 other.darkModeEnabled == darkModeEnabled) &&
             (identical(other.seedColor, seedColor) ||
@@ -245,12 +245,13 @@ class _$_GlobalSettings implements _GlobalSettings {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_GlobalSettingsCopyWith<_$_GlobalSettings> get copyWith =>
-      __$$_GlobalSettingsCopyWithImpl<_$_GlobalSettings>(this, _$identity);
+  _$$GlobalSettingsImplCopyWith<_$GlobalSettingsImpl> get copyWith =>
+      __$$GlobalSettingsImplCopyWithImpl<_$GlobalSettingsImpl>(
+          this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_GlobalSettingsToJson(
+    return _$$GlobalSettingsImplToJson(
       this,
     );
   }
@@ -264,10 +265,10 @@ abstract class _GlobalSettings implements GlobalSettings {
       required final bool showChords,
       required final bool showMusicalNotes,
       required final int accidentals,
-      required final int autoScrollSpeedIndex}) = _$_GlobalSettings;
+      required final int autoScrollSpeedIndex}) = _$GlobalSettingsImpl;
 
   factory _GlobalSettings.fromJson(Map<String, dynamic> json) =
-      _$_GlobalSettings.fromJson;
+      _$GlobalSettingsImpl.fromJson;
 
   @override
   bool? get darkModeEnabled;
@@ -285,7 +286,7 @@ abstract class _GlobalSettings implements GlobalSettings {
   int get autoScrollSpeedIndex;
   @override
   @JsonKey(ignore: true)
-  _$$_GlobalSettingsCopyWith<_$_GlobalSettings> get copyWith =>
+  _$$GlobalSettingsImplCopyWith<_$GlobalSettingsImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -363,11 +364,12 @@ class _$SongLyricSettingsModelCopyWithImpl<$Res,
 }
 
 /// @nodoc
-abstract class _$$_SongLyricSettingsModelCopyWith<$Res>
+abstract class _$$SongLyricSettingsModelImplCopyWith<$Res>
     implements $SongLyricSettingsModelCopyWith<$Res> {
-  factory _$$_SongLyricSettingsModelCopyWith(_$_SongLyricSettingsModel value,
-          $Res Function(_$_SongLyricSettingsModel) then) =
-      __$$_SongLyricSettingsModelCopyWithImpl<$Res>;
+  factory _$$SongLyricSettingsModelImplCopyWith(
+          _$SongLyricSettingsModelImpl value,
+          $Res Function(_$SongLyricSettingsModelImpl) then) =
+      __$$SongLyricSettingsModelImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -379,12 +381,13 @@ abstract class _$$_SongLyricSettingsModelCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_SongLyricSettingsModelCopyWithImpl<$Res>
+class __$$SongLyricSettingsModelImplCopyWithImpl<$Res>
     extends _$SongLyricSettingsModelCopyWithImpl<$Res,
-        _$_SongLyricSettingsModel>
-    implements _$$_SongLyricSettingsModelCopyWith<$Res> {
-  __$$_SongLyricSettingsModelCopyWithImpl(_$_SongLyricSettingsModel _value,
-      $Res Function(_$_SongLyricSettingsModel) _then)
+        _$SongLyricSettingsModelImpl>
+    implements _$$SongLyricSettingsModelImplCopyWith<$Res> {
+  __$$SongLyricSettingsModelImplCopyWithImpl(
+      _$SongLyricSettingsModelImpl _value,
+      $Res Function(_$SongLyricSettingsModelImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -396,7 +399,7 @@ class __$$_SongLyricSettingsModelCopyWithImpl<$Res>
     Object? accidentals = null,
     Object? transposition = null,
   }) {
-    return _then(_$_SongLyricSettingsModel(
+    return _then(_$SongLyricSettingsModelImpl(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -424,8 +427,8 @@ class __$$_SongLyricSettingsModelCopyWithImpl<$Res>
 /// @nodoc
 
 @Entity(realClass: SongLyricSettingsModel)
-class _$_SongLyricSettingsModel implements _SongLyricSettingsModel {
-  const _$_SongLyricSettingsModel(
+class _$SongLyricSettingsModelImpl implements _SongLyricSettingsModel {
+  const _$SongLyricSettingsModelImpl(
       {@Id(assignable: true) required this.id,
       required this.showChords,
       required this.showMusicalNotes,
@@ -453,7 +456,7 @@ class _$_SongLyricSettingsModel implements _SongLyricSettingsModel {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_SongLyricSettingsModel &&
+            other is _$SongLyricSettingsModelImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.showChords, showChords) ||
                 other.showChords == showChords) &&
@@ -472,9 +475,9 @@ class _$_SongLyricSettingsModel implements _SongLyricSettingsModel {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_SongLyricSettingsModelCopyWith<_$_SongLyricSettingsModel> get copyWith =>
-      __$$_SongLyricSettingsModelCopyWithImpl<_$_SongLyricSettingsModel>(
-          this, _$identity);
+  _$$SongLyricSettingsModelImplCopyWith<_$SongLyricSettingsModelImpl>
+      get copyWith => __$$SongLyricSettingsModelImplCopyWithImpl<
+          _$SongLyricSettingsModelImpl>(this, _$identity);
 }
 
 abstract class _SongLyricSettingsModel implements SongLyricSettingsModel {
@@ -483,7 +486,7 @@ abstract class _SongLyricSettingsModel implements SongLyricSettingsModel {
       required final bool showChords,
       required final bool showMusicalNotes,
       required final int accidentals,
-      required final int transposition}) = _$_SongLyricSettingsModel;
+      required final int transposition}) = _$SongLyricSettingsModelImpl;
 
   @override
   @Id(assignable: true)
@@ -498,6 +501,6 @@ abstract class _SongLyricSettingsModel implements SongLyricSettingsModel {
   int get transposition;
   @override
   @JsonKey(ignore: true)
-  _$$_SongLyricSettingsModelCopyWith<_$_SongLyricSettingsModel> get copyWith =>
-      throw _privateConstructorUsedError;
+  _$$SongLyricSettingsModelImplCopyWith<_$SongLyricSettingsModelImpl>
+      get copyWith => throw _privateConstructorUsedError;
 }
