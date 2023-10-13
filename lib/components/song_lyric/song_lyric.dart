@@ -84,6 +84,8 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
   }
 
   Widget _buildLyrics(BuildContext context) {
+    if (!widget.songLyric.hasLyrics) return const Text('Text písně připravujeme.');
+
     final fontSizeScale = ref.watch(settingsProvider.select((settings) => settings.fontSizeScale));
 
     final List<Widget> children = [];

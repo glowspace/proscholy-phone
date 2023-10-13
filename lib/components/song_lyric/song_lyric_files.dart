@@ -23,11 +23,15 @@ class SongLyricFilesWidget extends StatelessWidget {
         for (final file in files)
           Highlightable(
             onTap: () => file.mediaType == MediaType.pdf
-                ? context.popAndPush('/pdf', arguments: file)
-                : context.popAndPush('/jpg', arguments: file),
+                ? context.popAndPush('/song_lyric/pdf', arguments: file)
+                : context.popAndPush('/song_lyric/jpg', arguments: file),
             padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding, vertical: kDefaultPadding / 2),
             child: Row(children: [
-              const FaIcon(FontAwesomeIcons.filePdf),
+              switch (file.mediaType) {
+                MediaType.pdf => const FaIcon(FontAwesomeIcons.solidFilePdf),
+                MediaType.jpg => const FaIcon(FontAwesomeIcons.solidFileLines),
+                _ => throw UnsupportedError('unsupported media type'),
+              },
               const SizedBox(width: kDefaultPadding),
               Expanded(child: Text(file.name)),
             ]),

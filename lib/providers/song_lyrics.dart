@@ -57,13 +57,12 @@ void migrateSongLyricSettingsModel(Store store) {
 
 @Riverpod(keepAlive: true)
 List<SongLyric> songLyrics(SongLyricsRef ref) {
-  final songLyrics = queryStore(
-    ref,
-    condition: SongLyric_.lyrics.notNull().or(SongLyric_.lilypond.notNull()),
-    orderBy: SongLyric_.name,
-  );
+  final songLyrics = queryStore(ref, orderBy: SongLyric_.name);
 
-  return songLyrics;
+  return songLyrics
+      .where(
+          (songLyric) => songLyric.hasLyrics || songLyric.hasLilypond || songLyric.hasFiles || songLyric.hasRecordings)
+      .toList();
 }
 
 @riverpod

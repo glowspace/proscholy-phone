@@ -93,6 +93,9 @@ class SongLyric with _$SongLyric implements Identifiable, RecentItem {
     return externals.any((external) => external.mediaType == MediaType.youtube || external.mediaType == MediaType.mp3);
   }
 
+  bool get hasTags => tags.isNotEmpty;
+  bool get hasSongbooks => songbookRecords.isNotEmpty;
+
   bool get isFavorite => playlistRecords.any((playlistRecord) => playlistRecord.playlist.target!.isFavorites);
 
   String get authorsText {

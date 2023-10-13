@@ -6,7 +6,7 @@ part of 'song_lyrics.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$songLyricsHash() => r'3fd6d38283929d11d0aa3e6da91d224335044034';
+String _$songLyricsHash() => r'75f1eb03410d154cd267379b51056b736017d0d9';
 
 /// See also [songLyrics].
 @ProviderFor(songLyrics)

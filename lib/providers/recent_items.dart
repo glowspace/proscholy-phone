@@ -47,7 +47,10 @@ class RecentItems extends _$RecentItems {
   }
 
   void add(RecentItem recentItem) {
-    final newState = [recentItem, ...state.where((element) => element.id != recentItem.id)];
+    final newState = [
+      recentItem,
+      ...state.where((element) => element.id != recentItem.id || element.recentItemType != recentItem.recentItemType)
+    ];
 
     state = newState.sublist(0, min(3, newState.length));
 
@@ -71,7 +74,7 @@ class RecentSongLyrics extends _$RecentSongLyrics {
   void add(SongLyric songLyric) {
     final newState = [songLyric, ...state.where((element) => element.id != songLyric.id)];
 
-    state = newState.sublist(0, min(4, newState.length));
+    state = newState.sublist(0, min(5, newState.length));
 
     ref
         .read(appDependenciesProvider.select((appDependencies) => appDependencies.sharedPreferences))

@@ -22,7 +22,7 @@ class SongLyricChips extends StatelessWidget {
         children: [
           if (songLyric.hasFiles)
             SongLyricChip(
-              text: 'Noty, materiály',
+              text: 'Noty',
               icon: FontAwesomeIcons.music,
               onTap: () => showModalBottomSheet(
                 context: context,
@@ -31,21 +31,22 @@ class SongLyricChips extends StatelessWidget {
             ),
           if (songLyric.hasTranslations)
             SongLyricChip(
-              text: 'Aranže, překlady',
+              text: 'Překlady',
               icon: Icons.translate,
               onTap: () => showModalBottomSheet(
                 context: context,
                 builder: (context) => TranslationsScreen(songLyric: songLyric),
               ),
             ),
-          SongLyricChip(
-            text: 'Štítky, zpěvníky',
-            icon: FontAwesomeIcons.tags,
-            onTap: () => showModalBottomSheet(
-              context: context,
-              builder: (context) => SongLyricTags(songLyric: songLyric),
+          if (songLyric.hasTags || songLyric.hasSongbooks)
+            SongLyricChip(
+              text: songLyric.hasTags ? (songLyric.hasSongbooks ? 'Štítky, zpěvníky' : 'Štítky') : 'Zpěvníky',
+              icon: FontAwesomeIcons.tags,
+              onTap: () => showModalBottomSheet(
+                context: context,
+                builder: (context) => SongLyricTags(songLyric: songLyric),
+              ),
             ),
-          ),
         ],
       ),
     );

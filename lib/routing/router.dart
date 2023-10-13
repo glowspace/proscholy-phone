@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zpevnik/models/bible_verse.dart';
 import 'package:zpevnik/models/custom_text.dart';
+import 'package:zpevnik/models/external.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/models/songbook.dart';
@@ -8,6 +9,8 @@ import 'package:zpevnik/routing/arguments.dart';
 import 'package:zpevnik/screens/about.dart';
 import 'package:zpevnik/screens/home.dart';
 import 'package:zpevnik/screens/initial.dart';
+import 'package:zpevnik/screens/jpg.dart';
+import 'package:zpevnik/screens/pdf.dart';
 import 'package:zpevnik/screens/playlist.dart';
 import 'package:zpevnik/screens/playlist/bible_verse.dart';
 import 'package:zpevnik/screens/playlist/custom_text.dart';
@@ -73,6 +76,8 @@ final class AppRouter {
           },
           false
         ),
+      '/song_lyric/jpg' => ((_) => JpgScreen(jpg: settings.arguments as External), true),
+      '/song_lyric/pdf' => ((_) => PdfScreen(pdf: settings.arguments as External), true),
       '/song_lyric/present' => ((_) => StartPresentationScreen(songLyric: settings.arguments as SongLyric), true),
       '/updated_song_lyrics' => (
           (_) => UpdatedSongLyricsScreen(songLyrics: settings.arguments as List<SongLyric>),

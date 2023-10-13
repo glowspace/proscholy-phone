@@ -6,7 +6,7 @@ part of 'recent_items.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$recentItemsHash() => r'e9b559e7de7021dceef3f2405bea104f657a4fb7';
+String _$recentItemsHash() => r'ab533716522be1332d7ec26fd6e80ebba272eb30';
 
 /// See also [RecentItems].
 @ProviderFor(RecentItems)
@@ -21,7 +21,7 @@ final recentItemsProvider =
 );
 
 typedef _$RecentItems = AutoDisposeNotifier<List<RecentItem>>;
-String _$recentSongLyricsHash() => r'ed0a9587be23f64fff600366690f14d698c65291';
+String _$recentSongLyricsHash() => r'094675e91f5c7b0d50028abdf65017c6250a1eb8';
 
 /// See also [RecentSongLyrics].
 @ProviderFor(RecentSongLyrics)
