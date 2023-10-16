@@ -6,7 +6,8 @@ import 'package:zpevnik/providers/settings.dart';
 class AutoScrollController extends ScrollController {
   final _scrollFutures = <Future<void>>{};
 
-  bool get canScroll => positions.isEmpty ? true : offset < position.maxScrollExtent;
+  bool get canScroll =>
+      (positions.isEmpty || !position.hasContentDimensions) ? true : offset < position.maxScrollExtent;
   bool get isScrolling => _scrollFutures.isNotEmpty;
 
   void toggle(WidgetRef ref) async {

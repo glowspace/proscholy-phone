@@ -50,7 +50,7 @@ Future<void> loadInitial(WidgetRef ref) async {
 
   // TODO: remove this after some time, that all users have at least 3.1.0 version
   migratePinnedSongbooks(appDependencies.store, appDependencies.sharedPreferences);
-  migrateSongLyricSettingsModel(appDependencies.store);
+  migrateSongLyricSettings(appDependencies.store);
 
   // TODO: remove json file after loading, this is not possible right now
   final json = jsonDecode(await rootBundle.loadString('assets/data.json'));

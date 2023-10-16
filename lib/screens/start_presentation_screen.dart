@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:zpevnik/components/custom/back_button.dart';
+import 'package:zpevnik/components/custom/close_button.dart';
 import 'package:zpevnik/components/highlightable.dart';
-import 'package:zpevnik/components/navigation/scaffold.dart';
 import 'package:zpevnik/components/presentation/settings.dart';
 import 'package:zpevnik/components/song_lyric/utils/parser.dart';
 import 'package:zpevnik/constants.dart';
@@ -11,7 +10,7 @@ import 'package:zpevnik/providers/presentation.dart';
 import 'package:zpevnik/routing/router.dart';
 
 const _noExternalDisplayText =
-    'Není připojen žádný externí displej. Aplikace v současné době nepodporuje žádné způsoby připojení a je proto nutné, abyste se k externímu displeji připojili pomocí jiné aplikace (např. airplay, chromecast). Poté bude promítání povoleno.';
+    'Nebyl detekován žádný externí displej. Bude pouze upraveno zobrazení písní na${unbreakableSpace}tomto zařízení.';
 
 class StartPresentationScreen extends ConsumerStatefulWidget {
   final SongLyric songLyric;
@@ -23,18 +22,24 @@ class StartPresentationScreen extends ConsumerStatefulWidget {
 }
 
 class _StartPresentationScreenState extends ConsumerState<StartPresentationScreen> with WidgetsBindingObserver {
-  bool _canPresent = false;
+  bool _onExternalDisplay = false;
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    ref.read(presentationProvider).canPresent.then((canPresent) => setState(() => _canPresent = canPresent));
+    ref
+        .read(presentationProvider)
+        .onExternalDisplay
+        .then((onExternalDisplay) => setState(() => _onExternalDisplay = onExternalDisplay));
   }
 
   @override
   void initState() {
     super.initState();
 
-    ref.read(presentationProvider).canPresent.then((canPresent) => setState(() => _canPresent = canPresent));
+    ref
+        .read(presentationProvider)
+        .onExternalDisplay
+        .then((onExternalDisplay) => setState(() => _onExternalDisplay = onExternalDisplay));
 
     WidgetsBinding.instance.addObserver(this);
   }
@@ -50,26 +55,24 @@ class _StartPresentationScreenState extends ConsumerState<StartPresentationScree
   Widget build(BuildContext context) {
     final infoColorScheme = ColorScheme.fromSeed(seedColor: blue, brightness: Theme.of(context).brightness);
 
-    return CustomScaffold(
+    return Scaffold(
       appBar: AppBar(
-        leading: const CustomBackButton(),
+        leading: const CustomCloseButton(),
         title: const Text('Prezentovat'),
-        leadingWidth: 24 + 4 * kDefaultPadding,
         actions: [
           Highlightable(
             onTap: () {
               ref.read(presentationProvider).start(SongLyricsParser(widget.songLyric));
               context.pop();
             },
-            // isEnabled: _canPresent,
-            padding: const EdgeInsets.all(kDefaultPadding),
+            padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
             icon: const Icon(Icons.check),
           ),
         ],
       ),
       body: SafeArea(
         child: Column(children: [
-          if (!_canPresent)
+          if (!_onExternalDisplay)
             Container(
               decoration: BoxDecoration(
                 border: Border.all(color: infoColorScheme.primary),
@@ -84,7 +87,7 @@ class _StartPresentationScreenState extends ConsumerState<StartPresentationScree
                 const Expanded(child: Text(_noExternalDisplayText)),
               ]),
             ),
-          const PresentationSettingsWidget(),
+          PresentationSettingsWidget(onExternalDisplay: _onExternalDisplay),
         ]),
       ),
     );

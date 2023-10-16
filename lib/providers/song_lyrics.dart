@@ -8,7 +8,7 @@ import 'package:zpevnik/providers/utils.dart';
 part 'song_lyrics.g.dart';
 
 // TODO: remove this after some time, that all users have at least 3.1.0 version
-void migrateSongLyricSettingsModel(Store store) {
+void migrateSongLyricSettings(Store store) {
   final query = store
       .box<SongLyric>()
       .query(SongLyric_.transposition

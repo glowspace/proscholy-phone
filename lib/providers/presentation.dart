@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -12,12 +13,15 @@ class PresentationProvider extends ChangeNotifier {
   final presentation = Presentation();
 
   SongLyricsParser? _songLyricsParser;
+  StreamController<PresentationData>? _showingDataStreamController;
   Function? _nextAction;
 
   bool _isPresenting = false;
+  bool _isPresentingLocally = false;
   bool _isPaused = false;
 
   bool get isPresenting => _isPresenting;
+  bool get isPresentingLocally => _isPresentingLocally;
   bool get isPaused => _isPaused;
 
   bool _isBeforeStart = false;
@@ -28,24 +32,39 @@ class PresentationProvider extends ChangeNotifier {
   PresentationData _showingData = defaultPresentationData;
   PresentationSettings get settings => _showingData.settings;
 
-  void start(SongLyricsParser songLyricsParser) {
+  PresentationData get showingData => _showingData;
+  Stream<PresentationData> get showingDataStream => _showingDataStreamController!.stream;
+
+  void start(SongLyricsParser songLyricsParser) async {
     _isPresenting = true;
+    _isPresentingLocally = !(await onExternalDisplay);
     _verseOrder = 0;
 
     _songLyricsParser = songLyricsParser;
 
-    presentation.startPresentation();
-    _changeShowingData(_showingData.copyWith(
-      songLyricId: songLyricsParser.songLyric.id,
-      songLyricName: songLyricsParser.songLyric.name,
-      lyrics: songLyricsParser.getVerse(_verseOrder),
-    ));
+    if (_isPresentingLocally) {
+      _showingDataStreamController = StreamController.broadcast(
+          onListen: () => _changeShowingData(_showingData.copyWith(
+                songLyricId: songLyricsParser.songLyric.id,
+                songLyricName: songLyricsParser.songLyric.name,
+                lyrics: songLyricsParser.getVerse(_verseOrder),
+              )));
+    } else {
+      presentation.startPresentation();
+      _changeShowingData(_showingData.copyWith(
+        songLyricId: songLyricsParser.songLyric.id,
+        songLyricName: songLyricsParser.songLyric.name,
+        lyrics: songLyricsParser.getVerse(_verseOrder),
+      ));
+    }
 
     notifyListeners();
   }
 
   void stop() {
     _isPresenting = false;
+
+    _showingDataStreamController?.close();
 
     presentation.stopPresentation();
 
@@ -122,8 +141,13 @@ class PresentationProvider extends ChangeNotifier {
 
   void _changeShowingData(PresentationData data) {
     _showingData = data;
-    presentation.transferData(jsonEncode(data));
+
+    if (_isPresentingLocally) {
+      _showingDataStreamController!.add(_showingData);
+    } else {
+      presentation.transferData(jsonEncode(data));
+    }
   }
 
-  Future<bool> get canPresent => presentation.canPresent();
+  Future<bool> get onExternalDisplay => presentation.canPresent();
 }

@@ -25,7 +25,7 @@ class SongbookScreen extends ConsumerWidget {
         actions: [
           Highlightable(
             onTap: () => _pushSearch(context, ref),
-            padding: const EdgeInsets.all(1.5 * kDefaultPadding),
+            padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
             icon: const Icon(Icons.filter_alt),
           ),
         ],

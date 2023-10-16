@@ -13,6 +13,7 @@ import 'package:zpevnik/components/song_lyric/externals/externals_wrapper.dart';
 import 'package:zpevnik/components/song_lyric/song_lyric.dart';
 import 'package:zpevnik/components/song_lyric/song_lyric_menu_button.dart';
 import 'package:zpevnik/components/song_lyric/utils/active_player_controller.dart';
+import 'package:zpevnik/components/song_lyric/utils/parser.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/auto_scroll.dart';
@@ -49,7 +50,7 @@ class _SongLyricScreenState extends ConsumerState<SongLyricScreen> {
   void initState() {
     super.initState();
 
-    _addRecentSongLyricAfterDelay();
+    _songLyricChanged();
   }
 
   @override
@@ -65,9 +66,6 @@ class _SongLyricScreenState extends ConsumerState<SongLyricScreen> {
     final presentation = ref.watch(presentationProvider);
 
     final fullScreen = ref.watch(songLyricScreenStatusProvider.select((status) => status.fullScreen));
-
-    // TODO: check if it is actually presenting on this device
-    final isPresentingOnThisDevice = false;
 
     final Widget? bottomSheet;
 
@@ -91,7 +89,11 @@ class _SongLyricScreenState extends ConsumerState<SongLyricScreen> {
           Highlightable(
             onTap: () => showModalBottomSheet(
               context: context,
-              builder: (context) => const PresentationSettingsWidget(),
+              builder: (context) => PresentationSettingsWidget(
+                onExternalDisplay: ref.read(
+                  presentationProvider.select((presentation) => !presentation.isPresentingLocally),
+                ),
+              ),
             ),
             icon: const Icon(Icons.tune),
           ),
@@ -119,7 +121,7 @@ class _SongLyricScreenState extends ConsumerState<SongLyricScreen> {
       builder: (_, __) => ExternalsWrapper(
         songLyric: _songLyric,
         child: CustomScaffold(
-          appBar: (fullScreen || isPresentingOnThisDevice)
+          appBar: fullScreen
               ? null
               : AppBar(
                   title: Text('${_songLyric.id}'),
@@ -143,7 +145,7 @@ class _SongLyricScreenState extends ConsumerState<SongLyricScreen> {
                     SongLyricMenuButton(songLyric: _songLyric),
                   ],
                 ),
-          bottomNavigationBar: (fullScreen || isPresentingOnThisDevice)
+          bottomNavigationBar: fullScreen
               ? const SizedBox()
               : SongLyricBottomBar(
                   songLyric: _songLyric,
@@ -161,7 +163,7 @@ class _SongLyricScreenState extends ConsumerState<SongLyricScreen> {
               child: PageView.builder(
                 controller: _pageController,
                 onPageChanged: (_) {
-                  _addRecentSongLyricAfterDelay();
+                  _songLyricChanged();
                   ref.read(activePlayerProvider.notifier).dismiss();
                 },
                 // disable scrolling when there is only one song lyric
@@ -187,8 +189,10 @@ class _SongLyricScreenState extends ConsumerState<SongLyricScreen> {
     ref.read(settingsProvider.notifier).changeFontSizeScale(_fontSizeScaleBeforeScale * details.scale);
   }
 
-  // saves song lyric as recent if it was at least for 2 seconds on screen
-  void _addRecentSongLyricAfterDelay() {
+  void _songLyricChanged() {
+    ref.read(presentationProvider.notifier).changeSongLyric(SongLyricsParser(_songLyric));
+
+    // saves song lyric as recent if it was at least for 2 seconds on screen
     _addRecentSongLyricTimer?.cancel();
     _addRecentSongLyricTimer =
         Timer(const Duration(seconds: 2), () => ref.read(recentSongLyricsProvider.notifier).add(_songLyric));

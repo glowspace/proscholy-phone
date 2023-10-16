@@ -160,7 +160,7 @@ class _PlaylistScaffold extends ConsumerWidget {
         actions: [
           Highlightable(
             onTap: playlist.records.isEmpty ? null : () => _pushSearch(context, ref),
-            padding: EdgeInsets.all((playlist.isFavorites ? 1.5 : 1) * kDefaultPadding),
+            padding: EdgeInsets.symmetric(horizontal: (playlist.isFavorites ? 1.5 : 1) * kDefaultPadding),
             icon: const Icon(Icons.filter_alt),
           ),
           if (!playlist.isFavorites) PlaylistButton(playlist: playlist, isInAppBar: true),
