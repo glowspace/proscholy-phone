@@ -284,41 +284,38 @@ class Playlists extends _$Playlists {
     _playlistsBox.putMany(state);
   }
 
-  void createBibleVerse(
-    Playlist playlist,
-    ({
-      int book,
-      int chapter,
-      int startVerse,
-      int? endVerse,
-      String text,
-    }) bibleVerseRecord,
-  ) {
+  BibleVerse createBibleVerse({
+    required int book,
+    required int chapter,
+    required int startVerse,
+    int? endVerse,
+    required String text,
+  }) {
     final bibleVerse = BibleVerse(
       id: _nextBibleVerseId++,
-      book: bibleVerseRecord.book,
-      chapter: bibleVerseRecord.chapter,
-      startVerse: bibleVerseRecord.startVerse,
-      endVerse: bibleVerseRecord.endVerse,
-      text: bibleVerseRecord.text,
+      book: book,
+      chapter: chapter,
+      startVerse: startVerse,
+      endVerse: endVerse,
+      text: text,
       playlistRecords: ToMany(),
     );
 
     _bibleVerseBox.put(bibleVerse);
 
-    addToPlaylist(playlist, bibleVerse: bibleVerse);
+    return bibleVerse;
   }
 
-  void createCustomText(Playlist playlist, ({String name, String content}) customTextRecord) {
+  CustomText createCustomText({required String name, required String content}) {
     final customText = CustomText(
       id: _nextCustomTextId++,
-      name: customTextRecord.name,
-      content: customTextRecord.content,
+      name: name,
+      content: content,
       playlistRecords: ToMany(),
     );
 
     _customTextBox.put(customText);
 
-    addToPlaylist(playlist, customText: customText);
+    return customText;
   }
 }

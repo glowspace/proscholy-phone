@@ -16,6 +16,7 @@ import 'package:zpevnik/screens/pdf.dart';
 import 'package:zpevnik/screens/playlist.dart';
 import 'package:zpevnik/screens/playlist/bible_verse.dart';
 import 'package:zpevnik/screens/playlist/custom_text.dart';
+import 'package:zpevnik/screens/playlist/select_bible_verse.dart';
 import 'package:zpevnik/screens/playlists.dart';
 import 'package:zpevnik/screens/search.dart';
 import 'package:zpevnik/screens/song_lyric.dart';
@@ -65,7 +66,11 @@ final class AppRouter {
       '/' => ((_) => const HomeScreen(), false),
       '/about' => ((_) => const AboutScreen(), false),
       '/playlist' => ((_) => PlaylistScreen(playlist: settings.arguments as Playlist), false),
-      '/playlist/bible_verse' => ((_) => BibleVerseScreen(bibleVerse: settings.arguments as BibleVerse?), false),
+      '/playlist/bible_verse' => ((_) => BibleVerseScreen(bibleVerse: settings.arguments as BibleVerse), false),
+      '/playlist/bible_verse/select_verse' => (
+          (_) => SelectBibleVerseScreen(bibleVerse: settings.arguments as BibleVerse?),
+          true
+        ),
       '/playlist/custom_text' => ((_) => CustomTextScreen(customText: settings.arguments as CustomText?), false),
       '/playlists' => ((_) => const PlaylistsScreen(), false),
       '/search' => ((_) => const SearchScreen(), true),

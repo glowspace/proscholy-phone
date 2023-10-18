@@ -39,8 +39,6 @@ dependencies:
 
   adaptive_dialog: ^1.9.0-no-macos.2
 
-  flutter_speed_dial: ^7.0.0
-
   sign_in_with_apple: ^5.0.0
 
   device_info_plus: ^9.0.3
@@ -74,6 +72,7 @@ dependencies:
   flutter_quill: ^7.4.11
   flex_color_picker: ^3.3.0
   quill_markdown: ^0.1.0
+  flutter_expandable_fab: ^2.0.0
 
 dev_dependencies:
   build_runner: any

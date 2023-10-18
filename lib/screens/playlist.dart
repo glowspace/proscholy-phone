@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 import 'package:zpevnik/components/custom/back_button.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/navigation/scaffold.dart';
-import 'package:zpevnik/components/playlist/action_button.dart';
 import 'package:zpevnik/components/playlist/playlist_button.dart';
 import 'package:zpevnik/components/playlist/playlist_records_list_view.dart';
 import 'package:zpevnik/components/playlist/selected_playlist_record.dart';
 import 'package:zpevnik/components/split_view.dart';
 import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/models/bible_verse.dart';
+import 'package:zpevnik/models/custom_text.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/playlist_record.dart';
 import 'package:zpevnik/models/song_lyric.dart';
@@ -21,6 +22,7 @@ import 'package:zpevnik/providers/tags.dart';
 import 'package:zpevnik/routing/arguments.dart';
 import 'package:zpevnik/routing/router.dart';
 import 'package:zpevnik/screens/playlist/bible_verse.dart';
+import 'package:zpevnik/screens/playlist/custom_text.dart';
 import 'package:zpevnik/screens/song_lyric.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
@@ -86,8 +88,7 @@ class _PlaylistScaffoldTabletState extends ConsumerState<_PlaylistScaffoldTablet
         } else if (selectedPlaylistRecord.bibleVerse.target != null) {
           detailScreen = BibleVerseScreen(bibleVerse: selectedPlaylistRecord.bibleVerse.target!);
         } else {
-          throw UnimplementedError();
-          // detailScreen = CustomTextScreen(customText: selectedPlaylistRecord.customText.target!);
+          detailScreen = CustomTextScreen(customText: selectedPlaylistRecord.customText.target!);
         }
 
         return SplitView(
@@ -127,28 +128,36 @@ class _PlaylistScaffold extends ConsumerWidget {
         onPressed: () => _addSongLyric(context, ref),
       );
     } else {
-      floatingActionButton = SpeedDial(
-        heroTag: 'playlist',
-        icon: Icons.playlist_add,
-        backgroundColor: theme.colorScheme.surface,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(kDefaultRadius)),
-        overlayOpacity: 0.0, // overlay will be invisible, but will allow closing the dial by tapping anywhere on screen
+      floatingActionButton = ExpandableFab(
+        type: ExpandableFabType.up,
+        distance: 40,
+        openButtonBuilder: DefaultFloatingActionButtonBuilder(child: const Icon(Icons.add)),
+        childrenOffset: const Offset(-6, kDefaultPadding),
         children: [
-          PlaylistActionButton(
-            label: 'vlastní text',
-            icon: Icons.edit_note,
+          Highlightable(
+            child: const Row(children: [
+              Text('vlastní text'),
+              SizedBox(width: kDefaultPadding),
+              Icon(Icons.edit_note),
+            ]),
             onTap: () => _addText(context, ref),
           ),
-          PlaylistActionButton(
-            label: 'biblický úryvek',
-            icon: Icons.book_outlined,
+          Highlightable(
+            child: const Row(children: [
+              Text('biblický úryvek'),
+              SizedBox(width: kDefaultPadding),
+              Icon(Icons.book_outlined),
+            ]),
             onTap: () => _addBibleVerse(context, ref),
           ),
-          PlaylistActionButton(
-            label: 'píseň',
-            icon: Icons.music_note,
+          Highlightable(
+            child: const Row(children: [
+              Text('píseň'),
+              SizedBox(width: kDefaultPadding),
+              Icon(Icons.music_note),
+            ]),
             onTap: () => _addSongLyric(context, ref),
-          ),
+          )
         ],
       );
     }
@@ -181,22 +190,16 @@ class _PlaylistScaffold extends ConsumerWidget {
   }
 
   void _addText(BuildContext context, WidgetRef ref) async {
-    final customTextRecord = await context.push('/playlist/custom_text') as ({String name, String content})?;
+    final customText = await context.push('/playlist/custom_text') as CustomText?;
 
-    if (customTextRecord != null) ref.read(playlistsProvider.notifier).createCustomText(playlist, customTextRecord);
+    if (customText != null) ref.read(playlistsProvider.notifier).addToPlaylist(playlist, customText: customText);
   }
 
   void _addBibleVerse(BuildContext context, WidgetRef ref) async {
-    final bibleVerseRecord = (await context.push('/playlist/bible_verse')) as ({
-      int book,
-      int chapter,
-      int startVerse,
-      int? endVerse,
-      String text
-    })?;
+    final bibleVerse = (await context.push('/playlist/bible_verse/select_verse')) as BibleVerse?;
 
-    if (bibleVerseRecord != null) {
-      ref.read(playlistsProvider.notifier).createBibleVerse(playlist, bibleVerseRecord);
+    if (bibleVerse != null) {
+      ref.read(playlistsProvider.notifier).addToPlaylist(playlist, bibleVerse: bibleVerse);
     }
   }
 
