@@ -6,22 +6,7 @@ part of 'song_lyrics.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$songLyricsHash() => r'75f1eb03410d154cd267379b51056b736017d0d9';
-
-/// See also [songLyrics].
-@ProviderFor(songLyrics)
-final songLyricsProvider = Provider<List<SongLyric>>.internal(
-  songLyrics,
-  name: r'songLyricsProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$songLyricsHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef SongLyricsRef = ProviderRef<List<SongLyric>>;
-String _$songsListSongLyricsHash() =>
-    r'5be5b2d1ea1000c78c94c7133639aa835b0eefae';
+String _$songLyricHash() => r'7c360784dcc1701b139f432fc1c9fc805a0f9404';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -43,6 +28,148 @@ class _SystemHash {
     return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
   }
 }
+
+/// See also [songLyric].
+@ProviderFor(songLyric)
+const songLyricProvider = SongLyricFamily();
+
+/// See also [songLyric].
+class SongLyricFamily extends Family<SongLyric?> {
+  /// See also [songLyric].
+  const SongLyricFamily();
+
+  /// See also [songLyric].
+  SongLyricProvider call(
+    int id,
+  ) {
+    return SongLyricProvider(
+      id,
+    );
+  }
+
+  @override
+  SongLyricProvider getProviderOverride(
+    covariant SongLyricProvider provider,
+  ) {
+    return call(
+      provider.id,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'songLyricProvider';
+}
+
+/// See also [songLyric].
+class SongLyricProvider extends AutoDisposeProvider<SongLyric?> {
+  /// See also [songLyric].
+  SongLyricProvider(
+    int id,
+  ) : this._internal(
+          (ref) => songLyric(
+            ref as SongLyricRef,
+            id,
+          ),
+          from: songLyricProvider,
+          name: r'songLyricProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$songLyricHash,
+          dependencies: SongLyricFamily._dependencies,
+          allTransitiveDependencies: SongLyricFamily._allTransitiveDependencies,
+          id: id,
+        );
+
+  SongLyricProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.id,
+  }) : super.internal();
+
+  final int id;
+
+  @override
+  Override overrideWith(
+    SongLyric? Function(SongLyricRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: SongLyricProvider._internal(
+        (ref) => create(ref as SongLyricRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        id: id,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<SongLyric?> createElement() {
+    return _SongLyricProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is SongLyricProvider && other.id == id;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, id.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin SongLyricRef on AutoDisposeProviderRef<SongLyric?> {
+  /// The parameter `id` of this provider.
+  int get id;
+}
+
+class _SongLyricProviderElement extends AutoDisposeProviderElement<SongLyric?>
+    with SongLyricRef {
+  _SongLyricProviderElement(super.provider);
+
+  @override
+  int get id => (origin as SongLyricProvider).id;
+}
+
+String _$songLyricsHash() => r'75f1eb03410d154cd267379b51056b736017d0d9';
+
+/// See also [songLyrics].
+@ProviderFor(songLyrics)
+final songLyricsProvider = Provider<List<SongLyric>>.internal(
+  songLyrics,
+  name: r'songLyricsProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$songLyricsHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef SongLyricsRef = ProviderRef<List<SongLyric>>;
+String _$songsListSongLyricsHash() =>
+    r'5be5b2d1ea1000c78c94c7133639aa835b0eefae';
 
 /// See also [songsListSongLyrics].
 @ProviderFor(songsListSongLyrics)

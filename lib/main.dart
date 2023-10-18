@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path/path.dart';
@@ -15,6 +16,7 @@ import 'package:zpevnik/routing/navigator_observer.dart';
 import 'package:zpevnik/routing/router.dart';
 import 'package:zpevnik/screens/presentation.dart';
 import 'package:zpevnik/theme.dart';
+import 'package:zpevnik/utils/services/external_actions.dart';
 
 const _title = 'Zpěvník';
 
@@ -29,6 +31,8 @@ Future<void> main() async {
     ftsDatabase: await openDatabase(join(await getDatabasesPath(), 'zpevnik.db')),
     packageInfo: await PackageInfo.fromPlatform(),
   );
+
+  ExternalActionsService.instance.initialize();
 
   return runApp(ProviderScope(
     observers: [MyProviderObserver()],
@@ -56,6 +60,13 @@ class MainWidget extends ConsumerWidget {
     }
 
     return MaterialApp(
+      navigatorKey: ExternalActionsService.instance.navigatorKey,
+      supportedLocales: const [Locale('cs', 'CZ')],
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
       debugShowCheckedModeBanner: false,
       title: _title,
       theme: AppTheme.light(seedColor),

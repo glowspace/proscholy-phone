@@ -18,6 +18,7 @@ import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/home.dart';
 import 'package:zpevnik/components/home/edit_home_sections_sheet.dart';
 import 'package:zpevnik/utils/extensions.dart';
+import 'package:zpevnik/utils/services/external_actions.dart';
 
 const double _minColumnWidth = 400;
 const double _collapsedAppBarHeight = 44;
@@ -31,6 +32,14 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   late final _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    // handle file that was used to open this app when we get first time to home screen
+    ExternalActionsService.instance.handleInitiallyOpenedFile();
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -1,9 +1,7 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:presentation/presentation.dart';
 import 'package:zpevnik/components/song_lyric/presentation.dart';
 import 'package:zpevnik/models/presentation.dart';
+import 'package:zpevnik/utils/services/presentation.dart';
 
 class PresentationScreen extends StatelessWidget {
   const PresentationScreen({super.key});
@@ -13,7 +11,7 @@ class PresentationScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: StreamBuilder(
-        stream: Presentation().getDataStream().map((event) => PresentationData.fromJson(jsonDecode(event))),
+        stream: PresentationService.instance.getDataStream(),
         builder: (_, dataSnaphost) => SongLyricPresentation(
           presentationData: dataSnaphost.data ?? defaultPresentationData,
         ),

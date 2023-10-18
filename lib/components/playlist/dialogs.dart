@@ -19,9 +19,7 @@ void showPlaylistDialog(BuildContext context, WidgetRef ref, {SongLyric? selecte
   );
 
   if (results != null) {
-    final playlist = ref
-        .read(playlistsProvider.notifier)
-        .createPlaylist(results.first, songLyrics: selectedSongLyric == null ? [] : [selectedSongLyric]);
+    final playlist = ref.read(playlistsProvider.notifier).createPlaylist(results.first);
 
     if (context.mounted && selectedSongLyric != null) context.popAndPush('/playlist', arguments: playlist);
   }
@@ -67,37 +65,28 @@ void showDuplicatePlaylistDialog(BuildContext context, WidgetRef ref, Playlist p
   }
 }
 
-void showAcceptSharedPlaylistDialog(
-    BuildContext context, String name, List<int> songLyricsIds, List<int>? transpositions) async {
-  // final dataProvider = context.read<DataProvider>();
-  // final playlists = dataProvider.playlists;
+void showAcceptReceivedPlaylistDialog(BuildContext context, Map<String, dynamic> playlistData) async {
+  final ref = ProviderScope.containerOf(context);
 
-  // final results = await showTextInputDialog(
-  //   context: context,
-  //   title: 'Přidat playlist',
-  //   okLabel: 'Přidat',
-  //   cancelLabel: 'Zrušit',
-  //   textFields: [DialogTextField(hintText: 'Název', initialText: name, validator: _validator(playlists))],
-  // );
+  final results = await showTextInputDialog(
+    context: context,
+    title: 'Přidat playlist',
+    okLabel: 'Přidat',
+    cancelLabel: 'Zrušit',
+    textFields: [
+      DialogTextField(
+        hintText: 'Název',
+        initialText: playlistData['name'],
+        validator: _validator(ref.read(playlistsProvider)),
+      )
+    ],
+  );
 
-  // if (results != null) {
-  //   final playlist = dataProvider.createPlaylist(results[0]);
-  //   int index = 0;
+  if (results != null) {
+    final acceptedPlaylist = ref.read(playlistsProvider.notifier).acceptPlaylist(playlistData, results.first);
 
-  //   for (final songLyricId in songLyricsIds) {
-  //     final songLyric = dataProvider.getSongLyricById(songLyricId);
-
-  //     if (songLyric != null) {
-  //       // TODO: save this with new settings
-  //       // if (transpositions != null) songLyric.transposition = transpositions[index++];
-  //       dataProvider.addToPlaylist(songLyric, playlist);
-  //     }
-  //   }
-
-  //   if (ModalRoute.of(context)?.settings.name != '/playlists') {
-  //     NavigationProvider.of(context).pushNamed('/playlist', arguments: playlist);
-  //   }
-  // }
+    if (context.mounted) context.push('/playlist', arguments: acceptedPlaylist);
+  }
 }
 
 void showRemovePlaylistDialog(BuildContext context, WidgetRef ref, Playlist playlist) async {

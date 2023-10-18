@@ -1,17 +1,14 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:presentation/presentation.dart';
 import 'package:zpevnik/components/song_lyric/utils/parser.dart';
 import 'package:zpevnik/models/presentation.dart';
+import 'package:zpevnik/utils/services/presentation.dart';
 
 final presentationProvider = ChangeNotifierProvider((ref) => PresentationProvider());
 
 class PresentationProvider extends ChangeNotifier {
-  final presentation = Presentation();
-
   SongLyricsParser? _songLyricsParser;
   StreamController<PresentationData>? _showingDataStreamController;
   Function? _nextAction;
@@ -50,7 +47,7 @@ class PresentationProvider extends ChangeNotifier {
                 lyrics: songLyricsParser.getVerse(_verseOrder),
               )));
     } else {
-      presentation.startPresentation();
+      PresentationService.instance.startPresentation();
       _changeShowingData(_showingData.copyWith(
         songLyricId: songLyricsParser.songLyric.id,
         songLyricName: songLyricsParser.songLyric.name,
@@ -66,7 +63,7 @@ class PresentationProvider extends ChangeNotifier {
 
     _showingDataStreamController?.close();
 
-    presentation.stopPresentation();
+    PresentationService.instance.stopPresentation();
 
     notifyListeners();
   }
@@ -145,9 +142,9 @@ class PresentationProvider extends ChangeNotifier {
     if (_isPresentingLocally) {
       _showingDataStreamController!.add(_showingData);
     } else {
-      presentation.transferData(jsonEncode(data));
+      PresentationService.instance.transferData(data);
     }
   }
 
-  Future<bool> get onExternalDisplay => presentation.canPresent();
+  Future<bool> get onExternalDisplay => PresentationService.instance.isExternalScreenConnected();
 }

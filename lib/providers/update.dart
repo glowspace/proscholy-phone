@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/services.dart';
+import 'package:flutter_core_spotlight/flutter_core_spotlight.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -117,6 +118,10 @@ Stream<UpdateStatus> update(UpdateRef ref) async* {
 
   // remove song lyrics that were removed on server
   box.removeMany(existingSongLyricsIds.toList());
+  // on iOS also remove them from spotlight indexing
+  if (Platform.isIOS) {
+    FlutterCoreSpotlight.instance.deleteSearchableItems(existingSongLyricsIds.map((id) => 'song_lyric_$id').toList());
+  }
 
   // update song lyrics
   final songLyrics = await client

@@ -6,7 +6,7 @@ part of 'update.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$updateHash() => r'abccc9bc3907ad8e8ed50531d84ec35fffc2fb90';
+String _$updateHash() => r'513366fe73f2597dd926d20cfc326554f6af5541';
 
 /// See also [update].
 @ProviderFor(update)

@@ -28,8 +28,6 @@ class _BibleVerseScreenState extends State<BibleVerseScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // ExpansionPanel
-
     return Consumer(
       builder: (_, ref, __) => CustomScaffold(
         appBar: AppBar(
@@ -38,7 +36,7 @@ class _BibleVerseScreenState extends State<BibleVerseScreen> {
           actions: [
             Highlightable(
               onTap: () => _editOrPop(context, ref),
-              padding: const EdgeInsets.only(left: kDefaultPadding, right: 2 * kDefaultPadding),
+              padding: const EdgeInsets.symmetric(vertical: 1.5 * kDefaultPadding),
               icon: _isEditing ? const Icon(Icons.check) : const Icon(Icons.edit),
             ),
           ],

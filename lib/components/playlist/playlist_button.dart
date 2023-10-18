@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart' hide PopupMenuEntry, PopupMenuItem, PopupMenuPosition;
@@ -11,6 +12,7 @@ import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/custom/custom_icon_icons.dart';
 import 'package:zpevnik/custom/popup_menu.dart';
 import 'package:zpevnik/models/playlist.dart';
+import 'package:zpevnik/providers/playlists.dart';
 
 enum PlaylistAction {
   rename,
@@ -80,36 +82,14 @@ class PlaylistButton extends ConsumerWidget {
   }
 
   void _sharePlaylist(BuildContext context, WidgetRef ref, Playlist playlist) async {
-    // final songLyricsIds = context
-    //     .read<DataProvider>()
-    //     .getPlaylistsSongLyrics(playlist)
-    //     .map((songLyric) => songLyric.id)
-    //     .toList()
-    //     .join(',');
-
-    // final songLyricsTranspositions = context
-    //     .read<DataProvider>()
-    //     .getPlaylistsSongLyrics(playlist)
-    //     .map((songLyric) => songLyric.settings.target?.transposition ?? 0)
-    //     .toList()
-    //     .join(',');
-
-    // final box = context.findRenderObject() as RenderBox?;
-
     final file = File('${(await getApplicationDocumentsDirectory()).path}/playlist.proscholy');
 
-    file.writeAsString('test');
+    file.writeAsString(jsonEncode(ref.read(playlistsProvider.notifier).playlistToMap(playlist)));
 
     await Share.shareXFiles(
-      [XFile('${(await getApplicationDocumentsDirectory()).path}/playlist.proscholy')],
+      [XFile('${(await getApplicationDocumentsDirectory()).path}/playlist.proscholy', mimeType: 'application/json')],
     );
 
     file.delete();
-
-    // Share.share(
-    //   Uri.encodeFull(
-    //       '$deepLinkUrl/add_playlist?name=${playlist.name}&ids=$songLyricsIds&transpositions=$songLyricsTranspositions'),
-    //   sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
-    // );
   }
 }

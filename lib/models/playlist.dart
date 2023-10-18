@@ -1,5 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:objectbox/objectbox.dart';
+import 'package:zpevnik/models/bible_verse.dart';
+import 'package:zpevnik/models/custom_text.dart';
 import 'package:zpevnik/models/model.dart';
 import 'package:zpevnik/models/playlist_record.dart';
 import 'package:zpevnik/models/tag.dart';

@@ -57,33 +57,18 @@ class Playlists extends _$Playlists {
     return playlists;
   }
 
-  Playlist createPlaylist(String name, {List<SongLyric> songLyrics = const []}) {
-    int nextPlaylistRecordRank = 0;
-
-    final newPlaylistRecords = [
-      for (final songLyric in songLyrics)
-        PlaylistRecord(
-          id: _nextPlaylistRecordId++,
-          rank: nextPlaylistRecordRank++,
-          songLyric: ToOne(target: songLyric),
-          customText: ToOne(),
-          bibleVerse: ToOne(),
-          playlist: ToOne(targetId: _nextPlaylistId),
-        )
-    ];
-
+  Playlist createPlaylist(String name) {
     final newPlaylist = Playlist(
       id: _nextPlaylistId++,
       name: name,
       rank: 0,
-      records: ToMany(items: newPlaylistRecords),
+      records: ToMany(),
     );
 
     // increase rank of all existing playlists and save them
     state = [newPlaylist, for (final playlist in state) playlist.copyWith(rank: playlist.rank + 1)];
 
     _playlistsBox.putMany(state);
-    _playlistRecordsBox.putMany(newPlaylistRecords);
 
     return newPlaylist;
   }
@@ -110,6 +95,83 @@ class Playlists extends _$Playlists {
     _playlistsBox.putMany(state);
 
     return newPlaylist;
+  }
+
+  Playlist acceptPlaylist(Map<String, dynamic> playlistData, String name) {
+    final playlistRecords = [
+      for (final playlistRecordData in playlistData['records'])
+        PlaylistRecord(
+          id: _nextPlaylistRecordId++,
+          rank: playlistRecordData['rank'],
+          songLyric: ToOne(targetId: playlistRecordData['song_lyric']),
+          customText: ToOne(
+            target: playlistRecordData.containsKey('custom_text')
+                ? CustomText(
+                    id: _nextCustomTextId++,
+                    name: playlistRecordData['custom_text']['name'],
+                    content: playlistRecordData['custom_text']['content'],
+                    playlistRecords: ToMany(),
+                  )
+                : null,
+          ),
+          bibleVerse: ToOne(
+            target: playlistRecordData.containsKey('bible_verse')
+                ? BibleVerse(
+                    id: _nextBibleVerseId++,
+                    book: playlistRecordData['bible_verse']['book'],
+                    chapter: playlistRecordData['bible_verse']['chapter'],
+                    startVerse: playlistRecordData['bible_verse']['start_verse'],
+                    endVerse: playlistRecordData['bible_verse']['end_verse'],
+                    text: playlistRecordData['bible_verse']['text'],
+                    playlistRecords: ToMany(),
+                  )
+                : null,
+          ),
+          playlist: ToOne(targetId: _nextPlaylistId),
+        )
+    ];
+
+    final newPlaylist = Playlist(
+      id: _nextPlaylistId++,
+      name: name,
+      rank: 0,
+      records: ToMany(items: playlistRecords),
+    );
+
+    // increase rank of all existing playlists and save them
+    state = [newPlaylist, for (final playlist in state) playlist.copyWith(rank: playlist.rank + 1)];
+
+    _playlistsBox.putMany(state);
+    _playlistRecordsBox.putMany(playlistRecords);
+
+    return newPlaylist;
+  }
+
+  // TODO: move this to some better place, it is here just to correspond to `acceptPlaylist` function above
+  Map<String, dynamic> playlistToMap(Playlist playlist) {
+    return {
+      'name': playlist.name,
+      'records': [
+        for (final playlistRecord in playlist.records)
+          {
+            'rank': playlistRecord.rank,
+            'song_lyric': playlistRecord.songLyric.targetId,
+            if (playlistRecord.customText.target != null)
+              'custom_text': {
+                'name': playlistRecord.customText.target!.name,
+                'content': playlistRecord.customText.target!.content,
+              },
+            if (playlistRecord.bibleVerse.target != null)
+              'bible_verse': {
+                'book': playlistRecord.bibleVerse.target!.book,
+                'chapter': playlistRecord.bibleVerse.target!.chapter,
+                'start_verse': playlistRecord.bibleVerse.target!.startVerse,
+                'end_verse': playlistRecord.bibleVerse.target!.endVerse,
+                'text': playlistRecord.bibleVerse.target!.text,
+              }
+          }
+      ]
+    };
   }
 
   void renamePlaylist(Playlist playlistToRename, String name) {

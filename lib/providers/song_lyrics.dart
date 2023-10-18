@@ -3,6 +3,7 @@ import 'package:zpevnik/models/model.dart';
 import 'package:zpevnik/models/objectbox.g.dart';
 import 'package:zpevnik/models/settings.dart';
 import 'package:zpevnik/models/song_lyric.dart';
+import 'package:zpevnik/providers/app_dependencies.dart';
 import 'package:zpevnik/providers/utils.dart';
 
 part 'song_lyrics.g.dart';
@@ -53,6 +54,11 @@ void migrateSongLyricSettings(Store store) {
 
   store.box<SongLyric>().putMany(songLyricsWithSettings);
   store.box<SongLyricSettingsModel>().putMany(songLyricsSettings);
+}
+
+@riverpod
+SongLyric? songLyric(SongLyricRef ref, int id) {
+  return ref.read(appDependenciesProvider.select((appDependencies) => appDependencies.store)).box<SongLyric>().get(id);
 }
 
 @Riverpod(keepAlive: true)
