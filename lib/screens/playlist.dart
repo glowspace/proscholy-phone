@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:zpevnik/components/custom/back_button.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/navigation/scaffold.dart';
@@ -128,36 +127,18 @@ class _PlaylistScaffold extends ConsumerWidget {
         onPressed: () => _addSongLyric(context, ref),
       );
     } else {
-      floatingActionButton = ExpandableFab(
-        type: ExpandableFabType.up,
-        distance: 40,
-        openButtonBuilder: DefaultFloatingActionButtonBuilder(child: const Icon(Icons.add)),
-        childrenOffset: const Offset(-6, kDefaultPadding),
+      floatingActionButton = SpeedDial(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(kDefaultRadius)),
+        backgroundColor: theme.colorScheme.surface,
+        overlayColor: Colors.black,
+        overlayOpacity: 0.1,
+        spacing: kDefaultPadding / 2,
+        icon: Icons.add,
+        activeIcon: Icons.close,
         children: [
-          Highlightable(
-            child: const Row(children: [
-              Text('vlastní text'),
-              SizedBox(width: kDefaultPadding),
-              Icon(Icons.edit_note),
-            ]),
-            onTap: () => _addText(context, ref),
-          ),
-          Highlightable(
-            child: const Row(children: [
-              Text('biblický úryvek'),
-              SizedBox(width: kDefaultPadding),
-              Icon(Icons.book_outlined),
-            ]),
-            onTap: () => _addBibleVerse(context, ref),
-          ),
-          Highlightable(
-            child: const Row(children: [
-              Text('píseň'),
-              SizedBox(width: kDefaultPadding),
-              Icon(Icons.music_note),
-            ]),
-            onTap: () => _addSongLyric(context, ref),
-          )
+          SpeedDialChild(label: 'vlastní text', child: const Icon(Icons.edit_note)),
+          SpeedDialChild(label: 'biblický úryvek', child: const Icon(Icons.book_outlined)),
+          SpeedDialChild(label: 'píseň', child: const Icon(Icons.music_note)),
         ],
       );
     }

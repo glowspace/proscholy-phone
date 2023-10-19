@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:zpevnik/components/navigation/bottom_navigation_bar.dart';
 import 'package:zpevnik/components/navigation/navigation_rail.dart';
 import 'package:zpevnik/utils/extensions.dart';
@@ -56,7 +55,6 @@ class CustomScaffold extends StatelessWidget {
       appBar: appBar,
       bottomNavigationBar: bottomNavigationBar ?? const CustomBottomNavigationBar(),
       bottomSheet: bottomSheet,
-      floatingActionButtonLocation: floatingActionButton is ExpandableFab ? ExpandableFab.location : null,
       floatingActionButton: floatingActionButton,
       body: body,
     );
