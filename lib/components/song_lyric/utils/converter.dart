@@ -19,7 +19,7 @@ final _fromFlat = {
 final _fromFlatRE = RegExp(r'([CDEFGAH][bs](?!us)|B)');
 
 String transpose(String chord, int transposition) {
-  return chord.replaceFirstMapped(_plainChordsRE, (match) {
+  return chord.replaceAllMapped(_plainChordsRE, (match) {
     final transposedIndex =
         (_plainChords.indexOf(chord.substring(match.start, match.end)) + transposition) % _plainChords.length;
 
@@ -28,7 +28,7 @@ String transpose(String chord, int transposition) {
 }
 
 String convertAccidentals(String chord, int accidental) {
-  return chord.replaceFirstMapped(accidental == 1 ? _toFlatRE : _fromFlatRE, (match) {
+  return chord.replaceAllMapped(accidental == 1 ? _toFlatRE : _fromFlatRE, (match) {
     return accidental == 1
         ? (_toFlat[chord.substring(match.start, match.end)] ?? '')
         : (_fromFlat[chord.substring(match.start, match.end)] ?? '');
