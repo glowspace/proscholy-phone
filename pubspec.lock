@@ -1077,14 +1077,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.3"
-  quill_markdown:
-    dependency: "direct main"
-    description:
-      name: quill_markdown
-      sha256: "209831b93e3ec7b003d2d783743dd6b7e9700c92d55d69a10347c03a39cf1915"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.0"
   quiver:
     dependency: transitive
     description:

@@ -71,7 +71,6 @@ dependencies:
   path_provider: ^2.0.15
   flutter_quill: ^7.4.11
   flex_color_picker: ^3.3.0
-  quill_markdown: ^0.1.0
   flutter_speed_dial: ^7.0.0
 
 dev_dependencies:

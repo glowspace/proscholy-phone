@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart' hide ListenableBuilder;
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:quill_markdown/quill_markdown.dart';
 import 'package:zpevnik/components/custom/back_button.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/navigation/scaffold.dart';
@@ -60,6 +59,7 @@ class _CustomTextScreenState extends State<CustomTextScreen> {
           ),
         ],
       ),
+      hideNavigationRail: context.isPlaylist,
       body: SafeArea(
         bottom: false,
         child: Column(children: [
@@ -112,19 +112,13 @@ class _CustomTextScreenState extends State<CustomTextScreen> {
   }
 
   String? _serializeDocumentToMarkdown(Document document) {
-    final convertedValue = jsonEncode(document.toDelta().toJson());
-
-    return quillToMarkdown(convertedValue);
+    return jsonEncode(document.toDelta().toJson()).toString();
   }
 
-  Document _deserializeMarkdownToDocument(String markdown) {
-    final delta = markdownToQuill(markdown);
+  Document _deserializeMarkdownToDocument(String serializedDelta) {
+    if (serializedDelta.isEmpty) return Document();
 
-    if (delta == null) return Document();
-
-    final value = jsonDecode(delta);
-
-    if (value.isEmpty) return Document();
+    final value = jsonDecode(serializedDelta);
 
     return Document.fromJson(value);
   }
