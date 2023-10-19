@@ -5,8 +5,8 @@ import 'package:zpevnik/components/selected_row_highlight.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/playlist_record.dart';
 import 'package:zpevnik/routing/arguments.dart';
-import 'package:zpevnik/routing/router.dart';
 import 'package:zpevnik/utils/bible_api_client.dart';
+import 'package:zpevnik/utils/extensions.dart';
 
 class PlaylistRecordRow extends StatelessWidget {
   final PlaylistRecord playlistRecord;

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zpevnik/components/custom/close_button.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/presentation/settings.dart';
@@ -7,26 +6,26 @@ import 'package:zpevnik/components/song_lyric/utils/parser.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/presentation.dart';
-import 'package:zpevnik/routing/router.dart';
+import 'package:zpevnik/utils/extensions.dart';
 
 const _noExternalDisplayText =
     'Nebyl detekován žádný externí displej. Bude pouze upraveno zobrazení písní na${unbreakableSpace}tomto zařízení.';
 
-class StartPresentationScreen extends ConsumerStatefulWidget {
+class StartPresentationScreen extends StatefulWidget {
   final SongLyric songLyric;
 
   const StartPresentationScreen({super.key, required this.songLyric});
 
   @override
-  ConsumerState<StartPresentationScreen> createState() => _StartPresentationScreenState();
+  State<StartPresentationScreen> createState() => _StartPresentationScreenState();
 }
 
-class _StartPresentationScreenState extends ConsumerState<StartPresentationScreen> with WidgetsBindingObserver {
+class _StartPresentationScreenState extends State<StartPresentationScreen> with WidgetsBindingObserver {
   bool _onExternalDisplay = false;
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    ref
+    context.providers
         .read(presentationProvider)
         .onExternalDisplay
         .then((onExternalDisplay) => setState(() => _onExternalDisplay = onExternalDisplay));
@@ -36,7 +35,7 @@ class _StartPresentationScreenState extends ConsumerState<StartPresentationScree
   void initState() {
     super.initState();
 
-    ref
+    context.providers
         .read(presentationProvider)
         .onExternalDisplay
         .then((onExternalDisplay) => setState(() => _onExternalDisplay = onExternalDisplay));
@@ -62,7 +61,7 @@ class _StartPresentationScreenState extends ConsumerState<StartPresentationScree
         actions: [
           Highlightable(
             onTap: () {
-              ref.read(presentationProvider).start(SongLyricsParser(widget.songLyric));
+              context.providers.read(presentationProvider).start(SongLyricsParser(widget.songLyric));
               context.pop();
             },
             padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),

@@ -53,7 +53,7 @@ class _NowPlayingSectionState extends State<NowPlayingSection> {
             highlightBackground: true,
             highlightColor: theme.brightness.isLight ? _backgroundHighlightColor : _backgroundColor,
             padding: const EdgeInsets.fromLTRB(2 * kDefaultPadding, kDefaultPadding, kDefaultPadding, kDefaultPadding),
-            onTap: () => _pushSongLyric(context, songLyric!),
+            onTap: () => _pushSongLyric(songLyric!),
             child: Container(
               color: theme.brightness.isLight ? _backgroundColor : _backgroundHighlightColor,
               child: Row(
@@ -88,7 +88,7 @@ class _NowPlayingSectionState extends State<NowPlayingSection> {
     );
   }
 
-  void _pushSongLyric(BuildContext context, SongLyric songLyric) {
+  void _pushSongLyric(SongLyric songLyric) {
     if (widget.pushShouldReplace) {
       Navigator.of(context).pushReplacementNamed('/song_lyric', arguments: songLyric);
     } else {

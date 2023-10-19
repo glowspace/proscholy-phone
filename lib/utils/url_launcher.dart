@@ -1,10 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:zpevnik/utils/extensions.dart';
+import 'dart:io';
 
-void launch(BuildContext context, String url) {
-  final platform = Theme.of(context).platform;
-  final mode = platform.isAndroid ? LaunchMode.externalApplication : LaunchMode.platformDefault;
+import 'package:url_launcher/url_launcher.dart';
+
+void launch(String url) {
+  final mode = Platform.isAndroid ? LaunchMode.externalApplication : LaunchMode.platformDefault;
 
   launchUrl(Uri.parse(url), mode: mode);
 }

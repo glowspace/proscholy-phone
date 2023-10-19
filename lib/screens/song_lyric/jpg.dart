@@ -24,7 +24,7 @@ class JpgScreen extends StatelessWidget {
         imageProvider: CachedNetworkImageProvider(jpg.url ?? ''),
         loadingBuilder: (_, __) => const Center(child: CircularProgressIndicator()),
         errorBuilder: (_, error, __) => Center(
-          child: Text(error is SocketException ? _noInternetMessage : error.toString(), textAlign: TextAlign.center),
+          child: Text(error is SocketException ? _noInternetMessage : '$error', textAlign: TextAlign.center),
         ),
       ),
     );

@@ -1,130 +1,83 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:zpevnik/components/custom/back_button.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/navigation/scaffold.dart';
 import 'package:zpevnik/components/playlist/playlist_button.dart';
 import 'package:zpevnik/components/playlist/playlist_records_list_view.dart';
-import 'package:zpevnik/components/playlist/selected_playlist_record.dart';
+import 'package:zpevnik/components/playlist/selected_playlist.dart';
 import 'package:zpevnik/components/split_view.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/bible_verse.dart';
 import 'package:zpevnik/models/custom_text.dart';
 import 'package:zpevnik/models/playlist.dart';
-import 'package:zpevnik/models/playlist_record.dart';
 import 'package:zpevnik/models/song_lyric.dart';
-import 'package:zpevnik/providers/menu_collapsed.dart';
 import 'package:zpevnik/providers/playlists.dart';
-import 'package:zpevnik/providers/recent_items.dart';
 import 'package:zpevnik/providers/tags.dart';
 import 'package:zpevnik/routing/arguments.dart';
-import 'package:zpevnik/routing/router.dart';
-import 'package:zpevnik/screens/playlist/bible_verse.dart';
-import 'package:zpevnik/screens/playlist/custom_text.dart';
-import 'package:zpevnik/screens/song_lyric.dart';
+import 'package:zpevnik/screens/playlists.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
-class PlaylistScreen extends ConsumerStatefulWidget {
+class PlaylistScreen extends StatelessWidget {
   final Playlist playlist;
 
   const PlaylistScreen({super.key, required this.playlist});
 
   @override
-  ConsumerState<PlaylistScreen> createState() => _PlaylistScreenState();
-}
-
-class _PlaylistScreenState extends ConsumerState<PlaylistScreen> {
-  @override
-  void initState() {
-    super.initState();
-
-    // TODO: find better place to do this, for example some observer
-    Future.delayed(const Duration(milliseconds: 20), () => ref.read(recentItemsProvider.notifier).add(widget.playlist));
-  }
-
-  @override
   Widget build(BuildContext context) {
-    if (MediaQuery.of(context).isTablet && context.isPlaylist) {
-      return _PlaylistScaffoldTablet(playlist: widget.playlist);
-    }
+    if (MediaQuery.of(context).isTablet && context.isPlaylist) return _PlaylistScreenTablet(playlist: playlist);
 
-    return _PlaylistScaffold(playlist: widget.playlist);
+    return _PlaylistScaffold(playlist: playlist);
   }
 }
 
-class _PlaylistScaffoldTablet extends ConsumerStatefulWidget {
+class _PlaylistScreenTablet extends StatefulWidget {
   final Playlist playlist;
 
-  const _PlaylistScaffoldTablet({required this.playlist});
+  const _PlaylistScreenTablet({required this.playlist});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _PlaylistScaffoldTabletState();
+  State<_PlaylistScreenTablet> createState() => _PlaylistScreenTabletState();
 }
 
-class _PlaylistScaffoldTabletState extends ConsumerState<_PlaylistScaffoldTablet> {
-  late ValueNotifier<PlaylistRecord?> _selectedPlaylistRecordNotifier;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _selectedPlaylistRecordNotifier = ValueNotifier(widget.playlist.records.firstOrNull);
-  }
+class _PlaylistScreenTabletState extends State<_PlaylistScreenTablet> {
+  late final _selectedPlaylistNotifier = ValueNotifier(widget.playlist);
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: _selectedPlaylistRecordNotifier,
-      builder: (_, selectedPlaylistRecord, child) {
-        if (ref.watch(menuCollapsedProvider)) return _PlaylistScaffold(playlist: widget.playlist);
-
-        final Widget detailScreen;
-        if (selectedPlaylistRecord == null) {
-          detailScreen = const Placeholder();
-        } else if (selectedPlaylistRecord.songLyric.target != null) {
-          detailScreen = SongLyricScreen(songLyrics: [selectedPlaylistRecord.songLyric.target!]);
-        } else if (selectedPlaylistRecord.bibleVerse.target != null) {
-          detailScreen = BibleVerseScreen(bibleVerse: selectedPlaylistRecord.bibleVerse.target!);
-        } else {
-          detailScreen = CustomTextScreen(customText: selectedPlaylistRecord.customText.target!);
-        }
-
-        return SplitView(
-          childFlex: 3,
-          subChildFlex: 7,
-          subChild: detailScreen,
-          child: child!,
-        );
-      },
-      child: SelectedPlaylistRecord(
-        playlistRecordNotifier: _selectedPlaylistRecordNotifier,
-        child: _PlaylistScaffold(playlist: widget.playlist, showBackButton: false),
+    return SplitView(
+      childFlex: 3,
+      subChildFlex: 7,
+      subChild: ValueListenableBuilder(
+        valueListenable: _selectedPlaylistNotifier,
+        builder: (_, playlist, __) => _PlaylistScaffold(playlist: playlist, hideNavigationRail: true),
+      ),
+      child: SelectedPlaylist(
+        playlistNotifier: _selectedPlaylistNotifier,
+        child: const PlaylistsScreen(),
       ),
     );
   }
 }
 
-class _PlaylistScaffold extends ConsumerWidget {
+class _PlaylistScaffold extends StatelessWidget {
   final Playlist playlist;
-  final bool showBackButton;
+  final bool hideNavigationRail;
 
-  const _PlaylistScaffold({required this.playlist, this.showBackButton = true});
+  const _PlaylistScaffold({required this.playlist, this.hideNavigationRail = false});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     final Widget floatingActionButton;
-
-    // only song lyrics are supported now, as it would not be possible to share other record types
 
     if (playlist.isFavorites) {
       floatingActionButton = FloatingActionButton(
         heroTag: 'playlist',
         backgroundColor: theme.colorScheme.surface,
         child: const Icon(Icons.playlist_add),
-        onPressed: () => _addSongLyric(context, ref),
+        onPressed: () => _addSongLyric(context),
       );
     } else {
       floatingActionButton = SpeedDial(
@@ -136,9 +89,21 @@ class _PlaylistScaffold extends ConsumerWidget {
         icon: Icons.add,
         activeIcon: Icons.close,
         children: [
-          SpeedDialChild(label: 'vlastní text', child: const Icon(Icons.edit_note)),
-          SpeedDialChild(label: 'biblický úryvek', child: const Icon(Icons.book_outlined)),
-          SpeedDialChild(label: 'píseň', child: const Icon(Icons.music_note)),
+          SpeedDialChild(
+            label: 'vlastní text',
+            onTap: () => _addText(context),
+            child: const Icon(Icons.edit_note),
+          ),
+          SpeedDialChild(
+            label: 'biblický úryvek',
+            onTap: () => _addBibleVerse(context),
+            child: const Icon(Icons.book_outlined),
+          ),
+          SpeedDialChild(
+            label: 'píseň',
+            onTap: () => _addSongLyric(context),
+            child: const Icon(Icons.music_note),
+          ),
         ],
       );
     }
@@ -146,12 +111,12 @@ class _PlaylistScaffold extends ConsumerWidget {
     return CustomScaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        leading: showBackButton ? const CustomBackButton() : null,
-        titleSpacing: showBackButton ? null : 2 * kDefaultPadding,
+        leading: context.isPlaylist ? const CustomBackButton() : null,
+        titleSpacing: context.isPlaylist ? null : 2 * kDefaultPadding,
         title: Text(playlist.name),
         actions: [
           Highlightable(
-            onTap: playlist.records.isEmpty ? null : () => _pushSearch(context, ref),
+            onTap: playlist.records.isEmpty ? null : () => _pushSearch(context),
             padding: EdgeInsets.symmetric(horizontal: (playlist.isFavorites ? 1.5 : 1) * kDefaultPadding),
             icon: const Icon(Icons.filter_alt),
           ),
@@ -159,34 +124,38 @@ class _PlaylistScaffold extends ConsumerWidget {
         ],
       ),
       floatingActionButton: floatingActionButton,
-      hideNavigationRail: context.isPlaylists,
-      body: SafeArea(child: PlaylistRecordsListView(playlist: playlist)),
+      hideNavigationRail: hideNavigationRail,
+      body: SafeArea(child: PlaylistRecordsListView(key: Key('${playlist.id}'), playlist: playlist)),
     );
   }
 
-  void _pushSearch(BuildContext context, WidgetRef ref) {
-    ref.read(selectedTagsProvider.notifier).push(initialTag: playlist.tag);
+  void _pushSearch(BuildContext context) {
+    context.providers.read(selectedTagsProvider.notifier).push(initialTag: playlist.tag);
 
     context.push('/search');
   }
 
-  void _addText(BuildContext context, WidgetRef ref) async {
+  void _addText(BuildContext context) async {
     final customText = await context.push('/playlist/custom_text') as CustomText?;
 
-    if (customText != null) ref.read(playlistsProvider.notifier).addToPlaylist(playlist, customText: customText);
-  }
-
-  void _addBibleVerse(BuildContext context, WidgetRef ref) async {
-    final bibleVerse = (await context.push('/playlist/bible_verse/select_verse')) as BibleVerse?;
-
-    if (bibleVerse != null) {
-      ref.read(playlistsProvider.notifier).addToPlaylist(playlist, bibleVerse: bibleVerse);
+    if (context.mounted && customText != null) {
+      context.providers.read(playlistsProvider.notifier).addToPlaylist(playlist, customText: customText);
     }
   }
 
-  void _addSongLyric(BuildContext context, WidgetRef ref) async {
+  void _addBibleVerse(BuildContext context) async {
+    final bibleVerse = (await context.push('/playlist/bible_verse/select_verse')) as BibleVerse?;
+
+    if (context.mounted && bibleVerse != null) {
+      context.providers.read(playlistsProvider.notifier).addToPlaylist(playlist, bibleVerse: bibleVerse);
+    }
+  }
+
+  void _addSongLyric(BuildContext context) async {
     final songLyric = (await context.push('/search', arguments: SearchScreenArguments.returnSongLyric())) as SongLyric?;
 
-    if (songLyric != null) ref.read(playlistsProvider.notifier).addToPlaylist(playlist, songLyric: songLyric);
+    if (context.mounted && songLyric != null) {
+      context.providers.read(playlistsProvider.notifier).addToPlaylist(playlist, songLyric: songLyric);
+    }
   }
 }

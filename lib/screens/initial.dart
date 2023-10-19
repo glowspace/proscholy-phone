@@ -8,7 +8,6 @@ import 'package:zpevnik/components/sign_in_button.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/components/custom/future_builder.dart';
 import 'package:zpevnik/providers/update.dart';
-import 'package:zpevnik/routing/router.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/extensions.dart';
 

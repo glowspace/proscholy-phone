@@ -3,13 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/navigation/utils.dart';
 import 'package:zpevnik/providers/menu_collapsed.dart';
-import 'package:zpevnik/routing/router.dart';
+import 'package:zpevnik/utils/extensions.dart';
 
-class CustomNavigationRail extends ConsumerWidget {
+class CustomNavigationRail extends StatelessWidget {
   const CustomNavigationRail({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     return Hero(
@@ -38,14 +38,18 @@ class CustomNavigationRail extends ConsumerWidget {
               labelType: NavigationRailLabelType.all,
               groupAlignment: context.isHome ? 0 : -0.155,
               selectedIndex: context.isHome ? 0 : (context.isSearching ? 1 : 2),
-              onDestinationSelected: (index) => onDestinationSelected(context, ref, index),
+              onDestinationSelected: (index) => onDestinationSelected(context, index),
               leading: context.isHome
                   ? null
                   : Column(children: [
                       Image.asset('assets/images/logos/logo.png'),
                       Highlightable(
-                        onTap: ref.read(menuCollapsedProvider.notifier).toggle,
-                        icon: Icon(ref.watch(menuCollapsedProvider) ? Icons.menu : Icons.menu_open),
+                        onTap: context.providers.read(menuCollapsedProvider.notifier).toggle,
+                        icon: Consumer(
+                          builder: (_, ref, __) => Icon(
+                            ref.watch(menuCollapsedProvider) ? Icons.menu : Icons.menu_open,
+                          ),
+                        ),
                       ),
                     ]),
               destinations: const [

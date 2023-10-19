@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:zpevnik/components/playlist/playlist_record_row.dart';
 import 'package:zpevnik/constants.dart';
@@ -11,19 +10,20 @@ import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/playlist_record.dart';
 import 'package:zpevnik/providers/app_dependencies.dart';
 import 'package:zpevnik/providers/playlists.dart';
+import 'package:zpevnik/utils/extensions.dart';
 
 const _noPlaylistRecordText = 'V tomto seznamu nemáte žádné písně. Klikněte na tlačítko níže pro přidání nové písně.';
 
-class PlaylistRecordsListView extends ConsumerStatefulWidget {
+class PlaylistRecordsListView extends StatefulWidget {
   final Playlist playlist;
 
   const PlaylistRecordsListView({super.key, required this.playlist});
 
   @override
-  ConsumerState<PlaylistRecordsListView> createState() => _PlaylistRecordsListViewState();
+  State<PlaylistRecordsListView> createState() => _PlaylistRecordsListViewState();
 }
 
-class _PlaylistRecordsListViewState extends ConsumerState<PlaylistRecordsListView> {
+class _PlaylistRecordsListViewState extends State<PlaylistRecordsListView> {
   late StreamSubscription<Query<PlaylistRecord>> _playlistChangesSubscription;
 
   // it is not possible to sort relations yet, so sort it here when displaying
@@ -34,7 +34,7 @@ class _PlaylistRecordsListViewState extends ConsumerState<PlaylistRecordsListVie
     super.initState();
 
     // subscribe to changes, so this widget redraws when removing record from playlist
-    _playlistChangesSubscription = ref
+    _playlistChangesSubscription = context.providers
         .read(appDependenciesProvider.select((appDependencies) => appDependencies.store))
         .box<PlaylistRecord>()
         .query(PlaylistRecord_.playlist.equals(widget.playlist.id))
@@ -69,16 +69,15 @@ class _PlaylistRecordsListViewState extends ConsumerState<PlaylistRecordsListVie
           motion: const DrawerMotion(),
           extentRatio: 0.15,
           children: [
-            Consumer(
-              builder: (_, ref, __) => SlidableAction(
-                onPressed: (_) =>
-                    ref.read(playlistsProvider.notifier).removeFromPlaylist(widget.playlist, _recordsOrdered[index]),
-                backgroundColor: red,
-                foregroundColor: Colors.white,
-                icon: Icons.delete,
-                padding: EdgeInsets.zero,
-              ),
-            )
+            SlidableAction(
+              onPressed: (_) => context.providers
+                  .read(playlistsProvider.notifier)
+                  .removeFromPlaylist(widget.playlist, _recordsOrdered[index]),
+              backgroundColor: red,
+              foregroundColor: Colors.white,
+              icon: Icons.delete,
+              padding: EdgeInsets.zero,
+            ),
           ],
         ),
         child: PlaylistRecordRow(playlistRecord: _recordsOrdered[index]),
@@ -95,7 +94,7 @@ class _PlaylistRecordsListViewState extends ConsumerState<PlaylistRecordsListVie
     widget.playlist.records.setAll(0, _recordsOrdered.mapIndexed((index, record) => record.copyWith(rank: index)));
 
     // `widget.playlist.records.applyToDb` saves sometimes incorrectly new ranks, so save it using `putMany`
-    ref
+    context.providers
         .read(appDependenciesProvider.select((appDependencies) => appDependencies.store))
         .box<PlaylistRecord>()
         .putMany(widget.playlist.records);

@@ -5,10 +5,10 @@ import 'package:zpevnik/components/song_lyric/song_lyrics_section_title.dart';
 import 'package:zpevnik/components/song_lyric/song_lyric_row.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 
-class TranslationsScreen extends StatelessWidget {
+class TranslationsSheet extends StatelessWidget {
   final SongLyric songLyric;
 
-  const TranslationsScreen({super.key, required this.songLyric});
+  const TranslationsSheet({super.key, required this.songLyric});
 
   @override
   Widget build(BuildContext context) {

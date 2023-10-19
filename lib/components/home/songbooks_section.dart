@@ -5,7 +5,7 @@ import 'package:zpevnik/components/section.dart';
 import 'package:zpevnik/components/songbook/songbook_row.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/songbooks.dart';
-import 'package:zpevnik/routing/router.dart';
+import 'package:zpevnik/utils/extensions.dart';
 
 const _maxShowingSongbooks = 3;
 

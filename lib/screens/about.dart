@@ -16,7 +16,7 @@ class AboutScreen extends StatelessWidget {
     final highlightedStyle = textStyle?.copyWith(color: theme.colorScheme.primary);
     final boldStyle = textStyle?.copyWith(fontWeight: FontWeight.bold);
 
-    final linkOpener = TapGestureRecognizer()..onTap = () => launch(context, proscholyUrl);
+    final linkOpener = TapGestureRecognizer()..onTap = () => launch(proscholyUrl);
 
     return Scaffold(
       backgroundColor: theme.colorScheme.background,

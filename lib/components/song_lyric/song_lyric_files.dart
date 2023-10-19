@@ -5,7 +5,7 @@ import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/external.dart';
 import 'package:zpevnik/models/song_lyric.dart';
-import 'package:zpevnik/routing/router.dart';
+import 'package:zpevnik/utils/extensions.dart';
 
 class SongLyricFilesWidget extends StatelessWidget {
   final SongLyric songLyric;

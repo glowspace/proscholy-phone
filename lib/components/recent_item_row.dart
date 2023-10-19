@@ -5,7 +5,7 @@ import 'package:zpevnik/models/model.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/routing/arguments.dart';
-import 'package:zpevnik/routing/router.dart';
+import 'package:zpevnik/utils/extensions.dart';
 
 class RecentItemRow extends StatelessWidget {
   final RecentItem recentItem;

@@ -1,15 +1,14 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart' hide ListenableBuilder;
+import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zpevnik/components/custom/back_button.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/navigation/scaffold.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/custom_text.dart';
 import 'package:zpevnik/providers/playlists.dart';
-import 'package:zpevnik/routing/router.dart';
+import 'package:zpevnik/utils/extensions.dart';
 
 class CustomTextScreen extends StatefulWidget {
   final CustomText? customText;
@@ -51,7 +50,7 @@ class _CustomTextScreenState extends State<CustomTextScreen> {
           ValueListenableBuilder<TextEditingValue>(
             valueListenable: _nameController,
             builder: (_, value, __) => Highlightable(
-              onTap: () => _editOrPop(context, value.text),
+              onTap: () => _editOrPop(value.text),
               padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
               isEnabled: value.text.isNotEmpty,
               icon: Icon(_isEditting ? Icons.check : Icons.edit),
@@ -100,12 +99,12 @@ class _CustomTextScreenState extends State<CustomTextScreen> {
     );
   }
 
-  void _editOrPop(BuildContext context, String name) {
+  void _editOrPop(String name) {
     if (widget.customText != null) {
       // TODO: save this and notify somehow playst about it
       setState(() => _isEditting = !_isEditting);
     } else {
-      context.pop(ProviderScope.containerOf(context)
+      context.pop(context.providers
           .read(playlistsProvider.notifier)
           .createCustomText(name: name, content: _serializeDocumentToMarkdown(_controller.document) ?? ''));
     }

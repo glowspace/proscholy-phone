@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zpevnik/models/bible_verse.dart';
 import 'package:zpevnik/models/custom_text.dart';
 import 'package:zpevnik/models/external.dart';
@@ -11,8 +10,8 @@ import 'package:zpevnik/routing/arguments.dart';
 import 'package:zpevnik/screens/about.dart';
 import 'package:zpevnik/screens/home.dart';
 import 'package:zpevnik/screens/initial.dart';
-import 'package:zpevnik/screens/jpg.dart';
-import 'package:zpevnik/screens/pdf.dart';
+import 'package:zpevnik/screens/song_lyric/jpg.dart';
+import 'package:zpevnik/screens/song_lyric/pdf.dart';
 import 'package:zpevnik/screens/playlist.dart';
 import 'package:zpevnik/screens/playlist/bible_verse.dart';
 import 'package:zpevnik/screens/playlist/custom_text.dart';
@@ -25,37 +24,6 @@ import 'package:zpevnik/screens/songbooks.dart';
 import 'package:zpevnik/screens/start_presentation_screen.dart';
 import 'package:zpevnik/screens/updated_song_lyrics.dart';
 import 'package:zpevnik/screens/settings.dart';
-
-extension AppNavigatorHelper on BuildContext {
-  bool get isHome => ModalRoute.of(this)?.settings.name == '/';
-  bool get isPlaylist => ModalRoute.of(this)?.settings.name == '/playlist';
-  bool get isPlaylists => ModalRoute.of(this)?.settings.name == '/playlists';
-  bool get isSearching => ModalRoute.of(this)?.settings.name == '/search';
-
-  Future<T?> push<T extends Object?>(String routeName, {Object? arguments}) {
-    return Navigator.of(this).pushNamed(routeName, arguments: arguments);
-  }
-
-  void pop<T>([T? result]) {
-    Navigator.of(this).pop(result);
-  }
-
-  void popUntil(String routeName) {
-    Navigator.of(this).popUntil((route) => route.settings.name == routeName);
-  }
-
-  Future<T?> popAndPush<T extends Object?>(String routeName, {Object? arguments}) {
-    return Navigator.of(this).popAndPushNamed(routeName, arguments: arguments);
-  }
-
-  void maybePop<T>([T? result]) {
-    Navigator.of(this).maybePop(result);
-  }
-
-  void replace(String routeName) {
-    Navigator.of(this).pushReplacementNamed(routeName);
-  }
-}
 
 final class AppRouter {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -81,7 +49,7 @@ final class AppRouter {
           (context) {
             if (uri.queryParameters.containsKey('id')) {
               final id = int.parse(uri.queryParameters['id']!);
-              final songLyric = ProviderScope.containerOf(context).read(songLyricProvider(id));
+              final songLyric = context.providers.read(songLyricProvider(id));
 
               if (songLyric != null) return SongLyricScreen(songLyrics: [songLyric]);
             }

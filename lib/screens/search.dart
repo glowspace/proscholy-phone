@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zpevnik/components/filters/filters.dart';
 import 'package:zpevnik/components/filters/filters_row.dart';
 import 'package:zpevnik/components/navigation/scaffold.dart';
@@ -10,14 +9,13 @@ import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/search.dart';
 import 'package:zpevnik/providers/tags.dart';
 import 'package:zpevnik/routing/arguments.dart';
-import 'package:zpevnik/routing/router.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
-class SearchScreen extends ConsumerWidget {
+class SearchScreen extends StatelessWidget {
   const SearchScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
 
     final appBar = AppBar(
@@ -34,8 +32,8 @@ class SearchScreen extends ConsumerWidget {
             SearchField(
               key: const Key('searchfield'),
               isInsideSearchScreen: true,
-              onChanged: ref.read(searchTextProvider.notifier).change,
-              onSubmitted: (_) => _maybePushMatchedSonglyric(context, ref),
+              onChanged: context.providers.read(searchTextProvider.notifier).change,
+              onSubmitted: (_) => _maybePushMatchedSonglyric(context),
             ),
             const Padding(
               padding: EdgeInsets.only(left: kDefaultPadding),
@@ -46,34 +44,31 @@ class SearchScreen extends ConsumerWidget {
       ),
     );
 
+    final Widget child;
+
     if (mediaQuery.isTablet && mediaQuery.isLandscape) {
-      return WillPopScope(
-        onWillPop: () async {
-          // this is called with delay, so the change is not visible while popping from this screen
-          Future.delayed(const Duration(milliseconds: 20), ref.read(selectedTagsProvider.notifier).pop);
-          return true;
-        },
-        child: SplitView(
-          childFlex: 4,
-          subChildFlex: 3,
-          subChild: const Scaffold(body: SafeArea(child: FiltersWidget())),
-          child: CustomScaffold(appBar: appBar, body: const SafeArea(child: SearchSongLyricsListView())),
-        ),
+      child = SplitView(
+        childFlex: 4,
+        subChildFlex: 3,
+        subChild: const Scaffold(body: SafeArea(child: FiltersWidget())),
+        child: CustomScaffold(appBar: appBar, body: const SafeArea(child: SearchSongLyricsListView())),
       );
+    } else {
+      child = CustomScaffold(appBar: appBar, body: const SafeArea(child: SearchSongLyricsListView()));
     }
 
     return WillPopScope(
       onWillPop: () async {
         // this is called with delay, so the change is not visible while popping from this screen
-        Future.delayed(const Duration(milliseconds: 20), ref.read(selectedTagsProvider.notifier).pop);
+        Future.delayed(const Duration(milliseconds: 20), context.providers.read(selectedTagsProvider.notifier).pop);
         return true;
       },
-      child: CustomScaffold(appBar: appBar, body: const SafeArea(child: SearchSongLyricsListView())),
+      child: child,
     );
   }
 
-  void _maybePushMatchedSonglyric(BuildContext context, WidgetRef ref) {
-    final matchedById = ref.read(
+  void _maybePushMatchedSonglyric(BuildContext context) {
+    final matchedById = context.providers.read(
       searchedSongLyricsProvider.select((searchedSongLyricsProvider) => searchedSongLyricsProvider.matchedById),
     );
 

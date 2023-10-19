@@ -15,6 +15,7 @@ class UpdatedSongLyricsScreen extends StatelessWidget {
       appBar: AppBar(leading: const CustomBackButton(), title: const Text('Naposledy aktualizované')),
       body: SafeArea(
         child: SongLyricsListView(
+          // TODO: can also show when has externals, merge this to one property
           songLyrics: songLyrics.where((songLyric) => songLyric.hasLyrics || songLyric.hasLilypond).toList(),
         ),
       ),

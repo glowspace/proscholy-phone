@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songbook_record.dart';
 import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/providers/tags.dart';
-import 'package:zpevnik/routing/router.dart';
+import 'package:zpevnik/utils/extensions.dart';
 
-class SongLyricTag extends ConsumerWidget {
+class SongLyricTag extends StatelessWidget {
   final SongbookRecord? songbookRecord;
   final Tag? tag;
 
   const SongLyricTag({super.key, this.songbookRecord, this.tag}) : assert(songbookRecord != null || tag != null);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     final String text;
@@ -41,12 +40,12 @@ class SongLyricTag extends ConsumerWidget {
           borderRadius: BorderRadius.circular(32),
           highlightColor: theme.colorScheme.primary.withAlpha(0x20),
           onTap: () => songbookRecord != null
-              ? _pushSearch(context, ref, songbookRecord!.songbook.target!.tag)
-              : _pushSearch(context, ref, tag!),
+              ? _pushSearch(context, songbookRecord!.songbook.target!.tag)
+              : _pushSearch(context, tag!),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Container(
+              Padding(
                 padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2)
                     .copyWith(right: songbookRecord == null ? kDefaultPadding : kDefaultPadding / 2),
                 child: Text(text),
@@ -64,8 +63,8 @@ class SongLyricTag extends ConsumerWidget {
     );
   }
 
-  void _pushSearch(BuildContext context, WidgetRef ref, Tag tag) {
-    ref.read(selectedTagsProvider.notifier).push(initialTag: tag);
+  void _pushSearch(BuildContext context, Tag tag) {
+    context.providers.read(selectedTagsProvider.notifier).push(initialTag: tag);
     context.popAndPush('/search', arguments: tag);
   }
 }

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_core_spotlight/flutter_core_spotlight.dart';
 import 'package:zpevnik/components/playlist/dialogs.dart';
-import 'package:zpevnik/routing/router.dart';
+import 'package:zpevnik/utils/extensions.dart';
 
 final spotlightSongLyricRE = RegExp(r'^song_lyric_(\d+)$');
 

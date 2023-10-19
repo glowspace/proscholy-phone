@@ -5,7 +5,7 @@ import 'package:zpevnik/components/song_lyric/song_lyric_files.dart';
 import 'package:zpevnik/components/song_lyric/song_lyric_tags.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
-import 'package:zpevnik/screens/song_lyric/translations.dart';
+import 'package:zpevnik/components/translations.dart';
 
 class SongLyricChips extends StatelessWidget {
   final SongLyric songLyric;
@@ -35,7 +35,7 @@ class SongLyricChips extends StatelessWidget {
               icon: Icons.translate,
               onTap: () => showModalBottomSheet(
                 context: context,
-                builder: (context) => TranslationsScreen(songLyric: songLyric),
+                builder: (context) => TranslationsSheet(songLyric: songLyric),
               ),
             ),
           if (songLyric.hasTags || songLyric.hasSongbooks)

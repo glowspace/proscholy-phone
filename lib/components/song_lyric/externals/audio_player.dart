@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:zpevnik/components/highlightable.dart';
@@ -7,17 +6,18 @@ import 'package:zpevnik/components/song_lyric/externals/seek_bar.dart';
 import 'package:zpevnik/components/song_lyric/utils/active_player_controller.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/external.dart';
+import 'package:zpevnik/utils/extensions.dart';
 
-class AudioPlayerWrapper extends ConsumerStatefulWidget {
+class AudioPlayerWrapper extends StatefulWidget {
   final External external;
 
   const AudioPlayerWrapper({super.key, required this.external});
 
   @override
-  ConsumerState<AudioPlayerWrapper> createState() => _AudioPlayerWrapperState();
+  State<AudioPlayerWrapper> createState() => _AudioPlayerWrapperState();
 }
 
-class _AudioPlayerWrapperState extends ConsumerState<AudioPlayerWrapper> {
+class _AudioPlayerWrapperState extends State<AudioPlayerWrapper> {
   late final _controller = AudioPlayer()..setUrl(widget.external.url!, preload: false);
 
   @override
@@ -27,7 +27,7 @@ class _AudioPlayerWrapperState extends ConsumerState<AudioPlayerWrapper> {
     final activePlayerController = ActivePlayerController(widget.external, audioPlayer: _controller);
 
     _controller.playingStream.listen((isPlaying) {
-      if (isPlaying) ref.read(activePlayerProvider.notifier).changePlayer(activePlayerController);
+      if (isPlaying) context.providers.read(activePlayerProvider.notifier).changePlayer(activePlayerController);
     });
   }
 

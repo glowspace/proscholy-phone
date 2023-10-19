@@ -6,7 +6,6 @@ import 'package:zpevnik/components/section.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/links.dart';
 import 'package:zpevnik/providers/app_dependencies.dart';
-import 'package:zpevnik/routing/router.dart';
 import 'package:zpevnik/utils/extensions.dart';
 import 'package:zpevnik/utils/url_launcher.dart';
 
@@ -47,28 +46,28 @@ class AdditionalSection extends StatelessWidget {
         Highlightable(
           highlightBackground: true,
           padding: const EdgeInsets.all(kDefaultPadding),
-          onTap: () => launch(context, proscholyUrl),
+          onTap: () => launch(proscholyUrl),
           child: const IconItem(icon: Icons.language, text: 'Webová verze', trailingIcon: Icons.open_in_new),
         ),
         const Divider(),
         Highlightable(
           highlightBackground: true,
           padding: const EdgeInsets.all(kDefaultPadding),
-          onTap: () => launch(context, theme.platform.isIos ? feedbackIOSUrl : feedbackAndroidUrl),
+          onTap: () => launch(theme.platform.isIos ? feedbackIOSUrl : feedbackAndroidUrl),
           child: const IconItem(icon: Icons.feedback, text: 'Zpětná vazba', trailingIcon: Icons.open_in_new),
         ),
         const Divider(),
         Highlightable(
           highlightBackground: true,
           padding: const EdgeInsets.all(kDefaultPadding),
-          onTap: () => launch(context, addSongUrl),
+          onTap: () => launch(addSongUrl),
           child: const IconItem(icon: Icons.add, text: 'Přidat píseň', trailingIcon: Icons.open_in_new),
         ),
         const Divider(),
         Highlightable(
           highlightBackground: true,
           padding: const EdgeInsets.all(kDefaultPadding),
-          onTap: () => launch(context, dontaionsUrl),
+          onTap: () => launch(dontaionsUrl),
           child: const IconItem(icon: Icons.favorite, text: 'Darovat', trailingIcon: Icons.open_in_new, iconColor: red),
         ),
       ],

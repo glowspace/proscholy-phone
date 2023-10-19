@@ -3,7 +3,7 @@ import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/logo.dart';
 import 'package:zpevnik/components/search/search_field.dart';
 import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/routing/router.dart';
+import 'package:zpevnik/utils/extensions.dart';
 
 class FlexibleTopSection extends StatelessWidget {
   const FlexibleTopSection({super.key});

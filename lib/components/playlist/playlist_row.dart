@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/playlist/playlist_button.dart';
 import 'package:zpevnik/components/playlist/selected_playlist.dart';
@@ -8,16 +7,16 @@ import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/playlists.dart';
-import 'package:zpevnik/routing/router.dart';
+import 'package:zpevnik/utils/extensions.dart';
 
-class PlaylistRow extends ConsumerWidget {
+class PlaylistRow extends StatelessWidget {
   final Playlist playlist;
   final bool isReorderable;
 
   const PlaylistRow({super.key, required this.playlist, this.isReorderable = false});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     final leadingIcon = Padding(
@@ -33,11 +32,12 @@ class PlaylistRow extends ConsumerWidget {
     );
 
     return DragTarget<SongLyric>(
-      onAccept: (songLyric) => ref.read(playlistsProvider.notifier).addToPlaylist(playlist, songLyric: songLyric),
+      onAccept: (songLyric) =>
+          context.providers.read(playlistsProvider.notifier).addToPlaylist(playlist, songLyric: songLyric),
       builder: (_, acceptList, __) => Highlightable(
         highlightBackground: true,
         padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2, vertical: kDefaultPadding / 3),
-        onTap: () => _pushPlaylist(context, ref),
+        onTap: () => _pushPlaylist(context),
         child: Container(
           color: acceptList.isEmpty ? null : theme.highlightColor,
           child: SelectedRowHighlight(
@@ -62,7 +62,7 @@ class PlaylistRow extends ConsumerWidget {
     );
   }
 
-  void _pushPlaylist(BuildContext context, WidgetRef ref) {
+  void _pushPlaylist(BuildContext context) {
     final selectedPlaylistNotifier = SelectedPlaylist.of(context);
 
     if (selectedPlaylistNotifier != null) {

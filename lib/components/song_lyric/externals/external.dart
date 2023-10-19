@@ -28,7 +28,7 @@ class ExternalWidget extends ConsumerWidget {
             padding: const EdgeInsets.all(kDefaultPadding),
             borderRadius: const BorderRadius.vertical(top: Radius.circular(kDefaultRadius)),
             isEnabled: external.url != null,
-            onTap: () => launch(context, external.url!),
+            onTap: () => launch(external.url!),
             child: Row(
               children: [
                 Icon(switch (external.mediaType) {

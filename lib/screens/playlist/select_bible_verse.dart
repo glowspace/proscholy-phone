@@ -19,17 +19,7 @@ class SelectBibleVerseScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Navigator(
-      onGenerateInitialRoutes: (_, __) => [
-        MaterialPageRoute(builder: (_) => _SelectBibleBookScreen(bibleVerse: bibleVerse)),
-        // if (bibleVerse != null)
-        //   MaterialPageRoute(
-        //     builder: (_) => _SelectBibleVerseScreen(
-        //       book: supportedBibleBooks[bibleVerse!.book],
-        //       chapter: bibleVerse!.chapter,
-        //       bibleVerse: bibleVerse,
-        //     ),
-        //   ),
-      ],
+      onGenerateRoute: (_) => MaterialPageRoute(builder: (_) => _SelectBibleBookScreen(bibleVerse: bibleVerse)),
     );
   }
 }
@@ -153,7 +143,7 @@ class _SelectBibleBookScreenState extends State<_SelectBibleBookScreen> {
   }
 }
 
-class _SelectBibleVerseScreen extends ConsumerStatefulWidget {
+class _SelectBibleVerseScreen extends StatefulWidget {
   final BibleVerse? bibleVerse;
   final BibleBook book;
   final int chapter;
@@ -161,10 +151,10 @@ class _SelectBibleVerseScreen extends ConsumerStatefulWidget {
   const _SelectBibleVerseScreen({required this.book, required this.chapter, this.bibleVerse});
 
   @override
-  ConsumerState<_SelectBibleVerseScreen> createState() => _SelectBibleVerseScreenState();
+  State<_SelectBibleVerseScreen> createState() => _SelectBibleVerseScreenState();
 }
 
-class _SelectBibleVerseScreenState extends ConsumerState<_SelectBibleVerseScreen> {
+class _SelectBibleVerseScreenState extends State<_SelectBibleVerseScreen> {
   int _startVerse = 1;
   int? _endVerse;
 
@@ -196,7 +186,7 @@ class _SelectBibleVerseScreenState extends ConsumerState<_SelectBibleVerseScreen
           title: const Text('Výběr verše'),
           actions: [
             Highlightable(
-              onTap: () => _pop(context, ref),
+              onTap: _pop,
               padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
               icon: const Icon(Icons.check),
             ),
@@ -254,19 +244,21 @@ class _SelectBibleVerseScreenState extends ConsumerState<_SelectBibleVerseScreen
                       2 * kDefaultPadding,
                       MediaQuery.of(context).padding.bottom + kDefaultPadding,
                     ),
-                    child: ref
-                        .watch(bibleVerseProvider(
-                          supportedBibleTranslations[0],
-                          widget.book,
-                          widget.chapter,
-                          _startVerse,
-                          endVerse: _endVerse,
-                        ))
-                        .when(
-                          data: (verses) => Text(verses),
-                          error: (_, __) => const Center(child: Text(_failedToLoadVersesMessage)),
-                          loading: () => const Center(child: CircularProgressIndicator.adaptive()),
-                        ),
+                    child: Consumer(
+                      builder: (_, ref, __) => ref
+                          .watch(bibleVerseProvider(
+                            supportedBibleTranslations[0],
+                            widget.book,
+                            widget.chapter,
+                            _startVerse,
+                            endVerse: _endVerse,
+                          ))
+                          .when(
+                            data: (verses) => Text(verses),
+                            error: (_, __) => const Center(child: Text(_failedToLoadVersesMessage)),
+                            loading: () => const Center(child: CircularProgressIndicator.adaptive()),
+                          ),
+                    ),
                   ),
                 ),
               ),
@@ -277,32 +269,35 @@ class _SelectBibleVerseScreenState extends ConsumerState<_SelectBibleVerseScreen
     );
   }
 
-  void _pop(BuildContext context, WidgetRef ref) async {
-    final text = await ref.read(
-        bibleVerseProvider(supportedBibleTranslations[0], widget.book, widget.chapter, _startVerse, endVerse: _endVerse)
-            .future);
+  void _pop() async {
+    final text = await context.providers.read(bibleVerseProvider(
+      supportedBibleTranslations[0],
+      widget.book,
+      widget.chapter,
+      _startVerse,
+      endVerse: _endVerse,
+    ).future);
 
-    if (widget.bibleVerse == null) {
-      final bibleVerse = ref.read(playlistsProvider.notifier).createBibleVerse(
+    final BibleVerse bibleVerse;
+
+    if (widget.bibleVerse == null && context.mounted) {
+      bibleVerse = context.providers.read(playlistsProvider.notifier).createBibleVerse(
             book: widget.book.number - 1,
             chapter: widget.chapter,
             startVerse: _startVerse,
             endVerse: _endVerse,
             text: text,
           );
-
-      if (context.mounted) Navigator.of(context, rootNavigator: true).pop(bibleVerse);
     } else {
-      if (context.mounted) {
-        // TODO: save bible verse update and notify playlist about it somehow
-        Navigator.of(context, rootNavigator: true).pop(widget.bibleVerse!.copyWith(
-          book: widget.book.number - 1,
-          chapter: widget.chapter,
-          startVerse: _startVerse,
-          endVerse: _endVerse,
-          text: text,
-        ));
-      }
+      bibleVerse = widget.bibleVerse!.copyWith(
+        book: widget.book.number - 1,
+        chapter: widget.chapter,
+        startVerse: _startVerse,
+        endVerse: _endVerse,
+        text: text,
+      );
     }
+
+    if (context.mounted) Navigator.of(context, rootNavigator: true).pop(bibleVerse);
   }
 }

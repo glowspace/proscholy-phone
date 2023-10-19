@@ -7,7 +7,7 @@ import 'package:zpevnik/components/playlist/playlist_row.dart';
 import 'package:zpevnik/components/section.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/playlists.dart';
-import 'package:zpevnik/routing/router.dart';
+import 'package:zpevnik/utils/extensions.dart';
 
 const _maxShowingPlaylists = 3;
 

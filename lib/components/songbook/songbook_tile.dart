@@ -4,7 +4,7 @@ import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/providers/songbooks.dart';
-import 'package:zpevnik/routing/router.dart';
+import 'package:zpevnik/utils/extensions.dart';
 
 const _logosPath = '$imagesPath/songbooks';
 const _existingLogos = [
@@ -61,12 +61,14 @@ class SongbookTile extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(child: Text(songbook.name, maxLines: 2)),
-                Consumer(
-                  builder: (_, ref, __) => Highlightable(
-                    onTap: () => ref.read(pinnedSongbookIdsProvider.notifier).togglePin(songbook),
-                    icon: Icon(ref.watch(pinnedSongbookIdsProvider).contains(songbook.id)
-                        ? Icons.push_pin
-                        : Icons.push_pin_outlined),
+                Highlightable(
+                  onTap: () => context.providers.read(pinnedSongbookIdsProvider.notifier).togglePin(songbook),
+                  icon: Consumer(
+                    builder: (_, ref, __) => Icon(
+                      ref.watch(pinnedSongbookIdsProvider).contains(songbook.id)
+                          ? Icons.push_pin
+                          : Icons.push_pin_outlined,
+                    ),
                   ),
                 )
               ],

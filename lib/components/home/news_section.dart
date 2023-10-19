@@ -47,7 +47,7 @@ class _NewsSectionState extends ConsumerState<NewsSection> {
               itemBuilder: (_, index) => Highlightable(
                 alignment: Alignment.centerLeft,
                 textStyle: textTheme.bodyMedium,
-                onTap: newsItems[index].hasLink ? () => launch(context, newsItems[index].link) : null,
+                onTap: newsItems[index].hasLink ? () => launch(newsItems[index].link) : null,
                 child: Row(children: [
                   Text(newsItems[index].text),
                   if (newsItems[index].hasLink)

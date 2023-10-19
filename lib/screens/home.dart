@@ -72,12 +72,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final sectionsPerColumn = (sections.length / columns).ceil();
     final columnSections = [
       for (int i = 0; i < columns; i++)
-        sections.sublist(i * sectionsPerColumn, min((i + 1) * sectionsPerColumn, sections.length))
+        // make sure we don't get out of range if there are less sections than columns
+        if (i * sectionsPerColumn < sections.length)
+          sections.sublist(i * sectionsPerColumn, min((i + 1) * sectionsPerColumn, sections.length))
+        else
+          <Widget>[]
     ];
 
     columnSections.first = [
-      if (columns > 1) const TopSection(),
-      if (columns > 1) const SearchField(key: Key('searchfield')),
+      // add these only if we show multiple columns, it is part of `FlexibleTopSection` in single column display
+      if (columns > 1) ...[
+        const TopSection(),
+        const SearchField(key: Key('searchfield')),
+      ],
       Text(greetings, style: Theme.of(context).textTheme.titleLarge),
       const UpdateSection(),
       ...columnSections.first

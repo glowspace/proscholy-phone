@@ -22,7 +22,7 @@ import 'package:zpevnik/providers/presentation.dart';
 import 'package:zpevnik/providers/recent_items.dart';
 import 'package:zpevnik/providers/settings.dart';
 import 'package:zpevnik/providers/song_lyric_screen_status.dart';
-import 'package:zpevnik/routing/router.dart';
+import 'package:zpevnik/utils/extensions.dart';
 
 class SongLyricScreen extends ConsumerStatefulWidget {
   final List<SongLyric> songLyrics;

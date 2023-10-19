@@ -6,7 +6,7 @@ import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/playlists.dart';
-import 'package:zpevnik/routing/router.dart';
+import 'package:zpevnik/utils/extensions.dart';
 
 class PlaylistsSheet extends StatelessWidget {
   final SongLyric selectedSongLyric;
@@ -27,7 +27,7 @@ class PlaylistsSheet extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Highlightable(
-                  onTap: () => showPlaylistDialog(context, ref, selectedSongLyric: selectedSongLyric),
+                  onTap: () => showPlaylistDialog(context, selectedSongLyric: selectedSongLyric),
                   padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
                   icon: const Icon(Icons.add),
                   child: const Text('Nový playlist'),
@@ -35,13 +35,11 @@ class PlaylistsSheet extends StatelessWidget {
                 const Divider(height: kDefaultPadding / 2),
                 ...[
                   for (final playlist in ref.watch(playlistsProvider))
-                    Consumer(
-                      builder: (context, ref, __) => Highlightable(
-                        onTap: () => _addToPlaylist(context, ref, playlist),
-                        padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
-                        icon: const Icon(Icons.playlist_play_rounded),
-                        child: Text(playlist.name),
-                      ),
+                    Highlightable(
+                      onTap: () => _addToPlaylist(context, playlist),
+                      padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
+                      icon: const Icon(Icons.playlist_play_rounded),
+                      child: Text(playlist.name),
                     ),
                 ],
                 SizedBox(height: MediaQuery.of(context).padding.bottom),
@@ -53,8 +51,8 @@ class PlaylistsSheet extends StatelessWidget {
     );
   }
 
-  void _addToPlaylist(BuildContext context, WidgetRef ref, Playlist playlist) {
-    ref.read(playlistsProvider.notifier).addToPlaylist(playlist, songLyric: selectedSongLyric);
+  void _addToPlaylist(BuildContext context, Playlist playlist) {
+    context.providers.read(playlistsProvider.notifier).addToPlaylist(playlist, songLyric: selectedSongLyric);
 
     context.popAndPush('/playlist', arguments: playlist);
   }

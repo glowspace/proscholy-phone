@@ -20,9 +20,9 @@ class PdfScreen extends StatelessWidget {
       appBar: AppBar(leading: const CustomCloseButton(), title: Text(pdf.name)),
       body: const PDF().cachedFromUrl(
         pdf.url ?? '',
-        placeholder: (progress) => Center(child: Text('$progress %')),
+        placeholder: (progress) => const Center(child: CircularProgressIndicator()),
         errorWidget: (error) => Center(
-          child: Text(error is SocketException ? _noInternetMessage : error.toString(), textAlign: TextAlign.center),
+          child: Text(error is SocketException ? _noInternetMessage : '$error', textAlign: TextAlign.center),
         ),
       ),
     );

@@ -9,7 +9,6 @@ import 'package:zpevnik/components/section.dart';
 import 'package:zpevnik/components/selector_widget.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/settings.dart';
-import 'package:zpevnik/routing/router.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
 class SettingsScreen extends ConsumerWidget {

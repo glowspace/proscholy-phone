@@ -9,7 +9,7 @@ import 'package:zpevnik/links.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/app_dependencies.dart';
 import 'package:zpevnik/providers/presentation.dart';
-import 'package:zpevnik/routing/router.dart';
+import 'package:zpevnik/utils/extensions.dart';
 import 'package:zpevnik/utils/url_launcher.dart';
 
 enum SongLyricMenuAction {
@@ -19,29 +19,31 @@ enum SongLyricMenuAction {
   report,
 }
 
-class SongLyricMenuButton extends ConsumerWidget {
+class SongLyricMenuButton extends StatelessWidget {
   final SongLyric songLyric;
 
   const SongLyricMenuButton({super.key, required this.songLyric});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return CustomPopupMenuButton(
-      items: _buildPopupMenuItems(context, ref),
-      onSelected: (context, action) => _selectedAction(context, ref, action),
+      items: _buildPopupMenuItems(context),
+      onSelected: (context, action) => _selectedAction(context, action),
       padding: const EdgeInsets.only(left: kDefaultPadding, right: 2 * kDefaultPadding),
     );
   }
 
-  List<PopupMenuEntry<SongLyricMenuAction>> _buildPopupMenuItems(BuildContext context, WidgetRef ref) {
+  List<PopupMenuEntry<SongLyricMenuAction>> _buildPopupMenuItems(BuildContext context) {
     return [
       PopupMenuItem(
         value: SongLyricMenuAction.present,
-        child: IconItem(
-          icon: Icons.cast,
-          text: ref.watch(presentationProvider.select((presentationProvider) => presentationProvider.isPresenting))
-              ? 'Ukončit promítání'
-              : 'Spustit promítání',
+        child: Consumer(
+          builder: (_, ref, __) => IconItem(
+            icon: Icons.cast,
+            text: ref.watch(presentationProvider.select((presentationProvider) => presentationProvider.isPresenting))
+                ? 'Ukončit promítání'
+                : 'Spustit promítání',
+          ),
         ),
       ),
       const PopupMenuItem(
@@ -59,15 +61,16 @@ class SongLyricMenuButton extends ConsumerWidget {
     ];
   }
 
-  void _selectedAction(BuildContext context, WidgetRef ref, SongLyricMenuAction? action) {
+  void _selectedAction(BuildContext context, SongLyricMenuAction? action) {
     if (action == null) return;
 
-    final version = ref.read(appDependenciesProvider.select((appDependencies) => appDependencies.packageInfo.version));
+    final version = context.providers
+        .read(appDependenciesProvider.select((appDependencies) => appDependencies.packageInfo.version));
     final platform = Theme.of(context).platform == TargetPlatform.iOS ? 'iOS' : 'android';
 
     switch (action) {
       case SongLyricMenuAction.present:
-        final presentationNotifier = ref.read(presentationProvider.notifier);
+        final presentationNotifier = context.providers.read(presentationProvider.notifier);
 
         if (presentationNotifier.isPresenting) {
           presentationNotifier.stop();
@@ -81,10 +84,10 @@ class SongLyricMenuButton extends ConsumerWidget {
         Share.share('$songUrl/${songLyric.id}/', sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size);
         break;
       case SongLyricMenuAction.openInBrowser:
-        launch(context, '$songUrl/${songLyric.id}/');
+        launch('$songUrl/${songLyric.id}/');
         break;
       case SongLyricMenuAction.report:
-        launch(context, '$reportSongLyricUrl?customfield_10056=${songLyric.id}+$version+$platform');
+        launch('$reportSongLyricUrl?customfield_10056=${songLyric.id}+$version+$platform');
         break;
     }
   }

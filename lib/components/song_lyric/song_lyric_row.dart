@@ -6,7 +6,7 @@ import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/search.dart';
 import 'package:zpevnik/routing/arguments.dart';
-import 'package:zpevnik/routing/router.dart';
+import 'package:zpevnik/utils/extensions.dart';
 
 const double _iconSize = 16;
 const _disabledAlpha = 0x20;

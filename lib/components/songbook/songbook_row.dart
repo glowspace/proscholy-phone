@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songbook.dart';
-import 'package:zpevnik/routing/router.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
 const _songbookColorBoxSize = 16.0;
@@ -19,7 +18,7 @@ class SongbookRow extends StatelessWidget {
     return Highlightable(
       highlightBackground: true,
       padding: const EdgeInsets.symmetric(vertical: kDefaultPadding, horizontal: 1.25 * kDefaultPadding),
-      onTap: () => _pushSongbook(context),
+      onTap: () => context.push('/songbook', arguments: songbook),
       child: Row(children: [
         Container(
           width: _songbookColorBoxSize,
@@ -34,11 +33,5 @@ class SongbookRow extends StatelessWidget {
         Text(songbook.shortcut, style: textTheme.bodySmall),
       ]),
     );
-  }
-
-  void _pushSongbook(BuildContext context) {
-    FocusScope.of(context).unfocus();
-
-    context.push('/songbook', arguments: songbook);
   }
 }

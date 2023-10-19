@@ -6,7 +6,7 @@ import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/links.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/update.dart';
-import 'package:zpevnik/routing/router.dart';
+import 'package:zpevnik/utils/extensions.dart';
 import 'package:zpevnik/utils/url_launcher.dart';
 
 class UpdateSection extends ConsumerStatefulWidget {
@@ -71,7 +71,7 @@ class _UpdateSectionState extends ConsumerState<UpdateSection> {
                     Highlightable(
                       foregroundColor: red,
                       padding: const EdgeInsets.only(top: 2 / 3 * kDefaultPadding),
-                      onTap: () => launch(context, '$reportUrl?summary=Chyba při aktualizaci písní&description=$error'),
+                      onTap: () => launch('$reportUrl?summary=Chyba při aktualizaci písní&description=$error'),
                       child: const Text('Nahlásit chybu'),
                     ),
                 ],
