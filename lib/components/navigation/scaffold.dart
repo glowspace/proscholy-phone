@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zpevnik/components/navigation/bottom_navigation_bar.dart';
-import 'package:zpevnik/components/navigation/navigation_rail.dart';
+import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
 class CustomScaffold extends StatelessWidget {
@@ -12,6 +12,7 @@ class CustomScaffold extends StatelessWidget {
   final Widget body;
 
   final bool hideNavigationRail;
+  final bool useMaxWidth;
 
   const CustomScaffold({
     super.key,
@@ -21,6 +22,7 @@ class CustomScaffold extends StatelessWidget {
     this.bottomSheet,
     this.floatingActionButton,
     this.hideNavigationRail = false,
+    this.useMaxWidth = true,
     required this.body,
   });
 
@@ -28,35 +30,29 @@ class CustomScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
 
-    if (mediaQuery.isTablet) {
-      final scaffold = Scaffold(
-        backgroundColor: backgroundColor,
-        appBar: appBar,
-        bottomNavigationBar: bottomNavigationBar,
-        floatingActionButton: floatingActionButton,
-        body: body,
-      );
-
-      if (hideNavigationRail) return scaffold;
-
-      return Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        // make the widget display from right to left, so the navigation rail shadow is visible
-        textDirection: TextDirection.rtl,
-        children: [
-          Expanded(child: scaffold),
-          const CustomNavigationRail(),
-        ],
-      );
-    }
-
-    return Scaffold(
-      backgroundColor: backgroundColor,
-      appBar: appBar,
-      bottomNavigationBar: bottomNavigationBar ?? const CustomBottomNavigationBar(),
-      bottomSheet: bottomSheet,
-      floatingActionButton: floatingActionButton,
-      body: body,
+    return LayoutBuilder(
+      builder: (context, constraints) => MediaQuery(
+        data: mediaQuery.copyWith(
+          padding:
+              mediaQuery.padding + EdgeInsets.symmetric(horizontal: _computeAdditionalPadding(context, constraints)),
+        ),
+        child: Scaffold(
+          backgroundColor: backgroundColor,
+          appBar: appBar,
+          bottomNavigationBar: bottomNavigationBar ?? (mediaQuery.isTablet ? null : const CustomBottomNavigationBar()),
+          bottomSheet: bottomSheet,
+          floatingActionButton: floatingActionButton,
+          body: body,
+        ),
+      ),
     );
+  }
+
+  double _computeAdditionalPadding(BuildContext context, BoxConstraints constraints) {
+    final mediaQuery = MediaQuery.of(context);
+
+    return (useMaxWidth && kScaffoldMaxWidth < constraints.maxWidth)
+        ? (constraints.maxWidth - kScaffoldMaxWidth - mediaQuery.padding.horizontal) / 2
+        : 0;
   }
 }

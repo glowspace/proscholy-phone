@@ -47,7 +47,7 @@ class _ExternalsWrapperState extends State<ExternalsWrapper> {
             duration: kDefaultAnimationDuration,
             bottom: ref.watch(songLyricScreenStatusProvider.select((status) => status.showingExternals))
                 ? 0
-                : -MediaQuery.of(context).size.height,
+                : -MediaQuery.sizeOf(context).height,
             child: StatefulBuilder(
               builder: (_, setState) => Transform.translate(
                 offset: Offset(0, _bottomOffset),

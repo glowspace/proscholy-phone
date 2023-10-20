@@ -32,7 +32,7 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final width = MediaQuery.of(context).size.width;
+    final width = MediaQuery.sizeOf(context).width;
 
     if (ref.watch(
         presentationProvider.select((presentation) => presentation.isPresenting && presentation.isPresentingLocally))) {

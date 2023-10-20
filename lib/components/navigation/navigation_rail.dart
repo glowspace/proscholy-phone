@@ -32,42 +32,40 @@ class CustomNavigationRail extends StatelessWidget {
           color: context.isHome ? theme.colorScheme.surface : theme.colorScheme.surface,
           elevation: 1,
           surfaceTintColor: context.isHome ? null : theme.colorScheme.surfaceTint,
-          child: SafeArea(
-            child: NavigationRail(
-              backgroundColor: Colors.transparent,
-              labelType: NavigationRailLabelType.all,
-              groupAlignment: context.isHome ? 0 : -0.155,
-              selectedIndex: context.isHome ? 0 : (context.isSearching ? 1 : 2),
-              onDestinationSelected: (index) => onDestinationSelected(context, index),
-              leading: context.isHome
-                  ? null
-                  : Column(children: [
-                      Image.asset('assets/images/logos/logo.png'),
-                      Highlightable(
-                        onTap: context.providers.read(menuCollapsedProvider.notifier).toggle,
-                        icon: Consumer(
-                          builder: (_, ref, __) => Icon(
-                            ref.watch(menuCollapsedProvider) ? Icons.menu : Icons.menu_open,
-                          ),
+          child: NavigationRail(
+            backgroundColor: Colors.transparent,
+            labelType: NavigationRailLabelType.all,
+            groupAlignment: context.isHome ? 0 : -0.155,
+            selectedIndex: context.isHome ? 0 : (context.isSearching ? 1 : 2),
+            onDestinationSelected: (index) => onDestinationSelected(context, index),
+            leading: context.isHome
+                ? null
+                : Column(children: [
+                    Image.asset('assets/images/logos/logo.png'),
+                    Highlightable(
+                      onTap: context.providers.read(menuCollapsedProvider.notifier).toggle,
+                      icon: Consumer(
+                        builder: (_, ref, __) => Icon(
+                          ref.watch(menuCollapsedProvider) ? Icons.menu : Icons.menu_open,
                         ),
                       ),
-                    ]),
-              destinations: const [
-                NavigationRailDestination(
-                  selectedIcon: Icon(Icons.home),
-                  icon: Icon(Icons.home_outlined),
-                  label: Text('Nástěnka'),
-                ),
-                NavigationRailDestination(
-                  icon: Icon(Icons.search),
-                  label: Text('Hledání'),
-                ),
-                NavigationRailDestination(
-                  icon: Icon(Icons.playlist_play_rounded),
-                  label: Text('Seznamy'),
-                ),
-              ],
-            ),
+                    ),
+                  ]),
+            destinations: const [
+              NavigationRailDestination(
+                selectedIcon: Icon(Icons.home),
+                icon: Icon(Icons.home_outlined),
+                label: Text('Nástěnka'),
+              ),
+              NavigationRailDestination(
+                icon: Icon(Icons.search),
+                label: Text('Hledání'),
+              ),
+              NavigationRailDestination(
+                icon: Icon(Icons.playlist_play_rounded),
+                label: Text('Seznamy'),
+              ),
+            ],
           ),
         ),
       ),

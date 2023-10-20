@@ -1,8 +1,15 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
+import 'package:zpevnik/models/bible_verse.dart';
+import 'package:zpevnik/models/custom_text.dart';
+import 'package:zpevnik/models/playlist.dart';
+import 'package:zpevnik/models/songbook.dart';
+import 'package:zpevnik/providers/recent_items.dart';
+import 'package:zpevnik/routing/arguments.dart';
 
 part 'navigator_observer.g.dart';
 
@@ -26,6 +33,9 @@ class AppNavigatorObserver extends NavigatorObserver {
 
     _changeRouteStack(name, true);
     _handleWakeLock(name);
+
+    // handle recent items with delay, so it is not visible to user during push
+    Future.delayed(const Duration(milliseconds: 100), () => _handleRecentItems(route));
   }
 
   @override
@@ -69,6 +79,51 @@ class AppNavigatorObserver extends NavigatorObserver {
       WakelockPlus.enable();
     } else {
       WakelockPlus.disable();
+    }
+  }
+
+  void _handleRecentItems(Route route) {
+    final context = route.navigator?.context;
+
+    if (context == null) return;
+
+    final recentItemsNotifier = ProviderScope.containerOf(context).read(recentItemsProvider.notifier);
+
+    switch (route.settings.name) {
+      case '/playlist/bible_verse':
+        final bibleVerse = route.settings.arguments as BibleVerse?;
+
+        if (bibleVerse != null) recentItemsNotifier.add(bibleVerse);
+
+        break;
+      case '/playlist/custom_text':
+        final customText = route.settings.arguments as CustomText?;
+
+        if (customText != null) recentItemsNotifier.add(customText);
+
+        break;
+      case '/playlist':
+        final playlist = route.settings.arguments as Playlist?;
+
+        if (playlist != null) recentItemsNotifier.add(playlist);
+
+        break;
+      case '/songbook':
+        final songbook = route.settings.arguments as Songbook?;
+
+        if (songbook != null) recentItemsNotifier.add(songbook);
+
+        break;
+      case '/song_lyric':
+        final arguments = route.settings.arguments as SongLyricScreenArguments?;
+
+        if (arguments != null) {
+          ProviderScope.containerOf(context)
+              .read(recentSongLyricsProvider.notifier)
+              .add(arguments.songLyrics[arguments.initialIndex]);
+        }
+
+        break;
     }
   }
 }

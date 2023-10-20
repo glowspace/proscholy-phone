@@ -62,7 +62,7 @@ class Section extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  if (insideTitle != null)
+                  if (insideTitle != null) ...[
                     Padding(
                       padding: const EdgeInsets.all(kDefaultPadding),
                       child: Row(children: [
@@ -71,6 +71,8 @@ class Section extends StatelessWidget {
                         Text(insideTitle!, style: theme.textTheme.titleSmall),
                       ]),
                     ),
+                    if (children.isNotEmpty) const Divider(),
+                  ],
                   ...children,
                 ],
               ),

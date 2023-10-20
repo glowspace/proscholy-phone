@@ -116,6 +116,7 @@ Stream<UpdateStatus> update(UpdateRef ref) async* {
     existingSongLyricsIds.remove(id);
   }
 
+  // TODO: remove also externals associated with it
   // remove song lyrics that were removed on server
   box.removeMany(existingSongLyricsIds.toList());
   // on iOS also remove them from spotlight indexing

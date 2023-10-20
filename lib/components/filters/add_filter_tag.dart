@@ -47,7 +47,7 @@ class AddFilterTag extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       builder: (context) => SizedBox(
-        height: 2 / 3 * MediaQuery.of(context).size.height,
+        height: 2 / 3 * MediaQuery.sizeOf(context).height,
         child: const FiltersWidget(),
       ),
       routeSettings: const RouteSettings(name: '/filters'),

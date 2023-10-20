@@ -6,7 +6,7 @@ part of 'recent_items.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$recentItemsHash() => r'ab533716522be1332d7ec26fd6e80ebba272eb30';
+String _$recentItemsHash() => r'cd4be6b5f38f9bc70a25928488bb9be163241114';
 
 /// See also [RecentItems].
 @ProviderFor(RecentItems)

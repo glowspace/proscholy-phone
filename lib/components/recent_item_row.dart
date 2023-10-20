@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/models/bible_verse.dart';
+import 'package:zpevnik/models/custom_text.dart';
 import 'package:zpevnik/models/model.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
+import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/routing/arguments.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
@@ -22,7 +25,10 @@ class RecentItemRow extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
           child: Icon(switch (recentItem.recentItemType) {
+            RecentItemType.bibleVerse => Icons.book_outlined,
+            RecentItemType.customText => Icons.edit_note,
             RecentItemType.playlist => Icons.playlist_play_rounded,
+            RecentItemType.songbook => Icons.book,
             RecentItemType.songLyric => Icons.music_note,
           }),
         ),
@@ -38,8 +44,17 @@ class RecentItemRow extends StatelessWidget {
 
   void _push(BuildContext context) {
     switch (recentItem.recentItemType) {
+      case RecentItemType.bibleVerse:
+        context.push('/playlist/bible_verse', arguments: recentItem as BibleVerse);
+        break;
+      case RecentItemType.customText:
+        context.push('/playlist/custom_text', arguments: recentItem as CustomText);
+        break;
       case RecentItemType.playlist:
         context.push('/playlist', arguments: recentItem as Playlist);
+        break;
+      case RecentItemType.songbook:
+        context.push('/songbook', arguments: recentItem as Songbook);
         break;
       case RecentItemType.songLyric:
         context.push('/song_lyric', arguments: SongLyricScreenArguments.songLyric(recentItem as SongLyric));

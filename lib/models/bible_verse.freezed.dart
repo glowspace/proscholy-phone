@@ -23,9 +23,6 @@ mixin _$BibleVerse {
   int get startVerse => throw _privateConstructorUsedError;
   int? get endVerse => throw _privateConstructorUsedError;
   String get text => throw _privateConstructorUsedError;
-  @Backlink()
-  ToMany<PlaylistRecord> get playlistRecords =>
-      throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $BibleVerseCopyWith<BibleVerse> get copyWith =>
@@ -44,8 +41,7 @@ abstract class $BibleVerseCopyWith<$Res> {
       int chapter,
       int startVerse,
       int? endVerse,
-      String text,
-      @Backlink() ToMany<PlaylistRecord> playlistRecords});
+      String text});
 }
 
 /// @nodoc
@@ -67,7 +63,6 @@ class _$BibleVerseCopyWithImpl<$Res, $Val extends BibleVerse>
     Object? startVerse = null,
     Object? endVerse = freezed,
     Object? text = null,
-    Object? playlistRecords = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -94,10 +89,6 @@ class _$BibleVerseCopyWithImpl<$Res, $Val extends BibleVerse>
           ? _value.text
           : text // ignore: cast_nullable_to_non_nullable
               as String,
-      playlistRecords: null == playlistRecords
-          ? _value.playlistRecords
-          : playlistRecords // ignore: cast_nullable_to_non_nullable
-              as ToMany<PlaylistRecord>,
     ) as $Val);
   }
 }
@@ -116,8 +107,7 @@ abstract class _$$BibleVerseImplCopyWith<$Res>
       int chapter,
       int startVerse,
       int? endVerse,
-      String text,
-      @Backlink() ToMany<PlaylistRecord> playlistRecords});
+      String text});
 }
 
 /// @nodoc
@@ -137,7 +127,6 @@ class __$$BibleVerseImplCopyWithImpl<$Res>
     Object? startVerse = null,
     Object? endVerse = freezed,
     Object? text = null,
-    Object? playlistRecords = null,
   }) {
     return _then(_$BibleVerseImpl(
       id: null == id
@@ -164,10 +153,6 @@ class __$$BibleVerseImplCopyWithImpl<$Res>
           ? _value.text
           : text // ignore: cast_nullable_to_non_nullable
               as String,
-      playlistRecords: null == playlistRecords
-          ? _value.playlistRecords
-          : playlistRecords // ignore: cast_nullable_to_non_nullable
-              as ToMany<PlaylistRecord>,
     ));
   }
 }
@@ -175,15 +160,15 @@ class __$$BibleVerseImplCopyWithImpl<$Res>
 /// @nodoc
 
 @Entity(realClass: BibleVerse)
-class _$BibleVerseImpl implements _BibleVerse {
+class _$BibleVerseImpl extends _BibleVerse {
   const _$BibleVerseImpl(
       {@Id(assignable: true) required this.id,
       required this.book,
       required this.chapter,
       required this.startVerse,
       this.endVerse,
-      required this.text,
-      @Backlink() required this.playlistRecords});
+      required this.text})
+      : super._();
 
   @override
   @Id(assignable: true)
@@ -198,13 +183,10 @@ class _$BibleVerseImpl implements _BibleVerse {
   final int? endVerse;
   @override
   final String text;
-  @override
-  @Backlink()
-  final ToMany<PlaylistRecord> playlistRecords;
 
   @override
   String toString() {
-    return 'BibleVerse(id: $id, book: $book, chapter: $chapter, startVerse: $startVerse, endVerse: $endVerse, text: $text, playlistRecords: $playlistRecords)';
+    return 'BibleVerse(id: $id, book: $book, chapter: $chapter, startVerse: $startVerse, endVerse: $endVerse, text: $text)';
   }
 
   @override
@@ -219,14 +201,12 @@ class _$BibleVerseImpl implements _BibleVerse {
                 other.startVerse == startVerse) &&
             (identical(other.endVerse, endVerse) ||
                 other.endVerse == endVerse) &&
-            (identical(other.text, text) || other.text == text) &&
-            const DeepCollectionEquality()
-                .equals(other.playlistRecords, playlistRecords));
+            (identical(other.text, text) || other.text == text));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, id, book, chapter, startVerse,
-      endVerse, text, const DeepCollectionEquality().hash(playlistRecords));
+  int get hashCode =>
+      Object.hash(runtimeType, id, book, chapter, startVerse, endVerse, text);
 
   @JsonKey(ignore: true)
   @override
@@ -235,16 +215,15 @@ class _$BibleVerseImpl implements _BibleVerse {
       __$$BibleVerseImplCopyWithImpl<_$BibleVerseImpl>(this, _$identity);
 }
 
-abstract class _BibleVerse implements BibleVerse {
+abstract class _BibleVerse extends BibleVerse {
   const factory _BibleVerse(
-          {@Id(assignable: true) required final int id,
-          required final int book,
-          required final int chapter,
-          required final int startVerse,
-          final int? endVerse,
-          required final String text,
-          @Backlink() required final ToMany<PlaylistRecord> playlistRecords}) =
-      _$BibleVerseImpl;
+      {@Id(assignable: true) required final int id,
+      required final int book,
+      required final int chapter,
+      required final int startVerse,
+      final int? endVerse,
+      required final String text}) = _$BibleVerseImpl;
+  const _BibleVerse._() : super._();
 
   @override
   @Id(assignable: true)
@@ -259,9 +238,6 @@ abstract class _BibleVerse implements BibleVerse {
   int? get endVerse;
   @override
   String get text;
-  @override
-  @Backlink()
-  ToMany<PlaylistRecord> get playlistRecords;
   @override
   @JsonKey(ignore: true)
   _$$BibleVerseImplCopyWith<_$BibleVerseImpl> get copyWith =>

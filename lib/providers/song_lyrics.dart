@@ -65,10 +65,7 @@ SongLyric? songLyric(SongLyricRef ref, int id) {
 List<SongLyric> songLyrics(SongLyricsRef ref) {
   final songLyrics = queryStore(ref, orderBy: SongLyric_.name);
 
-  return songLyrics
-      .where(
-          (songLyric) => songLyric.hasLyrics || songLyric.hasLilypond || songLyric.hasFiles || songLyric.hasRecordings)
-      .toList();
+  return songLyrics.where((songLyric) => songLyric.shouldAppearToUser).toList();
 }
 
 @riverpod

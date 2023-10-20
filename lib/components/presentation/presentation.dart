@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/presentation.dart';
@@ -11,15 +13,17 @@ class SongLyricPresentation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    final width = MediaQuery.sizeOf(context).width;
+    final mediaQuery = MediaQuery.of(context);
+    final width = mediaQuery.size.width - mediaQuery.padding.horizontal;
 
     final backgroundColor = (presentationData.settings.showBackground && onExternalDisplay
         ? (presentationData.settings.darkMode ? Colors.black : Colors.white)
         : null);
     final textColor = onExternalDisplay ? (presentationData.settings.darkMode ? Colors.white : Colors.black) : null;
 
-    final textScaleFactor =
-        _computeTextScaleFactor(context, presentationData.lyrics, presentationData.settings.showName);
+    final presentingLyrics =
+        presentationData.settings.allCapital ? presentationData.lyrics.toUpperCase() : presentationData.lyrics;
+    final textScaleFactor = _computeTextScaleFactor(context, presentingLyrics, presentationData.settings.showName);
 
     return Container(
       color: backgroundColor,
@@ -42,7 +46,7 @@ class SongLyricPresentation extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 2 * kDefaultPadding),
               child: Text(
-                presentationData.settings.allCapital ? presentationData.lyrics.toUpperCase() : presentationData.lyrics,
+                presentingLyrics,
                 style: textTheme.bodyMedium?.copyWith(color: textColor),
                 textScaleFactor: textScaleFactor,
               ),
@@ -74,7 +78,7 @@ class SongLyricPresentation extends StatelessWidget {
   }
 
   double _computeTextScaleFactor(BuildContext context, String lyrics, bool showingName) {
-    final size = MediaQuery.of(context).size;
+    final size = MediaQuery.sizeOf(context);
 
     double textScaleFactor = 20;
 
@@ -87,7 +91,9 @@ class SongLyricPresentation extends StatelessWidget {
 
       textPainter.layout();
 
-      if (size.width - (onExternalDisplay ? 12 : 4) * kDefaultPadding > textPainter.size.width &&
+      // for some reason mediaQuery is not aware of added padding from scaffold here, so make sure the used width is correct
+      if (min(size.width, kScaffoldMaxWidth) - (onExternalDisplay ? 12 : 4) * kDefaultPadding >
+              textPainter.size.width &&
           size.height - (showingName ? 19 : 16) * kDefaultPadding > textPainter.size.height) {
         return textScaleFactor;
       }

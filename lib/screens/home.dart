@@ -111,6 +111,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       value: theme.brightness.isLight ? SystemUiOverlayStyle.dark : SystemUiOverlayStyle.light,
       child: CustomScaffold(
         backgroundColor: theme.colorScheme.background,
+        useMaxWidth: false,
         body: SafeArea(
           child: columns == 1
               ? NotificationListener<ScrollEndNotification>(

@@ -154,7 +154,7 @@ class _SongLyricProviderElement extends AutoDisposeProviderElement<SongLyric?>
   int get id => (origin as SongLyricProvider).id;
 }
 
-String _$songLyricsHash() => r'75f1eb03410d154cd267379b51056b736017d0d9';
+String _$songLyricsHash() => r'37e470d124dbe664e775b1dd126c04f72412a070';
 
 /// See also [songLyrics].
 @ProviderFor(songLyrics)

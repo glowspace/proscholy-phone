@@ -20,9 +20,6 @@ mixin _$CustomText {
   int get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String get content => throw _privateConstructorUsedError;
-  @Backlink()
-  ToMany<PlaylistRecord> get playlistRecords =>
-      throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $CustomTextCopyWith<CustomText> get copyWith =>
@@ -35,11 +32,7 @@ abstract class $CustomTextCopyWith<$Res> {
           CustomText value, $Res Function(CustomText) then) =
       _$CustomTextCopyWithImpl<$Res, CustomText>;
   @useResult
-  $Res call(
-      {@Id(assignable: true) int id,
-      String name,
-      String content,
-      @Backlink() ToMany<PlaylistRecord> playlistRecords});
+  $Res call({@Id(assignable: true) int id, String name, String content});
 }
 
 /// @nodoc
@@ -58,7 +51,6 @@ class _$CustomTextCopyWithImpl<$Res, $Val extends CustomText>
     Object? id = null,
     Object? name = null,
     Object? content = null,
-    Object? playlistRecords = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -73,10 +65,6 @@ class _$CustomTextCopyWithImpl<$Res, $Val extends CustomText>
           ? _value.content
           : content // ignore: cast_nullable_to_non_nullable
               as String,
-      playlistRecords: null == playlistRecords
-          ? _value.playlistRecords
-          : playlistRecords // ignore: cast_nullable_to_non_nullable
-              as ToMany<PlaylistRecord>,
     ) as $Val);
   }
 }
@@ -89,11 +77,7 @@ abstract class _$$CustomTextImplCopyWith<$Res>
       __$$CustomTextImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call(
-      {@Id(assignable: true) int id,
-      String name,
-      String content,
-      @Backlink() ToMany<PlaylistRecord> playlistRecords});
+  $Res call({@Id(assignable: true) int id, String name, String content});
 }
 
 /// @nodoc
@@ -110,7 +94,6 @@ class __$$CustomTextImplCopyWithImpl<$Res>
     Object? id = null,
     Object? name = null,
     Object? content = null,
-    Object? playlistRecords = null,
   }) {
     return _then(_$CustomTextImpl(
       id: null == id
@@ -125,10 +108,6 @@ class __$$CustomTextImplCopyWithImpl<$Res>
           ? _value.content
           : content // ignore: cast_nullable_to_non_nullable
               as String,
-      playlistRecords: null == playlistRecords
-          ? _value.playlistRecords
-          : playlistRecords // ignore: cast_nullable_to_non_nullable
-              as ToMany<PlaylistRecord>,
     ));
   }
 }
@@ -136,12 +115,12 @@ class __$$CustomTextImplCopyWithImpl<$Res>
 /// @nodoc
 
 @Entity(realClass: CustomText)
-class _$CustomTextImpl implements _CustomText {
+class _$CustomTextImpl extends _CustomText {
   const _$CustomTextImpl(
       {@Id(assignable: true) required this.id,
       required this.name,
-      required this.content,
-      @Backlink() required this.playlistRecords});
+      required this.content})
+      : super._();
 
   @override
   @Id(assignable: true)
@@ -150,13 +129,10 @@ class _$CustomTextImpl implements _CustomText {
   final String name;
   @override
   final String content;
-  @override
-  @Backlink()
-  final ToMany<PlaylistRecord> playlistRecords;
 
   @override
   String toString() {
-    return 'CustomText(id: $id, name: $name, content: $content, playlistRecords: $playlistRecords)';
+    return 'CustomText(id: $id, name: $name, content: $content)';
   }
 
   @override
@@ -166,14 +142,11 @@ class _$CustomTextImpl implements _CustomText {
             other is _$CustomTextImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
-            (identical(other.content, content) || other.content == content) &&
-            const DeepCollectionEquality()
-                .equals(other.playlistRecords, playlistRecords));
+            (identical(other.content, content) || other.content == content));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, id, name, content,
-      const DeepCollectionEquality().hash(playlistRecords));
+  int get hashCode => Object.hash(runtimeType, id, name, content);
 
   @JsonKey(ignore: true)
   @override
@@ -182,13 +155,12 @@ class _$CustomTextImpl implements _CustomText {
       __$$CustomTextImplCopyWithImpl<_$CustomTextImpl>(this, _$identity);
 }
 
-abstract class _CustomText implements CustomText {
+abstract class _CustomText extends CustomText {
   const factory _CustomText(
-          {@Id(assignable: true) required final int id,
-          required final String name,
-          required final String content,
-          @Backlink() required final ToMany<PlaylistRecord> playlistRecords}) =
-      _$CustomTextImpl;
+      {@Id(assignable: true) required final int id,
+      required final String name,
+      required final String content}) = _$CustomTextImpl;
+  const _CustomText._() : super._();
 
   @override
   @Id(assignable: true)
@@ -197,9 +169,6 @@ abstract class _CustomText implements CustomText {
   String get name;
   @override
   String get content;
-  @override
-  @Backlink()
-  ToMany<PlaylistRecord> get playlistRecords;
   @override
   @JsonKey(ignore: true)
   _$$CustomTextImplCopyWith<_$CustomTextImpl> get copyWith =>

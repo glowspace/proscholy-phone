@@ -22,7 +22,7 @@ class SongbooksGridView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
+    final width = MediaQuery.sizeOf(context).width;
 
     int crossAxisCount = max(2, (width / _minTileWidth).floor());
 

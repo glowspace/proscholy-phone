@@ -457,10 +457,7 @@ final _entities = <ModelEntity>[
             flags: 0)
       ],
       relations: <ModelRelation>[],
-      backlinks: <ModelBacklink>[
-        ModelBacklink(
-            name: 'playlistRecords', srcEntity: 'PlaylistRecord', srcField: '')
-      ]),
+      backlinks: <ModelBacklink>[]),
   ModelEntity(
       id: const IdUid(21, 2063445298157793913),
       name: 'CustomText',
@@ -484,10 +481,7 @@ final _entities = <ModelEntity>[
             flags: 0)
       ],
       relations: <ModelRelation>[],
-      backlinks: <ModelBacklink>[
-        ModelBacklink(
-            name: 'playlistRecords', srcEntity: 'PlaylistRecord', srcField: '')
-      ]),
+      backlinks: <ModelBacklink>[]),
   ModelEntity(
       id: const IdUid(22, 3313311911381561450),
       name: 'SongLyricSettingsModel',
@@ -1245,11 +1239,7 @@ ModelDefinition getObjectBoxModel() {
     BibleVerse: EntityDefinition<BibleVerse>(
         model: _entities[10],
         toOneRelations: (BibleVerse object) => [],
-        toManyRelations: (BibleVerse object) => {
-              RelInfo<PlaylistRecord>.toOneBacklink(7, object.id,
-                      (PlaylistRecord srcObject) => srcObject.bibleVerse):
-                  object.playlistRecords
-            },
+        toManyRelations: (BibleVerse object) => {},
         getId: (BibleVerse object) => object.id,
         setId: (BibleVerse object, int id) {
           if (object.id != id) {
@@ -1287,30 +1277,20 @@ ModelDefinition getObjectBoxModel() {
               const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 12);
           final textParam = const fb.StringReader(asciiOptimization: true)
               .vTableGet(buffer, rootOffset, 14, '');
-          final playlistRecordsParam = ToMany<PlaylistRecord>();
           final object = BibleVerse(
               id: idParam,
               book: bookParam,
               chapter: chapterParam,
               startVerse: startVerseParam,
               endVerse: endVerseParam,
-              text: textParam,
-              playlistRecords: playlistRecordsParam);
-          InternalToManyAccess.setRelInfo<BibleVerse>(
-              object.playlistRecords,
-              store,
-              RelInfo<PlaylistRecord>.toOneBacklink(7, object.id,
-                  (PlaylistRecord srcObject) => srcObject.bibleVerse));
+              text: textParam);
+
           return object;
         }),
     CustomText: EntityDefinition<CustomText>(
         model: _entities[11],
         toOneRelations: (CustomText object) => [],
-        toManyRelations: (CustomText object) => {
-              RelInfo<PlaylistRecord>.toOneBacklink(6, object.id,
-                      (PlaylistRecord srcObject) => srcObject.customText):
-                  object.playlistRecords
-            },
+        toManyRelations: (CustomText object) => {},
         getId: (CustomText object) => object.id,
         setId: (CustomText object, int id) {
           if (object.id != id) {
@@ -1340,17 +1320,9 @@ ModelDefinition getObjectBoxModel() {
               .vTableGet(buffer, rootOffset, 6, '');
           final contentParam = const fb.StringReader(asciiOptimization: true)
               .vTableGet(buffer, rootOffset, 8, '');
-          final playlistRecordsParam = ToMany<PlaylistRecord>();
-          final object = CustomText(
-              id: idParam,
-              name: nameParam,
-              content: contentParam,
-              playlistRecords: playlistRecordsParam);
-          InternalToManyAccess.setRelInfo<CustomText>(
-              object.playlistRecords,
-              store,
-              RelInfo<PlaylistRecord>.toOneBacklink(6, object.id,
-                  (PlaylistRecord srcObject) => srcObject.customText));
+          final object =
+              CustomText(id: idParam, name: nameParam, content: contentParam);
+
           return object;
         }),
     SongLyricSettingsModel: EntityDefinition<SongLyricSettingsModel>(

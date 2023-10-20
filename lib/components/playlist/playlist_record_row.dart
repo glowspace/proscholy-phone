@@ -5,7 +5,6 @@ import 'package:zpevnik/components/selected_row_highlight.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/playlist_record.dart';
 import 'package:zpevnik/routing/arguments.dart';
-import 'package:zpevnik/utils/bible_api_client.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
 class PlaylistRecordRow extends StatelessWidget {
@@ -29,9 +28,7 @@ class PlaylistRecordRow extends StatelessWidget {
       title = songLyric.name;
       icon = null;
     } else if (bibleVerse != null) {
-      title = bibleVerse.endVerse == null
-          ? '${supportedBibleBooks[bibleVerse.book]} ${bibleVerse.startVerse}'
-          : '${supportedBibleBooks[bibleVerse.book]} ${bibleVerse.startVerse}:${bibleVerse.endVerse}';
+      title = bibleVerse.name;
       icon = Icons.book_outlined;
     } else if (customText != null) {
       title = customText.name;

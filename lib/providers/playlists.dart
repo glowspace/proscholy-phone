@@ -75,12 +75,28 @@ class Playlists extends _$Playlists {
 
   Playlist duplicatePlaylist(Playlist playlist, String name) {
     // copy the records with new playlist id
-    final playlistRecords = playlist.records
-        .map((playlistRecord) => playlistRecord.copyWith(
-              id: _nextPlaylistRecordId++,
-              playlist: ToOne(targetId: _nextPlaylistId),
-            ))
-        .toList();
+    final playlistRecords = <PlaylistRecord>[];
+
+    // for bible verses and custom texts make also duplicates, so that changes in duplicated playlist don't alter records in previous
+    for (final playlistRecord in playlist.records) {
+      if (playlistRecord.bibleVerse.targetId != 0) {
+        final bibleVerse = playlistRecord.bibleVerse.target!.copyWith(id: _nextBibleVerseId++);
+
+        _bibleVerseBox.put(bibleVerse);
+
+        playlistRecords
+            .add(playlistRecord.copyWith(id: _nextPlaylistRecordId++, bibleVerse: ToOne(target: bibleVerse)));
+      } else if (playlistRecord.customText.targetId != 0) {
+        final customText = playlistRecord.customText.target!.copyWith(id: _nextCustomTextId++);
+
+        _customTextBox.put(customText);
+
+        playlistRecords
+            .add(playlistRecord.copyWith(id: _nextPlaylistRecordId++, customText: ToOne(target: customText)));
+      } else {
+        playlistRecords.add(playlistRecord.copyWith(id: _nextPlaylistRecordId++));
+      }
+    }
 
     final newPlaylist = playlist.copyWith(
       id: _nextPlaylistId++,
@@ -110,7 +126,6 @@ class Playlists extends _$Playlists {
                     id: _nextCustomTextId++,
                     name: playlistRecordData['custom_text']['name'],
                     content: playlistRecordData['custom_text']['content'],
-                    playlistRecords: ToMany(),
                   )
                 : null,
           ),
@@ -123,7 +138,6 @@ class Playlists extends _$Playlists {
                     startVerse: playlistRecordData['bible_verse']['start_verse'],
                     endVerse: playlistRecordData['bible_verse']['end_verse'],
                     text: playlistRecordData['bible_verse']['text'],
-                    playlistRecords: ToMany(),
                   )
                 : null,
           ),
@@ -156,12 +170,12 @@ class Playlists extends _$Playlists {
           {
             'rank': playlistRecord.rank,
             'song_lyric': playlistRecord.songLyric.targetId,
-            if (playlistRecord.customText.target != null)
+            if (playlistRecord.customText.targetId != 0)
               'custom_text': {
                 'name': playlistRecord.customText.target!.name,
                 'content': playlistRecord.customText.target!.content,
               },
-            if (playlistRecord.bibleVerse.target != null)
+            if (playlistRecord.bibleVerse.targetId != 0)
               'bible_verse': {
                 'book': playlistRecord.bibleVerse.target!.book,
                 'chapter': playlistRecord.bibleVerse.target!.chapter,
@@ -190,6 +204,12 @@ class Playlists extends _$Playlists {
       for (final playlist in state)
         if (playlist.id != playlistToRemove.id) playlist
     ];
+
+    print('removing records: ${playlistToRemove.records.map((playlistRecord) => playlistRecord.id).toList()}');
+    print(
+        'removing custom texts: ${playlistToRemove.records.map((playlistRecord) => playlistRecord.customText.targetId).toList()}');
+    print(
+        'removing bible verses: ${playlistToRemove.records.map((playlistRecord) => playlistRecord.bibleVerse.targetId).toList()}');
 
     _playlistsBox.remove(playlistToRemove.id);
     _playlistRecordsBox.removeMany(playlistToRemove.records.map((playlistRecord) => playlistRecord.id).toList());
@@ -249,8 +269,7 @@ class Playlists extends _$Playlists {
 
     if (playlistRecordToRemove.customText.targetId != 0) {
       _customTextBox.remove(playlistRecordToRemove.customText.targetId);
-    }
-    if (playlistRecordToRemove.bibleVerse.targetId != 0) {
+    } else if (playlistRecordToRemove.bibleVerse.targetId != 0) {
       _bibleVerseBox.remove(playlistRecordToRemove.bibleVerse.targetId);
     }
   }
@@ -298,7 +317,6 @@ class Playlists extends _$Playlists {
       startVerse: startVerse,
       endVerse: endVerse,
       text: text,
-      playlistRecords: ToMany(),
     );
 
     _bibleVerseBox.put(bibleVerse);
@@ -311,7 +329,6 @@ class Playlists extends _$Playlists {
       id: _nextCustomTextId++,
       name: name,
       content: content,
-      playlistRecords: ToMany(),
     );
 
     _customTextBox.put(customText);

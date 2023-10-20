@@ -71,7 +71,8 @@ class _SongLyricScreenState extends ConsumerState<SongLyricScreen> {
 
     if (presentation.isPresenting) {
       bottomSheet = Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding, vertical: kDefaultPadding),
+        padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding, vertical: kDefaultPadding) +
+            EdgeInsets.only(bottom: fullScreen ? MediaQuery.of(context).padding.bottom : 0),
         child: Row(children: [
           Highlightable(
             onTap: presentation.prevVerse,

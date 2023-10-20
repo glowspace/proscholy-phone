@@ -47,10 +47,13 @@ class SongLyricTag extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2)
-                    .copyWith(right: songbookRecord == null ? kDefaultPadding : kDefaultPadding / 2),
+                    .copyWith(
+                        right: songbookRecord == null || songbookRecord!.number.isEmpty
+                            ? kDefaultPadding
+                            : kDefaultPadding / 2),
                 child: Text(text),
               ),
-              if (songbookRecord != null)
+              if (songbookRecord != null && songbookRecord!.number.isNotEmpty)
                 Container(
                   padding: const EdgeInsets.all(kDefaultPadding / 2).copyWith(right: 3 * kDefaultPadding / 4),
                   color: numberBackgroundColor,

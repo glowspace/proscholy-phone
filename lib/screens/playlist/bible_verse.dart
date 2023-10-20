@@ -4,7 +4,6 @@ import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/navigation/scaffold.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/bible_verse.dart';
-import 'package:zpevnik/utils/bible_api_client.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
 class BibleVerseScreen extends StatefulWidget {
@@ -24,11 +23,7 @@ class _BibleVerseScreenState extends State<BibleVerseScreen> {
     return CustomScaffold(
       appBar: AppBar(
         leading: const CustomBackButton(),
-        title: Text(
-          _bibleVerse.endVerse == null
-              ? '${supportedBibleBooks[_bibleVerse.book]} ${_bibleVerse.startVerse}'
-              : '${supportedBibleBooks[_bibleVerse.book]} ${_bibleVerse.startVerse}:${_bibleVerse.endVerse}',
-        ),
+        title: Text(_bibleVerse.name),
         actions: [
           Highlightable(
             onTap: _edit,

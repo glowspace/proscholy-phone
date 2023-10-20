@@ -80,6 +80,9 @@ class SongLyric with _$SongLyric implements Identifiable, RecentItem {
 
   SongLyricType get type => SongLyricType.fromRawValue(dbType);
 
+  // show song lyrics that have lyrics or lilypond or supported external files or supported recordings
+  bool get shouldAppearToUser => hasLyrics || hasLilypond || hasFiles || hasRecordings;
+
   bool get hasTranslations => song.target?.hasTranslations ?? false;
 
   bool get hasLyrics => lyrics != null && lyrics!.isNotEmpty;

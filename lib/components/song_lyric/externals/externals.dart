@@ -28,7 +28,7 @@ class _ExternalsWidgetState extends State<ExternalsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
+    final size = MediaQuery.sizeOf(context);
 
     final externals = widget.songLyric.externals
         .where((external) => external.mediaType == MediaType.youtube || external.mediaType == MediaType.mp3)
