@@ -10,6 +10,7 @@ import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/playlist_record.dart';
 import 'package:zpevnik/providers/app_dependencies.dart';
 import 'package:zpevnik/providers/playlists.dart';
+import 'package:zpevnik/routing/arguments.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
 const _noPlaylistRecordText = 'V tomto seznamu nemáte žádné písně. Klikněte na tlačítko níže pro přidání nové písně.';
@@ -80,10 +81,26 @@ class _PlaylistRecordsListViewState extends State<PlaylistRecordsListView> {
             ),
           ],
         ),
-        child: PlaylistRecordRow(playlistRecord: _recordsOrdered[index]),
+        child: PlaylistRecordRow(
+          playlistRecord: _recordsOrdered[index],
+          displayScreenArguments: DisplayScreenArguments(
+            items: _recordsOrdered.map(_unwrapPlaylistRecord).toList(),
+            initialIndex: index,
+          ),
+        ),
       ),
       onReorder: _reorder,
     );
+  }
+
+  dynamic _unwrapPlaylistRecord(PlaylistRecord playlistRecord) {
+    if (playlistRecord.bibleVerse.targetId != 0) {
+      return playlistRecord.bibleVerse.target;
+    } else if (playlistRecord.customText.targetId != 0) {
+      return playlistRecord.customText.target;
+    }
+
+    return playlistRecord.songLyric.target;
   }
 
   void _reorder(int oldIndex, int newIndex) {

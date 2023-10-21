@@ -1,5 +1,6 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:zpevnik/components/playlist/selected_playlist.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/playlists.dart';
@@ -44,7 +45,13 @@ void showRenamePlaylistDialog(BuildContext context, Playlist playlist) async {
   );
 
   if (results != null && context.mounted) {
-    context.providers.read(playlistsProvider.notifier).renamePlaylist(playlist, results.first);
+    final renamedPlaylist = context.providers.read(playlistsProvider.notifier).renamePlaylist(playlist, results.first);
+
+    final selectedPlaylistNotifier = SelectedPlaylist.of(context);
+
+    if (selectedPlaylistNotifier != null && selectedPlaylistNotifier.value == playlist) {
+      selectedPlaylistNotifier.value = renamedPlaylist;
+    }
   }
 }
 
@@ -69,7 +76,13 @@ void showDuplicatePlaylistDialog(BuildContext context, Playlist playlist) async 
     final duplicatedPlaylist =
         context.providers.read(playlistsProvider.notifier).duplicatePlaylist(playlist, results.first);
 
-    context.push('/playlist', arguments: duplicatedPlaylist);
+    final selectedPlaylistNotifier = SelectedPlaylist.of(context);
+
+    if (selectedPlaylistNotifier != null) {
+      selectedPlaylistNotifier.value = duplicatedPlaylist;
+    } else {
+      context.push('/playlist', arguments: duplicatedPlaylist);
+    }
   }
 }
 
@@ -110,7 +123,15 @@ void showRemovePlaylistDialog(BuildContext context, Playlist playlist) async {
   if (result == OkCancelResult.ok && context.mounted) {
     context.providers.read(playlistsProvider.notifier).removePlaylist(playlist);
 
-    if (context.isPlaylist) context.pop();
+    final selectedPlaylistNotifier = SelectedPlaylist.of(context);
+
+    if (selectedPlaylistNotifier != null) {
+      if (selectedPlaylistNotifier.value == playlist) {
+        selectedPlaylistNotifier.value = context.providers.read(favoritePlaylistProvider);
+      }
+    } else if (context.isPlaylist) {
+      context.pop();
+    }
   }
 }
 

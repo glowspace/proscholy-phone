@@ -1,14 +1,14 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'song_lyric_screen_status.g.dart';
-part 'song_lyric_screen_status.freezed.dart';
+part 'display_screen_status.g.dart';
+part 'display_screen_status.freezed.dart';
 
 @riverpod
-class SongLyricScreenStatus extends _$SongLyricScreenStatus {
+class DisplayScreenStatus extends _$DisplayScreenStatus {
   @override
-  SongLyricScreenStatusModel build() {
-    return const SongLyricScreenStatusModel(fullScreen: false, showingExternals: false);
+  DisplayScreenStatusModel build() {
+    return const DisplayScreenStatusModel(fullScreen: false, showingExternals: false);
   }
 
   void toggleFullScreen() => state = state.copyWith(fullScreen: !state.fullScreen);
@@ -23,9 +23,9 @@ class SongLyricScreenStatus extends _$SongLyricScreenStatus {
 }
 
 @freezed
-class SongLyricScreenStatusModel with _$SongLyricScreenStatusModel {
-  const factory SongLyricScreenStatusModel({
+class DisplayScreenStatusModel with _$DisplayScreenStatusModel {
+  const factory DisplayScreenStatusModel({
     required bool fullScreen,
     required bool showingExternals,
-  }) = _SongLyricScreenStatusModel;
+  }) = _DisplayScreenStatusModel;
 }

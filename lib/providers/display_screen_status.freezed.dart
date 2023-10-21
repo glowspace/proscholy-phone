@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'song_lyric_screen_status.dart';
+part of 'display_screen_status.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -15,30 +15,29 @@ final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
 /// @nodoc
-mixin _$SongLyricScreenStatusModel {
+mixin _$DisplayScreenStatusModel {
   bool get fullScreen => throw _privateConstructorUsedError;
   bool get showingExternals => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
-  $SongLyricScreenStatusModelCopyWith<SongLyricScreenStatusModel>
-      get copyWith => throw _privateConstructorUsedError;
+  $DisplayScreenStatusModelCopyWith<DisplayScreenStatusModel> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $SongLyricScreenStatusModelCopyWith<$Res> {
-  factory $SongLyricScreenStatusModelCopyWith(SongLyricScreenStatusModel value,
-          $Res Function(SongLyricScreenStatusModel) then) =
-      _$SongLyricScreenStatusModelCopyWithImpl<$Res,
-          SongLyricScreenStatusModel>;
+abstract class $DisplayScreenStatusModelCopyWith<$Res> {
+  factory $DisplayScreenStatusModelCopyWith(DisplayScreenStatusModel value,
+          $Res Function(DisplayScreenStatusModel) then) =
+      _$DisplayScreenStatusModelCopyWithImpl<$Res, DisplayScreenStatusModel>;
   @useResult
   $Res call({bool fullScreen, bool showingExternals});
 }
 
 /// @nodoc
-class _$SongLyricScreenStatusModelCopyWithImpl<$Res,
-        $Val extends SongLyricScreenStatusModel>
-    implements $SongLyricScreenStatusModelCopyWith<$Res> {
-  _$SongLyricScreenStatusModelCopyWithImpl(this._value, this._then);
+class _$DisplayScreenStatusModelCopyWithImpl<$Res,
+        $Val extends DisplayScreenStatusModel>
+    implements $DisplayScreenStatusModelCopyWith<$Res> {
+  _$DisplayScreenStatusModelCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -65,25 +64,25 @@ class _$SongLyricScreenStatusModelCopyWithImpl<$Res,
 }
 
 /// @nodoc
-abstract class _$$SongLyricScreenStatusModelImplCopyWith<$Res>
-    implements $SongLyricScreenStatusModelCopyWith<$Res> {
-  factory _$$SongLyricScreenStatusModelImplCopyWith(
-          _$SongLyricScreenStatusModelImpl value,
-          $Res Function(_$SongLyricScreenStatusModelImpl) then) =
-      __$$SongLyricScreenStatusModelImplCopyWithImpl<$Res>;
+abstract class _$$DisplayScreenStatusModelImplCopyWith<$Res>
+    implements $DisplayScreenStatusModelCopyWith<$Res> {
+  factory _$$DisplayScreenStatusModelImplCopyWith(
+          _$DisplayScreenStatusModelImpl value,
+          $Res Function(_$DisplayScreenStatusModelImpl) then) =
+      __$$DisplayScreenStatusModelImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({bool fullScreen, bool showingExternals});
 }
 
 /// @nodoc
-class __$$SongLyricScreenStatusModelImplCopyWithImpl<$Res>
-    extends _$SongLyricScreenStatusModelCopyWithImpl<$Res,
-        _$SongLyricScreenStatusModelImpl>
-    implements _$$SongLyricScreenStatusModelImplCopyWith<$Res> {
-  __$$SongLyricScreenStatusModelImplCopyWithImpl(
-      _$SongLyricScreenStatusModelImpl _value,
-      $Res Function(_$SongLyricScreenStatusModelImpl) _then)
+class __$$DisplayScreenStatusModelImplCopyWithImpl<$Res>
+    extends _$DisplayScreenStatusModelCopyWithImpl<$Res,
+        _$DisplayScreenStatusModelImpl>
+    implements _$$DisplayScreenStatusModelImplCopyWith<$Res> {
+  __$$DisplayScreenStatusModelImplCopyWithImpl(
+      _$DisplayScreenStatusModelImpl _value,
+      $Res Function(_$DisplayScreenStatusModelImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -92,7 +91,7 @@ class __$$SongLyricScreenStatusModelImplCopyWithImpl<$Res>
     Object? fullScreen = null,
     Object? showingExternals = null,
   }) {
-    return _then(_$SongLyricScreenStatusModelImpl(
+    return _then(_$DisplayScreenStatusModelImpl(
       fullScreen: null == fullScreen
           ? _value.fullScreen
           : fullScreen // ignore: cast_nullable_to_non_nullable
@@ -107,8 +106,8 @@ class __$$SongLyricScreenStatusModelImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$SongLyricScreenStatusModelImpl implements _SongLyricScreenStatusModel {
-  const _$SongLyricScreenStatusModelImpl(
+class _$DisplayScreenStatusModelImpl implements _DisplayScreenStatusModel {
+  const _$DisplayScreenStatusModelImpl(
       {required this.fullScreen, required this.showingExternals});
 
   @override
@@ -118,14 +117,14 @@ class _$SongLyricScreenStatusModelImpl implements _SongLyricScreenStatusModel {
 
   @override
   String toString() {
-    return 'SongLyricScreenStatusModel(fullScreen: $fullScreen, showingExternals: $showingExternals)';
+    return 'DisplayScreenStatusModel(fullScreen: $fullScreen, showingExternals: $showingExternals)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$SongLyricScreenStatusModelImpl &&
+            other is _$DisplayScreenStatusModelImpl &&
             (identical(other.fullScreen, fullScreen) ||
                 other.fullScreen == fullScreen) &&
             (identical(other.showingExternals, showingExternals) ||
@@ -138,16 +137,15 @@ class _$SongLyricScreenStatusModelImpl implements _SongLyricScreenStatusModel {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$SongLyricScreenStatusModelImplCopyWith<_$SongLyricScreenStatusModelImpl>
-      get copyWith => __$$SongLyricScreenStatusModelImplCopyWithImpl<
-          _$SongLyricScreenStatusModelImpl>(this, _$identity);
+  _$$DisplayScreenStatusModelImplCopyWith<_$DisplayScreenStatusModelImpl>
+      get copyWith => __$$DisplayScreenStatusModelImplCopyWithImpl<
+          _$DisplayScreenStatusModelImpl>(this, _$identity);
 }
 
-abstract class _SongLyricScreenStatusModel
-    implements SongLyricScreenStatusModel {
-  const factory _SongLyricScreenStatusModel(
+abstract class _DisplayScreenStatusModel implements DisplayScreenStatusModel {
+  const factory _DisplayScreenStatusModel(
       {required final bool fullScreen,
-      required final bool showingExternals}) = _$SongLyricScreenStatusModelImpl;
+      required final bool showingExternals}) = _$DisplayScreenStatusModelImpl;
 
   @override
   bool get fullScreen;
@@ -155,6 +153,6 @@ abstract class _SongLyricScreenStatusModel
   bool get showingExternals;
   @override
   @JsonKey(ignore: true)
-  _$$SongLyricScreenStatusModelImplCopyWith<_$SongLyricScreenStatusModelImpl>
+  _$$DisplayScreenStatusModelImplCopyWith<_$DisplayScreenStatusModelImpl>
       get copyWith => throw _privateConstructorUsedError;
 }

@@ -18,7 +18,7 @@ class BottomSheetSection extends StatelessWidget {
           childrenPadding ? 1.5 * kDefaultPadding : 0,
           kDefaultPadding,
           childrenPadding ? 1.5 * kDefaultPadding : 0,
-          MediaQuery.of(context).padding.bottom,
+          MediaQuery.paddingOf(context).bottom,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,

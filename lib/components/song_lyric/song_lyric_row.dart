@@ -14,9 +14,9 @@ const _disabledAlpha = 0x20;
 class SongLyricRow extends StatelessWidget {
   final SongLyric songLyric;
 
-  final SongLyricScreenArguments? songLyricScreenArguments;
+  final DisplayScreenArguments? displayScreenArguments;
 
-  const SongLyricRow({super.key, required this.songLyric, this.songLyricScreenArguments});
+  const SongLyricRow({super.key, required this.songLyric, this.displayScreenArguments});
 
   @override
   Widget build(BuildContext context) {
@@ -87,26 +87,6 @@ class SongLyricRow extends StatelessWidget {
       ),
     );
 
-    // if (isDraggable) {
-    //   return Draggable(
-    //     data: songLyric,
-    //     dragAnchorStrategy: pointerDragAnchorStrategy,
-    //     affinity: Axis.horizontal,
-    //     rootOverlay: true,
-    //     feedback: Opacity(
-    //       opacity: 0.75,
-    //       child: Material(
-    //         color: Colors.transparent,
-    //         child: Container(
-    //           padding: const EdgeInsets.all(kDefaultPadding),
-    //           child: Text(songLyric.name),
-    //         ),
-    //       ),
-    //     ),
-    //     child: row,
-    //   );
-    // }
-
     return row;
   }
 
@@ -118,7 +98,7 @@ class SongLyricRow extends StatelessWidget {
     if (arguments is SearchScreenArguments && arguments.shouldReturnSongLyric) {
       Navigator.of(context).pop(songLyric);
     } else {
-      context.push('/song_lyric', arguments: songLyricScreenArguments ?? SongLyricScreenArguments.songLyric(songLyric));
+      context.push('/display', arguments: displayScreenArguments ?? DisplayScreenArguments.item(songLyric));
     }
   }
 }

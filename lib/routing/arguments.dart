@@ -1,14 +1,13 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:zpevnik/models/song_lyric.dart';
 
 @immutable
-class SongLyricScreenArguments {
-  final List<SongLyric> songLyrics;
+class DisplayScreenArguments {
+  final List<dynamic> items;
   final int initialIndex;
 
-  const SongLyricScreenArguments({required this.songLyrics, this.initialIndex = 0});
+  const DisplayScreenArguments({required this.items, this.initialIndex = 0});
 
-  factory SongLyricScreenArguments.songLyric(SongLyric songLyric) => SongLyricScreenArguments(songLyrics: [songLyric]);
+  factory DisplayScreenArguments.item(dynamic item) => DisplayScreenArguments(items: [item]);
 }
 
 @immutable

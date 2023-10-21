@@ -14,6 +14,7 @@ class SongLyricChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final fontSizeScale = MediaQuery.textScaleFactorOf(context);
 
     return Container(
       decoration: BoxDecoration(
@@ -23,13 +24,13 @@ class SongLyricChip extends StatelessWidget {
       child: Highlightable(
         highlightBackground: true,
         borderRadius: BorderRadius.circular(_chipRadius),
-        padding: const EdgeInsets.all(kDefaultPadding / 2),
+        padding: EdgeInsets.all(fontSizeScale * kDefaultPadding / 2),
         onTap: onTap,
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, color: theme.colorScheme.primary, size: 14),
-            const SizedBox(width: kDefaultPadding / 2),
+            Icon(icon, color: theme.colorScheme.primary, size: 14 * fontSizeScale),
+            SizedBox(width: fontSizeScale * kDefaultPadding / 2),
             Text(text, style: theme.textTheme.labelMedium),
           ],
         ),

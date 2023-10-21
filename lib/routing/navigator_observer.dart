@@ -90,16 +90,14 @@ class AppNavigatorObserver extends NavigatorObserver {
     final recentItemsNotifier = ProviderScope.containerOf(context).read(recentItemsProvider.notifier);
 
     switch (route.settings.name) {
-      case '/playlist/bible_verse':
-        final bibleVerse = route.settings.arguments as BibleVerse?;
+      case '/display':
+        final arguments = route.settings.arguments as DisplayScreenArguments?;
 
-        if (bibleVerse != null) recentItemsNotifier.add(bibleVerse);
-
-        break;
-      case '/playlist/custom_text':
-        final customText = route.settings.arguments as CustomText?;
-
-        if (customText != null) recentItemsNotifier.add(customText);
+        if (arguments != null) {
+          ProviderScope.containerOf(context)
+              .read(recentItemsProvider.notifier)
+              .add(arguments.items[arguments.initialIndex]);
+        }
 
         break;
       case '/playlist':
@@ -112,16 +110,6 @@ class AppNavigatorObserver extends NavigatorObserver {
         final songbook = route.settings.arguments as Songbook?;
 
         if (songbook != null) recentItemsNotifier.add(songbook);
-
-        break;
-      case '/song_lyric':
-        final arguments = route.settings.arguments as SongLyricScreenArguments?;
-
-        if (arguments != null) {
-          ProviderScope.containerOf(context)
-              .read(recentSongLyricsProvider.notifier)
-              .add(arguments.songLyrics[arguments.initialIndex]);
-        }
 
         break;
     }

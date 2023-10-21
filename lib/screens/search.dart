@@ -72,6 +72,6 @@ class SearchScreen extends StatelessWidget {
       searchedSongLyricsProvider.select((searchedSongLyricsProvider) => searchedSongLyricsProvider.matchedById),
     );
 
-    if (matchedById != null) context.push('/song_lyric', arguments: SongLyricScreenArguments.songLyric(matchedById));
+    if (matchedById != null) context.push('/display', arguments: DisplayScreenArguments.item(matchedById));
   }
 }

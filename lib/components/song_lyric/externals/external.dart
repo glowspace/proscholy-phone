@@ -7,7 +7,7 @@ import 'package:zpevnik/components/song_lyric/externals/youtube_player.dart';
 import 'package:zpevnik/components/song_lyric/utils/active_player_controller.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/external.dart';
-import 'package:zpevnik/providers/song_lyric_screen_status.dart';
+import 'package:zpevnik/providers/display_screen_status.dart';
 import 'package:zpevnik/utils/url_launcher.dart';
 
 class ExternalWidget extends ConsumerWidget {
@@ -17,7 +17,7 @@ class ExternalWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isVisible = ref.watch(songLyricScreenStatusProvider.select((status) => status.showingExternals));
+    final isVisible = ref.watch(displayScreenStatusProvider.select((status) => status.showingExternals));
     final isPlaying = ref.watch(activePlayerProvider.select((activePlayer) => activePlayer?.external == external));
 
     return Card(

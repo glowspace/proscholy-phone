@@ -242,7 +242,7 @@ class _SelectBibleVerseScreenState extends State<_SelectBibleVerseScreen> {
                       2 * kDefaultPadding,
                       kDefaultPadding,
                       2 * kDefaultPadding,
-                      MediaQuery.of(context).padding.bottom + kDefaultPadding,
+                      MediaQuery.paddingOf(context).bottom + kDefaultPadding,
                     ),
                     child: Consumer(
                       builder: (_, ref, __) => ref

@@ -8,7 +8,7 @@ import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/settings.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/settings.dart';
-import 'package:zpevnik/providers/song_lyric_screen_status.dart';
+import 'package:zpevnik/providers/display_screen_status.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
 const double _bottomBarHeight = 64;
@@ -44,13 +44,13 @@ class SongLyricBottomBar extends ConsumerWidget {
           Highlightable(
             padding: const EdgeInsets.all(kDefaultPadding),
             isEnabled: songLyric.hasRecordings,
-            onTap: ref.read(songLyricScreenStatusProvider.notifier).showExternals,
+            onTap: ref.read(displayScreenStatusProvider.notifier).showExternals,
             icon: const Icon(FontAwesomeIcons.headphones),
             child: showLabels ? const Text('Nahrávky') : null,
           ),
           Highlightable(
             padding: const EdgeInsets.all(kDefaultPadding),
-            onTap: ref.read(songLyricScreenStatusProvider.notifier).enableFullScreen,
+            onTap: ref.read(displayScreenStatusProvider.notifier).enableFullScreen,
             icon: const Icon(Icons.fullscreen),
             child: showLabels ? const Text('Celá obrazovka') : null,
           ),

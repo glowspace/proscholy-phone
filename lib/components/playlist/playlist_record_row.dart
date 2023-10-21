@@ -9,8 +9,9 @@ import 'package:zpevnik/utils/extensions.dart';
 
 class PlaylistRecordRow extends StatelessWidget {
   final PlaylistRecord playlistRecord;
+  final DisplayScreenArguments displayScreenArguments;
 
-  const PlaylistRecordRow({super.key, required this.playlistRecord});
+  const PlaylistRecordRow({super.key, required this.playlistRecord, required this.displayScreenArguments});
 
   @override
   Widget build(BuildContext context) {
@@ -88,17 +89,7 @@ class PlaylistRecordRow extends StatelessWidget {
     if (selectedPlaylistRecordNotifier != null) {
       selectedPlaylistRecordNotifier.value = playlistRecord;
     } else {
-      final songLyric = playlistRecord.songLyric.target;
-      final bibleVerse = playlistRecord.bibleVerse.target;
-      final customText = playlistRecord.customText.target;
-
-      if (songLyric != null) {
-        context.push('/song_lyric', arguments: SongLyricScreenArguments.songLyric(songLyric));
-      } else if (bibleVerse != null) {
-        context.push('/playlist/bible_verse', arguments: bibleVerse);
-      } else {
-        context.push('/playlist/custom_text', arguments: customText);
-      }
+      context.push('/display', arguments: displayScreenArguments);
     }
   }
 }

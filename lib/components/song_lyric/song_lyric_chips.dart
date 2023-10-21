@@ -14,41 +14,40 @@ class SongLyricChips extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
-      child: Wrap(
-        spacing: kDefaultPadding / 2,
-        runSpacing: kDefaultPadding / 4,
-        children: [
-          if (songLyric.hasFiles)
-            SongLyricChip(
-              text: 'Noty',
-              icon: FontAwesomeIcons.music,
-              onTap: () => showModalBottomSheet(
-                context: context,
-                builder: (context) => SongLyricFilesWidget(songLyric: songLyric),
-              ),
+    final fontSizeScale = MediaQuery.textScaleFactorOf(context);
+
+    return Wrap(
+      spacing: fontSizeScale * kDefaultPadding / 2,
+      runSpacing: fontSizeScale * kDefaultPadding / 4,
+      children: [
+        if (songLyric.hasFiles)
+          SongLyricChip(
+            text: 'Noty',
+            icon: FontAwesomeIcons.music,
+            onTap: () => showModalBottomSheet(
+              context: context,
+              builder: (context) => SongLyricFilesWidget(songLyric: songLyric),
             ),
-          if (songLyric.hasTranslations)
-            SongLyricChip(
-              text: 'Překlady',
-              icon: Icons.translate,
-              onTap: () => showModalBottomSheet(
-                context: context,
-                builder: (context) => TranslationsSheet(songLyric: songLyric),
-              ),
+          ),
+        if (songLyric.hasTranslations)
+          SongLyricChip(
+            text: 'Překlady',
+            icon: Icons.translate,
+            onTap: () => showModalBottomSheet(
+              context: context,
+              builder: (context) => TranslationsSheet(songLyric: songLyric),
             ),
-          if (songLyric.hasTags || songLyric.hasSongbooks)
-            SongLyricChip(
-              text: songLyric.hasTags ? (songLyric.hasSongbooks ? 'Štítky, zpěvníky' : 'Štítky') : 'Zpěvníky',
-              icon: FontAwesomeIcons.tags,
-              onTap: () => showModalBottomSheet(
-                context: context,
-                builder: (context) => SongLyricTags(songLyric: songLyric),
-              ),
+          ),
+        if (songLyric.hasTags || songLyric.hasSongbooks)
+          SongLyricChip(
+            text: songLyric.hasTags ? (songLyric.hasSongbooks ? 'Štítky, zpěvníky' : 'Štítky') : 'Zpěvníky',
+            icon: FontAwesomeIcons.tags,
+            onTap: () => showModalBottomSheet(
+              context: context,
+              builder: (context) => SongLyricTags(songLyric: songLyric),
             ),
-        ],
-      ),
+          ),
+      ],
     );
   }
 }

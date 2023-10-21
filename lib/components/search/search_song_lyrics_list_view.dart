@@ -55,8 +55,8 @@ class SearchSongLyricsListView extends ConsumerWidget {
           if (index < recentSongLyrics.length) {
             return SongLyricRow(
               songLyric: recentSongLyrics[index],
-              songLyricScreenArguments: SongLyricScreenArguments(
-                songLyrics: recentSongLyrics,
+              displayScreenArguments: DisplayScreenArguments(
+                items: recentSongLyrics,
                 initialIndex: index,
               ),
             );
@@ -81,8 +81,8 @@ class SearchSongLyricsListView extends ConsumerWidget {
           if (index < matchedBySongbookNumber.length) {
             return SongLyricRow(
               songLyric: matchedBySongbookNumber[index],
-              songLyricScreenArguments: SongLyricScreenArguments(
-                songLyrics: matchedBySongbookNumber,
+              displayScreenArguments: DisplayScreenArguments(
+                items: matchedBySongbookNumber,
                 initialIndex: index,
               ),
             );
@@ -103,8 +103,8 @@ class SearchSongLyricsListView extends ConsumerWidget {
 
         return SongLyricRow(
           songLyric: songLyrics[index],
-          songLyricScreenArguments: SongLyricScreenArguments(
-            songLyrics: songLyrics,
+          displayScreenArguments: DisplayScreenArguments(
+            items: songLyrics,
             initialIndex: index,
           ),
         );

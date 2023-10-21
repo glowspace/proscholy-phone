@@ -188,7 +188,7 @@ class Playlists extends _$Playlists {
     };
   }
 
-  void renamePlaylist(Playlist playlistToRename, String name) {
+  Playlist renamePlaylist(Playlist playlistToRename, String name) {
     final renamedPlaylist = playlistToRename.copyWith(name: name);
 
     state = [
@@ -197,6 +197,8 @@ class Playlists extends _$Playlists {
     ];
 
     _playlistsBox.put(renamedPlaylist);
+
+    return renamedPlaylist;
   }
 
   void removePlaylist(Playlist playlistToRemove) {
@@ -204,12 +206,6 @@ class Playlists extends _$Playlists {
       for (final playlist in state)
         if (playlist.id != playlistToRemove.id) playlist
     ];
-
-    print('removing records: ${playlistToRemove.records.map((playlistRecord) => playlistRecord.id).toList()}');
-    print(
-        'removing custom texts: ${playlistToRemove.records.map((playlistRecord) => playlistRecord.customText.targetId).toList()}');
-    print(
-        'removing bible verses: ${playlistToRemove.records.map((playlistRecord) => playlistRecord.bibleVerse.targetId).toList()}');
 
     _playlistsBox.remove(playlistToRemove.id);
     _playlistRecordsBox.removeMany(playlistToRemove.records.map((playlistRecord) => playlistRecord.id).toList());

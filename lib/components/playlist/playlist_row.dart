@@ -5,8 +5,6 @@ import 'package:zpevnik/components/playlist/selected_playlist.dart';
 import 'package:zpevnik/components/selected_row_highlight.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/playlist.dart';
-import 'package:zpevnik/models/song_lyric.dart';
-import 'package:zpevnik/providers/playlists.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
 class PlaylistRow extends StatelessWidget {
@@ -17,8 +15,6 @@ class PlaylistRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     final leadingIcon = Padding(
       padding: EdgeInsets.fromLTRB(
         context.isHome ? kDefaultPadding / 2 : 1.5 * kDefaultPadding,
@@ -31,33 +27,23 @@ class PlaylistRow extends StatelessWidget {
       ),
     );
 
-    return DragTarget<SongLyric>(
-      onAccept: (songLyric) =>
-          context.providers.read(playlistsProvider.notifier).addToPlaylist(playlist, songLyric: songLyric),
-      builder: (_, acceptList, __) => Highlightable(
-        highlightBackground: true,
-        padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2, vertical: kDefaultPadding / 3),
-        onTap: () => _pushPlaylist(context),
-        child: Container(
-          color: acceptList.isEmpty ? null : theme.highlightColor,
-          child: SelectedRowHighlight(
-            selectedObjectNotifier: SelectedPlaylist.of(context),
-            object: playlist,
-            child: Row(children: [
-              if (isReorderable)
-                ReorderableDragStartListener(index: playlist.rank, child: leadingIcon)
-              else
-                leadingIcon,
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
-                  child: Text(playlist.name),
-                ),
-              ),
-              if (!playlist.isFavorites) PlaylistButton(playlist: playlist),
-            ]),
+    return Highlightable(
+      highlightBackground: true,
+      padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2, vertical: kDefaultPadding / 3),
+      onTap: () => _pushPlaylist(context),
+      child: SelectedRowHighlight(
+        selectedObjectNotifier: SelectedPlaylist.of(context),
+        object: playlist,
+        child: Row(children: [
+          if (isReorderable) ReorderableDragStartListener(index: playlist.rank, child: leadingIcon) else leadingIcon,
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
+              child: Text(playlist.name),
+            ),
           ),
-        ),
+          if (!playlist.isFavorites) PlaylistButton(playlist: playlist),
+        ]),
       ),
     );
   }

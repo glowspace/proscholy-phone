@@ -27,11 +27,9 @@ Future<void> main() async {
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  final store = await openStore();
-
   final appDependencies = AppDependencies(
     sharedPreferences: await SharedPreferences.getInstance(),
-    store: store,
+    store: await openStore(),
     ftsDatabase: await openDatabase(join(await getDatabasesPath(), 'zpevnik.db')),
     packageInfo: await PackageInfo.fromPlatform(),
   );

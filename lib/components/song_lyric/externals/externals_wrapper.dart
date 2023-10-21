@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zpevnik/components/song_lyric/externals/externals.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
-import 'package:zpevnik/providers/song_lyric_screen_status.dart';
+import 'package:zpevnik/providers/display_screen_status.dart';
 
 const _dragSpeedScale = 0.01;
 const _collapseThresholdOffset = 150;
@@ -29,13 +29,13 @@ class _ExternalsWrapperState extends State<ExternalsWrapper> {
         widget.child,
         Consumer(
           builder: (_, ref, child) => IgnorePointer(
-            ignoring: !ref.watch(songLyricScreenStatusProvider.select((status) => status.showingExternals)),
+            ignoring: !ref.watch(displayScreenStatusProvider.select((status) => status.showingExternals)),
             child: GestureDetector(
               behavior: HitTestBehavior.translucent,
-              onTap: ref.read(songLyricScreenStatusProvider.notifier).hideExternals,
+              onTap: ref.read(displayScreenStatusProvider.notifier).hideExternals,
               child: AnimatedContainer(
                 duration: kDefaultAnimationDuration,
-                color: ref.watch(songLyricScreenStatusProvider.select((status) => status.showingExternals))
+                color: ref.watch(displayScreenStatusProvider.select((status) => status.showingExternals))
                     ? Colors.black.withAlpha(0x80)
                     : Colors.transparent,
               ),
@@ -45,7 +45,7 @@ class _ExternalsWrapperState extends State<ExternalsWrapper> {
         Consumer(
           builder: (_, ref, child) => AnimatedPositioned(
             duration: kDefaultAnimationDuration,
-            bottom: ref.watch(songLyricScreenStatusProvider.select((status) => status.showingExternals))
+            bottom: ref.watch(displayScreenStatusProvider.select((status) => status.showingExternals))
                 ? 0
                 : -MediaQuery.sizeOf(context).height,
             child: StatefulBuilder(
@@ -72,7 +72,7 @@ class _ExternalsWrapperState extends State<ExternalsWrapper> {
 
   void _snapOffset(DragEndDetails details, void Function(void Function()) setState, WidgetRef ref) {
     if (_bottomOffset + _dragSpeedScale * details.velocity.pixelsPerSecond.dy > _collapseThresholdOffset) {
-      ref.read(songLyricScreenStatusProvider.notifier).hideExternals();
+      ref.read(displayScreenStatusProvider.notifier).hideExternals();
       // reset offset with delay
       Future.delayed(kDefaultAnimationDuration, () => setState(() => _bottomOffset = 0));
     } else {

@@ -41,7 +41,7 @@ class _BibleVerseScreenState extends State<BibleVerseScreen> {
                 2 * kDefaultPadding,
                 kDefaultPadding,
                 2 * kDefaultPadding,
-                MediaQuery.of(context).padding.bottom + kDefaultPadding,
+                MediaQuery.paddingOf(context).bottom + kDefaultPadding,
               ),
               child: Text(_bibleVerse.text)),
         ),

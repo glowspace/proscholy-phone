@@ -12,61 +12,57 @@ class CustomNavigationRail extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Hero(
-      tag: 'navigationRail',
-      transitionOnUserGestures: true,
-      // can't set `surfaceTintColor` for `NavigationRail`, so it is wrapped to match the app bar color
-      child: Container(
-        decoration: BoxDecoration(
-          boxShadow: [
-            if (context.isHome)
-              BoxShadow(
-                color: theme.shadowColor.withOpacity(0.2),
-                spreadRadius: 0,
-                blurRadius: 6,
-                offset: const Offset(2, 0),
-              ),
-          ],
-        ),
-        child: Material(
-          color: context.isHome ? theme.colorScheme.surface : theme.colorScheme.surface,
-          elevation: 1,
-          surfaceTintColor: context.isHome ? null : theme.colorScheme.surfaceTint,
-          child: NavigationRail(
-            backgroundColor: Colors.transparent,
-            labelType: NavigationRailLabelType.all,
-            groupAlignment: context.isHome ? 0 : -0.155,
-            selectedIndex: context.isHome ? 0 : (context.isSearching ? 1 : 2),
-            onDestinationSelected: (index) => onDestinationSelected(context, index),
-            leading: context.isHome
-                ? null
-                : Column(children: [
-                    Image.asset('assets/images/logos/logo.png'),
-                    Highlightable(
-                      onTap: context.providers.read(menuCollapsedProvider.notifier).toggle,
-                      icon: Consumer(
-                        builder: (_, ref, __) => Icon(
-                          ref.watch(menuCollapsedProvider) ? Icons.menu : Icons.menu_open,
-                        ),
+    // can't set `surfaceTintColor` for `NavigationRail`, so it is wrapped to match the app bar color
+    return Container(
+      decoration: BoxDecoration(
+        boxShadow: [
+          if (context.isHome)
+            BoxShadow(
+              color: theme.shadowColor.withOpacity(0.2),
+              spreadRadius: 0,
+              blurRadius: 6,
+              offset: const Offset(2, 0),
+            ),
+        ],
+      ),
+      child: Material(
+        color: context.isHome ? theme.colorScheme.surface : theme.colorScheme.surface,
+        elevation: 1,
+        surfaceTintColor: context.isHome ? null : theme.colorScheme.surfaceTint,
+        child: NavigationRail(
+          backgroundColor: Colors.transparent,
+          labelType: NavigationRailLabelType.all,
+          groupAlignment: context.isHome ? 0 : -0.155,
+          selectedIndex: context.isHome ? 0 : (context.isSearching ? 1 : 2),
+          onDestinationSelected: (index) => onDestinationSelected(context, index),
+          leading: context.isHome
+              ? null
+              : Column(children: [
+                  Image.asset('assets/images/logos/logo.png'),
+                  Highlightable(
+                    onTap: context.providers.read(menuCollapsedProvider.notifier).toggle,
+                    icon: Consumer(
+                      builder: (_, ref, __) => Icon(
+                        ref.watch(menuCollapsedProvider) ? Icons.menu : Icons.menu_open,
                       ),
                     ),
-                  ]),
-            destinations: const [
-              NavigationRailDestination(
-                selectedIcon: Icon(Icons.home),
-                icon: Icon(Icons.home_outlined),
-                label: Text('Nástěnka'),
-              ),
-              NavigationRailDestination(
-                icon: Icon(Icons.search),
-                label: Text('Hledání'),
-              ),
-              NavigationRailDestination(
-                icon: Icon(Icons.playlist_play_rounded),
-                label: Text('Seznamy'),
-              ),
-            ],
-          ),
+                  ),
+                ]),
+          destinations: const [
+            NavigationRailDestination(
+              selectedIcon: Icon(Icons.home),
+              icon: Icon(Icons.home_outlined),
+              label: Text('Nástěnka'),
+            ),
+            NavigationRailDestination(
+              icon: Icon(Icons.search),
+              label: Text('Hledání'),
+            ),
+            NavigationRailDestination(
+              icon: Icon(Icons.playlist_play_rounded),
+              label: Text('Seznamy'),
+            ),
+          ],
         ),
       ),
     );
