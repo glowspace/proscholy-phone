@@ -8,6 +8,26 @@
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
 	<string>Zpěvník</string>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string></string>
+			<key>CFBundleTypeIconFiles</key>
+			<array>
+				<string>Icon-29.png</string>
+				<string>Icon-58.png</string>
+				<string>Icon-64.png</string>
+				<string>Icon-320.png</string>
+			</array>
+			<key>LSHandlerRank</key>
+			<string>Owner</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>cz.proscholy</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -20,8 +40,6 @@
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
 	<string>$(MARKETING_VERSION)</string>
-	<key>CFBundleSignature</key>
-	<string>????</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -41,18 +59,16 @@
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>Bluetooth je potřeba pro sdílené zobrazení.</string>
-	<key>NSBonjourServices</key>
-	<array>
-		<string>_proscholy-conn._tcp</string>
-	</array>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
 	<key>UIRequiresPersistentWiFi</key>
 	<true/>
+	<key>UIStatusBarHidden</key>
+	<false/>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
@@ -68,11 +84,38 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>UTExportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.json</string>
+			</array>
+			<key>UTTypeIconFiles</key>
+			<array>
+				<string>Icon-29.png</string>
+				<string>Icon-58.png</string>
+				<string>Icon-64.png</string>
+				<string>Icon-320.png</string>
+			</array>
+			<key>UTTypeIdentifier</key>
+			<string>cz.proscholy</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>proscholy</string>
+				</array>
+				<key>public.mime-type</key>
+				<array>
+					<string>application/json</string>
+				</array>
+			</dict>
+		</dict>
+	</array>
 	<key>io.flutter.embedded_views_preview</key>
 	<true/>
-	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<key>FlutterDeepLinkingEnabled</key>
 	<true/>
-	<key>UIStatusBarHidden</key>
-	<false/>
 </dict>
 </plist>

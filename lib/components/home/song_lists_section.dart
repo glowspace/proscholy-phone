@@ -1,36 +1,40 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zpevnik/components/open_all_button.dart';
 import 'package:zpevnik/components/playlist/playlist_row.dart';
 import 'package:zpevnik/components/section.dart';
-import 'package:zpevnik/providers/data.dart';
-import 'package:zpevnik/providers/navigation.dart';
+import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/providers/playlists.dart';
+import 'package:zpevnik/utils/extensions.dart';
 
 const _maxShowingPlaylists = 3;
 
-class SongListsSection extends StatelessWidget {
-  const SongListsSection({Key? key}) : super(key: key);
+class SongListsSection extends ConsumerWidget {
+  const SongListsSection({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final dataProvider = context.watch<DataProvider>();
-    final playlists = [dataProvider.favorites] + dataProvider.playlists;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final playlists = [ref.read(favoritePlaylistProvider)] + ref.watch(playlistsProvider);
 
     return Section(
-      title: Text('Moje seznamy', style: Theme.of(context).textTheme.titleLarge),
+      outsideTitle: 'Moje seznamy',
+      outsideTitleLarge: true,
+      margin: const EdgeInsets.symmetric(vertical: 2 / 3 * kDefaultPadding),
       action: OpenAllButton(
-        title: 'Všechny seznamy',
-        onTap: () => NavigationProvider.of(context).pushNamed('/playlists'),
+        title: 'Zobrazit vše',
+        onTap: () => context.push('/playlists'),
       ),
-      child: ListView.separated(
-        itemCount: min(_maxShowingPlaylists, playlists.length),
-        itemBuilder: (_, index) => PlaylistRow(playlist: playlists[index], visualDensity: VisualDensity.comfortable),
-        separatorBuilder: (_, __) => const Divider(height: 0),
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-      ),
+      children: [
+        ListView.separated(
+          itemCount: min(_maxShowingPlaylists, playlists.length),
+          itemBuilder: (_, index) => PlaylistRow(playlist: playlists[index]),
+          separatorBuilder: (_, __) => const Divider(),
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+        ),
+      ],
     );
   }
 }

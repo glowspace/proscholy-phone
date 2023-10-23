@@ -5,36 +5,65 @@ import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/song_lyric/externals/seek_bar.dart';
 import 'package:zpevnik/components/song_lyric/utils/active_player_controller.dart';
 import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/models/external.dart';
+import 'package:zpevnik/utils/extensions.dart';
 
-class AudioPlayerWidget extends StatelessWidget {
-  final ActivePlayerController controller;
+class AudioPlayerWrapper extends StatefulWidget {
+  final External external;
 
-  const AudioPlayerWidget({Key? key, required this.controller}) : super(key: key);
+  const AudioPlayerWrapper({super.key, required this.external});
+
+  @override
+  State<AudioPlayerWrapper> createState() => _AudioPlayerWrapperState();
+}
+
+class _AudioPlayerWrapperState extends State<AudioPlayerWrapper> {
+  late final _controller = AudioPlayer()..setUrl(widget.external.url!, preload: false);
+
+  @override
+  void initState() {
+    super.initState();
+
+    final activePlayerController = ActivePlayerController(widget.external, audioPlayer: _controller);
+
+    _controller.playingStream.listen((isPlaying) {
+      if (isPlaying) context.providers.read(activePlayerProvider.notifier).changePlayer(activePlayerController);
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+
+    super.dispose();
+  }
 
   Stream<PositionData> get _positionDataStream => Rx.combineLatest2<Duration, Duration?, PositionData>(
-      controller.audioPlayer!.positionStream,
-      controller.audioPlayer!.durationStream,
+      _controller.positionStream,
+      _controller.durationStream,
       (position, duration) => PositionData(position, duration ?? Duration.zero));
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        HighlightableIconButton(
-          onTap: controller.rewind,
+        Highlightable(
+          onTap: () => _controller.seek(_controller.position - const Duration(seconds: 5)),
           padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
           icon: const Icon(Icons.fast_rewind),
         ),
-        StreamBuilder<PlayerState>(
-          stream: controller.audioPlayer!.playerStateStream,
-          builder: (_, __) => HighlightableIconButton(
-            onTap: controller.isPlaying ? controller.pause : controller.play,
-            padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
-            icon: Icon(controller.isPlaying ? Icons.pause : Icons.play_arrow),
-          ),
+        StreamBuilder(
+          stream: _controller.playingStream,
+          builder: (_, isPlaying) => isPlaying.hasData
+              ? Highlightable(
+                  onTap: isPlaying.data! ? _controller.pause : _controller.play,
+                  padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
+                  icon: Icon(isPlaying.data! ? Icons.pause : Icons.play_arrow),
+                )
+              : const CircularProgressIndicator.adaptive(),
         ),
-        HighlightableIconButton(
-          onTap: controller.forward,
+        Highlightable(
+          onTap: () => _controller.seek(_controller.position + const Duration(seconds: 5)),
           padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
           icon: const Icon(Icons.fast_forward),
         ),
@@ -46,7 +75,7 @@ class AudioPlayerWidget extends StatelessWidget {
               return SeekBar(
                 duration: positionData?.duration ?? Duration.zero,
                 position: positionData?.position ?? Duration.zero,
-                onChangeEnd: controller.audioPlayer!.seek,
+                onChangeEnd: _controller.seek,
               );
             },
           ),

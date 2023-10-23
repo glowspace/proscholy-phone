@@ -2,18 +2,32 @@ import 'package:flutter/material.dart';
 
 class SplitView extends StatelessWidget {
   final Widget child;
-  final Widget subChild;
+  final Widget detail;
 
-  const SplitView({Key? key, required this.child, required this.subChild}) : super(key: key);
+  final int childFlex;
+  final int detailFlex;
+
+  final bool showingOnlyDetail;
+
+  const SplitView({
+    super.key,
+    required this.child,
+    required this.detail,
+    this.childFlex = 1,
+    this.detailFlex = 1,
+    this.showingOnlyDetail = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(flex: 4, child: child),
-        const VerticalDivider(width: 0),
-        Flexible(flex: 3, child: subChild),
+        if (!showingOnlyDetail) ...[
+          Expanded(flex: childFlex, child: child),
+          VerticalDivider(width: 0.3, color: Theme.of(context).dividerColor),
+        ],
+        Flexible(flex: detailFlex, child: detail),
       ],
     );
   }

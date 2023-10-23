@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
@@ -83,7 +84,7 @@ class SignInButton extends StatefulWidget {
   final SignInButtonType type;
   final Function()? onSignIn;
 
-  const SignInButton({Key? key, required this.type, this.onSignIn}) : super(key: key);
+  const SignInButton({super.key, required this.type, this.onSignIn});
 
   @override
   State<SignInButton> createState() => _SignInButtonState();
@@ -101,17 +102,15 @@ class _SignInButtonState extends State<SignInButton> {
         border: widget.type.border,
       ),
       clipBehavior: Clip.antiAlias,
-      child: InkWell(
+      child: Highlightable(
         onTap: widget.onSignIn,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2, vertical: kDefaultPadding / 3),
-          child: Row(
-            children: [
-              widget.type.logo(theme),
-              const SizedBox(width: kDefaultPadding / 2),
-              Expanded(child: Text(widget.type.text, style: widget.type.style(theme), maxLines: 2))
-            ],
-          ),
+        padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2, vertical: kDefaultPadding / 3),
+        child: Row(
+          children: [
+            widget.type.logo(theme),
+            const SizedBox(width: kDefaultPadding / 2),
+            Expanded(child: Text(widget.type.text, style: widget.type.style(theme), maxLines: 2))
+          ],
         ),
       ),
     );

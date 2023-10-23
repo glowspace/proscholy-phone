@@ -1,35 +1,40 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zpevnik/components/open_all_button.dart';
 import 'package:zpevnik/components/section.dart';
-import 'package:zpevnik/components/songbook/songbooks_grid_view.dart';
-import 'package:zpevnik/components/songbook/songbooks_list_view.dart';
-import 'package:zpevnik/providers/data.dart';
-import 'package:zpevnik/providers/navigation.dart';
+import 'package:zpevnik/components/songbook/songbook_row.dart';
+import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/providers/songbooks.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
-const _maxShowingSongbooksPhone = 3;
-const _maxShowingSongbooksTablet = 4;
+const _maxShowingSongbooks = 3;
 
-class SongbooksSection extends StatelessWidget {
-  const SongbooksSection({Key? key}) : super(key: key);
+class SongbooksSection extends ConsumerWidget {
+  const SongbooksSection({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final dataProvider = context.watch<DataProvider>();
-
-    final showingSongbooks = dataProvider.songbooks
-        .sublist(0, MediaQuery.of(context).isTablet ? _maxShowingSongbooksTablet : _maxShowingSongbooksPhone);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final showingSongbooks = ref.watch(songbooksProvider).sublist(0, _maxShowingSongbooks);
 
     return Section(
-      title: Text('Zpěvníky', style: Theme.of(context).textTheme.titleLarge),
+      outsideTitle: 'Zpěvníky',
+      outsideTitleLarge: true,
+      margin: const EdgeInsets.symmetric(vertical: 2 / 3 * kDefaultPadding),
       action: OpenAllButton(
-        title: 'Všechny zpěvníky',
-        onTap: () => NavigationProvider.of(context).pushNamed('/songbooks'),
+        title: 'Zobrazit vše',
+        onTap: () => context.push('/songbooks'),
       ),
-      child: MediaQuery.of(context).isTablet
-          ? SongbooksGridView(songbooks: showingSongbooks, shrinkWrap: true, isCrossAxisCountMultipleOfTwo: true)
-          : SongbooksListView(songbooks: showingSongbooks, shrinkWrap: true),
+      children: [
+        ListView.separated(
+          primary: false,
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          itemCount: showingSongbooks.length,
+          itemBuilder: (_, index) => SongbookRow(songbook: showingSongbooks[index]),
+          separatorBuilder: (_, __) => const Divider(),
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+        ),
+      ],
     );
   }
 }

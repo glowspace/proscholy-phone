@@ -1,119 +1,172 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:zpevnik/components/bottom_navigation_bar.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/home/additional_section.dart';
+import 'package:zpevnik/components/home/flexible_top_section.dart';
 import 'package:zpevnik/components/home/news_section.dart';
-import 'package:zpevnik/components/home/now_playing_section.dart';
-// import 'package:zpevnik/components/home/shared_with_me_section.dart';
+import 'package:zpevnik/components/home/recent_section.dart';
 import 'package:zpevnik/components/home/song_lists_section.dart';
 import 'package:zpevnik/components/home/songbooks_section.dart';
 import 'package:zpevnik/components/home/top_section.dart';
 import 'package:zpevnik/components/home/update_section.dart';
-import 'package:zpevnik/components/search_field.dart';
+import 'package:zpevnik/components/navigation/scaffold.dart';
+import 'package:zpevnik/components/search/search_field.dart';
 import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/providers/home.dart';
+import 'package:zpevnik/components/home/edit_home_sections_sheet.dart';
 import 'package:zpevnik/utils/extensions.dart';
+import 'package:zpevnik/utils/services/external_actions.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+const double _minColumnWidth = 400;
+const double _collapsedAppBarHeight = 44;
+
+class HomeScreen extends ConsumerStatefulWidget {
+  const HomeScreen({super.key});
+
+  @override
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  late final _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    // handle file that was used to open this app when we get first time to home screen
+    ExternalActionsService.instance.handleInitiallyOpenedFile();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final String text;
+    final String greetings;
     final now = DateTime.now();
 
     if (now.hour < 11) {
-      text = 'Dobré ráno';
+      greetings = 'Dobré ráno';
     } else if (now.hour < 12) {
-      text = 'Dobré dopoledne';
+      greetings = 'Dobré dopoledne';
     } else if (now.hour < 18) {
-      text = 'Dobré odpoledne';
+      greetings = 'Dobré odpoledne';
     } else {
-      text = 'Dobrý večer';
+      greetings = 'Dobrý večer';
     }
 
-    if (MediaQuery.of(context).isTablet) return _HomeScreenTablet(greetings: text);
+    final sections = [
+      for (final homeSection in ref.watch(homeSectionSettingsProvider))
+        switch (homeSection) {
+          HomeSection.news => const NewsSection(),
+          HomeSection.recent => const RecentSection(),
+          HomeSection.playlists => const SongListsSection(),
+          HomeSection.songbooks => const SongbooksSection(),
+        },
+      const AdditionalSection(),
+    ];
 
-    return _HomeScreenPhone(greetings: text);
-  }
-}
+    final mediaQuery = MediaQuery.of(context);
+    final columns = max(1, (mediaQuery.size.width / _minColumnWidth).floor());
+    final sectionsPerColumn = (sections.length / columns).ceil();
+    final columnSections = [
+      for (int i = 0; i < columns; i++)
+        // make sure we don't get out of range if there are less sections than columns
+        if (i * sectionsPerColumn < sections.length)
+          sections.sublist(i * sectionsPerColumn, min((i + 1) * sectionsPerColumn, sections.length))
+        else
+          <Widget>[]
+    ];
 
-class _HomeScreenPhone extends StatelessWidget {
-  final String greetings;
+    columnSections.first = [
+      // add these only if we show multiple columns, it is part of `FlexibleTopSection` in single column display
+      if (columns > 1) ...[
+        const TopSection(),
+        const SearchField(key: Key('searchfield')),
+      ],
+      Text(greetings, style: Theme.of(context).textTheme.titleLarge),
+      const UpdateSection(),
+      ...columnSections.first
+    ];
 
-  const _HomeScreenPhone({Key? key, required this.greetings}) : super(key: key);
+    columnSections.last.add(
+      Highlightable(
+        padding: const EdgeInsets.only(top: 2 / 3 * kDefaultPadding, bottom: 2 * kDefaultPadding),
+        onTap: () => showModalBottomSheet(context: context, builder: (context) => const EditHomeSectionsSheet()),
+        child: const Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Icon(Icons.edit, size: kDefaultIconSize),
+            SizedBox(width: kDefaultPadding / 2),
+            Text('Upravit nástěnku')
+          ],
+        ),
+      ),
+    );
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      bottomNavigationBar: const CustomBottomNavigationBar(),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const SizedBox(height: 2 * kDefaultPadding),
-                const TopSection(),
-                const SizedBox(height: 2 * kDefaultPadding),
-                const SearchField(key: Key('searchfield')),
-                const SizedBox(height: 2 * kDefaultPadding),
-                Text(greetings, style: Theme.of(context).textTheme.titleLarge),
-                const NowPlayingSection(),
-                const UpdateSection(),
-                const NewsSection(),
-                const SizedBox(height: 2 * kDefaultPadding),
-                const SongListsSection(),
-                const SizedBox(height: 2 * kDefaultPadding),
-                const SongbooksSection(),
-                const SizedBox(height: 2 * kDefaultPadding),
-                const AdditionalSection(),
-                const SizedBox(height: 2 * kDefaultPadding),
-                // const SharedWithMeSection(),
-              ],
-            ),
-          ),
+    final theme = Theme.of(context);
+
+    return AnnotatedRegion(
+      value: theme.brightness.isLight ? SystemUiOverlayStyle.dark : SystemUiOverlayStyle.light,
+      child: CustomScaffold(
+        backgroundColor: theme.colorScheme.background,
+        useMaxWidth: false,
+        body: SafeArea(
+          child: columns == 1
+              ? NotificationListener<ScrollEndNotification>(
+                  onNotification: _snapCollapseAnimation,
+                  child: CustomScrollView(
+                    controller: _scrollController,
+                    primary: false,
+                    slivers: [
+                      const SliverAppBar(
+                        expandedHeight: 2 * kToolbarHeight + kDefaultPadding,
+                        toolbarHeight: kToolbarHeight + 2 * kDefaultPadding,
+                        pinned: true,
+                        forceMaterialTransparency: true,
+                        flexibleSpace: FlexibleTopSection(),
+                      ),
+                      SliverPadding(
+                        padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+                        sliver: SliverList.list(children: columnSections.first),
+                      ),
+                    ],
+                  ),
+                )
+              : SingleChildScrollView(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      for (final columnSection in columnSections)
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
+                            child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: columnSection),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
         ),
       ),
     );
   }
-}
 
-class _HomeScreenTablet extends StatelessWidget {
-  final String greetings;
+  bool _snapCollapseAnimation(ScrollEndNotification notification) {
+    final scrollDistance = _collapsedAppBarHeight - _scrollController.offset;
 
-  const _HomeScreenTablet({Key? key, required this.greetings}) : super(key: key);
+    if (scrollDistance > 0) {
+      Future.delayed(
+        const Duration(milliseconds: 10),
+        () => _scrollController.animateTo(
+          scrollDistance < _collapsedAppBarHeight / 2 ? _collapsedAppBarHeight : 0,
+          duration: kDefaultAnimationDuration,
+          curve: Curves.decelerate,
+        ),
+      );
+    }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Row(children: [
-          const Spacer(flex: 1),
-          Expanded(
-            flex: 8,
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 2 * kDefaultPadding),
-                  Text(greetings, style: Theme.of(context).textTheme.titleLarge),
-                  const SizedBox(height: kDefaultPadding / 2),
-                  const UpdateSection(),
-                  const NewsSection(),
-                  const SizedBox(height: 2 * kDefaultPadding),
-                  const SongbooksSection(),
-                  const SizedBox(height: 2 * kDefaultPadding),
-                  const AdditionalSection(),
-                  const SizedBox(height: 2 * kDefaultPadding),
-                  // const SharedWithMeSection(),
-                ],
-              ),
-            ),
-          ),
-          const Spacer(flex: 1),
-        ]),
-      ),
-    );
+    return false;
   }
 }

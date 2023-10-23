@@ -1,21 +1,18 @@
 import 'package:flutter/material.dart' hide PopupMenuEntry, PopupMenuItem;
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:zpevnik/components/custom/popup_menu_button.dart';
 import 'package:zpevnik/components/icon_item.dart';
-import 'package:zpevnik/components/playlist/playlists_sheet.dart';
-import 'package:zpevnik/components/song_lyric/utils/parser.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/custom/popup_menu.dart';
 import 'package:zpevnik/links.dart';
 import 'package:zpevnik/models/song_lyric.dart';
-import 'package:zpevnik/providers/data.dart';
-import 'package:zpevnik/providers/navigation.dart';
+import 'package:zpevnik/providers/app_dependencies.dart';
 import 'package:zpevnik/providers/presentation.dart';
+import 'package:zpevnik/utils/extensions.dart';
 import 'package:zpevnik/utils/url_launcher.dart';
 
 enum SongLyricMenuAction {
-  addToPlaylist,
   present,
   share,
   openInBrowser,
@@ -24,34 +21,30 @@ enum SongLyricMenuAction {
 
 class SongLyricMenuButton extends StatelessWidget {
   final SongLyric songLyric;
-  // TODO: this is only temporary, remove it once better solution to pass this to presentation is found
-  final SongLyricsParser songLyricsParser;
 
-  const SongLyricMenuButton({Key? key, required this.songLyric, required this.songLyricsParser}) : super(key: key);
+  const SongLyricMenuButton({super.key, required this.songLyric});
 
   @override
   Widget build(BuildContext context) {
     return CustomPopupMenuButton(
       items: _buildPopupMenuItems(context),
-      onSelected: _selectedAction,
+      onSelected: (context, action) => _selectedAction(context, action),
       padding: const EdgeInsets.only(left: kDefaultPadding, right: 2 * kDefaultPadding),
     );
   }
 
   List<PopupMenuEntry<SongLyricMenuAction>> _buildPopupMenuItems(BuildContext context) {
     return [
-      const PopupMenuItem(
-        value: SongLyricMenuAction.addToPlaylist,
-        child: IconItem(icon: Icons.playlist_add, text: 'Přidat do seznamu'),
-      ),
-      // PopupMenuItem(
-      //   child: _buildItem(context, Icons.tap_and_play, 'Připojit k zařízením v okolí'),
-      // ),
       PopupMenuItem(
         value: SongLyricMenuAction.present,
-        child: IconItem(
+        child: Consumer(
+          builder: (_, ref, __) => IconItem(
             icon: Icons.cast,
-            text: context.watch<PresentationProvider>().isPresenting ? 'Ukončit promítání' : 'Spustit promítání'),
+            text: ref.watch(presentationProvider.select((presentationProvider) => presentationProvider.isPresenting))
+                ? 'Ukončit promítání'
+                : 'Spustit promítání',
+          ),
+        ),
       ),
       const PopupMenuItem(
         value: SongLyricMenuAction.share,
@@ -71,20 +64,18 @@ class SongLyricMenuButton extends StatelessWidget {
   void _selectedAction(BuildContext context, SongLyricMenuAction? action) {
     if (action == null) return;
 
-    final version = context.read<DataProvider>().packageInfo.version;
+    final version = context.providers
+        .read(appDependenciesProvider.select((appDependencies) => appDependencies.packageInfo.version));
     final platform = Theme.of(context).platform == TargetPlatform.iOS ? 'iOS' : 'android';
 
     switch (action) {
-      case SongLyricMenuAction.addToPlaylist:
-        _showPlaylists(context);
-        break;
       case SongLyricMenuAction.present:
-        final presentationProvider = context.read<PresentationProvider>();
+        final presentationNotifier = context.providers.read(presentationProvider.notifier);
 
-        if (presentationProvider.isPresenting) {
-          presentationProvider.stop();
+        if (presentationNotifier.isPresenting) {
+          presentationNotifier.stop();
         } else {
-          NavigationProvider.of(context).pushNamed('/song_lyric/present', arguments: songLyricsParser);
+          context.push('/song_lyric/present', arguments: songLyric);
         }
         break;
       case SongLyricMenuAction.share:
@@ -99,13 +90,5 @@ class SongLyricMenuButton extends StatelessWidget {
         launch('$reportSongLyricUrl?customfield_10056=${songLyric.id}+$version+$platform');
         break;
     }
-  }
-
-  void _showPlaylists(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(kDefaultRadius))),
-      builder: (context) => PlaylistsSheet(selectedSongLyric: songLyric),
-    );
   }
 }

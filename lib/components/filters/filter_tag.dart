@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/tag.dart';
-import 'package:zpevnik/providers/song_lyrics.dart';
+import 'package:zpevnik/providers/tags.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
-const double _filterRadius = 7;
+const double _removablefilterRadius = 7;
+const double _filterRadius = 32;
 
 class FilterTag extends StatelessWidget {
   final Tag tag;
@@ -13,11 +15,11 @@ class FilterTag extends StatelessWidget {
   final bool isRemovable;
 
   const FilterTag({
-    Key? key,
+    super.key,
     required this.tag,
     this.isToggable = false,
     this.isRemovable = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -27,11 +29,8 @@ class FilterTag extends StatelessWidget {
         ? const EdgeInsets.only(left: kDefaultPadding)
         : const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2);
 
-    final songLyricsProvider = context.watch<AllSongLyricsProvider>();
-
-    final backgroundColor = theme.brightness.isLight ? const Color(0xfff2f1f6) : const Color(0xff15131d);
-    final selectedBackgroundColor = theme.brightness.isLight ? const Color(0xffe4e2ec) : const Color(0xff3c3653);
-    final removeBackgroundColor = theme.brightness.isLight ? const Color(0xffe9e4f5) : const Color(0xff1c1333);
+    final selectedBackgroundColor = theme.colorScheme.secondaryContainer;
+    final removeBackgroundColor = theme.colorScheme.primaryContainer;
 
     Widget child = Row(
       mainAxisSize: MainAxisSize.min,
@@ -41,36 +40,48 @@ class FilterTag extends StatelessWidget {
         if (isRemovable)
           Material(
             color: removeBackgroundColor,
-            child: InkWell(
-              onTap: () => songLyricsProvider.toggleSelectedTag(tag),
+            child: Highlightable(
+              onTap: () => context.providers.read(selectedTagsProvider.notifier).toggleSelection(tag),
+              highlightBackground: true,
               highlightColor: theme.colorScheme.primary.withAlpha(0x20),
-              child: Padding(
-                padding: const EdgeInsets.all(kDefaultPadding / 2).copyWith(left: kDefaultPadding / 4),
-                child: const Icon(Icons.close, size: 14),
-              ),
+              padding: const EdgeInsets.all(2 * kDefaultPadding / 3).copyWith(left: kDefaultPadding / 4),
+              child: const Icon(Icons.close, size: 14),
             ),
           ),
       ],
     );
 
     if (isToggable) {
-      child = InkWell(
-        highlightColor: theme.colorScheme.primary.withAlpha(0x10),
-        onTap: () => songLyricsProvider.toggleSelectedTag(tag),
-        child: Padding(padding: padding, child: child),
+      child = Highlightable(
+        highlightBackground: true,
+        highlightColor: theme.colorScheme.primary.withAlpha(0x20),
+        borderRadius: BorderRadius.circular(_filterRadius),
+        onTap: () => context.providers.read(selectedTagsProvider.notifier).toggleSelection(tag),
+        padding: padding,
+        child: child,
       );
     }
 
     return Container(
       margin: isToggable ? null : const EdgeInsets.symmetric(horizontal: kDefaultPadding / 4),
-      padding: isToggable ? null : padding,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(isRemovable ? _filterRadius : 32),
+        borderRadius: BorderRadius.circular(isRemovable ? _removablefilterRadius : _filterRadius),
         border: isToggable ? Border.all(color: theme.hintColor, width: 0.5) : null,
-        color: isRemovable ? backgroundColor : (songLyricsProvider.isSelected(tag) ? selectedBackgroundColor : null),
       ),
       clipBehavior: Clip.antiAlias,
-      child: child,
+      // for background color must be wrapped in `Material`, when setting color of the `Container` highligh won't be visible
+      child: Consumer(
+        builder: (_, ref, child) => Material(
+          borderRadius: BorderRadius.circular(isRemovable ? _removablefilterRadius : _filterRadius),
+          color: isRemovable
+              ? selectedBackgroundColor
+              : (ref.watch(selectedTagsByTypeProvider(tag.type).select((selectedTags) => selectedTags.contains(tag)))
+                  ? selectedBackgroundColor
+                  : Colors.transparent),
+          child: child,
+        ),
+        child: Padding(padding: isToggable ? EdgeInsets.zero : padding, child: child),
+      ),
     );
   }
 }

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
-import 'package:zpevnik/providers/data.dart';
 import 'package:zpevnik/providers/now_playing.dart';
-import 'package:zpevnik/routes/arguments/song_lyric.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
 const _backgroundColor = Color(0xff232380);
@@ -14,7 +12,7 @@ class NowPlayingSection extends StatefulWidget {
   final NowPlayingController? controller;
   final bool pushShouldReplace;
 
-  const NowPlayingSection({Key? key, this.controller, this.pushShouldReplace = false}) : super(key: key);
+  const NowPlayingSection({super.key, this.controller, this.pushShouldReplace = false});
 
   @override
   State<NowPlayingSection> createState() => _NowPlayingSectionState();
@@ -27,7 +25,7 @@ class _NowPlayingSectionState extends State<NowPlayingSection> {
   void initState() {
     super.initState();
 
-    _controller = widget.controller ?? NowPlayingController(context.read<DataProvider>());
+    _controller = widget.controller ?? NowPlayingController();
   }
 
   @override
@@ -51,13 +49,13 @@ class _NowPlayingSectionState extends State<NowPlayingSection> {
           margin: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
           clipBehavior: Clip.antiAlias,
-          child: InkWell(
-            onTap: () => _pushSongLyric(context, songLyric!),
+          child: Highlightable(
+            highlightBackground: true,
             highlightColor: theme.brightness.isLight ? _backgroundHighlightColor : _backgroundColor,
+            padding: const EdgeInsets.fromLTRB(2 * kDefaultPadding, kDefaultPadding, kDefaultPadding, kDefaultPadding),
+            onTap: () => _pushSongLyric(songLyric!),
             child: Container(
               color: theme.brightness.isLight ? _backgroundColor : _backgroundHighlightColor,
-              padding:
-                  const EdgeInsets.fromLTRB(2 * kDefaultPadding, kDefaultPadding, kDefaultPadding, kDefaultPadding),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -90,13 +88,11 @@ class _NowPlayingSectionState extends State<NowPlayingSection> {
     );
   }
 
-  void _pushSongLyric(BuildContext context, SongLyric songLyric) {
-    final arguments = SongLyricScreenArguments([songLyric], 0, shouldShowBanner: true);
-
+  void _pushSongLyric(SongLyric songLyric) {
     if (widget.pushShouldReplace) {
-      Navigator.of(context).pushReplacementNamed('/song_lyric', arguments: arguments);
+      Navigator.of(context).pushReplacementNamed('/song_lyric', arguments: songLyric);
     } else {
-      Navigator.of(context).pushNamed('/song_lyric', arguments: arguments);
+      Navigator.of(context).pushNamed('/song_lyric', arguments: songLyric);
     }
   }
 }

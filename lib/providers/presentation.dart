@@ -1,20 +1,25 @@
-import 'dart:convert';
+import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:presentation/presentation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zpevnik/components/song_lyric/utils/parser.dart';
+import 'package:zpevnik/models/model.dart';
 import 'package:zpevnik/models/presentation.dart';
+import 'package:zpevnik/utils/services/presentation.dart';
+
+final presentationProvider = ChangeNotifierProvider((ref) => PresentationProvider());
 
 class PresentationProvider extends ChangeNotifier {
-  final presentation = Presentation();
-
   SongLyricsParser? _songLyricsParser;
+  StreamController<PresentationData>? _showingDataStreamController;
   Function? _nextAction;
 
   bool _isPresenting = false;
+  bool _isPresentingLocally = false;
   bool _isPaused = false;
 
   bool get isPresenting => _isPresenting;
+  bool get isPresentingLocally => _isPresentingLocally;
   bool get isPaused => _isPaused;
 
   bool _isBeforeStart = false;
@@ -25,18 +30,34 @@ class PresentationProvider extends ChangeNotifier {
   PresentationData _showingData = defaultPresentationData;
   PresentationSettings get settings => _showingData.settings;
 
-  void start(SongLyricsParser songLyricsParser) {
+  PresentationData get showingData => _showingData;
+  Stream<PresentationData> get showingDataStream => _showingDataStreamController!.stream;
+
+  void start(SongLyricsParser songLyricsParser) async {
     _isPresenting = true;
+    _isPresentingLocally = !(await onExternalDisplay);
     _verseOrder = 0;
 
     _songLyricsParser = songLyricsParser;
 
-    presentation.startPresentation();
-    _changeShowingData(_showingData.copyWith(
-      songLyricId: songLyricsParser.songLyric.id,
-      songLyricName: songLyricsParser.songLyric.name,
-      lyrics: songLyricsParser.getVerse(_verseOrder),
-    ));
+    if (_isPresentingLocally) {
+      _showingDataStreamController = StreamController.broadcast(
+        onListen: () => _changeShowingData(
+          _showingData.copyWith(
+            songLyricId: songLyricsParser.songLyric.id,
+            name: songLyricsParser.songLyric.name,
+            text: songLyricsParser.getVerse(_verseOrder),
+          ),
+        ),
+      );
+    } else {
+      PresentationService.instance.startPresentation();
+      _changeShowingData(_showingData.copyWith(
+        songLyricId: songLyricsParser.songLyric.id,
+        name: songLyricsParser.songLyric.name,
+        text: songLyricsParser.getVerse(_verseOrder),
+      ));
+    }
 
     notifyListeners();
   }
@@ -44,7 +65,9 @@ class PresentationProvider extends ChangeNotifier {
   void stop() {
     _isPresenting = false;
 
-    presentation.stopPresentation();
+    _showingDataStreamController?.close();
+
+    PresentationService.instance.stopPresentation();
 
     notifyListeners();
   }
@@ -59,9 +82,9 @@ class PresentationProvider extends ChangeNotifier {
     if (verse.isEmpty) _isAfterEnd = true;
 
     if (isPaused) {
-      _nextAction = () => _changeShowingData(_showingData.copyWith(lyrics: verse));
+      _nextAction = () => _changeShowingData(_showingData.copyWith(text: verse));
     } else {
-      _changeShowingData(_showingData.copyWith(lyrics: verse));
+      _changeShowingData(_showingData.copyWith(text: verse));
     }
   }
 
@@ -75,9 +98,9 @@ class PresentationProvider extends ChangeNotifier {
     if (verse.isEmpty) _isBeforeStart = true;
 
     if (isPaused) {
-      _nextAction = () => _changeShowingData(_showingData.copyWith(lyrics: verse));
+      _nextAction = () => _changeShowingData(_showingData.copyWith(text: verse));
     } else {
-      _changeShowingData(_showingData.copyWith(lyrics: verse));
+      _changeShowingData(_showingData.copyWith(text: verse));
     }
   }
 
@@ -91,34 +114,60 @@ class PresentationProvider extends ChangeNotifier {
 
   void changeSettings(PresentationSettings settings) {
     _changeShowingData(_showingData.copyWith(settings: settings));
+
+    notifyListeners();
   }
 
-  void changeSongLyric(SongLyricsParser songLyricsParser) {
+  void change(DisplayableItem displayableItem) {
     _verseOrder = 0;
 
-    _songLyricsParser = songLyricsParser;
-
-    if (isPaused) {
-      _nextAction = () {
+    final changeFunction = displayableItem.when(
+      bibleVerse: (bibleVerse) => () {
         _changeShowingData(_showingData.copyWith(
-          songLyricId: songLyricsParser.songLyric.id,
-          songLyricName: songLyricsParser.songLyric.name,
-          lyrics: songLyricsParser.getVerse(_verseOrder),
+          songLyricId: null,
+          name: bibleVerse.name,
+          text: bibleVerse.text,
         ));
-      };
+      },
+      customText: (customText) => () {
+        _changeShowingData(_showingData.copyWith(
+          songLyricId: null,
+          name: customText.name,
+          text: customText.content,
+        ));
+      },
+      songLyric: (songLyric) {
+        final songLyricsParser = SongLyricsParser(songLyric);
+
+        _songLyricsParser = songLyricsParser;
+
+        return () {
+          _changeShowingData(_showingData.copyWith(
+            songLyricId: songLyricsParser.songLyric.id,
+            name: songLyricsParser.songLyric.name,
+            text: songLyricsParser.getVerse(_verseOrder),
+          ));
+        };
+      },
+    );
+
+    // if presentation is paused store it as pending action otherwise execute it immediately
+    if (isPaused) {
+      _nextAction = changeFunction;
     } else {
-      _changeShowingData(_showingData.copyWith(
-        songLyricId: songLyricsParser.songLyric.id,
-        songLyricName: songLyricsParser.songLyric.name,
-        lyrics: songLyricsParser.getVerse(_verseOrder),
-      ));
+      changeFunction();
     }
   }
 
   void _changeShowingData(PresentationData data) {
     _showingData = data;
-    presentation.transferData(jsonEncode(data));
+
+    if (_isPresentingLocally) {
+      _showingDataStreamController!.add(_showingData);
+    } else {
+      PresentationService.instance.transferData(data);
+    }
   }
 
-  Future<bool> get canPresent => presentation.canPresent();
+  Future<bool> get onExternalDisplay => PresentationService.instance.isExternalScreenConnected();
 }

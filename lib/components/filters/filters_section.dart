@@ -6,14 +6,8 @@ import 'package:zpevnik/components/filters/filter_tag.dart';
 class FiltersSection extends StatelessWidget {
   final String title;
   final List<Tag> tags;
-  final bool isLast;
 
-  const FiltersSection({
-    Key? key,
-    required this.title,
-    required this.tags,
-    this.isLast = false,
-  }) : super(key: key);
+  const FiltersSection({super.key, required this.title, required this.tags});
 
   @override
   Widget build(BuildContext context) {
@@ -22,22 +16,20 @@ class FiltersSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(title, style: theme.textTheme.titleLarge),
-              const SizedBox(height: kDefaultPadding),
-              Wrap(
-                spacing: kDefaultPadding / 2,
-                runSpacing: kDefaultPadding / 2,
-                children: tags.map((tag) => FilterTag(tag: tag, isToggable: true)).toList(),
-              ),
-            ],
-          ),
+        ExpansionTile(
+          title: Text(title, style: theme.textTheme.titleLarge),
+          shape: const Border(),
+          expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
+          tilePadding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+          childrenPadding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
+          children: [
+            Wrap(
+              spacing: kDefaultPadding / 2,
+              runSpacing: kDefaultPadding / 2,
+              children: tags.map((tag) => FilterTag(tag: tag, isToggable: true)).toList(),
+            ),
+          ],
         ),
-        if (!isLast) Divider(thickness: 1, color: theme.colorScheme.outlineVariant),
       ],
     );
   }

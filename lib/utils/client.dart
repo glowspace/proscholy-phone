@@ -69,6 +69,9 @@ query {
       pivot {
         id
         number
+        song_lyric {
+          id
+        }
         songbook {
           id
         }
@@ -80,9 +83,6 @@ query {
       url
       media_id
       media_type
-      authors {
-        id
-      }
     }
     authors_pivot {
       pivot {
@@ -117,6 +117,9 @@ query {
       pivot {
         id
         number
+        song_lyric {
+          id
+        }
         songbook {
           id
         }

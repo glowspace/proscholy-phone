@@ -1,38 +1,36 @@
 import 'package:collection/collection.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:objectbox/objectbox.dart';
+import 'package:zpevnik/models/model.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/models/songbook.dart';
 
-@Entity()
-class SongbookRecord implements Comparable<SongbookRecord> {
-  @Id(assignable: true)
-  final int id;
+part 'songbook_record.freezed.dart';
+part 'songbook_record.g.dart';
 
-  final String number;
+@Freezed(toJson: false)
+class SongbookRecord with _$SongbookRecord implements Comparable<SongbookRecord>, Identifiable, Record {
+  static const String fieldKey = 'songbook_records';
 
-  final songLyric = ToOne<SongLyric>();
-  final songbook = ToOne<Songbook>();
+  const SongbookRecord._();
 
-  SongbookRecord(this.id, this.number);
+  @Entity(realClass: SongbookRecord)
+  @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
+  const factory SongbookRecord({
+    @Id(assignable: true) @JsonKey(fromJson: int.parse) required int id,
+    required String number,
+    @JsonKey(fromJson: _songLyricFromJson) required ToOne<SongLyric> songLyric,
+    @JsonKey(fromJson: _songbookFromJson) required ToOne<Songbook> songbook,
+  }) = _SongbookRecord;
 
-  factory SongbookRecord.fromJson(Map<String, dynamic> json, int songLyricId) {
-    return SongbookRecord(
-      int.parse(json['id'] as String),
-      json['number'] as String,
-    )
-      ..songLyric.targetId = songLyricId
-      ..songbook.targetId = int.parse(json['songbook']['id'] as String);
-  }
+  factory SongbookRecord.fromJson(Map<String, Object?> json) => _$SongbookRecordFromJson(json);
 
-  static List<SongbookRecord> fromMapList(Map<String, dynamic> json, int songLyricId) {
-    return (json['songbook_records'] as List)
-        .map((json) => SongbookRecord.fromJson(json['pivot'], songLyricId))
-        .toList();
-  }
-
-  @override
-  String toString() => 'SongbookRecord(id: $id, number: $number)';
+  String get numberWithShortcut => '${songbook.target!.shortcut}$number';
 
   @override
   int compareTo(SongbookRecord other) => compareNatural(number, other.number);
 }
+
+ToOne<SongLyric> _songLyricFromJson(Map<String, dynamic> json) => ToOne(targetId: int.parse(json['id']));
+
+ToOne<Songbook> _songbookFromJson(Map<String, dynamic> json) => ToOne(targetId: int.parse(json['id']));

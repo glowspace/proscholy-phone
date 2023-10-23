@@ -1,7 +1,12 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:objectbox/objectbox.dart';
-import 'package:zpevnik/models/song_lyric.dart';
+import 'package:zpevnik/models/model.dart';
 
-final RegExp _nameAuthorRE = RegExp(r'\(([^|]+\|\s?)?(.+)\)');
+part 'external.freezed.dart';
+part 'external.g.dart';
+
+// `publicName` property of `External` is in this format "(NAME | AUTHOR_NAME)", this regex will extract only NAME from this
+final RegExp _nameRe = RegExp(r'\(([^|]+\|\s?)?(.+)\)');
 
 enum MediaType {
   soundcloud,
@@ -10,30 +15,9 @@ enum MediaType {
   mp3,
   pdf,
   jpg,
-  unsupported,
-}
+  unsupported;
 
-extension MediaTypeExtension on MediaType {
-  static MediaType fromString(String? string) {
-    switch (string) {
-      case "spotify":
-        return MediaType.spotify;
-      case "soundcloud":
-        return MediaType.soundcloud;
-      case "youtube":
-        return MediaType.youtube;
-      case "file/mp3":
-        return MediaType.mp3;
-      case "file/pdf":
-        return MediaType.pdf;
-      case "file/jpg":
-        return MediaType.jpg;
-      default:
-        return MediaType.unsupported;
-    }
-  }
-
-  static MediaType fromRawValue(int rawValue) {
+  factory MediaType.fromRawValue(int rawValue) {
     switch (rawValue) {
       case 0:
         return MediaType.spotify;
@@ -52,19 +36,19 @@ extension MediaTypeExtension on MediaType {
     }
   }
 
-  int get rawValue {
-    switch (this) {
-      case MediaType.spotify:
+  static int rawValueFromString(String? string) {
+    switch (string) {
+      case "spotify":
         return 0;
-      case MediaType.soundcloud:
+      case "soundcloud":
         return 1;
-      case MediaType.youtube:
+      case "youtube":
         return 2;
-      case MediaType.mp3:
+      case "file/mp3":
         return 3;
-      case MediaType.pdf:
+      case "file/pdf":
         return 4;
-      case MediaType.jpg:
+      case "file/jpg":
         return 5;
       default:
         return -1;
@@ -72,61 +56,36 @@ extension MediaTypeExtension on MediaType {
   }
 }
 
-@Entity()
-class External {
-  @Id(assignable: true)
-  final int id;
+@Freezed(toJson: false)
+class External with _$External implements Identifiable {
+  static const String fieldKey = 'externals';
 
-  final String? publicName;
-  final String? mediaId;
+  const External._();
 
-  final String? url;
+  @Entity(realClass: External)
+  @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
+  const factory External({
+    @Id(assignable: true) @JsonKey(fromJson: int.parse) required int id,
+    required String publicName,
+    String? mediaId,
+    String? url,
+    @JsonKey(name: 'media_type', fromJson: MediaType.rawValueFromString) required int dbMediaType,
+  }) = _External;
 
-  final int dbMediaType;
-
-  final songLyric = ToOne<SongLyric>();
-
-  External(
-    this.id,
-    this.publicName,
-    this.mediaId,
-    this.url,
-    this.dbMediaType,
-  );
-
-  factory External.fromJson(Map<String, dynamic> json, int songLyricId) {
-    return External(
-      int.parse(json['id'] as String),
-      json['public_name'] as String?,
-      json['media_id'] as String?,
-      json['url'] as String?,
-      MediaTypeExtension.fromString(json['media_type'] as String?).rawValue,
-    );
-  }
-
-  static List<External> fromMapList(Map<String, dynamic> json, int songLyricId) {
-    return (json['externals'] as List).map((json) => External.fromJson(json, songLyricId)).toList();
-  }
+  factory External.fromJson(Map<String, Object?> json) => _$ExternalFromJson(json);
 
   String get name {
-    final name = publicName ?? '';
+    final name = _nameRe.firstMatch(publicName)?.group(2) ?? publicName;
 
-    switch (type) {
-      case MediaType.youtube:
-        return _nameAuthorRE.firstMatch(name)?.group(2) ?? name;
+    switch (mediaType) {
       case MediaType.pdf:
-        return mediaId ?? _nameAuthorRE.firstMatch(name)?.group(2) ?? name;
+        return mediaId ?? name;
       case MediaType.jpg:
-        return mediaId ?? _nameAuthorRE.firstMatch(name)?.group(2) ?? name;
-      case MediaType.mp3:
-        return _nameAuthorRE.firstMatch(name)?.group(2) ?? name;
+        return mediaId ?? name;
       default:
         return name;
     }
   }
 
-  MediaType get type => MediaTypeExtension.fromRawValue(dbMediaType);
-
-  @override
-  String toString() => 'External(id: $id, name: $name)';
+  MediaType get mediaType => MediaType.fromRawValue(dbMediaType);
 }

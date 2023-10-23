@@ -1,34 +1,49 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:zpevnik/constants.dart';
 
 class SelectorWidget extends StatelessWidget {
+  final String title;
+
   final Function(int) onSelected;
-  final List<Widget> options;
+  final List<ButtonSegment<int>> segments;
   final int selected;
-  final double? width;
+
+  final bool isEnabled;
+
+  final EdgeInsets padding;
 
   const SelectorWidget({
-    Key? key,
+    super.key,
+    required this.title,
     required this.onSelected,
-    this.options = const [],
+    required this.segments,
     this.selected = 0,
-    this.width,
-  }) : super(key: key);
+    this.isEnabled = true,
+    this.padding = const EdgeInsets.all(kDefaultPadding),
+  });
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: width,
-      child: CupertinoSlidingSegmentedControl(
-        children: options.asMap(),
-        groupValue: selected,
-        onValueChanged: _selectedChanged,
-      ),
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+
+    return Padding(
+      padding: padding,
+      child: Row(children: [
+        Expanded(
+          child: Text(title, style: textTheme.bodyMedium?.copyWith(color: isEnabled ? null : theme.disabledColor)),
+        ),
+        SegmentedButton<int>(
+          style: const ButtonStyle(
+            visualDensity: VisualDensity.compact,
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
+          segments: segments,
+          selected: {selected},
+          onSelectionChanged: isEnabled ? (selected) => onSelected(selected.first) : null,
+          showSelectedIcon: false,
+        ),
+      ]),
     );
-  }
-
-  void _selectedChanged(int? index) {
-    if (index == null) return;
-
-    onSelected(index);
   }
 }

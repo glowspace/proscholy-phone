@@ -8,12 +8,12 @@ class CustomFutureBuilder<T> extends StatelessWidget {
   final Widget Function(BuildContext, T?) builder;
 
   const CustomFutureBuilder({
-    Key? key,
+    super.key,
     this.future,
     this.wrapperBuilder,
     this.errorBuilder,
     required this.builder,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

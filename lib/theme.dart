@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:zpevnik/constants.dart';
 
 const Color lightBackgroundColor = Color(0xfff2f1f6);
@@ -21,69 +20,82 @@ const Color darkCaptionColor = Color(0xff595959);
 const Color lightIconColor = Color(0xff595959);
 const Color darkIconColor = Color(0xffa6a6a6);
 
+const Color lightDividerColor = Color(0xfff5f5f8);
+const Color darkDividerColor = Color(0xff282839);
+
+const Color lightShadowColor = Color(0xfff3edf7);
+const Color darkShadowColor = Color(0xff341d43);
+
 class AppTheme {
-  static ThemeData light() {
-    final theme = ThemeData.light();
+  static ThemeData light(Color seedColor) {
+    const iconTheme = IconThemeData(color: lightIconColor);
 
-    final colorScheme = ColorScheme.fromSeed(seedColor: blue).copyWith(surface: Colors.white);
-    final iconTheme = theme.iconTheme.copyWith(color: lightIconColor);
-
-    return theme.copyWith(
-      scaffoldBackgroundColor: lightBackgroundColor,
-      colorScheme: colorScheme.copyWith(outlineVariant: const Color(0xffd0d0d0)),
-      canvasColor: colorScheme.surface,
-      appBarTheme: theme.appBarTheme.copyWith(
-        backgroundColor: lightBackgroundColor,
-        shadowColor: Colors.grey,
+    return ThemeData(
+      brightness: Brightness.light,
+      colorScheme: ColorScheme.fromSeed(seedColor: seedColor, background: lightBackgroundColor),
+      scaffoldBackgroundColor: Colors.white,
+      appBarTheme: const AppBarTheme(
         iconTheme: iconTheme,
+        shadowColor: lightShadowColor,
+        centerTitle: false,
+        titleTextStyle: TextStyle(fontSize: 22, color: lightTextColor, fontWeight: FontWeight.w400),
+        titleSpacing: 1.25 * kDefaultPadding,
         elevation: 1,
       ),
-      textTheme: theme.textTheme.copyWith(
-        titleLarge: GoogleFonts.roboto(fontSize: 22, color: lightTextColor, fontWeight: FontWeight.w500),
-        titleMedium: const TextStyle(fontSize: 17, color: lightTextColor, fontWeight: FontWeight.w500),
-        titleSmall: const TextStyle(fontSize: 16, color: lightTextColor, fontWeight: FontWeight.w500),
-        bodyMedium: const TextStyle(fontSize: 15, color: lightTextColor, fontWeight: FontWeight.w400),
-        bodySmall: const TextStyle(fontSize: 14, color: lightCaptionColor, fontWeight: FontWeight.w400),
-        labelLarge: GoogleFonts.roboto(fontSize: 14, color: lightCommentColor, fontWeight: FontWeight.w400),
-        labelMedium: const TextStyle(fontSize: 12, color: lightCaptionColor, fontWeight: FontWeight.w400),
+      dividerTheme: const DividerThemeData(space: 0, thickness: 1.5, color: lightDividerColor),
+      textTheme: const TextTheme(
+        titleLarge: TextStyle(fontSize: 22, color: lightTextColor, fontWeight: FontWeight.w500),
+        titleMedium: TextStyle(fontSize: 17, color: lightTextColor, fontWeight: FontWeight.w500),
+        titleSmall: TextStyle(fontSize: 14, color: lightTextColor, fontWeight: FontWeight.w700),
+        bodyMedium: TextStyle(fontSize: 15, color: lightTextColor, fontWeight: FontWeight.w400),
+        bodySmall: TextStyle(fontSize: 14, color: lightCaptionColor, fontWeight: FontWeight.w400),
+        labelLarge: TextStyle(fontSize: 14, color: lightCommentColor, fontWeight: FontWeight.w400),
       ),
-      iconTheme: iconTheme,
+      bottomSheetTheme: const BottomSheetThemeData(
+        surfaceTintColor: Colors.transparent,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(kDefaultRadius))),
+      ),
       splashFactory: NoSplash.splashFactory,
+      iconTheme: iconTheme,
       useMaterial3: true,
     );
   }
 
-  static ThemeData dark() {
-    final theme = ThemeData.dark();
+  static ThemeData dark(Color seedColor) {
+    const iconTheme = IconThemeData(color: darkIconColor);
 
-    final colorScheme = ColorScheme.fromSeed(seedColor: blue, brightness: Brightness.dark);
-    final iconTheme = theme.iconTheme.copyWith(color: darkIconColor);
-
-    return theme.copyWith(
+    return ThemeData(
+      brightness: Brightness.dark,
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: seedColor,
+        brightness: Brightness.dark,
+        background: darkBackgroundColor,
+      ),
       scaffoldBackgroundColor: darkBackgroundColor,
-      colorScheme: colorScheme.copyWith(outlineVariant: const Color(0xff2f2f2f)),
-      canvasColor: colorScheme.surface,
-      bottomSheetTheme: theme.bottomSheetTheme.copyWith(modalBackgroundColor: colorScheme.surface, modalElevation: 0),
-      appBarTheme: theme.appBarTheme.copyWith(
-        backgroundColor: darkBackgroundColor,
-        shadowColor: Colors.grey,
+      appBarTheme: const AppBarTheme(
         iconTheme: iconTheme,
+        shadowColor: darkShadowColor,
+        centerTitle: false,
+        titleTextStyle: TextStyle(fontSize: 22, color: darkTextColor, fontWeight: FontWeight.w400),
+        titleSpacing: 1.25 * kDefaultPadding,
         elevation: 1,
       ),
-      textTheme: theme.textTheme.copyWith(
-        titleLarge: GoogleFonts.roboto(fontSize: 22, color: darkTextColor, fontWeight: FontWeight.w500),
-        titleMedium: const TextStyle(fontSize: 17, color: darkTextColor, fontWeight: FontWeight.w500),
-        titleSmall: const TextStyle(fontSize: 16, color: darkTextColor, fontWeight: FontWeight.w500),
-        bodyMedium: const TextStyle(fontSize: 15, color: darkTextColor, fontWeight: FontWeight.w400),
-        bodySmall: const TextStyle(fontSize: 14, color: darkCaptionColor, fontWeight: FontWeight.w400),
-        labelLarge: GoogleFonts.roboto(fontSize: 14, color: darkCommentColor, fontWeight: FontWeight.w400),
-        labelMedium: const TextStyle(fontSize: 12, color: darkCaptionColor, fontWeight: FontWeight.w400),
+      dividerTheme: const DividerThemeData(space: 0, thickness: 1.5, color: darkDividerColor),
+      textTheme: const TextTheme(
+        titleLarge: TextStyle(fontSize: 22, color: darkTextColor, fontWeight: FontWeight.w500),
+        titleMedium: TextStyle(fontSize: 17, color: darkTextColor, fontWeight: FontWeight.w500),
+        titleSmall: TextStyle(fontSize: 14, color: darkTextColor, fontWeight: FontWeight.w700),
+        bodyMedium: TextStyle(fontSize: 15, color: darkTextColor, fontWeight: FontWeight.w400),
+        bodySmall: TextStyle(fontSize: 14, color: darkCaptionColor, fontWeight: FontWeight.w400),
+        labelLarge: TextStyle(fontSize: 14, color: darkCommentColor, fontWeight: FontWeight.w400),
       ),
-      iconTheme: iconTheme,
+      bottomSheetTheme: const BottomSheetThemeData(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(kDefaultRadius))),
+      ),
       splashFactory: NoSplash.splashFactory,
-      cupertinoOverrideTheme: const CupertinoThemeData(
-        textTheme: CupertinoTextThemeData(),
-      ),
+      // needed, so text in alert dialogs on iOS has correct color
+      cupertinoOverrideTheme: const CupertinoThemeData(textTheme: CupertinoTextThemeData()),
+      iconTheme: iconTheme,
       useMaterial3: true,
     );
   }

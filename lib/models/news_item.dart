@@ -1,47 +1,26 @@
-// ignore: unnecessary_import
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:objectbox/objectbox.dart';
-import 'package:zpevnik/models/objectbox.g.dart';
+import 'package:zpevnik/models/model.dart';
 
-@Entity()
-class NewsItem {
-  @Id(assignable: true)
-  final int id;
+part 'news_item.freezed.dart';
+part 'news_item.g.dart';
 
-  @Index()
-  final String text;
-  final String link;
+@Freezed(toJson: false)
+class NewsItem with _$NewsItem implements Identifiable {
+  static const String fieldKey = 'news_items';
 
-  @Property(type: PropertyType.date)
-  final DateTime? expiresAt;
+  const NewsItem._();
 
-  NewsItem(
-    this.id,
-    this.text,
-    this.link,
-    this.expiresAt,
-  );
+  @Entity(realClass: NewsItem)
+  @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
+  const factory NewsItem({
+    @Id(assignable: true) @JsonKey(fromJson: int.parse) required int id,
+    required String text,
+    required String link,
+    @Property(type: PropertyType.date) DateTime? expiresAt,
+  }) = _NewsItem;
 
-  factory NewsItem.fromJson(Map<String, dynamic> json) {
-    return NewsItem(
-      int.parse(json['id'] as String),
-      json['text'] as String,
-      json['link'] as String,
-      json['expires_at'] == null ? null : DateTime.parse(json['expires_at'] as String),
-    );
-  }
+  factory NewsItem.fromJson(Map<String, Object?> json) => _$NewsItemFromJson(json);
 
-  static List<NewsItem> fromMapList(Map<String, dynamic> json) {
-    return (json['news_items'] as List).map((json) => NewsItem.fromJson(json)).toList();
-  }
-
-  static List<NewsItem> load(Store store, _) {
-    return store
-        .box<NewsItem>()
-        .query(NewsItem_.expiresAt.greaterOrEqual(DateTime.now().millisecondsSinceEpoch))
-        .build()
-        .find();
-  }
-
-  @override
-  String toString() => 'NewsItem(id: $id, text: $text, link: $link, expiresAt: $expiresAt)';
+  bool get hasLink => link.isNotEmpty;
 }

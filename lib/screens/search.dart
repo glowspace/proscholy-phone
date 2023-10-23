@@ -1,75 +1,76 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:zpevnik/components/filters/filters.dart';
 import 'package:zpevnik/components/filters/filters_row.dart';
-import 'package:zpevnik/components/search_field.dart';
-import 'package:zpevnik/components/song_lyric/song_lyrics_list_view.dart';
+import 'package:zpevnik/components/navigation/scaffold.dart';
+import 'package:zpevnik/components/search/search_field.dart';
+import 'package:zpevnik/components/search/search_song_lyrics_list_view.dart';
 import 'package:zpevnik/components/split_view.dart';
 import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/providers/song_lyrics.dart';
-import 'package:zpevnik/routes/arguments/song_lyric.dart';
+import 'package:zpevnik/providers/search.dart';
+import 'package:zpevnik/providers/tags.dart';
+import 'package:zpevnik/routing/arguments.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
 class SearchScreen extends StatelessWidget {
-  const SearchScreen({Key? key}) : super(key: key);
+  const SearchScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    final songLyricsProvider = context.read<AllSongLyricsProvider>();
-
-    final child = Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        const SizedBox(height: kDefaultPadding),
-        SearchField(
-          key: const Key('searchfield'),
-          isInsideSearchScreen: true,
-          onChanged: (searchText) => songLyricsProvider.search(searchText),
-          onSubmitted: (_) => _maybePushMatchedSonglyric(context),
-        ),
-        Container(
-          padding: const EdgeInsets.only(left: kDefaultPadding),
-          child: const FiltersRow(),
-        ),
-        const SizedBox(height: kDefaultPadding),
-        const Expanded(child: SongLyricsListView<AllSongLyricsProvider>()),
-      ],
-    );
-
     final mediaQuery = MediaQuery.of(context);
 
-    if (mediaQuery.isTablet && mediaQuery.isLandscape) {
-      return Scaffold(
-        backgroundColor: theme.brightness.isLight ? theme.colorScheme.surface : null,
-        body: SafeArea(
-          child: SplitView(
-            subChild: Scaffold(
-              backgroundColor: theme.brightness.isLight ? theme.colorScheme.surface : null,
-              body: SafeArea(child: FiltersWidget(tagsSections: songLyricsProvider.tagsSections)),
+    final appBar = AppBar(
+      automaticallyImplyLeading: false,
+      // top padding is added only if there is no padding from safe area (e.g. when phone is in landscape)
+      toolbarHeight: 100 + (mediaQuery.padding.top == 0 ? kDefaultPadding : 0),
+      flexibleSpace: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // top padding is added only if there is no padding from safe area (e.g. when phone is in landscape)
+            if (mediaQuery.padding.top == 0) const SizedBox(height: kDefaultPadding),
+            SearchField(
+              key: const Key('searchfield'),
+              onChanged: context.providers.read(searchTextProvider.notifier).change,
+              onSubmitted: (_) => _maybePushMatchedSonglyric(context),
             ),
-            child: child,
-          ),
+            const Padding(
+              padding: EdgeInsets.only(left: kDefaultPadding),
+              child: FiltersRow(),
+            ),
+          ],
         ),
+      ),
+    );
+
+    final Widget child;
+
+    if (mediaQuery.isTablet && mediaQuery.isLandscape && context.isSearching) {
+      child = SplitView(
+        childFlex: 4,
+        detailFlex: 3,
+        detail: const Scaffold(body: SafeArea(child: FiltersWidget())),
+        child: CustomScaffold(appBar: appBar, body: const SafeArea(child: SearchSongLyricsListView())),
       );
+    } else {
+      child = CustomScaffold(appBar: appBar, body: const SafeArea(child: SearchSongLyricsListView()));
     }
 
-    return Scaffold(
-      backgroundColor: theme.brightness.isLight ? theme.colorScheme.surface : null,
-      body: SafeArea(child: child),
+    return WillPopScope(
+      onWillPop: () async {
+        // this is called with delay, so the change is not visible while popping from this screen
+        Future.delayed(const Duration(milliseconds: 20), context.providers.read(selectedTagsProvider.notifier).pop);
+        return true;
+      },
+      child: child,
     );
   }
 
   void _maybePushMatchedSonglyric(BuildContext context) {
-    final songLyricsProvider = context.read<AllSongLyricsProvider>();
+    final matchedById = context.providers.read(
+      searchedSongLyricsProvider.select((searchedSongLyricsProvider) => searchedSongLyricsProvider.matchedById),
+    );
 
-    if (songLyricsProvider.matchedById != null) {
-      songLyricsProvider.addRecentSongLyric(songLyricsProvider.matchedById!);
-
-      Navigator.of(context)
-          .pushNamed('/song_lyric', arguments: SongLyricScreenArguments([songLyricsProvider.matchedById!], 0));
-    }
+    if (matchedById != null) context.push('/display', arguments: DisplayScreenArguments.songLyric(matchedById));
   }
 }

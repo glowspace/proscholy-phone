@@ -13,7 +13,8 @@ class OpenAllButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return HighlightableTextButton(
+    return Highlightable(
+      padding: EdgeInsets.zero,
       textStyle: TextStyle(
         fontSize: 14,
         color: Theme.of(context).brightness.isLight ? lightTextColor : darkTextColor,

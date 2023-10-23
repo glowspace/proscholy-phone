@@ -7,13 +7,14 @@ import 'package:zpevnik/utils/extensions.dart';
 class Logo extends StatelessWidget {
   final bool showFullName;
 
-  const Logo({Key? key, this.showFullName = true}) : super(key: key);
+  const Logo({super.key, this.showFullName = true});
 
   @override
   Widget build(BuildContext context) {
     final textColor = Theme.of(context).brightness.isLight ? lightTitleColor : darkTitleColor;
 
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
         Image.asset('assets/images/logos/logo.png'),
@@ -36,7 +37,7 @@ class Logo extends StatelessWidget {
 class GlowspaceLogo extends StatelessWidget {
   final bool showDescription;
 
-  const GlowspaceLogo({Key? key, this.showDescription = false}) : super(key: key);
+  const GlowspaceLogo({super.key, this.showDescription = false});
 
   @override
   Widget build(BuildContext context) {

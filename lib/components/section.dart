@@ -2,51 +2,84 @@ import 'package:flutter/material.dart';
 import 'package:zpevnik/constants.dart';
 
 class Section extends StatelessWidget {
-  final Widget? title;
+  final String? outsideTitle;
+  final bool outsideTitleLarge;
+  final String? insideTitle;
+  final IconData? insideTitleIcon;
+  final Color? insideTitleIconColor;
 
-  final Widget child;
+  final List<Widget> children;
   final Widget? action;
 
   final EdgeInsets? margin;
   final EdgeInsets? padding;
 
   const Section({
-    Key? key,
-    this.title,
-    required this.child,
+    super.key,
+    this.outsideTitle,
+    this.outsideTitleLarge = false,
+    this.insideTitle,
+    this.insideTitleIcon,
+    this.insideTitleIconColor,
+    required this.children,
     this.action,
     this.margin,
     this.padding,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final section = Container(
-      padding: padding,
-      decoration: BoxDecoration(color: theme.colorScheme.surface, borderRadius: BorderRadius.circular(kDefaultRadius)),
-      clipBehavior: Clip.antiAlias,
-      child: Material(child: child), // needs another wrapping in material widget, so inkwell highlight is visible
+    return Container(
+      margin: margin,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (outsideTitle != null)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 2 / 3 * kDefaultPadding),
+              child: Row(children: [
+                Expanded(
+                  child: Text(
+                    outsideTitle!,
+                    style: outsideTitleLarge ? theme.textTheme.titleLarge : theme.textTheme.titleMedium,
+                  ),
+                ),
+                if (action != null) action!,
+              ]),
+            ),
+          Container(
+            padding: padding,
+            decoration: BoxDecoration(
+              color: theme.colorScheme.surface,
+              borderRadius: BorderRadius.circular(kDefaultRadius),
+            ),
+            clipBehavior: Clip.antiAlias,
+            // needs another wrapping in material widget, so inkwell highlight is visible
+            child: Material(
+              color: theme.colorScheme.surface,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (insideTitle != null) ...[
+                    Padding(
+                      padding: const EdgeInsets.all(kDefaultPadding),
+                      child: Row(children: [
+                        Icon(insideTitleIcon, color: insideTitleIconColor),
+                        const SizedBox(width: kDefaultPadding),
+                        Text(insideTitle!, style: theme.textTheme.titleSmall),
+                      ]),
+                    ),
+                    if (children.isNotEmpty) const Divider(),
+                  ],
+                  ...children,
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
-
-    if (title != null) {
-      return Container(
-        margin: margin,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(children: [
-              Expanded(child: title!),
-              if (action != null) action!,
-            ]),
-            const SizedBox(height: kDefaultPadding / 2),
-            section,
-          ],
-        ),
-      );
-    }
-
-    return Container(margin: margin, child: section);
   }
 }

@@ -6,7 +6,7 @@ import 'package:zpevnik/links.dart';
 import 'package:zpevnik/utils/url_launcher.dart';
 
 class AboutScreen extends StatelessWidget {
-  const AboutScreen({Key? key}) : super(key: key);
+  const AboutScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,13 +19,10 @@ class AboutScreen extends StatelessWidget {
     final linkOpener = TapGestureRecognizer()..onTap = () => launch(proscholyUrl);
 
     return Scaffold(
-      appBar: AppBar(
-        leading: const CustomBackButton(),
-        title: Text('O projektu', style: Theme.of(context).textTheme.titleMedium),
-        centerTitle: false,
-      ),
+      backgroundColor: theme.colorScheme.background,
+      appBar: AppBar(leading: const CustomBackButton(), title: const Text('O projektu')),
       body: SafeArea(
-        child: Container(
+        child: Padding(
           padding: const EdgeInsets.all(kDefaultPadding),
           child: RichText(
             text: TextSpan(

@@ -1,75 +1,59 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:zpevnik/components/section.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:zpevnik/components/bottom_sheet_section.dart';
 import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/models/presentation.dart';
 import 'package:zpevnik/providers/presentation.dart';
 
-class PresentationSettingsWidget extends StatefulWidget {
-  const PresentationSettingsWidget({super.key});
+class PresentationSettingsWidget extends ConsumerWidget {
+  final bool onExternalDisplay;
+
+  const PresentationSettingsWidget({super.key, required this.onExternalDisplay});
 
   @override
-  State<PresentationSettingsWidget> createState() => _PresentationSettingsState();
-}
-
-class _PresentationSettingsState extends State<PresentationSettingsWidget> {
-  late PresentationSettings _presentationSettings;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _presentationSettings = context.read<PresentationProvider>().settings;
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final textTheme = Theme.of(context).textTheme;
 
-    return Section(
-      title: Text('Nastavení', style: textTheme.titleMedium),
-      margin: const EdgeInsets.all(kDefaultPadding),
-      padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-      child: Column(children: [
-        SwitchListTile.adaptive(
-          title: Text('Zobrazovat pozadí', style: textTheme.bodyMedium),
-          value: _presentationSettings.showBackground,
-          onChanged: (value) => _settingsChanged(() => setState(
-                () => setState(() => _presentationSettings = _presentationSettings.copyWith(showBackground: value)),
-              )),
-          contentPadding: EdgeInsets.zero,
-        ),
-        SwitchListTile.adaptive(
-          title: Text('Světlé písmo', style: textTheme.bodyMedium),
-          value: _presentationSettings.darkMode,
-          onChanged: (value) => _settingsChanged(
-            () => setState(() => _presentationSettings = _presentationSettings.copyWith(darkMode: value)),
+    final settings = ref.watch(presentationProvider.select((presentation) => presentation.settings));
+
+    return BottomSheetSection(
+      title: 'Nastavení promítání',
+      childrenPadding: false,
+      children: [
+        if (onExternalDisplay)
+          SwitchListTile.adaptive(
+            title: Text('Zobrazovat pozadí', style: textTheme.bodyMedium),
+            value: settings.showBackground,
+            dense: true,
+            onChanged: (value) =>
+                ref.read(presentationProvider.notifier).changeSettings(settings.copyWith(showBackground: value)),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
           ),
-          contentPadding: EdgeInsets.zero,
-        ),
+        if (onExternalDisplay)
+          SwitchListTile.adaptive(
+            title: Text('Světlé písmo', style: textTheme.bodyMedium),
+            value: settings.darkMode,
+            dense: true,
+            onChanged: (value) =>
+                ref.read(presentationProvider.notifier).changeSettings(settings.copyWith(darkMode: value)),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
+          ),
         SwitchListTile.adaptive(
           title: Text('Zobrazovat název písně', style: textTheme.bodyMedium),
-          value: _presentationSettings.showName,
-          onChanged: (value) => _settingsChanged(
-            () => setState(() => _presentationSettings = _presentationSettings.copyWith(showName: value)),
-          ),
-          contentPadding: EdgeInsets.zero,
+          value: settings.showName,
+          dense: true,
+          onChanged: (value) =>
+              ref.read(presentationProvider.notifier).changeSettings(settings.copyWith(showName: value)),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
         ),
         SwitchListTile.adaptive(
           title: Text('Zobrazovat všechna písmena velká', style: textTheme.bodyMedium),
-          value: _presentationSettings.allCapital,
-          onChanged: (value) => _settingsChanged(
-            () => setState(() => _presentationSettings = _presentationSettings.copyWith(allCapital: value)),
-          ),
-          contentPadding: EdgeInsets.zero,
+          value: settings.allCapital,
+          dense: true,
+          onChanged: (value) =>
+              ref.read(presentationProvider.notifier).changeSettings(settings.copyWith(allCapital: value)),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
         ),
-      ]),
+      ],
     );
-  }
-
-  void _settingsChanged(Function setState) {
-    setState();
-
-    context.read<PresentationProvider>().changeSettings(_presentationSettings);
   }
 }

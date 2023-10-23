@@ -1,37 +1,44 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:zpevnik/components/custom/back_button.dart';
+import 'package:zpevnik/components/custom/close_button.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/presentation/settings.dart';
 import 'package:zpevnik/components/song_lyric/utils/parser.dart';
 import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/presentation.dart';
+import 'package:zpevnik/utils/extensions.dart';
 
 const _noExternalDisplayText =
-    'Není připojen žádný externí displej. Aplikace v současné době nepodporuje žádné způsoby připojení a je proto nutné, abyste se k externímu displeji připojili pomocí jiné aplikace (např. airplay, chromecast). Poté bude promítání povoleno.';
+    'Nebyl detekován žádný externí displej. Bude pouze upraveno zobrazení písní na${unbreakableSpace}tomto zařízení.';
 
 class StartPresentationScreen extends StatefulWidget {
-  final SongLyricsParser songLyricsParser;
+  final SongLyric songLyric;
 
-  const StartPresentationScreen({super.key, required this.songLyricsParser});
+  const StartPresentationScreen({super.key, required this.songLyric});
 
   @override
   State<StartPresentationScreen> createState() => _StartPresentationScreenState();
 }
 
 class _StartPresentationScreenState extends State<StartPresentationScreen> with WidgetsBindingObserver {
-  bool _canPresent = false;
+  bool _onExternalDisplay = false;
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    context.read<PresentationProvider>().canPresent.then((canPresent) => setState(() => _canPresent = canPresent));
+    context.providers
+        .read(presentationProvider)
+        .onExternalDisplay
+        .then((onExternalDisplay) => setState(() => _onExternalDisplay = onExternalDisplay));
   }
 
   @override
   void initState() {
     super.initState();
 
-    context.read<PresentationProvider>().canPresent.then((canPresent) => setState(() => _canPresent = canPresent));
+    context.providers
+        .read(presentationProvider)
+        .onExternalDisplay
+        .then((onExternalDisplay) => setState(() => _onExternalDisplay = onExternalDisplay));
 
     WidgetsBinding.instance.addObserver(this);
   }
@@ -49,27 +56,22 @@ class _StartPresentationScreenState extends State<StartPresentationScreen> with 
 
     return Scaffold(
       appBar: AppBar(
-        leading: const CustomBackButton(),
-        title: Text('Prezentovat', style: Theme.of(context).textTheme.titleMedium),
-        centerTitle: false,
-        leadingWidth: 24 + 4 * kDefaultPadding,
-        titleSpacing: 0,
+        leading: const CustomCloseButton(),
+        title: const Text('Prezentovat'),
         actions: [
-          HighlightableIconButton(
-            onTap: _canPresent
-                ? () {
-                    context.read<PresentationProvider>().start(widget.songLyricsParser);
-                    Navigator.of(context).pop();
-                  }
-                : null,
-            padding: const EdgeInsets.all(kDefaultPadding),
+          Highlightable(
+            onTap: () {
+              context.providers.read(presentationProvider).start(SongLyricsParser(widget.songLyric));
+              context.pop();
+            },
+            padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
             icon: const Icon(Icons.check),
           ),
         ],
       ),
       body: SafeArea(
         child: Column(children: [
-          if (!_canPresent)
+          if (!_onExternalDisplay)
             Container(
               decoration: BoxDecoration(
                 border: Border.all(color: infoColorScheme.primary),
@@ -84,7 +86,7 @@ class _StartPresentationScreenState extends State<StartPresentationScreen> with 
                 const Expanded(child: Text(_noExternalDisplayText)),
               ]),
             ),
-          const PresentationSettingsWidget(),
+          PresentationSettingsWidget(onExternalDisplay: _onExternalDisplay),
         ]),
       ),
     );

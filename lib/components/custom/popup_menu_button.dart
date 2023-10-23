@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart' hide showMenu, PopupMenuItem, PopupMenuEntry, PopupMenuPosition;
+import 'package:flutter/material.dart' hide showMenu, PopupMenuItem, PopupMenuEntry;
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/custom/popup_menu.dart';
@@ -11,16 +11,16 @@ class CustomPopupMenuButton<T> extends StatelessWidget {
   final EdgeInsets? padding;
 
   const CustomPopupMenuButton({
-    Key? key,
+    super.key,
     required this.items,
     required this.onSelected,
     this.padding,
     this.menuPosition = PopupMenuPosition.under,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
-    return HighlightableIconButton(
+    return Highlightable(
       onTap: () => _showMenu(context),
       shrinkWrap: menuPosition == PopupMenuPosition.over,
       padding: padding ?? const EdgeInsets.symmetric(vertical: kDefaultPadding / 2, horizontal: kDefaultPadding),

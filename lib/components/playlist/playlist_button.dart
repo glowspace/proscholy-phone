@@ -1,5 +1,8 @@
-import 'package:flutter/material.dart' hide PopupMenuEntry, PopupMenuItem, PopupMenuPosition;
-import 'package:provider/provider.dart';
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:flutter/material.dart' hide PopupMenuEntry, PopupMenuItem;
+import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:zpevnik/components/custom/popup_menu_button.dart';
 import 'package:zpevnik/components/icon_item.dart';
@@ -7,9 +10,9 @@ import 'package:zpevnik/components/playlist/dialogs.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/custom/custom_icon_icons.dart';
 import 'package:zpevnik/custom/popup_menu.dart';
-import 'package:zpevnik/links.dart';
 import 'package:zpevnik/models/playlist.dart';
-import 'package:zpevnik/providers/data.dart';
+import 'package:zpevnik/providers/playlists.dart';
+import 'package:zpevnik/utils/extensions.dart';
 
 enum PlaylistAction {
   rename,
@@ -21,24 +24,20 @@ enum PlaylistAction {
 class PlaylistButton extends StatelessWidget {
   final Playlist playlist;
   final bool isInAppBar;
-  final bool extendPadding;
 
   const PlaylistButton({
-    Key? key,
+    super.key,
     required this.playlist,
     this.isInAppBar = false,
-    this.extendPadding = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return CustomPopupMenuButton(
       items: _buildPopupMenuItems(context),
-      onSelected: _selectedAction,
+      onSelected: (context, action) => _selectedAction(context, action),
       menuPosition: isInAppBar ? PopupMenuPosition.under : PopupMenuPosition.over,
-      padding: extendPadding
-          ? const EdgeInsets.fromLTRB(kDefaultPadding, kDefaultPadding / 2, 2 * kDefaultPadding, kDefaultPadding / 2)
-          : null,
+      padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
     );
   }
 
@@ -82,27 +81,22 @@ class PlaylistButton extends StatelessWidget {
     }
   }
 
-  void _sharePlaylist(BuildContext context, Playlist playlist) {
-    final songLyricsIds = context
-        .read<DataProvider>()
-        .getPlaylistsSongLyrics(playlist)
-        .map((songLyric) => songLyric.id)
-        .toList()
-        .join(',');
+  void _sharePlaylist(BuildContext context, Playlist playlist) async {
+    final box = context.findRenderObject() as RenderBox;
 
-    final songLyricsTranspositions = context
-        .read<DataProvider>()
-        .getPlaylistsSongLyrics(playlist)
-        .map((songLyric) => songLyric.transposition)
-        .toList()
-        .join(',');
+    final playlistData = jsonEncode(context.providers.read(playlistsProvider.notifier).playlistToMap(playlist));
+    final file = File('${(await getApplicationDocumentsDirectory()).path}/${playlist.name}.proscholy');
 
-    final box = context.findRenderObject() as RenderBox?;
+    file.writeAsString(playlistData);
 
-    Share.share(
-      Uri.encodeFull(
-          '$deepLinkUrl/add_playlist?name=${playlist.name}&ids=$songLyricsIds&transpositions=$songLyricsTranspositions'),
-      sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
+    await Share.shareXFiles(
+      [
+        XFile('${(await getApplicationDocumentsDirectory()).path}/${playlist.name}.proscholy',
+            mimeType: 'application/json')
+      ],
+      sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size,
     );
+
+    file.delete();
   }
 }

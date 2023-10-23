@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/songbook.dart';
-import 'package:zpevnik/providers/data.dart';
-import 'package:zpevnik/providers/navigation.dart';
 import 'package:zpevnik/components/highlightable.dart';
+import 'package:zpevnik/providers/songbooks.dart';
+import 'package:zpevnik/utils/extensions.dart';
 
 const _logosPath = '$imagesPath/songbooks';
 const _existingLogos = [
@@ -35,40 +35,45 @@ const _existingLogos = [
 class SongbookTile extends StatelessWidget {
   final Songbook songbook;
 
-  const SongbookTile({Key? key, required this.songbook}) : super(key: key);
+  const SongbookTile({super.key, required this.songbook});
 
   @override
   Widget build(BuildContext context) {
     final shortcut = songbook.shortcut.toLowerCase();
     final imagePath = _existingLogos.contains(shortcut) ? '$_logosPath/$shortcut.png' : '$_logosPath/default.png';
 
-    return InkWell(
+    return Highlightable(
+      highlightBackground: true,
+      padding: const EdgeInsets.all(kDefaultPadding),
       onTap: () => _pushSongbook(context),
-      child: Padding(
-        padding: const EdgeInsets.all(kDefaultPadding),
-        child: IntrinsicWidth(
-          child: Column(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(15),
-                child: AspectRatio(
-                  aspectRatio: 4 / 3,
-                  child: FittedBox(child: Image.asset(imagePath)),
-                ),
+      child: IntrinsicWidth(
+        child: Column(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(15),
+              child: AspectRatio(
+                aspectRatio: 4 / 3,
+                child: FittedBox(child: Image.asset(imagePath)),
               ),
-              const SizedBox(height: kDefaultPadding / 2),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(child: Text(songbook.name, maxLines: 2)),
-                  HighlightableIconButton(
-                    onTap: () => context.read<DataProvider>().togglePin(songbook),
-                    icon: Icon(songbook.isPinned ? Icons.push_pin : Icons.push_pin_outlined),
-                  )
-                ],
-              ),
-            ],
-          ),
+            ),
+            const SizedBox(height: kDefaultPadding / 2),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(child: Text(songbook.name, maxLines: 2)),
+                Highlightable(
+                  onTap: () => context.providers.read(pinnedSongbookIdsProvider.notifier).togglePin(songbook),
+                  icon: Consumer(
+                    builder: (_, ref, __) => Icon(
+                      ref.watch(pinnedSongbookIdsProvider).contains(songbook.id)
+                          ? Icons.push_pin
+                          : Icons.push_pin_outlined,
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ],
         ),
       ),
     );
@@ -77,6 +82,6 @@ class SongbookTile extends StatelessWidget {
   void _pushSongbook(BuildContext context) {
     FocusScope.of(context).unfocus();
 
-    NavigationProvider.of(context).pushNamed('/songbook', arguments: songbook);
+    context.push('/songbook', arguments: songbook);
   }
 }

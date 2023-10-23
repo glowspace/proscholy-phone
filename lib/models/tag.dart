@@ -1,55 +1,73 @@
-// ignore: unnecessary_import
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:objectbox/objectbox.dart';
-import 'package:zpevnik/models/objectbox.g.dart';
+import 'package:zpevnik/models/model.dart';
+
+part 'tag.freezed.dart';
+part 'tag.g.dart';
+
+const List<TagType> supportedTagTypes = [
+  TagType.liturgyPart,
+  TagType.liturgyPeriod,
+  TagType.sacredOccasion,
+  TagType.generic,
+  TagType.saints,
+  TagType.songbook,
+  TagType.playlist,
+  TagType.language,
+];
 
 enum TagType {
-  liturgyPart,
-  liturgyPeriod,
-  liturgyDay,
-  sacredOccasion,
-  saints,
-  historyPeriod,
-  instrumentation,
-  genre,
-  musicalForm,
-  generic,
-  language,
-  songbook,
-  playlist,
-  unknown
-}
+  liturgyPart('Mše svatá'),
+  liturgyPeriod('Liturgický rok'),
+  liturgyDay(''),
+  sacredOccasion('Svátosti a pobožnosti'),
+  saints('Ke svatým'),
+  historyPeriod(''),
+  instrumentation(''),
+  genre(''),
+  musicalForm(''),
+  generic('K příležitostem'),
+  language('Jazyky'),
+  songbook('Zpěvníky'),
+  playlist('Playlisty'),
+  unknown('');
 
-extension TagTypeExtension on TagType {
-  static TagType fromString(String string) {
+  final String description;
+
+  const TagType(this.description);
+
+  bool get isSupported => supportedTagTypes.contains(this);
+
+  static int rawValueFromString(String string) {
     switch (string) {
       case 'LITURGY_PART':
-        return TagType.liturgyPart;
+        return 0;
       case 'LITURGY_PERIOD':
-        return TagType.liturgyPeriod;
+        return 1;
       case 'LITURGY_DAY':
-        return TagType.liturgyDay;
+        return 10;
       case 'SAINTS':
-        return TagType.saints;
+        return 8;
       case 'HISTORY_PERIOD':
-        return TagType.historyPeriod;
+        return 3;
       case 'INSTRUMENTATION':
-        return TagType.instrumentation;
+        return 4;
       case 'GENRE':
-        return TagType.genre;
+        return 5;
       case 'MUSICAL_FORM':
-        return TagType.musicalForm;
+        return 6;
       case 'SACRED_OCCASION':
-        return TagType.sacredOccasion;
+        return 7;
       case 'LANGUAGE':
-        return TagType.language;
+        return 9;
       case 'GENERIC':
-        return TagType.generic;
+        return 2;
       default:
-        return TagType.unknown;
+        return -1;
     }
   }
 
-  static TagType fromRawValue(int rawValue) {
+  factory TagType.fromRawValue(int rawValue) {
     switch (rawValue) {
       case 0:
         return TagType.liturgyPart;
@@ -111,95 +129,26 @@ extension TagTypeExtension on TagType {
       case TagType.playlist:
         return 12;
       default:
-        return 13;
-    }
-  }
-
-  bool get supported {
-    switch (this) {
-      case TagType.generic:
-      case TagType.liturgyPart:
-      case TagType.liturgyPeriod:
-      case TagType.saints:
-      case TagType.sacredOccasion:
-      case TagType.language:
-      case TagType.songbook:
-      case TagType.playlist:
-        return true;
-      default:
-        return false;
-    }
-  }
-
-  String get description {
-    switch (this) {
-      case TagType.generic:
-        return 'Příležitosti';
-      case TagType.liturgyPart:
-        return 'Mše svatá';
-      case TagType.liturgyPeriod:
-        return 'Liturgický rok';
-      case TagType.saints:
-        return 'Ke svatým';
-      case TagType.sacredOccasion:
-        return 'Svátosti a pobožnosti';
-      case TagType.language:
-        return 'Jazyky';
-      case TagType.songbook:
-        return 'Zpěvníky';
-      case TagType.playlist:
-        return 'Playlisty';
-      default:
-        return 'Filtry';
+        return -1;
     }
   }
 }
 
-@Entity()
-class Tag {
-  @Id(assignable: true)
-  final int id;
+@Freezed(toJson: false)
+class Tag with _$Tag implements Identifiable {
+  static const String fieldKey = 'tags_enum';
 
-  final String name;
+  const Tag._();
 
-  final int dbType;
+  @Entity(realClass: Tag)
+  @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
+  const factory Tag({
+    @Id(assignable: true) @JsonKey(fromJson: int.parse) required int id,
+    required String name,
+    @JsonKey(name: 'type_enum', fromJson: TagType.rawValueFromString) required int dbType,
+  }) = _Tag;
 
-  Tag(this.id, this.name, this.dbType);
+  factory Tag.fromJson(Map<String, Object?> json) => _$TagFromJson(json);
 
-  factory Tag.fromJson(Map<String, dynamic> json) {
-    return Tag(
-      int.parse(json['id'] as String),
-      json['name'] as String,
-      TagTypeExtension.fromString(json['type_enum'] as String).rawValue,
-    );
-  }
-
-  static List<Tag> fromMapList(Map<String, dynamic> json) {
-    return (json['tags_enum'] as List).map((json) => Tag.fromJson(json)).toList();
-  }
-
-  static List<Tag> load(Store store, _) {
-    final query = store.box<Tag>().query();
-    query.order(Tag_.id);
-
-    return query.build().find();
-  }
-
-  TagType get type => TagTypeExtension.fromRawValue(dbType);
-
-  @override
-  String toString() => 'Tag(id: $id, name: $name)';
-
-  @override
-  bool operator ==(Object other) => other is Tag && id == other.id;
-
-  @override
-  int get hashCode => id;
-}
-
-class TagsSection {
-  final String title;
-  final List<Tag> tags;
-
-  TagsSection(this.title, this.tags);
+  TagType get type => TagType.fromRawValue(dbType);
 }

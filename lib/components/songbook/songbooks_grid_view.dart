@@ -14,32 +14,29 @@ class SongbooksGridView extends StatelessWidget {
   final bool isCrossAxisCountMultipleOfTwo;
 
   const SongbooksGridView({
-    Key? key,
+    super.key,
     required this.songbooks,
     this.shrinkWrap = false,
     this.isCrossAxisCountMultipleOfTwo = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
+    final width = MediaQuery.sizeOf(context).width - MediaQuery.paddingOf(context).horizontal;
 
     int crossAxisCount = max(2, (width / _minTileWidth).floor());
 
     if (isCrossAxisCountMultipleOfTwo && crossAxisCount % 2 != 0) crossAxisCount--;
 
-    return Theme(
-      data: Theme.of(context).copyWith(canvasColor: Colors.transparent),
-      child: AlignedGridView.count(
-        crossAxisCount: crossAxisCount,
-        primary: false,
-        padding: shrinkWrap ? null : const EdgeInsets.only(top: kDefaultPadding / 2, bottom: 2 * kDefaultPadding),
-        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-        itemCount: songbooks.length,
-        itemBuilder: (context, index) => SongbookTile(songbook: songbooks[index]),
-        shrinkWrap: shrinkWrap,
-        physics: shrinkWrap ? const NeverScrollableScrollPhysics() : null,
-      ),
+    return AlignedGridView.count(
+      crossAxisCount: crossAxisCount,
+      primary: false,
+      padding: shrinkWrap ? null : const EdgeInsets.only(top: kDefaultPadding / 2, bottom: 2 * kDefaultPadding),
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+      itemCount: songbooks.length,
+      itemBuilder: (context, index) => SongbookTile(songbook: songbooks[index]),
+      shrinkWrap: shrinkWrap,
+      physics: shrinkWrap ? const NeverScrollableScrollPhysics() : null,
     );
   }
 }

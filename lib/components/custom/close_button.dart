@@ -3,13 +3,13 @@ import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
 
 class CustomCloseButton extends StatelessWidget {
-  const CustomCloseButton({Key? key}) : super(key: key);
+  const CustomCloseButton({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return HighlightableIconButton(
+    return Highlightable(
       padding: const EdgeInsets.all(kDefaultPadding).copyWith(left: 2 * kDefaultPadding),
-      onTap: Navigator.of(context).maybePop,
+      onTap: Navigator.of(context, rootNavigator: true).maybePop,
       icon: const Icon(Icons.close),
     );
   }

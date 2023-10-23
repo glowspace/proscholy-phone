@@ -1,36 +1,35 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/components/filters/filters_section.dart';
-import 'package:zpevnik/providers/navigation.dart';
+import 'package:zpevnik/providers/tags.dart';
+import 'package:zpevnik/utils/extensions.dart';
 
-class FiltersWidget extends StatelessWidget {
-  final List<TagsSection> tagsSections;
-
-  const FiltersWidget({Key? key, required this.tagsSections}) : super(key: key);
+class FiltersWidget extends ConsumerWidget {
+  const FiltersWidget({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return OrientationBuilder(builder: (context, orientation) {
-      if (orientation == Orientation.landscape && NavigationProvider.of(context).isFiltersOpen) {
-        Navigator.of(context).pop();
-      }
+  Widget build(BuildContext context, WidgetRef ref) {
+    final mediaQuery = MediaQuery.of(context);
 
-      return SafeArea(
-        top: false,
-        child: ListView.builder(
-          controller: PrimaryScrollController.of(context),
-          padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
-          addRepaintBoundaries: false,
-          itemCount: tagsSections.length,
-          itemBuilder: (context, index) => FiltersSection(
-            title: tagsSections[index].title,
-            tags: tagsSections[index].tags,
-            isLast: index == tagsSections.length - 1,
-          ),
+    return SafeArea(
+      top: false,
+      bottom: false,
+      child: ListView.builder(
+        controller: PrimaryScrollController.of(context),
+        padding: EdgeInsets.only(
+          top: (mediaQuery.isTablet && mediaQuery.isLandscape) ? 0 : kDefaultPadding,
+          bottom: mediaQuery.padding.bottom,
         ),
-      );
-    });
+        addRepaintBoundaries: false,
+        itemCount: supportedTagTypes.length,
+        itemBuilder: (_, index) => FiltersSection(
+          title: supportedTagTypes[index].description,
+          tags: ref.watch(tagsProvider(supportedTagTypes[index])),
+        ),
+      ),
+    );
   }
 }

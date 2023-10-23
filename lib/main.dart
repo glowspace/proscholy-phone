@@ -1,18 +1,22 @@
+import 'dart:developer';
+
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter/rendering.dart';
-import 'package:provider/provider.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:path/path.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:zpevnik/firebase_options.dart';
-import 'package:zpevnik/providers/data.dart';
-import 'package:zpevnik/providers/navigation.dart';
-import 'package:zpevnik/providers/presentation.dart';
+import 'package:zpevnik/models/objectbox.g.dart';
+import 'package:zpevnik/providers/app_dependencies.dart';
 import 'package:zpevnik/providers/settings.dart';
-import 'package:zpevnik/screens/initial.dart';
+import 'package:zpevnik/routing/navigator_observer.dart';
+import 'package:zpevnik/routing/router.dart';
 import 'package:zpevnik/screens/presentation.dart';
 import 'package:zpevnik/theme.dart';
-import 'package:zpevnik/utils/extensions.dart';
+import 'package:zpevnik/utils/services/external_actions.dart';
 
 const _title = 'Zpěvník';
 
@@ -21,55 +25,59 @@ Future<void> main() async {
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  if (kDebugMode) return runApp(const MainWidget());
-
-  await SentryFlutter.init(
-    (options) {
-      options.dsn = 'https://59762f67d1644603bddb1f0fc27849dd@sentry.glowspace.cz/2';
-      options.tracesSampleRate = 1.0;
-    },
-    appRunner: () => runApp(const MainWidget()),
+  final appDependencies = AppDependencies(
+    sharedPreferences: await SharedPreferences.getInstance(),
+    store: await openStore(),
+    ftsDatabase: await openDatabase(join(await getDatabasesPath(), 'zpevnik.db')),
+    packageInfo: await PackageInfo.fromPlatform(),
   );
+
+  ExternalActionsService.instance.initialize();
+
+  return runApp(ProviderScope(
+    observers: [MyProviderObserver()],
+    overrides: [appDependenciesProvider.overrideWithValue(appDependencies)],
+    child: const MainWidget(),
+  ));
 }
 
-class MainWidget extends StatelessWidget {
-  const MainWidget({Key? key}) : super(key: key);
+class MainWidget extends ConsumerWidget {
+  const MainWidget({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => SettingsProvider(),
-      builder: (_, __) => Builder(
-        builder: (context) {
-          final darkModeEnabled = context.select<SettingsProvider, bool?>((provider) => provider.darkModeEnabled);
-          ThemeMode? themeMode;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final darkModeEnabled = ref.watch(settingsProvider.select((settings) => settings.darkModeEnabled));
+    final seedColor = ref.watch(settingsProvider.select((settings) => Color(settings.seedColor)));
 
-          if (darkModeEnabled != null) {
-            if (darkModeEnabled) {
-              themeMode = ThemeMode.dark;
-            } else {
-              themeMode = ThemeMode.light;
-            }
-          }
+    ThemeMode? themeMode;
 
-          return MaterialApp(
-            debugShowCheckedModeBanner: false,
-            title: _title,
-            theme: AppTheme.light(),
-            darkTheme: AppTheme.dark(),
-            themeMode: themeMode,
-            home: const InitialScreen(),
-            builder: (context, child) => MultiProvider(
-              providers: [
-                ChangeNotifierProvider(create: (_) => DataProvider()),
-                ChangeNotifierProvider(create: (_) => NavigationProvider(hasMenu: MediaQuery.of(context).isTablet)),
-                ChangeNotifierProvider(create: (_) => PresentationProvider()),
-              ],
-              builder: (_, __) => child!,
-            ),
-          );
-        },
-      ),
+    if (darkModeEnabled != null) {
+      if (darkModeEnabled) {
+        themeMode = ThemeMode.dark;
+      } else {
+        themeMode = ThemeMode.light;
+      }
+    }
+
+    return MaterialApp(
+      navigatorKey: ExternalActionsService.instance.navigatorKey,
+      supportedLocales: const [Locale('cs', 'CZ')],
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      debugShowCheckedModeBanner: false,
+      title: _title,
+      theme: AppTheme.light(seedColor),
+      darkTheme: AppTheme.dark(seedColor),
+      themeMode: themeMode,
+      // must be without leading '/', otherwise navigation stack will be `HomeScreen` > `InitialScreen`
+      // and when replacing `InitialScreen` it will result to `HomeScreen` > `HomeScreen`
+      // this is because of deeplinking, when all screens in path are pushed to stack as well
+      initialRoute: 'initial',
+      onGenerateRoute: AppRouter.generateRoute,
+      navigatorObservers: [ref.read(appNavigatorObserverProvider)],
     );
   }
 }
@@ -78,10 +86,42 @@ class MainWidget extends StatelessWidget {
 void mainPresentation() => runApp(const MainPresentation());
 
 class MainPresentation extends StatelessWidget {
-  const MainPresentation({Key? key}) : super(key: key);
+  const MainPresentation({super.key});
 
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(debugShowCheckedModeBanner: false, title: _title, home: PresentationScreen());
+  }
+}
+
+class MyProviderObserver extends ProviderObserver {
+  @override
+  void didAddProvider(ProviderBase<Object?> provider, Object? value, ProviderContainer container) {
+    super.didAddProvider(provider, value, container);
+
+    log('added provider: $provider');
+  }
+
+  @override
+  void didUpdateProvider(
+      ProviderBase<Object?> provider, Object? previousValue, Object? newValue, ProviderContainer container) {
+    super.didUpdateProvider(provider, previousValue, newValue, container);
+
+    log('updated provider: $provider');
+  }
+
+  @override
+  void didDisposeProvider(ProviderBase<Object?> provider, ProviderContainer container) {
+    super.didDisposeProvider(provider, container);
+
+    log('disposed provider: $provider');
+  }
+
+  @override
+  void providerDidFail(
+      ProviderBase<Object?> provider, Object error, StackTrace stackTrace, ProviderContainer container) {
+    super.providerDidFail(provider, error, stackTrace, container);
+
+    log('provider failed: $provider, $error, $stackTrace');
   }
 }
