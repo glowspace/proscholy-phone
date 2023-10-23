@@ -1,27 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/selected_displayable_item_index.dart';
 import 'package:zpevnik/components/selected_row_highlight.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/playlist_record.dart';
+import 'package:zpevnik/providers/bible_verse.dart';
+import 'package:zpevnik/providers/custom_text.dart';
+import 'package:zpevnik/providers/song_lyrics.dart';
 import 'package:zpevnik/routing/arguments.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
-class PlaylistRecordRow extends StatelessWidget {
+class PlaylistRecordRow extends ConsumerWidget {
   final PlaylistRecord playlistRecord;
   final DisplayScreenArguments displayScreenArguments;
 
   const PlaylistRecordRow({super.key, required this.playlistRecord, required this.displayScreenArguments});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final textTheme = Theme.of(context).textTheme;
 
     const textMargin = EdgeInsets.only(top: 2);
 
-    final songLyric = playlistRecord.songLyric.target;
-    final bibleVerse = playlistRecord.bibleVerse.target;
-    final customText = playlistRecord.customText.target;
+    final songLyric = ref.watch(songLyricProvider(playlistRecord.songLyric.targetId));
+    final bibleVerse = ref.watch(bibleVerseProvider(playlistRecord.bibleVerse.targetId));
+    final customText = ref.watch(customTextProvider(playlistRecord.customText.targetId));
 
     final String title;
     final IconData? icon;

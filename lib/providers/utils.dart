@@ -73,7 +73,7 @@ Future<List<SongLyric>> storeSongLyrics(Store store, List<SongLyric> songLyrics)
 }
 
 int nextId<T extends Identifiable, D>(Ref ref, QueryProperty<T, D> idProperty) {
-  final box = ref.read(appDependenciesProvider.select((appDependencies) => appDependencies.store)).box<T>();
+  final box = ref.read(appDependenciesProvider.select((appDependencies) => appDependencies.store.box<T>()));
   final queryBuilder = box.query()..order(idProperty, flags: Order.descending);
   final query = queryBuilder.build();
   final lastId = query.findFirst()?.id ?? 0;
@@ -90,7 +90,7 @@ List<T> queryStore<T, D>(
   // default ascending
   int orderFlags = 0,
 }) {
-  final box = ref.read(appDependenciesProvider.select((appDependencies) => appDependencies.store)).box<T>();
+  final box = ref.read(appDependenciesProvider.select((appDependencies) => appDependencies.store.box<T>()));
   final queryBuilder = box.query(condition);
 
   if (orderBy != null) queryBuilder.order(orderBy, flags: orderFlags);

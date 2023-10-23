@@ -99,17 +99,19 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
   // this controller is only used to set the initial page
   late final _controller = PageController(initialPage: widget.initialIndex + 100 * widget.items.length);
 
-  late DisplayableItem _currentItem;
+  late int _currentIndex;
 
   late double _fontSizeScaleBeforeScale;
 
   Timer? _addRecentItemTimer;
 
+  DisplayableItem get _currentItem => widget.items[_currentIndex % widget.items.length];
+
   @override
   void initState() {
     super.initState();
 
-    _currentItem = widget.items[widget.initialIndex];
+    _currentIndex = widget.initialIndex;
   }
 
   @override
@@ -303,7 +305,7 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
   }
 
   void _itemChanged(int index) {
-    setState(() => _currentItem = widget.items[index % widget.items.length]);
+    setState(() => _currentIndex = index);
 
     // notify presentation
     ref.read(presentationProvider.notifier).change(_currentItem);
@@ -332,14 +334,19 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
   }
 
   void _editBibleVerse(BibleVerse bibleVerse) async {
-    (await context.push('/playlist/bible_verse/select_verse', arguments: bibleVerse)) as BibleVerse?;
+    final editedBibleVerse =
+        (await context.push('/playlist/bible_verse/select_verse', arguments: bibleVerse)) as BibleVerse?;
 
-    // if (bibleVerse != null) setState(() => _bibleVerse = bibleVerse);
+    if (editedBibleVerse != null) {
+      setState(() => widget.items[_currentIndex] = DisplayableItem.bibleVerse(editedBibleVerse));
+    }
   }
 
   void _editCustomText(CustomText customText) async {
-    (await context.push('/playlist/custom_text/edit', arguments: customText)) as CustomText?;
+    final editedCustomText = (await context.push('/playlist/custom_text/edit', arguments: customText)) as CustomText?;
 
-    // if (bibleVerse != null) setState(() => _bibleVerse = bibleVerse);
+    if (editedCustomText != null) {
+      setState(() => widget.items[_currentIndex] = DisplayableItem.customText(editedCustomText));
+    }
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zpevnik/models/bible_verse.dart';
+import 'package:zpevnik/models/custom_text.dart';
 import 'package:zpevnik/models/external.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
@@ -10,6 +11,7 @@ import 'package:zpevnik/screens/about.dart';
 import 'package:zpevnik/screens/display.dart';
 import 'package:zpevnik/screens/home.dart';
 import 'package:zpevnik/screens/initial.dart';
+import 'package:zpevnik/screens/playlist/custom_text_edit.dart';
 import 'package:zpevnik/screens/song_lyric/jpg.dart';
 import 'package:zpevnik/screens/song_lyric/pdf.dart';
 import 'package:zpevnik/screens/playlist.dart';
@@ -45,6 +47,10 @@ final class AppRouter {
       '/playlist' => ((_) => PlaylistScreen(playlist: settings.arguments as Playlist), false),
       '/playlist/bible_verse/select_verse' => (
           (_) => SelectBibleVerseScreen(bibleVerse: settings.arguments as BibleVerse?),
+          true
+        ),
+      '/playlist/custom_text/edit' => (
+          (_) => CustomTextEditScreen(customText: settings.arguments as CustomText?),
           true
         ),
       '/playlists' => ((_) => const PlaylistsScreen(), false),

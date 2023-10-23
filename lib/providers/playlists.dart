@@ -13,7 +13,7 @@ part 'playlists.g.dart';
 
 @Riverpod(keepAlive: true)
 Playlist favoritePlaylist(FavoritePlaylistRef ref) {
-  final box = ref.read(appDependenciesProvider.select((appDependencies) => appDependencies.store)).box<Playlist>();
+  final box = ref.read(appDependenciesProvider.select((appDependencies) => appDependencies.store.box<Playlist>()));
 
   if (!box.contains(favoritesPlaylistId)) box.put(Playlist.favorites());
 
@@ -23,19 +23,19 @@ Playlist favoritePlaylist(FavoritePlaylistRef ref) {
 @Riverpod(keepAlive: true)
 class Playlists extends _$Playlists {
   Box<Playlist> get _playlistsBox {
-    return ref.read(appDependenciesProvider.select((appDependencies) => appDependencies.store)).box<Playlist>();
+    return ref.read(appDependenciesProvider.select((appDependencies) => appDependencies.store.box<Playlist>()));
   }
 
   Box<PlaylistRecord> get _playlistRecordsBox {
-    return ref.read(appDependenciesProvider.select((appDependencies) => appDependencies.store)).box<PlaylistRecord>();
+    return ref.read(appDependenciesProvider.select((appDependencies) => appDependencies.store.box<PlaylistRecord>()));
   }
 
   Box<BibleVerse> get _bibleVerseBox {
-    return ref.read(appDependenciesProvider.select((appDependencies) => appDependencies.store)).box<BibleVerse>();
+    return ref.read(appDependenciesProvider.select((appDependencies) => appDependencies.store.box<BibleVerse>()));
   }
 
   Box<CustomText> get _customTextBox {
-    return ref.read(appDependenciesProvider.select((appDependencies) => appDependencies.store)).box<CustomText>();
+    return ref.read(appDependenciesProvider.select((appDependencies) => appDependencies.store.box<CustomText>()));
   }
 
   late int _nextPlaylistId;

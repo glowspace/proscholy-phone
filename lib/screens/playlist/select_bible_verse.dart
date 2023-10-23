@@ -5,6 +5,7 @@ import 'package:zpevnik/components/custom/close_button.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/bible_verse.dart';
+import 'package:zpevnik/providers/app_dependencies.dart';
 import 'package:zpevnik/providers/playlists.dart';
 import 'package:zpevnik/utils/bible_api_client.dart';
 import 'package:zpevnik/utils/extensions.dart';
@@ -155,10 +156,25 @@ class _SelectBibleVerseScreen extends StatefulWidget {
 }
 
 class _SelectBibleVerseScreenState extends State<_SelectBibleVerseScreen> {
-  int _startVerse = 1;
-  int? _endVerse;
+  late int _startVerse;
+  late int? _endVerse;
 
   int get _versesCount => widget.book.verseCounts[widget.chapter - 1];
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.bibleVerse != null &&
+        supportedBibleBooks[widget.bibleVerse!.book] == widget.book &&
+        widget.bibleVerse!.chapter == widget.chapter) {
+      _startVerse = widget.bibleVerse!.startVerse;
+      _endVerse = widget.bibleVerse!.endVerse;
+    } else {
+      _startVerse = 1;
+      _endVerse = null;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -207,7 +223,7 @@ class _SelectBibleVerseScreenState extends State<_SelectBibleVerseScreen> {
                   children: [
                     Expanded(
                       child: TextFormField(
-                        initialValue: '$_startVerse',
+                        initialValue: _startVerse.toString(),
                         keyboardType: TextInputType.number,
                         onChanged: (value) => setState(() => _startVerse = int.tryParse(value) ?? 1),
                         decoration: InputDecoration(
@@ -222,6 +238,7 @@ class _SelectBibleVerseScreenState extends State<_SelectBibleVerseScreen> {
                     const SizedBox(width: kDefaultPadding),
                     Expanded(
                       child: TextFormField(
+                        initialValue: _endVerse?.toString(),
                         keyboardType: TextInputType.number,
                         onChanged: (value) => setState(() => _endVerse = int.tryParse(value)),
                         decoration: InputDecoration(
@@ -278,9 +295,11 @@ class _SelectBibleVerseScreenState extends State<_SelectBibleVerseScreen> {
       endVerse: _endVerse,
     ).future);
 
+    if (!context.mounted) return;
+
     final BibleVerse bibleVerse;
 
-    if (widget.bibleVerse == null && context.mounted) {
+    if (widget.bibleVerse == null) {
       bibleVerse = context.providers.read(playlistsProvider.notifier).createBibleVerse(
             book: widget.book.number - 1,
             chapter: widget.chapter,
@@ -296,6 +315,10 @@ class _SelectBibleVerseScreenState extends State<_SelectBibleVerseScreen> {
         endVerse: _endVerse,
         text: text,
       );
+
+      ProviderScope.containerOf(context)
+          .read(appDependenciesProvider.select((appDependencies) => appDependencies.store.box<BibleVerse>()))
+          .put(bibleVerse);
     }
 
     if (context.mounted) Navigator.of(context, rootNavigator: true).pop(bibleVerse);
