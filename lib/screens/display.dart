@@ -8,6 +8,7 @@ import 'package:zpevnik/components/navigation/scaffold.dart';
 import 'package:zpevnik/components/playlist/bible_verse.dart';
 import 'package:zpevnik/components/playlist/custom_text.dart';
 import 'package:zpevnik/components/playlist/playlists_sheet.dart';
+import 'package:zpevnik/components/presentation/presentation.dart';
 import 'package:zpevnik/components/selected_displayable_item_index.dart';
 import 'package:zpevnik/components/presentation/settings.dart';
 import 'package:zpevnik/components/song_lyric/bottom_bar.dart';
@@ -16,13 +17,13 @@ import 'package:zpevnik/components/song_lyric/externals/externals_wrapper.dart';
 import 'package:zpevnik/components/song_lyric/song_lyric.dart';
 import 'package:zpevnik/components/song_lyric/song_lyric_menu_button.dart';
 import 'package:zpevnik/components/song_lyric/utils/active_player_controller.dart';
-import 'package:zpevnik/components/song_lyric/utils/parser.dart';
 import 'package:zpevnik/components/split_view.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/bible_verse.dart';
 import 'package:zpevnik/models/custom_text.dart';
 import 'package:zpevnik/models/model.dart';
 import 'package:zpevnik/models/playlist.dart';
+import 'package:zpevnik/models/presentation.dart';
 import 'package:zpevnik/providers/auto_scroll.dart';
 import 'package:zpevnik/providers/playlists.dart';
 import 'package:zpevnik/providers/presentation.dart';
@@ -145,7 +146,25 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
               // disable scrolling when there is only one item
               physics: widget.items.length == 1 ? const NeverScrollableScrollPhysics() : null,
               itemBuilder: (_, index) {
-                return widget.items[index % widget.items.length].when(
+                final item = widget.items[index % widget.items.length];
+
+                if (ref.watch(presentationProvider
+                    .select((presentation) => presentation.isPresenting && presentation.isPresentingLocally))) {
+                  if (ref.watch(
+                      presentationProvider.select((presentation) => presentation.showingData.name == item.name))) {
+                    return StreamBuilder(
+                      stream: ref.read(presentationProvider).showingDataStream,
+                      builder: (_, dataSnaphost) => Presentation(
+                        onExternalDisplay: false,
+                        presentationData: dataSnaphost.data ?? defaultPresentationData,
+                      ),
+                    );
+                  } else {
+                    return const SizedBox();
+                  }
+                }
+
+                return item.when(
                   bibleVerse: (bibleVerse) => BibleVerseWidget(bibleVerse: bibleVerse),
                   customText: (customText) => CustomTextWidget(customText: customText),
                   songLyric: (songLyric) => SongLyricWidget(
@@ -219,8 +238,6 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
   }
 
   Widget? _buildBottomSheet() {
-    if (_currentItem is! SongLyricItem) return null;
-
     final activePlayer = ref.watch(activePlayerProvider);
     final presentation = ref.watch(presentationProvider);
     final fullScreen = ref.watch(displayScreenStatusProvider.select((status) => status.fullScreen));
@@ -289,12 +306,7 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
     setState(() => _currentItem = widget.items[index % widget.items.length]);
 
     // notify presentation
-    final displayable = _currentItem;
-
-    if (displayable is SongLyricItem) {
-      // TODO: support also other types for presentation
-      ref.read(presentationProvider.notifier).changeSongLyric(SongLyricsParser(displayable.songLyric));
-    }
+    ref.read(presentationProvider.notifier).change(_currentItem);
 
     // change highligh index on tablet
     final selectedDisplayableItemIndexNotifier = SelectedDisplayableItemIndex.of(context);

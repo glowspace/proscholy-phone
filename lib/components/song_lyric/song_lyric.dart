@@ -3,13 +3,10 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:zpevnik/components/presentation/presentation.dart';
 import 'package:zpevnik/components/song_lyric/song_lyric_chips.dart';
 import 'package:zpevnik/components/song_lyric/utils/auto_scroll.dart';
 import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/models/presentation.dart';
 import 'package:zpevnik/models/song_lyric.dart';
-import 'package:zpevnik/providers/presentation.dart';
 import 'package:zpevnik/providers/settings.dart';
 import 'package:zpevnik/components/song_lyric/utils/converter.dart';
 import 'package:zpevnik/components/song_lyric/utils/lyrics_controller.dart';
@@ -32,22 +29,6 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
-    if (ref.watch(
-        presentationProvider.select((presentation) => presentation.isPresenting && presentation.isPresentingLocally))) {
-      // if (ref.watch(
-      //     presentationProvider.select((presentation) => presentation.showingData.songLyricId == widget.songLyric.id))) {
-      return StreamBuilder(
-        stream: ref.read(presentationProvider).showingDataStream,
-        builder: (_, dataSnaphost) => SongLyricPresentation(
-          onExternalDisplay: false,
-          presentationData: dataSnaphost.data ?? defaultPresentationData,
-        ),
-      );
-      // } else {
-      //   return const SizedBox();
-      // }
-    }
 
     final fontSizeScale = MediaQuery.textScaleFactorOf(context);
 

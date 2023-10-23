@@ -20,9 +20,9 @@ PresentationData _$PresentationDataFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$PresentationData {
-  int get songLyricId => throw _privateConstructorUsedError;
-  String get songLyricName => throw _privateConstructorUsedError;
-  String get lyrics => throw _privateConstructorUsedError;
+  int? get songLyricId => throw _privateConstructorUsedError;
+  String get name => throw _privateConstructorUsedError;
+  String get text => throw _privateConstructorUsedError;
   PresentationSettings get settings => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -38,9 +38,9 @@ abstract class $PresentationDataCopyWith<$Res> {
       _$PresentationDataCopyWithImpl<$Res, PresentationData>;
   @useResult
   $Res call(
-      {int songLyricId,
-      String songLyricName,
-      String lyrics,
+      {int? songLyricId,
+      String name,
+      String text,
       PresentationSettings settings});
 
   $PresentationSettingsCopyWith<$Res> get settings;
@@ -59,23 +59,23 @@ class _$PresentationDataCopyWithImpl<$Res, $Val extends PresentationData>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? songLyricId = null,
-    Object? songLyricName = null,
-    Object? lyrics = null,
+    Object? songLyricId = freezed,
+    Object? name = null,
+    Object? text = null,
     Object? settings = null,
   }) {
     return _then(_value.copyWith(
-      songLyricId: null == songLyricId
+      songLyricId: freezed == songLyricId
           ? _value.songLyricId
           : songLyricId // ignore: cast_nullable_to_non_nullable
-              as int,
-      songLyricName: null == songLyricName
-          ? _value.songLyricName
-          : songLyricName // ignore: cast_nullable_to_non_nullable
+              as int?,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
               as String,
-      lyrics: null == lyrics
-          ? _value.lyrics
-          : lyrics // ignore: cast_nullable_to_non_nullable
+      text: null == text
+          ? _value.text
+          : text // ignore: cast_nullable_to_non_nullable
               as String,
       settings: null == settings
           ? _value.settings
@@ -102,9 +102,9 @@ abstract class _$$PresentationDataImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {int songLyricId,
-      String songLyricName,
-      String lyrics,
+      {int? songLyricId,
+      String name,
+      String text,
       PresentationSettings settings});
 
   @override
@@ -122,23 +122,23 @@ class __$$PresentationDataImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? songLyricId = null,
-    Object? songLyricName = null,
-    Object? lyrics = null,
+    Object? songLyricId = freezed,
+    Object? name = null,
+    Object? text = null,
     Object? settings = null,
   }) {
     return _then(_$PresentationDataImpl(
-      songLyricId: null == songLyricId
+      songLyricId: freezed == songLyricId
           ? _value.songLyricId
           : songLyricId // ignore: cast_nullable_to_non_nullable
-              as int,
-      songLyricName: null == songLyricName
-          ? _value.songLyricName
-          : songLyricName // ignore: cast_nullable_to_non_nullable
+              as int?,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
               as String,
-      lyrics: null == lyrics
-          ? _value.lyrics
-          : lyrics // ignore: cast_nullable_to_non_nullable
+      text: null == text
+          ? _value.text
+          : text // ignore: cast_nullable_to_non_nullable
               as String,
       settings: null == settings
           ? _value.settings
@@ -152,26 +152,26 @@ class __$$PresentationDataImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$PresentationDataImpl implements _PresentationData {
   const _$PresentationDataImpl(
-      {required this.songLyricId,
-      required this.songLyricName,
-      required this.lyrics,
+      {this.songLyricId,
+      required this.name,
+      required this.text,
       required this.settings});
 
   factory _$PresentationDataImpl.fromJson(Map<String, dynamic> json) =>
       _$$PresentationDataImplFromJson(json);
 
   @override
-  final int songLyricId;
+  final int? songLyricId;
   @override
-  final String songLyricName;
+  final String name;
   @override
-  final String lyrics;
+  final String text;
   @override
   final PresentationSettings settings;
 
   @override
   String toString() {
-    return 'PresentationData(songLyricId: $songLyricId, songLyricName: $songLyricName, lyrics: $lyrics, settings: $settings)';
+    return 'PresentationData(songLyricId: $songLyricId, name: $name, text: $text, settings: $settings)';
   }
 
   @override
@@ -181,9 +181,8 @@ class _$PresentationDataImpl implements _PresentationData {
             other is _$PresentationDataImpl &&
             (identical(other.songLyricId, songLyricId) ||
                 other.songLyricId == songLyricId) &&
-            (identical(other.songLyricName, songLyricName) ||
-                other.songLyricName == songLyricName) &&
-            (identical(other.lyrics, lyrics) || other.lyrics == lyrics) &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.text, text) || other.text == text) &&
             (identical(other.settings, settings) ||
                 other.settings == settings));
   }
@@ -191,7 +190,7 @@ class _$PresentationDataImpl implements _PresentationData {
   @JsonKey(ignore: true)
   @override
   int get hashCode =>
-      Object.hash(runtimeType, songLyricId, songLyricName, lyrics, settings);
+      Object.hash(runtimeType, songLyricId, name, text, settings);
 
   @JsonKey(ignore: true)
   @override
@@ -210,20 +209,20 @@ class _$PresentationDataImpl implements _PresentationData {
 
 abstract class _PresentationData implements PresentationData {
   const factory _PresentationData(
-      {required final int songLyricId,
-      required final String songLyricName,
-      required final String lyrics,
+      {final int? songLyricId,
+      required final String name,
+      required final String text,
       required final PresentationSettings settings}) = _$PresentationDataImpl;
 
   factory _PresentationData.fromJson(Map<String, dynamic> json) =
       _$PresentationDataImpl.fromJson;
 
   @override
-  int get songLyricId;
+  int? get songLyricId;
   @override
-  String get songLyricName;
+  String get name;
   @override
-  String get lyrics;
+  String get text;
   @override
   PresentationSettings get settings;
   @override

@@ -9,9 +9,9 @@ part of 'presentation.dart';
 _$PresentationDataImpl _$$PresentationDataImplFromJson(
         Map<String, dynamic> json) =>
     _$PresentationDataImpl(
-      songLyricId: json['songLyricId'] as int,
-      songLyricName: json['songLyricName'] as String,
-      lyrics: json['lyrics'] as String,
+      songLyricId: json['songLyricId'] as int?,
+      name: json['name'] as String,
+      text: json['text'] as String,
       settings: PresentationSettings.fromJson(
           json['settings'] as Map<String, dynamic>),
     );
@@ -20,8 +20,8 @@ Map<String, dynamic> _$$PresentationDataImplToJson(
         _$PresentationDataImpl instance) =>
     <String, dynamic>{
       'songLyricId': instance.songLyricId,
-      'songLyricName': instance.songLyricName,
-      'lyrics': instance.lyrics,
+      'name': instance.name,
+      'text': instance.text,
       'settings': instance.settings,
     };
 

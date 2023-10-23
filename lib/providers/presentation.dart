@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zpevnik/components/song_lyric/utils/parser.dart';
+import 'package:zpevnik/models/model.dart';
 import 'package:zpevnik/models/presentation.dart';
 import 'package:zpevnik/utils/services/presentation.dart';
 
@@ -41,17 +42,20 @@ class PresentationProvider extends ChangeNotifier {
 
     if (_isPresentingLocally) {
       _showingDataStreamController = StreamController.broadcast(
-          onListen: () => _changeShowingData(_showingData.copyWith(
-                songLyricId: songLyricsParser.songLyric.id,
-                songLyricName: songLyricsParser.songLyric.name,
-                lyrics: songLyricsParser.getVerse(_verseOrder),
-              )));
+        onListen: () => _changeShowingData(
+          _showingData.copyWith(
+            songLyricId: songLyricsParser.songLyric.id,
+            name: songLyricsParser.songLyric.name,
+            text: songLyricsParser.getVerse(_verseOrder),
+          ),
+        ),
+      );
     } else {
       PresentationService.instance.startPresentation();
       _changeShowingData(_showingData.copyWith(
         songLyricId: songLyricsParser.songLyric.id,
-        songLyricName: songLyricsParser.songLyric.name,
-        lyrics: songLyricsParser.getVerse(_verseOrder),
+        name: songLyricsParser.songLyric.name,
+        text: songLyricsParser.getVerse(_verseOrder),
       ));
     }
 
@@ -78,9 +82,9 @@ class PresentationProvider extends ChangeNotifier {
     if (verse.isEmpty) _isAfterEnd = true;
 
     if (isPaused) {
-      _nextAction = () => _changeShowingData(_showingData.copyWith(lyrics: verse));
+      _nextAction = () => _changeShowingData(_showingData.copyWith(text: verse));
     } else {
-      _changeShowingData(_showingData.copyWith(lyrics: verse));
+      _changeShowingData(_showingData.copyWith(text: verse));
     }
   }
 
@@ -94,9 +98,9 @@ class PresentationProvider extends ChangeNotifier {
     if (verse.isEmpty) _isBeforeStart = true;
 
     if (isPaused) {
-      _nextAction = () => _changeShowingData(_showingData.copyWith(lyrics: verse));
+      _nextAction = () => _changeShowingData(_showingData.copyWith(text: verse));
     } else {
-      _changeShowingData(_showingData.copyWith(lyrics: verse));
+      _changeShowingData(_showingData.copyWith(text: verse));
     }
   }
 
@@ -114,25 +118,44 @@ class PresentationProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void changeSongLyric(SongLyricsParser songLyricsParser) {
+  void change(DisplayableItem displayableItem) {
     _verseOrder = 0;
 
-    _songLyricsParser = songLyricsParser;
-
-    if (isPaused) {
-      _nextAction = () {
+    final changeFunction = displayableItem.when(
+      bibleVerse: (bibleVerse) => () {
         _changeShowingData(_showingData.copyWith(
-          songLyricId: songLyricsParser.songLyric.id,
-          songLyricName: songLyricsParser.songLyric.name,
-          lyrics: songLyricsParser.getVerse(_verseOrder),
+          songLyricId: null,
+          name: bibleVerse.name,
+          text: bibleVerse.text,
         ));
-      };
+      },
+      customText: (customText) => () {
+        _changeShowingData(_showingData.copyWith(
+          songLyricId: null,
+          name: customText.name,
+          text: customText.content,
+        ));
+      },
+      songLyric: (songLyric) {
+        final songLyricsParser = SongLyricsParser(songLyric);
+
+        _songLyricsParser = songLyricsParser;
+
+        return () {
+          _changeShowingData(_showingData.copyWith(
+            songLyricId: songLyricsParser.songLyric.id,
+            name: songLyricsParser.songLyric.name,
+            text: songLyricsParser.getVerse(_verseOrder),
+          ));
+        };
+      },
+    );
+
+    // if presentation is paused store it as pending action otherwise execute it immediately
+    if (isPaused) {
+      _nextAction = changeFunction;
     } else {
-      _changeShowingData(_showingData.copyWith(
-        songLyricId: songLyricsParser.songLyric.id,
-        songLyricName: songLyricsParser.songLyric.name,
-        lyrics: songLyricsParser.getVerse(_verseOrder),
-      ));
+      changeFunction();
     }
   }
 

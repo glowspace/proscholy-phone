@@ -10,11 +10,11 @@ class PresentationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // projected screen should not have any color, unless specified by user, which is handled inside of `SongLyricPresentation`
+      // projected screen should not have any color, unless specified by user, which is handled inside of `Presentation`
       backgroundColor: Colors.transparent,
       body: StreamBuilder(
         stream: PresentationService.instance.getDataStream(),
-        builder: (_, dataSnaphost) => SongLyricPresentation(
+        builder: (_, dataSnaphost) => Presentation(
           presentationData: dataSnaphost.data ?? defaultPresentationData,
         ),
       ),

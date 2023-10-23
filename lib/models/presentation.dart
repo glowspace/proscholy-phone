@@ -4,9 +4,9 @@ part 'presentation.freezed.dart';
 part 'presentation.g.dart';
 
 const defaultPresentationData = PresentationData(
-  songLyricId: 0,
-  songLyricName: '',
-  lyrics: '',
+  songLyricId: null,
+  name: '',
+  text: '',
   settings: defaultPresentationSettings,
 );
 
@@ -20,9 +20,9 @@ const defaultPresentationSettings = PresentationSettings(
 @freezed
 class PresentationData with _$PresentationData {
   const factory PresentationData({
-    required int songLyricId,
-    required String songLyricName,
-    required String lyrics,
+    int? songLyricId,
+    required String name,
+    required String text,
     required PresentationSettings settings,
   }) = _PresentationData;
 
