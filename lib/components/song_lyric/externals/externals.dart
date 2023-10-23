@@ -28,43 +28,44 @@ class _ExternalsWidgetState extends State<ExternalsWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.sizeOf(context);
+    final width = size.width - MediaQuery.paddingOf(context).horizontal;
+
     final externals = widget.songLyric.externals
         .where((external) => external.mediaType == MediaType.youtube || external.mediaType == MediaType.mp3)
         .toList();
 
-    return LayoutBuilder(
-      builder: (context, constraints) => Container(
-        width: constraints.maxWidth,
-        constraints: BoxConstraints(maxHeight: 2 / 3 * constraints.maxHeight),
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(kDefaultRadius)),
-          color: Theme.of(context).colorScheme.surface,
-        ),
-        child: BottomSheetSection(
-          title: 'Nahrávky',
-          children: [
-            CustomFutureBuilder(
-              future: _checkInternetFuture,
-              builder: (_, __) => AlignedGridView.count(
-                primary: false,
-                padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
-                crossAxisCount: max(1, (constraints.maxWidth / _externalMinWidth).floor()),
-                crossAxisSpacing: kDefaultPadding,
-                mainAxisSpacing: kDefaultPadding,
-                itemCount: externals.length,
-                shrinkWrap: true,
-                itemBuilder: (_, index) => ExternalWidget(external: externals[index]),
-              ),
-              errorBuilder: (_, __) => const Padding(
-                padding: EdgeInsets.all(kDefaultPadding),
-                child: Material(
-                  color: Colors.transparent,
-                  child: Text(_noInternetMessage, textAlign: TextAlign.center),
-                ),
+    return Container(
+      width: width,
+      constraints: BoxConstraints(maxHeight: 2 / 3 * size.height),
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(kDefaultRadius)),
+        color: Theme.of(context).colorScheme.surface,
+      ),
+      child: BottomSheetSection(
+        title: 'Nahrávky',
+        children: [
+          CustomFutureBuilder(
+            future: _checkInternetFuture,
+            builder: (_, __) => AlignedGridView.count(
+              primary: false,
+              padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
+              crossAxisCount: max(1, (width / _externalMinWidth).floor()),
+              crossAxisSpacing: kDefaultPadding,
+              mainAxisSpacing: kDefaultPadding,
+              itemCount: externals.length,
+              shrinkWrap: true,
+              itemBuilder: (_, index) => ExternalWidget(external: externals[index]),
+            ),
+            errorBuilder: (_, __) => const Padding(
+              padding: EdgeInsets.all(kDefaultPadding),
+              child: Material(
+                color: Colors.transparent,
+                child: Text(_noInternetMessage, textAlign: TextAlign.center),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

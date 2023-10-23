@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
-import 'package:zpevnik/models/bible_verse.dart';
-import 'package:zpevnik/models/custom_text.dart';
+import 'package:zpevnik/models/model.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/providers/recent_items.dart';
@@ -35,7 +34,7 @@ class AppNavigatorObserver extends NavigatorObserver {
     _handleWakeLock(name);
 
     // handle recent items with delay, so it is not visible to user during push
-    Future.delayed(const Duration(milliseconds: 100), () => _handleRecentItems(route));
+    Future.delayed(const Duration(milliseconds: 100), () => _handleRecentItems(route, previousRoute));
   }
 
   @override
@@ -82,7 +81,7 @@ class AppNavigatorObserver extends NavigatorObserver {
     }
   }
 
-  void _handleRecentItems(Route route) {
+  void _handleRecentItems(Route route, Route? previousRoute) {
     final context = route.navigator?.context;
 
     if (context == null) return;
@@ -94,9 +93,13 @@ class AppNavigatorObserver extends NavigatorObserver {
         final arguments = route.settings.arguments as DisplayScreenArguments?;
 
         if (arguments != null) {
-          ProviderScope.containerOf(context)
-              .read(recentItemsProvider.notifier)
-              .add(arguments.items[arguments.initialIndex]);
+          if (previousRoute?.settings.name == '/search') {
+            ProviderScope.containerOf(context)
+                .read(recentSongLyricsProvider.notifier)
+                .add((arguments.items[arguments.initialIndex] as SongLyricItem).songLyric);
+          } else {
+            recentItemsNotifier.add(arguments.items[arguments.initialIndex]);
+          }
         }
 
         break;

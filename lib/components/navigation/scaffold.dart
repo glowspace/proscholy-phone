@@ -11,7 +11,6 @@ class CustomScaffold extends StatelessWidget {
   final Widget? floatingActionButton;
   final Widget body;
 
-  final bool hideNavigationRail;
   final bool useMaxWidth;
 
   const CustomScaffold({
@@ -21,7 +20,6 @@ class CustomScaffold extends StatelessWidget {
     this.bottomNavigationBar,
     this.bottomSheet,
     this.floatingActionButton,
-    this.hideNavigationRail = false,
     this.useMaxWidth = true,
     required this.body,
   });

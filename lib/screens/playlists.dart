@@ -6,6 +6,7 @@ import 'package:zpevnik/components/playlist/playlists_list_view.dart';
 import 'package:zpevnik/components/playlist/dialogs.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/utils/extensions.dart';
+import 'package:zpevnik/utils/hero_tags.dart';
 
 class PlaylistsScreen extends StatelessWidget {
   const PlaylistsScreen({super.key});
@@ -14,7 +15,7 @@ class PlaylistsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomScaffold(
       appBar: HeroAppBar(
-        tag: 'playlists_app_bar',
+        tag: HeroTags.playlistsAppBar,
         appBar: AppBar(
           automaticallyImplyLeading: false,
           leading: context.isPlaylists ? const CustomBackButton() : null,
@@ -23,14 +24,14 @@ class PlaylistsScreen extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        heroTag: 'playlists_fab',
+        heroTag: HeroTags.playlistsFAB,
         backgroundColor: Theme.of(context).colorScheme.surface,
         child: const Icon(Icons.add),
         onPressed: () => showPlaylistDialog(context),
       ),
-      body: const SafeArea(
-        child: Hero(
-          tag: 'playlists_list_view',
+      body: const Hero(
+        tag: HeroTags.playlistsList,
+        child: SafeArea(
           // must be wrapped in material widget, as there is no material in tree during hero transition
           child: Material(
             color: Colors.transparent,

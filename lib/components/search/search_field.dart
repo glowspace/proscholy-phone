@@ -71,11 +71,10 @@ class SearchFieldTransitionWidget extends AnimatedWidget {
 }
 
 class SearchField extends StatefulWidget {
-  final bool isInsideSearchScreen;
   final Function(String)? onChanged;
   final Function(String)? onSubmitted;
 
-  const SearchField({super.key, this.isInsideSearchScreen = false, this.onChanged, this.onSubmitted});
+  const SearchField({super.key, this.onChanged, this.onSubmitted});
 
   @override
   State<SearchField> createState() => _SearchFieldState();
@@ -93,9 +92,7 @@ class _SearchFieldState extends State<SearchField> {
     _focusNode = FocusNode();
 
     // autofocus on search screen
-    if (widget.isInsideSearchScreen) {
-      Future.delayed(const Duration(milliseconds: 10), () => _requestFocusAfterTransition());
-    }
+    Future.delayed(const Duration(milliseconds: 10), () => _requestFocusAfterTransition());
   }
 
   @override
@@ -103,10 +100,10 @@ class _SearchFieldState extends State<SearchField> {
     final theme = Theme.of(context);
 
     Widget? suffixIcon;
-    if (widget.isInsideSearchScreen) {
+    if (context.isSearching) {
       suffixIcon = Highlightable(
         padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-        onTap: _clearOrPop,
+        onTap: _clear,
         icon: const Icon(Icons.clear),
       );
     }
@@ -117,7 +114,9 @@ class _SearchFieldState extends State<SearchField> {
           ? null
           : (_, animation, __, ___, ____) => SearchFieldTransitionWidget(animation: animation),
       child: Container(
-        padding: widget.isInsideSearchScreen ? const EdgeInsets.only(left: kDefaultPadding) : null,
+        padding: !context.isHome
+            ? EdgeInsets.only(left: kDefaultPadding, right: context.isSearching ? 0 : kDefaultPadding)
+            : null,
         child: Material(
           type: MaterialType.transparency,
           child: Row(
@@ -134,7 +133,7 @@ class _SearchFieldState extends State<SearchField> {
                         color: theme.brightness.isLight ? lightIconColor : darkIconColor,
                       ),
                       filled: true,
-                      fillColor: theme.brightness.isLight && widget.isInsideSearchScreen
+                      fillColor: theme.brightness.isLight && context.isSearching
                           ? theme.scaffoldBackgroundColor
                           : theme.colorScheme.surface,
                       isDense: true,
@@ -152,7 +151,7 @@ class _SearchFieldState extends State<SearchField> {
                       contentPadding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
                     ),
                     // disable pasting to search field on home screen, as it should only open search screen
-                    enableInteractiveSelection: widget.isInsideSearchScreen,
+                    enableInteractiveSelection: context.isSearching,
                     onTap: _showSearchScreen,
                     onChanged: widget.onChanged,
                     onSubmitted: widget.onSubmitted,
@@ -161,7 +160,7 @@ class _SearchFieldState extends State<SearchField> {
                   ),
                 ),
               ),
-              if (widget.isInsideSearchScreen)
+              if (context.isSearching)
                 Highlightable(
                   onTap: () => context.maybePop(),
                   padding: const EdgeInsets.all(kDefaultPadding),
@@ -177,7 +176,7 @@ class _SearchFieldState extends State<SearchField> {
   }
 
   void _showSearchScreen() {
-    if (widget.isInsideSearchScreen) return;
+    if (context.isSearching) return;
 
     // prevent keyboard from showing up
     FocusScope.of(context).requestFocus(FocusNode());
@@ -185,17 +184,15 @@ class _SearchFieldState extends State<SearchField> {
     context.push('/search');
   }
 
-  void _clearOrPop() {
-    if (_controller.text.isEmpty) {
-      context.maybePop();
-    } else {
-      _controller.clear();
-      widget.onChanged?.call('');
-    }
+  void _clear() {
+    _controller.clear();
+    widget.onChanged?.call('');
   }
 
   // requests focus after route transition ends, needed becuse of the hero transition of searchfield
   void _requestFocusAfterTransition() {
+    if (!context.isSearching) return;
+
     final animation = ModalRoute.of(context)?.animation;
 
     void handler(status) {

@@ -58,7 +58,6 @@ class _CustomTextScreenState extends State<CustomTextScreen> {
           ),
         ],
       ),
-      hideNavigationRail: context.isPlaylist,
       body: SafeArea(
         bottom: false,
         child: Column(children: [

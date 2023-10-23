@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:zpevnik/components/playlist/playlist_record_row.dart';
 import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/models/model.dart';
 import 'package:zpevnik/models/objectbox.g.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/playlist_record.dart';
@@ -86,6 +87,7 @@ class _PlaylistRecordsListViewState extends State<PlaylistRecordsListView> {
           displayScreenArguments: DisplayScreenArguments(
             items: _recordsOrdered.map(_unwrapPlaylistRecord).toList(),
             initialIndex: index,
+            playlist: widget.playlist,
           ),
         ),
       ),
@@ -93,14 +95,14 @@ class _PlaylistRecordsListViewState extends State<PlaylistRecordsListView> {
     );
   }
 
-  dynamic _unwrapPlaylistRecord(PlaylistRecord playlistRecord) {
+  DisplayableItem _unwrapPlaylistRecord(PlaylistRecord playlistRecord) {
     if (playlistRecord.bibleVerse.targetId != 0) {
-      return playlistRecord.bibleVerse.target;
+      return DisplayableItem.bibleVerse(playlistRecord.bibleVerse.target!);
     } else if (playlistRecord.customText.targetId != 0) {
-      return playlistRecord.customText.target;
+      return DisplayableItem.customText(playlistRecord.customText.target!);
     }
 
-    return playlistRecord.songLyric.target;
+    return DisplayableItem.songLyric(playlistRecord.songLyric.target!);
   }
 
   void _reorder(int oldIndex, int newIndex) {

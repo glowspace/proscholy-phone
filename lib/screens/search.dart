@@ -31,7 +31,6 @@ class SearchScreen extends StatelessWidget {
             if (mediaQuery.padding.top == 0) const SizedBox(height: kDefaultPadding),
             SearchField(
               key: const Key('searchfield'),
-              isInsideSearchScreen: true,
               onChanged: context.providers.read(searchTextProvider.notifier).change,
               onSubmitted: (_) => _maybePushMatchedSonglyric(context),
             ),
@@ -46,7 +45,7 @@ class SearchScreen extends StatelessWidget {
 
     final Widget child;
 
-    if (mediaQuery.isTablet && mediaQuery.isLandscape) {
+    if (mediaQuery.isTablet && mediaQuery.isLandscape && context.isSearching) {
       child = SplitView(
         childFlex: 4,
         subChildFlex: 3,
@@ -72,6 +71,6 @@ class SearchScreen extends StatelessWidget {
       searchedSongLyricsProvider.select((searchedSongLyricsProvider) => searchedSongLyricsProvider.matchedById),
     );
 
-    if (matchedById != null) context.push('/display', arguments: DisplayScreenArguments.item(matchedById));
+    if (matchedById != null) context.push('/display', arguments: DisplayScreenArguments.songLyric(matchedById));
   }
 }

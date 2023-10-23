@@ -32,7 +32,6 @@ class _BibleVerseScreenState extends State<BibleVerseScreen> {
           ),
         ],
       ),
-      hideNavigationRail: context.isPlaylist,
       body: SafeArea(
         bottom: false,
         child: SingleChildScrollView(

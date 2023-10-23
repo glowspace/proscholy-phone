@@ -8,6 +8,7 @@ import 'package:zpevnik/components/navigation/scaffold.dart';
 import 'package:zpevnik/components/playlist/bible_verse.dart';
 import 'package:zpevnik/components/playlist/custom_text.dart';
 import 'package:zpevnik/components/playlist/playlists_sheet.dart';
+import 'package:zpevnik/components/selected_displayable_item_index.dart';
 import 'package:zpevnik/components/presentation/settings.dart';
 import 'package:zpevnik/components/song_lyric/bottom_bar.dart';
 import 'package:zpevnik/components/song_lyric/externals/collapsed_player.dart';
@@ -16,35 +17,88 @@ import 'package:zpevnik/components/song_lyric/song_lyric.dart';
 import 'package:zpevnik/components/song_lyric/song_lyric_menu_button.dart';
 import 'package:zpevnik/components/song_lyric/utils/active_player_controller.dart';
 import 'package:zpevnik/components/song_lyric/utils/parser.dart';
+import 'package:zpevnik/components/split_view.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/bible_verse.dart';
 import 'package:zpevnik/models/custom_text.dart';
-import 'package:zpevnik/models/song_lyric.dart';
+import 'package:zpevnik/models/model.dart';
+import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/providers/auto_scroll.dart';
 import 'package:zpevnik/providers/playlists.dart';
 import 'package:zpevnik/providers/presentation.dart';
 import 'package:zpevnik/providers/recent_items.dart';
 import 'package:zpevnik/providers/settings.dart';
 import 'package:zpevnik/providers/display_screen_status.dart';
+import 'package:zpevnik/screens/playlist.dart';
+import 'package:zpevnik/screens/search.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
-class DisplayScreen extends ConsumerStatefulWidget {
-  // supports display of bible verses, custom texts and song lyrics
-  final List<dynamic> items;
+class DisplayScreen extends StatelessWidget {
+  final List<DisplayableItem> items;
   final int initialIndex;
 
-  const DisplayScreen({super.key, required this.items, this.initialIndex = 0});
+  final Playlist? playlist;
+
+  const DisplayScreen({super.key, required this.items, this.initialIndex = 0, this.playlist});
 
   @override
-  ConsumerState<DisplayScreen> createState() => _DisplayScreenState();
+  Widget build(BuildContext context) {
+    if (MediaQuery.of(context).isTablet) {
+      return _DisplayScreenTablet(items: items, initialIndex: initialIndex, playlist: playlist);
+    }
+
+    return _DisplayScaffold(items: items, initialIndex: initialIndex);
+  }
 }
 
-class _DisplayScreenState extends ConsumerState<DisplayScreen> {
+class _DisplayScreenTablet extends StatefulWidget {
+  final List<DisplayableItem> items;
+  final int initialIndex;
+
+  final Playlist? playlist;
+
+  const _DisplayScreenTablet({required this.items, required this.initialIndex, this.playlist});
+
+  @override
+  State<_DisplayScreenTablet> createState() => _DisplayScreenTabletState();
+}
+
+class _DisplayScreenTabletState extends State<_DisplayScreenTablet> {
+  late final _selectedDisplayableItemIndex = ValueNotifier(widget.initialIndex);
+
+  @override
+  Widget build(BuildContext context) {
+    return SelectedDisplayableItemIndex(
+      displayableItemIndexNotifier: _selectedDisplayableItemIndex,
+      child: SplitView(
+        childFlex: 3,
+        subChildFlex: 7,
+        subChild: ValueListenableBuilder(
+          valueListenable: _selectedDisplayableItemIndex,
+          builder: (_, index, __) => _DisplayScaffold(key: Key('$index'), items: widget.items, initialIndex: index),
+        ),
+        child: widget.playlist == null ? const SearchScreen() : PlaylistScreen(playlist: widget.playlist!),
+      ),
+    );
+  }
+}
+
+class _DisplayScaffold extends ConsumerStatefulWidget {
+  final List<DisplayableItem> items;
+  final int initialIndex;
+
+  const _DisplayScaffold({super.key, required this.items, required this.initialIndex});
+
+  @override
+  ConsumerState<_DisplayScaffold> createState() => _DisplayScaffoldState();
+}
+
+class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
   // make sure it is possible to swipe to previous item
   // this controller is only used to set the initial page
   late final _controller = PageController(initialPage: widget.initialIndex + 100 * widget.items.length);
 
-  late dynamic _currentItem;
+  late DisplayableItem _currentItem;
 
   late double _fontSizeScaleBeforeScale;
 
@@ -66,6 +120,9 @@ class _DisplayScreenState extends ConsumerState<DisplayScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final newMediaQuery = MediaQuery.of(context)
+        .copyWith(textScaleFactor: ref.watch(settingsProvider.select((settings) => settings.fontSizeScale)));
+
     final fullScreen = ref.watch(displayScreenStatusProvider.select((status) => status.fullScreen));
 
     final scaffold = CustomScaffold(
@@ -80,19 +137,22 @@ class _DisplayScreenState extends ConsumerState<DisplayScreen> {
         child: SafeArea(
           bottom: false,
           child: MediaQuery(
-            data: MediaQuery.of(context)
-                .copyWith(textScaleFactor: ref.watch(settingsProvider.select((settings) => settings.fontSizeScale))),
+            data: newMediaQuery,
             child: PageView.builder(
-              controller: _controller,
+              controller: widget.items.length == 1 ? null : _controller,
               onPageChanged: _itemChanged,
-              itemBuilder: (_, index) => switch (widget.items[index % widget.items.length]) {
-                (BibleVerse bibleVerse) => BibleVerseWidget(bibleVerse: bibleVerse),
-                (CustomText customText) => CustomTextWidget(customText: customText),
-                (SongLyric songLyric) => SongLyricWidget(
+              itemCount: widget.items.length == 1 ? 1 : null,
+              // disable scrolling when there is only one item
+              physics: widget.items.length == 1 ? const NeverScrollableScrollPhysics() : null,
+              itemBuilder: (_, index) {
+                return widget.items[index % widget.items.length].when(
+                  bibleVerse: (bibleVerse) => BibleVerseWidget(bibleVerse: bibleVerse),
+                  customText: (customText) => CustomTextWidget(customText: customText),
+                  songLyric: (songLyric) => SongLyricWidget(
                     songLyric: songLyric,
                     autoScrollController: ref.read(autoScrollControllerProvider(songLyric)),
                   ),
-                (dynamic item) => throw UnsupportedError('display for item: $item is not supported'),
+                );
               },
             ),
           ),
@@ -100,65 +160,66 @@ class _DisplayScreenState extends ConsumerState<DisplayScreen> {
       ),
     );
 
-    if (_currentItem is SongLyric) {
-      return ExternalsWrapper(songLyric: _currentItem, child: scaffold);
+    final displayable = _currentItem;
+
+    if (displayable is SongLyricItem) {
+      return ExternalsWrapper(songLyric: displayable.songLyric, child: scaffold);
     }
 
     return scaffold;
   }
 
   PreferredSizeWidget? _buildAppBar() {
-    return switch (_currentItem) {
-      (BibleVerse bibleVerse) => AppBar(
-          leading: const CustomBackButton(),
-          title: Text(bibleVerse.name),
-          actions: [
-            Highlightable(
-              onTap: () => _editBibleVerse(bibleVerse),
-              padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
-              icon: const Icon(Icons.edit),
-            ),
-          ],
-        ),
-      (CustomText customText) => AppBar(
-          leading: const CustomBackButton(),
-          title: Text(customText.name),
-          actions: [
-            Highlightable(
-              onTap: () => _editCustomText(customText),
-              padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
-              icon: const Icon(Icons.edit),
-            ),
-          ],
-        ),
-      (SongLyric songLyric) => AppBar(
-          title: Text('${songLyric.id}'),
-          leading: const CustomBackButton(),
-          actions: [
-            StatefulBuilder(
-              builder: (context, setState) => Highlightable(
-                onTap: () => setState(() => ref.read(playlistsProvider.notifier).toggleFavorite(songLyric)),
-                padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-                icon: Icon(songLyric.isFavorite ? Icons.star : Icons.star_outline),
-              ),
-            ),
-            Highlightable(
-              onTap: () => showModalBottomSheet(
-                context: context,
-                builder: (context) => PlaylistsSheet(selectedSongLyric: songLyric),
-              ),
+    return _currentItem.when(
+      bibleVerse: (bibleVerse) => AppBar(
+        leading: const CustomBackButton(),
+        title: Text(bibleVerse.name),
+        actions: [
+          Highlightable(
+            onTap: () => _editBibleVerse(bibleVerse),
+            padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
+            icon: const Icon(Icons.edit),
+          ),
+        ],
+      ),
+      customText: (customText) => AppBar(
+        leading: const CustomBackButton(),
+        title: Text(customText.name),
+        actions: [
+          Highlightable(
+            onTap: () => _editCustomText(customText),
+            padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
+            icon: const Icon(Icons.edit),
+          ),
+        ],
+      ),
+      songLyric: (songLyric) => AppBar(
+        title: Text('${songLyric.id}'),
+        leading: const CustomBackButton(),
+        actions: [
+          StatefulBuilder(
+            builder: (context, setState) => Highlightable(
+              onTap: () => setState(() => ref.read(playlistsProvider.notifier).toggleFavorite(songLyric)),
               padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-              icon: const Icon(Icons.playlist_add),
+              icon: Icon(songLyric.isFavorite ? Icons.star : Icons.star_outline),
             ),
-            SongLyricMenuButton(songLyric: songLyric),
-          ],
-        ),
-      (dynamic item) => throw UnsupportedError('display for item: $item is not supported')
-    };
+          ),
+          Highlightable(
+            onTap: () => showModalBottomSheet(
+              context: context,
+              builder: (context) => PlaylistsSheet(selectedSongLyric: songLyric),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+            icon: const Icon(Icons.playlist_add),
+          ),
+          SongLyricMenuButton(songLyric: songLyric),
+        ],
+      ),
+    );
   }
 
   Widget? _buildBottomSheet() {
-    if (_currentItem is! SongLyric) return null;
+    if (_currentItem is! SongLyricItem) return null;
 
     final activePlayer = ref.watch(activePlayerProvider);
     final presentation = ref.watch(presentationProvider);
@@ -214,20 +275,32 @@ class _DisplayScreenState extends ConsumerState<DisplayScreen> {
   }
 
   Widget? _buildBottomNavigationBar() {
-    if (_currentItem is! SongLyric) return null;
+    final displayable = _currentItem;
+
+    if (displayable is! SongLyricItem) return null;
 
     return SongLyricBottomBar(
-      songLyric: _currentItem,
-      autoScrollController: ref.read(autoScrollControllerProvider(_currentItem)),
+      songLyric: displayable.songLyric,
+      autoScrollController: ref.read(autoScrollControllerProvider(displayable.songLyric)),
     );
   }
 
   void _itemChanged(int index) {
     setState(() => _currentItem = widget.items[index % widget.items.length]);
 
-    if (_currentItem is SongLyric) {
+    // notify presentation
+    final displayable = _currentItem;
+
+    if (displayable is SongLyricItem) {
       // TODO: support also other types for presentation
-      ref.read(presentationProvider.notifier).changeSongLyric(SongLyricsParser(_currentItem));
+      ref.read(presentationProvider.notifier).changeSongLyric(SongLyricsParser(displayable.songLyric));
+    }
+
+    // change highligh index on tablet
+    final selectedDisplayableItemIndexNotifier = SelectedDisplayableItemIndex.of(context);
+
+    if (selectedDisplayableItemIndexNotifier != null) {
+      selectedDisplayableItemIndexNotifier.value = index % widget.items.length;
     }
 
     // saves item as recent if it was at least for 2 seconds on screen

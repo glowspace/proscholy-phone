@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zpevnik/components/highlightable.dart';
-import 'package:zpevnik/components/playlist/selected_playlist_record.dart';
+import 'package:zpevnik/components/selected_displayable_item_index.dart';
 import 'package:zpevnik/components/selected_row_highlight.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/playlist_record.dart';
@@ -43,8 +43,8 @@ class PlaylistRecordRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2, vertical: kDefaultPadding / 3),
       onTap: () => _pushPlaylistRecord(context),
       child: SelectedRowHighlight(
-        selectedObjectNotifier: SelectedPlaylistRecord.of(context),
-        object: playlistRecord,
+        selectedObjectNotifier: SelectedDisplayableItemIndex.of(context),
+        object: displayScreenArguments.initialIndex,
         child: Row(children: [
           const ReorderableDragStartListener(
             index: 0,
@@ -84,10 +84,10 @@ class PlaylistRecordRow extends StatelessWidget {
   }
 
   void _pushPlaylistRecord(BuildContext context) {
-    final selectedPlaylistRecordNotifier = SelectedPlaylistRecord.of(context);
+    final selectedPlaylistRecordNotifier = SelectedDisplayableItemIndex.of(context);
 
     if (selectedPlaylistRecordNotifier != null) {
-      selectedPlaylistRecordNotifier.value = playlistRecord;
+      selectedPlaylistRecordNotifier.value = displayScreenArguments.initialIndex;
     } else {
       context.push('/display', arguments: displayScreenArguments);
     }

@@ -34,7 +34,11 @@ final class AppRouter {
           (context) {
             final arguments = settings.arguments as DisplayScreenArguments;
 
-            return DisplayScreen(items: arguments.items, initialIndex: arguments.initialIndex);
+            return DisplayScreen(
+              items: arguments.items,
+              initialIndex: arguments.initialIndex,
+              playlist: arguments.playlist,
+            );
           },
           false
         ),
@@ -72,10 +76,17 @@ final class AppRouter {
       _ => throw 'Unknown route: ${settings.name}',
     };
 
-    return MaterialPageRoute(
+    return CustomPageRoute(
       settings: settings,
       builder: builder,
       fullscreenDialog: fullScreenDialog,
     );
   }
+}
+
+class CustomPageRoute extends MaterialPageRoute {
+  CustomPageRoute({required super.builder, super.settings, super.fullscreenDialog});
+
+  // @override
+  // Duration get transitionDuration => const Duration(seconds: 3);
 }
