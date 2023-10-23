@@ -82,13 +82,19 @@ class PlaylistButton extends StatelessWidget {
   }
 
   void _sharePlaylist(BuildContext context, Playlist playlist) async {
+    final box = context.findRenderObject() as RenderBox;
+
     final playlistData = jsonEncode(context.providers.read(playlistsProvider.notifier).playlistToMap(playlist));
-    final file = File('${(await getApplicationDocumentsDirectory()).path}/playlist.proscholy');
+    final file = File('${(await getApplicationDocumentsDirectory()).path}/${playlist.name}.proscholy');
 
     file.writeAsString(playlistData);
 
     await Share.shareXFiles(
-      [XFile('${(await getApplicationDocumentsDirectory()).path}/playlist.proscholy', mimeType: 'application/json')],
+      [
+        XFile('${(await getApplicationDocumentsDirectory()).path}/${playlist.name}.proscholy',
+            mimeType: 'application/json')
+      ],
+      sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size,
     );
 
     file.delete();
