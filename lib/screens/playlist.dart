@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:zpevnik/components/custom/back_button.dart';
 import 'package:zpevnik/components/highlightable.dart';
@@ -13,6 +14,7 @@ import 'package:zpevnik/models/bible_verse.dart';
 import 'package:zpevnik/models/custom_text.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
+import 'package:zpevnik/providers/menu_collapsed.dart';
 import 'package:zpevnik/providers/playlists.dart';
 import 'package:zpevnik/providers/tags.dart';
 import 'package:zpevnik/routing/arguments.dart';
@@ -33,24 +35,25 @@ class PlaylistScreen extends StatelessWidget {
   }
 }
 
-class _PlaylistScreenTablet extends StatefulWidget {
+class _PlaylistScreenTablet extends ConsumerStatefulWidget {
   final Playlist playlist;
 
   const _PlaylistScreenTablet({required this.playlist});
 
   @override
-  State<_PlaylistScreenTablet> createState() => _PlaylistScreenTabletState();
+  ConsumerState<_PlaylistScreenTablet> createState() => _PlaylistScreenTabletState();
 }
 
-class _PlaylistScreenTabletState extends State<_PlaylistScreenTablet> {
+class _PlaylistScreenTabletState extends ConsumerState<_PlaylistScreenTablet> {
   late final _selectedPlaylistNotifier = ValueNotifier(widget.playlist);
 
   @override
   Widget build(BuildContext context) {
     return SplitView(
       childFlex: 3,
-      subChildFlex: 7,
-      subChild: ValueListenableBuilder(
+      detailFlex: 7,
+      showingOnlyDetail: ref.watch(menuCollapsedProvider),
+      detail: ValueListenableBuilder(
         valueListenable: _selectedPlaylistNotifier,
         builder: (_, playlist, __) => _PlaylistScaffold(key: Key('${playlist.id}'), playlist: playlist),
       ),
@@ -70,16 +73,25 @@ class _PlaylistScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final mediaQuery = MediaQuery.of(context);
 
     final Widget floatingActionButton;
 
     if (playlist.isFavorites) {
-      floatingActionButton = FloatingActionButton(
-        heroTag: HeroTags.playlistFAB,
-        backgroundColor: theme.colorScheme.surface,
-        child: const Icon(Icons.playlist_add),
-        onPressed: () => _addSongLyric(context),
-      );
+      floatingActionButton = mediaQuery.isTablet
+          ? FloatingActionButton.extended(
+              heroTag: HeroTags.playlistFAB,
+              backgroundColor: theme.colorScheme.surface,
+              icon: const Icon(Icons.add),
+              label: const Text('Přidat do seznamu'),
+              onPressed: () => _addSongLyric(context),
+            )
+          : FloatingActionButton(
+              heroTag: HeroTags.playlistFAB,
+              backgroundColor: theme.colorScheme.surface,
+              child: const Icon(Icons.add),
+              onPressed: () => _addSongLyric(context),
+            );
     } else {
       floatingActionButton = Hero(
         tag: HeroTags.playlistFAB,
@@ -89,6 +101,7 @@ class _PlaylistScaffold extends StatelessWidget {
           overlayColor: Colors.black,
           overlayOpacity: 0.1,
           spacing: kDefaultPadding / 2,
+          label: mediaQuery.isTablet ? const Text('Přidat do seznamu') : null,
           icon: Icons.add,
           activeIcon: Icons.close,
           children: [

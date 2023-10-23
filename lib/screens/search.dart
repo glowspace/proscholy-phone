@@ -48,8 +48,8 @@ class SearchScreen extends StatelessWidget {
     if (mediaQuery.isTablet && mediaQuery.isLandscape && context.isSearching) {
       child = SplitView(
         childFlex: 4,
-        subChildFlex: 3,
-        subChild: const Scaffold(body: SafeArea(child: FiltersWidget())),
+        detailFlex: 3,
+        detail: const Scaffold(body: SafeArea(child: FiltersWidget())),
         child: CustomScaffold(appBar: appBar, body: const SafeArea(child: SearchSongLyricsListView())),
       );
     } else {

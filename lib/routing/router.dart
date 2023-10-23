@@ -7,6 +7,7 @@ import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
 import 'package:zpevnik/routing/arguments.dart';
+import 'package:zpevnik/routing/navigation_rail_wrapper.dart';
 import 'package:zpevnik/screens/about.dart';
 import 'package:zpevnik/screens/display.dart';
 import 'package:zpevnik/screens/home.dart';
@@ -84,7 +85,7 @@ final class AppRouter {
 
     return CustomPageRoute(
       settings: settings,
-      builder: builder,
+      builder: (_) => NavigationRailWrapper(builder: builder),
       fullscreenDialog: fullScreenDialog,
     );
   }
@@ -94,5 +95,5 @@ class CustomPageRoute extends MaterialPageRoute {
   CustomPageRoute({required super.builder, super.settings, super.fullscreenDialog});
 
   // @override
-  // Duration get transitionDuration => const Duration(seconds: 3);
+  // Duration get transitionDuration => const Duration(seconds: 5);
 }

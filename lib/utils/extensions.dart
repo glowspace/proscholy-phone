@@ -39,6 +39,7 @@ extension MediaQueryExtension on MediaQueryData {
 
 extension BuildContextExtension on BuildContext {
   bool get isHome => ModalRoute.of(this)?.settings.name == '/';
+  bool get isDisplay => ModalRoute.of(this)?.settings.name == '/display';
   bool get isPlaylist => ModalRoute.of(this)?.settings.name == '/playlist';
   bool get isPlaylists => ModalRoute.of(this)?.settings.name == '/playlists';
   bool get isSearching => ModalRoute.of(this)?.settings.name == '/search';

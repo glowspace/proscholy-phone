@@ -23,12 +23,20 @@ class PlaylistsScreen extends StatelessWidget {
           title: const Text('Moje seznamy'),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        heroTag: HeroTags.playlistsFAB,
-        backgroundColor: Theme.of(context).colorScheme.surface,
-        child: const Icon(Icons.add),
-        onPressed: () => showPlaylistDialog(context),
-      ),
+      floatingActionButton: MediaQuery.of(context).isTablet
+          ? FloatingActionButton.extended(
+              heroTag: HeroTags.playlistsFAB,
+              backgroundColor: Theme.of(context).colorScheme.surface,
+              icon: const Icon(Icons.add),
+              label: const Text('Vytvořit nový seznam'),
+              onPressed: () => showPlaylistDialog(context),
+            )
+          : FloatingActionButton(
+              heroTag: HeroTags.playlistsFAB,
+              backgroundColor: Theme.of(context).colorScheme.surface,
+              child: const Icon(Icons.add),
+              onPressed: () => showPlaylistDialog(context),
+            ),
       body: const Hero(
         tag: HeroTags.playlistsList,
         child: SafeArea(

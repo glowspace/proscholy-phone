@@ -25,6 +25,7 @@ import 'package:zpevnik/models/model.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/presentation.dart';
 import 'package:zpevnik/providers/auto_scroll.dart';
+import 'package:zpevnik/providers/menu_collapsed.dart';
 import 'package:zpevnik/providers/playlists.dart';
 import 'package:zpevnik/providers/presentation.dart';
 import 'package:zpevnik/providers/recent_items.dart';
@@ -52,7 +53,7 @@ class DisplayScreen extends StatelessWidget {
   }
 }
 
-class _DisplayScreenTablet extends StatefulWidget {
+class _DisplayScreenTablet extends ConsumerStatefulWidget {
   final List<DisplayableItem> items;
   final int initialIndex;
 
@@ -61,10 +62,10 @@ class _DisplayScreenTablet extends StatefulWidget {
   const _DisplayScreenTablet({required this.items, required this.initialIndex, this.playlist});
 
   @override
-  State<_DisplayScreenTablet> createState() => _DisplayScreenTabletState();
+  ConsumerState<_DisplayScreenTablet> createState() => _DisplayScreenTabletState();
 }
 
-class _DisplayScreenTabletState extends State<_DisplayScreenTablet> {
+class _DisplayScreenTabletState extends ConsumerState<_DisplayScreenTablet> {
   late final _selectedDisplayableItemIndex = ValueNotifier(widget.initialIndex);
 
   @override
@@ -73,8 +74,9 @@ class _DisplayScreenTabletState extends State<_DisplayScreenTablet> {
       displayableItemIndexNotifier: _selectedDisplayableItemIndex,
       child: SplitView(
         childFlex: 3,
-        subChildFlex: 7,
-        subChild: ValueListenableBuilder(
+        detailFlex: 7,
+        showingOnlyDetail: ref.watch(menuCollapsedProvider),
+        detail: ValueListenableBuilder(
           valueListenable: _selectedDisplayableItemIndex,
           builder: (_, index, __) => _DisplayScaffold(key: Key('$index'), items: widget.items, initialIndex: index),
         ),

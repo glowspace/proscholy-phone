@@ -8,7 +8,6 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path/path.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:zpevnik/components/navigation/navigation_rail.dart';
 import 'package:zpevnik/firebase_options.dart';
 import 'package:zpevnik/models/objectbox.g.dart';
 import 'package:zpevnik/providers/app_dependencies.dart';
@@ -17,7 +16,6 @@ import 'package:zpevnik/routing/navigator_observer.dart';
 import 'package:zpevnik/routing/router.dart';
 import 'package:zpevnik/screens/presentation.dart';
 import 'package:zpevnik/theme.dart';
-import 'package:zpevnik/utils/extensions.dart';
 import 'package:zpevnik/utils/services/external_actions.dart';
 
 const _title = 'Zpěvník';
@@ -80,21 +78,6 @@ class MainWidget extends ConsumerWidget {
       initialRoute: 'initial',
       onGenerateRoute: AppRouter.generateRoute,
       navigatorObservers: [ref.read(appNavigatorObserverProvider)],
-      builder: (context, child) {
-        if (MediaQuery.of(context).isTablet) {
-          return Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            // make the widget display from right to left, so the navigation rail shadow is visible
-            textDirection: TextDirection.rtl,
-            children: [
-              Expanded(child: child!),
-              const CustomNavigationRail(),
-            ],
-          );
-        }
-
-        return child!;
-      },
     );
   }
 }

@@ -2,17 +2,20 @@ import 'package:flutter/material.dart';
 
 class SplitView extends StatelessWidget {
   final Widget child;
-  final Widget subChild;
+  final Widget detail;
 
   final int childFlex;
-  final int subChildFlex;
+  final int detailFlex;
+
+  final bool showingOnlyDetail;
 
   const SplitView({
     super.key,
     required this.child,
-    required this.subChild,
+    required this.detail,
     this.childFlex = 1,
-    this.subChildFlex = 1,
+    this.detailFlex = 1,
+    this.showingOnlyDetail = false,
   });
 
   @override
@@ -20,9 +23,11 @@ class SplitView extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(flex: childFlex, child: child),
-        VerticalDivider(width: 0.3, color: Theme.of(context).dividerColor),
-        Flexible(flex: subChildFlex, child: subChild),
+        if (!showingOnlyDetail) ...[
+          Expanded(flex: childFlex, child: child),
+          VerticalDivider(width: 0.3, color: Theme.of(context).dividerColor),
+        ],
+        Flexible(flex: detailFlex, child: detail),
       ],
     );
   }
