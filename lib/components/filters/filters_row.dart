@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zpevnik/components/filters/add_filter_tag.dart';
+import 'package:zpevnik/components/split_view.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/components/filters/filter_tag.dart';
 import 'package:zpevnik/providers/tags.dart';
@@ -11,9 +12,6 @@ class FiltersRow extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
-    final mediaQuery = MediaQuery.of(context);
-
     final selectedTags = ref.watch(selectedTagsProvider);
 
     return Container(
@@ -21,12 +19,9 @@ class FiltersRow extends ConsumerWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
-            child: Icon(
-              Icons.filter_alt,
-              color: theme.brightness.isLight ? const Color(0xff50555c) : const Color(0xffafaaa3),
-            ),
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
+            child: Icon(Icons.filter_alt),
           ),
           const SizedBox(width: kDefaultPadding / 2),
           Expanded(
@@ -34,7 +29,9 @@ class FiltersRow extends ConsumerWidget {
               scrollDirection: Axis.horizontal,
               child: Row(children: [
                 ...selectedTags.map((tag) => FilterTag(tag: tag, isRemovable: true)),
-                if (!mediaQuery.isTablet || !mediaQuery.isLandscape) const AddFilterTag(),
+                if (!MediaQuery.of(context).isTablet ||
+                    MediaQuery.sizeOf(context).width < (kdefaultSplitViewChildWidth + kdefaultSplitViewMinDetailWidth))
+                  const AddFilterTag(),
               ]),
             ),
           ),

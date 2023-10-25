@@ -50,8 +50,6 @@ class _PlaylistScreenTabletState extends ConsumerState<_PlaylistScreenTablet> {
   @override
   Widget build(BuildContext context) {
     return SplitView(
-      childFlex: 3,
-      detailFlex: 7,
       showingOnlyDetail: ref.watch(menuCollapsedProvider),
       detail: ValueListenableBuilder(
         valueListenable: _selectedPlaylistNotifier,

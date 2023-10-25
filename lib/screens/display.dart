@@ -73,8 +73,6 @@ class _DisplayScreenTabletState extends ConsumerState<_DisplayScreenTablet> {
     return SelectedDisplayableItemIndex(
       displayableItemIndexNotifier: _selectedDisplayableItemIndex,
       child: SplitView(
-        childFlex: 3,
-        detailFlex: 7,
         showingOnlyDetail: ref.watch(menuCollapsedProvider),
         detail: ValueListenableBuilder(
           valueListenable: _selectedDisplayableItemIndex,

@@ -29,10 +29,10 @@ final class AppRouter {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     final uri = Uri.parse(settings.name ?? '/');
 
-    final (builder, fullScreenDialog) = switch (uri.path) {
-      'initial' => ((_) => const InitialScreen(), false),
-      '/' => ((_) => const HomeScreen(), false),
-      '/about' => ((_) => const AboutScreen(), false),
+    final (builder, fullScreenDialog, showNavigationRail) = switch (uri.path) {
+      'initial' => ((_) => const InitialScreen(), false, false),
+      '/' => ((_) => const HomeScreen(), false, true),
+      '/about' => ((_) => const AboutScreen(), false, false),
       '/display' => (
           (context) {
             final arguments = settings.arguments as DisplayScreenArguments;
@@ -43,22 +43,25 @@ final class AppRouter {
               playlist: arguments.playlist,
             );
           },
-          false
+          false,
+          true
         ),
-      '/playlist' => ((_) => PlaylistScreen(playlist: settings.arguments as Playlist), false),
+      '/playlist' => ((_) => PlaylistScreen(playlist: settings.arguments as Playlist), false, true),
       '/playlist/bible_verse/select_verse' => (
           (_) => SelectBibleVerseScreen(bibleVerse: settings.arguments as BibleVerse?),
-          true
+          true,
+          false
         ),
       '/playlist/custom_text/edit' => (
           (_) => CustomTextEditScreen(customText: settings.arguments as CustomText?),
-          true
+          true,
+          false
         ),
-      '/playlists' => ((_) => const PlaylistsScreen(), false),
-      '/search' => ((_) => const SearchScreen(), true),
-      '/settings' => ((_) => const SettingsScreen(), true),
-      '/songbook' => ((_) => SongbookScreen(songbook: settings.arguments as Songbook), false),
-      '/songbooks' => ((_) => const SongbooksScreen(), false),
+      '/playlists' => ((_) => const PlaylistsScreen(), false, true),
+      '/search' => ((_) => const SearchScreen(), true, true),
+      '/settings' => ((_) => const SettingsScreen(), true, true),
+      '/songbook' => ((_) => SongbookScreen(songbook: settings.arguments as Songbook), false, true),
+      '/songbooks' => ((_) => const SongbooksScreen(), false, true),
       '/song_lyric' => (
           (context) {
             if (uri.queryParameters.containsKey('id')) {
@@ -71,14 +74,20 @@ final class AppRouter {
             // should not get here
             throw UnimplementedError();
           },
+          false,
+          true
+        ),
+      '/song_lyric/jpg' => ((_) => JpgScreen(jpg: settings.arguments as External), true, false),
+      '/song_lyric/pdf' => ((_) => PdfScreen(pdf: settings.arguments as External), true, false),
+      '/song_lyric/present' => (
+          (_) => StartPresentationScreen(songLyric: settings.arguments as SongLyric),
+          true,
           false
         ),
-      '/song_lyric/jpg' => ((_) => JpgScreen(jpg: settings.arguments as External), true),
-      '/song_lyric/pdf' => ((_) => PdfScreen(pdf: settings.arguments as External), true),
-      '/song_lyric/present' => ((_) => StartPresentationScreen(songLyric: settings.arguments as SongLyric), true),
       '/updated_song_lyrics' => (
           (_) => UpdatedSongLyricsScreen(songLyrics: settings.arguments as List<SongLyric>),
           false,
+          true
         ),
       _ => throw 'Unknown route: ${settings.name}',
     };
@@ -99,7 +108,7 @@ final class AppRouter {
 
     return CustomPageRoute(
       settings: settings,
-      builder: (_) => NavigationRailWrapper(builder: builder),
+      builder: (_) => NavigationRailWrapper(builder: builder, showNavigationRail: showNavigationRail),
       fullscreenDialog: fullScreenDialog,
     );
   }

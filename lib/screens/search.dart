@@ -45,15 +45,16 @@ class SearchScreen extends StatelessWidget {
 
     final Widget child;
 
-    if (mediaQuery.isTablet && mediaQuery.isLandscape && context.isSearching) {
+    if (mediaQuery.isTablet && context.isSearching) {
       child = SplitView(
-        childFlex: 4,
-        detailFlex: 3,
-        detail: const Scaffold(body: SafeArea(child: FiltersWidget())),
-        child: CustomScaffold(appBar: appBar, body: const SafeArea(child: SearchSongLyricsListView())),
+        // we want detail on left
+        textDirection: TextDirection.rtl,
+        childWidth: 420.0,
+        detail: CustomScaffold(appBar: appBar, body: const SearchSongLyricsListView()),
+        child: const Scaffold(body: FiltersWidget()),
       );
     } else {
-      child = CustomScaffold(appBar: appBar, body: const SafeArea(child: SearchSongLyricsListView()));
+      child = CustomScaffold(appBar: appBar, body: const SearchSongLyricsListView());
     }
 
     return WillPopScope(

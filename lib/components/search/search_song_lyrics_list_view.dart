@@ -41,74 +41,77 @@ class SearchSongLyricsListView extends ConsumerWidget {
 
     if (showRecentSongLyrics) itemCount += recentSongLyrics.length + 2;
 
-    return ListView.builder(
-      key: Key('${ref.read(searchTextProvider)}_${ref.read(selectedTagsProvider).length}'),
-      primary: false,
-      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-      itemCount: itemCount,
-      itemBuilder: (_, index) {
-        if (showRecentSongLyrics) {
-          if (index == 0) return const SongLyricsSectionTitle(title: 'Poslední písně');
+    return SafeArea(
+      bottom: false,
+      child: ListView.builder(
+        key: Key('${ref.read(searchTextProvider)}_${ref.read(selectedTagsProvider).length}'),
+        primary: false,
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        itemCount: itemCount,
+        itemBuilder: (_, index) {
+          if (showRecentSongLyrics) {
+            if (index == 0) return const SongLyricsSectionTitle(title: 'Poslední písně');
 
-          index -= 1;
+            index -= 1;
 
-          if (index < recentSongLyrics.length) {
-            return SongLyricRow(
-              songLyric: recentSongLyrics[index],
-              displayScreenArguments: DisplayScreenArguments.songLyrics(
-                recentSongLyrics,
-                initialIndex: index,
-              ),
-            );
+            if (index < recentSongLyrics.length) {
+              return SongLyricRow(
+                songLyric: recentSongLyrics[index],
+                displayScreenArguments: DisplayScreenArguments.songLyrics(
+                  recentSongLyrics,
+                  initialIndex: index,
+                ),
+              );
+            }
+
+            index -= recentSongLyrics.length;
           }
 
-          index -= recentSongLyrics.length;
-        }
+          if (matchedById != null) {
+            if (index == 0) return SongLyricRow(songLyric: matchedById);
 
-        if (matchedById != null) {
-          if (index == 0) return SongLyricRow(songLyric: matchedById);
-
-          index -= 1;
-        }
-
-        if (matchedBySongbookNumber.isNotEmpty) {
-          if (index == 0) {
-            return SongLyricsSectionTitle(title: 'Číslo ${searchedSongLyricsResult.searchedNumber} ve zpěvnících');
+            index -= 1;
           }
 
-          index -= 1;
+          if (matchedBySongbookNumber.isNotEmpty) {
+            if (index == 0) {
+              return SongLyricsSectionTitle(title: 'Číslo ${searchedSongLyricsResult.searchedNumber} ve zpěvnících');
+            }
 
-          if (index < matchedBySongbookNumber.length) {
-            return SongLyricRow(
-              songLyric: matchedBySongbookNumber[index],
-              displayScreenArguments: DisplayScreenArguments.songLyrics(
-                matchedBySongbookNumber,
-                initialIndex: index,
-              ),
-            );
+            index -= 1;
+
+            if (index < matchedBySongbookNumber.length) {
+              return SongLyricRow(
+                songLyric: matchedBySongbookNumber[index],
+                displayScreenArguments: DisplayScreenArguments.songLyrics(
+                  matchedBySongbookNumber,
+                  initialIndex: index,
+                ),
+              );
+            }
+
+            index -= matchedBySongbookNumber.length;
           }
 
-          index -= matchedBySongbookNumber.length;
-        }
+          if (showRecentSongLyrics) {
+            if (index == 0) return const SongLyricsSectionTitle(title: 'Všechny písně');
 
-        if (showRecentSongLyrics) {
-          if (index == 0) return const SongLyricsSectionTitle(title: 'Všechny písně');
+            index -= 1;
+          } else if (hasMatchedResults) {
+            if (index == 0) return const SongLyricsSectionTitle(title: 'Ostatní výsledky');
 
-          index -= 1;
-        } else if (hasMatchedResults) {
-          if (index == 0) return const SongLyricsSectionTitle(title: 'Ostatní výsledky');
+            index -= 1;
+          }
 
-          index -= 1;
-        }
-
-        return SongLyricRow(
-          songLyric: songLyrics[index],
-          displayScreenArguments: DisplayScreenArguments.songLyrics(
-            songLyrics,
-            initialIndex: index,
-          ),
-        );
-      },
+          return SongLyricRow(
+            songLyric: songLyrics[index],
+            displayScreenArguments: DisplayScreenArguments.songLyrics(
+              songLyrics,
+              initialIndex: index,
+            ),
+          );
+        },
+      ),
     );
   }
 

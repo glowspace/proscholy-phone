@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 
+const kdefaultSplitViewChildWidth = 320.0;
+const kdefaultSplitViewMinDetailWidth = 560.0;
+
 class SplitView extends StatelessWidget {
   final Widget child;
   final Widget detail;
 
-  final int childFlex;
-  final int detailFlex;
+  final double childWidth;
+  final double minDetailWidth;
+
+  final TextDirection textDirection;
 
   final bool showingOnlyDetail;
 
@@ -13,22 +18,30 @@ class SplitView extends StatelessWidget {
     super.key,
     required this.child,
     required this.detail,
-    this.childFlex = 1,
-    this.detailFlex = 1,
+    this.childWidth = kdefaultSplitViewChildWidth,
+    this.minDetailWidth = kdefaultSplitViewMinDetailWidth,
+    this.textDirection = TextDirection.ltr,
     this.showingOnlyDetail = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (!showingOnlyDetail) ...[
-          Expanded(flex: childFlex, child: child),
-          VerticalDivider(width: 0.3, color: Theme.of(context).dividerColor),
-        ],
-        Flexible(flex: detailFlex, child: detail),
-      ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth < childWidth + minDetailWidth) return detail;
+
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          textDirection: textDirection,
+          children: [
+            if (!showingOnlyDetail) ...[
+              SizedBox(width: childWidth, child: child),
+              VerticalDivider(width: 0.3, thickness: 0.3, color: Theme.of(context).dividerColor),
+            ],
+            Expanded(child: detail),
+          ],
+        );
+      },
     );
   }
 }

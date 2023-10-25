@@ -12,16 +12,13 @@ class FiltersWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final mediaQuery = MediaQuery.of(context);
-
     return SafeArea(
-      top: false,
       bottom: false,
       child: ListView.builder(
         controller: PrimaryScrollController.of(context),
         padding: EdgeInsets.only(
-          top: (mediaQuery.isTablet && mediaQuery.isLandscape) ? 0 : kDefaultPadding,
-          bottom: mediaQuery.padding.bottom,
+          top: context.isSearching ? 0 : kDefaultPadding,
+          bottom: MediaQuery.paddingOf(context).bottom,
         ),
         addRepaintBoundaries: false,
         itemCount: supportedTagTypes.length,
