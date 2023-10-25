@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:zpevnik/models/bible_verse.dart';
 import 'package:zpevnik/models/custom_text.dart';
 import 'package:zpevnik/models/external.dart';
+import 'package:zpevnik/models/model.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/models/songbook.dart';
@@ -24,6 +25,7 @@ import 'package:zpevnik/screens/songbooks.dart';
 import 'package:zpevnik/screens/start_presentation_screen.dart';
 import 'package:zpevnik/screens/updated_song_lyrics.dart';
 import 'package:zpevnik/screens/settings.dart';
+import 'package:zpevnik/utils/extensions.dart';
 
 final class AppRouter {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -63,12 +65,12 @@ final class AppRouter {
       '/songbook' => ((_) => SongbookScreen(songbook: settings.arguments as Songbook), false, true),
       '/songbooks' => ((_) => const SongbooksScreen(), false, true),
       '/song_lyric' => (
-          (context) {
+          (BuildContext context) {
             if (uri.queryParameters.containsKey('id')) {
               final id = int.parse(uri.queryParameters['id']!);
               final songLyric = context.providers.read(songLyricProvider(id));
 
-              if (songLyric != null) return DisplayScreen(items: [songLyric]);
+              if (songLyric != null) return DisplayScreen(items: [DisplayableItem.songLyric(songLyric)]);
             }
 
             // should not get here

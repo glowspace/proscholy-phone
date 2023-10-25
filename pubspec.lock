@@ -518,14 +518,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.3"
-  flutter_core_spotlight:
-    dependency: "direct main"
-    description:
-      name: flutter_core_spotlight
-      sha256: "89eaf74d17d40f71dbc3eec3032d8fd99b319a91bef86a5e0a83b93b1e5ecfa7"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.4"
   flutter_inappwebview:
     dependency: transitive
     description:

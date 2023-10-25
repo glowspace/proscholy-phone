@@ -50,8 +50,6 @@ PODS:
     - GoogleUtilities/UserDefaults (~> 7.8)
     - PromisesObjC (~> 2.1)
   - Flutter (1.0.0)
-  - flutter_core_spotlight (0.0.1):
-    - Flutter
   - flutter_inappwebview (0.0.1):
     - Flutter
     - flutter_inappwebview/Core (= 0.0.1)
@@ -148,7 +146,6 @@ DEPENDENCIES:
   - firebase_analytics (from `.symlinks/plugins/firebase_analytics/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - Flutter (from `Flutter`)
-  - flutter_core_spotlight (from `.symlinks/plugins/flutter_core_spotlight/ios`)
   - flutter_inappwebview (from `.symlinks/plugins/flutter_inappwebview/ios`)
   - flutter_keyboard_visibility (from `.symlinks/plugins/flutter_keyboard_visibility/ios`)
   - flutter_pdfview (from `.symlinks/plugins/flutter_pdfview/ios`)
@@ -193,8 +190,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/firebase_core/ios"
   Flutter:
     :path: Flutter
-  flutter_core_spotlight:
-    :path: ".symlinks/plugins/flutter_core_spotlight/ios"
   flutter_inappwebview:
     :path: ".symlinks/plugins/flutter_inappwebview/ios"
   flutter_keyboard_visibility:
@@ -236,7 +231,6 @@ SPEC CHECKSUMS:
   FirebaseCoreInternal: 26233f705cc4531236818a07ac84d20c333e505a
   FirebaseInstallations: b822f91a61f7d1ba763e5ccc9d4f2e6f2ed3b3ee
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
-  flutter_core_spotlight: d79a87d3264b30a0e12f602246d81303f4122b8f
   flutter_inappwebview: 3d32228f1304635e7c028b0d4252937730bbc6cf
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
   flutter_pdfview: 25f53dd6097661e6395b17de506e6060585946bd

@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/services.dart';
-import 'package:flutter_core_spotlight/flutter_core_spotlight.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -15,6 +14,7 @@ import 'package:zpevnik/providers/song_lyrics.dart';
 import 'package:zpevnik/providers/songbooks.dart';
 import 'package:zpevnik/providers/utils.dart';
 import 'package:zpevnik/utils/client.dart';
+import 'package:zpevnik/utils/services/spotlight.dart';
 
 part 'update.g.dart';
 
@@ -121,7 +121,7 @@ Stream<UpdateStatus> update(UpdateRef ref) async* {
   box.removeMany(existingSongLyricsIds.toList());
   // on iOS also remove them from spotlight indexing
   if (Platform.isIOS) {
-    FlutterCoreSpotlight.instance.deleteSearchableItems(existingSongLyricsIds.map((id) => 'song_lyric_$id').toList());
+    SpotlightService.instance.deindexItems(existingSongLyricsIds.map((id) => 'song_lyric_$id').toList());
   }
 
   // update song lyrics

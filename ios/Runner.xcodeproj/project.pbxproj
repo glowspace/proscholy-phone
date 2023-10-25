@@ -16,6 +16,7 @@
 		3951CA1E297D46C500876FCE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3951CA1B297D46C500876FCE /* Main.storyboard */; };
 		3956F5A22ADDC5270090372B /* OpenedFileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3956F5A12ADDC5270090372B /* OpenedFileService.swift */; };
 		3987E1512ADFC95A001C8760 /* PresentationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3987E1502ADFC95A001C8760 /* PresentationService.swift */; };
+		39E4ACFD2AE931AE003A91EC /* SpotlightService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39E4ACFC2AE931AE003A91EC /* SpotlightService.swift */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
@@ -46,6 +47,7 @@
 		3951CA1C297D46C500876FCE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		3956F5A12ADDC5270090372B /* OpenedFileService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenedFileService.swift; sourceTree = "<group>"; };
 		3987E1502ADFC95A001C8760 /* PresentationService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PresentationService.swift; sourceTree = "<group>"; };
+		39E4ACFC2AE931AE003A91EC /* SpotlightService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpotlightService.swift; sourceTree = "<group>"; };
 		39E8CD302854914200239D8E /* Runner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
 		6C7B74770036D9CC36633D4A /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -146,6 +148,7 @@
 				1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */,
 				3956F5A12ADDC5270090372B /* OpenedFileService.swift */,
 				3987E1502ADFC95A001C8760 /* PresentationService.swift */,
+				39E4ACFC2AE931AE003A91EC /* SpotlightService.swift */,
 				74858FAE1ED2DC5600515810 /* AppDelegate.swift */,
 				74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */,
 			);
@@ -308,6 +311,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				39E4ACFD2AE931AE003A91EC /* SpotlightService.swift in Sources */,
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
 				3987E1512ADFC95A001C8760 /* PresentationService.swift in Sources */,
 				3956F5A22ADDC5270090372B /* OpenedFileService.swift in Sources */,

@@ -17,6 +17,7 @@ import 'package:zpevnik/routing/router.dart';
 import 'package:zpevnik/screens/presentation.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/services/external_actions.dart';
+import 'package:zpevnik/utils/services/spotlight.dart';
 
 const _title = 'Zpěvník';
 
@@ -37,12 +38,14 @@ Future<void> main() async {
   return runApp(ProviderScope(
     observers: [MyProviderObserver()],
     overrides: [appDependenciesProvider.overrideWithValue(appDependencies)],
-    child: const MainWidget(),
+    child: MainWidget(initialRoute: await SpotlightService.instance.getInitialRoute()),
   ));
 }
 
 class MainWidget extends ConsumerWidget {
-  const MainWidget({super.key});
+  final String? initialRoute;
+
+  const MainWidget({super.key, this.initialRoute});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -75,7 +78,7 @@ class MainWidget extends ConsumerWidget {
       // must be without leading '/', otherwise navigation stack will be `HomeScreen` > `InitialScreen`
       // and when replacing `InitialScreen` it will result to `HomeScreen` > `HomeScreen`
       // this is because of deeplinking, when all screens in path are pushed to stack as well
-      initialRoute: 'initial',
+      initialRoute: initialRoute ?? 'initial',
       onGenerateRoute: AppRouter.generateRoute,
       navigatorObservers: [ref.read(appNavigatorObserverProvider)],
     );
