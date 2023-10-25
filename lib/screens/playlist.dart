@@ -164,7 +164,7 @@ class _PlaylistScaffold extends StatelessWidget {
   }
 
   void _addText(BuildContext context) async {
-    final customText = await context.push('/playlist/custom_text') as CustomText?;
+    final customText = await context.push('/playlist/custom_text/edit') as CustomText?;
 
     if (context.mounted && customText != null) {
       context.providers.read(playlistsProvider.notifier).addToPlaylist(playlist, customText: customText);

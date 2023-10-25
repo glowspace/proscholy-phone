@@ -83,6 +83,20 @@ final class AppRouter {
       _ => throw 'Unknown route: ${settings.name}',
     };
 
+    // return PageRouteBuilder(
+    //   settings: settings,
+    //   pageBuilder: (_, __, ___) => NavigationRailWrapper(builder: builder),
+    //   transitionDuration: const Duration(seconds: 5),
+    //   transitionsBuilder: (_, animation, __, child) {
+    //     const begin = Offset(1.0, 0.0);
+    //     const end = Offset.zero;
+    //     final tween = Tween(begin: begin, end: end);
+    //     final offsetAnimation = animation.drive(tween);
+
+    //     return SlideTransition(position: offsetAnimation, child: child);
+    //   },
+    // );
+
     return CustomPageRoute(
       settings: settings,
       builder: (_) => NavigationRailWrapper(builder: builder),
@@ -95,5 +109,5 @@ class CustomPageRoute extends MaterialPageRoute {
   CustomPageRoute({required super.builder, super.settings, super.fullscreenDialog});
 
   // @override
-  // Duration get transitionDuration => const Duration(seconds: 5);
+  // Duration get transitionDuration => const Duration(seconds: 10);
 }

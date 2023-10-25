@@ -125,6 +125,7 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
 
   @override
   Widget build(BuildContext context) {
+    // update media query with font size scale from settings, so all children has correct font size scale and it does not have to be set individually
     final newMediaQuery = MediaQuery.of(context)
         .copyWith(textScaleFactor: ref.watch(settingsProvider.select((settings) => settings.fontSizeScale)));
 
@@ -133,7 +134,12 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
     final scaffold = CustomScaffold(
       appBar: fullScreen ? null : _buildAppBar(),
       bottomSheet: _buildBottomSheet(),
-      bottomNavigationBar: fullScreen ? null : _buildBottomNavigationBar(),
+      bottomNavigationBar: fullScreen
+          ? const SizedBox()
+          : SongLyricBottomBar(
+              songLyric: _currentItem.whenOrNull(songLyric: (songLyric) => songLyric),
+              autoScrollController: ref.read(autoScrollControllerProvider(_currentItem)),
+            ),
       body: GestureDetector(
         onScaleStart: _fontScaleStarted,
         onScaleUpdate: _fontScaleUpdated,
@@ -168,12 +174,20 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
                   }
                 }
 
+                final autoScrollController = ref.read(autoScrollControllerProvider(item));
+
                 return item.when(
-                  bibleVerse: (bibleVerse) => BibleVerseWidget(bibleVerse: bibleVerse),
-                  customText: (customText) => CustomTextWidget(customText: customText),
+                  bibleVerse: (bibleVerse) => BibleVerseWidget(
+                    bibleVerse: bibleVerse,
+                    autoScrollController: autoScrollController,
+                  ),
+                  customText: (customText) => CustomTextWidget(
+                    customText: customText,
+                    autoScrollController: autoScrollController,
+                  ),
                   songLyric: (songLyric) => SongLyricWidget(
                     songLyric: songLyric,
-                    autoScrollController: ref.read(autoScrollControllerProvider(songLyric)),
+                    autoScrollController: autoScrollController,
                   ),
                 );
               },
@@ -183,13 +197,8 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
       ),
     );
 
-    final displayable = _currentItem;
-
-    if (displayable is SongLyricItem) {
-      return ExternalsWrapper(songLyric: displayable.songLyric, child: scaffold);
-    }
-
-    return scaffold;
+    // FIXME: it must be wrapped, even when it is not song lyric, otherwise the pageview is initialized again and displayed content does not make sense
+    return ExternalsWrapper(songLyric: _currentItem.whenOrNull(songLyric: (songLyric) => songLyric), child: scaffold);
   }
 
   PreferredSizeWidget? _buildAppBar() {
@@ -293,17 +302,6 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
     }
 
     return null;
-  }
-
-  Widget? _buildBottomNavigationBar() {
-    final displayable = _currentItem;
-
-    if (displayable is! SongLyricItem) return null;
-
-    return SongLyricBottomBar(
-      songLyric: displayable.songLyric,
-      autoScrollController: ref.read(autoScrollControllerProvider(displayable.songLyric)),
-    );
   }
 
   void _itemChanged(int index) {

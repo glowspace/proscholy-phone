@@ -74,7 +74,7 @@ class AppNavigatorObserver extends NavigatorObserver {
 
   // enable wakelock for `SongLyricScreen` disable for other screens
   void _handleWakeLock(String? routeName) {
-    if (routeName == '/song_lyric') {
+    if (routeName == '/display') {
       WakelockPlus.enable();
     } else {
       WakelockPlus.disable();

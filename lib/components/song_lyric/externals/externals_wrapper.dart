@@ -9,11 +9,11 @@ const _dragSpeedScale = 0.01;
 const _collapseThresholdOffset = 150;
 
 class ExternalsWrapper extends StatefulWidget {
-  final SongLyric songLyric;
+  final SongLyric? songLyric;
 
   final Widget child;
 
-  const ExternalsWrapper({super.key, required this.songLyric, required this.child});
+  const ExternalsWrapper({super.key, this.songLyric, required this.child});
 
   @override
   State<ExternalsWrapper> createState() => _ExternalsWrapperState();
@@ -42,24 +42,25 @@ class _ExternalsWrapperState extends State<ExternalsWrapper> {
             ),
           ),
         ),
-        Consumer(
-          builder: (_, ref, child) => AnimatedPositioned(
-            duration: kDefaultAnimationDuration,
-            bottom: ref.watch(displayScreenStatusProvider.select((status) => status.showingExternals))
-                ? 0
-                : -MediaQuery.sizeOf(context).height,
-            child: StatefulBuilder(
-              builder: (_, setState) => Transform.translate(
-                offset: Offset(0, _bottomOffset),
-                child: GestureDetector(
-                    onPanUpdate: (details) => setState(() => _updateOffset(details)),
-                    onPanEnd: (details) => _snapOffset(details, setState, ref),
-                    child: child!),
+        if (widget.songLyric != null)
+          Consumer(
+            builder: (_, ref, child) => AnimatedPositioned(
+              duration: kDefaultAnimationDuration,
+              bottom: ref.watch(displayScreenStatusProvider.select((status) => status.showingExternals))
+                  ? 0
+                  : -MediaQuery.sizeOf(context).height,
+              child: StatefulBuilder(
+                builder: (_, setState) => Transform.translate(
+                  offset: Offset(0, _bottomOffset),
+                  child: GestureDetector(
+                      onPanUpdate: (details) => setState(() => _updateOffset(details)),
+                      onPanEnd: (details) => _snapOffset(details, setState, ref),
+                      child: child!),
+                ),
               ),
             ),
-          ),
-          child: ExternalsWidget(songLyric: widget.songLyric),
-        )
+            child: ExternalsWidget(songLyric: widget.songLyric!),
+          )
       ],
     );
   }

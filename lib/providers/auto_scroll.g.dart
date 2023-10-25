@@ -7,7 +7,7 @@ part of 'auto_scroll.dart';
 // **************************************************************************
 
 String _$autoScrollControllerHash() =>
-    r'96253b51c311be625264f91c9e81ddcdee427299';
+    r'918236e992bdc4eef068c6a820c9e16987784524';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -41,10 +41,10 @@ class AutoScrollControllerFamily extends Family<AutoScrollController> {
 
   /// See also [autoScrollController].
   AutoScrollControllerProvider call(
-    SongLyric songLyric,
+    DisplayableItem displayableItem,
   ) {
     return AutoScrollControllerProvider(
-      songLyric,
+      displayableItem,
     );
   }
 
@@ -53,7 +53,7 @@ class AutoScrollControllerFamily extends Family<AutoScrollController> {
     covariant AutoScrollControllerProvider provider,
   ) {
     return call(
-      provider.songLyric,
+      provider.displayableItem,
     );
   }
 
@@ -77,11 +77,11 @@ class AutoScrollControllerProvider
     extends AutoDisposeProvider<AutoScrollController> {
   /// See also [autoScrollController].
   AutoScrollControllerProvider(
-    SongLyric songLyric,
+    DisplayableItem displayableItem,
   ) : this._internal(
           (ref) => autoScrollController(
             ref as AutoScrollControllerRef,
-            songLyric,
+            displayableItem,
           ),
           from: autoScrollControllerProvider,
           name: r'autoScrollControllerProvider',
@@ -92,7 +92,7 @@ class AutoScrollControllerProvider
           dependencies: AutoScrollControllerFamily._dependencies,
           allTransitiveDependencies:
               AutoScrollControllerFamily._allTransitiveDependencies,
-          songLyric: songLyric,
+          displayableItem: displayableItem,
         );
 
   AutoScrollControllerProvider._internal(
@@ -102,10 +102,10 @@ class AutoScrollControllerProvider
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
     required super.from,
-    required this.songLyric,
+    required this.displayableItem,
   }) : super.internal();
 
-  final SongLyric songLyric;
+  final DisplayableItem displayableItem;
 
   @override
   Override overrideWith(
@@ -120,7 +120,7 @@ class AutoScrollControllerProvider
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
-        songLyric: songLyric,
+        displayableItem: displayableItem,
       ),
     );
   }
@@ -133,21 +133,21 @@ class AutoScrollControllerProvider
   @override
   bool operator ==(Object other) {
     return other is AutoScrollControllerProvider &&
-        other.songLyric == songLyric;
+        other.displayableItem == displayableItem;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, songLyric.hashCode);
+    hash = _SystemHash.combine(hash, displayableItem.hashCode);
 
     return _SystemHash.finish(hash);
   }
 }
 
 mixin AutoScrollControllerRef on AutoDisposeProviderRef<AutoScrollController> {
-  /// The parameter `songLyric` of this provider.
-  SongLyric get songLyric;
+  /// The parameter `displayableItem` of this provider.
+  DisplayableItem get displayableItem;
 }
 
 class _AutoScrollControllerProviderElement
@@ -156,7 +156,8 @@ class _AutoScrollControllerProviderElement
   _AutoScrollControllerProviderElement(super.provider);
 
   @override
-  SongLyric get songLyric => (origin as AutoScrollControllerProvider).songLyric;
+  DisplayableItem get displayableItem =>
+      (origin as AutoScrollControllerProvider).displayableItem;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

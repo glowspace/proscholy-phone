@@ -14,10 +14,10 @@ import 'package:zpevnik/utils/extensions.dart';
 const double _bottomBarHeight = 64;
 
 class SongLyricBottomBar extends ConsumerWidget {
-  final SongLyric songLyric;
+  final SongLyric? songLyric;
   final AutoScrollController autoScrollController;
 
-  const SongLyricBottomBar({super.key, required this.songLyric, required this.autoScrollController});
+  const SongLyricBottomBar({super.key, this.songLyric, required this.autoScrollController});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -33,17 +33,17 @@ class SongLyricBottomBar extends ConsumerWidget {
         child: Row(children: [
           Highlightable(
             padding: const EdgeInsets.all(kDefaultPadding),
-            isEnabled: songLyric.hasChords,
+            isEnabled: songLyric?.hasChords ?? false,
             onTap: () => showModalBottomSheet(
               context: context,
-              builder: (context) => SongLyricSettingsModelWidget(songLyric: songLyric),
+              builder: (context) => SongLyricSettingsModelWidget(songLyric: songLyric!),
             ),
             icon: const Icon(Icons.tune),
             child: showLabels ? const Text('Nástroje') : null,
           ),
           Highlightable(
             padding: const EdgeInsets.all(kDefaultPadding),
-            isEnabled: songLyric.hasRecordings,
+            isEnabled: songLyric?.hasRecordings ?? false,
             onTap: ref.read(displayScreenStatusProvider.notifier).showExternals,
             icon: const Icon(FontAwesomeIcons.headphones),
             child: showLabels ? const Text('Nahrávky') : null,
