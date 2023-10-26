@@ -10,9 +10,15 @@ class DisplayScreenArguments {
   final List<DisplayableItem> items;
   final int initialIndex;
 
+  final bool fromSearchScreen;
   final Playlist? playlist;
 
-  const DisplayScreenArguments({required this.items, this.initialIndex = 0, this.playlist});
+  const DisplayScreenArguments({
+    required this.items,
+    this.initialIndex = 0,
+    this.fromSearchScreen = false,
+    this.playlist,
+  });
 
   factory DisplayScreenArguments.bibleVerse(BibleVerse bibleVerse) {
     return DisplayScreenArguments(items: [bibleVerse]);
@@ -22,8 +28,8 @@ class DisplayScreenArguments {
     return DisplayScreenArguments(items: [customText]);
   }
 
-  factory DisplayScreenArguments.songLyric(SongLyric songLyric) {
-    return DisplayScreenArguments(items: [songLyric]);
+  factory DisplayScreenArguments.songLyric(SongLyric songLyric, {bool fromSearchScreen = false}) {
+    return DisplayScreenArguments(items: [songLyric], fromSearchScreen: fromSearchScreen);
   }
 
   @override

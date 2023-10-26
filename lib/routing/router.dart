@@ -42,6 +42,7 @@ final class AppRouter {
               items: arguments.items,
               initialIndex: arguments.initialIndex,
               playlist: arguments.playlist,
+              fromSearchScreen: arguments.fromSearchScreen,
             );
           },
           false,

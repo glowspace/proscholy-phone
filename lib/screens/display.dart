@@ -41,13 +41,20 @@ class DisplayScreen extends StatelessWidget {
   final List<DisplayableItem> items;
   final int initialIndex;
 
+  final bool fromSearchScreen;
   final Playlist? playlist;
 
-  const DisplayScreen({super.key, required this.items, this.initialIndex = 0, this.playlist});
+  const DisplayScreen({
+    super.key,
+    required this.items,
+    this.initialIndex = 0,
+    this.fromSearchScreen = false,
+    this.playlist,
+  });
 
   @override
   Widget build(BuildContext context) {
-    if (MediaQuery.of(context).isTablet) {
+    if (MediaQuery.of(context).isTablet && (fromSearchScreen || playlist != null)) {
       return _DisplayScreenTablet(items: items, initialIndex: initialIndex, playlist: playlist);
     }
 

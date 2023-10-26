@@ -60,6 +60,7 @@ class SearchSongLyricsListView extends ConsumerWidget {
                 displayScreenArguments: DisplayScreenArguments(
                   items: recentSongLyrics,
                   initialIndex: index,
+                  fromSearchScreen: true,
                 ),
               );
             }
@@ -86,6 +87,7 @@ class SearchSongLyricsListView extends ConsumerWidget {
                 displayScreenArguments: DisplayScreenArguments(
                   items: matchedBySongbookNumber,
                   initialIndex: index,
+                  fromSearchScreen: true,
                 ),
               );
             }
@@ -108,6 +110,7 @@ class SearchSongLyricsListView extends ConsumerWidget {
             displayScreenArguments: DisplayScreenArguments(
               items: songLyrics,
               initialIndex: index,
+              fromSearchScreen: true,
             ),
           );
         },
