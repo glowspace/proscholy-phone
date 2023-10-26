@@ -21,6 +21,7 @@ PresentationData _$PresentationDataFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$PresentationData {
   int? get songLyricId => throw _privateConstructorUsedError;
+  bool get isCustomText => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String get text => throw _privateConstructorUsedError;
   PresentationSettings get settings => throw _privateConstructorUsedError;
@@ -39,6 +40,7 @@ abstract class $PresentationDataCopyWith<$Res> {
   @useResult
   $Res call(
       {int? songLyricId,
+      bool isCustomText,
       String name,
       String text,
       PresentationSettings settings});
@@ -60,6 +62,7 @@ class _$PresentationDataCopyWithImpl<$Res, $Val extends PresentationData>
   @override
   $Res call({
     Object? songLyricId = freezed,
+    Object? isCustomText = null,
     Object? name = null,
     Object? text = null,
     Object? settings = null,
@@ -69,6 +72,10 @@ class _$PresentationDataCopyWithImpl<$Res, $Val extends PresentationData>
           ? _value.songLyricId
           : songLyricId // ignore: cast_nullable_to_non_nullable
               as int?,
+      isCustomText: null == isCustomText
+          ? _value.isCustomText
+          : isCustomText // ignore: cast_nullable_to_non_nullable
+              as bool,
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -103,6 +110,7 @@ abstract class _$$PresentationDataImplCopyWith<$Res>
   @useResult
   $Res call(
       {int? songLyricId,
+      bool isCustomText,
       String name,
       String text,
       PresentationSettings settings});
@@ -123,6 +131,7 @@ class __$$PresentationDataImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? songLyricId = freezed,
+    Object? isCustomText = null,
     Object? name = null,
     Object? text = null,
     Object? settings = null,
@@ -132,6 +141,10 @@ class __$$PresentationDataImplCopyWithImpl<$Res>
           ? _value.songLyricId
           : songLyricId // ignore: cast_nullable_to_non_nullable
               as int?,
+      isCustomText: null == isCustomText
+          ? _value.isCustomText
+          : isCustomText // ignore: cast_nullable_to_non_nullable
+              as bool,
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -153,6 +166,7 @@ class __$$PresentationDataImplCopyWithImpl<$Res>
 class _$PresentationDataImpl implements _PresentationData {
   const _$PresentationDataImpl(
       {this.songLyricId,
+      this.isCustomText = false,
       required this.name,
       required this.text,
       required this.settings});
@@ -163,6 +177,9 @@ class _$PresentationDataImpl implements _PresentationData {
   @override
   final int? songLyricId;
   @override
+  @JsonKey()
+  final bool isCustomText;
+  @override
   final String name;
   @override
   final String text;
@@ -171,7 +188,7 @@ class _$PresentationDataImpl implements _PresentationData {
 
   @override
   String toString() {
-    return 'PresentationData(songLyricId: $songLyricId, name: $name, text: $text, settings: $settings)';
+    return 'PresentationData(songLyricId: $songLyricId, isCustomText: $isCustomText, name: $name, text: $text, settings: $settings)';
   }
 
   @override
@@ -181,6 +198,8 @@ class _$PresentationDataImpl implements _PresentationData {
             other is _$PresentationDataImpl &&
             (identical(other.songLyricId, songLyricId) ||
                 other.songLyricId == songLyricId) &&
+            (identical(other.isCustomText, isCustomText) ||
+                other.isCustomText == isCustomText) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.text, text) || other.text == text) &&
             (identical(other.settings, settings) ||
@@ -190,7 +209,7 @@ class _$PresentationDataImpl implements _PresentationData {
   @JsonKey(ignore: true)
   @override
   int get hashCode =>
-      Object.hash(runtimeType, songLyricId, name, text, settings);
+      Object.hash(runtimeType, songLyricId, isCustomText, name, text, settings);
 
   @JsonKey(ignore: true)
   @override
@@ -210,6 +229,7 @@ class _$PresentationDataImpl implements _PresentationData {
 abstract class _PresentationData implements PresentationData {
   const factory _PresentationData(
       {final int? songLyricId,
+      final bool isCustomText,
       required final String name,
       required final String text,
       required final PresentationSettings settings}) = _$PresentationDataImpl;
@@ -219,6 +239,8 @@ abstract class _PresentationData implements PresentationData {
 
   @override
   int? get songLyricId;
+  @override
+  bool get isCustomText;
   @override
   String get name;
   @override

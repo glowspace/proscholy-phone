@@ -23,7 +23,6 @@ import 'package:zpevnik/models/bible_verse.dart';
 import 'package:zpevnik/models/custom_text.dart';
 import 'package:zpevnik/models/model.dart';
 import 'package:zpevnik/models/playlist.dart';
-import 'package:zpevnik/models/presentation.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/auto_scroll.dart';
 import 'package:zpevnik/providers/menu_collapsed.dart';
@@ -174,12 +173,12 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
                 if (ref.watch(presentationProvider
                     .select((presentation) => presentation.isPresenting && presentation.isPresentingLocally))) {
                   if (ref.watch(
-                      presentationProvider.select((presentation) => presentation.showingData.name == item.name))) {
-                    return StreamBuilder(
-                      stream: ref.read(presentationProvider).showingDataStream,
-                      builder: (_, dataSnaphost) => Presentation(
+                      presentationProvider.select((presentation) => presentation.presentationData.name == item.name))) {
+                    return Consumer(
+                      builder: (_, ref, __) => Presentation(
                         onExternalDisplay: false,
-                        presentationData: dataSnaphost.data ?? defaultPresentationData,
+                        presentationData:
+                            ref.watch(presentationProvider.select((presentation) => presentation.presentationData)),
                       ),
                     );
                   } else {
@@ -276,6 +275,7 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
             EdgeInsets.only(bottom: fullScreen ? MediaQuery.paddingOf(context).bottom : 0),
         child: Row(children: [
           Highlightable(
+            isEnabled: presentation.hasSongLyricsParser,
             onTap: presentation.prevVerse,
             icon: Icon(Icons.adaptive.arrow_back),
           ),
@@ -284,6 +284,7 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
             icon: Icon(presentation.isPaused ? Icons.play_arrow : Icons.pause),
           ),
           Highlightable(
+            isEnabled: presentation.hasSongLyricsParser,
             onTap: presentation.nextVerse,
             icon: Icon(Icons.adaptive.arrow_forward),
           ),

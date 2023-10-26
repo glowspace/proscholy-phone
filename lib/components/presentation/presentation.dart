@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/presentation.dart';
 
@@ -21,9 +23,17 @@ class Presentation extends StatelessWidget {
         : null);
     final textColor = onExternalDisplay ? (presentationData.settings.darkMode ? Colors.white : Colors.black) : null;
 
-    final presentingText =
-        presentationData.settings.allCapital ? presentationData.text.toUpperCase() : presentationData.text;
-    final textScaleFactor = _computeTextScaleFactor(context, presentingText, presentationData.settings.showName);
+    final presentingText = (presentationData.songLyricId != null && presentationData.settings.allCapital)
+        ? presentationData.text.toUpperCase()
+        : presentationData.text;
+    final textScaleFactor = onExternalDisplay
+        ? _computeTextScaleFactor(
+            context,
+            // for lyrics compute scale factor so there are no line breaks, there can be line breaks for custom text and bible verse
+            presentationData.songLyricId == null ? 'Na počátku stvořil Bůh nebe a zemi.' : presentingText,
+            presentationData.settings.showName,
+          )
+        : mediaQuery.textScaleFactor;
 
     return Container(
       color: backgroundColor,
@@ -43,14 +53,33 @@ class Presentation extends StatelessWidget {
             ),
           Align(
             alignment: Alignment.center,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 2 * kDefaultPadding),
-              child: Text(
-                presentingText,
-                style: textTheme.bodyMedium?.copyWith(color: textColor),
-                textScaleFactor: textScaleFactor,
-              ),
-            ),
+            child: presentationData.isCustomText
+                ? QuillProvider(
+                    configurations: QuillConfigurations(
+                      controller: QuillController(
+                        document: _deserializeMarkdownToDocument(presentingText),
+                        selection: const TextSelection.collapsed(offset: 0),
+                      ),
+                      editorConfigurations: const QuillEditorConfigurations(readOnly: true),
+                    ),
+                    child: QuillEditor(
+                      padding: const EdgeInsets.symmetric(horizontal: 2 * kDefaultPadding),
+                      focusNode: FocusNode(),
+                      scrollController: ScrollController(),
+                      scrollable: false,
+                      autoFocus: false,
+                      expands: false,
+                      showCursor: false,
+                    ),
+                  )
+                : Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 2 * kDefaultPadding),
+                    child: Text(
+                      presentingText,
+                      style: textTheme.bodyMedium?.copyWith(color: textColor),
+                      textScaleFactor: textScaleFactor,
+                    ),
+                  ),
           ),
           if (onExternalDisplay && presentingText.isNotEmpty && presentationData.songLyricId != null)
             Align(
@@ -100,5 +129,13 @@ class Presentation extends StatelessWidget {
 
       textScaleFactor -= 0.1;
     }
+  }
+
+  Document _deserializeMarkdownToDocument(String serializedDelta) {
+    if (serializedDelta.isEmpty) return Document();
+
+    final value = jsonDecode(serializedDelta);
+
+    return Document.fromJson(value);
   }
 }

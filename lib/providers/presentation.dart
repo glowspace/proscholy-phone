@@ -14,7 +14,6 @@ final presentationProvider = ChangeNotifierProvider((ref) => PresentationProvide
 
 class PresentationProvider extends ChangeNotifier {
   SongLyricsParser? _songLyricsParser;
-  StreamController<PresentationData>? _showingDataStreamController;
   Function? _nextAction;
 
   bool _isPresenting = false;
@@ -25,16 +24,17 @@ class PresentationProvider extends ChangeNotifier {
   bool get isPresentingLocally => _isPresentingLocally;
   bool get isPaused => _isPaused;
 
+  bool get hasSongLyricsParser => _songLyricsParser != null;
+
   bool _isBeforeStart = false;
   bool _isAfterEnd = false;
 
   int _verseOrder = 0;
 
-  PresentationData _showingData = defaultPresentationData;
-  PresentationSettings get settings => _showingData.settings;
+  PresentationData _presentationData = defaultPresentationData;
+  PresentationSettings get settings => _presentationData.settings;
 
-  PresentationData get showingData => _showingData;
-  Stream<PresentationData> get showingDataStream => _showingDataStreamController!.stream;
+  PresentationData get presentationData => _presentationData;
 
   void start(SongLyricsParser songLyricsParser) async {
     _isPresenting = true;
@@ -43,32 +43,19 @@ class PresentationProvider extends ChangeNotifier {
 
     _songLyricsParser = songLyricsParser;
 
-    if (_isPresentingLocally) {
-      _showingDataStreamController = StreamController.broadcast(
-        onListen: () => _changeShowingData(
-          _showingData.copyWith(
-            songLyricId: songLyricsParser.songLyric.id,
-            name: songLyricsParser.songLyric.name,
-            text: songLyricsParser.getVerse(_verseOrder),
-          ),
-        ),
-      );
-    } else {
-      PresentationService.instance.startPresentation();
-      _changeShowingData(_showingData.copyWith(
-        songLyricId: songLyricsParser.songLyric.id,
-        name: songLyricsParser.songLyric.name,
-        text: songLyricsParser.getVerse(_verseOrder),
-      ));
-    }
+    if (!_isPresentingLocally) PresentationService.instance.startPresentation();
+
+    _changeShowingData(_presentationData.copyWith(
+      songLyricId: songLyricsParser.songLyric.id,
+      name: songLyricsParser.songLyric.name,
+      text: songLyricsParser.getVerse(_verseOrder),
+    ));
 
     notifyListeners();
   }
 
   void stop() {
     _isPresenting = false;
-
-    _showingDataStreamController?.close();
 
     PresentationService.instance.stopPresentation();
 
@@ -85,9 +72,9 @@ class PresentationProvider extends ChangeNotifier {
     if (verse.isEmpty) _isAfterEnd = true;
 
     if (isPaused) {
-      _nextAction = () => _changeShowingData(_showingData.copyWith(text: verse));
+      _nextAction = () => _changeShowingData(_presentationData.copyWith(text: verse));
     } else {
-      _changeShowingData(_showingData.copyWith(text: verse));
+      _changeShowingData(_presentationData.copyWith(text: verse));
     }
   }
 
@@ -101,9 +88,9 @@ class PresentationProvider extends ChangeNotifier {
     if (verse.isEmpty) _isBeforeStart = true;
 
     if (isPaused) {
-      _nextAction = () => _changeShowingData(_showingData.copyWith(text: verse));
+      _nextAction = () => _changeShowingData(_presentationData.copyWith(text: verse));
     } else {
-      _changeShowingData(_showingData.copyWith(text: verse));
+      _changeShowingData(_presentationData.copyWith(text: verse));
     }
   }
 
@@ -116,7 +103,7 @@ class PresentationProvider extends ChangeNotifier {
   }
 
   void changeSettings(PresentationSettings settings) {
-    _changeShowingData(_showingData.copyWith(settings: settings));
+    _changeShowingData(_presentationData.copyWith(settings: settings));
 
     notifyListeners();
   }
@@ -126,15 +113,21 @@ class PresentationProvider extends ChangeNotifier {
 
     final changeFunction = switch (displayableItem) {
       (BibleVerse bibleVerse) => () {
-          _changeShowingData(_showingData.copyWith(
+          _songLyricsParser = null;
+
+          _changeShowingData(_presentationData.copyWith(
             songLyricId: null,
+            isCustomText: false,
             name: bibleVerse.name,
             text: bibleVerse.text,
           ));
         },
       (CustomText customText) => () {
-          _changeShowingData(_showingData.copyWith(
+          _songLyricsParser = null;
+
+          _changeShowingData(_presentationData.copyWith(
             songLyricId: null,
+            isCustomText: true,
             name: customText.name,
             text: customText.content,
           ));
@@ -144,16 +137,17 @@ class PresentationProvider extends ChangeNotifier {
 
           _songLyricsParser = songLyricsParser;
 
-          return () {
-            _changeShowingData(_showingData.copyWith(
-              songLyricId: songLyricsParser.songLyric.id,
-              name: songLyricsParser.songLyric.name,
-              text: songLyricsParser.getVerse(_verseOrder),
-            ));
-          };
+          return _changeShowingData(_presentationData.copyWith(
+            songLyricId: songLyricsParser.songLyric.id,
+            isCustomText: false,
+            name: songLyricsParser.songLyric.name,
+            text: songLyricsParser.getVerse(_verseOrder),
+          ));
         },
       _ => throw UnimplementedError(),
     };
+
+    print(changeFunction);
 
     // if presentation is paused store it as pending action otherwise execute it immediately
     if (isPaused) {
@@ -164,10 +158,10 @@ class PresentationProvider extends ChangeNotifier {
   }
 
   void _changeShowingData(PresentationData data) {
-    _showingData = data;
+    _presentationData = data;
 
     if (_isPresentingLocally) {
-      _showingDataStreamController!.add(_showingData);
+      notifyListeners();
     } else {
       PresentationService.instance.transferData(data);
     }

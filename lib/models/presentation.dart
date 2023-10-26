@@ -21,6 +21,7 @@ const defaultPresentationSettings = PresentationSettings(
 class PresentationData with _$PresentationData {
   const factory PresentationData({
     int? songLyricId,
+    @Default(false) bool isCustomText,
     required String name,
     required String text,
     required PresentationSettings settings,

@@ -10,6 +10,7 @@ _$PresentationDataImpl _$$PresentationDataImplFromJson(
         Map<String, dynamic> json) =>
     _$PresentationDataImpl(
       songLyricId: json['songLyricId'] as int?,
+      isCustomText: json['isCustomText'] as bool? ?? false,
       name: json['name'] as String,
       text: json['text'] as String,
       settings: PresentationSettings.fromJson(
@@ -20,6 +21,7 @@ Map<String, dynamic> _$$PresentationDataImplToJson(
         _$PresentationDataImpl instance) =>
     <String, dynamic>{
       'songLyricId': instance.songLyricId,
+      'isCustomText': instance.isCustomText,
       'name': instance.name,
       'text': instance.text,
       'settings': instance.settings,
