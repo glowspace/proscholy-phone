@@ -56,7 +56,7 @@ enum MediaType {
   }
 }
 
-@Freezed(toJson: false)
+@Freezed(toJson: false, equal: false)
 class External with _$External implements Identifiable {
   static const String fieldKey = 'externals';
 
@@ -88,4 +88,10 @@ class External with _$External implements Identifiable {
   }
 
   MediaType get mediaType => MediaType.fromRawValue(dbMediaType);
+
+  @override
+  int get hashCode => id;
+
+  @override
+  bool operator ==(Object other) => other is External && id == other.id;
 }

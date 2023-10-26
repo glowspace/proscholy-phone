@@ -111,10 +111,11 @@ class __$$AuthorImplCopyWithImpl<$Res>
 
 @Entity(realClass: Author)
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
-class _$AuthorImpl implements _Author {
+class _$AuthorImpl extends _Author {
   const _$AuthorImpl(
       {@Id(assignable: true) @JsonKey(fromJson: int.parse) required this.id,
-      required this.name});
+      required this.name})
+      : super._();
 
   factory _$AuthorImpl.fromJson(Map<String, dynamic> json) =>
       _$$AuthorImplFromJson(json);
@@ -131,19 +132,6 @@ class _$AuthorImpl implements _Author {
     return 'Author(id: $id, name: $name)';
   }
 
-  @override
-  bool operator ==(dynamic other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$AuthorImpl &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.name, name) || other.name == name));
-  }
-
-  @JsonKey(ignore: true)
-  @override
-  int get hashCode => Object.hash(runtimeType, id, name);
-
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
@@ -151,12 +139,13 @@ class _$AuthorImpl implements _Author {
       __$$AuthorImplCopyWithImpl<_$AuthorImpl>(this, _$identity);
 }
 
-abstract class _Author implements Author {
+abstract class _Author extends Author {
   const factory _Author(
       {@Id(assignable: true)
       @JsonKey(fromJson: int.parse)
       required final int id,
       required final String name}) = _$AuthorImpl;
+  const _Author._() : super._();
 
   factory _Author.fromJson(Map<String, dynamic> json) = _$AuthorImpl.fromJson;
 

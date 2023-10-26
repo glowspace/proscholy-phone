@@ -7,7 +7,10 @@ import 'package:zpevnik/models/song_lyric.dart';
 part 'song.freezed.dart';
 part 'song.g.dart';
 
-@Freezed(toJson: false)
+@Freezed(
+  toJson: false,
+  equal: false,
+)
 class Song with _$Song implements Identifiable {
   static const String fieldKey = 'songs';
 
@@ -26,6 +29,12 @@ class Song with _$Song implements Identifiable {
   bool get hasTranslations => songLyrics.length > 1;
 
   SongLyric? get original => songLyrics.firstWhereOrNull((songLyric) => songLyric.type == SongLyricType.original);
+
+  @override
+  int get hashCode => id;
+
+  @override
+  bool operator ==(Object other) => other is Song && id == other.id;
 }
 
 ToMany<SongLyric> _songLyricsFromJson(List<dynamic>? jsonList) => ToMany();

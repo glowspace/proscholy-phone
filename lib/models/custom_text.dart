@@ -4,8 +4,8 @@ import 'package:zpevnik/models/model.dart';
 
 part 'custom_text.freezed.dart';
 
-@freezed
-class CustomText with _$CustomText implements Identifiable, RecentItem {
+@Freezed(equal: false)
+class CustomText with _$CustomText implements DisplayableItem, Identifiable, RecentItem {
   const CustomText._();
 
   @Entity(realClass: CustomText)
@@ -17,4 +17,10 @@ class CustomText with _$CustomText implements Identifiable, RecentItem {
 
   @override
   RecentItemType get recentItemType => RecentItemType.customText;
+
+  @override
+  int get hashCode => id;
+
+  @override
+  bool operator ==(Object other) => other is CustomText && id == other.id;
 }

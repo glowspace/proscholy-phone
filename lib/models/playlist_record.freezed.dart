@@ -160,14 +160,15 @@ class __$$PlaylistRecordImplCopyWithImpl<$Res>
 /// @nodoc
 
 @Entity(realClass: PlaylistRecord)
-class _$PlaylistRecordImpl implements _PlaylistRecord {
+class _$PlaylistRecordImpl extends _PlaylistRecord {
   const _$PlaylistRecordImpl(
       {@Id(assignable: true) required this.id,
       required this.rank,
       required this.songLyric,
       required this.customText,
       required this.bibleVerse,
-      required this.playlist});
+      required this.playlist})
+      : super._();
 
   @override
   @Id(assignable: true)
@@ -188,27 +189,6 @@ class _$PlaylistRecordImpl implements _PlaylistRecord {
     return 'PlaylistRecord(id: $id, rank: $rank, songLyric: $songLyric, customText: $customText, bibleVerse: $bibleVerse, playlist: $playlist)';
   }
 
-  @override
-  bool operator ==(dynamic other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$PlaylistRecordImpl &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.rank, rank) || other.rank == rank) &&
-            (identical(other.songLyric, songLyric) ||
-                other.songLyric == songLyric) &&
-            (identical(other.customText, customText) ||
-                other.customText == customText) &&
-            (identical(other.bibleVerse, bibleVerse) ||
-                other.bibleVerse == bibleVerse) &&
-            (identical(other.playlist, playlist) ||
-                other.playlist == playlist));
-  }
-
-  @override
-  int get hashCode => Object.hash(
-      runtimeType, id, rank, songLyric, customText, bibleVerse, playlist);
-
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
@@ -217,7 +197,7 @@ class _$PlaylistRecordImpl implements _PlaylistRecord {
           this, _$identity);
 }
 
-abstract class _PlaylistRecord implements PlaylistRecord {
+abstract class _PlaylistRecord extends PlaylistRecord {
   const factory _PlaylistRecord(
       {@Id(assignable: true) required final int id,
       required final int rank,
@@ -225,6 +205,7 @@ abstract class _PlaylistRecord implements PlaylistRecord {
       required final ToOne<CustomText> customText,
       required final ToOne<BibleVerse> bibleVerse,
       required final ToOne<Playlist> playlist}) = _$PlaylistRecordImpl;
+  const _PlaylistRecord._() : super._();
 
   @override
   @Id(assignable: true)

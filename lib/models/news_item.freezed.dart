@@ -168,22 +168,6 @@ class _$NewsItemImpl extends _NewsItem {
     return 'NewsItem(id: $id, text: $text, link: $link, expiresAt: $expiresAt)';
   }
 
-  @override
-  bool operator ==(dynamic other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$NewsItemImpl &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.text, text) || other.text == text) &&
-            (identical(other.link, link) || other.link == link) &&
-            (identical(other.expiresAt, expiresAt) ||
-                other.expiresAt == expiresAt));
-  }
-
-  @JsonKey(ignore: true)
-  @override
-  int get hashCode => Object.hash(runtimeType, id, text, link, expiresAt);
-
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')

@@ -97,12 +97,12 @@ class _PlaylistRecordsListViewState extends State<PlaylistRecordsListView> {
 
   DisplayableItem _unwrapPlaylistRecord(PlaylistRecord playlistRecord) {
     if (playlistRecord.bibleVerse.targetId != 0) {
-      return DisplayableItem.bibleVerse(playlistRecord.bibleVerse.target!);
+      return playlistRecord.bibleVerse.target!;
     } else if (playlistRecord.customText.targetId != 0) {
-      return DisplayableItem.customText(playlistRecord.customText.target!);
+      return playlistRecord.customText.target!;
     }
 
-    return DisplayableItem.songLyric(playlistRecord.songLyric.target!);
+    return playlistRecord.songLyric.target!;
   }
 
   void _reorder(int oldIndex, int newIndex) {

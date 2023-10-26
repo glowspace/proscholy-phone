@@ -45,8 +45,8 @@ enum SongLyricType {
   }
 }
 
-@Freezed(toJson: false)
-class SongLyric with _$SongLyric implements Identifiable, RecentItem {
+@Freezed(toJson: false, equal: false)
+class SongLyric with _$SongLyric implements DisplayableItem, Identifiable, RecentItem {
   static const String fieldKey = 'song_lyrics';
 
   const SongLyric._();
@@ -133,6 +133,12 @@ class SongLyric with _$SongLyric implements Identifiable, RecentItem {
 
   @override
   RecentItemType get recentItemType => RecentItemType.songLyric;
+
+  @override
+  int get hashCode => id;
+
+  @override
+  bool operator ==(Object other) => other is SongLyric && id == other.id;
 }
 
 ToOne<Song> _songFromJson(Map<String, dynamic>? json) {

@@ -14,23 +14,24 @@ class DisplayScreenArguments {
 
   const DisplayScreenArguments({required this.items, this.initialIndex = 0, this.playlist});
 
-  factory DisplayScreenArguments.songLyrics(List<SongLyric> songLyrics, {required int initialIndex}) {
-    return DisplayScreenArguments(
-      items: songLyrics.map((songLyric) => DisplayableItem.songLyric(songLyric)).toList(),
-      initialIndex: initialIndex,
-    );
-  }
-
   factory DisplayScreenArguments.bibleVerse(BibleVerse bibleVerse) {
-    return DisplayScreenArguments(items: [DisplayableItem.bibleVerse(bibleVerse)]);
+    return DisplayScreenArguments(items: [bibleVerse]);
   }
 
   factory DisplayScreenArguments.customText(CustomText customText) {
-    return DisplayScreenArguments(items: [DisplayableItem.customText(customText)]);
+    return DisplayScreenArguments(items: [customText]);
   }
 
   factory DisplayScreenArguments.songLyric(SongLyric songLyric) {
-    return DisplayScreenArguments(items: [DisplayableItem.songLyric(songLyric)]);
+    return DisplayScreenArguments(items: [songLyric]);
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, items, initialIndex);
+
+  @override
+  bool operator ==(Object other) {
+    return other is DisplayScreenArguments && initialIndex == other.initialIndex && items == other.items;
   }
 }
 

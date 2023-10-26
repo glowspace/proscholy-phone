@@ -149,20 +149,6 @@ class _$TagImpl extends _Tag {
     return 'Tag(id: $id, name: $name, dbType: $dbType)';
   }
 
-  @override
-  bool operator ==(dynamic other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$TagImpl &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.name, name) || other.name == name) &&
-            (identical(other.dbType, dbType) || other.dbType == dbType));
-  }
-
-  @JsonKey(ignore: true)
-  @override
-  int get hashCode => Object.hash(runtimeType, id, name, dbType);
-
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')

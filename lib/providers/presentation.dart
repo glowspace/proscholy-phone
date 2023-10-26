@@ -3,8 +3,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zpevnik/components/song_lyric/utils/parser.dart';
+import 'package:zpevnik/models/bible_verse.dart';
+import 'package:zpevnik/models/custom_text.dart';
 import 'package:zpevnik/models/model.dart';
 import 'package:zpevnik/models/presentation.dart';
+import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/utils/services/presentation.dart';
 
 final presentationProvider = ChangeNotifierProvider((ref) => PresentationProvider());
@@ -121,35 +124,36 @@ class PresentationProvider extends ChangeNotifier {
   void change(DisplayableItem displayableItem) {
     _verseOrder = 0;
 
-    final changeFunction = displayableItem.when(
-      bibleVerse: (bibleVerse) => () {
-        _changeShowingData(_showingData.copyWith(
-          songLyricId: null,
-          name: bibleVerse.name,
-          text: bibleVerse.text,
-        ));
-      },
-      customText: (customText) => () {
-        _changeShowingData(_showingData.copyWith(
-          songLyricId: null,
-          name: customText.name,
-          text: customText.content,
-        ));
-      },
-      songLyric: (songLyric) {
-        final songLyricsParser = SongLyricsParser(songLyric);
-
-        _songLyricsParser = songLyricsParser;
-
-        return () {
+    final changeFunction = switch (displayableItem) {
+      (BibleVerse bibleVerse) => () {
           _changeShowingData(_showingData.copyWith(
-            songLyricId: songLyricsParser.songLyric.id,
-            name: songLyricsParser.songLyric.name,
-            text: songLyricsParser.getVerse(_verseOrder),
+            songLyricId: null,
+            name: bibleVerse.name,
+            text: bibleVerse.text,
           ));
-        };
-      },
-    );
+        },
+      (CustomText customText) => () {
+          _changeShowingData(_showingData.copyWith(
+            songLyricId: null,
+            name: customText.name,
+            text: customText.content,
+          ));
+        },
+      (SongLyric songLyric) => () {
+          final songLyricsParser = SongLyricsParser(songLyric);
+
+          _songLyricsParser = songLyricsParser;
+
+          return () {
+            _changeShowingData(_showingData.copyWith(
+              songLyricId: songLyricsParser.songLyric.id,
+              name: songLyricsParser.songLyric.name,
+              text: songLyricsParser.getVerse(_verseOrder),
+            ));
+          };
+        },
+      _ => throw UnimplementedError(),
+    };
 
     // if presentation is paused store it as pending action otherwise execute it immediately
     if (isPaused) {

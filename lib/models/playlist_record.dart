@@ -8,8 +8,10 @@ import 'package:zpevnik/models/song_lyric.dart';
 
 part 'playlist_record.freezed.dart';
 
-@freezed
+@Freezed(equal: false)
 class PlaylistRecord with _$PlaylistRecord implements Identifiable, Record {
+  const PlaylistRecord._();
+
   @Entity(realClass: PlaylistRecord)
   const factory PlaylistRecord({
     @Id(assignable: true) required int id,
@@ -19,4 +21,10 @@ class PlaylistRecord with _$PlaylistRecord implements Identifiable, Record {
     required ToOne<BibleVerse> bibleVerse,
     required ToOne<Playlist> playlist,
   }) = _PlaylistRecord;
+
+  @override
+  int get hashCode => id;
+
+  @override
+  bool operator ==(Object other) => other is PlaylistRecord && id == other.id;
 }

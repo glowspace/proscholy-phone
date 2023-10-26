@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
-import 'package:zpevnik/models/model.dart';
 import 'package:zpevnik/models/playlist.dart';
+import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/providers/recent_items.dart';
 import 'package:zpevnik/routing/arguments.dart';
@@ -96,7 +96,7 @@ class AppNavigatorObserver extends NavigatorObserver {
           if (previousRoute?.settings.name == '/search') {
             ProviderScope.containerOf(context)
                 .read(recentSongLyricsProvider.notifier)
-                .add((arguments.items[arguments.initialIndex] as SongLyricItem).songLyric);
+                .add(arguments.items[arguments.initialIndex] as SongLyric);
           } else {
             recentItemsNotifier.add(arguments.items[arguments.initialIndex]);
           }

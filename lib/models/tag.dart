@@ -134,7 +134,10 @@ enum TagType {
   }
 }
 
-@Freezed(toJson: false)
+@Freezed(
+  toJson: false,
+  equal: false,
+)
 class Tag with _$Tag implements Identifiable {
   static const String fieldKey = 'tags_enum';
 
@@ -151,4 +154,10 @@ class Tag with _$Tag implements Identifiable {
   factory Tag.fromJson(Map<String, Object?> json) => _$TagFromJson(json);
 
   TagType get type => TagType.fromRawValue(dbType);
+
+  @override
+  int get hashCode => id;
+
+  @override
+  bool operator ==(Object other) => other is Tag && id == other.id;
 }

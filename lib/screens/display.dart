@@ -24,6 +24,7 @@ import 'package:zpevnik/models/custom_text.dart';
 import 'package:zpevnik/models/model.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/presentation.dart';
+import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/auto_scroll.dart';
 import 'package:zpevnik/providers/menu_collapsed.dart';
 import 'package:zpevnik/providers/playlists.dart';
@@ -31,6 +32,7 @@ import 'package:zpevnik/providers/presentation.dart';
 import 'package:zpevnik/providers/recent_items.dart';
 import 'package:zpevnik/providers/settings.dart';
 import 'package:zpevnik/providers/display_screen_status.dart';
+import 'package:zpevnik/routing/arguments.dart';
 import 'package:zpevnik/screens/playlist.dart';
 import 'package:zpevnik/screens/search.dart';
 import 'package:zpevnik/utils/extensions.dart';
@@ -66,17 +68,23 @@ class _DisplayScreenTablet extends ConsumerStatefulWidget {
 }
 
 class _DisplayScreenTabletState extends ConsumerState<_DisplayScreenTablet> {
-  late final _selectedDisplayableItemIndex = ValueNotifier(widget.initialIndex);
+  late final _selectedDisplayableItemArgumentsNotifier = ValueNotifier(
+    DisplayScreenArguments(items: widget.items, initialIndex: widget.initialIndex),
+  );
 
   @override
   Widget build(BuildContext context) {
-    return SelectedDisplayableItemIndex(
-      displayableItemIndexNotifier: _selectedDisplayableItemIndex,
+    return SelectedDisplayableItemArguments(
+      displayableItemArgumentsNotifier: _selectedDisplayableItemArgumentsNotifier,
       child: SplitView(
         showingOnlyDetail: ref.watch(menuCollapsedProvider),
         detail: ValueListenableBuilder(
-          valueListenable: _selectedDisplayableItemIndex,
-          builder: (_, index, __) => _DisplayScaffold(key: Key('$index'), items: widget.items, initialIndex: index),
+          valueListenable: _selectedDisplayableItemArgumentsNotifier,
+          builder: (_, arguments, __) => _DisplayScaffold(
+            key: Key('${arguments.hashCode}'),
+            items: arguments.items,
+            initialIndex: arguments.initialIndex,
+          ),
         ),
         child: widget.playlist == null ? const SearchScreen() : PlaylistScreen(playlist: widget.playlist!),
       ),
@@ -105,7 +113,7 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
 
   Timer? _addRecentItemTimer;
 
-  DisplayableItem get _currentItem => widget.items[_currentIndex % widget.items.length];
+  DisplayableItem get _currentItem => widget.items[_currentIndex];
 
   @override
   void initState() {
@@ -135,7 +143,7 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
       bottomNavigationBar: fullScreen
           ? const SizedBox()
           : SongLyricBottomBar(
-              songLyric: _currentItem.whenOrNull(songLyric: (songLyric) => songLyric),
+              songLyric: _currentItem is SongLyric ? _currentItem as SongLyric : null,
               autoScrollController: ref.read(autoScrollControllerProvider(_currentItem)),
             ),
       body: GestureDetector(
@@ -174,20 +182,21 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
 
                 final autoScrollController = ref.read(autoScrollControllerProvider(item));
 
-                return item.when(
-                  bibleVerse: (bibleVerse) => BibleVerseWidget(
-                    bibleVerse: bibleVerse,
-                    autoScrollController: autoScrollController,
-                  ),
-                  customText: (customText) => CustomTextWidget(
-                    customText: customText,
-                    autoScrollController: autoScrollController,
-                  ),
-                  songLyric: (songLyric) => SongLyricWidget(
-                    songLyric: songLyric,
-                    autoScrollController: autoScrollController,
-                  ),
-                );
+                return switch (item) {
+                  (BibleVerse bibleVerse) => BibleVerseWidget(
+                      bibleVerse: bibleVerse,
+                      autoScrollController: autoScrollController,
+                    ),
+                  (CustomText customText) => CustomTextWidget(
+                      customText: customText,
+                      autoScrollController: autoScrollController,
+                    ),
+                  (SongLyric songLyric) => SongLyricWidget(
+                      songLyric: songLyric,
+                      autoScrollController: autoScrollController,
+                    ),
+                  _ => throw UnimplementedError(),
+                };
               },
             ),
           ),
@@ -196,56 +205,57 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
     );
 
     // FIXME: it must be wrapped, even when it is not song lyric, otherwise the pageview is initialized again and displayed content does not make sense
-    return ExternalsWrapper(songLyric: _currentItem.whenOrNull(songLyric: (songLyric) => songLyric), child: scaffold);
+    return ExternalsWrapper(songLyric: _currentItem is SongLyric ? _currentItem as SongLyric : null, child: scaffold);
   }
 
   PreferredSizeWidget? _buildAppBar() {
-    return _currentItem.when(
-      bibleVerse: (bibleVerse) => AppBar(
-        leading: const CustomBackButton(),
-        title: Text(bibleVerse.name),
-        actions: [
-          Highlightable(
-            onTap: () => _editBibleVerse(bibleVerse),
-            padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
-            icon: const Icon(Icons.edit),
-          ),
-        ],
-      ),
-      customText: (customText) => AppBar(
-        leading: const CustomBackButton(),
-        title: Text(customText.name),
-        actions: [
-          Highlightable(
-            onTap: () => _editCustomText(customText),
-            padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
-            icon: const Icon(Icons.edit),
-          ),
-        ],
-      ),
-      songLyric: (songLyric) => AppBar(
-        title: Text('${songLyric.id}'),
-        leading: const CustomBackButton(),
-        actions: [
-          StatefulBuilder(
-            builder: (context, setState) => Highlightable(
-              onTap: () => setState(() => ref.read(playlistsProvider.notifier).toggleFavorite(songLyric)),
+    return switch (_currentItem) {
+      (BibleVerse bibleVerse) => AppBar(
+          leading: const CustomBackButton(),
+          title: Text(bibleVerse.name),
+          actions: [
+            Highlightable(
+              onTap: () => _editBibleVerse(bibleVerse),
+              padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
+              icon: const Icon(Icons.edit),
+            ),
+          ],
+        ),
+      (CustomText customText) => AppBar(
+          leading: const CustomBackButton(),
+          title: Text(customText.name),
+          actions: [
+            Highlightable(
+              onTap: () => _editCustomText(customText),
+              padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
+              icon: const Icon(Icons.edit),
+            ),
+          ],
+        ),
+      (SongLyric songLyric) => AppBar(
+          title: Text('${songLyric.id}'),
+          leading: const CustomBackButton(),
+          actions: [
+            StatefulBuilder(
+              builder: (context, setState) => Highlightable(
+                onTap: () => setState(() => ref.read(playlistsProvider.notifier).toggleFavorite(songLyric)),
+                padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+                icon: Icon(songLyric.isFavorite ? Icons.star : Icons.star_outline),
+              ),
+            ),
+            Highlightable(
+              onTap: () => showModalBottomSheet(
+                context: context,
+                builder: (context) => PlaylistsSheet(selectedSongLyric: songLyric),
+              ),
               padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-              icon: Icon(songLyric.isFavorite ? Icons.star : Icons.star_outline),
+              icon: const Icon(Icons.playlist_add),
             ),
-          ),
-          Highlightable(
-            onTap: () => showModalBottomSheet(
-              context: context,
-              builder: (context) => PlaylistsSheet(selectedSongLyric: songLyric),
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-            icon: const Icon(Icons.playlist_add),
-          ),
-          SongLyricMenuButton(songLyric: songLyric),
-        ],
-      ),
-    );
+            SongLyricMenuButton(songLyric: songLyric),
+          ],
+        ),
+      _ => throw UnimplementedError(),
+    };
   }
 
   Widget? _buildBottomSheet() {
@@ -303,22 +313,27 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
   }
 
   void _itemChanged(int index) {
-    setState(() => _currentIndex = index);
+    setState(() => _currentIndex = index % widget.items.length);
 
     // notify presentation
     ref.read(presentationProvider.notifier).change(_currentItem);
 
-    // change highligh index on tablet
-    final selectedDisplayableItemIndexNotifier = SelectedDisplayableItemIndex.of(context);
+    // change highlight index on tablet
+    final selectedDisplayableItemArgumentsNotifier = SelectedDisplayableItemArguments.of(context);
 
-    if (selectedDisplayableItemIndexNotifier != null) {
-      selectedDisplayableItemIndexNotifier.value = index % widget.items.length;
+    if (selectedDisplayableItemArgumentsNotifier != null) {
+      selectedDisplayableItemArgumentsNotifier.value = DisplayScreenArguments(
+        items: widget.items,
+        initialIndex: _currentIndex,
+      );
     }
 
     // saves item as recent if it was at least for 2 seconds on screen
     _addRecentItemTimer?.cancel();
-    _addRecentItemTimer =
-        Timer(const Duration(seconds: 2), () => ref.read(recentItemsProvider.notifier).add(_currentItem));
+    _addRecentItemTimer = Timer(
+      const Duration(seconds: 2),
+      () => ref.read(recentItemsProvider.notifier).add(_currentItem),
+    );
 
     ref.read(activePlayerProvider.notifier).dismiss();
   }
@@ -336,7 +351,7 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
         (await context.push('/playlist/bible_verse/select_verse', arguments: bibleVerse)) as BibleVerse?;
 
     if (editedBibleVerse != null) {
-      setState(() => widget.items[_currentIndex] = DisplayableItem.bibleVerse(editedBibleVerse));
+      setState(() => widget.items[_currentIndex] = editedBibleVerse);
     }
   }
 
@@ -344,7 +359,7 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
     final editedCustomText = (await context.push('/playlist/custom_text/edit', arguments: customText)) as CustomText?;
 
     if (editedCustomText != null) {
-      setState(() => widget.items[_currentIndex] = DisplayableItem.customText(editedCustomText));
+      setState(() => widget.items[_currentIndex] = editedCustomText);
     }
   }
 }

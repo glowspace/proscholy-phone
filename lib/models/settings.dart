@@ -32,8 +32,10 @@ class GlobalSettings with _$GlobalSettings {
   factory GlobalSettings.fromJson(Map<String, Object?> json) => _$GlobalSettingsFromJson(json);
 }
 
-@freezed
+@Freezed(equal: false)
 class SongLyricSettingsModel with _$SongLyricSettingsModel implements Identifiable {
+  const SongLyricSettingsModel._();
+
   @Entity(realClass: SongLyricSettingsModel)
   const factory SongLyricSettingsModel({
     @Id(assignable: true) required int id,
@@ -52,4 +54,10 @@ class SongLyricSettingsModel with _$SongLyricSettingsModel implements Identifiab
       transposition: 0,
     );
   }
+
+  @override
+  int get hashCode => id;
+
+  @override
+  bool operator ==(Object other) => other is SongLyricSettingsModel && id == other.id;
 }

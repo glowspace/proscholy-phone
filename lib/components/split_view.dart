@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-const kdefaultSplitViewChildWidth = 320.0;
+const kdefaultSplitViewChildWidth = 360.0;
 const kdefaultSplitViewMinDetailWidth = 560.0;
 
 class SplitView extends StatelessWidget {

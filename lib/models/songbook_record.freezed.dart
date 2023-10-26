@@ -171,23 +171,6 @@ class _$SongbookRecordImpl extends _SongbookRecord {
     return 'SongbookRecord(id: $id, number: $number, songLyric: $songLyric, songbook: $songbook)';
   }
 
-  @override
-  bool operator ==(dynamic other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$SongbookRecordImpl &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.number, number) || other.number == number) &&
-            (identical(other.songLyric, songLyric) ||
-                other.songLyric == songLyric) &&
-            (identical(other.songbook, songbook) ||
-                other.songbook == songbook));
-  }
-
-  @JsonKey(ignore: true)
-  @override
-  int get hashCode => Object.hash(runtimeType, id, number, songLyric, songbook);
-
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')

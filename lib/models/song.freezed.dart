@@ -157,22 +157,6 @@ class _$SongImpl extends _Song {
     return 'Song(id: $id, name: $name, songLyrics: $songLyrics)';
   }
 
-  @override
-  bool operator ==(dynamic other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$SongImpl &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.name, name) || other.name == name) &&
-            const DeepCollectionEquality()
-                .equals(other.songLyrics, songLyrics));
-  }
-
-  @JsonKey(ignore: true)
-  @override
-  int get hashCode => Object.hash(
-      runtimeType, id, name, const DeepCollectionEquality().hash(songLyrics));
-
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')

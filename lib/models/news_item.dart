@@ -5,7 +5,7 @@ import 'package:zpevnik/models/model.dart';
 part 'news_item.freezed.dart';
 part 'news_item.g.dart';
 
-@Freezed(toJson: false)
+@Freezed(toJson: false, equal: false)
 class NewsItem with _$NewsItem implements Identifiable {
   static const String fieldKey = 'news_items';
 
@@ -23,4 +23,10 @@ class NewsItem with _$NewsItem implements Identifiable {
   factory NewsItem.fromJson(Map<String, Object?> json) => _$NewsItemFromJson(json);
 
   bool get hasLink => link.isNotEmpty;
+
+  @override
+  int get hashCode => id;
+
+  @override
+  bool operator ==(Object other) => other is NewsItem && id == other.id;
 }

@@ -5,8 +5,10 @@ import 'package:zpevnik/models/model.dart';
 part 'author.freezed.dart';
 part 'author.g.dart';
 
-@Freezed(toJson: false)
+@Freezed(toJson: false, equal: false)
 class Author with _$Author implements Identifiable {
+  const Author._();
+
   static const String fieldKey = 'authors';
 
   @Entity(realClass: Author)
@@ -17,4 +19,10 @@ class Author with _$Author implements Identifiable {
   }) = _Author;
 
   factory Author.fromJson(Map<String, Object?> json) => _$AuthorFromJson(json);
+
+  @override
+  int get hashCode => id;
+
+  @override
+  bool operator ==(Object other) => other is Author && id == other.id;
 }

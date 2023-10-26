@@ -1,10 +1,5 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:objectbox/objectbox.dart';
-import 'package:zpevnik/models/bible_verse.dart';
-import 'package:zpevnik/models/custom_text.dart';
 import 'package:zpevnik/models/song_lyric.dart';
-
-part 'model.freezed.dart';
 
 abstract class Identifiable {
   int get id;
@@ -53,32 +48,4 @@ abstract class RecentItem extends Identifiable {
   RecentItemType get recentItemType;
 }
 
-@freezed
-class DisplayableItem with _$DisplayableItem implements RecentItem {
-  const DisplayableItem._();
-
-  const factory DisplayableItem.bibleVerse(BibleVerse bibleVerse) = BibleVerseItem;
-  const factory DisplayableItem.customText(CustomText customText) = CustomTextItem;
-  const factory DisplayableItem.songLyric(SongLyric songLyric) = SongLyricItem;
-
-  @override
-  int get id => when(
-        bibleVerse: (bibleVerse) => bibleVerse.id,
-        customText: (customText) => customText.id,
-        songLyric: (songLyric) => songLyric.id,
-      );
-
-  @override
-  String get name => when(
-        bibleVerse: (bibleVerse) => bibleVerse.name,
-        customText: (customText) => customText.name,
-        songLyric: (songLyric) => songLyric.name,
-      );
-
-  @override
-  RecentItemType get recentItemType => when(
-        bibleVerse: (bibleVerse) => bibleVerse.recentItemType,
-        songLyric: (songLyric) => songLyric.recentItemType,
-        customText: (customText) => customText.recentItemType,
-      );
-}
+abstract class DisplayableItem extends RecentItem {}

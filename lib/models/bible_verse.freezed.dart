@@ -189,25 +189,6 @@ class _$BibleVerseImpl extends _BibleVerse {
     return 'BibleVerse(id: $id, book: $book, chapter: $chapter, startVerse: $startVerse, endVerse: $endVerse, text: $text)';
   }
 
-  @override
-  bool operator ==(dynamic other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$BibleVerseImpl &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.book, book) || other.book == book) &&
-            (identical(other.chapter, chapter) || other.chapter == chapter) &&
-            (identical(other.startVerse, startVerse) ||
-                other.startVerse == startVerse) &&
-            (identical(other.endVerse, endVerse) ||
-                other.endVerse == endVerse) &&
-            (identical(other.text, text) || other.text == text));
-  }
-
-  @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, book, chapter, startVerse, endVerse, text);
-
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')

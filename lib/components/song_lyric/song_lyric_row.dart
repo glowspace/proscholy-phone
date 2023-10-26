@@ -36,8 +36,9 @@ class SongLyricRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2, vertical: kDefaultPadding / 3),
       onTap: () => _pushSongLyric(context),
       child: SelectedRowHighlight(
-        selectedObjectNotifier: SelectedDisplayableItemIndex.of(context),
-        object: displayScreenArguments?.initialIndex,
+        selectedObjectNotifier: SelectedDisplayableItemArguments.of(context),
+        object: songLyric,
+        mapSelectedObject: (arguments) => arguments?.items[arguments.initialIndex] as SongLyric,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 3),
           child: Row(
@@ -101,9 +102,12 @@ class SongLyricRow extends StatelessWidget {
     FocusScope.of(context).unfocus();
 
     final arguments = ModalRoute.of(context)?.settings.arguments;
+    final selectedDisplayableItemArgumentsNotifier = SelectedDisplayableItemArguments.of(context);
 
     if (arguments is SearchScreenArguments && arguments.shouldReturnSongLyric) {
       Navigator.of(context).pop(songLyric);
+    } else if (selectedDisplayableItemArgumentsNotifier != null) {
+      selectedDisplayableItemArgumentsNotifier.value = displayScreenArguments;
     } else {
       context.push('/display', arguments: displayScreenArguments ?? DisplayScreenArguments.songLyric(songLyric));
     }

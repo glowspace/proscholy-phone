@@ -160,21 +160,6 @@ class _$PlaylistImpl extends _Playlist {
     return 'Playlist(id: $id, name: $name, rank: $rank, records: $records)';
   }
 
-  @override
-  bool operator ==(dynamic other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$PlaylistImpl &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.name, name) || other.name == name) &&
-            (identical(other.rank, rank) || other.rank == rank) &&
-            const DeepCollectionEquality().equals(other.records, records));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, id, name, rank,
-      const DeepCollectionEquality().hash(records));
-
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')

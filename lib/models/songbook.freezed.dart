@@ -244,38 +244,6 @@ class _$SongbookImpl extends _Songbook {
     return 'Songbook(id: $id, name: $name, shortcut: $shortcut, color: $color, colorText: $colorText, isPrivate: $isPrivate, isPinned: $isPinned, records: $records)';
   }
 
-  @override
-  bool operator ==(dynamic other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$SongbookImpl &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.name, name) || other.name == name) &&
-            (identical(other.shortcut, shortcut) ||
-                other.shortcut == shortcut) &&
-            (identical(other.color, color) || other.color == color) &&
-            (identical(other.colorText, colorText) ||
-                other.colorText == colorText) &&
-            (identical(other.isPrivate, isPrivate) ||
-                other.isPrivate == isPrivate) &&
-            (identical(other.isPinned, isPinned) ||
-                other.isPinned == isPinned) &&
-            const DeepCollectionEquality().equals(other.records, records));
-  }
-
-  @JsonKey(ignore: true)
-  @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      id,
-      name,
-      shortcut,
-      color,
-      colorText,
-      isPrivate,
-      isPinned,
-      const DeepCollectionEquality().hash(records));
-
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')

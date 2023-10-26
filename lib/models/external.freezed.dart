@@ -187,25 +187,6 @@ class _$ExternalImpl extends _External {
     return 'External(id: $id, publicName: $publicName, mediaId: $mediaId, url: $url, dbMediaType: $dbMediaType)';
   }
 
-  @override
-  bool operator ==(dynamic other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$ExternalImpl &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.publicName, publicName) ||
-                other.publicName == publicName) &&
-            (identical(other.mediaId, mediaId) || other.mediaId == mediaId) &&
-            (identical(other.url, url) || other.url == url) &&
-            (identical(other.dbMediaType, dbMediaType) ||
-                other.dbMediaType == dbMediaType));
-  }
-
-  @JsonKey(ignore: true)
-  @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, publicName, mediaId, url, dbMediaType);
-
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')

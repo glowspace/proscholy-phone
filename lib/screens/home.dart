@@ -84,6 +84,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       if (columns > 1) ...[
         const TopSection(),
         const SearchField(key: Key('searchfield')),
+        const SizedBox(height: kDefaultPadding),
       ],
       Text(greetings, style: Theme.of(context).textTheme.titleLarge),
       const UpdateSection(),

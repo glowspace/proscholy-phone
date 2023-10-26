@@ -1,16 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:zpevnik/routing/arguments.dart';
 
-class SelectedDisplayableItemIndex extends InheritedWidget {
-  final ValueNotifier<int?> displayableItemIndexNotifier;
+class SelectedDisplayableItemArguments extends InheritedWidget {
+  final ValueNotifier<DisplayScreenArguments?> displayableItemArgumentsNotifier;
 
-  const SelectedDisplayableItemIndex({super.key, required super.child, required this.displayableItemIndexNotifier});
+  const SelectedDisplayableItemArguments({
+    super.key,
+    required super.child,
+    required this.displayableItemArgumentsNotifier,
+  });
 
   @override
-  bool updateShouldNotify(SelectedDisplayableItemIndex oldWidget) {
-    return displayableItemIndexNotifier != oldWidget.displayableItemIndexNotifier;
+  bool updateShouldNotify(SelectedDisplayableItemArguments oldWidget) {
+    return displayableItemArgumentsNotifier != oldWidget.displayableItemArgumentsNotifier;
   }
 
-  static ValueNotifier<int?>? of(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<SelectedDisplayableItemIndex>()?.displayableItemIndexNotifier;
+  static ValueNotifier<DisplayScreenArguments?>? of(BuildContext context) {
+    return context
+        .dependOnInheritedWidgetOfExactType<SelectedDisplayableItemArguments>()
+        ?.displayableItemArgumentsNotifier;
   }
 }

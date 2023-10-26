@@ -427,13 +427,14 @@ class __$$SongLyricSettingsModelImplCopyWithImpl<$Res>
 /// @nodoc
 
 @Entity(realClass: SongLyricSettingsModel)
-class _$SongLyricSettingsModelImpl implements _SongLyricSettingsModel {
+class _$SongLyricSettingsModelImpl extends _SongLyricSettingsModel {
   const _$SongLyricSettingsModelImpl(
       {@Id(assignable: true) required this.id,
       required this.showChords,
       required this.showMusicalNotes,
       required this.accidentals,
-      required this.transposition});
+      required this.transposition})
+      : super._();
 
   @override
   @Id(assignable: true)
@@ -452,26 +453,6 @@ class _$SongLyricSettingsModelImpl implements _SongLyricSettingsModel {
     return 'SongLyricSettingsModel(id: $id, showChords: $showChords, showMusicalNotes: $showMusicalNotes, accidentals: $accidentals, transposition: $transposition)';
   }
 
-  @override
-  bool operator ==(dynamic other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$SongLyricSettingsModelImpl &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.showChords, showChords) ||
-                other.showChords == showChords) &&
-            (identical(other.showMusicalNotes, showMusicalNotes) ||
-                other.showMusicalNotes == showMusicalNotes) &&
-            (identical(other.accidentals, accidentals) ||
-                other.accidentals == accidentals) &&
-            (identical(other.transposition, transposition) ||
-                other.transposition == transposition));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, id, showChords, showMusicalNotes,
-      accidentals, transposition);
-
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
@@ -480,13 +461,14 @@ class _$SongLyricSettingsModelImpl implements _SongLyricSettingsModel {
           _$SongLyricSettingsModelImpl>(this, _$identity);
 }
 
-abstract class _SongLyricSettingsModel implements SongLyricSettingsModel {
+abstract class _SongLyricSettingsModel extends SongLyricSettingsModel {
   const factory _SongLyricSettingsModel(
       {@Id(assignable: true) required final int id,
       required final bool showChords,
       required final bool showMusicalNotes,
       required final int accidentals,
       required final int transposition}) = _$SongLyricSettingsModelImpl;
+  const _SongLyricSettingsModel._() : super._();
 
   @override
   @Id(assignable: true)

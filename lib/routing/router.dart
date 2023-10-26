@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:zpevnik/models/bible_verse.dart';
 import 'package:zpevnik/models/custom_text.dart';
 import 'package:zpevnik/models/external.dart';
-import 'package:zpevnik/models/model.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/models/songbook.dart';
@@ -70,7 +69,7 @@ final class AppRouter {
               final id = int.parse(uri.queryParameters['id']!);
               final songLyric = context.providers.read(songLyricProvider(id));
 
-              if (songLyric != null) return DisplayScreen(items: [DisplayableItem.songLyric(songLyric)]);
+              if (songLyric != null) return DisplayScreen(items: [songLyric]);
             }
 
             // should not get here
@@ -94,31 +93,10 @@ final class AppRouter {
       _ => throw 'Unknown route: ${settings.name}',
     };
 
-    // return PageRouteBuilder(
-    //   settings: settings,
-    //   pageBuilder: (_, __, ___) => NavigationRailWrapper(builder: builder),
-    //   transitionDuration: const Duration(seconds: 5),
-    //   transitionsBuilder: (_, animation, __, child) {
-    //     const begin = Offset(1.0, 0.0);
-    //     const end = Offset.zero;
-    //     final tween = Tween(begin: begin, end: end);
-    //     final offsetAnimation = animation.drive(tween);
-
-    //     return SlideTransition(position: offsetAnimation, child: child);
-    //   },
-    // );
-
-    return CustomPageRoute(
+    return MaterialPageRoute(
       settings: settings,
       builder: (_) => NavigationRailWrapper(builder: builder, showNavigationRail: showNavigationRail),
       fullscreenDialog: fullScreenDialog,
     );
   }
-}
-
-class CustomPageRoute extends MaterialPageRoute {
-  CustomPageRoute({required super.builder, super.settings, super.fullscreenDialog});
-
-  // @override
-  // Duration get transitionDuration => const Duration(seconds: 10);
 }

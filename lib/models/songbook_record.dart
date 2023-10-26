@@ -8,7 +8,7 @@ import 'package:zpevnik/models/songbook.dart';
 part 'songbook_record.freezed.dart';
 part 'songbook_record.g.dart';
 
-@Freezed(toJson: false)
+@Freezed(toJson: false, equal: false)
 class SongbookRecord with _$SongbookRecord implements Comparable<SongbookRecord>, Identifiable, Record {
   static const String fieldKey = 'songbook_records';
 
@@ -29,6 +29,12 @@ class SongbookRecord with _$SongbookRecord implements Comparable<SongbookRecord>
 
   @override
   int compareTo(SongbookRecord other) => compareNatural(number, other.number);
+
+  @override
+  int get hashCode => id;
+
+  @override
+  bool operator ==(Object other) => other is SongbookRecord && id == other.id;
 }
 
 ToOne<SongLyric> _songLyricFromJson(Map<String, dynamic> json) => ToOne(targetId: int.parse(json['id']));

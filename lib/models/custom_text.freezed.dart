@@ -135,19 +135,6 @@ class _$CustomTextImpl extends _CustomText {
     return 'CustomText(id: $id, name: $name, content: $content)';
   }
 
-  @override
-  bool operator ==(dynamic other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$CustomTextImpl &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.name, name) || other.name == name) &&
-            (identical(other.content, content) || other.content == content));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, id, name, content);
-
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')

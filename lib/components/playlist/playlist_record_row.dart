@@ -23,23 +23,23 @@ class PlaylistRecordRow extends ConsumerWidget {
 
     const textMargin = EdgeInsets.only(top: 2);
 
-    final songLyric = ref.watch(songLyricProvider(playlistRecord.songLyric.targetId));
     final bibleVerse = ref.watch(bibleVerseProvider(playlistRecord.bibleVerse.targetId));
     final customText = ref.watch(customTextProvider(playlistRecord.customText.targetId));
+    final songLyric = ref.watch(songLyricProvider(playlistRecord.songLyric.targetId));
 
     final String title;
     final IconData? icon;
-    if (songLyric != null) {
-      title = songLyric.name;
-      icon = null;
-    } else if (bibleVerse != null) {
+    if (bibleVerse != null) {
       title = bibleVerse.name;
       icon = Icons.book_outlined;
     } else if (customText != null) {
       title = customText.name;
       icon = Icons.edit_note;
+    } else if (songLyric != null) {
+      title = songLyric.name;
+      icon = null;
     } else {
-      throw UnimplementedError('unsupported playlist record');
+      throw UnsupportedError('unsupported playlist record');
     }
 
     return Highlightable(
@@ -47,8 +47,9 @@ class PlaylistRecordRow extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2, vertical: kDefaultPadding / 3),
       onTap: () => _pushPlaylistRecord(context),
       child: SelectedRowHighlight(
-        selectedObjectNotifier: SelectedDisplayableItemIndex.of(context),
-        object: displayScreenArguments.initialIndex,
+        selectedObjectNotifier: SelectedDisplayableItemArguments.of(context),
+        object: bibleVerse ?? customText ?? songLyric,
+        mapSelectedObject: (arguments) => arguments?.items[arguments.initialIndex],
         child: Row(children: [
           const ReorderableDragStartListener(
             index: 0,
@@ -88,10 +89,10 @@ class PlaylistRecordRow extends ConsumerWidget {
   }
 
   void _pushPlaylistRecord(BuildContext context) {
-    final selectedPlaylistRecordNotifier = SelectedDisplayableItemIndex.of(context);
+    final selectedDisplayableItemArgumentsNotifier = SelectedDisplayableItemArguments.of(context);
 
-    if (selectedPlaylistRecordNotifier != null) {
-      selectedPlaylistRecordNotifier.value = displayScreenArguments.initialIndex;
+    if (selectedDisplayableItemArgumentsNotifier != null) {
+      selectedDisplayableItemArgumentsNotifier.value = displayScreenArguments;
     } else {
       context.push('/display', arguments: displayScreenArguments);
     }

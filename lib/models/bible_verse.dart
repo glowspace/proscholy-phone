@@ -4,8 +4,8 @@ import 'package:zpevnik/models/model.dart';
 
 part 'bible_verse.freezed.dart';
 
-@freezed
-class BibleVerse with _$BibleVerse implements Identifiable, RecentItem {
+@Freezed(equal: false)
+class BibleVerse with _$BibleVerse implements DisplayableItem, Identifiable, RecentItem {
   const BibleVerse._();
 
   @Entity(realClass: BibleVerse)
@@ -25,6 +25,12 @@ class BibleVerse with _$BibleVerse implements Identifiable, RecentItem {
 
   @override
   RecentItemType get recentItemType => RecentItemType.bibleVerse;
+
+  @override
+  int get hashCode => id;
+
+  @override
+  bool operator ==(Object other) => other is BibleVerse && id == other.id;
 }
 
 @immutable
