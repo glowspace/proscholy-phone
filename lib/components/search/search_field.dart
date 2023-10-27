@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/providers/search.dart';
 import 'package:zpevnik/theme.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
@@ -21,7 +22,7 @@ class SearchFieldTransitionWidget extends AnimatedWidget {
       end: theme.brightness.isLight ? theme.scaffoldBackgroundColor : theme.colorScheme.surface,
     ).evaluate(animation);
 
-    return Container(
+    return Padding(
       padding: EdgeInsets.only(left: animation.value * kDefaultPadding),
       child: Material(
         type: MaterialType.transparency,
@@ -73,8 +74,9 @@ class SearchFieldTransitionWidget extends AnimatedWidget {
 class SearchField extends StatefulWidget {
   final Function(String)? onChanged;
   final Function(String)? onSubmitted;
+  final bool isHome;
 
-  const SearchField({super.key, this.onChanged, this.onSubmitted});
+  const SearchField({super.key, this.onChanged, this.onSubmitted, this.isHome = false});
 
   @override
   State<SearchField> createState() => _SearchFieldState();
@@ -88,8 +90,10 @@ class _SearchFieldState extends State<SearchField> {
   void initState() {
     super.initState();
 
-    _controller = TextEditingController();
+    _controller = TextEditingController(text: widget.isHome ? null : context.providers.read(searchTextProvider));
     _focusNode = FocusNode();
+
+    if (!widget.isHome) context.providers.listen(searchTextProvider, (_, text) => _controller.text = text);
 
     // autofocus on search screen
     Future.delayed(const Duration(milliseconds: 10), () => _requestFocusAfterTransition());
@@ -100,7 +104,7 @@ class _SearchFieldState extends State<SearchField> {
     final theme = Theme.of(context);
 
     Widget? suffixIcon;
-    if (context.isSearching) {
+    if (!widget.isHome) {
       suffixIcon = Highlightable(
         padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
         onTap: _clear,
@@ -133,7 +137,7 @@ class _SearchFieldState extends State<SearchField> {
                         color: theme.brightness.isLight ? lightIconColor : darkIconColor,
                       ),
                       filled: true,
-                      fillColor: theme.brightness.isLight && context.isSearching
+                      fillColor: theme.brightness.isLight && !context.isHome
                           ? theme.scaffoldBackgroundColor
                           : theme.colorScheme.surface,
                       isDense: true,
@@ -151,8 +155,8 @@ class _SearchFieldState extends State<SearchField> {
                       contentPadding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
                     ),
                     // disable pasting to search field on home screen, as it should only open search screen
-                    enableInteractiveSelection: context.isSearching,
-                    onTap: _showSearchScreen,
+                    enableInteractiveSelection: !context.isHome,
+                    onTap: context.isHome ? _showSearchScreen : null,
                     onChanged: widget.onChanged,
                     onSubmitted: widget.onSubmitted,
                     controller: _controller,
@@ -176,8 +180,6 @@ class _SearchFieldState extends State<SearchField> {
   }
 
   void _showSearchScreen() {
-    if (context.isSearching) return;
-
     // prevent keyboard from showing up
     FocusScope.of(context).requestFocus(FocusNode());
 

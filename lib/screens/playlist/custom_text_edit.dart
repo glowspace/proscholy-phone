@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zpevnik/components/custom/close_button.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/navigation/scaffold.dart';
@@ -100,7 +99,7 @@ class _CustomTextEditScreenState extends State<CustomTextEditScreen> {
       customText =
           widget.customText!.copyWith(name: name, content: _serializeDocumentToMarkdown(_controller.document) ?? '');
 
-      ProviderScope.containerOf(context)
+      context.providers
           .read(appDependenciesProvider.select((appDependencies) => appDependencies.store.box<CustomText>()))
           .put(customText);
     }

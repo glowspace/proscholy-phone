@@ -15,10 +15,16 @@ const _disabledAlpha = 0x20;
 
 class SongLyricRow extends StatelessWidget {
   final SongLyric songLyric;
+  final bool isInsideTranslationSheet;
 
   final DisplayScreenArguments? displayScreenArguments;
 
-  const SongLyricRow({super.key, required this.songLyric, this.displayScreenArguments});
+  const SongLyricRow({
+    super.key,
+    required this.songLyric,
+    this.displayScreenArguments,
+    this.isInsideTranslationSheet = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +43,7 @@ class SongLyricRow extends StatelessWidget {
       onTap: () => _pushSongLyric(context),
       child: SelectedRowHighlight(
         selectedObjectNotifier: SelectedDisplayableItemArguments.of(context),
-        object: songLyric,
+        object: isInsideTranslationSheet ? null : songLyric,
         mapSelectedObject: (arguments) => arguments?.items[arguments.initialIndex] as SongLyric,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 3),
@@ -107,9 +113,17 @@ class SongLyricRow extends StatelessWidget {
     if (arguments is SearchScreenArguments && arguments.shouldReturnSongLyric) {
       Navigator.of(context).pop(songLyric);
     } else if (selectedDisplayableItemArgumentsNotifier != null) {
-      selectedDisplayableItemArgumentsNotifier.value = displayScreenArguments;
+      selectedDisplayableItemArgumentsNotifier.value =
+          displayScreenArguments ?? DisplayScreenArguments.songLyric(songLyric);
+
+      if (isInsideTranslationSheet) context.pop();
     } else {
-      context.push('/display', arguments: displayScreenArguments ?? DisplayScreenArguments.songLyric(songLyric));
+      if (isInsideTranslationSheet) {
+        context.popAndPush('/display',
+            arguments: displayScreenArguments ?? DisplayScreenArguments.songLyric(songLyric));
+      } else {
+        context.push('/display', arguments: displayScreenArguments ?? DisplayScreenArguments.songLyric(songLyric));
+      }
     }
   }
 }

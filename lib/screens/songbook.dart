@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:zpevnik/components/app_bar_action_button.dart';
 import 'package:zpevnik/components/custom/back_button.dart';
+import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/navigation/scaffold.dart';
 import 'package:zpevnik/components/song_lyric/song_lyrics_list_view.dart';
 import 'package:zpevnik/constants.dart';
@@ -22,7 +22,13 @@ class SongbookScreen extends StatelessWidget {
         leading: const CustomBackButton(),
         title: Text(songbook.name),
         leadingWidth: 24 + 4 * kDefaultPadding,
-        actions: [AppBarActionButton(onTap: () => _pushSearch(context), icon: Icons.filter_alt)],
+        actions: [
+          Highlightable(
+            onTap: () => _pushSearch(context),
+            padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
+            icon: const Icon(Icons.filter_alt),
+          ),
+        ],
       ),
       body: SafeArea(
         child: Consumer(

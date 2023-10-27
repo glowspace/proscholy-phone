@@ -40,20 +40,20 @@ class DisplayScreen extends StatelessWidget {
   final List<DisplayableItem> items;
   final int initialIndex;
 
-  final bool fromSearchScreen;
+  final bool showSearchScreen;
   final Playlist? playlist;
 
   const DisplayScreen({
     super.key,
     required this.items,
     this.initialIndex = 0,
-    this.fromSearchScreen = false,
+    this.showSearchScreen = false,
     this.playlist,
   });
 
   @override
   Widget build(BuildContext context) {
-    if (MediaQuery.of(context).isTablet && (fromSearchScreen || playlist != null)) {
+    if (MediaQuery.of(context).isTablet && (showSearchScreen || playlist != null)) {
       return _DisplayScreenTablet(items: items, initialIndex: initialIndex, playlist: playlist);
     }
 
@@ -80,10 +80,13 @@ class _DisplayScreenTabletState extends ConsumerState<_DisplayScreenTablet> {
 
   @override
   Widget build(BuildContext context) {
+    final menuCollapsed = ref.watch(menuCollapsedProvider);
+    final fullScreen = ref.watch(displayScreenStatusProvider.select((status) => status.fullScreen));
+
     return SelectedDisplayableItemArguments(
       displayableItemArgumentsNotifier: _selectedDisplayableItemArgumentsNotifier,
       child: SplitView(
-        showingOnlyDetail: ref.watch(menuCollapsedProvider),
+        showingOnlyDetail: menuCollapsed || fullScreen,
         detail: ValueListenableBuilder(
           valueListenable: _selectedDisplayableItemArgumentsNotifier,
           builder: (_, arguments, __) => _DisplayScaffold(
@@ -215,6 +218,8 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
   }
 
   PreferredSizeWidget? _buildAppBar() {
+    final presentationNotifier = ref.read(presentationProvider.notifier);
+
     return switch (_currentItem) {
       (BibleVerse bibleVerse) => AppBar(
           leading: const CustomBackButton(),
@@ -222,8 +227,17 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
           actions: [
             Highlightable(
               onTap: () => _editBibleVerse(bibleVerse),
-              padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
+              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
               icon: const Icon(Icons.edit),
+            ),
+            Highlightable(
+              onTap: () => presentationNotifier.isPresenting
+                  ? presentationNotifier.stop()
+                  : context.push('/display/present').then((_) => presentationNotifier.change(bibleVerse)),
+              padding: const EdgeInsets.only(left: kDefaultPadding, right: 1.5 * kDefaultPadding),
+              icon: Icon(ref.watch(presentationProvider.select((presentation) => presentation.isPresenting))
+                  ? Icons.cancel_presentation
+                  : Icons.cast),
             ),
           ],
         ),
@@ -233,8 +247,17 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
           actions: [
             Highlightable(
               onTap: () => _editCustomText(customText),
-              padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
+              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
               icon: const Icon(Icons.edit),
+            ),
+            Highlightable(
+              onTap: () => presentationNotifier.isPresenting
+                  ? presentationNotifier.stop()
+                  : context.push('/display/present').then((_) => presentationNotifier.change(customText)),
+              padding: const EdgeInsets.only(left: kDefaultPadding, right: 1.5 * kDefaultPadding),
+              icon: Icon(ref.watch(presentationProvider.select((presentation) => presentation.isPresenting))
+                  ? Icons.cancel_presentation
+                  : Icons.cast),
             ),
           ],
         ),

@@ -68,6 +68,6 @@ class SongLyricTag extends StatelessWidget {
 
   void _pushSearch(BuildContext context, Tag tag) {
     context.providers.read(selectedTagsProvider.notifier).push(initialTag: tag);
-    context.popAndPush('/search', arguments: tag);
+    context.popAndPush('/search');
   }
 }

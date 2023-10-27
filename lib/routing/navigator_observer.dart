@@ -9,6 +9,7 @@ import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/providers/recent_items.dart';
 import 'package:zpevnik/routing/arguments.dart';
+import 'package:zpevnik/utils/extensions.dart';
 
 part 'navigator_observer.g.dart';
 
@@ -86,7 +87,7 @@ class AppNavigatorObserver extends NavigatorObserver {
 
     if (context == null) return;
 
-    final recentItemsNotifier = ProviderScope.containerOf(context).read(recentItemsProvider.notifier);
+    final recentItemsNotifier = context.providers.read(recentItemsProvider.notifier);
 
     switch (route.settings.name) {
       case '/display':
@@ -94,7 +95,7 @@ class AppNavigatorObserver extends NavigatorObserver {
 
         if (arguments != null) {
           if (previousRoute?.settings.name == '/search') {
-            ProviderScope.containerOf(context)
+            context.providers
                 .read(recentSongLyricsProvider.notifier)
                 .add(arguments.items[arguments.initialIndex] as SongLyric);
           } else {

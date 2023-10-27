@@ -316,7 +316,7 @@ class _SelectBibleVerseScreenState extends State<_SelectBibleVerseScreen> {
         text: text,
       );
 
-      ProviderScope.containerOf(context)
+      context.providers
           .read(appDependenciesProvider.select((appDependencies) => appDependencies.store.box<BibleVerse>()))
           .put(bibleVerse);
     }

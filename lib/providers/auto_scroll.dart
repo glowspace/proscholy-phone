@@ -4,7 +4,7 @@ import 'package:zpevnik/models/model.dart';
 
 part 'auto_scroll.g.dart';
 
-// provides different `AutoScrollController` for given songLyric
+// provides different `AutoScrollController` for given displayable item
 @riverpod
 AutoScrollController autoScrollController(AutoScrollControllerRef ref, DisplayableItem displayableItem) {
   return AutoScrollController();

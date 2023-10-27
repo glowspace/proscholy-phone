@@ -59,8 +59,11 @@ class SearchScreen extends StatelessWidget {
 
     return WillPopScope(
       onWillPop: () async {
-        // this is called with delay, so the change is not visible while popping from this screen
-        Future.delayed(const Duration(milliseconds: 20), context.providers.read(selectedTagsProvider.notifier).pop);
+        if (context.isSearching) {
+          // this is called with delay, so the change is not visible while popping from this screen
+          Future.delayed(const Duration(milliseconds: 20), context.providers.read(selectedTagsProvider.notifier).pop);
+        }
+
         return true;
       },
       child: child,
@@ -73,7 +76,7 @@ class SearchScreen extends StatelessWidget {
     );
 
     if (matchedById != null) {
-      context.push('/display', arguments: DisplayScreenArguments.songLyric(matchedById, fromSearchScreen: true));
+      context.push('/display', arguments: DisplayScreenArguments.songLyric(matchedById, showSearchScreen: true));
     }
   }
 }

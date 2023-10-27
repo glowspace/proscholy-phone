@@ -20,8 +20,8 @@ class BibleVerse with _$BibleVerse implements DisplayableItem, Identifiable, Rec
 
   @override
   String get name => endVerse == null
-      ? '${supportedBibleBooks[book]} $startVerse'
-      : '${supportedBibleBooks[book]} $startVerse:$endVerse';
+      ? '${supportedBibleBooks[book]} $chapter:$startVerse'
+      : '${supportedBibleBooks[book]} $chapter:$startVerse-$endVerse';
 
   @override
   RecentItemType get recentItemType => RecentItemType.bibleVerse;

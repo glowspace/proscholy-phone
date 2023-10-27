@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:zpevnik/components/custom/close_button.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/presentation/settings.dart';
-import 'package:zpevnik/components/song_lyric/utils/parser.dart';
 import 'package:zpevnik/constants.dart';
-import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/presentation.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
@@ -12,9 +10,7 @@ const _noExternalDisplayText =
     'Nebyl detekován žádný externí displej. Bude pouze upraveno zobrazení písní na${unbreakableSpace}tomto zařízení.';
 
 class StartPresentationScreen extends StatefulWidget {
-  final SongLyric songLyric;
-
-  const StartPresentationScreen({super.key, required this.songLyric});
+  const StartPresentationScreen({super.key});
 
   @override
   State<StartPresentationScreen> createState() => _StartPresentationScreenState();
@@ -57,11 +53,11 @@ class _StartPresentationScreenState extends State<StartPresentationScreen> with 
     return Scaffold(
       appBar: AppBar(
         leading: const CustomCloseButton(),
-        title: const Text('Prezentovat'),
+        title: const Text('Promítat'),
         actions: [
           Highlightable(
             onTap: () {
-              context.providers.read(presentationProvider).start(SongLyricsParser(widget.songLyric));
+              context.providers.read(presentationProvider).start();
               context.pop();
             },
             padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),

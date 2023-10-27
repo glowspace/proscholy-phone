@@ -36,20 +36,12 @@ class PresentationProvider extends ChangeNotifier {
 
   PresentationData get presentationData => _presentationData;
 
-  void start(SongLyricsParser songLyricsParser) async {
+  void start() async {
     _isPresenting = true;
     _isPresentingLocally = !(await onExternalDisplay);
     _verseOrder = 0;
 
-    _songLyricsParser = songLyricsParser;
-
     if (!_isPresentingLocally) PresentationService.instance.startPresentation();
-
-    _changeShowingData(_presentationData.copyWith(
-      songLyricId: songLyricsParser.songLyric.id,
-      name: songLyricsParser.songLyric.name,
-      text: songLyricsParser.getVerse(_verseOrder),
-    ));
 
     notifyListeners();
   }
@@ -146,8 +138,6 @@ class PresentationProvider extends ChangeNotifier {
         },
       _ => throw UnimplementedError(),
     };
-
-    print(changeFunction);
 
     // if presentation is paused store it as pending action otherwise execute it immediately
     if (isPaused) {

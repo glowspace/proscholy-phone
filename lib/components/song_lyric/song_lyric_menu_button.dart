@@ -29,7 +29,7 @@ class SongLyricMenuButton extends StatelessWidget {
     return CustomPopupMenuButton(
       items: _buildPopupMenuItems(context),
       onSelected: (context, action) => _selectedAction(context, action),
-      padding: const EdgeInsets.only(left: kDefaultPadding, right: 2 * kDefaultPadding),
+      padding: const EdgeInsets.only(left: kDefaultPadding, right: 1.5 * kDefaultPadding),
     );
   }
 
@@ -75,7 +75,7 @@ class SongLyricMenuButton extends StatelessWidget {
         if (presentationNotifier.isPresenting) {
           presentationNotifier.stop();
         } else {
-          context.push('/song_lyric/present', arguments: songLyric);
+          context.push('/song_lyric/present').then((_) => presentationNotifier.change(songLyric));
         }
         break;
       case SongLyricMenuAction.share:

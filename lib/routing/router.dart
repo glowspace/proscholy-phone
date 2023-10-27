@@ -42,12 +42,13 @@ final class AppRouter {
               items: arguments.items,
               initialIndex: arguments.initialIndex,
               playlist: arguments.playlist,
-              fromSearchScreen: arguments.fromSearchScreen,
+              showSearchScreen: arguments.showSearchScreen,
             );
           },
           false,
           true
         ),
+      '/display/present' => ((_) => const StartPresentationScreen(), true, false),
       '/playlist' => ((_) => PlaylistScreen(playlist: settings.arguments as Playlist), false, true),
       '/playlist/bible_verse/select_verse' => (
           (_) => SelectBibleVerseScreen(bibleVerse: settings.arguments as BibleVerse?),
@@ -81,11 +82,6 @@ final class AppRouter {
         ),
       '/song_lyric/jpg' => ((_) => JpgScreen(jpg: settings.arguments as External), true, false),
       '/song_lyric/pdf' => ((_) => PdfScreen(pdf: settings.arguments as External), true, false),
-      '/song_lyric/present' => (
-          (_) => StartPresentationScreen(songLyric: settings.arguments as SongLyric),
-          true,
-          false
-        ),
       '/updated_song_lyrics' => (
           (_) => UpdatedSongLyricsScreen(songLyrics: settings.arguments as List<SongLyric>),
           false,
