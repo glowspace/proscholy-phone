@@ -14,23 +14,15 @@ void migrateSongLyricSettings(Store store) {
       .box<SongLyric>()
       .query(SongLyric_.transposition
           .notEquals(0)
-          .or(SongLyric_.accidentals.notNull())
+          .or(SongLyric_.accidentals.notNull().and(SongLyric_.accidentals.notEquals(0)))
           .or(SongLyric_.showChords.notNull()))
       .build();
+
   final songLyricsWithSettings = query.find();
 
   query.close();
 
-  int id = () {
-    final queryBuilder = store.box<SongLyricSettingsModel>().query()
-      ..order(SongLyricSettingsModel_.id, flags: Order.descending);
-    final query = queryBuilder.build();
-    final lastId = query.findFirst()?.id ?? 0;
-
-    query.close();
-
-    return lastId + 1;
-  }();
+  int id = 1;
 
   final songLyricsSettings = <SongLyricSettingsModel>[];
 
