@@ -11,8 +11,6 @@
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
-			<key>CFBundleTypeName</key>
-			<string></string>
 			<key>CFBundleTypeIconFiles</key>
 			<array>
 				<string>Icon-29.png</string>
@@ -20,6 +18,8 @@
 				<string>Icon-64.png</string>
 				<string>Icon-320.png</string>
 			</array>
+			<key>CFBundleTypeName</key>
+			<string>cz.proscholy.share_playlist</string>
 			<key>LSHandlerRank</key>
 			<string>Owner</string>
 			<key>LSItemContentTypes</key>
@@ -55,9 +55,13 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>FlutterDeepLinkingEnabled</key>
+	<true/>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
+	<false/>
+	<key>LSSupportsOpeningDocumentsInPlace</key>
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
@@ -114,8 +118,6 @@
 		</dict>
 	</array>
 	<key>io.flutter.embedded_views_preview</key>
-	<true/>
-	<key>FlutterDeepLinkingEnabled</key>
 	<true/>
 </dict>
 </plist>
