@@ -21,7 +21,7 @@ final favoritePlaylistProvider = Provider<Playlist>.internal(
 );
 
 typedef FavoritePlaylistRef = ProviderRef<Playlist>;
-String _$playlistsHash() => r'c9698e175a923301d1a909c1096764595bfe5bff';
+String _$playlistsHash() => r'dad88a57addc1c10c77bf261d0fa1c42636f9742';
 
 /// See also [Playlists].
 @ProviderFor(Playlists)

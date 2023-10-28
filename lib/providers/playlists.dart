@@ -5,8 +5,12 @@ import 'package:zpevnik/models/custom_text.dart';
 import 'package:zpevnik/models/objectbox.g.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/playlist_record.dart';
+import 'package:zpevnik/models/settings.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/app_dependencies.dart';
+import 'package:zpevnik/providers/bible_verse.dart';
+import 'package:zpevnik/providers/custom_text.dart';
+import 'package:zpevnik/providers/settings.dart';
 import 'package:zpevnik/providers/utils.dart';
 
 part 'playlists.g.dart';
@@ -79,20 +83,23 @@ class Playlists extends _$Playlists {
 
     // for bible verses and custom texts make also duplicates, so that changes in duplicated playlist don't alter records in previous
     for (final playlistRecord in playlist.records) {
-      if (playlistRecord.bibleVerse.targetId != 0) {
-        final bibleVerse = playlistRecord.bibleVerse.target!.copyWith(id: _nextBibleVerseId++);
+      final bibleVerse = ref.read(bibleVerseProvider(playlistRecord.bibleVerse.targetId));
+      final customText = ref.read(customTextProvider(playlistRecord.customText.targetId));
 
-        _bibleVerseBox.put(bibleVerse);
+      if (bibleVerse != null) {
+        final duplicatedBibleVerse = bibleVerse.copyWith(id: _nextBibleVerseId++);
 
-        playlistRecords
-            .add(playlistRecord.copyWith(id: _nextPlaylistRecordId++, bibleVerse: ToOne(target: bibleVerse)));
-      } else if (playlistRecord.customText.targetId != 0) {
-        final customText = playlistRecord.customText.target!.copyWith(id: _nextCustomTextId++);
-
-        _customTextBox.put(customText);
+        _bibleVerseBox.put(duplicatedBibleVerse);
 
         playlistRecords
-            .add(playlistRecord.copyWith(id: _nextPlaylistRecordId++, customText: ToOne(target: customText)));
+            .add(playlistRecord.copyWith(id: _nextPlaylistRecordId++, bibleVerse: ToOne(target: duplicatedBibleVerse)));
+      } else if (customText != null) {
+        final duplicatedCustomText = customText.copyWith(id: _nextCustomTextId++);
+
+        _customTextBox.put(duplicatedCustomText);
+
+        playlistRecords
+            .add(playlistRecord.copyWith(id: _nextPlaylistRecordId++, customText: ToOne(target: duplicatedCustomText)));
       } else {
         playlistRecords.add(playlistRecord.copyWith(id: _nextPlaylistRecordId++));
       }
@@ -119,7 +126,9 @@ class Playlists extends _$Playlists {
         PlaylistRecord(
           id: _nextPlaylistRecordId++,
           rank: playlistRecordData['rank'],
-          songLyric: ToOne(targetId: playlistRecordData['song_lyric']),
+          songLyric: ToOne(
+            targetId: playlistRecordData.containsKey('song_lyric') ? playlistRecordData['song_lyric']['id'] : 0,
+          ),
           customText: ToOne(
             target: playlistRecordData.containsKey('custom_text')
                 ? CustomText(
@@ -142,6 +151,15 @@ class Playlists extends _$Playlists {
                 : null,
           ),
           playlist: ToOne(targetId: _nextPlaylistId),
+          settings: ToOne(
+            target: (playlistRecordData['accidentals'] != null || playlistRecordData['transposition'] != 0)
+                ? SongLyricSettingsModel.defaultFromGlobalSettings(ref.read(settingsProvider)).copyWith(
+                    id: nextId(ref, SongLyricSettingsModel_.id),
+                    accidentals: playlistRecordData['accidentals'],
+                    transposition: playlistRecordData['transposition'],
+                  )
+                : null,
+          ),
         )
     ];
 
@@ -163,28 +181,38 @@ class Playlists extends _$Playlists {
 
   // TODO: move this to some better place, it is here just to correspond to `acceptPlaylist` function above
   Map<String, dynamic> playlistToMap(Playlist playlist) {
+    final records = <Map<String, dynamic>>[];
+
+    for (final playlistRecord in playlist.records) {
+      final bibleVerse = ref.read(bibleVerseProvider(playlistRecord.bibleVerse.targetId));
+      final customText = ref.read(customTextProvider(playlistRecord.customText.targetId));
+
+      final record = {
+        'rank': playlistRecord.rank,
+        'song_lyric': playlistRecord.songLyric.targetId,
+        if (bibleVerse != null)
+          'bible_verse': {
+            'book': bibleVerse.book,
+            'chapter': bibleVerse.chapter,
+            'start_verse': bibleVerse.startVerse,
+            'end_verse': bibleVerse.endVerse,
+            'text': bibleVerse.text,
+          },
+        if (customText != null)
+          'custom_text': {
+            'name': customText.name,
+            'content': customText.content,
+          },
+        if (playlistRecord.settings.targetId != 0) 'accidentals': playlistRecord.settings.target!.accidentals,
+        if (playlistRecord.settings.targetId != 0) 'transposition': playlistRecord.settings.target!.transposition,
+      };
+
+      records.add(record);
+    }
+
     return {
       'name': playlist.name,
-      'records': [
-        for (final playlistRecord in playlist.records)
-          {
-            'rank': playlistRecord.rank,
-            'song_lyric': playlistRecord.songLyric.targetId,
-            if (playlistRecord.customText.targetId != 0)
-              'custom_text': {
-                'name': playlistRecord.customText.target!.name,
-                'content': playlistRecord.customText.target!.content,
-              },
-            if (playlistRecord.bibleVerse.targetId != 0)
-              'bible_verse': {
-                'book': playlistRecord.bibleVerse.target!.book,
-                'chapter': playlistRecord.bibleVerse.target!.chapter,
-                'start_verse': playlistRecord.bibleVerse.target!.startVerse,
-                'end_verse': playlistRecord.bibleVerse.target!.endVerse,
-                'text': playlistRecord.bibleVerse.target!.text,
-              }
-          }
-      ]
+      'records': records,
     };
   }
 
@@ -250,6 +278,7 @@ class Playlists extends _$Playlists {
       customText: ToOne(target: customText),
       bibleVerse: ToOne(target: bibleVerse),
       playlist: ToOne(target: playlist),
+      settings: ToOne(),
     );
 
     _playlistRecordsBox.put(playlistRecord);

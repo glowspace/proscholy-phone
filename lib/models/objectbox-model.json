@@ -341,7 +341,7 @@
     },
     {
       "id": "17:7654860777539205773",
-      "lastPropertyId": "7:5967467250290572620",
+      "lastPropertyId": "8:3351492689785759157",
       "name": "PlaylistRecord",
       "properties": [
         {
@@ -386,6 +386,14 @@
           "flags": 520,
           "indexId": "21:6699618113083989690",
           "relationTarget": "BibleVerse"
+        },
+        {
+          "id": "8:3351492689785759157",
+          "name": "settingsId",
+          "type": 11,
+          "flags": 520,
+          "indexId": "23:1570506917931356663",
+          "relationTarget": "SongLyricSettingsModel"
         }
       ],
       "relations": []
@@ -489,7 +497,7 @@
     }
   ],
   "lastEntityId": "22:3313311911381561450",
-  "lastIndexId": "22:6689134858203517923",
+  "lastIndexId": "23:1570506917931356663",
   "lastRelationId": "9:6609909260274628973",
   "lastSequenceId": "0:0",
   "modelVersion": 5,

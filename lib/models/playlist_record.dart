@@ -4,6 +4,7 @@ import 'package:zpevnik/models/bible_verse.dart';
 import 'package:zpevnik/models/custom_text.dart';
 import 'package:zpevnik/models/model.dart';
 import 'package:zpevnik/models/playlist.dart';
+import 'package:zpevnik/models/settings.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 
 part 'playlist_record.freezed.dart';
@@ -20,6 +21,7 @@ class PlaylistRecord with _$PlaylistRecord implements Identifiable, Record {
     required ToOne<CustomText> customText,
     required ToOne<BibleVerse> bibleVerse,
     required ToOne<Playlist> playlist,
+    required ToOne<SongLyricSettingsModel> settings,
   }) = _PlaylistRecord;
 
   @override
