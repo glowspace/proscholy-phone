@@ -29,14 +29,14 @@ class OpenedFileService: NSObject {
     }
 
     func initiallyOpenedFile(url: URL) {
-        do {
-            initiallyOpenedFile = try String(contentsOf: url)
-        } catch { }
+        initiallyOpenedFile = try? String(contentsOf: url)
     }
 
     func openedFile(url: URL) {
-        do {
-            channel.invokeMethod("onOpenedFile", arguments: try String(contentsOf: url))
-        } catch { }
+        _ = url.startAccessingSecurityScopedResource()
+
+        channel.invokeMethod("onOpenedFile", arguments: try? String(contentsOf: url))
+
+        url.stopAccessingSecurityScopedResource()
     }
 }

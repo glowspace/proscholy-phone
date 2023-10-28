@@ -93,7 +93,7 @@
 		<dict>
 			<key>UTTypeConformsTo</key>
 			<array>
-				<string>public.data</string>
+				<string>public.json</string>
 			</array>
 			<key>UTTypeIconFiles</key>
 			<array>
