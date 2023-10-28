@@ -44,7 +44,7 @@ class SongLyricRow extends StatelessWidget {
       child: SelectedRowHighlight(
         selectedObjectNotifier: SelectedDisplayableItemArguments.of(context),
         object: isInsideTranslationSheet ? null : songLyric,
-        mapSelectedObject: (arguments) => arguments?.items[arguments.initialIndex] as SongLyric,
+        mapSelectedObject: (arguments) => arguments.items[arguments.initialIndex] as SongLyric,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 3),
           child: Row(

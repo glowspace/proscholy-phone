@@ -129,6 +129,9 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
     super.initState();
 
     _currentIndex = widget.initialIndex;
+
+    // TODO: make sure this widget does not depend on `presentationProvider` and do this without delay
+    Future.delayed(const Duration(milliseconds: 10), () => ref.read(presentationProvider).change(_currentItem));
   }
 
   @override

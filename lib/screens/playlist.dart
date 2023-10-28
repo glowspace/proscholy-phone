@@ -133,7 +133,9 @@ class _PlaylistScaffold extends StatelessWidget {
           title: Text(playlist.name),
           actions: [
             Highlightable(
-              onTap: playlist.records.isEmpty ? null : () => _pushSearch(context),
+              // enable filter only if there are some song lyrics in playlist
+              isEnabled: playlist.records.where((record) => record.songLyric.targetId != 0).isNotEmpty,
+              onTap: () => _pushSearch(context),
               padding: EdgeInsets.symmetric(horizontal: (playlist.isFavorites ? 1.5 : 1) * kDefaultPadding),
               icon: const Icon(Icons.filter_alt),
             ),

@@ -75,7 +75,7 @@ class SongLyricMenuButton extends StatelessWidget {
         if (presentationNotifier.isPresenting) {
           presentationNotifier.stop();
         } else {
-          context.push('/song_lyric/present').then((_) => presentationNotifier.change(songLyric));
+          context.push('/display/present').then((_) => presentationNotifier.change(songLyric));
         }
         break;
       case SongLyricMenuAction.share:

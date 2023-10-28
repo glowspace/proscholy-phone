@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:zpevnik/components/playlist/playlist_record_row.dart';
+import 'package:zpevnik/components/selected_displayable_item_index.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/model.dart';
 import 'package:zpevnik/models/objectbox.g.dart';
@@ -72,9 +73,7 @@ class _PlaylistRecordsListViewState extends State<PlaylistRecordsListView> {
           extentRatio: 0.15,
           children: [
             SlidableAction(
-              onPressed: (_) => context.providers
-                  .read(playlistsProvider.notifier)
-                  .removeFromPlaylist(widget.playlist, _recordsOrdered[index]),
+              onPressed: (_) => _removePlaylistRecord(index),
               backgroundColor: red,
               foregroundColor: Colors.white,
               icon: Icons.delete,
@@ -117,5 +116,33 @@ class _PlaylistRecordsListViewState extends State<PlaylistRecordsListView> {
         .read(appDependenciesProvider.select((appDependencies) => appDependencies.store))
         .box<PlaylistRecord>()
         .putMany(widget.playlist.records);
+  }
+
+  void _removePlaylistRecord(int index) {
+    context.providers.read(playlistsProvider.notifier).removeFromPlaylist(widget.playlist, _recordsOrdered[index]);
+
+    final removed = _recordsOrdered.removeAt(index);
+
+    final selectedDisplayableItemArguments = SelectedDisplayableItemArguments.of(context);
+
+    // change selected item if it was removed
+    if (selectedDisplayableItemArguments != null &&
+        selectedDisplayableItemArguments.value.items[selectedDisplayableItemArguments.value.initialIndex] ==
+            _unwrapPlaylistRecord(removed)) {
+      if (index == _recordsOrdered.length) index--;
+
+      // if there are no more records pop out to all playlists
+      if (index < 0) {
+        context.pop();
+
+        return;
+      }
+
+      selectedDisplayableItemArguments.value = DisplayScreenArguments(
+        items: _recordsOrdered.map(_unwrapPlaylistRecord).toList(),
+        initialIndex: index,
+        playlist: widget.playlist,
+      );
+    }
   }
 }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:zpevnik/routing/arguments.dart';
 
 class SelectedDisplayableItemArguments extends InheritedWidget {
-  final ValueNotifier<DisplayScreenArguments?> displayableItemArgumentsNotifier;
+  final ValueNotifier<DisplayScreenArguments> displayableItemArgumentsNotifier;
 
   const SelectedDisplayableItemArguments({
     super.key,
@@ -15,7 +15,7 @@ class SelectedDisplayableItemArguments extends InheritedWidget {
     return displayableItemArgumentsNotifier != oldWidget.displayableItemArgumentsNotifier;
   }
 
-  static ValueNotifier<DisplayScreenArguments?>? of(BuildContext context) {
+  static ValueNotifier<DisplayScreenArguments>? of(BuildContext context) {
     return context
         .dependOnInheritedWidgetOfExactType<SelectedDisplayableItemArguments>()
         ?.displayableItemArgumentsNotifier;

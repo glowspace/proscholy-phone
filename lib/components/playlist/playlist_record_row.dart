@@ -49,7 +49,7 @@ class PlaylistRecordRow extends ConsumerWidget {
       child: SelectedRowHighlight(
         selectedObjectNotifier: SelectedDisplayableItemArguments.of(context),
         object: bibleVerse ?? customText ?? songLyric,
-        mapSelectedObject: (arguments) => arguments?.items[arguments.initialIndex],
+        mapSelectedObject: (arguments) => arguments.items[arguments.initialIndex],
         child: Row(children: [
           const ReorderableDragStartListener(
             index: 0,
