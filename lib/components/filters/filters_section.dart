@@ -26,7 +26,7 @@ class FiltersSection extends StatelessWidget {
             Wrap(
               spacing: kDefaultPadding / 2,
               runSpacing: kDefaultPadding / 2,
-              children: tags.map((tag) => FilterTag(tag: tag, isToggable: true)).toList(),
+              children: tags.map((tag) => FilterTag(tag: tag)).toList(),
             ),
           ],
         ),

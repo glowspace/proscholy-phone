@@ -23,44 +23,37 @@ class SongLyricTag extends StatelessWidget {
       text = tag!.name;
     }
 
-    final backgroundColor = theme.colorScheme.secondaryContainer;
-    final numberBackgroundColor = theme.colorScheme.primaryContainer;
-
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(32),
         border: Border.all(color: theme.hintColor, width: 0.5),
       ),
-      child: Material(
-        clipBehavior: Clip.antiAlias,
+      child: Highlightable(
+        highlightBackground: true,
         borderRadius: BorderRadius.circular(32),
-        color: backgroundColor,
-        child: Highlightable(
-          highlightBackground: true,
-          borderRadius: BorderRadius.circular(32),
-          highlightColor: theme.colorScheme.primary.withAlpha(0x20),
-          onTap: () => songbookRecord != null
-              ? _pushSearch(context, songbookRecord!.songbook.target!.tag)
-              : _pushSearch(context, tag!),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2)
-                    .copyWith(
-                        right: songbookRecord == null || songbookRecord!.number.isEmpty
-                            ? kDefaultPadding
-                            : kDefaultPadding / 2),
-                child: Text(text),
-              ),
-              if (songbookRecord != null && songbookRecord!.number.isNotEmpty)
-                Container(
-                  padding: const EdgeInsets.all(kDefaultPadding / 2).copyWith(right: 3 * kDefaultPadding / 4),
-                  color: numberBackgroundColor,
-                  child: Text(songbookRecord!.number),
+        highlightColor: theme.colorScheme.primary.withAlpha(0x20),
+        onTap: () => songbookRecord != null
+            ? _pushSearch(context, songbookRecord!.songbook.target!.tag)
+            : _pushSearch(context, tag!),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2).copyWith(
+                  right:
+                      songbookRecord == null || songbookRecord!.number.isEmpty ? kDefaultPadding : kDefaultPadding / 2),
+              child: Text(text),
+            ),
+            if (songbookRecord != null && songbookRecord!.number.isNotEmpty)
+              Ink(
+                padding: const EdgeInsets.all(kDefaultPadding / 2).copyWith(right: 3 * kDefaultPadding / 4),
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.horizontal(right: Radius.circular(32)),
+                  color: theme.colorScheme.secondaryContainer,
                 ),
-            ],
-          ),
+                child: Text(songbookRecord!.number),
+              ),
+          ],
         ),
       ),
     );

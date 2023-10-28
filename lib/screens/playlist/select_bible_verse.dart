@@ -115,7 +115,7 @@ class _SelectBibleBookScreenState extends State<_SelectBibleBookScreen> {
                           highlightBackground: true,
                           child: Ink(
                             color: _selectedBook == index && _selectedChapter == chapterIndex + 1
-                                ? Theme.of(context).colorScheme.primaryContainer
+                                ? Theme.of(context).colorScheme.secondaryContainer
                                 : null,
                             child: Center(child: Text('${chapterIndex + 1}')),
                           ),

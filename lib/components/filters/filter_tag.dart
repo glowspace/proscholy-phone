@@ -11,13 +11,11 @@ const double _filterRadius = 32;
 
 class FilterTag extends StatelessWidget {
   final Tag tag;
-  final bool isToggable;
   final bool isRemovable;
 
   const FilterTag({
     super.key,
     required this.tag,
-    this.isToggable = false,
     this.isRemovable = false,
   });
 
@@ -25,48 +23,11 @@ class FilterTag extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final padding = isRemovable
-        ? const EdgeInsets.only(left: kDefaultPadding)
-        : const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2);
-
-    final selectedBackgroundColor = theme.colorScheme.secondaryContainer;
-    final removeBackgroundColor = theme.colorScheme.primaryContainer;
-
-    Widget child = Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Flexible(child: Text(tag.name, overflow: TextOverflow.ellipsis, maxLines: 1)),
-        if (isRemovable) const SizedBox(width: kDefaultPadding / 2),
-        if (isRemovable)
-          Material(
-            color: removeBackgroundColor,
-            child: Highlightable(
-              onTap: () => context.providers.read(selectedTagsProvider.notifier).toggleSelection(tag),
-              highlightBackground: true,
-              highlightColor: theme.colorScheme.primary.withAlpha(0x20),
-              padding: const EdgeInsets.all(2 * kDefaultPadding / 3).copyWith(left: kDefaultPadding / 4),
-              child: const Icon(Icons.close, size: 14),
-            ),
-          ),
-      ],
-    );
-
-    if (isToggable) {
-      child = Highlightable(
-        highlightBackground: true,
-        highlightColor: theme.colorScheme.primary.withAlpha(0x20),
-        borderRadius: BorderRadius.circular(_filterRadius),
-        onTap: () => context.providers.read(selectedTagsProvider.notifier).toggleSelection(tag),
-        padding: padding,
-        child: child,
-      );
-    }
-
     return Container(
-      margin: isToggable ? null : const EdgeInsets.symmetric(horizontal: kDefaultPadding / 4),
+      margin: isRemovable ? const EdgeInsets.symmetric(horizontal: kDefaultPadding / 4) : null,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(isRemovable ? _removablefilterRadius : _filterRadius),
-        border: isToggable ? Border.all(color: theme.hintColor, width: 0.5) : null,
+        border: Border.all(color: theme.hintColor, width: 0.5),
       ),
       clipBehavior: Clip.antiAlias,
       // for background color must be wrapped in `Material`, when setting color of the `Container` highligh won't be visible
@@ -74,13 +35,29 @@ class FilterTag extends StatelessWidget {
         builder: (_, ref, child) => Material(
           borderRadius: BorderRadius.circular(isRemovable ? _removablefilterRadius : _filterRadius),
           color: isRemovable
-              ? selectedBackgroundColor
+              ? Colors.transparent
               : (ref.watch(selectedTagsByTypeProvider(tag.type).select((selectedTags) => selectedTags.contains(tag)))
-                  ? selectedBackgroundColor
+                  ? theme.colorScheme.secondaryContainer
                   : Colors.transparent),
           child: child,
         ),
-        child: Padding(padding: isToggable ? EdgeInsets.zero : padding, child: child),
+        child: Highlightable(
+          highlightBackground: true,
+          highlightColor: theme.colorScheme.primary.withAlpha(0x20),
+          borderRadius: BorderRadius.circular(isRemovable ? _removablefilterRadius : _filterRadius),
+          onTap: () => context.providers.read(selectedTagsProvider.notifier).toggleSelection(tag),
+          padding: isRemovable
+              ? const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 3)
+              : const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Flexible(child: Text(tag.name, overflow: TextOverflow.ellipsis, maxLines: 1)),
+              if (isRemovable) const SizedBox(width: kDefaultPadding / 2),
+              if (isRemovable) const Icon(Icons.close, size: 14),
+            ],
+          ),
+        ),
       ),
     );
   }
