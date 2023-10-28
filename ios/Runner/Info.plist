@@ -89,7 +89,7 @@
 		<dict>
 			<key>UTTypeConformsTo</key>
 			<array>
-				<string>public.json</string>
+				<string>public.data</string>
 			</array>
 			<key>UTTypeIconFiles</key>
 			<array>
@@ -108,7 +108,7 @@
 				</array>
 				<key>public.mime-type</key>
 				<array>
-					<string>application/json</string>
+					<string>application/data</string>
 				</array>
 			</dict>
 		</dict>

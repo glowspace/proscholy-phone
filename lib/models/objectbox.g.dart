@@ -375,7 +375,7 @@ final _entities = <ModelEntity>[
   ModelEntity(
       id: const IdUid(17, 7654860777539205773),
       name: 'PlaylistRecord',
-      lastPropertyId: const IdUid(8, 3351492689785759157),
+      lastPropertyId: const IdUid(8, 3873057272621101277),
       flags: 0,
       properties: <ModelProperty>[
         ModelProperty(
@@ -417,11 +417,11 @@ final _entities = <ModelEntity>[
             indexId: const IdUid(21, 6699618113083989690),
             relationTarget: 'BibleVerse'),
         ModelProperty(
-            id: const IdUid(8, 3351492689785759157),
+            id: const IdUid(8, 3873057272621101277),
             name: 'settingsId',
             type: 11,
             flags: 520,
-            indexId: const IdUid(23, 1570506917931356663),
+            indexId: const IdUid(23, 1526469212631298588),
             relationTarget: 'SongLyricSettingsModel')
       ],
       relations: <ModelRelation>[],
@@ -553,7 +553,7 @@ ModelDefinition getObjectBoxModel() {
   final model = ModelInfo(
       entities: _entities,
       lastEntityId: const IdUid(22, 3313311911381561450),
-      lastIndexId: const IdUid(23, 1570506917931356663),
+      lastIndexId: const IdUid(23, 1526469212631298588),
       lastRelationId: const IdUid(9, 6609909260274628973),
       lastSequenceId: const IdUid(0, 0),
       retiredEntityUids: const [

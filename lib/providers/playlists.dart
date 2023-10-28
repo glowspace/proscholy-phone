@@ -126,13 +126,10 @@ class Playlists extends _$Playlists {
         PlaylistRecord(
           id: _nextPlaylistRecordId++,
           rank: playlistRecordData['rank'],
-          songLyric: ToOne(
-            targetId: playlistRecordData.containsKey('song_lyric') ? playlistRecordData['song_lyric']['id'] : 0,
-          ),
+          songLyric: ToOne(targetId: playlistRecordData['song_lyric']),
           customText: ToOne(
             target: playlistRecordData.containsKey('custom_text')
-                ? CustomText(
-                    id: _nextCustomTextId++,
+                ? createCustomText(
                     name: playlistRecordData['custom_text']['name'],
                     content: playlistRecordData['custom_text']['content'],
                   )
@@ -140,8 +137,7 @@ class Playlists extends _$Playlists {
           ),
           bibleVerse: ToOne(
             target: playlistRecordData.containsKey('bible_verse')
-                ? BibleVerse(
-                    id: _nextBibleVerseId++,
+                ? createBibleVerse(
                     book: playlistRecordData['bible_verse']['book'],
                     chapter: playlistRecordData['bible_verse']['chapter'],
                     startVerse: playlistRecordData['bible_verse']['start_verse'],
@@ -152,14 +148,14 @@ class Playlists extends _$Playlists {
           ),
           playlist: ToOne(targetId: _nextPlaylistId),
           settings: ToOne(
-            target: (playlistRecordData['accidentals'] != null || playlistRecordData['transposition'] != 0)
-                ? SongLyricSettingsModel.defaultFromGlobalSettings(ref.read(settingsProvider)).copyWith(
-                    id: nextId(ref, SongLyricSettingsModel_.id),
-                    accidentals: playlistRecordData['accidentals'],
-                    transposition: playlistRecordData['transposition'],
-                  )
-                : null,
-          ),
+              // target: (playlistRecordData['accidentals'] != null || playlistRecordData['transposition'] != 0)
+              //     ? SongLyricSettingsModel.defaultFromGlobalSettings(ref.read(settingsProvider)).copyWith(
+              //         id: nextId(ref, SongLyricSettingsModel_.id),
+              //         accidentals: playlistRecordData['accidentals'],
+              //         transposition: playlistRecordData['transposition'],
+              //       )
+              //     : null,
+              ),
         )
     ];
 

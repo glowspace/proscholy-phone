@@ -92,7 +92,7 @@ class PlaylistButton extends StatelessWidget {
     await Share.shareXFiles(
       [
         XFile('${(await getApplicationDocumentsDirectory()).path}/${playlist.name}.proscholy',
-            mimeType: 'application/json')
+            mimeType: 'application/data')
       ],
       sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size,
     );
