@@ -62,8 +62,9 @@ class Stepper extends StatelessWidget {
                     borderRadius: leftButtonBorderRadius,
                     highlightBackground: true,
                     isEnabled: isEnabled,
-                    onTap: () =>
-                        context.providers.read(songLyricSettingsProvider(songLyric).notifier).changeTransposition(-1),
+                    onTap: () => context.providers
+                        .read(songLyricSettingsProvider(songLyric.id).notifier)
+                        .changeTransposition(-1),
                     child: Icon(Icons.remove, color: isEnabled ? null : disabledColor),
                   ),
                 ),
@@ -77,7 +78,7 @@ class Stepper extends StatelessWidget {
                     alignment: Alignment.center,
                     child: Consumer(
                       builder: (_, ref, __) => Text(
-                        '${ref.watch(songLyricSettingsProvider(songLyric).select((songLyricSettings) => songLyricSettings.transposition))}',
+                        '${ref.watch(songLyricSettingsProvider(songLyric.id).select((songLyricSettings) => songLyricSettings.transposition))}',
                         textAlign: TextAlign.center,
                         style: textTheme.bodyMedium?.copyWith(color: isEnabled ? null : disabledColor),
                       ),
@@ -99,7 +100,7 @@ class Stepper extends StatelessWidget {
                     highlightBackground: true,
                     isEnabled: isEnabled,
                     onTap: () =>
-                        context.providers.read(songLyricSettingsProvider(songLyric).notifier).changeTransposition(1),
+                        context.providers.read(songLyricSettingsProvider(songLyric.id).notifier).changeTransposition(1),
                     child: Icon(Icons.add, color: isEnabled ? null : disabledColor),
                   ),
                 ),

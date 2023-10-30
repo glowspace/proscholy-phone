@@ -386,14 +386,6 @@
           "flags": 520,
           "indexId": "21:6699618113083989690",
           "relationTarget": "BibleVerse"
-        },
-        {
-          "id": "8:3873057272621101277",
-          "name": "settingsId",
-          "type": 11,
-          "flags": 520,
-          "indexId": "23:1526469212631298588",
-          "relationTarget": "SongLyricSettingsModel"
         }
       ],
       "relations": []
@@ -463,7 +455,7 @@
     },
     {
       "id": "22:3313311911381561450",
-      "lastPropertyId": "5:4772539694454545900",
+      "lastPropertyId": "6:6538238091134320076",
       "name": "SongLyricSettingsModel",
       "properties": [
         {
@@ -491,13 +483,21 @@
           "id": "5:4772539694454545900",
           "name": "transposition",
           "type": 6
+        },
+        {
+          "id": "6:6538238091134320076",
+          "name": "songLyricId",
+          "type": 11,
+          "flags": 520,
+          "indexId": "24:2671655412393307456",
+          "relationTarget": "SongLyric"
         }
       ],
       "relations": []
     }
   ],
   "lastEntityId": "22:3313311911381561450",
-  "lastIndexId": "23:1526469212631298588",
+  "lastIndexId": "24:2671655412393307456",
   "lastRelationId": "9:6609909260274628973",
   "lastSequenceId": "0:0",
   "modelVersion": 5,
@@ -521,7 +521,8 @@
     5349464891857123935,
     1850499091710419784,
     6416834576335019143,
-    2335111573671041561
+    2335111573671041561,
+    1526469212631298588
   ],
   "retiredPropertyUids": [
     1286404604582147955,
@@ -595,7 +596,8 @@
     6120913430319880953,
     5404942060880140897,
     7528607199616284548,
-    3483625794157916143
+    3483625794157916143,
+    3873057272621101277
   ],
   "retiredRelationUids": [
     7916874752771113838,

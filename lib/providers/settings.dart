@@ -4,7 +4,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/objectbox.g.dart';
 import 'package:zpevnik/models/settings.dart';
-import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/app_dependencies.dart';
 import 'package:zpevnik/providers/utils.dart';
 
@@ -70,21 +69,20 @@ class SongLyricSettings extends _$SongLyricSettings {
   SongLyricSettingsModel get _defaultSongLyricSettings =>
       SongLyricSettingsModel.defaultFromGlobalSettings(ref.read(settingsProvider));
 
-  // TODO: support individual settings also for playlist records
   @override
-  SongLyricSettingsModel build(SongLyric songLyric) {
-    ref.listenSelf((previous, next) {
-      if (previous == null || previous == next) return;
+  SongLyricSettingsModel build(int songLyricId) {
+    if (songLyricId == 0) return _defaultSongLyricSettings;
 
-      songLyric.settings.target = next == _defaultSongLyricSettings ? null : next;
+    final box = ref
+        .read(appDependenciesProvider.select((appDependencies) => appDependencies.store.box<SongLyricSettingsModel>()));
 
-      ref
-          .read(appDependenciesProvider.select((appDependencies) => appDependencies.store))
-          .box<SongLyric>()
-          .put(songLyric);
-    });
+    final query = box.query(SongLyricSettingsModel_.songLyric.equals(songLyricId)).build();
 
-    return songLyric.settings.target ?? _defaultSongLyricSettings;
+    final songLyricSettings = query.findFirst();
+
+    query.close();
+
+    return songLyricSettings ?? _defaultSongLyricSettings.copyWith(songLyric: ToOne(targetId: songLyricId));
   }
 
   void changeShowChords(bool showChords) => _updateState(state.copyWith(showChords: showChords));

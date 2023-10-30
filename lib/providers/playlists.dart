@@ -5,7 +5,6 @@ import 'package:zpevnik/models/custom_text.dart';
 import 'package:zpevnik/models/objectbox.g.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/playlist_record.dart';
-import 'package:zpevnik/models/settings.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/app_dependencies.dart';
 import 'package:zpevnik/providers/bible_verse.dart';
@@ -121,43 +120,43 @@ class Playlists extends _$Playlists {
   }
 
   Playlist acceptPlaylist(Map<String, dynamic> playlistData, String name) {
-    final playlistRecords = [
-      for (final playlistRecordData in playlistData['records'])
-        PlaylistRecord(
-          id: _nextPlaylistRecordId++,
-          rank: playlistRecordData['rank'],
-          songLyric: ToOne(targetId: playlistRecordData['song_lyric']),
-          customText: ToOne(
-            target: playlistRecordData.containsKey('custom_text')
-                ? createCustomText(
-                    name: playlistRecordData['custom_text']['name'],
-                    content: playlistRecordData['custom_text']['content'],
-                  )
-                : null,
-          ),
-          bibleVerse: ToOne(
-            target: playlistRecordData.containsKey('bible_verse')
-                ? createBibleVerse(
-                    book: playlistRecordData['bible_verse']['book'],
-                    chapter: playlistRecordData['bible_verse']['chapter'],
-                    startVerse: playlistRecordData['bible_verse']['start_verse'],
-                    endVerse: playlistRecordData['bible_verse']['end_verse'],
-                    text: playlistRecordData['bible_verse']['text'],
-                  )
-                : null,
-          ),
-          playlist: ToOne(targetId: _nextPlaylistId),
-          settings: ToOne(
-              // target: (playlistRecordData['accidentals'] != null || playlistRecordData['transposition'] != 0)
-              //     ? SongLyricSettingsModel.defaultFromGlobalSettings(ref.read(settingsProvider)).copyWith(
-              //         id: nextId(ref, SongLyricSettingsModel_.id),
-              //         accidentals: playlistRecordData['accidentals'],
-              //         transposition: playlistRecordData['transposition'],
-              //       )
-              //     : null,
-              ),
-        )
-    ];
+    final playlistRecords = <PlaylistRecord>[];
+
+    for (final playlistRecordData in playlistData['records']) {
+      final playlistRecord = PlaylistRecord(
+        id: _nextPlaylistRecordId++,
+        rank: playlistRecordData['rank'],
+        songLyric: ToOne(targetId: playlistRecordData['song_lyric']?['id']),
+        customText: ToOne(
+          target: playlistRecordData.containsKey('custom_text')
+              ? createCustomText(
+                  name: playlistRecordData['custom_text']['name'],
+                  content: playlistRecordData['custom_text']['content'],
+                )
+              : null,
+        ),
+        bibleVerse: ToOne(
+          target: playlistRecordData.containsKey('bible_verse')
+              ? createBibleVerse(
+                  book: playlistRecordData['bible_verse']['book'],
+                  chapter: playlistRecordData['bible_verse']['chapter'],
+                  startVerse: playlistRecordData['bible_verse']['start_verse'],
+                  endVerse: playlistRecordData['bible_verse']['end_verse'],
+                  text: playlistRecordData['bible_verse']['text'],
+                )
+              : null,
+        ),
+        playlist: ToOne(targetId: _nextPlaylistId),
+      );
+
+      if (playlistRecordData['song_lyric']?.containsKey('accidentals') ?? false) {
+        ref.read(songLyricSettingsProvider(playlistRecordData['song_lyric']['id']).notifier)
+          ..changeAccidentals(playlistRecordData['song_lyric']['accidentals'])
+          ..changeTransposition(playlistRecordData['song_lyric']['transposition']);
+      }
+
+      playlistRecords.add(playlistRecord);
+    }
 
     final newPlaylist = Playlist(
       id: _nextPlaylistId++,
@@ -182,10 +181,18 @@ class Playlists extends _$Playlists {
     for (final playlistRecord in playlist.records) {
       final bibleVerse = ref.read(bibleVerseProvider(playlistRecord.bibleVerse.targetId));
       final customText = ref.read(customTextProvider(playlistRecord.customText.targetId));
+      final songLyricSettings = ref.read(songLyricSettingsProvider(playlistRecord.songLyric.targetId));
 
       final record = {
         'rank': playlistRecord.rank,
-        'song_lyric': playlistRecord.songLyric.targetId,
+        if (playlistRecord.songLyric.targetId != 0)
+          'song_lyric': {
+            'id': playlistRecord.songLyric.targetId,
+            if (songLyricSettings.id != 0) ...{
+              'accidentals': songLyricSettings.accidentals,
+              'transposition': songLyricSettings.transposition,
+            },
+          },
         if (bibleVerse != null)
           'bible_verse': {
             'book': bibleVerse.book,
@@ -199,8 +206,6 @@ class Playlists extends _$Playlists {
             'name': customText.name,
             'content': customText.content,
           },
-        if (playlistRecord.settings.targetId != 0) 'accidentals': playlistRecord.settings.target!.accidentals,
-        if (playlistRecord.settings.targetId != 0) 'transposition': playlistRecord.settings.target!.transposition,
       };
 
       records.add(record);
@@ -274,7 +279,6 @@ class Playlists extends _$Playlists {
       customText: ToOne(target: customText),
       bibleVerse: ToOne(target: bibleVerse),
       playlist: ToOne(target: playlist),
-      settings: ToOne(),
     );
 
     _playlistRecordsBox.put(playlistRecord);

@@ -23,8 +23,6 @@ mixin _$PlaylistRecord {
   ToOne<CustomText> get customText => throw _privateConstructorUsedError;
   ToOne<BibleVerse> get bibleVerse => throw _privateConstructorUsedError;
   ToOne<Playlist> get playlist => throw _privateConstructorUsedError;
-  ToOne<SongLyricSettingsModel> get settings =>
-      throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $PlaylistRecordCopyWith<PlaylistRecord> get copyWith =>
@@ -43,8 +41,7 @@ abstract class $PlaylistRecordCopyWith<$Res> {
       ToOne<SongLyric> songLyric,
       ToOne<CustomText> customText,
       ToOne<BibleVerse> bibleVerse,
-      ToOne<Playlist> playlist,
-      ToOne<SongLyricSettingsModel> settings});
+      ToOne<Playlist> playlist});
 }
 
 /// @nodoc
@@ -66,7 +63,6 @@ class _$PlaylistRecordCopyWithImpl<$Res, $Val extends PlaylistRecord>
     Object? customText = null,
     Object? bibleVerse = null,
     Object? playlist = null,
-    Object? settings = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -93,10 +89,6 @@ class _$PlaylistRecordCopyWithImpl<$Res, $Val extends PlaylistRecord>
           ? _value.playlist
           : playlist // ignore: cast_nullable_to_non_nullable
               as ToOne<Playlist>,
-      settings: null == settings
-          ? _value.settings
-          : settings // ignore: cast_nullable_to_non_nullable
-              as ToOne<SongLyricSettingsModel>,
     ) as $Val);
   }
 }
@@ -115,8 +107,7 @@ abstract class _$$PlaylistRecordImplCopyWith<$Res>
       ToOne<SongLyric> songLyric,
       ToOne<CustomText> customText,
       ToOne<BibleVerse> bibleVerse,
-      ToOne<Playlist> playlist,
-      ToOne<SongLyricSettingsModel> settings});
+      ToOne<Playlist> playlist});
 }
 
 /// @nodoc
@@ -136,7 +127,6 @@ class __$$PlaylistRecordImplCopyWithImpl<$Res>
     Object? customText = null,
     Object? bibleVerse = null,
     Object? playlist = null,
-    Object? settings = null,
   }) {
     return _then(_$PlaylistRecordImpl(
       id: null == id
@@ -163,10 +153,6 @@ class __$$PlaylistRecordImplCopyWithImpl<$Res>
           ? _value.playlist
           : playlist // ignore: cast_nullable_to_non_nullable
               as ToOne<Playlist>,
-      settings: null == settings
-          ? _value.settings
-          : settings // ignore: cast_nullable_to_non_nullable
-              as ToOne<SongLyricSettingsModel>,
     ));
   }
 }
@@ -181,8 +167,7 @@ class _$PlaylistRecordImpl extends _PlaylistRecord {
       required this.songLyric,
       required this.customText,
       required this.bibleVerse,
-      required this.playlist,
-      required this.settings})
+      required this.playlist})
       : super._();
 
   @override
@@ -198,12 +183,10 @@ class _$PlaylistRecordImpl extends _PlaylistRecord {
   final ToOne<BibleVerse> bibleVerse;
   @override
   final ToOne<Playlist> playlist;
-  @override
-  final ToOne<SongLyricSettingsModel> settings;
 
   @override
   String toString() {
-    return 'PlaylistRecord(id: $id, rank: $rank, songLyric: $songLyric, customText: $customText, bibleVerse: $bibleVerse, playlist: $playlist, settings: $settings)';
+    return 'PlaylistRecord(id: $id, rank: $rank, songLyric: $songLyric, customText: $customText, bibleVerse: $bibleVerse, playlist: $playlist)';
   }
 
   @JsonKey(ignore: true)
@@ -216,14 +199,12 @@ class _$PlaylistRecordImpl extends _PlaylistRecord {
 
 abstract class _PlaylistRecord extends PlaylistRecord {
   const factory _PlaylistRecord(
-          {@Id(assignable: true) required final int id,
-          required final int rank,
-          required final ToOne<SongLyric> songLyric,
-          required final ToOne<CustomText> customText,
-          required final ToOne<BibleVerse> bibleVerse,
-          required final ToOne<Playlist> playlist,
-          required final ToOne<SongLyricSettingsModel> settings}) =
-      _$PlaylistRecordImpl;
+      {@Id(assignable: true) required final int id,
+      required final int rank,
+      required final ToOne<SongLyric> songLyric,
+      required final ToOne<CustomText> customText,
+      required final ToOne<BibleVerse> bibleVerse,
+      required final ToOne<Playlist> playlist}) = _$PlaylistRecordImpl;
   const _PlaylistRecord._() : super._();
 
   @override
@@ -239,8 +220,6 @@ abstract class _PlaylistRecord extends PlaylistRecord {
   ToOne<BibleVerse> get bibleVerse;
   @override
   ToOne<Playlist> get playlist;
-  @override
-  ToOne<SongLyricSettingsModel> get settings;
   @override
   @JsonKey(ignore: true)
   _$$PlaylistRecordImplCopyWith<_$PlaylistRecordImpl> get copyWith =>

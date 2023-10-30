@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:objectbox/objectbox.dart';
 import 'package:zpevnik/models/model.dart';
+import 'package:zpevnik/models/song_lyric.dart';
 
 part 'settings.freezed.dart';
 part 'settings.g.dart';
@@ -43,6 +44,7 @@ class SongLyricSettingsModel with _$SongLyricSettingsModel implements Identifiab
     required bool showMusicalNotes,
     required int accidentals,
     required int transposition,
+    required ToOne<SongLyric> songLyric,
   }) = _SongLyricSettingsModel;
 
   factory SongLyricSettingsModel.defaultFromGlobalSettings(GlobalSettings globalSettings) {
@@ -52,6 +54,7 @@ class SongLyricSettingsModel with _$SongLyricSettingsModel implements Identifiab
       showMusicalNotes: globalSettings.showMusicalNotes,
       accidentals: 0,
       transposition: 0,
+      songLyric: ToOne(),
     );
   }
 

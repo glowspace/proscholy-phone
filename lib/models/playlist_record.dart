@@ -21,7 +21,6 @@ class PlaylistRecord with _$PlaylistRecord implements Identifiable, Record {
     required ToOne<CustomText> customText,
     required ToOne<BibleVerse> bibleVerse,
     required ToOne<Playlist> playlist,
-    required ToOne<SongLyricSettingsModel> settings,
   }) = _PlaylistRecord;
 
   @override

@@ -3,6 +3,7 @@ import 'package:objectbox/objectbox.dart';
 import 'package:zpevnik/models/author.dart';
 import 'package:zpevnik/models/external.dart';
 import 'package:zpevnik/models/model.dart';
+import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/playlist_record.dart';
 import 'package:zpevnik/models/settings.dart';
 import 'package:zpevnik/models/song.dart';
@@ -99,7 +100,8 @@ class SongLyric with _$SongLyric implements DisplayableItem, Identifiable, Recen
   bool get hasTags => tags.isNotEmpty;
   bool get hasSongbooks => songbookRecords.isNotEmpty;
 
-  bool get isFavorite => playlistRecords.any((playlistRecord) => playlistRecord.playlist.target!.isFavorites);
+  bool get isFavorite =>
+      playlistRecords.any((playlistRecord) => playlistRecord.playlist.targetId == favoritesPlaylistId);
 
   String get authorsText {
     if (type == SongLyricType.original) {

@@ -21,7 +21,7 @@ final settingsProvider =
 );
 
 typedef _$Settings = AutoDisposeNotifier<GlobalSettings>;
-String _$songLyricSettingsHash() => r'3f9de5eda5c5d9eef14066b8725c21a4ce6de3c2';
+String _$songLyricSettingsHash() => r'28d7969de835bac405764a0808a995ee1c894b40';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -46,10 +46,10 @@ class _SystemHash {
 
 abstract class _$SongLyricSettings
     extends BuildlessAutoDisposeNotifier<SongLyricSettingsModel> {
-  late final SongLyric songLyric;
+  late final int songLyricId;
 
   SongLyricSettingsModel build(
-    SongLyric songLyric,
+    int songLyricId,
   );
 }
 
@@ -64,10 +64,10 @@ class SongLyricSettingsFamily extends Family<SongLyricSettingsModel> {
 
   /// See also [SongLyricSettings].
   SongLyricSettingsProvider call(
-    SongLyric songLyric,
+    int songLyricId,
   ) {
     return SongLyricSettingsProvider(
-      songLyric,
+      songLyricId,
     );
   }
 
@@ -76,7 +76,7 @@ class SongLyricSettingsFamily extends Family<SongLyricSettingsModel> {
     covariant SongLyricSettingsProvider provider,
   ) {
     return call(
-      provider.songLyric,
+      provider.songLyricId,
     );
   }
 
@@ -100,9 +100,9 @@ class SongLyricSettingsProvider extends AutoDisposeNotifierProviderImpl<
     SongLyricSettings, SongLyricSettingsModel> {
   /// See also [SongLyricSettings].
   SongLyricSettingsProvider(
-    SongLyric songLyric,
+    int songLyricId,
   ) : this._internal(
-          () => SongLyricSettings()..songLyric = songLyric,
+          () => SongLyricSettings()..songLyricId = songLyricId,
           from: songLyricSettingsProvider,
           name: r'songLyricSettingsProvider',
           debugGetCreateSourceHash:
@@ -112,7 +112,7 @@ class SongLyricSettingsProvider extends AutoDisposeNotifierProviderImpl<
           dependencies: SongLyricSettingsFamily._dependencies,
           allTransitiveDependencies:
               SongLyricSettingsFamily._allTransitiveDependencies,
-          songLyric: songLyric,
+          songLyricId: songLyricId,
         );
 
   SongLyricSettingsProvider._internal(
@@ -122,17 +122,17 @@ class SongLyricSettingsProvider extends AutoDisposeNotifierProviderImpl<
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
     required super.from,
-    required this.songLyric,
+    required this.songLyricId,
   }) : super.internal();
 
-  final SongLyric songLyric;
+  final int songLyricId;
 
   @override
   SongLyricSettingsModel runNotifierBuild(
     covariant SongLyricSettings notifier,
   ) {
     return notifier.build(
-      songLyric,
+      songLyricId,
     );
   }
 
@@ -141,13 +141,13 @@ class SongLyricSettingsProvider extends AutoDisposeNotifierProviderImpl<
     return ProviderOverride(
       origin: this,
       override: SongLyricSettingsProvider._internal(
-        () => create()..songLyric = songLyric,
+        () => create()..songLyricId = songLyricId,
         from: from,
         name: null,
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
-        songLyric: songLyric,
+        songLyricId: songLyricId,
       ),
     );
   }
@@ -160,13 +160,14 @@ class SongLyricSettingsProvider extends AutoDisposeNotifierProviderImpl<
 
   @override
   bool operator ==(Object other) {
-    return other is SongLyricSettingsProvider && other.songLyric == songLyric;
+    return other is SongLyricSettingsProvider &&
+        other.songLyricId == songLyricId;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, songLyric.hashCode);
+    hash = _SystemHash.combine(hash, songLyricId.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -174,8 +175,8 @@ class SongLyricSettingsProvider extends AutoDisposeNotifierProviderImpl<
 
 mixin SongLyricSettingsRef
     on AutoDisposeNotifierProviderRef<SongLyricSettingsModel> {
-  /// The parameter `songLyric` of this provider.
-  SongLyric get songLyric;
+  /// The parameter `songLyricId` of this provider.
+  int get songLyricId;
 }
 
 class _SongLyricSettingsProviderElement
@@ -184,7 +185,7 @@ class _SongLyricSettingsProviderElement
   _SongLyricSettingsProviderElement(super.provider);
 
   @override
-  SongLyric get songLyric => (origin as SongLyricSettingsProvider).songLyric;
+  int get songLyricId => (origin as SongLyricSettingsProvider).songLyricId;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

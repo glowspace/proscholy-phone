@@ -298,6 +298,7 @@ mixin _$SongLyricSettingsModel {
   bool get showMusicalNotes => throw _privateConstructorUsedError;
   int get accidentals => throw _privateConstructorUsedError;
   int get transposition => throw _privateConstructorUsedError;
+  ToOne<SongLyric> get songLyric => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $SongLyricSettingsModelCopyWith<SongLyricSettingsModel> get copyWith =>
@@ -315,7 +316,8 @@ abstract class $SongLyricSettingsModelCopyWith<$Res> {
       bool showChords,
       bool showMusicalNotes,
       int accidentals,
-      int transposition});
+      int transposition,
+      ToOne<SongLyric> songLyric});
 }
 
 /// @nodoc
@@ -337,6 +339,7 @@ class _$SongLyricSettingsModelCopyWithImpl<$Res,
     Object? showMusicalNotes = null,
     Object? accidentals = null,
     Object? transposition = null,
+    Object? songLyric = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -359,6 +362,10 @@ class _$SongLyricSettingsModelCopyWithImpl<$Res,
           ? _value.transposition
           : transposition // ignore: cast_nullable_to_non_nullable
               as int,
+      songLyric: null == songLyric
+          ? _value.songLyric
+          : songLyric // ignore: cast_nullable_to_non_nullable
+              as ToOne<SongLyric>,
     ) as $Val);
   }
 }
@@ -377,7 +384,8 @@ abstract class _$$SongLyricSettingsModelImplCopyWith<$Res>
       bool showChords,
       bool showMusicalNotes,
       int accidentals,
-      int transposition});
+      int transposition,
+      ToOne<SongLyric> songLyric});
 }
 
 /// @nodoc
@@ -398,6 +406,7 @@ class __$$SongLyricSettingsModelImplCopyWithImpl<$Res>
     Object? showMusicalNotes = null,
     Object? accidentals = null,
     Object? transposition = null,
+    Object? songLyric = null,
   }) {
     return _then(_$SongLyricSettingsModelImpl(
       id: null == id
@@ -420,6 +429,10 @@ class __$$SongLyricSettingsModelImplCopyWithImpl<$Res>
           ? _value.transposition
           : transposition // ignore: cast_nullable_to_non_nullable
               as int,
+      songLyric: null == songLyric
+          ? _value.songLyric
+          : songLyric // ignore: cast_nullable_to_non_nullable
+              as ToOne<SongLyric>,
     ));
   }
 }
@@ -433,7 +446,8 @@ class _$SongLyricSettingsModelImpl extends _SongLyricSettingsModel {
       required this.showChords,
       required this.showMusicalNotes,
       required this.accidentals,
-      required this.transposition})
+      required this.transposition,
+      required this.songLyric})
       : super._();
 
   @override
@@ -447,10 +461,12 @@ class _$SongLyricSettingsModelImpl extends _SongLyricSettingsModel {
   final int accidentals;
   @override
   final int transposition;
+  @override
+  final ToOne<SongLyric> songLyric;
 
   @override
   String toString() {
-    return 'SongLyricSettingsModel(id: $id, showChords: $showChords, showMusicalNotes: $showMusicalNotes, accidentals: $accidentals, transposition: $transposition)';
+    return 'SongLyricSettingsModel(id: $id, showChords: $showChords, showMusicalNotes: $showMusicalNotes, accidentals: $accidentals, transposition: $transposition, songLyric: $songLyric)';
   }
 
   @JsonKey(ignore: true)
@@ -463,11 +479,13 @@ class _$SongLyricSettingsModelImpl extends _SongLyricSettingsModel {
 
 abstract class _SongLyricSettingsModel extends SongLyricSettingsModel {
   const factory _SongLyricSettingsModel(
-      {@Id(assignable: true) required final int id,
-      required final bool showChords,
-      required final bool showMusicalNotes,
-      required final int accidentals,
-      required final int transposition}) = _$SongLyricSettingsModelImpl;
+          {@Id(assignable: true) required final int id,
+          required final bool showChords,
+          required final bool showMusicalNotes,
+          required final int accidentals,
+          required final int transposition,
+          required final ToOne<SongLyric> songLyric}) =
+      _$SongLyricSettingsModelImpl;
   const _SongLyricSettingsModel._() : super._();
 
   @override
@@ -481,6 +499,8 @@ abstract class _SongLyricSettingsModel extends SongLyricSettingsModel {
   int get accidentals;
   @override
   int get transposition;
+  @override
+  ToOne<SongLyric> get songLyric;
   @override
   @JsonKey(ignore: true)
   _$$SongLyricSettingsModelImplCopyWith<_$SongLyricSettingsModelImpl>

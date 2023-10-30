@@ -415,14 +415,7 @@ final _entities = <ModelEntity>[
             type: 11,
             flags: 520,
             indexId: const IdUid(21, 6699618113083989690),
-            relationTarget: 'BibleVerse'),
-        ModelProperty(
-            id: const IdUid(8, 3873057272621101277),
-            name: 'settingsId',
-            type: 11,
-            flags: 520,
-            indexId: const IdUid(23, 1526469212631298588),
-            relationTarget: 'SongLyricSettingsModel')
+            relationTarget: 'BibleVerse')
       ],
       relations: <ModelRelation>[],
       backlinks: <ModelBacklink>[]),
@@ -492,7 +485,7 @@ final _entities = <ModelEntity>[
   ModelEntity(
       id: const IdUid(22, 3313311911381561450),
       name: 'SongLyricSettingsModel',
-      lastPropertyId: const IdUid(5, 4772539694454545900),
+      lastPropertyId: const IdUid(6, 6538238091134320076),
       flags: 0,
       properties: <ModelProperty>[
         ModelProperty(
@@ -519,7 +512,14 @@ final _entities = <ModelEntity>[
             id: const IdUid(5, 4772539694454545900),
             name: 'transposition',
             type: 6,
-            flags: 0)
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(6, 6538238091134320076),
+            name: 'songLyricId',
+            type: 11,
+            flags: 520,
+            indexId: const IdUid(24, 2671655412393307456),
+            relationTarget: 'SongLyric')
       ],
       relations: <ModelRelation>[],
       backlinks: <ModelBacklink>[])
@@ -553,7 +553,7 @@ ModelDefinition getObjectBoxModel() {
   final model = ModelInfo(
       entities: _entities,
       lastEntityId: const IdUid(22, 3313311911381561450),
-      lastIndexId: const IdUid(23, 1526469212631298588),
+      lastIndexId: const IdUid(24, 2671655412393307456),
       lastRelationId: const IdUid(9, 6609909260274628973),
       lastSequenceId: const IdUid(0, 0),
       retiredEntityUids: const [
@@ -575,7 +575,8 @@ ModelDefinition getObjectBoxModel() {
         5349464891857123935,
         1850499091710419784,
         6416834576335019143,
-        2335111573671041561
+        2335111573671041561,
+        1526469212631298588
       ],
       retiredPropertyUids: const [
         1286404604582147955,
@@ -649,7 +650,8 @@ ModelDefinition getObjectBoxModel() {
         6120913430319880953,
         5404942060880140897,
         7528607199616284548,
-        3483625794157916143
+        3483625794157916143,
+        3873057272621101277
       ],
       retiredRelationUids: const [
         7916874752771113838,
@@ -1187,8 +1189,7 @@ ModelDefinition getObjectBoxModel() {
               object.songLyric,
               object.playlist,
               object.customText,
-              object.bibleVerse,
-              object.settings
+              object.bibleVerse
             ],
         toManyRelations: (PlaylistRecord object) => {},
         getId: (PlaylistRecord object) => object.id,
@@ -1209,7 +1210,6 @@ ModelDefinition getObjectBoxModel() {
           fbb.addInt64(4, object.rank);
           fbb.addInt64(5, object.customText.targetId);
           fbb.addInt64(6, object.bibleVerse.targetId);
-          fbb.addInt64(7, object.settings.targetId);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -1232,22 +1232,17 @@ ModelDefinition getObjectBoxModel() {
           final playlistParam = ToOne<Playlist>(
               targetId:
                   const fb.Int64Reader().vTableGet(buffer, rootOffset, 10, 0));
-          final settingsParam = ToOne<SongLyricSettingsModel>(
-              targetId:
-                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 18, 0));
           final object = PlaylistRecord(
               id: idParam,
               rank: rankParam,
               songLyric: songLyricParam,
               customText: customTextParam,
               bibleVerse: bibleVerseParam,
-              playlist: playlistParam,
-              settings: settingsParam);
+              playlist: playlistParam);
           object.songLyric.attach(store);
           object.playlist.attach(store);
           object.customText.attach(store);
           object.bibleVerse.attach(store);
-          object.settings.attach(store);
           return object;
         }),
     BibleVerse: EntityDefinition<BibleVerse>(
@@ -1341,7 +1336,7 @@ ModelDefinition getObjectBoxModel() {
         }),
     SongLyricSettingsModel: EntityDefinition<SongLyricSettingsModel>(
         model: _entities[12],
-        toOneRelations: (SongLyricSettingsModel object) => [],
+        toOneRelations: (SongLyricSettingsModel object) => [object.songLyric],
         toManyRelations: (SongLyricSettingsModel object) => {},
         getId: (SongLyricSettingsModel object) => object.id,
         setId: (SongLyricSettingsModel object, int id) {
@@ -1354,12 +1349,13 @@ ModelDefinition getObjectBoxModel() {
           }
         },
         objectToFB: (SongLyricSettingsModel object, fb.Builder fbb) {
-          fbb.startTable(6);
+          fbb.startTable(7);
           fbb.addInt64(0, object.id);
           fbb.addBool(1, object.showChords);
           fbb.addBool(2, object.showMusicalNotes);
           fbb.addInt64(3, object.accidentals);
           fbb.addInt64(4, object.transposition);
+          fbb.addInt64(5, object.songLyric.targetId);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -1376,13 +1372,17 @@ ModelDefinition getObjectBoxModel() {
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 10, 0);
           final transpositionParam =
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 12, 0);
+          final songLyricParam = ToOne<SongLyric>(
+              targetId:
+                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 14, 0));
           final object = SongLyricSettingsModel(
               id: idParam,
               showChords: showChordsParam,
               showMusicalNotes: showMusicalNotesParam,
               accidentals: accidentalsParam,
-              transposition: transpositionParam);
-
+              transposition: transpositionParam,
+              songLyric: songLyricParam);
+          object.songLyric.attach(store);
           return object;
         })
   };
@@ -1617,11 +1617,6 @@ class PlaylistRecord_ {
   /// see [PlaylistRecord.bibleVerse]
   static final bibleVerse = QueryRelationToOne<PlaylistRecord, BibleVerse>(
       _entities[9].properties[5]);
-
-  /// see [PlaylistRecord.settings]
-  static final settings =
-      QueryRelationToOne<PlaylistRecord, SongLyricSettingsModel>(
-          _entities[9].properties[6]);
 }
 
 /// [BibleVerse] entity fields to define ObjectBox queries.
@@ -1687,4 +1682,9 @@ class SongLyricSettingsModel_ {
   /// see [SongLyricSettingsModel.transposition]
   static final transposition =
       QueryIntegerProperty<SongLyricSettingsModel>(_entities[12].properties[4]);
+
+  /// see [SongLyricSettingsModel.songLyric]
+  static final songLyric =
+      QueryRelationToOne<SongLyricSettingsModel, SongLyric>(
+          _entities[12].properties[5]);
 }

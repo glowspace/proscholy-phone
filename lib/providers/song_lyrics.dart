@@ -26,25 +26,19 @@ void migrateSongLyricSettings(Store store) {
 
   final songLyricsSettings = <SongLyricSettingsModel>[];
 
-  for (int i = 0; i < songLyricsWithSettings.length; i++) {
-    final songLyric = songLyricsWithSettings[i];
+  for (final songLyric in songLyricsWithSettings) {
     final songLyricSettings = SongLyricSettingsModel(
-        id: id++,
-        showChords: songLyric.showChords ?? true,
-        showMusicalNotes: true,
-        accidentals: songLyric.accidentals ?? 1,
-        transposition: songLyric.transposition ?? 0);
+      id: id++,
+      showChords: songLyric.showChords ?? true,
+      showMusicalNotes: true,
+      accidentals: songLyric.accidentals ?? 1,
+      transposition: songLyric.transposition ?? 0,
+      songLyric: ToOne(target: songLyric),
+    );
 
     songLyricsSettings.add(songLyricSettings);
-    songLyricsWithSettings[i] = songLyric.copyWith(
-      transposition: 0,
-      accidentals: null,
-      showChords: null,
-      settings: ToOne(target: songLyricSettings),
-    );
   }
 
-  store.box<SongLyric>().putMany(songLyricsWithSettings);
   store.box<SongLyricSettingsModel>().putMany(songLyricsSettings);
 }
 

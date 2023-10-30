@@ -32,8 +32,8 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
 
     final fontSizeScale = MediaQuery.textScaleFactorOf(context);
 
-    final showLilypond = ref.watch(
-        songLyricSettingsProvider(widget.songLyric).select((songLyricSettings) => songLyricSettings.showMusicalNotes));
+    final showLilypond = ref.watch(songLyricSettingsProvider(widget.songLyric.id)
+        .select((songLyricSettings) => songLyricSettings.showMusicalNotes));
 
     return SingleChildScrollView(
       controller: widget.autoScrollController,
@@ -44,12 +44,12 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 2 * kDefaultPadding),
-              child: Text(controller.songLyric.name, style: theme.textTheme.titleLarge),
+              child: Text(widget.songLyric.name, style: theme.textTheme.titleLarge),
             ),
             SizedBox(height: fontSizeScale * kDefaultPadding / 2),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 2 * kDefaultPadding),
-              child: Text(controller.songLyric.authorsText, style: theme.textTheme.labelSmall),
+              child: Text(widget.songLyric.authorsText, style: theme.textTheme.labelSmall),
             ),
             SizedBox(height: fontSizeScale * kDefaultPadding / 2),
             Padding(
@@ -87,7 +87,7 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
       if (currentToken is Comment) {
         children.add(_buildComment(context, currentToken, false));
       } else if (currentToken is Interlude) {
-        if (ref.watch(songLyricSettingsProvider(controller.songLyric)
+        if (ref.watch(songLyricSettingsProvider(widget.songLyric.id)
             .select((songLyricSettings) => songLyricSettings.showChords))) {
           children.add(_buildInterlude(context, currentToken));
         } else {
@@ -173,7 +173,7 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
     while (currentToken != null && currentToken is! NewLine) {
       if (currentToken is VersePart) {
         if (currentChord == null ||
-            ref.watch(songLyricSettingsProvider(controller.songLyric)
+            ref.watch(songLyricSettingsProvider(widget.songLyric.id)
                 .select((songLyricSettings) => !songLyricSettings.showChords))) {
           children.add(WidgetSpan(child: Text(currentToken.value, style: textStyle)));
         } else {
@@ -181,7 +181,7 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
           currentChord = null;
         }
       } else if (currentToken is Chord &&
-          ref.watch(songLyricSettingsProvider(controller.songLyric)
+          ref.watch(songLyricSettingsProvider(widget.songLyric.id)
               .select((songLyricSettings) => songLyricSettings.showChords))) {
         if (isInterlude) {
           children.add(_buildChord(context, currentToken, textStyle, isInterlude: true));
@@ -197,7 +197,7 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
 
     if (!isInterlude &&
         currentChord != null &&
-        ref.watch(songLyricSettingsProvider(controller.songLyric)
+        ref.watch(songLyricSettingsProvider(widget.songLyric.id)
             .select((songLyricSettings) => songLyricSettings.showChords))) {
       children.add(_buildChord(context, currentChord, textStyle));
     }
@@ -207,8 +207,8 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
 
   Widget _buildComment(BuildContext context, Comment comment, bool hasChords) {
     final showChords = hasChords &&
-        ref.watch(songLyricSettingsProvider(controller.songLyric)
-            .select((songLyricSettings) => songLyricSettings.showChords));
+        ref.watch(
+            songLyricSettingsProvider(widget.songLyric.id).select((songLyricSettings) => songLyricSettings.showChords));
     final textStyle = Theme.of(context).textTheme.labelLarge?.copyWith(
           fontStyle: FontStyle.italic,
           height: showChords ? 2.5 : 1.5,
@@ -229,9 +229,9 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
     String chordText = convertAccidentals(
         transpose(
             chord.value,
-            ref.watch(songLyricSettingsProvider(controller.songLyric)
+            ref.watch(songLyricSettingsProvider(widget.songLyric.id)
                 .select((songLyricSettings) => songLyricSettings.transposition))),
-        ref.watch(songLyricSettingsProvider(controller.songLyric)
+        ref.watch(songLyricSettingsProvider(widget.songLyric.id)
             .select((songLyricSettings) => songLyricSettings.accidentals)));
 
     int chordNumberIndex = chordText.indexOf('maj');
@@ -277,8 +277,8 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
 
   TextStyle? _textStyle(BuildContext context, bool hasChords) {
     final showChords = hasChords &&
-        ref.watch(songLyricSettingsProvider(controller.songLyric)
-            .select((songLyricSettings) => songLyricSettings.showChords));
+        ref.watch(
+            songLyricSettingsProvider(widget.songLyric.id).select((songLyricSettings) => songLyricSettings.showChords));
 
     return Theme.of(context).textTheme.bodyMedium?.copyWith(height: showChords ? 2.5 : 1.5);
   }

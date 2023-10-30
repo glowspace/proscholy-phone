@@ -18,7 +18,7 @@ class SongLyricSettingsModelWidget extends ConsumerWidget {
     final theme = Theme.of(context);
 
     final showChords =
-        ref.watch(songLyricSettingsProvider(songLyric).select((songLyricSettings) => songLyricSettings.showChords));
+        ref.watch(songLyricSettingsProvider(songLyric.id).select((songLyricSettings) => songLyricSettings.showChords));
 
     final accidentalsStyle = theme.textTheme.bodyMedium?.copyWith(
       fontFamily: 'KaiseiHarunoUmi',
@@ -38,19 +38,19 @@ class SongLyricSettingsModelWidget extends ConsumerWidget {
           title: 'Posuvky',
           padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding, vertical: kDefaultPadding / 2),
           isEnabled: showChords,
-          onSelected: ref.read(songLyricSettingsProvider(songLyric).notifier).changeAccidentals,
+          onSelected: ref.read(songLyricSettingsProvider(songLyric.id).notifier).changeAccidentals,
           segments: [
             ButtonSegment(value: 0, label: Text('#', style: accidentalsStyle, textAlign: TextAlign.center)),
             ButtonSegment(value: 1, label: Text('♭', style: accidentalsStyle, textAlign: TextAlign.center)),
           ],
-          selected: ref
-              .watch(songLyricSettingsProvider(songLyric).select((songLyricSettings) => songLyricSettings.accidentals)),
+          selected: ref.watch(
+              songLyricSettingsProvider(songLyric.id).select((songLyricSettings) => songLyricSettings.accidentals)),
         ),
         SwitchListTile.adaptive(
           title: Text('Akordy', style: theme.textTheme.bodyMedium),
           activeColor: theme.colorScheme.primary,
           value: showChords,
-          onChanged: (value) => ref.read(songLyricSettingsProvider(songLyric).notifier).changeShowChords(value),
+          onChanged: (value) => ref.read(songLyricSettingsProvider(songLyric.id).notifier).changeShowChords(value),
           dense: true,
           contentPadding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
         ),
@@ -60,13 +60,13 @@ class SongLyricSettingsModelWidget extends ConsumerWidget {
             activeColor: theme.colorScheme.primary,
             contentPadding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
             dense: true,
-            value: ref.watch(
-                songLyricSettingsProvider(songLyric).select((songLyricSettings) => songLyricSettings.showMusicalNotes)),
-            onChanged: ref.read(songLyricSettingsProvider(songLyric).notifier).changeShowMusicalNotes,
+            value: ref.watch(songLyricSettingsProvider(songLyric.id)
+                .select((songLyricSettings) => songLyricSettings.showMusicalNotes)),
+            onChanged: ref.read(songLyricSettingsProvider(songLyric.id).notifier).changeShowMusicalNotes,
           ),
         const SizedBox(height: kDefaultPadding),
         Highlightable(
-          onTap: ref.read(songLyricSettingsProvider(songLyric).notifier).reset,
+          onTap: ref.read(songLyricSettingsProvider(songLyric.id).notifier).reset,
           padding: const EdgeInsets.all(kDefaultPadding / 2),
           textStyle: theme.textTheme.bodySmall,
           child: const Text('Resetovat nastavení'),
