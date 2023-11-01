@@ -21,7 +21,7 @@ class PresentationProvider extends ChangeNotifier {
   bool _isPaused = false;
 
   bool get isPresenting => _isPresenting;
-  bool get isPresentingLocally => _isPresentingLocally;
+  bool get isPresentingLocally => _isPresenting && _isPresentingLocally;
   bool get isPaused => _isPaused;
 
   bool get hasSongLyricsParser => _songLyricsParser != null;

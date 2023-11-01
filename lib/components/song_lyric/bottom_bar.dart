@@ -7,6 +7,7 @@ import 'package:zpevnik/components/song_lyric/utils/auto_scroll.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/settings.dart';
 import 'package:zpevnik/models/song_lyric.dart';
+import 'package:zpevnik/providers/presentation.dart';
 import 'package:zpevnik/providers/settings.dart';
 import 'package:zpevnik/providers/display_screen_status.dart';
 import 'package:zpevnik/utils/extensions.dart';
@@ -71,7 +72,8 @@ class SongLyricBottomBar extends ConsumerWidget {
             ),
           Highlightable(
             padding: const EdgeInsets.all(kDefaultPadding),
-            isEnabled: autoScrollController.canScroll,
+            isEnabled: autoScrollController.canScroll &&
+                ref.watch(presentationProvider.select((presentation) => !presentation.isPresentingLocally)),
             onTap: () => autoScrollController.toggle(ref),
             icon: autoScrollController.isScrolling ? const Icon(Icons.stop) : const Icon(Icons.arrow_downward),
             child:
