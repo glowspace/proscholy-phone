@@ -30,7 +30,7 @@ class BibleVerse with _$BibleVerse implements DisplayableItem, Identifiable, Rec
   int get hashCode => id;
 
   @override
-  bool operator ==(Object other) => other is BibleVerse && id == other.id;
+  bool operator ==(Object other) => other is BibleVerse && id == other.id && name == other.name;
 }
 
 @immutable

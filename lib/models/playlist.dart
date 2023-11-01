@@ -42,5 +42,5 @@ class Playlist with _$Playlist implements Identifiable, RecentItem, SongsList {
   int get hashCode => id;
 
   @override
-  bool operator ==(Object other) => other is Playlist && id == other.id;
+  bool operator ==(Object other) => other is Playlist && id == other.id && name == other.name;
 }

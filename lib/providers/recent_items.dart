@@ -9,6 +9,9 @@ import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/providers/app_dependencies.dart';
+import 'package:zpevnik/providers/bible_verse.dart';
+import 'package:zpevnik/providers/custom_text.dart';
+import 'package:zpevnik/providers/playlists.dart';
 
 part 'recent_items.g.dart';
 
@@ -61,18 +64,76 @@ class RecentItems extends _$RecentItems {
     recentItems.addAll(appDependencies.store.box<Songbook>().getMany(songbookIds).whereNotNull());
     recentItems.addAll(appDependencies.store.box<SongLyric>().getMany(songLyricIds).whereNotNull());
 
+    recentItems.forEach(_watchForChanges);
+
     return recentItems;
   }
 
   void add(RecentItem recentItem) {
+    _watchForChanges(recentItem);
+
     final newState = [
       recentItem,
       ...state.where((element) => element.id != recentItem.id || element.recentItemType != recentItem.recentItemType)
     ];
 
+    _update(newState);
+  }
+
+  void _watchForChanges(RecentItem recentItem) {
+    switch (recentItem) {
+      case (BibleVerse bibleVerse):
+        final subscription = ref.listen(
+          bibleVerseProvider(bibleVerse.id),
+          (_, newBibleVerse) => _updateItem(newBibleVerse, bibleVerse.id),
+        );
+
+        ref.onDispose(subscription.close);
+
+        break;
+      case (CustomText customText):
+        final subscription = ref.listen(
+          customTextProvider(customText.id),
+          (_, newCustomText) => _updateItem(newCustomText, customText.id),
+        );
+
+        ref.onDispose(subscription.close);
+
+        break;
+      case (Playlist playlist):
+        final subscription = ref.listen(
+          playlistProvider(playlist.id),
+          (_, newPlaylist) => _updateItem(newPlaylist, playlist.id),
+        );
+
+        ref.onDispose(subscription.close);
+
+        break;
+    }
+  }
+
+  void _updateItem(RecentItem? newItem, int id) {
+    final oldItemIndex = state.indexWhere((element) => element.id == id);
+
+    if (oldItemIndex != -1) {
+      final newState = <RecentItem>[];
+
+      for (int i = 0; i < state.length; i++) {
+        if (i == oldItemIndex) {
+          if (newItem != null) newState.add(newItem);
+        } else {
+          newState.add(state[i]);
+        }
+      }
+
+      _update(newState);
+    }
+  }
+
+  void _update(List<RecentItem> newState) {
     state = newState.sublist(0, min(5, newState.length));
 
-    ref.read(appDependenciesProvider.select((appDependencies) => appDependencies.sharedPreferences)).setStringList(
+    ref.read(appDependenciesProvider).sharedPreferences.setStringList(
         _recentItemsKey, state.map((recentItem) => '${recentItem.recentItemType.rawValue};${recentItem.id}').toList());
   }
 }

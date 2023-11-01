@@ -14,7 +14,7 @@ BibleVerse? bibleVerse(BibleVerseRef ref, int id) {
   final stream = box.query(BibleVerse_.id.equals(id)).watch();
   final subscription = stream.listen((_) => ref.invalidateSelf());
 
-  ref.onDispose(() => subscription.cancel());
+  ref.onDispose(subscription.cancel);
 
   return box.get(id);
 }

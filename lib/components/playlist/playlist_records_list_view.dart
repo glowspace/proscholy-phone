@@ -62,6 +62,8 @@ class _PlaylistRecordsListViewState extends State<PlaylistRecordsListView> {
       );
     }
 
+    final displayableItems = _recordsOrdered.map(_unwrapPlaylistRecord).toList();
+
     return ReorderableListView.builder(
       primary: false,
       itemCount: _recordsOrdered.length,
@@ -84,7 +86,7 @@ class _PlaylistRecordsListViewState extends State<PlaylistRecordsListView> {
         child: PlaylistRecordRow(
           playlistRecord: _recordsOrdered[index],
           displayScreenArguments: DisplayScreenArguments(
-            items: _recordsOrdered.map(_unwrapPlaylistRecord).toList(),
+            items: displayableItems,
             initialIndex: index,
             playlist: widget.playlist,
           ),

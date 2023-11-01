@@ -22,5 +22,5 @@ class CustomText with _$CustomText implements DisplayableItem, Identifiable, Rec
   int get hashCode => id;
 
   @override
-  bool operator ==(Object other) => other is CustomText && id == other.id;
+  bool operator ==(Object other) => other is CustomText && id == other.id && name == other.name;
 }

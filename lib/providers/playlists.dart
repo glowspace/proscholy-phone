@@ -14,6 +14,20 @@ import 'package:zpevnik/providers/utils.dart';
 
 part 'playlists.g.dart';
 
+@riverpod
+Playlist? playlist(PlaylistRef ref, int id) {
+  if (id == 0) return null;
+
+  final box = ref.read(appDependenciesProvider.select((appDependencies) => appDependencies.store.box<Playlist>()));
+
+  final stream = box.query(Playlist_.id.equals(id)).watch();
+  final subscription = stream.listen((_) => ref.invalidateSelf());
+
+  ref.onDispose(subscription.cancel);
+
+  return box.get(id);
+}
+
 @Riverpod(keepAlive: true)
 Playlist favoritePlaylist(FavoritePlaylistRef ref) {
   final box = ref.read(appDependenciesProvider.select((appDependencies) => appDependencies.store.box<Playlist>()));
