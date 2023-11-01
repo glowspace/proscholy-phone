@@ -17,6 +17,7 @@ import 'package:zpevnik/components/song_lyric/externals/externals_wrapper.dart';
 import 'package:zpevnik/components/song_lyric/song_lyric.dart';
 import 'package:zpevnik/components/song_lyric/song_lyric_menu_button.dart';
 import 'package:zpevnik/components/song_lyric/utils/active_player_controller.dart';
+import 'package:zpevnik/components/song_lyric/utils/auto_scroll.dart';
 import 'package:zpevnik/components/split_view.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/bible_verse.dart';
@@ -24,7 +25,6 @@ import 'package:zpevnik/models/custom_text.dart';
 import 'package:zpevnik/models/model.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
-import 'package:zpevnik/providers/auto_scroll.dart';
 import 'package:zpevnik/providers/menu_collapsed.dart';
 import 'package:zpevnik/providers/playlists.dart';
 import 'package:zpevnik/providers/presentation.dart';
@@ -116,6 +116,8 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
   // this controller is only used to set the initial page
   late final _controller = PageController(initialPage: widget.initialIndex + 100 * widget.items.length);
 
+  final _autoScrollControllers = <int, AutoScrollController>{};
+
   late int _currentIndex;
 
   late double _fontSizeScaleBeforeScale;
@@ -123,6 +125,10 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
   Timer? _addRecentItemTimer;
 
   DisplayableItem get _currentItem => widget.items[_currentIndex];
+
+  AutoScrollController _autoScrollController(int index) {
+    return _autoScrollControllers.putIfAbsent(index, () => AutoScrollController());
+  }
 
   @override
   void initState() {
@@ -156,7 +162,7 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
           ? const SizedBox()
           : SongLyricBottomBar(
               songLyric: _currentItem is SongLyric ? _currentItem as SongLyric : null,
-              autoScrollController: ref.read(autoScrollControllerProvider(_currentItem)),
+              autoScrollController: _autoScrollController(_currentIndex),
             ),
       body: GestureDetector(
         onScaleStart: _fontScaleStarted,
@@ -174,7 +180,8 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
               // disable scrolling when there is only one item
               physics: widget.items.length == 1 ? const NeverScrollableScrollPhysics() : null,
               itemBuilder: (_, index) {
-                final item = widget.items[index % widget.items.length];
+                index = index % widget.items.length;
+                final item = widget.items[index];
 
                 if (ref.watch(presentationProvider
                     .select((presentation) => presentation.isPresenting && presentation.isPresentingLocally))) {
@@ -192,20 +199,18 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
                   }
                 }
 
-                final autoScrollController = ref.read(autoScrollControllerProvider(item));
-
                 return switch (item) {
                   (BibleVerse bibleVerse) => BibleVerseWidget(
                       bibleVerse: bibleVerse,
-                      autoScrollController: autoScrollController,
+                      autoScrollController: _autoScrollController(index),
                     ),
                   (CustomText customText) => CustomTextWidget(
                       customText: customText,
-                      autoScrollController: autoScrollController,
+                      autoScrollController: _autoScrollController(index),
                     ),
                   (SongLyric songLyric) => SongLyricWidget(
                       songLyric: songLyric,
-                      autoScrollController: autoScrollController,
+                      autoScrollController: _autoScrollController(index),
                     ),
                   _ => throw UnimplementedError(),
                 };
