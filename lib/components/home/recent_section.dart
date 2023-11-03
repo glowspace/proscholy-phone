@@ -18,6 +18,7 @@ class RecentSection extends ConsumerWidget {
       insideTitleIconColor: green,
       margin: const EdgeInsets.symmetric(vertical: 2 / 3 * kDefaultPadding),
       children: [
+        if (recentItems.isNotEmpty) const Divider(),
         ListView.separated(
           primary: false,
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
