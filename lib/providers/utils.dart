@@ -58,15 +58,13 @@ Future<List<SongLyric>> storeSongLyrics(Store store, List<SongLyric> songLyrics)
   ]);
 
   // index new song lyrics on iOS
-  if (Platform.isIOS) {
-    SpotlightService.instance.indexItems(songLyrics
-        .map((songLyric) => SpotlightItem(
-              identifier: 'song_lyric_${songLyric.id}',
-              title: songLyric.name,
-              description: songLyric.lyrics?.replaceAll(_chordRE, '') ?? '',
-            ))
-        .toList());
-  }
+  SpotlightService.instance.indexItems(songLyrics
+      .map((songLyric) => SpotlightItem(
+            identifier: 'song_lyric_${songLyric.id}',
+            title: songLyric.name,
+            description: songLyric.lyrics?.replaceAll(_chordRE, '') ?? '',
+          ))
+      .toList());
 
   // retrieve the updated song lyrics with correctly setup relations
   return (await store.box<SongLyric>().getManyAsync(songLyricIds)).cast();

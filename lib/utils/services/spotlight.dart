@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:zpevnik/models/spotlight_item.dart';
@@ -13,16 +14,28 @@ class SpotlightService {
   static SpotlightService instance = const SpotlightService._();
 
   Future<String?> getInitialRoute() async {
+    if (!Platform.isIOS) return null;
+
     final identifier = await methodChannel.invokeMethod<String>('getInitiallyOpenedItemIdentifier');
 
     return _parseSongLyricId(identifier);
   }
 
-  Future<void> indexItems(List<SpotlightItem> items) => methodChannel.invokeMethod('indexItems', jsonEncode(items));
+  Future<void> indexItems(List<SpotlightItem> items) async {
+    if (!Platform.isIOS) return;
 
-  Future<void> deindexItems(List<String> identifiers) => methodChannel.invokeMethod('deindexItems', identifiers);
+    return methodChannel.invokeMethod('indexItems', jsonEncode(items));
+  }
+
+  Future<void> deindexItems(List<String> identifiers) async {
+    if (!Platform.isIOS) return;
+
+    return methodChannel.invokeMethod('deindexItems', identifiers);
+  }
 
   void setMethodCallHandler(Function(String?) callHandler) {
+    if (!Platform.isIOS) return;
+
     methodChannel.setMethodCallHandler((call) => callHandler(_parseSongLyricId(call.arguments)));
   }
 

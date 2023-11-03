@@ -120,9 +120,7 @@ Stream<UpdateStatus> update(UpdateRef ref) async* {
   // remove song lyrics that were removed on server
   box.removeMany(existingSongLyricsIds.toList());
   // on iOS also remove them from spotlight indexing
-  if (Platform.isIOS) {
-    SpotlightService.instance.deindexItems(existingSongLyricsIds.map((id) => 'song_lyric_$id').toList());
-  }
+  SpotlightService.instance.deindexItems(existingSongLyricsIds.map((id) => 'song_lyric_$id').toList());
 
   // update song lyrics
   final songLyrics = await client
