@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zpevnik/components/custom/close_button.dart';
 import 'package:zpevnik/components/font_size_slider.dart';
 import 'package:zpevnik/components/highlightable.dart';
-import 'package:zpevnik/components/logo.dart';
 import 'package:zpevnik/components/section.dart';
 import 'package:zpevnik/components/selector_widget.dart';
 import 'package:zpevnik/constants.dart';
@@ -21,7 +20,7 @@ class SettingsScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: theme.colorScheme.background,
-      appBar: AppBar(leading: const CustomCloseButton(), title: const Logo(), centerTitle: true),
+      appBar: AppBar(leading: const CustomCloseButton(), title: const Text('Nastavení')),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -55,11 +54,11 @@ class SettingsScreen extends ConsumerWidget {
     final systemDarkModeEnabled = MediaQuery.of(context).platformBrightness.isDark;
 
     return Section(
-      outsideTitle: 'Nastavení',
       margin: const EdgeInsets.all(kDefaultPadding),
       children: [
         SwitchListTile.adaptive(
           title: Text('Tmavý mód', style: textTheme.bodyMedium),
+          activeColor: theme.colorScheme.primary,
           value: ref.watch(settingsProvider.select((settings) => settings.darkModeEnabled)) ?? systemDarkModeEnabled,
           onChanged: (value) =>
               ref.read(settingsProvider.notifier).changeDarkModeEnabled(value == systemDarkModeEnabled ? null : value),

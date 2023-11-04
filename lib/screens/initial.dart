@@ -135,7 +135,7 @@ class _InitialScreenState extends ConsumerState<InitialScreen> {
   Future<void> _init() async {
     await loadInitial(ref);
 
-    _pushHomeScreen(context);
+    // _pushHomeScreen(context);
 
     // setState(() => _showSignInButtons = true);
   }
