@@ -30,12 +30,7 @@ const _selectQuery =
 @riverpod
 class SearchText extends _$SearchText {
   @override
-  String build() {
-    ref.onDispose(() {
-      print('disposing');
-    });
-    return '';
-  }
+  String build() => '';
 
   void change(String searchText) => state = searchText;
 }
