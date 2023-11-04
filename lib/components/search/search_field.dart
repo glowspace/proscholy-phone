@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/search.dart';
@@ -86,6 +87,8 @@ class _SearchFieldState extends State<SearchField> {
   late final TextEditingController _controller;
   late final FocusNode _focusNode;
 
+  late final ProviderSubscription<String> searchTextSubscription;
+
   @override
   void initState() {
     super.initState();
@@ -93,10 +96,19 @@ class _SearchFieldState extends State<SearchField> {
     _controller = TextEditingController(text: widget.isHome ? null : context.providers.read(searchTextProvider));
     _focusNode = FocusNode();
 
-    if (!widget.isHome) context.providers.listen(searchTextProvider, (_, text) => _controller.text = text);
+    if (!widget.isHome) {
+      searchTextSubscription = context.providers.listen(searchTextProvider, (_, text) => _controller.text = text);
+    }
 
     // autofocus on search screen
     Future.delayed(const Duration(milliseconds: 10), () => _requestFocusAfterTransition());
+  }
+
+  @override
+  void dispose() {
+    if (!widget.isHome) searchTextSubscription.close();
+
+    super.dispose();
   }
 
   @override

@@ -83,7 +83,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       // add these only if we show multiple columns, it is part of `FlexibleTopSection` in single column display
       if (columns > 1) ...[
         const TopSection(),
-        const SearchField(key: Key('searchfield')),
+        const SearchField(key: Key('searchfield'), isHome: true),
         const SizedBox(height: kDefaultPadding),
       ],
       Text(greetings, style: Theme.of(context).textTheme.titleLarge),
