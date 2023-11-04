@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zpevnik/components/song_lyric/song_lyrics_section_title.dart';
 import 'package:zpevnik/components/song_lyric/song_lyric_row.dart';
+import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/models/tag.dart';
 import 'package:zpevnik/providers/recent_items.dart';
@@ -50,7 +51,12 @@ class SearchSongLyricsListView extends ConsumerWidget {
         itemCount: itemCount,
         itemBuilder: (_, index) {
           if (showRecentSongLyrics) {
-            if (index == 0) return const SongLyricsSectionTitle(title: 'Poslední písně');
+            if (index == 0) {
+              return const Padding(
+                padding: EdgeInsets.only(top: kDefaultPadding),
+                child: SongLyricsSectionTitle(title: 'Poslední písně'),
+              );
+            }
 
             index -= 1;
 
@@ -76,7 +82,10 @@ class SearchSongLyricsListView extends ConsumerWidget {
 
           if (matchedBySongbookNumber.isNotEmpty) {
             if (index == 0) {
-              return SongLyricsSectionTitle(title: 'Číslo ${searchedSongLyricsResult.searchedNumber} ve zpěvnících');
+              return Padding(
+                padding: const EdgeInsets.only(top: kDefaultPadding),
+                child: SongLyricsSectionTitle(title: 'Číslo ${searchedSongLyricsResult.searchedNumber} ve zpěvnících'),
+              );
             }
 
             index -= 1;
@@ -96,11 +105,21 @@ class SearchSongLyricsListView extends ConsumerWidget {
           }
 
           if (showRecentSongLyrics) {
-            if (index == 0) return const SongLyricsSectionTitle(title: 'Všechny písně');
+            if (index == 0) {
+              return const Padding(
+                padding: EdgeInsets.only(top: kDefaultPadding),
+                child: SongLyricsSectionTitle(title: 'Všechny písně'),
+              );
+            }
 
             index -= 1;
           } else if (hasMatchedResults) {
-            if (index == 0) return const SongLyricsSectionTitle(title: 'Ostatní výsledky');
+            if (index == 0) {
+              return const Padding(
+                padding: EdgeInsets.only(top: kDefaultPadding),
+                child: SongLyricsSectionTitle(title: 'Ostatní výsledky'),
+              );
+            }
 
             index -= 1;
           }

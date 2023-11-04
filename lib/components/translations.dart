@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:zpevnik/components/bottom_sheet_section.dart';
 import 'package:zpevnik/components/song_lyric/song_lyrics_section_title.dart';
 import 'package:zpevnik/components/song_lyric/song_lyric_row.dart';
+import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 
 class TranslationsSheet extends StatelessWidget {
@@ -25,9 +26,14 @@ class TranslationsSheet extends StatelessWidget {
       title: 'Překlady',
       childrenPadding: false,
       children: [
-        if (original != null) _buildSection(context, SongLyricType.original, [original]),
-        if (authorizedTranslations.isNotEmpty)
+        if (original != null) ...[
+          _buildSection(context, SongLyricType.original, [original]),
+          const SizedBox(height: kDefaultPadding),
+        ],
+        if (authorizedTranslations.isNotEmpty) ...[
           _buildSection(context, SongLyricType.authorizedTranslation, authorizedTranslations),
+          const SizedBox(height: kDefaultPadding),
+        ],
         if (translations.isNotEmpty) _buildSection(context, SongLyricType.translation, translations),
       ],
     );

@@ -14,7 +14,6 @@ class SongLyricTags extends StatelessWidget {
     return BottomSheetSection(
       title: 'Štítky',
       children: [
-        const SizedBox(height: kDefaultPadding),
         Wrap(
           spacing: kDefaultPadding / 2,
           runSpacing: kDefaultPadding / 2,

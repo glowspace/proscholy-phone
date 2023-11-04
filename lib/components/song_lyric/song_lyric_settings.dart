@@ -29,7 +29,6 @@ class SongLyricSettingsModelWidget extends ConsumerWidget {
       title: 'Nastavení zobrazení',
       childrenPadding: false,
       children: [
-        const SizedBox(height: kDefaultPadding),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding, vertical: kDefaultPadding / 2),
           child: Stepper(title: 'Transpozice', songLyric: songLyric, isEnabled: showChords),

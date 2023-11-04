@@ -11,7 +11,7 @@ class SongLyricsSectionTitle extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(1.5 * kDefaultPadding, kDefaultPadding, 1.5 * kDefaultPadding, 0),
+      padding: const EdgeInsets.fromLTRB(1.5 * kDefaultPadding, 0, 1.5 * kDefaultPadding, 0),
       child: Text(title.toUpperCase(), style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.primary)),
     );
   }

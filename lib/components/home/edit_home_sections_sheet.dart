@@ -18,7 +18,6 @@ class EditHomeSectionsSheet extends ConsumerWidget {
       title: 'Úprava nástěnky',
       childrenPadding: false,
       children: [
-        const SizedBox(height: kDefaultPadding),
         ReorderableListView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),

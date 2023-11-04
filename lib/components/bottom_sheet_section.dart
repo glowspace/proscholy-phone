@@ -13,28 +13,28 @@ class BottomSheetSection extends StatelessWidget {
     return SafeArea(
       top: false,
       bottom: false,
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(
-          childrenPadding ? 1.5 * kDefaultPadding : 0,
-          kDefaultPadding,
-          childrenPadding ? 1.5 * kDefaultPadding : 0,
-          MediaQuery.paddingOf(context).bottom,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: childrenPadding ? 0 : 1.5 * kDefaultPadding),
-              child: Text(title, style: Theme.of(context).textTheme.titleLarge),
-            ),
-            Flexible(
-              child: SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding, vertical: kDefaultPadding),
+            child: Text(title, style: Theme.of(context).textTheme.titleLarge),
+          ),
+          Flexible(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(
+                  childrenPadding ? kDefaultPadding : 0,
+                  0,
+                  childrenPadding ? kDefaultPadding : 0,
+                  MediaQuery.paddingOf(context).bottom,
+                ),
                 child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: children),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
