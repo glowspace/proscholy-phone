@@ -39,10 +39,6 @@ class SearchText extends _$SearchText {
 class SearchedSongLyrics extends _$SearchedSongLyrics {
   String? _currentSearchText;
 
-  Database get ftsDatabase {
-    return ref.read(appDependenciesProvider.select((appDependencies) => appDependencies.ftsDatabase));
-  }
-
   @override
   SearchedSongLyricsResult build() {
     ref.listen(searchTextProvider, (_, searchText) async {
@@ -56,7 +52,7 @@ class SearchedSongLyrics extends _$SearchedSongLyrics {
     return const SearchedSongLyricsResult();
   }
 
-  Future<void> update(List<SongLyric> songLyrics) async {
+  static Future<void> update(Database ftsDatabase, List<SongLyric> songLyrics) async {
     await ftsDatabase.execute(_createTableQuery);
 
     final batch = ftsDatabase.batch();
@@ -108,7 +104,7 @@ class SearchedSongLyrics extends _$SearchedSongLyrics {
     final ranks = <int, double>{};
     final searchResults = <int>[];
 
-    for (final value in await ftsDatabase.rawQuery(_selectQuery, [searchText])) {
+    for (final value in await ref.read(appDependenciesProvider).ftsDatabase.rawQuery(_selectQuery, [searchText])) {
       final songLyricId = value['rowid'] as int;
 
       if (!matchedIds.contains(songLyricId)) {

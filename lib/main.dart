@@ -12,6 +12,7 @@ import 'package:zpevnik/firebase_options.dart';
 import 'package:zpevnik/models/objectbox.g.dart';
 import 'package:zpevnik/providers/app_dependencies.dart';
 import 'package:zpevnik/providers/settings.dart';
+import 'package:zpevnik/providers/update.dart';
 import 'package:zpevnik/routing/navigator_observer.dart';
 import 'package:zpevnik/routing/router.dart';
 import 'package:zpevnik/screens/presentation.dart';
@@ -33,12 +34,19 @@ Future<void> main() async {
     packageInfo: await PackageInfo.fromPlatform(),
   );
 
+  // initialize listeners for externals actions
   ExternalActionsService.instance.initialize();
+
+  // load offline data during first start
+  await loadInitial(appDependencies);
+
+  // check if app was opened from spotlight search on iOS
+  final initialRoute = await SpotlightService.instance.getInitialRoute();
 
   return runApp(ProviderScope(
     observers: [MyProviderObserver()],
     overrides: [appDependenciesProvider.overrideWithValue(appDependencies)],
-    child: MainWidget(initialRoute: await SpotlightService.instance.getInitialRoute()),
+    child: MainWidget(initialRoute: initialRoute),
   ));
 }
 
@@ -75,10 +83,7 @@ class MainWidget extends ConsumerWidget {
       theme: AppTheme.light(seedColor),
       darkTheme: AppTheme.dark(seedColor),
       themeMode: themeMode,
-      // must be without leading '/', otherwise navigation stack will be `HomeScreen` > `InitialScreen`
-      // and when replacing `InitialScreen` it will result to `HomeScreen` > `HomeScreen`
-      // this is because of deeplinking, when all screens in path are pushed to stack as well
-      initialRoute: initialRoute ?? 'initial',
+      initialRoute: initialRoute ?? '/',
       onGenerateRoute: AppRouter.generateRoute,
       navigatorObservers: [ref.read(appNavigatorObserverProvider)],
     );

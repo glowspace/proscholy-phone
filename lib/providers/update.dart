@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:zpevnik/models/news_item.dart';
@@ -41,9 +40,7 @@ class Updated extends UpdateStatus {
   const Updated(this.songLyrics);
 }
 
-Future<void> loadInitial(WidgetRef ref) async {
-  final appDependencies = ref.read(appDependenciesProvider);
-
+Future<void> loadInitial(AppDependencies appDependencies) async {
   final lastVersion = appDependencies.sharedPreferences.getString(_versionKey);
   final currentVersion = '${appDependencies.packageInfo.version}+${appDependencies.packageInfo.buildNumber}';
 
@@ -63,7 +60,7 @@ Future<void> loadInitial(WidgetRef ref) async {
     readJsonList(json['data'][SongLyric.fieldKey], mapper: SongLyric.fromJson),
   );
 
-  ref.read(searchedSongLyricsProvider.notifier).update(songLyrics);
+  SearchedSongLyrics.update(appDependencies.ftsDatabase, songLyrics);
 
   appDependencies.sharedPreferences.remove(_lastUpdateKey);
   appDependencies.sharedPreferences.setString(_versionKey, currentVersion);
@@ -142,7 +139,7 @@ Stream<UpdateStatus> update(UpdateRef ref) async* {
 
   final updatedSongLyrics = await storeSongLyrics(appDependencies.store, songLyrics);
 
-  ref.read(searchedSongLyricsProvider.notifier).update(updatedSongLyrics);
+  SearchedSongLyrics.update(appDependencies.ftsDatabase, updatedSongLyrics);
 
   yield Updated(updatedSongLyrics);
 

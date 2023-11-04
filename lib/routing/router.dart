@@ -11,7 +11,6 @@ import 'package:zpevnik/routing/navigation_rail_wrapper.dart';
 import 'package:zpevnik/screens/about.dart';
 import 'package:zpevnik/screens/display.dart';
 import 'package:zpevnik/screens/home.dart';
-import 'package:zpevnik/screens/initial.dart';
 import 'package:zpevnik/screens/playlist/custom_text_edit.dart';
 import 'package:zpevnik/screens/song_lyric/jpg.dart';
 import 'package:zpevnik/screens/song_lyric/pdf.dart';
@@ -31,7 +30,6 @@ final class AppRouter {
     final uri = Uri.parse(settings.name ?? '/');
 
     final (builder, fullScreenDialog, showNavigationRail) = switch (uri.path) {
-      'initial' => ((_) => const InitialScreen(), false, false),
       '/' => ((_) => const HomeScreen(), false, true),
       '/about' => ((_) => const AboutScreen(), false, false),
       '/display' => (

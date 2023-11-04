@@ -1,0 +1,21 @@
+flutter_native_splash:
+  color: "#f2f1f6"
+  color_dark: "#000000"
+
+  image: splash_screen/logo.png
+  image_dark: splash_screen/logo_dark.png
+
+  branding: splash_screen/gs_logo.png
+  branding_dark: splash_screen/gs_logo_dark.png
+
+  branding_mode: bottom
+
+  android_12:
+    image: splash_screen/logo.png
+    image_dark: splash_screen/logo_dark.png
+
+    color: "#f2f1f6"
+    color_dark: "#000000"
+
+    branding: splash_screen/gs_logo.png
+    branding_dark: splash_screen/gs_logo_dark.png
