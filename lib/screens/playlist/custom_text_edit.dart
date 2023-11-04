@@ -58,28 +58,32 @@ class _CustomTextEditScreenState extends State<CustomTextEditScreen> {
         child: QuillProvider(
           configurations: QuillConfigurations(controller: _controller),
           child: Column(children: [
-            Padding(
-              padding: const EdgeInsets.all(kDefaultPadding),
-              child: QuillToolbar.basic(
-                showClearFormat: false,
-                showCodeBlock: false,
-                showFontFamily: false,
-                showFontSize: false,
-                showInlineCode: false,
-                showQuote: false,
-                showSearchButton: false,
-                showSubscript: false,
-                showSuperscript: false,
-                showBackgroundColorButton: false,
+            const Padding(
+              padding: EdgeInsets.all(kDefaultPadding),
+              child: QuillToolbar(
+                configurations: QuillToolbarConfigurations(
+                  showClearFormat: false,
+                  showCodeBlock: false,
+                  showFontFamily: false,
+                  showFontSize: false,
+                  showInlineCode: false,
+                  showQuote: false,
+                  showSearchButton: false,
+                  showSubscript: false,
+                  showSuperscript: false,
+                  showBackgroundColorButton: false,
+                ),
               ),
             ),
             const Divider(),
             Expanded(
               child: QuillEditor.basic(
-                padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding, vertical: kDefaultPadding),
-                autoFocus: false,
-                expands: false,
-                readOnly: false,
+                configurations: const QuillEditorConfigurations(
+                  padding: EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding, vertical: kDefaultPadding),
+                  autoFocus: false,
+                  expands: false,
+                  readOnly: false,
+                ),
               ),
             ),
           ]),

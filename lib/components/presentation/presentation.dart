@@ -60,16 +60,16 @@ class Presentation extends StatelessWidget {
                         document: _deserializeMarkdownToDocument(presentingText),
                         selection: const TextSelection.collapsed(offset: 0),
                       ),
-                      editorConfigurations: const QuillEditorConfigurations(readOnly: true),
                     ),
-                    child: QuillEditor(
-                      padding: const EdgeInsets.symmetric(horizontal: 2 * kDefaultPadding),
-                      focusNode: FocusNode(),
-                      scrollController: ScrollController(),
-                      scrollable: false,
-                      autoFocus: false,
-                      expands: false,
-                      showCursor: false,
+                    child: QuillEditor.basic(
+                      configurations: const QuillEditorConfigurations(
+                        padding: EdgeInsets.symmetric(horizontal: 2 * kDefaultPadding),
+                        readOnly: true,
+                        scrollable: false,
+                        autoFocus: false,
+                        expands: false,
+                        showCursor: false,
+                      ),
                     ),
                   )
                 : Padding(
