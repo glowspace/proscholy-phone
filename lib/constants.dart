@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 const double kDefaultPadding = 12;
 const double kDefaultRadius = 12;
-const double kDefaultIconSize = 18;
+const double kDefaultIconSize = 24;
 const kDefaultAnimationDuration = Duration(milliseconds: 300);
 
 const kScaffoldMaxWidth = 768;
