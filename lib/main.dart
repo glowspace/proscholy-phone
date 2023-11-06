@@ -1,11 +1,13 @@
 import 'dart:developer';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path/path.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:zpevnik/firebase_options.dart';
@@ -43,11 +45,21 @@ Future<void> main() async {
   // check if app was opened from spotlight search on iOS
   final initialRoute = await SpotlightService.instance.getInitialRoute();
 
-  return runApp(ProviderScope(
-    observers: [MyProviderObserver()],
-    overrides: [appDependenciesProvider.overrideWithValue(appDependencies)],
-    child: MainWidget(initialRoute: initialRoute),
-  ));
+  appRunner() => runApp(ProviderScope(
+        observers: [MyProviderObserver()],
+        overrides: [appDependenciesProvider.overrideWithValue(appDependencies)],
+        child: MainWidget(initialRoute: initialRoute),
+      ));
+
+  if (kDebugMode) return appRunner();
+
+  await SentryFlutter.init(
+    (options) {
+      options.dsn = 'https://4398b4421c372b093c4f88c16dff9c63@o4506177850572800.ingest.sentry.io/4506177851621376';
+      options.tracesSampleRate = 1.0;
+    },
+    appRunner: appRunner,
+  );
 }
 
 class MainWidget extends ConsumerWidget {
