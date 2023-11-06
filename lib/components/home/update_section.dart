@@ -43,9 +43,9 @@ class _UpdateSectionState extends ConsumerState<UpdateSection> {
     final hasSonglyrics = updatedSongLyrics?.isNotEmpty ?? false;
     final hasError = error != null;
 
-    final text = updatedSongLyrics == null
+    final text = updatedSongLyrics?.isEmpty ?? true
         ? (error == null ? 'Probíhá stahování písní' : 'Při aktualizaci nastala chyba')
-        : 'Počet aktualizovaných písní: ${updatedSongLyrics.length}';
+        : 'Počet aktualizovaných písní: ${updatedSongLyrics!.length}';
 
     return AnimatedCrossFade(
       crossFadeState: isShowing ? CrossFadeState.showFirst : CrossFadeState.showSecond,
