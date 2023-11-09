@@ -72,9 +72,9 @@ class PlaylistRecordRow extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(title, style: textTheme.bodyMedium),
-                  if (songLyric?.secondaryName1 != null)
+                  if (songLyric?.secondaryName1?.isNotEmpty ?? false)
                     Container(margin: textMargin, child: Text(songLyric!.secondaryName1!, style: textTheme.bodySmall)),
-                  if (songLyric?.secondaryName2 != null)
+                  if (songLyric?.secondaryName2?.isNotEmpty ?? false)
                     Container(margin: textMargin, child: Text(songLyric!.secondaryName2!, style: textTheme.bodySmall)),
                 ],
               ),
