@@ -103,9 +103,7 @@ class _CustomTextEditScreenState extends State<CustomTextEditScreen> {
       customText =
           widget.customText!.copyWith(name: name, content: _serializeDocumentToMarkdown(_controller.document) ?? '');
 
-      context.providers
-          .read(appDependenciesProvider.select((appDependencies) => appDependencies.store.box<CustomText>()))
-          .put(customText);
+      context.providers.read(appDependenciesProvider).store.box<CustomText>().put(customText);
     }
 
     context.pop(customText);

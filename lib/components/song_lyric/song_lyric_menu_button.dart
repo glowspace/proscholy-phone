@@ -64,8 +64,7 @@ class SongLyricMenuButton extends StatelessWidget {
   void _selectedAction(BuildContext context, SongLyricMenuAction? action) {
     if (action == null) return;
 
-    final version = context.providers
-        .read(appDependenciesProvider.select((appDependencies) => appDependencies.packageInfo.version));
+    final version = context.providers.read(appDependenciesProvider).packageInfo.version;
     final platform = Theme.of(context).platform == TargetPlatform.iOS ? 'iOS' : 'android';
 
     switch (action) {

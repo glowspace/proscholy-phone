@@ -76,8 +76,7 @@ class SearchedSongLyrics extends _$SearchedSongLyrics {
     if (searchText.isEmpty) return const SearchedSongLyricsResult();
 
     final searchedNumber = _numberRE.firstMatch(searchText)?.group(0);
-    final songLyricBox =
-        ref.read(appDependenciesProvider.select((appDependencies) => appDependencies.store.box<SongLyric>()));
+    final songLyricBox = ref.read(appDependenciesProvider).store.box<SongLyric>();
     final matchedIds = <int>{};
 
     SongLyric? matchedById;

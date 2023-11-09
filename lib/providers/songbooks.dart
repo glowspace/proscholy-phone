@@ -24,7 +24,7 @@ void migratePinnedSongbooks(Store store, SharedPreferences sharedPreferences) {
 @riverpod
 class PinnedSongbookIds extends _$PinnedSongbookIds {
   SharedPreferences get _sharedPreferences {
-    return ref.read(appDependenciesProvider.select((appDependencies) => appDependencies.sharedPreferences));
+    return ref.read(appDependenciesProvider).sharedPreferences;
   }
 
   @override

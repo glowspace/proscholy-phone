@@ -316,9 +316,7 @@ class _SelectBibleVerseScreenState extends State<_SelectBibleVerseScreen> {
         text: text,
       );
 
-      context.providers
-          .read(appDependenciesProvider.select((appDependencies) => appDependencies.store.box<BibleVerse>()))
-          .put(bibleVerse);
+      context.providers.read(appDependenciesProvider).store.box<BibleVerse>().put(bibleVerse);
     }
 
     if (context.mounted) Navigator.of(context, rootNavigator: true).pop(bibleVerse);

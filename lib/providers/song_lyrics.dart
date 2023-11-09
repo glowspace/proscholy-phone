@@ -46,7 +46,7 @@ void migrateSongLyricSettings(Store store) {
 SongLyric? songLyric(SongLyricRef ref, int id) {
   if (id == 0) return null;
 
-  return ref.read(appDependenciesProvider.select((appDependencies) => appDependencies.store.box<SongLyric>().get(id)));
+  return ref.read(appDependenciesProvider).store.box<SongLyric>().get(id);
 }
 
 @Riverpod(keepAlive: true)

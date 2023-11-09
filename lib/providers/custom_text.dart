@@ -9,7 +9,7 @@ part 'custom_text.g.dart';
 CustomText? customText(CustomTextRef ref, int id) {
   if (id == 0) return null;
 
-  final box = ref.read(appDependenciesProvider.select((appDependencies) => appDependencies.store.box<CustomText>()));
+  final box = ref.read(appDependenciesProvider).store.box<CustomText>();
 
   final stream = box.query(CustomText_.id.equals(id)).watch();
   final subscription = stream.listen((_) => ref.invalidateSelf());

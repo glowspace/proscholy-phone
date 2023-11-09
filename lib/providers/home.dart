@@ -22,7 +22,7 @@ enum HomeSection {
 @riverpod
 class HomeSectionSettings extends _$HomeSectionSettings {
   SharedPreferences get _sharedPreferences {
-    return ref.read(appDependenciesProvider.select((appDependencies) => appDependencies.sharedPreferences));
+    return ref.read(appDependenciesProvider).sharedPreferences;
   }
 
   @override

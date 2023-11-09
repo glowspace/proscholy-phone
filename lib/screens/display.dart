@@ -324,9 +324,7 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
             onTap: () => showModalBottomSheet(
               context: context,
               builder: (context) => PresentationSettingsWidget(
-                onExternalDisplay: ref.read(
-                  presentationProvider.select((presentation) => !presentation.isPresentingLocally),
-                ),
+                onExternalDisplay: !ref.read(presentationProvider).isPresentingLocally,
               ),
             ),
             icon: const Icon(Icons.tune),
@@ -378,7 +376,7 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
   }
 
   void _fontScaleStarted(ScaleStartDetails _) {
-    _fontSizeScaleBeforeScale = ref.read(settingsProvider.select((settings) => settings.fontSizeScale));
+    _fontSizeScaleBeforeScale = ref.read(settingsProvider).fontSizeScale;
   }
 
   void _fontScaleUpdated(ScaleUpdateDetails details) {

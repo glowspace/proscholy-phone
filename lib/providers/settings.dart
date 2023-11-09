@@ -21,7 +21,7 @@ const String _settingsKey = 'settings';
 class Settings extends _$Settings {
   @override
   GlobalSettings build() {
-    final prefs = ref.read(appDependenciesProvider.select((appDependencies) => appDependencies.sharedPreferences));
+    final prefs = ref.read(appDependenciesProvider).sharedPreferences;
     final settingsData = prefs.getString(_settingsKey);
 
     ref.listenSelf((_, next) => prefs.setString(_settingsKey, jsonEncode(next)));
@@ -73,8 +73,7 @@ class SongLyricSettings extends _$SongLyricSettings {
   SongLyricSettingsModel build(int songLyricId) {
     if (songLyricId == 0) return _defaultSongLyricSettings;
 
-    final box = ref
-        .read(appDependenciesProvider.select((appDependencies) => appDependencies.store.box<SongLyricSettingsModel>()));
+    final box = ref.read(appDependenciesProvider).store.box<SongLyricSettingsModel>();
 
     final query = box.query(SongLyricSettingsModel_.songLyric.equals(songLyricId)).build();
 
@@ -102,9 +101,7 @@ class SongLyricSettings extends _$SongLyricSettings {
   void reset() => _updateState(_defaultSongLyricSettings);
 
   void _updateState(SongLyricSettingsModel songLyricSettings) {
-    final songLyricSettingsBox = ref
-        .read(appDependenciesProvider.select((appDependencies) => appDependencies.store))
-        .box<SongLyricSettingsModel>();
+    final songLyricSettingsBox = ref.read(appDependenciesProvider).store.box<SongLyricSettingsModel>();
 
     if (songLyricSettings == _defaultSongLyricSettings && state != _defaultSongLyricSettings) {
       songLyricSettingsBox.remove(state.id);

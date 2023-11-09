@@ -24,7 +24,7 @@ class AutoScrollController extends ScrollController {
       (_, msPerPixel) => _start(msPerPixel),
     );
 
-    _start(ref.read(settingsProvider.select((settings) => autoScrollSpeeds[settings.autoScrollSpeedIndex])));
+    _start(autoScrollSpeeds[ref.read(settingsProvider).autoScrollSpeedIndex]);
   }
 
   void _start(int msPerPixel) async {

@@ -18,7 +18,7 @@ part 'playlists.g.dart';
 Playlist? playlist(PlaylistRef ref, int id) {
   if (id == 0) return null;
 
-  final box = ref.read(appDependenciesProvider.select((appDependencies) => appDependencies.store.box<Playlist>()));
+  final box = ref.read(appDependenciesProvider).store.box<Playlist>();
 
   final stream = box.query(Playlist_.id.equals(id)).watch();
   final subscription = stream.listen((_) => ref.invalidateSelf());
@@ -30,7 +30,7 @@ Playlist? playlist(PlaylistRef ref, int id) {
 
 @Riverpod(keepAlive: true)
 Playlist favoritePlaylist(FavoritePlaylistRef ref) {
-  final box = ref.read(appDependenciesProvider.select((appDependencies) => appDependencies.store.box<Playlist>()));
+  final box = ref.read(appDependenciesProvider).store.box<Playlist>();
 
   if (!box.contains(favoritesPlaylistId)) box.put(Playlist.favorites());
 
@@ -39,21 +39,10 @@ Playlist favoritePlaylist(FavoritePlaylistRef ref) {
 
 @Riverpod(keepAlive: true)
 class Playlists extends _$Playlists {
-  Box<Playlist> get _playlistsBox {
-    return ref.read(appDependenciesProvider.select((appDependencies) => appDependencies.store.box<Playlist>()));
-  }
-
-  Box<PlaylistRecord> get _playlistRecordsBox {
-    return ref.read(appDependenciesProvider.select((appDependencies) => appDependencies.store.box<PlaylistRecord>()));
-  }
-
-  Box<BibleVerse> get _bibleVerseBox {
-    return ref.read(appDependenciesProvider.select((appDependencies) => appDependencies.store.box<BibleVerse>()));
-  }
-
-  Box<CustomText> get _customTextBox {
-    return ref.read(appDependenciesProvider.select((appDependencies) => appDependencies.store.box<CustomText>()));
-  }
+  Box<Playlist> get _playlistsBox => ref.read(appDependenciesProvider).store.box<Playlist>();
+  Box<PlaylistRecord> get _playlistRecordsBox => ref.read(appDependenciesProvider).store.box<PlaylistRecord>();
+  Box<BibleVerse> get _bibleVerseBox => ref.read(appDependenciesProvider).store.box<BibleVerse>();
+  Box<CustomText> get _customTextBox => ref.read(appDependenciesProvider).store.box<CustomText>();
 
   late int _nextPlaylistId;
   late int _nextPlaylistRecordId;

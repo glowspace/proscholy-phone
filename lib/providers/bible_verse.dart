@@ -9,7 +9,7 @@ part 'bible_verse.g.dart';
 BibleVerse? bibleVerse(BibleVerseRef ref, int id) {
   if (id == 0) return null;
 
-  final box = ref.read(appDependenciesProvider.select((appDependencies) => appDependencies.store.box<BibleVerse>()));
+  final box = ref.read(appDependenciesProvider).store.box<BibleVerse>();
 
   final stream = box.query(BibleVerse_.id.equals(id)).watch();
   final subscription = stream.listen((_) => ref.invalidateSelf());

@@ -156,7 +156,8 @@ class RecentSongLyrics extends _$RecentSongLyrics {
     state = newState.sublist(0, min(5, newState.length));
 
     ref
-        .read(appDependenciesProvider.select((appDependencies) => appDependencies.sharedPreferences))
+        .read(appDependenciesProvider)
+        .sharedPreferences
         .setStringList(_recentSongLyricsKey, state.map((songLyric) => '${songLyric.id}').toList());
 
     ref.read(recentItemsProvider.notifier).add(songLyric);

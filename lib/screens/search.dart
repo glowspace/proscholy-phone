@@ -72,9 +72,7 @@ class SearchScreen extends StatelessWidget {
   }
 
   void _maybePushMatchedSonglyric(BuildContext context) {
-    final matchedById = context.providers.read(
-      searchedSongLyricsProvider.select((searchedSongLyricsProvider) => searchedSongLyricsProvider.matchedById),
-    );
+    final matchedById = context.providers.read(searchedSongLyricsProvider).matchedById;
 
     if (matchedById == null) return;
 

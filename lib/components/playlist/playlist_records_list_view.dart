@@ -38,7 +38,8 @@ class _PlaylistRecordsListViewState extends State<PlaylistRecordsListView> {
 
     // subscribe to changes, so this widget redraws when removing record from playlist
     _playlistChangesSubscription = context.providers
-        .read(appDependenciesProvider.select((appDependencies) => appDependencies.store))
+        .read(appDependenciesProvider)
+        .store
         .box<PlaylistRecord>()
         .query(PlaylistRecord_.playlist.equals(widget.playlist.id))
         .watch()
@@ -115,10 +116,7 @@ class _PlaylistRecordsListViewState extends State<PlaylistRecordsListView> {
     widget.playlist.records.setAll(0, _recordsOrdered.mapIndexed((index, record) => record.copyWith(rank: index)));
 
     // `widget.playlist.records.applyToDb` saves sometimes incorrectly new ranks, so save it using `putMany`
-    context.providers
-        .read(appDependenciesProvider.select((appDependencies) => appDependencies.store))
-        .box<PlaylistRecord>()
-        .putMany(widget.playlist.records);
+    context.providers.read(appDependenciesProvider).store.box<PlaylistRecord>().putMany(widget.playlist.records);
   }
 
   void _removePlaylistRecord(int index) {

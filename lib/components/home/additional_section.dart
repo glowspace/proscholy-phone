@@ -36,9 +36,7 @@ class AdditionalSection extends StatelessWidget {
             builder: (_, ref, __) => IconItem(
               icon: Icons.settings,
               text: 'Nastavení aplikace',
-              trailingtext: ref.read(
-                appDependenciesProvider.select((appDependencies) => appDependencies.packageInfo.version),
-              ),
+              trailingtext: ref.read(appDependenciesProvider).packageInfo.version,
             ),
           ),
         ),
