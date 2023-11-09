@@ -105,8 +105,6 @@ class SongLyricRow extends StatelessWidget {
   }
 
   void _pushSongLyric(BuildContext context) {
-    FocusScope.of(context).unfocus();
-
     final arguments = ModalRoute.of(context)?.settings.arguments;
     final selectedDisplayableItemArgumentsNotifier = SelectedDisplayableItemArguments.of(context);
 

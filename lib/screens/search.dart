@@ -4,6 +4,7 @@ import 'package:zpevnik/components/filters/filters_row.dart';
 import 'package:zpevnik/components/navigation/scaffold.dart';
 import 'package:zpevnik/components/search/search_field.dart';
 import 'package:zpevnik/components/search/search_song_lyrics_list_view.dart';
+import 'package:zpevnik/components/selected_displayable_item_index.dart';
 import 'package:zpevnik/components/split_view.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/search.dart';
@@ -75,7 +76,16 @@ class SearchScreen extends StatelessWidget {
       searchedSongLyricsProvider.select((searchedSongLyricsProvider) => searchedSongLyricsProvider.matchedById),
     );
 
-    if (matchedById != null) {
+    if (matchedById == null) return;
+
+    final arguments = ModalRoute.of(context)?.settings.arguments;
+    final selectedDisplayableItemArgumentsNotifier = SelectedDisplayableItemArguments.of(context);
+
+    if (arguments is SearchScreenArguments && arguments.shouldReturnSongLyric) {
+      Navigator.of(context).pop(matchedById);
+    } else if (selectedDisplayableItemArgumentsNotifier != null) {
+      selectedDisplayableItemArgumentsNotifier.value = DisplayScreenArguments.songLyric(matchedById);
+    } else {
       context.push('/display', arguments: DisplayScreenArguments.songLyric(matchedById, showSearchScreen: true));
     }
   }
