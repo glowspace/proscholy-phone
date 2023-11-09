@@ -62,7 +62,7 @@ class _PlaylistRecordsListViewState extends State<PlaylistRecordsListView> {
       );
     }
 
-    final displayableItems = _recordsOrdered.map(_unwrapPlaylistRecord).toList();
+    final displayableItems = _recordsOrdered.map(_unwrapPlaylistRecord).whereNotNull().toList();
 
     return ReorderableListView.builder(
       primary: false,
@@ -96,14 +96,15 @@ class _PlaylistRecordsListViewState extends State<PlaylistRecordsListView> {
     );
   }
 
-  DisplayableItem _unwrapPlaylistRecord(PlaylistRecord playlistRecord) {
+  DisplayableItem? _unwrapPlaylistRecord(PlaylistRecord playlistRecord) {
     if (playlistRecord.bibleVerse.targetId != 0) {
       return playlistRecord.bibleVerse.target!;
     } else if (playlistRecord.customText.targetId != 0) {
       return playlistRecord.customText.target!;
     }
 
-    return playlistRecord.songLyric.target!;
+    // TODO: make sure to remove removed song lyrics from playlists
+    return playlistRecord.songLyric.target;
   }
 
   void _reorder(int oldIndex, int newIndex) {
@@ -141,7 +142,7 @@ class _PlaylistRecordsListViewState extends State<PlaylistRecordsListView> {
       }
 
       selectedDisplayableItemArguments.value = DisplayScreenArguments(
-        items: _recordsOrdered.map(_unwrapPlaylistRecord).toList(),
+        items: _recordsOrdered.map(_unwrapPlaylistRecord).whereNotNull().toList(),
         initialIndex: index,
         playlist: widget.playlist,
       );
