@@ -35,6 +35,8 @@ class Presentation extends StatelessWidget {
           )
         : mediaQuery.textScaleFactor;
 
+    if (!presentationData.settings.isVisible) return Container(color: backgroundColor);
+
     return Container(
       color: backgroundColor,
       child: Stack(

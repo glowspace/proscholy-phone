@@ -7,7 +7,7 @@ part of 'home.dart';
 // **************************************************************************
 
 String _$homeSectionSettingsHash() =>
-    r'ff8403322c71442bbe3a2b0dda673ebbe3133fc2';
+    r'366d1e46aea16cb0ce96dec4a2e6916e5e6aabbd';
 
 /// See also [HomeSectionSettings].
 @ProviderFor(HomeSectionSettings)

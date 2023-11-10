@@ -321,6 +321,11 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
           ),
           const Spacer(),
           Highlightable(
+            isEnabled: presentation.hasSongLyricsParser,
+            onTap: presentation.toggleVisibility,
+            icon: Icon(presentation.isVisible ? Icons.visibility : Icons.visibility_off),
+          ),
+          Highlightable(
             onTap: () => showModalBottomSheet(
               context: context,
               builder: (context) => PresentationSettingsWidget(

@@ -21,7 +21,7 @@ final recentItemsProvider =
 );
 
 typedef _$RecentItems = AutoDisposeNotifier<List<RecentItem>>;
-String _$recentSongLyricsHash() => r'094675e91f5c7b0d50028abdf65017c6250a1eb8';
+String _$recentSongLyricsHash() => r'3d79c59c446f062b4b608636ef8cb8bdf8f87fef';
 
 /// See also [RecentSongLyrics].
 @ProviderFor(RecentSongLyrics)

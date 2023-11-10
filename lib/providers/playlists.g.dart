@@ -6,7 +6,7 @@ part of 'playlists.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$playlistHash() => r'5b61edc210b7c55a53d20208f1231b12d56ca3f8';
+String _$playlistHash() => r'0e19b9c0f0b1e05dc464265228ade9d17786531d';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -154,7 +154,7 @@ class _PlaylistProviderElement extends AutoDisposeProviderElement<Playlist?>
   int get id => (origin as PlaylistProvider).id;
 }
 
-String _$favoritePlaylistHash() => r'34a259c8884054b8d3ac012a21bc6e154e28cc42';
+String _$favoritePlaylistHash() => r'9fd754a0465c892225006c5bc0d42cc9c4d8abd2';
 
 /// See also [favoritePlaylist].
 @ProviderFor(favoritePlaylist)
@@ -169,7 +169,7 @@ final favoritePlaylistProvider = Provider<Playlist>.internal(
 );
 
 typedef FavoritePlaylistRef = ProviderRef<Playlist>;
-String _$playlistsHash() => r'3f37a413027a354f3b3e89b87c26ca538e001bee';
+String _$playlistsHash() => r'c8a57318c26e3549d744e3f20228c587006eab77';
 
 /// See also [Playlists].
 @ProviderFor(Playlists)

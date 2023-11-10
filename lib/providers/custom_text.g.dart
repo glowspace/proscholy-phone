@@ -6,7 +6,7 @@ part of 'custom_text.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$customTextHash() => r'a0832f5a8d53fafbdf02cade8032d88012e8b399';
+String _$customTextHash() => r'c2c0c983d6ba1a1983fa7fea32febded91d7be04';
 
 /// Copied from Dart SDK
 class _SystemHash {

@@ -15,6 +15,7 @@ const defaultPresentationSettings = PresentationSettings(
   darkMode: true,
   showName: false,
   allCapital: false,
+  isVisible: true,
 );
 
 @freezed
@@ -37,6 +38,7 @@ class PresentationSettings with _$PresentationSettings {
     required bool darkMode,
     required bool showName,
     required bool allCapital,
+    required bool isVisible,
   }) = _PresentationSettings;
 
   factory PresentationSettings.fromJson(Map<String, Object?> json) => _$PresentationSettingsFromJson(json);

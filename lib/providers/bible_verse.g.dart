@@ -6,7 +6,7 @@ part of 'bible_verse.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$bibleVerseHash() => r'f94e6d83cd2d18256c6f69fead58a6a4130a0fef';
+String _$bibleVerseHash() => r'6b25a087a61b5f9e885865beb46134e34c92e272';
 
 /// Copied from Dart SDK
 class _SystemHash {

@@ -34,6 +34,7 @@ _$PresentationSettingsImpl _$$PresentationSettingsImplFromJson(
       darkMode: json['darkMode'] as bool,
       showName: json['showName'] as bool,
       allCapital: json['allCapital'] as bool,
+      isVisible: json['isVisible'] as bool,
     );
 
 Map<String, dynamic> _$$PresentationSettingsImplToJson(
@@ -43,4 +44,5 @@ Map<String, dynamic> _$$PresentationSettingsImplToJson(
       'darkMode': instance.darkMode,
       'showName': instance.showName,
       'allCapital': instance.allCapital,
+      'isVisible': instance.isVisible,
     };

@@ -23,11 +23,9 @@ class PresentationProvider extends ChangeNotifier {
   bool get isPresenting => _isPresenting;
   bool get isPresentingLocally => _isPresenting && _isPresentingLocally;
   bool get isPaused => _isPaused;
+  bool get isVisible => _presentationData.settings.isVisible;
 
   bool get hasSongLyricsParser => _songLyricsParser != null;
-
-  bool _isBeforeStart = false;
-  bool _isAfterEnd = false;
 
   int _verseOrder = 0;
 
@@ -55,13 +53,11 @@ class PresentationProvider extends ChangeNotifier {
   }
 
   void nextVerse() {
-    if (_isAfterEnd) return;
-    _isBeforeStart = false;
-
-    _verseOrder++;
-
-    final verse = _songLyricsParser!.getVerse(_verseOrder);
-    if (verse.isEmpty) _isAfterEnd = true;
+    final verse = _songLyricsParser!.getVerse(++_verseOrder);
+    if (verse.isEmpty) {
+      _verseOrder--;
+      return;
+    }
 
     if (isPaused) {
       _nextAction = () => _changeShowingData(_presentationData.copyWith(text: verse));
@@ -71,13 +67,11 @@ class PresentationProvider extends ChangeNotifier {
   }
 
   void prevVerse() {
-    if (_isBeforeStart) return;
-    _isAfterEnd = false;
-
-    _verseOrder--;
-
-    final verse = _songLyricsParser!.getVerse(_verseOrder);
-    if (verse.isEmpty) _isBeforeStart = true;
+    final verse = _songLyricsParser!.getVerse(--_verseOrder);
+    if (verse.isEmpty) {
+      _verseOrder++;
+      return;
+    }
 
     if (isPaused) {
       _nextAction = () => _changeShowingData(_presentationData.copyWith(text: verse));
@@ -92,6 +86,14 @@ class PresentationProvider extends ChangeNotifier {
     if (!_isPaused) _nextAction?.call();
 
     notifyListeners();
+  }
+
+  void toggleVisibility() {
+    _changeShowingData(
+      _presentationData.copyWith(
+        settings: _presentationData.settings.copyWith(isVisible: !_presentationData.settings.isVisible),
+      ),
+    );
   }
 
   void changeSettings(PresentationSettings settings) {
