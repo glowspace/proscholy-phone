@@ -323,7 +323,7 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
           Highlightable(
             isEnabled: presentation.hasSongLyricsParser,
             onTap: presentation.toggleVisibility,
-            icon: Icon(presentation.isVisible ? Icons.visibility : Icons.visibility_off),
+            icon: Icon(presentation.isVisible ? Icons.visibility_off : Icons.visibility),
           ),
           Highlightable(
             onTap: () => showModalBottomSheet(
