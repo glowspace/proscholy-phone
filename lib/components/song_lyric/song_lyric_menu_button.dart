@@ -64,9 +64,6 @@ class SongLyricMenuButton extends StatelessWidget {
   void _selectedAction(BuildContext context, SongLyricMenuAction? action) {
     if (action == null) return;
 
-    final version = context.providers.read(appDependenciesProvider).packageInfo.version;
-    final platform = Theme.of(context).platform == TargetPlatform.iOS ? 'iOS' : 'android';
-
     switch (action) {
       case SongLyricMenuAction.present:
         final presentationNotifier = context.providers.read(presentationProvider.notifier);
@@ -86,8 +83,26 @@ class SongLyricMenuButton extends StatelessWidget {
         launch('$songUrl/${songLyric.id}/');
         break;
       case SongLyricMenuAction.report:
-        launch('$reportSongLyricUrl?customfield_10056=${songLyric.id}+$version+$platform');
+        final version = context.providers.read(appDependenciesProvider).packageInfo.version;
+        final platform = Theme.of(context).platform == TargetPlatform.iOS ? 'iOS' : 'android';
+
+        final url = 'https://$platform.proscholy.cz/v$version/pisen/${songLyric.id}/${_formatName(songLyric.name)}';
+
+        launch('$reportSongLyricUrl?customfield_10056=$url');
         break;
     }
+  }
+
+  String _formatName(String name) {
+    name = name.toLowerCase();
+
+    var withDiacritic = 'áčďéěíňóřšťúůýž';
+    var withoutDiacritic = 'acdeeinorstuuyz';
+
+    for (int i = 0; i < withDiacritic.length; i++) {
+      name = name.replaceAll(withDiacritic[i], withoutDiacritic[i]);
+    }
+
+    return name.replaceAll(' ', '-');
   }
 }
