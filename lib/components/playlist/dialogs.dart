@@ -23,7 +23,10 @@ void showPlaylistDialog(BuildContext context, {SongLyric? selectedSongLyric}) as
   if (results != null && context.mounted) {
     final playlist = context.providers.read(playlistsProvider.notifier).createPlaylist(results.first);
 
-    if (selectedSongLyric != null) context.popAndPush('/playlist', arguments: playlist);
+    if (selectedSongLyric != null) {
+      context.providers.read(playlistsProvider.notifier).addToPlaylist(playlist, songLyric: selectedSongLyric);
+      context.popAndPush('/playlist', arguments: playlist);
+    }
   }
 }
 

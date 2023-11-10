@@ -13,16 +13,9 @@ class EditHomeSectionsSheet extends ConsumerWidget {
 
     return BottomSheetSection(
       title: 'Úprava nástěnky',
+      tip: 'Seřaďte si jednotlivé sekce podle vašich preferencí',
       childrenPadding: false,
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
-          child: Text(
-            'Seřaďte si jednotlivé sekce podle vašich preferencí',
-            style: Theme.of(context).textTheme.labelLarge,
-          ),
-        ),
-        const Divider(height: kDefaultPadding),
         ReorderableListView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),

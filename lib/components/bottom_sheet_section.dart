@@ -3,10 +3,17 @@ import 'package:zpevnik/constants.dart';
 
 class BottomSheetSection extends StatelessWidget {
   final String title;
+  final String? tip;
   final bool childrenPadding;
   final List<Widget> children;
 
-  const BottomSheetSection({super.key, required this.title, this.childrenPadding = true, this.children = const []});
+  const BottomSheetSection({
+    super.key,
+    required this.title,
+    this.tip,
+    this.childrenPadding = true,
+    this.children = const [],
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +26,16 @@ class BottomSheetSection extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding, vertical: kDefaultPadding),
-            child: Text(title, style: Theme.of(context).textTheme.titleLarge),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title, style: Theme.of(context).textTheme.titleLarge),
+                if (tip != null) ...[
+                  Text(tip!, style: Theme.of(context).textTheme.labelLarge),
+                  // const SizedBox(height: kDefaultPadding / 2),
+                ],
+              ],
+            ),
           ),
           Flexible(
             child: SingleChildScrollView(
@@ -30,7 +46,10 @@ class BottomSheetSection extends StatelessWidget {
                   childrenPadding ? kDefaultPadding : 0,
                   MediaQuery.paddingOf(context).bottom,
                 ),
-                child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: children),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: children,
+                ),
               ),
             ),
           ),
