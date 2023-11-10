@@ -60,6 +60,10 @@ class Playlists extends _$Playlists {
 
     final playlists = queryStore(ref, condition: Playlist_.id.notEquals(favoritesPlaylistId), orderBy: Playlist_.rank);
 
+    // TODO: remove this, it is just to fix errors during testflight
+    _playlistRecordsBox.removeMany(
+        _playlistRecordsBox.query(PlaylistRecord_.playlist.equals(0)).build().property(PlaylistRecord_.id).find());
+
     return playlists;
   }
 
@@ -239,8 +243,9 @@ class Playlists extends _$Playlists {
         if (playlist.id != playlistToRemove.id) playlist
     ];
 
-    _playlistsBox.remove(playlistToRemove.id);
+    // remove records first, as they might not be loaded and if we remove playlist first, it won't be possible to load them anymore
     _playlistRecordsBox.removeMany(playlistToRemove.records.map((playlistRecord) => playlistRecord.id).toList());
+    _playlistsBox.remove(playlistToRemove.id);
 
     _customTextBox.removeMany(playlistToRemove.records
         .map((playlistRecord) => playlistRecord.customText.targetId)
