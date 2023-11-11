@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zpevnik/components/navigation/navigation_rail.dart';
+import 'package:zpevnik/providers/display_screen_status.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
 class NavigationRailWrapper extends StatelessWidget {
@@ -17,7 +19,12 @@ class NavigationRailWrapper extends StatelessWidget {
         textDirection: TextDirection.rtl,
         children: [
           Expanded(child: builder(context)),
-          const CustomNavigationRail(),
+          Consumer(
+            builder: (_, ref, child) => ref.watch(displayScreenStatusProvider.select((status) => status.fullScreen))
+                ? const SizedBox()
+                : child!,
+            child: const CustomNavigationRail(),
+          ),
         ],
       );
     }
