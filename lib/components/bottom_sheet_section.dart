@@ -32,7 +32,6 @@ class BottomSheetSection extends StatelessWidget {
                 Text(title, style: Theme.of(context).textTheme.titleLarge),
                 if (tip != null) ...[
                   Text(tip!, style: Theme.of(context).textTheme.labelLarge),
-                  // const SizedBox(height: kDefaultPadding / 2),
                 ],
               ],
             ),
@@ -44,7 +43,7 @@ class BottomSheetSection extends StatelessWidget {
                   childrenPadding ? kDefaultPadding : 0,
                   0,
                   childrenPadding ? kDefaultPadding : 0,
-                  MediaQuery.paddingOf(context).bottom,
+                  MediaQuery.paddingOf(context).bottom + kDefaultPadding,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
