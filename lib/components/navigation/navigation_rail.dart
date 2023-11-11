@@ -4,6 +4,7 @@ import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/navigation/utils.dart';
 import 'package:zpevnik/components/split_view.dart';
 import 'package:zpevnik/providers/menu_collapsed.dart';
+import 'package:zpevnik/routing/arguments.dart';
 import 'package:zpevnik/utils/extensions.dart';
 import 'package:zpevnik/utils/hero_tags.dart';
 
@@ -48,7 +49,10 @@ class CustomNavigationRail extends StatelessWidget {
                     Image.asset('assets/images/logos/logo.png'),
                     if (MediaQuery.sizeOf(context).width - _navigationRailWidth >
                             (kDefaultSplitViewChildMinWidth + kDefaultSplitViewDetailMinWidth) &&
-                        (context.isPlaylist || context.isDisplay))
+                        (context.isPlaylist ||
+                            (context.isDisplay &&
+                                ((ModalRoute.of(context)?.settings.arguments as DisplayScreenArguments?)?.canShowMenu ??
+                                    false))))
                       Highlightable(
                         onTap: context.providers.read(menuCollapsedProvider.notifier).toggle,
                         icon: Consumer(

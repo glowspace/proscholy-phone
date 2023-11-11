@@ -32,6 +32,8 @@ class DisplayScreenArguments {
     return DisplayScreenArguments(items: [songLyric], showSearchScreen: showSearchScreen);
   }
 
+  bool get canShowMenu => playlist != null || showSearchScreen;
+
   @override
   int get hashCode => Object.hash(runtimeType, items, initialIndex);
 
