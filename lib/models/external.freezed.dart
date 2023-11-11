@@ -28,6 +28,8 @@ mixin _$External {
   String? get url => throw _privateConstructorUsedError;
   @JsonKey(name: 'media_type', fromJson: MediaType.rawValueFromString)
   int get dbMediaType => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: _songLyricFromJson)
+  ToOne<SongLyric> get songLyric => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $ExternalCopyWith<External> get copyWith =>
@@ -45,7 +47,8 @@ abstract class $ExternalCopyWith<$Res> {
       String? mediaId,
       String? url,
       @JsonKey(name: 'media_type', fromJson: MediaType.rawValueFromString)
-      int dbMediaType});
+      int dbMediaType,
+      @JsonKey(fromJson: _songLyricFromJson) ToOne<SongLyric> songLyric});
 }
 
 /// @nodoc
@@ -66,6 +69,7 @@ class _$ExternalCopyWithImpl<$Res, $Val extends External>
     Object? mediaId = freezed,
     Object? url = freezed,
     Object? dbMediaType = null,
+    Object? songLyric = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -88,6 +92,10 @@ class _$ExternalCopyWithImpl<$Res, $Val extends External>
           ? _value.dbMediaType
           : dbMediaType // ignore: cast_nullable_to_non_nullable
               as int,
+      songLyric: null == songLyric
+          ? _value.songLyric
+          : songLyric // ignore: cast_nullable_to_non_nullable
+              as ToOne<SongLyric>,
     ) as $Val);
   }
 }
@@ -106,7 +114,8 @@ abstract class _$$ExternalImplCopyWith<$Res>
       String? mediaId,
       String? url,
       @JsonKey(name: 'media_type', fromJson: MediaType.rawValueFromString)
-      int dbMediaType});
+      int dbMediaType,
+      @JsonKey(fromJson: _songLyricFromJson) ToOne<SongLyric> songLyric});
 }
 
 /// @nodoc
@@ -125,6 +134,7 @@ class __$$ExternalImplCopyWithImpl<$Res>
     Object? mediaId = freezed,
     Object? url = freezed,
     Object? dbMediaType = null,
+    Object? songLyric = null,
   }) {
     return _then(_$ExternalImpl(
       id: null == id
@@ -147,6 +157,10 @@ class __$$ExternalImplCopyWithImpl<$Res>
           ? _value.dbMediaType
           : dbMediaType // ignore: cast_nullable_to_non_nullable
               as int,
+      songLyric: null == songLyric
+          ? _value.songLyric
+          : songLyric // ignore: cast_nullable_to_non_nullable
+              as ToOne<SongLyric>,
     ));
   }
 }
@@ -162,7 +176,8 @@ class _$ExternalImpl extends _External {
       this.mediaId,
       this.url,
       @JsonKey(name: 'media_type', fromJson: MediaType.rawValueFromString)
-      required this.dbMediaType})
+      required this.dbMediaType,
+      @JsonKey(fromJson: _songLyricFromJson) required this.songLyric})
       : super._();
 
   factory _$ExternalImpl.fromJson(Map<String, dynamic> json) =>
@@ -181,10 +196,13 @@ class _$ExternalImpl extends _External {
   @override
   @JsonKey(name: 'media_type', fromJson: MediaType.rawValueFromString)
   final int dbMediaType;
+  @override
+  @JsonKey(fromJson: _songLyricFromJson)
+  final ToOne<SongLyric> songLyric;
 
   @override
   String toString() {
-    return 'External(id: $id, publicName: $publicName, mediaId: $mediaId, url: $url, dbMediaType: $dbMediaType)';
+    return 'External(id: $id, publicName: $publicName, mediaId: $mediaId, url: $url, dbMediaType: $dbMediaType, songLyric: $songLyric)';
   }
 
   @JsonKey(ignore: true)
@@ -203,7 +221,9 @@ abstract class _External extends External {
       final String? mediaId,
       final String? url,
       @JsonKey(name: 'media_type', fromJson: MediaType.rawValueFromString)
-      required final int dbMediaType}) = _$ExternalImpl;
+      required final int dbMediaType,
+      @JsonKey(fromJson: _songLyricFromJson)
+      required final ToOne<SongLyric> songLyric}) = _$ExternalImpl;
   const _External._() : super._();
 
   factory _External.fromJson(Map<String, dynamic> json) =
@@ -222,6 +242,9 @@ abstract class _External extends External {
   @override
   @JsonKey(name: 'media_type', fromJson: MediaType.rawValueFromString)
   int get dbMediaType;
+  @override
+  @JsonKey(fromJson: _songLyricFromJson)
+  ToOne<SongLyric> get songLyric;
   @override
   @JsonKey(ignore: true)
   _$$ExternalImplCopyWith<_$ExternalImpl> get copyWith =>

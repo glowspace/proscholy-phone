@@ -8,6 +8,7 @@ import 'package:zpevnik/custom/sqlite-bm25/bm25.dart';
 import 'package:zpevnik/models/objectbox.g.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/app_dependencies.dart';
+import 'package:zpevnik/providers/song_lyrics.dart';
 import 'package:zpevnik/providers/utils.dart';
 
 part 'search.freezed.dart';
@@ -96,7 +97,7 @@ class SearchedSongLyrics extends _$SearchedSongLyrics {
         if (matchedIds.contains(songbookRecord.songLyric.targetId)) continue;
 
         matchedIds.add(songbookRecord.songLyric.targetId);
-        matchedBySongbookNumber.add(songbookRecord.songLyric.target!);
+        matchedBySongbookNumber.add(ref.read(songLyricProvider(songbookRecord.songLyric.targetId))!);
       }
     }
 

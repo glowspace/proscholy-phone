@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:objectbox/objectbox.dart';
 import 'package:zpevnik/models/model.dart';
+import 'package:zpevnik/models/song_lyric.dart';
 
 part 'external.freezed.dart';
 part 'external.g.dart';
@@ -70,6 +71,7 @@ class External with _$External implements Identifiable {
     String? mediaId,
     String? url,
     @JsonKey(name: 'media_type', fromJson: MediaType.rawValueFromString) required int dbMediaType,
+    @JsonKey(fromJson: _songLyricFromJson) required ToOne<SongLyric> songLyric,
   }) = _External;
 
   factory External.fromJson(Map<String, Object?> json) => _$ExternalFromJson(json);
@@ -95,3 +97,5 @@ class External with _$External implements Identifiable {
   @override
   bool operator ==(Object other) => other is External && id == other.id;
 }
+
+ToOne<SongLyric> _songLyricFromJson(dynamic json) => ToOne();

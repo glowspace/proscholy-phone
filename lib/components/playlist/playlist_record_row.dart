@@ -39,8 +39,6 @@ class PlaylistRecordRow extends ConsumerWidget {
       title = songLyric.name;
       icon = null;
     } else {
-      // TODO: make sure to remove removed song lyrics from playlists
-      return const SizedBox();
       throw UnsupportedError('unsupported playlist record');
     }
 

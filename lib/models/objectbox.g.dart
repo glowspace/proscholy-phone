@@ -313,7 +313,7 @@ final _entities = <ModelEntity>[
   ModelEntity(
       id: const IdUid(13, 34413049226011067),
       name: 'External',
-      lastPropertyId: const IdUid(6, 1240759115435120045),
+      lastPropertyId: const IdUid(7, 4552902403603048801),
       flags: 0,
       properties: <ModelProperty>[
         ModelProperty(
@@ -340,7 +340,14 @@ final _entities = <ModelEntity>[
             id: const IdUid(6, 1240759115435120045),
             name: 'url',
             type: 9,
-            flags: 0)
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(7, 4552902403603048801),
+            name: 'songLyricId',
+            type: 11,
+            flags: 520,
+            indexId: const IdUid(25, 6759144687015843733),
+            relationTarget: 'SongLyric')
       ],
       relations: <ModelRelation>[],
       backlinks: <ModelBacklink>[]),
@@ -553,7 +560,7 @@ ModelDefinition getObjectBoxModel() {
   final model = ModelInfo(
       entities: _entities,
       lastEntityId: const IdUid(22, 3313311911381561450),
-      lastIndexId: const IdUid(24, 2671655412393307456),
+      lastIndexId: const IdUid(25, 6759144687015843733),
       lastRelationId: const IdUid(9, 6609909260274628973),
       lastSequenceId: const IdUid(0, 0),
       retiredEntityUids: const [
@@ -1085,7 +1092,7 @@ ModelDefinition getObjectBoxModel() {
         }),
     External: EntityDefinition<External>(
         model: _entities[7],
-        toOneRelations: (External object) => [],
+        toOneRelations: (External object) => [object.songLyric],
         toManyRelations: (External object) => {},
         getId: (External object) => object.id,
         setId: (External object, int id) {
@@ -1103,12 +1110,13 @@ ModelDefinition getObjectBoxModel() {
               object.mediaId == null ? null : fbb.writeString(object.mediaId!);
           final urlOffset =
               object.url == null ? null : fbb.writeString(object.url!);
-          fbb.startTable(7);
+          fbb.startTable(8);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, publicNameOffset);
           fbb.addOffset(2, mediaIdOffset);
           fbb.addInt64(3, object.dbMediaType);
           fbb.addOffset(5, urlOffset);
+          fbb.addInt64(6, object.songLyric.targetId);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -1125,13 +1133,17 @@ ModelDefinition getObjectBoxModel() {
               .vTableGetNullable(buffer, rootOffset, 14);
           final dbMediaTypeParam =
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 10, 0);
+          final songLyricParam = ToOne<SongLyric>(
+              targetId:
+                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 16, 0));
           final object = External(
               id: idParam,
               publicName: publicNameParam,
               mediaId: mediaIdParam,
               url: urlParam,
-              dbMediaType: dbMediaTypeParam);
-
+              dbMediaType: dbMediaTypeParam,
+              songLyric: songLyricParam);
+          object.songLyric.attach(store);
           return object;
         }),
     Playlist: EntityDefinition<Playlist>(
@@ -1577,6 +1589,10 @@ class External_ {
 
   /// see [External.url]
   static final url = QueryStringProperty<External>(_entities[7].properties[4]);
+
+  /// see [External.songLyric]
+  static final songLyric =
+      QueryRelationToOne<External, SongLyric>(_entities[7].properties[5]);
 }
 
 /// [Playlist] entity fields to define ObjectBox queries.

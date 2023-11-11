@@ -281,7 +281,7 @@
     },
     {
       "id": "13:34413049226011067",
-      "lastPropertyId": "6:1240759115435120045",
+      "lastPropertyId": "7:4552902403603048801",
       "name": "External",
       "properties": [
         {
@@ -309,6 +309,14 @@
           "id": "6:1240759115435120045",
           "name": "url",
           "type": 9
+        },
+        {
+          "id": "7:4552902403603048801",
+          "name": "songLyricId",
+          "type": 11,
+          "flags": 520,
+          "indexId": "25:6759144687015843733",
+          "relationTarget": "SongLyric"
         }
       ],
       "relations": []
@@ -497,7 +505,7 @@
     }
   ],
   "lastEntityId": "22:3313311911381561450",
-  "lastIndexId": "24:2671655412393307456",
+  "lastIndexId": "25:6759144687015843733",
   "lastRelationId": "9:6609909260274628973",
   "lastSequenceId": "0:0",
   "modelVersion": 5,

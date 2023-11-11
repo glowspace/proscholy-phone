@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:zpevnik/models/news_item.dart';
+import 'package:zpevnik/models/objectbox.g.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/models/utils.dart';
 import 'package:zpevnik/providers/app_dependencies.dart';
@@ -60,6 +61,9 @@ Future<void> loadInitial(AppDependencies appDependencies) async {
     readJsonList(json['data'][SongLyric.fieldKey], mapper: SongLyric.fromJson),
   );
 
+  // TODO: remove this after some time, that all users have at least 3.1.0 version
+  _removeInvalidPlaylistRecords(appDependencies.store);
+
   SearchedSongLyrics.update(appDependencies.ftsDatabase, songLyrics);
 
   appDependencies.sharedPreferences.remove(_lastUpdateKey);
@@ -113,9 +117,9 @@ Stream<UpdateStatus> update(UpdateRef ref) async* {
     existingSongLyricsIds.remove(id);
   }
 
-  // TODO: remove also externals associated with it
   // remove song lyrics that were removed on server
   box.removeMany(existingSongLyricsIds.toList());
+
   // on iOS also remove them from spotlight indexing
   SpotlightService.instance.deindexItems(existingSongLyricsIds.map((id) => 'song_lyric_$id').toList());
 
@@ -139,9 +143,43 @@ Stream<UpdateStatus> update(UpdateRef ref) async* {
 
   final updatedSongLyrics = await storeSongLyrics(appDependencies.store, songLyrics);
 
+  // remove externals that were associated with removed song lyrics
+  _removeRelations(appDependencies.store, External_.songLyric.equals(0));
+
+  // remove songbook records that were associated with removed song lyrics
+  _removeRelations(appDependencies.store, SongbookRecord_.songLyric.equals(0));
+
+  // remove playlist records that were associated with removed song lyrics
+  _removeRelations(
+    appDependencies.store,
+    PlaylistRecord_.songLyric
+        .equals(0)
+        .and(PlaylistRecord_.bibleVerse.equals(0))
+        .and(PlaylistRecord_.customText.equals(0)),
+  );
+
   SearchedSongLyrics.update(appDependencies.ftsDatabase, updatedSongLyrics);
 
   yield Updated(updatedSongLyrics);
 
   appDependencies.sharedPreferences.setString(_lastUpdateKey, _dateFormat.format(now));
+}
+
+// TODO: remove this after some time, that all users have at least 3.1.0 version
+void _removeInvalidPlaylistRecords(Store store) {
+  _removeRelations(
+      store,
+      PlaylistRecord_.songLyric
+          .equals(0)
+          .and(PlaylistRecord_.bibleVerse.equals(0))
+          .and(PlaylistRecord_.customText.equals(0)));
+}
+
+void _removeRelations<T>(Store store, Condition<T> condition) {
+  final box = store.box<T>();
+  final query = box.query(condition).build();
+
+  box.removeMany(query.findIds());
+
+  query.close();
 }

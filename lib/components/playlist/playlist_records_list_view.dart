@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:zpevnik/components/playlist/playlist_record_row.dart';
 import 'package:zpevnik/components/selected_displayable_item_index.dart';
@@ -11,22 +12,25 @@ import 'package:zpevnik/models/objectbox.g.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/playlist_record.dart';
 import 'package:zpevnik/providers/app_dependencies.dart';
+import 'package:zpevnik/providers/bible_verse.dart';
+import 'package:zpevnik/providers/custom_text.dart';
 import 'package:zpevnik/providers/playlists.dart';
+import 'package:zpevnik/providers/song_lyrics.dart';
 import 'package:zpevnik/routing/arguments.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
 const _noPlaylistRecordText = 'V tomto seznamu nemáte žádné písně. Klikněte na tlačítko níže pro přidání nové písně.';
 
-class PlaylistRecordsListView extends StatefulWidget {
+class PlaylistRecordsListView extends ConsumerStatefulWidget {
   final Playlist playlist;
 
   const PlaylistRecordsListView({super.key, required this.playlist});
 
   @override
-  State<PlaylistRecordsListView> createState() => _PlaylistRecordsListViewState();
+  ConsumerState<PlaylistRecordsListView> createState() => _PlaylistRecordsListViewState();
 }
 
-class _PlaylistRecordsListViewState extends State<PlaylistRecordsListView> {
+class _PlaylistRecordsListViewState extends ConsumerState<PlaylistRecordsListView> {
   late StreamSubscription<Query<PlaylistRecord>> _playlistChangesSubscription;
 
   // it is not possible to sort relations yet, so sort it here when displaying
@@ -63,13 +67,13 @@ class _PlaylistRecordsListViewState extends State<PlaylistRecordsListView> {
       );
     }
 
-    final displayableItems = _recordsOrdered.map(_unwrapPlaylistRecord).whereNotNull().toList();
+    final displayableItems = _recordsOrdered.map(_unwrapPlaylistRecord).toList();
 
     return ReorderableListView.builder(
       primary: false,
-      itemCount: _recordsOrdered.length,
+      itemCount: displayableItems.length,
       itemBuilder: (_, index) => Slidable(
-        key: Key('${_recordsOrdered[index].id}'),
+        key: Key('${displayableItems[index].id}'),
         groupTag: 'playlist_record',
         endActionPane: ActionPane(
           motion: const DrawerMotion(),
@@ -97,15 +101,18 @@ class _PlaylistRecordsListViewState extends State<PlaylistRecordsListView> {
     );
   }
 
-  DisplayableItem? _unwrapPlaylistRecord(PlaylistRecord playlistRecord) {
-    if (playlistRecord.bibleVerse.targetId != 0) {
-      return playlistRecord.bibleVerse.target!;
-    } else if (playlistRecord.customText.targetId != 0) {
-      return playlistRecord.customText.target!;
+  DisplayableItem _unwrapPlaylistRecord(PlaylistRecord playlistRecord) {
+    final bibleVerse = ref.watch(bibleVerseProvider(playlistRecord.bibleVerse.targetId));
+    final customText = ref.watch(customTextProvider(playlistRecord.customText.targetId));
+    final songLyric = ref.watch(songLyricProvider(playlistRecord.songLyric.targetId));
+
+    if (bibleVerse != null) {
+      return bibleVerse;
+    } else if (customText != null) {
+      return customText;
     }
 
-    // TODO: make sure to remove removed song lyrics from playlists
-    return playlistRecord.songLyric.target;
+    return songLyric!;
   }
 
   void _reorder(int oldIndex, int newIndex) {
@@ -140,7 +147,7 @@ class _PlaylistRecordsListViewState extends State<PlaylistRecordsListView> {
       }
 
       selectedDisplayableItemArguments.value = DisplayScreenArguments(
-        items: _recordsOrdered.map(_unwrapPlaylistRecord).whereNotNull().toList(),
+        items: _recordsOrdered.map(_unwrapPlaylistRecord).toList(),
         initialIndex: index,
         playlist: widget.playlist,
       );

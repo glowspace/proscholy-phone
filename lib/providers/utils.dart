@@ -40,7 +40,8 @@ Future<List<SongLyric>> storeSongLyrics(Store store, List<SongLyric> songLyrics)
   query.close();
 
   for (final songLyric in songLyrics) {
-    externals.addAll(songLyric.externals);
+    externals
+        .addAll(songLyric.externals.map((external) => external.copyWith(songLyric: ToOne(targetId: songLyric.id))));
     songbookRecords.addAll(songLyric.songbookRecords);
 
     if (songLyricsWithSettings.containsKey(songLyric.id)) {

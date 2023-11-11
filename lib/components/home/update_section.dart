@@ -30,7 +30,11 @@ class _UpdateSectionState extends ConsumerState<UpdateSection> {
 
             return _build(context, updatedSongLyrics: updatedSongLyrics);
           },
-          error: (error, _) => _build(context, error: error),
+          error: (error, stackTrace) {
+            print(stackTrace);
+            print(error);
+            return _build(context, error: error);
+          },
           loading: () => _build(context, updatedSongLyrics: []),
         );
   }
