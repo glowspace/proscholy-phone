@@ -31,7 +31,7 @@ class FiltersRow extends ConsumerWidget {
                 ...selectedTags.map((tag) => FilterTag(tag: tag, isRemovable: true)),
                 if (!MediaQuery.of(context).isTablet ||
                     MediaQuery.sizeOf(context).width <
-                        (kdefaultSplitViewChildWidth + kdefaultSplitViewMinDetailWidth) ||
+                        (kDefaultSplitViewChildMinWidth + kDefaultSplitViewDetailMinWidth) ||
                     !context.isSearching)
                   const AddFilterTag(),
               ]),

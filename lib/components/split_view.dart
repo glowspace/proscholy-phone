@@ -1,14 +1,20 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
-const kdefaultSplitViewChildWidth = 360.0;
-const kdefaultSplitViewMinDetailWidth = 560.0;
+const kDefaultSplitViewChildMinWidth = 240.0;
+const kDefaultSplitViewChildMaxWidth = 320.0;
+const kDefaultSplitViewDetailMinWidth = 480.0;
+const kDefaultSplitViewChildWidthFactor = 0.3;
 
 class SplitView extends StatelessWidget {
   final Widget child;
   final Widget detail;
 
-  final double childWidth;
-  final double minDetailWidth;
+  final double minChildWidth;
+  final double maxChildWidth;
+  final double detailMinWidth;
+  final double childWidthFactor;
 
   final TextDirection textDirection;
 
@@ -18,8 +24,10 @@ class SplitView extends StatelessWidget {
     super.key,
     required this.child,
     required this.detail,
-    this.childWidth = kdefaultSplitViewChildWidth,
-    this.minDetailWidth = kdefaultSplitViewMinDetailWidth,
+    this.minChildWidth = kDefaultSplitViewChildMinWidth,
+    this.maxChildWidth = kDefaultSplitViewChildMaxWidth,
+    this.detailMinWidth = kDefaultSplitViewDetailMinWidth,
+    this.childWidthFactor = kDefaultSplitViewChildWidthFactor,
     this.textDirection = TextDirection.ltr,
     this.showingOnlyDetail = false,
   });
@@ -28,7 +36,10 @@ class SplitView extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        if (constraints.maxWidth < childWidth + minDetailWidth) return detail;
+        final childWidth = min(max(kDefaultSplitViewChildMinWidth, childWidthFactor * constraints.maxWidth),
+            kDefaultSplitViewChildMaxWidth);
+
+        if (constraints.maxWidth < childWidth + detailMinWidth) return detail;
 
         return Row(
           crossAxisAlignment: CrossAxisAlignment.start,

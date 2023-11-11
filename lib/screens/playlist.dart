@@ -71,54 +71,57 @@ class _PlaylistScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final mediaQuery = MediaQuery.of(context);
 
     final Widget floatingActionButton;
 
     if (playlist.isFavorites) {
-      floatingActionButton = mediaQuery.isTablet
-          ? FloatingActionButton.extended(
-              heroTag: HeroTags.playlistFAB,
-              backgroundColor: theme.colorScheme.surface,
-              icon: const Icon(Icons.add),
-              label: const Text('Přidat do seznamu'),
-              onPressed: () => _addSongLyric(context),
-            )
-          : FloatingActionButton(
-              heroTag: HeroTags.playlistFAB,
-              backgroundColor: theme.colorScheme.surface,
-              child: const Icon(Icons.add),
-              onPressed: () => _addSongLyric(context),
-            );
+      floatingActionButton = LayoutBuilder(
+        builder: (_, constraints) => constraints.maxWidth > kTabletSizeBreakpoint / 2
+            ? FloatingActionButton.extended(
+                heroTag: HeroTags.playlistFAB,
+                backgroundColor: theme.colorScheme.surface,
+                icon: const Icon(Icons.add),
+                label: const Text('Přidat do seznamu'),
+                onPressed: () => _addSongLyric(context),
+              )
+            : FloatingActionButton(
+                heroTag: HeroTags.playlistFAB,
+                backgroundColor: theme.colorScheme.surface,
+                child: const Icon(Icons.add),
+                onPressed: () => _addSongLyric(context),
+              ),
+      );
     } else {
-      floatingActionButton = Hero(
-        tag: HeroTags.playlistFAB,
-        child: SpeedDial(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(kDefaultRadius)),
-          backgroundColor: theme.colorScheme.surface,
-          overlayColor: Colors.black,
-          overlayOpacity: 0.1,
-          spacing: kDefaultPadding / 2,
-          label: mediaQuery.isTablet ? const Text('Přidat do seznamu') : null,
-          icon: Icons.add,
-          activeIcon: Icons.close,
-          children: [
-            SpeedDialChild(
-              label: 'vlastní text',
-              onTap: () => _addText(context),
-              child: const Icon(Icons.edit_note),
-            ),
-            SpeedDialChild(
-              label: 'biblický úryvek',
-              onTap: () => _addBibleVerse(context),
-              child: const Icon(Icons.book_outlined),
-            ),
-            SpeedDialChild(
-              label: 'píseň',
-              onTap: () => _addSongLyric(context),
-              child: const Icon(Icons.music_note),
-            ),
-          ],
+      floatingActionButton = LayoutBuilder(
+        builder: (_, constraints) => Hero(
+          tag: HeroTags.playlistFAB,
+          child: SpeedDial(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(kDefaultRadius)),
+            backgroundColor: theme.colorScheme.surface,
+            overlayColor: Colors.black,
+            overlayOpacity: 0.1,
+            spacing: kDefaultPadding / 2,
+            label: constraints.maxWidth > kTabletSizeBreakpoint / 2 ? const Text('Přidat do seznamu') : null,
+            icon: Icons.add,
+            activeIcon: Icons.close,
+            children: [
+              SpeedDialChild(
+                label: 'vlastní text',
+                onTap: () => _addText(context),
+                child: const Icon(Icons.edit_note),
+              ),
+              SpeedDialChild(
+                label: 'biblický úryvek',
+                onTap: () => _addBibleVerse(context),
+                child: const Icon(Icons.book_outlined),
+              ),
+              SpeedDialChild(
+                label: 'píseň',
+                onTap: () => _addSongLyric(context),
+                child: const Icon(Icons.music_note),
+              ),
+            ],
+          ),
         ),
       );
     }
