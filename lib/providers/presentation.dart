@@ -27,7 +27,8 @@ class PresentationProvider extends ChangeNotifier {
 
   bool get hasSongLyricsParser => _songLyricsParser != null;
 
-  int _verseOrder = 0;
+  int _part = 0;
+  int get part => _part;
 
   PresentationData _presentationData = defaultPresentationData;
   PresentationSettings get settings => _presentationData.settings;
@@ -37,7 +38,7 @@ class PresentationProvider extends ChangeNotifier {
   void start() async {
     _isPresenting = true;
     _isPresentingLocally = !(await onExternalDisplay);
-    _verseOrder = 0;
+    _part = 0;
 
     if (!_isPresentingLocally) PresentationService.instance.startPresentation();
 
@@ -53,9 +54,9 @@ class PresentationProvider extends ChangeNotifier {
   }
 
   void nextVerse() {
-    final verse = _songLyricsParser!.getVerse(++_verseOrder);
+    final verse = _songLyricsParser!.getVerse(++_part);
     if (verse.isEmpty) {
-      _verseOrder--;
+      _part--;
       return;
     }
 
@@ -67,9 +68,9 @@ class PresentationProvider extends ChangeNotifier {
   }
 
   void prevVerse() {
-    final verse = _songLyricsParser!.getVerse(--_verseOrder);
+    final verse = _songLyricsParser!.getVerse(--_part);
     if (verse.isEmpty) {
-      _verseOrder++;
+      _part++;
       return;
     }
 
@@ -96,6 +97,22 @@ class PresentationProvider extends ChangeNotifier {
     );
   }
 
+  void changePart(int part) {
+    _part = part;
+
+    final verse = _songLyricsParser!.getVerse(_part);
+    if (verse.isEmpty) {
+      _part++;
+      return;
+    }
+
+    if (isPaused) {
+      _nextAction = () => _changeShowingData(_presentationData.copyWith(text: verse));
+    } else {
+      _changeShowingData(_presentationData.copyWith(text: verse));
+    }
+  }
+
   void changeSettings(PresentationSettings settings) {
     _changeShowingData(_presentationData.copyWith(settings: settings));
 
@@ -103,7 +120,7 @@ class PresentationProvider extends ChangeNotifier {
   }
 
   void change(DisplayableItem displayableItem) {
-    _verseOrder = 0;
+    _part = 0;
 
     final changeFunction = switch (displayableItem) {
       (BibleVerse bibleVerse) => () {
@@ -135,7 +152,7 @@ class PresentationProvider extends ChangeNotifier {
             songLyricId: songLyricsParser.songLyric.id,
             isCustomText: false,
             name: songLyricsParser.songLyric.name,
-            text: songLyricsParser.getVerse(_verseOrder),
+            text: songLyricsParser.getVerse(_part),
           ));
         },
       _ => throw UnimplementedError(),
@@ -152,11 +169,9 @@ class PresentationProvider extends ChangeNotifier {
   void _changeShowingData(PresentationData data) {
     _presentationData = data;
 
-    if (_isPresentingLocally) {
-      notifyListeners();
-    } else {
-      PresentationService.instance.transferData(data);
-    }
+    if (!isPresentingLocally) PresentationService.instance.transferData(data);
+
+    notifyListeners();
   }
 
   Future<bool> get onExternalDisplay => PresentationService.instance.isExternalScreenConnected();

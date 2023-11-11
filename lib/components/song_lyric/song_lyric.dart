@@ -7,6 +7,7 @@ import 'package:zpevnik/components/song_lyric/song_lyric_chips.dart';
 import 'package:zpevnik/components/song_lyric/utils/auto_scroll.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
+import 'package:zpevnik/providers/presentation.dart';
 import 'package:zpevnik/providers/settings.dart';
 import 'package:zpevnik/components/song_lyric/utils/converter.dart';
 import 'package:zpevnik/components/song_lyric/utils/lyrics_controller.dart';
@@ -26,6 +27,29 @@ class SongLyricWidget extends ConsumerStatefulWidget {
 class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
   late final controller = LyricsController(widget.songLyric, context);
 
+  final _presentationPartGlobalKeysMap = <int, GlobalKey>{};
+
+  @override
+  void initState() {
+    super.initState();
+
+    // listen for changes in presented verse and make sure it is visible
+    context.providers
+        .listen(presentationProvider.select((presentation) => presentation.isPresenting ? presentation.part : -1),
+            (_, presentationPart) {
+      final context = _presentationPartGlobalKeysMap[presentationPart]?.currentContext;
+
+      if (context != null) {
+        Scrollable.ensureVisible(
+          context,
+          alignment: 0.05,
+          duration: kDefaultAnimationDuration,
+          curve: Curves.easeInOut,
+        );
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -40,7 +64,7 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 2 * kDefaultPadding),
@@ -66,11 +90,19 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
                 ),
               ),
             SizedBox(height: kDefaultPadding * fontSizeScale),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 2 * kDefaultPadding),
-              child: _buildLyrics(context),
+            MediaQuery(
+              // double the text scale factor for lyrics as they look wrong with text scale factor < 1 and minimum is 0.5
+              // font size is changed according to it
+              data: MediaQuery.of(context).copyWith(textScaleFactor: 2 * MediaQuery.textScaleFactorOf(context)),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 2 * kDefaultPadding),
+                child: _buildLyrics(context),
+              ),
             ),
             SizedBox(height: kDefaultPadding * fontSizeScale),
+            // make sure lyrics are visible with bottom sheet
+            if (ref.watch(presentationProvider.select((presentation) => presentation.isPresenting)))
+              SizedBox(height: 4 * kDefaultPadding * fontSizeScale),
           ],
         ),
       ),
@@ -83,6 +115,8 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
     final List<Widget> children = [];
 
     Token? currentToken = controller.parser.nextToken;
+    int presentationPart = 0;
+
     while (currentToken != null) {
       if (currentToken is Comment) {
         children.add(_buildComment(context, currentToken, false));
@@ -96,28 +130,32 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
           }
         }
       } else if (currentToken is VerseNumber) {
-        children.add(_buildVerse(context, currentToken));
+        children.add(_buildVerse(context, currentToken, presentationPart));
       } else if (currentToken is NewLine) {
-        children.add(SizedBox(height: kDefaultPadding * MediaQuery.textScaleFactorOf(context)));
+        children.add(SizedBox(height: kDefaultPadding * MediaQuery.textScaleFactorOf(context) / 2));
+      } else if (currentToken is PresentationBreakpoint) {
+        _presentationPartGlobalKeysMap.putIfAbsent(currentToken.part, () => GlobalKey());
+        presentationPart = currentToken.part;
       }
 
       currentToken = controller.parser.nextToken;
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: children,
-    );
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: children);
   }
 
   Widget _buildInterlude(BuildContext context, Interlude interlude) {
     final List<Widget> children = [];
+
     Token? currentToken = controller.parser.nextToken;
+
     while (currentToken != null && currentToken is! InterludeEnd) {
       if (currentToken is Chord) {
-        children.add(_buildLine(context, currentToken, _textStyle(context, false), isInterlude: true));
+        children.add(
+          _buildLine(context, currentToken, _textStyle(context, false), isInterlude: true),
+        );
       } else if (currentToken is NewLine) {
-        children.add(SizedBox(height: kDefaultPadding * MediaQuery.textScaleFactorOf(context)));
+        children.add(SizedBox(height: kDefaultPadding * MediaQuery.textScaleFactorOf(context) / 2));
       }
 
       currentToken = controller.parser.nextToken;
@@ -130,23 +168,34 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
           padding: const EdgeInsets.only(right: kDefaultPadding / 2),
           child: Text(interlude.value, style: _textStyle(context, false)),
         ),
-        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: children)),
+        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: children)),
       ],
     );
   }
 
-  Widget _buildVerse(BuildContext context, VerseNumber number) {
+  Widget _buildVerse(BuildContext context, VerseNumber number, int presentationPart) {
     final textStyle = _textStyle(context, number.verseHasChord);
 
     final List<Widget> children = [];
+    final originalPresentationPart = presentationPart;
+
     Token? currentToken = controller.parser.nextToken;
+    bool isFirstLine = true;
+
     while (currentToken != null && currentToken is! VerseEnd) {
       if (currentToken is VersePart || currentToken is Chord) {
-        children.add(_buildLine(context, currentToken, textStyle));
+        children.add(
+          _buildLine(context, currentToken, textStyle, presentationPart: presentationPart, isFirst: isFirstLine),
+        );
+        isFirstLine = false;
       } else if (currentToken is Comment) {
         children.add(_buildComment(context, currentToken, number.verseHasChord));
       } else if (currentToken is NewLine) {
-        children.add(SizedBox(height: kDefaultPadding * MediaQuery.textScaleFactorOf(context)));
+        children.add(SizedBox(height: kDefaultPadding * MediaQuery.textScaleFactorOf(context) / 2));
+      } else if (currentToken is PresentationBreakpoint) {
+        _presentationPartGlobalKeysMap.putIfAbsent(currentToken.part, () => GlobalKey());
+        presentationPart = currentToken.part;
+        isFirstLine = true;
       }
 
       currentToken = controller.parser.nextToken;
@@ -156,16 +205,27 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (number.value.isNotEmpty)
-          Padding(
+          Container(
+            color: ref.watch(presentationProvider.select(
+                    (presentation) => presentation.isPresenting && presentation.part == originalPresentationPart))
+                ? Theme.of(context).colorScheme.secondaryContainer
+                : null,
             padding: const EdgeInsets.only(right: kDefaultPadding / 2),
             child: Text(number.value, style: textStyle),
           ),
-        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: children)),
+        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: children)),
       ],
     );
   }
 
-  Widget _buildLine(BuildContext context, Token token, TextStyle? textStyle, {bool isInterlude = false}) {
+  Widget _buildLine(
+    BuildContext context,
+    Token token,
+    TextStyle? textStyle, {
+    int? presentationPart,
+    bool? isFirst,
+    bool isInterlude = false,
+  }) {
     final List<InlineSpan> children = [];
 
     Token? currentToken = token;
@@ -202,7 +262,21 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
       children.add(_buildChord(context, currentChord, textStyle));
     }
 
-    return RichText(text: TextSpan(text: '', style: textStyle, children: children));
+    return GestureDetector(
+      onTap: ref.watch(presentationProvider.select((presentation) => presentation.isPresenting))
+          ? () => ref.read(presentationProvider.notifier).changePart(presentationPart!)
+          : null,
+      child: Container(
+        color: ref.watch(presentationProvider
+                .select((presentation) => presentation.isPresenting && presentation.part == presentationPart))
+            ? Theme.of(context).colorScheme.secondaryContainer
+            : null,
+        child: RichText(
+          key: (!isInterlude && isFirst!) ? _presentationPartGlobalKeysMap[presentationPart] : null,
+          text: TextSpan(style: textStyle, children: children),
+        ),
+      ),
+    );
   }
 
   Widget _buildComment(BuildContext context, Comment comment, bool hasChords) {
@@ -224,7 +298,7 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
     VersePart? versePart,
     bool isInterlude = false,
   }) {
-    final chordOffset = isInterlude ? 0.0 : -(textStyle?.fontSize ?? 0) * MediaQuery.textScaleFactorOf(context);
+    final chordOffset = isInterlude ? 0.0 : -(textStyle?.fontSize ?? 0) * 2 * MediaQuery.textScaleFactorOf(context);
 
     String chordText = convertAccidentals(
         transpose(
@@ -280,6 +354,9 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
         ref.watch(
             songLyricSettingsProvider(widget.songLyric.id).select((songLyricSettings) => songLyricSettings.showChords));
 
-    return Theme.of(context).textTheme.bodyMedium?.copyWith(height: showChords ? 2.5 : 1.5);
+    return Theme.of(context).textTheme.bodyMedium?.copyWith(
+          fontSize: 8,
+          height: showChords ? 2.25 : 1.5,
+        );
   }
 }

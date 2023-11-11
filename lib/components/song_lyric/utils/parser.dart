@@ -101,6 +101,15 @@ class VersePart extends Token {
   String toString() => 'VersePart($value)';
 }
 
+class PresentationBreakpoint extends Token {
+  final int part;
+
+  PresentationBreakpoint(this.part);
+
+  @override
+  String toString() => 'PresentationBreakpoint($part)';
+}
+
 class VerseEnd extends Token {
   @override
   String toString() => 'VerseEnd()';
@@ -124,14 +133,11 @@ class _FilledTokensBuilder {
   final List<Token> chordSubstitutes = [];
 
   VerseNumber? currentVerseNumber;
+  bool isInsideInterlude = false;
+  int part = 0;
 
   List<Token> _fillSubstitutes(List<Token> tokens) {
     if (tokens.isEmpty) return [];
-
-    // log(songLyric.lyrics);
-    // log(tokens.toString());
-
-    bool isInsideInterlude = false;
 
     for (int i = 0; i < tokens.length; i++) {
       final token = tokens[i];
@@ -227,8 +233,24 @@ class _FilledTokensBuilder {
   }
 
   void _fillToken(Token token) {
-    if (currentVerseNumber != null) verseSubstitutes.putIfAbsent(currentVerseNumber!.value, () => []).add(token);
+    if (token is VerseNumber && filledTokens.lastOrNull is! PresentationBreakpoint) {
+      filledTokens.add(PresentationBreakpoint(part++));
+    }
+
+    // save tokens into verse substitute, make sure same verse is not saved multiple times (for example when there is R: filled multiple times - see "21: Emanuel")
+    if (currentVerseNumber != null &&
+        token is! PresentationBreakpoint &&
+        verseSubstitutes[currentVerseNumber!.value]?.lastOrNull is! VerseEnd) {
+      verseSubstitutes.putIfAbsent(currentVerseNumber!.value, () => []).add(token);
+    }
+
+    final previousToken = filledTokens.lastOrNull;
+
     filledTokens.add(token);
+
+    if (!isInsideInterlude && token is NewLine && previousToken is NewLine) {
+      filledTokens.add(PresentationBreakpoint(part++));
+    }
   }
 
   void _fillEmptyVerseNumber() {
@@ -240,8 +262,12 @@ class _FilledTokensBuilder {
 
   void _fillVerseEnd() {
     if (currentVerseNumber != null) {
+      if (filledTokens.lastOrNull is PresentationBreakpoint) {
+        filledTokens.removeLast();
+        part--;
+      }
       // make sure that before verse end there is a new line
-      if (filledTokens.last is! NewLine) _fillToken(NewLine());
+      if (filledTokens.lastOrNull is! NewLine) _fillToken(NewLine());
 
       _fillToken(VerseEnd());
     }
@@ -275,6 +301,7 @@ class _FilledTokensBuilder {
       } else if (token is VerseEnd) {
         final substitutes = verseSubstitutes[verseNumber] ?? verseSubstitutes[verseNumber.replaceFirst('.', ':')] ?? [];
 
+        if (filledTokens.lastOrNull is! PresentationBreakpoint) filledTokens.add(PresentationBreakpoint(part++));
         filledTokens.addAll(substitutes);
         filledTokens.addAll(comments);
 
@@ -334,6 +361,7 @@ class SongLyricsParser {
         case 'B':
         case 'C':
         case 'R':
+        case 'm': // starting with "mezizpěv"
           if (state == _ParserState.lineStart) {
             chordSubstituteIndex = 0;
 
@@ -441,8 +469,9 @@ class SongLyricsParser {
         // handles end of line
         case '\r\n':
         case '\n':
-          if (currentString.trim().isEmpty && tokens.last is VerseNumber) {
+          if (currentString.trim().isEmpty && (tokens.last is VerseNumber || tokens.last is VerseSubstitute)) {
             tokens.add(VerseEnd());
+            isInsideVerse = false;
           }
 
           if (state == _ParserState.comment) {
@@ -450,7 +479,7 @@ class SongLyricsParser {
           } else if (currentString.isNotEmpty) {
             tokens.add(VersePart(currentString));
             tokens.add(NewLine());
-          } else {
+          } else if (tokens.last is! VerseEnd) {
             tokens.add(NewLine());
           }
 
@@ -460,7 +489,8 @@ class SongLyricsParser {
         default:
           if (state == _ParserState.lineStart) {
             state = _ParserState.verseLine;
-          } else if (state == _ParserState.possibleVerseNumber && int.tryParse(c) == null) {
+          } else if (state == _ParserState.possibleVerseNumber &&
+              !(int.tryParse(c) != null || 'mezizpěv'.startsWith(currentString))) {
             state = _ParserState.verseLine;
           } else if (state == _ParserState.possibleVerseSubstitute && int.tryParse(c) == null) {
             currentString = '($currentString';
@@ -483,14 +513,16 @@ class SongLyricsParser {
     return tokens;
   }
 
-  String getVerse(int order) {
+  String getVerse(int part) {
     _parsedSongLyrics ??= _FilledTokensBuilder()._fillSubstitutes(_parseTokens());
 
     String verse = '';
-    Token? lastToken;
+    bool isInsideVersepart = false;
 
     for (final token in _parsedSongLyrics!) {
-      if (order == 0) {
+      if (isInsideVersepart) {
+        if (token is PresentationBreakpoint || token is VerseEnd) break;
+
         if (token is VersePart) {
           verse = '$verse${token.value}';
         } else if (token is VerseNumber) {
@@ -500,13 +532,7 @@ class SongLyricsParser {
         }
       }
 
-      if ((token is NewLine && lastToken is NewLine)) {
-        if (order == 0) break;
-
-        order--;
-      }
-
-      lastToken = token;
+      if (token is PresentationBreakpoint && token.part == part) isInsideVersepart = true;
     }
 
     return verse.trim();
