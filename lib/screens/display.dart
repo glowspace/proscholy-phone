@@ -300,54 +300,60 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
     final presentation = ref.watch(presentationProvider);
     final fullScreen = ref.watch(displayScreenStatusProvider.select((status) => status.fullScreen));
 
+    Widget? bottomSheet;
+
     if (presentation.isPresenting) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding, vertical: kDefaultPadding) +
-            EdgeInsets.only(bottom: fullScreen ? MediaQuery.paddingOf(context).bottom : 0),
-        child: Row(children: [
-          Highlightable(
-            isEnabled: presentation.hasSongLyricsParser,
-            onTap: presentation.prevVerse,
-            icon: Icon(Icons.adaptive.arrow_back),
-          ),
-          Highlightable(
-            onTap: presentation.togglePause,
-            icon: Icon(presentation.isPaused ? Icons.play_arrow : Icons.pause),
-          ),
-          Highlightable(
-            isEnabled: presentation.hasSongLyricsParser,
-            onTap: presentation.nextVerse,
-            icon: Icon(Icons.adaptive.arrow_forward),
-          ),
-          const Spacer(),
-          Highlightable(
-            isEnabled: presentation.hasSongLyricsParser,
-            onTap: presentation.toggleVisibility,
-            icon: Icon(presentation.isVisible ? Icons.visibility_off : Icons.visibility),
-          ),
-          Highlightable(
-            onTap: () => showModalBottomSheet(
-              context: context,
-              builder: (context) => PresentationSettingsWidget(
-                onExternalDisplay: !ref.read(presentationProvider).isPresentingLocally,
-              ),
+      bottomSheet = Row(children: [
+        Highlightable(
+          isEnabled: presentation.hasSongLyricsParser,
+          onTap: presentation.prevVerse,
+          icon: Icon(Icons.adaptive.arrow_back),
+        ),
+        Highlightable(
+          onTap: presentation.togglePause,
+          icon: Icon(presentation.isPaused ? Icons.play_arrow : Icons.pause),
+        ),
+        Highlightable(
+          isEnabled: presentation.hasSongLyricsParser,
+          onTap: presentation.nextVerse,
+          icon: Icon(Icons.adaptive.arrow_forward),
+        ),
+        const Spacer(),
+        Highlightable(
+          isEnabled: presentation.hasSongLyricsParser,
+          onTap: presentation.toggleVisibility,
+          icon: Icon(presentation.isVisible ? Icons.visibility_off : Icons.visibility),
+        ),
+        Highlightable(
+          onTap: () => showModalBottomSheet(
+            context: context,
+            builder: (context) => PresentationSettingsWidget(
+              onExternalDisplay: !ref.read(presentationProvider).isPresentingLocally,
             ),
-            icon: const Icon(Icons.tune),
           ),
-          Highlightable(
-            onTap: () => presentation.stop(),
-            icon: const Icon(Icons.close),
-          ),
-        ]),
-      );
+          icon: const Icon(Icons.tune),
+        ),
+        Highlightable(
+          onTap: () => presentation.stop(),
+          icon: const Icon(Icons.close),
+        ),
+      ]);
     } else if (activePlayer != null) {
-      return GestureDetector(
+      bottomSheet = GestureDetector(
         behavior: HitTestBehavior.translucent,
         onTap: ref.read(displayScreenStatusProvider.notifier).showExternals,
         child: CollapsedPlayer(
           controller: activePlayer,
           onDismiss: ref.read(activePlayerProvider.notifier).dismiss,
         ),
+      );
+    }
+
+    if (bottomSheet != null) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding, vertical: kDefaultPadding) +
+            EdgeInsets.only(bottom: fullScreen ? MediaQuery.paddingOf(context).bottom : 0),
+        child: bottomSheet,
       );
     }
 

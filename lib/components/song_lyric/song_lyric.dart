@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:zpevnik/components/song_lyric/song_lyric_chips.dart';
+import 'package:zpevnik/components/song_lyric/utils/active_player_controller.dart';
 import 'package:zpevnik/components/song_lyric/utils/auto_scroll.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
+import 'package:zpevnik/providers/display_screen_status.dart';
 import 'package:zpevnik/providers/presentation.dart';
 import 'package:zpevnik/providers/settings.dart';
 import 'package:zpevnik/components/song_lyric/utils/converter.dart';
@@ -101,8 +103,14 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
             ),
             SizedBox(height: kDefaultPadding * fontSizeScale),
             // make sure lyrics are visible with bottom sheet
-            if (ref.watch(presentationProvider.select((presentation) => presentation.isPresenting)))
-              SizedBox(height: 4 * kDefaultPadding * fontSizeScale),
+            SizedBox(
+                height: (ref.watch(presentationProvider.select((presentation) => presentation.isPresenting)) ||
+                        ref.watch(activePlayerProvider.select((activePlayer) => activePlayer != null)))
+                    ? (4 * kDefaultPadding * fontSizeScale +
+                        (ref.watch(displayScreenStatusProvider.select((status) => status.fullScreen))
+                            ? MediaQuery.of(context).padding.bottom
+                            : 0))
+                    : 0),
           ],
         ),
       ),
