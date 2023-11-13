@@ -23,8 +23,9 @@ const _noPlaylistRecordText = 'V tomto seznamu nemáte žádné písně. Klikně
 
 class PlaylistRecordsListView extends ConsumerStatefulWidget {
   final Playlist playlist;
+  final ValueNotifier<bool> sortedAlphabeticallyNotifier;
 
-  const PlaylistRecordsListView({super.key, required this.playlist});
+  const PlaylistRecordsListView({super.key, required this.playlist, required this.sortedAlphabeticallyNotifier});
 
   @override
   ConsumerState<PlaylistRecordsListView> createState() => _PlaylistRecordsListViewState();
@@ -49,6 +50,15 @@ class _PlaylistRecordsListViewState extends ConsumerState<PlaylistRecordsListVie
         .watch()
         .listen((_) =>
             setState(() => _recordsOrdered = widget.playlist.records.sorted((a, b) => a.rank.compareTo(b.rank))));
+
+    widget.sortedAlphabeticallyNotifier.addListener(() {
+      if (widget.sortedAlphabeticallyNotifier.value) {
+        setState(() => _recordsOrdered = widget.playlist.records
+            .sorted((a, b) => _unwrapPlaylistRecord(a).name.compareTo(_unwrapPlaylistRecord(b).name)));
+      } else {
+        setState(() => _recordsOrdered = widget.playlist.records.sorted((a, b) => a.rank.compareTo(b.rank)));
+      }
+    });
   }
 
   @override
@@ -118,12 +128,16 @@ class _PlaylistRecordsListViewState extends ConsumerState<PlaylistRecordsListVie
   void _reorder(int oldIndex, int newIndex) {
     if (oldIndex < newIndex) newIndex -= 1;
 
+    if (oldIndex == newIndex) return;
+
     _recordsOrdered.insert(newIndex, _recordsOrdered.removeAt(oldIndex));
 
     widget.playlist.records.setAll(0, _recordsOrdered.mapIndexed((index, record) => record.copyWith(rank: index)));
 
     // `widget.playlist.records.applyToDb` saves sometimes incorrectly new ranks, so save it using `putMany`
     context.providers.read(appDependenciesProvider).store.box<PlaylistRecord>().putMany(widget.playlist.records);
+
+    widget.sortedAlphabeticallyNotifier.value = false;
   }
 
   void _removePlaylistRecord(int index) {

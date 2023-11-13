@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:zpevnik/components/custom/back_button.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/navigation/hero_app_bar.dart';
@@ -66,7 +67,9 @@ class _PlaylistScreenTabletState extends ConsumerState<_PlaylistScreenTablet> {
 class _PlaylistScaffold extends StatelessWidget {
   final Playlist playlist;
 
-  const _PlaylistScaffold({super.key, required this.playlist});
+  _PlaylistScaffold({super.key, required this.playlist});
+
+  final ValueNotifier<bool> sortedAlphabeticallyNotifier = ValueNotifier(false);
 
   @override
   Widget build(BuildContext context) {
@@ -139,8 +142,23 @@ class _PlaylistScaffold extends StatelessWidget {
               // enable filter only if there are some song lyrics in playlist
               isEnabled: playlist.records.where((record) => record.songLyric.targetId != 0).isNotEmpty,
               onTap: () => _pushSearch(context),
-              padding: EdgeInsets.symmetric(horizontal: (playlist.isFavorites ? 1.5 : 1) * kDefaultPadding),
+              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
               icon: const Icon(Icons.filter_alt),
+            ),
+            ValueListenableBuilder(
+              valueListenable: sortedAlphabeticallyNotifier,
+              builder: (_, sortedAlphabetically, __) => Highlightable(
+                isEnabled: playlist.records.isNotEmpty,
+                onTap: () => sortedAlphabeticallyNotifier.value = !sortedAlphabeticallyNotifier.value,
+                padding: EdgeInsets.only(
+                  left: kDefaultPadding,
+                  right: (playlist.isFavorites ? 1.5 : 1) * kDefaultPadding,
+                ),
+                icon: Icon(
+                  FontAwesomeIcons.arrowDownAZ,
+                  color: sortedAlphabetically ? theme.colorScheme.primary : null,
+                ),
+              ),
             ),
             if (!playlist.isFavorites) PlaylistButton(playlist: playlist, isInAppBar: true),
           ],
@@ -153,7 +171,10 @@ class _PlaylistScaffold extends StatelessWidget {
           // must be wrapped in material widget, as there is no material in tree during hero transition
           child: Material(
             color: Colors.transparent,
-            child: PlaylistRecordsListView(playlist: playlist),
+            child: PlaylistRecordsListView(
+              playlist: playlist,
+              sortedAlphabeticallyNotifier: sortedAlphabeticallyNotifier,
+            ),
           ),
         ),
       ),
