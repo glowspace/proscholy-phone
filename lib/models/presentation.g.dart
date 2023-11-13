@@ -30,7 +30,6 @@ Map<String, dynamic> _$$PresentationDataImplToJson(
 _$PresentationSettingsImpl _$$PresentationSettingsImplFromJson(
         Map<String, dynamic> json) =>
     _$PresentationSettingsImpl(
-      showBackground: json['showBackground'] as bool,
       darkMode: json['darkMode'] as bool,
       showName: json['showName'] as bool,
       allCapital: json['allCapital'] as bool,
@@ -42,7 +41,6 @@ _$PresentationSettingsImpl _$$PresentationSettingsImplFromJson(
 Map<String, dynamic> _$$PresentationSettingsImplToJson(
         _$PresentationSettingsImpl instance) =>
     <String, dynamic>{
-      'showBackground': instance.showBackground,
       'darkMode': instance.darkMode,
       'showName': instance.showName,
       'allCapital': instance.allCapital,

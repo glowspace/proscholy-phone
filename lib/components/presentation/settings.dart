@@ -23,15 +23,6 @@ class PresentationSettingsWidget extends ConsumerWidget {
       children: [
         if (onExternalDisplay)
           SwitchListTile.adaptive(
-            title: Text('Zobrazovat pozadí', style: textTheme.bodyMedium),
-            value: settings.showBackground,
-            dense: true,
-            onChanged: (value) =>
-                ref.read(presentationProvider.notifier).changeSettings(settings.copyWith(showBackground: value)),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
-          ),
-        if (onExternalDisplay)
-          SwitchListTile.adaptive(
             title: Text('Světlé písmo', style: textTheme.bodyMedium),
             value: settings.darkMode,
             dense: true,

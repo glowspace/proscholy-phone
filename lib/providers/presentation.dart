@@ -27,6 +27,8 @@ class PresentationProvider extends ChangeNotifier {
 
   bool get hasSongLyricsParser => _songLyricsParser != null;
 
+  SongLyric? get songLyric => _songLyricsParser?.songLyric;
+
   int _part = 0;
   int get part => _part;
 

@@ -36,9 +36,10 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
     super.initState();
 
     // listen for changes in presented verse and make sure it is visible
-    context.providers
-        .listen(presentationProvider.select((presentation) => presentation.isPresenting ? presentation.part : -1),
-            (_, presentationPart) {
+    context.providers.listen(
+        presentationProvider.select((presentation) =>
+            presentation.isPresenting && presentation.songLyric == widget.songLyric ? presentation.part : -1),
+        (_, presentationPart) {
       final context = _presentationPartGlobalKeysMap[presentationPart]?.currentContext;
 
       if (context != null) {
@@ -106,7 +107,7 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
             SizedBox(
                 height: (ref.watch(presentationProvider.select((presentation) => presentation.isPresenting)) ||
                         ref.watch(activePlayerProvider.select((activePlayer) => activePlayer != null)))
-                    ? (4 * kDefaultPadding * fontSizeScale +
+                    ? (4 * kDefaultPadding +
                         (ref.watch(displayScreenStatusProvider.select((status) => status.fullScreen))
                             ? MediaQuery.of(context).padding.bottom
                             : 0))

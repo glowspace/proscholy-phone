@@ -18,9 +18,8 @@ class Presentation extends StatelessWidget {
     final mediaQuery = MediaQuery.of(context);
     final width = mediaQuery.size.width - mediaQuery.padding.horizontal;
 
-    final backgroundColor = (presentationData.settings.showBackground && onExternalDisplay
-        ? (presentationData.settings.darkMode ? Colors.black : Colors.white)
-        : null);
+    final backgroundColor =
+        (onExternalDisplay ? (presentationData.settings.darkMode ? Colors.black : Colors.white) : null);
     final textColor = onExternalDisplay ? (presentationData.settings.darkMode ? Colors.white : Colors.black) : null;
 
     final presentingText = (presentationData.songLyricId != null && presentationData.settings.allCapital)
@@ -38,7 +37,6 @@ class Presentation extends StatelessWidget {
     if (!presentationData.settings.isVisible) return Container(color: backgroundColor);
 
     return Container(
-      key: Key(presentationData.text),
       color: backgroundColor,
       child: Stack(
         children: [

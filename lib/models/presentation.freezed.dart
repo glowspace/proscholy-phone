@@ -259,7 +259,6 @@ PresentationSettings _$PresentationSettingsFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$PresentationSettings {
-  bool get showBackground => throw _privateConstructorUsedError;
   bool get darkMode => throw _privateConstructorUsedError;
   bool get showName => throw _privateConstructorUsedError;
   bool get allCapital => throw _privateConstructorUsedError;
@@ -279,8 +278,7 @@ abstract class $PresentationSettingsCopyWith<$Res> {
       _$PresentationSettingsCopyWithImpl<$Res, PresentationSettings>;
   @useResult
   $Res call(
-      {bool showBackground,
-      bool darkMode,
+      {bool darkMode,
       bool showName,
       bool allCapital,
       bool isVisible,
@@ -301,7 +299,6 @@ class _$PresentationSettingsCopyWithImpl<$Res,
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? showBackground = null,
     Object? darkMode = null,
     Object? showName = null,
     Object? allCapital = null,
@@ -309,10 +306,6 @@ class _$PresentationSettingsCopyWithImpl<$Res,
     Object? alignment = freezed,
   }) {
     return _then(_value.copyWith(
-      showBackground: null == showBackground
-          ? _value.showBackground
-          : showBackground // ignore: cast_nullable_to_non_nullable
-              as bool,
       darkMode: null == darkMode
           ? _value.darkMode
           : darkMode // ignore: cast_nullable_to_non_nullable
@@ -346,8 +339,7 @@ abstract class _$$PresentationSettingsImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {bool showBackground,
-      bool darkMode,
+      {bool darkMode,
       bool showName,
       bool allCapital,
       bool isVisible,
@@ -365,7 +357,6 @@ class __$$PresentationSettingsImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? showBackground = null,
     Object? darkMode = null,
     Object? showName = null,
     Object? allCapital = null,
@@ -373,10 +364,6 @@ class __$$PresentationSettingsImplCopyWithImpl<$Res>
     Object? alignment = freezed,
   }) {
     return _then(_$PresentationSettingsImpl(
-      showBackground: null == showBackground
-          ? _value.showBackground
-          : showBackground // ignore: cast_nullable_to_non_nullable
-              as bool,
       darkMode: null == darkMode
           ? _value.darkMode
           : darkMode // ignore: cast_nullable_to_non_nullable
@@ -405,8 +392,7 @@ class __$$PresentationSettingsImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$PresentationSettingsImpl implements _PresentationSettings {
   const _$PresentationSettingsImpl(
-      {required this.showBackground,
-      required this.darkMode,
+      {required this.darkMode,
       required this.showName,
       required this.allCapital,
       required this.isVisible,
@@ -415,8 +401,6 @@ class _$PresentationSettingsImpl implements _PresentationSettings {
   factory _$PresentationSettingsImpl.fromJson(Map<String, dynamic> json) =>
       _$$PresentationSettingsImplFromJson(json);
 
-  @override
-  final bool showBackground;
   @override
   final bool darkMode;
   @override
@@ -430,7 +414,7 @@ class _$PresentationSettingsImpl implements _PresentationSettings {
 
   @override
   String toString() {
-    return 'PresentationSettings(showBackground: $showBackground, darkMode: $darkMode, showName: $showName, allCapital: $allCapital, isVisible: $isVisible, alignment: $alignment)';
+    return 'PresentationSettings(darkMode: $darkMode, showName: $showName, allCapital: $allCapital, isVisible: $isVisible, alignment: $alignment)';
   }
 
   @override
@@ -438,8 +422,6 @@ class _$PresentationSettingsImpl implements _PresentationSettings {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$PresentationSettingsImpl &&
-            (identical(other.showBackground, showBackground) ||
-                other.showBackground == showBackground) &&
             (identical(other.darkMode, darkMode) ||
                 other.darkMode == darkMode) &&
             (identical(other.showName, showName) ||
@@ -454,8 +436,8 @@ class _$PresentationSettingsImpl implements _PresentationSettings {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, showBackground, darkMode,
-      showName, allCapital, isVisible, alignment);
+  int get hashCode => Object.hash(
+      runtimeType, darkMode, showName, allCapital, isVisible, alignment);
 
   @JsonKey(ignore: true)
   @override
@@ -475,8 +457,7 @@ class _$PresentationSettingsImpl implements _PresentationSettings {
 
 abstract class _PresentationSettings implements PresentationSettings {
   const factory _PresentationSettings(
-      {required final bool showBackground,
-      required final bool darkMode,
+      {required final bool darkMode,
       required final bool showName,
       required final bool allCapital,
       required final bool isVisible,
@@ -485,8 +466,6 @@ abstract class _PresentationSettings implements PresentationSettings {
   factory _PresentationSettings.fromJson(Map<String, dynamic> json) =
       _$PresentationSettingsImpl.fromJson;
 
-  @override
-  bool get showBackground;
   @override
   bool get darkMode;
   @override

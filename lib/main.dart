@@ -103,16 +103,7 @@ class MainWidget extends ConsumerWidget {
 }
 
 @pragma('vm:entry-point')
-void mainPresentation() => runApp(const MainPresentation());
-
-class MainPresentation extends StatelessWidget {
-  const MainPresentation({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(debugShowCheckedModeBanner: false, title: _title, home: PresentationScreen());
-  }
-}
+void mainPresentation() => runApp(const MaterialApp(home: PresentationScreen(), debugShowCheckedModeBanner: false));
 
 class MyProviderObserver extends ProviderObserver {
   @override

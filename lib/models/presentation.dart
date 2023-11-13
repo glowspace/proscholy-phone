@@ -11,7 +11,6 @@ const defaultPresentationData = PresentationData(
 );
 
 const defaultPresentationSettings = PresentationSettings(
-  showBackground: false,
   darkMode: true,
   showName: false,
   allCapital: false,
@@ -36,7 +35,6 @@ class PresentationData with _$PresentationData {
 @freezed
 class PresentationSettings with _$PresentationSettings {
   const factory PresentationSettings({
-    required bool showBackground,
     required bool darkMode,
     required bool showName,
     required bool allCapital,
