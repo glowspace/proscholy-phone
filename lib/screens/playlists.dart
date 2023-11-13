@@ -24,7 +24,7 @@ class PlaylistsScreen extends StatelessWidget {
         ),
       ),
       floatingActionButton: LayoutBuilder(
-        builder: (_, constraints) => constraints.maxWidth > kTabletSizeBreakpoint / 2
+        builder: (_, constraints) => constraints.maxWidth > kTabletSizeBreakpoint
             ? FloatingActionButton.extended(
                 heroTag: HeroTags.playlistsFAB,
                 backgroundColor: Theme.of(context).colorScheme.surface,

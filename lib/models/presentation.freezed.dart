@@ -264,6 +264,7 @@ mixin _$PresentationSettings {
   bool get showName => throw _privateConstructorUsedError;
   bool get allCapital => throw _privateConstructorUsedError;
   bool get isVisible => throw _privateConstructorUsedError;
+  PresentationAlignment? get alignment => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -282,7 +283,8 @@ abstract class $PresentationSettingsCopyWith<$Res> {
       bool darkMode,
       bool showName,
       bool allCapital,
-      bool isVisible});
+      bool isVisible,
+      PresentationAlignment? alignment});
 }
 
 /// @nodoc
@@ -304,6 +306,7 @@ class _$PresentationSettingsCopyWithImpl<$Res,
     Object? showName = null,
     Object? allCapital = null,
     Object? isVisible = null,
+    Object? alignment = freezed,
   }) {
     return _then(_value.copyWith(
       showBackground: null == showBackground
@@ -326,6 +329,10 @@ class _$PresentationSettingsCopyWithImpl<$Res,
           ? _value.isVisible
           : isVisible // ignore: cast_nullable_to_non_nullable
               as bool,
+      alignment: freezed == alignment
+          ? _value.alignment
+          : alignment // ignore: cast_nullable_to_non_nullable
+              as PresentationAlignment?,
     ) as $Val);
   }
 }
@@ -343,7 +350,8 @@ abstract class _$$PresentationSettingsImplCopyWith<$Res>
       bool darkMode,
       bool showName,
       bool allCapital,
-      bool isVisible});
+      bool isVisible,
+      PresentationAlignment? alignment});
 }
 
 /// @nodoc
@@ -362,6 +370,7 @@ class __$$PresentationSettingsImplCopyWithImpl<$Res>
     Object? showName = null,
     Object? allCapital = null,
     Object? isVisible = null,
+    Object? alignment = freezed,
   }) {
     return _then(_$PresentationSettingsImpl(
       showBackground: null == showBackground
@@ -384,6 +393,10 @@ class __$$PresentationSettingsImplCopyWithImpl<$Res>
           ? _value.isVisible
           : isVisible // ignore: cast_nullable_to_non_nullable
               as bool,
+      alignment: freezed == alignment
+          ? _value.alignment
+          : alignment // ignore: cast_nullable_to_non_nullable
+              as PresentationAlignment?,
     ));
   }
 }
@@ -396,7 +409,8 @@ class _$PresentationSettingsImpl implements _PresentationSettings {
       required this.darkMode,
       required this.showName,
       required this.allCapital,
-      required this.isVisible});
+      required this.isVisible,
+      this.alignment});
 
   factory _$PresentationSettingsImpl.fromJson(Map<String, dynamic> json) =>
       _$$PresentationSettingsImplFromJson(json);
@@ -411,10 +425,12 @@ class _$PresentationSettingsImpl implements _PresentationSettings {
   final bool allCapital;
   @override
   final bool isVisible;
+  @override
+  final PresentationAlignment? alignment;
 
   @override
   String toString() {
-    return 'PresentationSettings(showBackground: $showBackground, darkMode: $darkMode, showName: $showName, allCapital: $allCapital, isVisible: $isVisible)';
+    return 'PresentationSettings(showBackground: $showBackground, darkMode: $darkMode, showName: $showName, allCapital: $allCapital, isVisible: $isVisible, alignment: $alignment)';
   }
 
   @override
@@ -431,13 +447,15 @@ class _$PresentationSettingsImpl implements _PresentationSettings {
             (identical(other.allCapital, allCapital) ||
                 other.allCapital == allCapital) &&
             (identical(other.isVisible, isVisible) ||
-                other.isVisible == isVisible));
+                other.isVisible == isVisible) &&
+            (identical(other.alignment, alignment) ||
+                other.alignment == alignment));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, showBackground, darkMode, showName, allCapital, isVisible);
+  int get hashCode => Object.hash(runtimeType, showBackground, darkMode,
+      showName, allCapital, isVisible, alignment);
 
   @JsonKey(ignore: true)
   @override
@@ -461,7 +479,8 @@ abstract class _PresentationSettings implements PresentationSettings {
       required final bool darkMode,
       required final bool showName,
       required final bool allCapital,
-      required final bool isVisible}) = _$PresentationSettingsImpl;
+      required final bool isVisible,
+      final PresentationAlignment? alignment}) = _$PresentationSettingsImpl;
 
   factory _PresentationSettings.fromJson(Map<String, dynamic> json) =
       _$PresentationSettingsImpl.fromJson;
@@ -476,6 +495,8 @@ abstract class _PresentationSettings implements PresentationSettings {
   bool get allCapital;
   @override
   bool get isVisible;
+  @override
+  PresentationAlignment? get alignment;
   @override
   @JsonKey(ignore: true)
   _$$PresentationSettingsImplCopyWith<_$PresentationSettingsImpl>

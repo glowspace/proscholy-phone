@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:zpevnik/constants.dart';
 
-class SelectorWidget extends StatelessWidget {
+class SelectorWidget<T> extends StatelessWidget {
   final String title;
 
-  final Function(int) onSelected;
-  final List<ButtonSegment<int>> segments;
-  final int selected;
+  final Function(T) onSelected;
+  final List<ButtonSegment<T>> segments;
+  final T selected;
 
   final bool isEnabled;
 
@@ -17,7 +17,7 @@ class SelectorWidget extends StatelessWidget {
     required this.title,
     required this.onSelected,
     required this.segments,
-    this.selected = 0,
+    required this.selected,
     this.isEnabled = true,
     this.padding = const EdgeInsets.all(kDefaultPadding),
   });
@@ -33,7 +33,7 @@ class SelectorWidget extends StatelessWidget {
         Expanded(
           child: Text(title, style: textTheme.bodyMedium?.copyWith(color: isEnabled ? null : theme.disabledColor)),
         ),
-        SegmentedButton<int>(
+        SegmentedButton<T>(
           style: const ButtonStyle(
             visualDensity: VisualDensity.compact,
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,

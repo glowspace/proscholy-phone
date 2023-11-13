@@ -76,7 +76,7 @@ class _PlaylistScaffold extends StatelessWidget {
 
     if (playlist.isFavorites) {
       floatingActionButton = LayoutBuilder(
-        builder: (_, constraints) => constraints.maxWidth > kTabletSizeBreakpoint / 2
+        builder: (_, constraints) => constraints.maxWidth > kTabletSizeBreakpoint
             ? FloatingActionButton.extended(
                 heroTag: HeroTags.playlistFAB,
                 backgroundColor: theme.colorScheme.surface,
@@ -101,7 +101,7 @@ class _PlaylistScaffold extends StatelessWidget {
             overlayColor: Colors.black,
             overlayOpacity: 0.1,
             spacing: kDefaultPadding / 2,
-            label: constraints.maxWidth > kTabletSizeBreakpoint / 2 ? const Text('Přidat do seznamu') : null,
+            label: constraints.maxWidth > kTabletSizeBreakpoint ? const Text('Přidat do seznamu') : null,
             icon: Icons.add,
             activeIcon: Icons.close,
             children: [

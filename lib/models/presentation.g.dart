@@ -35,6 +35,8 @@ _$PresentationSettingsImpl _$$PresentationSettingsImplFromJson(
       showName: json['showName'] as bool,
       allCapital: json['allCapital'] as bool,
       isVisible: json['isVisible'] as bool,
+      alignment: $enumDecodeNullable(
+          _$PresentationAlignmentEnumMap, json['alignment']),
     );
 
 Map<String, dynamic> _$$PresentationSettingsImplToJson(
@@ -45,4 +47,11 @@ Map<String, dynamic> _$$PresentationSettingsImplToJson(
       'showName': instance.showName,
       'allCapital': instance.allCapital,
       'isVisible': instance.isVisible,
+      'alignment': _$PresentationAlignmentEnumMap[instance.alignment],
     };
+
+const _$PresentationAlignmentEnumMap = {
+  PresentationAlignment.top: 'top',
+  PresentationAlignment.center: 'center',
+  PresentationAlignment.bottom: 'bottom',
+};

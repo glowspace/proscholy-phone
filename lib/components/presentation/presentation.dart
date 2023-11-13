@@ -38,6 +38,7 @@ class Presentation extends StatelessWidget {
     if (!presentationData.settings.isVisible) return Container(color: backgroundColor);
 
     return Container(
+      key: Key(presentationData.text),
       color: backgroundColor,
       child: Stack(
         children: [
@@ -54,34 +55,44 @@ class Presentation extends StatelessWidget {
               ),
             ),
           Align(
-            alignment: Alignment.center,
-            child: presentationData.isCustomText
-                ? QuillProvider(
-                    configurations: QuillConfigurations(
-                      controller: QuillController(
-                        document: _deserializeMarkdownToDocument(presentingText),
-                        selection: const TextSelection.collapsed(offset: 0),
+            alignment: switch (presentationData.settings.alignment) {
+              PresentationAlignment.top => Alignment.topCenter,
+              PresentationAlignment.bottom => Alignment.bottomCenter,
+              _ => Alignment.center,
+            },
+            child: Padding(
+              padding: EdgeInsets.only(
+                top: (presentationData.settings.showName ? 4 : 1) * textScaleFactor * kDefaultPadding,
+                bottom: (onExternalDisplay ? 1 : 8) * textScaleFactor * kDefaultPadding,
+              ),
+              child: presentationData.isCustomText
+                  ? QuillProvider(
+                      configurations: QuillConfigurations(
+                        controller: QuillController(
+                          document: _deserializeMarkdownToDocument(presentingText),
+                          selection: const TextSelection.collapsed(offset: 0),
+                        ),
+                      ),
+                      child: QuillEditor.basic(
+                        configurations: const QuillEditorConfigurations(
+                          padding: EdgeInsets.symmetric(horizontal: 2 * kDefaultPadding),
+                          readOnly: true,
+                          scrollable: false,
+                          autoFocus: false,
+                          expands: false,
+                          showCursor: false,
+                        ),
+                      ),
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 2 * kDefaultPadding),
+                      child: Text(
+                        presentingText,
+                        style: textTheme.bodyMedium?.copyWith(color: textColor),
+                        textScaleFactor: textScaleFactor,
                       ),
                     ),
-                    child: QuillEditor.basic(
-                      configurations: const QuillEditorConfigurations(
-                        padding: EdgeInsets.symmetric(horizontal: 2 * kDefaultPadding),
-                        readOnly: true,
-                        scrollable: false,
-                        autoFocus: false,
-                        expands: false,
-                        showCursor: false,
-                      ),
-                    ),
-                  )
-                : Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 2 * kDefaultPadding),
-                    child: Text(
-                      presentingText,
-                      style: textTheme.bodyMedium?.copyWith(color: textColor),
-                      textScaleFactor: textScaleFactor,
-                    ),
-                  ),
+            ),
           ),
           if (onExternalDisplay && presentingText.isNotEmpty && presentationData.songLyricId != null)
             Align(

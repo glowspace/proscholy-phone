@@ -18,6 +18,8 @@ const defaultPresentationSettings = PresentationSettings(
   isVisible: true,
 );
 
+enum PresentationAlignment { top, center, bottom }
+
 @freezed
 class PresentationData with _$PresentationData {
   const factory PresentationData({
@@ -39,6 +41,7 @@ class PresentationSettings with _$PresentationSettings {
     required bool showName,
     required bool allCapital,
     required bool isVisible,
+    PresentationAlignment? alignment,
   }) = _PresentationSettings;
 
   factory PresentationSettings.fromJson(Map<String, Object?> json) => _$PresentationSettingsFromJson(json);
