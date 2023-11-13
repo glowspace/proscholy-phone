@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zpevnik/constants.dart' hide red, green, blue;
+import 'package:zpevnik/routing/navigator_observer.dart';
 
 extension PlatformExtension on TargetPlatform {
   bool get isAndroid => this == TargetPlatform.android;
@@ -45,7 +46,13 @@ extension BuildContextExtension on BuildContext {
 
   ProviderContainer get providers => ProviderScope.containerOf(this, listen: false);
 
-  Future<T?> push<T extends Object?>(String routeName, {Object? arguments}) {
+  Future<T?> push<T extends Object?>(String routeName, {Object? arguments}) async {
+    if (providers.read(appNavigatorObserverProvider).isPathInStack(routeName)) {
+      popUntil(routeName);
+
+      return replace(routeName, arguments: arguments);
+    }
+
     return Navigator.of(this).pushNamed(routeName, arguments: arguments);
   }
 
@@ -65,7 +72,7 @@ extension BuildContextExtension on BuildContext {
     Navigator.of(this).maybePop(result);
   }
 
-  void replace(String routeName) {
-    Navigator.of(this).pushReplacementNamed(routeName);
+  Future<T?> replace<T extends Object?>(String routeName, {Object? arguments}) {
+    return Navigator.of(this).pushReplacementNamed(routeName, arguments: arguments);
   }
 }

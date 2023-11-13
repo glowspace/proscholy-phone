@@ -4,8 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zpevnik/components/song_lyric/song_lyrics_section_title.dart';
 import 'package:zpevnik/components/song_lyric/song_lyric_row.dart';
 import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/models/tag.dart';
+import 'package:zpevnik/providers/playlists.dart';
 import 'package:zpevnik/providers/recent_items.dart';
 import 'package:zpevnik/providers/search.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
@@ -42,6 +44,11 @@ class SearchSongLyricsListView extends ConsumerWidget {
 
     if (showRecentSongLyrics) itemCount += recentSongLyrics.length + 2;
 
+    final selectedTags = ref.read(selectedTagsProvider);
+    final playlist = selectedTags.length != 1 || selectedTags.firstOrNull?.type != TagType.playlist
+        ? null
+        : ref.read(playlistProvider(selectedTags.first.id - playlistIdOffset));
+
     return SafeArea(
       bottom: false,
       child: ListView.builder(
@@ -67,6 +74,7 @@ class SearchSongLyricsListView extends ConsumerWidget {
                   items: recentSongLyrics,
                   initialIndex: index,
                   showSearchScreen: true,
+                  playlist: playlist,
                 ),
               );
             }
@@ -97,6 +105,7 @@ class SearchSongLyricsListView extends ConsumerWidget {
                   items: matchedBySongbookNumber,
                   initialIndex: index,
                   showSearchScreen: true,
+                  playlist: playlist,
                 ),
               );
             }
@@ -130,6 +139,7 @@ class SearchSongLyricsListView extends ConsumerWidget {
               items: songLyrics,
               initialIndex: index,
               showSearchScreen: true,
+              playlist: playlist,
             ),
           );
         },

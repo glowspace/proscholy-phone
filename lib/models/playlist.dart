@@ -10,7 +10,7 @@ const favoritesPlaylistId = 1;
 const _favoritesName = 'Písně s hvězdičkou';
 
 // offset for songbook tags, tags from API have id > 0, songbook tags have negative id starting from -1000, so offset -2000 should be enough
-const _playlistIdOffset = -2000;
+const playlistIdOffset = -2000;
 
 @Freezed(equal: false)
 class Playlist with _$Playlist implements Identifiable, RecentItem, SongsList {
@@ -31,7 +31,7 @@ class Playlist with _$Playlist implements Identifiable, RecentItem, SongsList {
         records: ToMany(),
       );
 
-  Tag get tag => Tag(id: id + _playlistIdOffset, name: name, dbType: TagType.playlist.rawValue);
+  Tag get tag => Tag(id: id + playlistIdOffset, name: name, dbType: TagType.playlist.rawValue);
 
   bool get isFavorites => id == favoritesPlaylistId;
 

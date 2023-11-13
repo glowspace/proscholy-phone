@@ -117,8 +117,10 @@ class SongLyricRow extends StatelessWidget {
       if (isInsideTranslationSheet) context.pop();
     } else {
       if (isInsideTranslationSheet) {
-        context.popAndPush('/display',
-            arguments: displayScreenArguments ?? DisplayScreenArguments.songLyric(songLyric));
+        context.popAndPush(
+          '/display',
+          arguments: displayScreenArguments ?? DisplayScreenArguments.songLyric(songLyric),
+        );
       } else {
         context.push('/display', arguments: displayScreenArguments ?? DisplayScreenArguments.songLyric(songLyric));
       }

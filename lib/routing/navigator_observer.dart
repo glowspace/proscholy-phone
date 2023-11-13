@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 import 'package:zpevnik/models/playlist.dart';
@@ -17,11 +16,9 @@ part 'navigator_observer.g.dart';
 AppNavigatorObserver appNavigatorObserver(AppNavigatorObserverRef ref) => AppNavigatorObserver();
 
 class AppNavigatorObserver extends NavigatorObserver {
-  bool _isPlaylistsRouteInStack = false;
-  bool _isSearchRouteInStack = false;
+  final Set<String> _pathsInStack = {};
 
-  bool get isPlaylistsRouteInStack => _isPlaylistsRouteInStack;
-  bool get isSearchRouteInStack => _isSearchRouteInStack;
+  bool isPathInStack(String name) => _pathsInStack.contains(name);
 
   @override
   void didPush(Route route, Route? previousRoute) {
@@ -31,7 +28,7 @@ class AppNavigatorObserver extends NavigatorObserver {
 
     final name = route.settings.name;
 
-    _changeRouteStack(name, true);
+    if (name != null) _pathsInStack.add(name);
     _handleWakeLock(name);
 
     // handle recent items with delay, so it is not visible to user during push
@@ -42,7 +39,7 @@ class AppNavigatorObserver extends NavigatorObserver {
   void didPop(Route route, Route? previousRoute) {
     super.didPop(route, previousRoute);
 
-    _changeRouteStack(route.settings.name, false);
+    _pathsInStack.remove(route.settings.name);
     _handleWakeLock(previousRoute?.settings.name);
 
     log('popped: $route to: $previousRoute', name: 'APP_NAVIGATOR');
@@ -60,17 +57,6 @@ class AppNavigatorObserver extends NavigatorObserver {
     super.didRemove(route, previousRoute);
 
     log('removed: $route to: $previousRoute', name: 'APP_NAVIGATOR');
-  }
-
-  void _changeRouteStack(String? routeName, bool isPushing) {
-    switch (routeName) {
-      case '/search':
-        _isSearchRouteInStack = isPushing;
-        break;
-      case '/playlists':
-        _isPlaylistsRouteInStack = isPushing;
-        break;
-    }
   }
 
   // enable wakelock for `SongLyricScreen` disable for other screens
