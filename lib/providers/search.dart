@@ -14,7 +14,7 @@ import 'package:zpevnik/providers/utils.dart';
 part 'search.freezed.dart';
 part 'search.g.dart';
 
-final _numberRE = RegExp(r'\d+');
+final _numberRE = RegExp(r'[1-9]\d*');
 
 // [name, secondary_name_1, secondary_name_2, lyrics]
 const _searchResultsWeights = [40.0, 35.0, 30.0, 1.0];
