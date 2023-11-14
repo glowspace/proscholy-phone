@@ -17,6 +17,13 @@ class CustomNavigationRail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final mediaQuery = MediaQuery.of(context);
+
+    final displayCollapseMenuButton = mediaQuery.size.width - _navigationRailWidth >
+            (kDefaultSplitViewChildMinWidth + kDefaultSplitViewDetailMinWidth) &&
+        (context.isPlaylist ||
+            (context.isDisplay &&
+                ((ModalRoute.of(context)?.settings.arguments as DisplayScreenArguments?)?.canShowMenu ?? false)));
 
     // can't set `surfaceTintColor` for `NavigationRail`, so it is wrapped to match the app bar color
     return Hero(
@@ -37,46 +44,45 @@ class CustomNavigationRail extends StatelessWidget {
           color: context.isHome ? theme.colorScheme.surface : theme.colorScheme.surface,
           elevation: 1,
           surfaceTintColor: context.isHome ? null : theme.colorScheme.surfaceTint,
-          child: NavigationRail(
-            backgroundColor: Colors.transparent,
-            labelType: NavigationRailLabelType.all,
-            groupAlignment: context.isHome ? 0 : -0.155,
-            selectedIndex: context.isHome ? 0 : (context.isSearching ? 1 : 2),
-            onDestinationSelected: (index) => onDestinationSelected(context, index),
-            leading: context.isHome
-                ? null
-                : Column(children: [
-                    Image.asset('assets/images/logos/logo.png'),
-                    if (MediaQuery.sizeOf(context).width - _navigationRailWidth >
-                            (kDefaultSplitViewChildMinWidth + kDefaultSplitViewDetailMinWidth) &&
-                        (context.isPlaylist ||
-                            (context.isDisplay &&
-                                ((ModalRoute.of(context)?.settings.arguments as DisplayScreenArguments?)?.canShowMenu ??
-                                    false))))
-                      Highlightable(
-                        onTap: context.providers.read(menuCollapsedProvider.notifier).toggle,
-                        icon: Consumer(
-                          builder: (_, ref, __) => Icon(
-                            ref.watch(menuCollapsedProvider) ? Icons.menu : Icons.menu_open,
+          child: MediaQuery(
+            // remove bottom padding, as `NavigationRail` uses `SafeArea` and it moves destination items little bit when keyboard appears
+            data: mediaQuery.copyWith(padding: mediaQuery.padding.copyWith(bottom: 0)),
+            child: NavigationRail(
+              backgroundColor: Colors.transparent,
+              labelType: NavigationRailLabelType.all,
+              groupAlignment: context.isHome ? 0 : (displayCollapseMenuButton ? -0.125 : -0.065),
+              selectedIndex: context.isHome ? 0 : (context.isSearching ? 1 : 2),
+              onDestinationSelected: (index) => onDestinationSelected(context, index),
+              leading: context.isHome
+                  ? null
+                  : Column(children: [
+                      Image.asset('assets/images/logos/logo.png'),
+                      if (displayCollapseMenuButton)
+                        Highlightable(
+                          onTap: context.providers.read(menuCollapsedProvider.notifier).toggle,
+                          icon: Consumer(
+                            builder: (_, ref, __) => Icon(
+                              ref.watch(menuCollapsedProvider) ? Icons.menu : Icons.menu_open,
+                            ),
                           ),
                         ),
-                      ),
-                  ]),
-            destinations: const [
-              NavigationRailDestination(
-                selectedIcon: Icon(Icons.home),
-                icon: Icon(Icons.home_outlined),
-                label: Text('Nástěnka'),
-              ),
-              NavigationRailDestination(
-                icon: Icon(Icons.search),
-                label: Text('Hledání'),
-              ),
-              NavigationRailDestination(
-                icon: Icon(Icons.playlist_play_rounded),
-                label: Text('Seznamy'),
-              ),
-            ],
+                    ]),
+              destinations: const [
+                NavigationRailDestination(
+                  selectedIcon: Icon(Icons.home),
+                  icon: Icon(Icons.home_outlined),
+                  label: Text('Nástěnka'),
+                ),
+                NavigationRailDestination(
+                  icon: Icon(Icons.search),
+                  label: Text('Hledání'),
+                ),
+                NavigationRailDestination(
+                  icon: Icon(Icons.playlist_play_rounded),
+                  label: Text('Seznamy'),
+                ),
+              ],
+            ),
           ),
         ),
       ),

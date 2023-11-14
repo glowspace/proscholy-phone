@@ -50,7 +50,7 @@ extension BuildContextExtension on BuildContext {
     if (providers.read(appNavigatorObserverProvider).isPathInStack(routeName)) {
       popUntil(routeName);
 
-      return replace(routeName, arguments: arguments);
+      if (arguments != null) return replace(routeName, arguments: arguments);
     }
 
     return Navigator.of(this).pushNamed(routeName, arguments: arguments);
