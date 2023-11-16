@@ -83,7 +83,7 @@ class _PlaylistRecordsListViewState extends ConsumerState<PlaylistRecordsListVie
       primary: false,
       itemCount: displayableItems.length,
       itemBuilder: (_, index) => Slidable(
-        key: Key('${displayableItems[index].id}'),
+        key: Key('${_recordsOrdered[index].id}'),
         groupTag: 'playlist_record',
         endActionPane: ActionPane(
           motion: const DrawerMotion(),
