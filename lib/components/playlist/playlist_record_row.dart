@@ -44,7 +44,7 @@ class PlaylistRecordRow extends ConsumerWidget {
 
     return Highlightable(
       highlightBackground: true,
-      padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2, vertical: kDefaultPadding / 3),
+      padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
       onTap: () => _pushPlaylistRecord(context),
       child: SelectedRowHighlight(
         selectedObjectNotifier: SelectedDisplayableItemArguments.of(context),

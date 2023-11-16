@@ -39,7 +39,7 @@ class SongLyricRow extends StatelessWidget {
 
     Widget row = Highlightable(
       highlightBackground: true,
-      padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2, vertical: kDefaultPadding / 3),
+      padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
       onTap: () => _pushSongLyric(context),
       child: SelectedRowHighlight(
         selectedObjectNotifier: SelectedDisplayableItemArguments.of(context),

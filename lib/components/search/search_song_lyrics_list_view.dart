@@ -53,6 +53,7 @@ class SearchSongLyricsListView extends ConsumerWidget {
       bottom: false,
       child: ListView.builder(
         key: Key('${ref.read(searchTextProvider)}_${ref.read(selectedTagsProvider).length}'),
+        padding: const EdgeInsets.only(top: kDefaultPadding / 3),
         primary: false,
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         itemCount: itemCount,
