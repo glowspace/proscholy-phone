@@ -50,40 +50,44 @@ class PlaylistRecordRow extends ConsumerWidget {
         selectedObjectNotifier: SelectedDisplayableItemArguments.of(context),
         object: bibleVerse ?? customText ?? songLyric,
         mapSelectedObject: (arguments) => arguments.items[arguments.initialIndex],
-        child: Row(children: [
-          const ReorderableDragStartListener(
-            index: 0,
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(
-                1.5 * kDefaultPadding,
-                kDefaultPadding / 2,
-                kDefaultPadding,
-                kDefaultPadding / 2,
-              ),
-              child: Icon(Icons.drag_indicator),
-            ),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(title, style: textTheme.bodyMedium),
-                  if (songLyric?.secondaryName1?.isNotEmpty ?? false)
-                    Container(margin: textMargin, child: Text(songLyric!.secondaryName1!, style: textTheme.bodySmall)),
-                  // if (songLyric?.secondaryName2?.isNotEmpty ?? false)
-                  //   Container(margin: textMargin, child: Text(songLyric!.secondaryName2!, style: textTheme.bodySmall)),
-                ],
+        child: Container(
+          constraints: const BoxConstraints(minHeight: 40),
+          child: Row(children: [
+            const ReorderableDragStartListener(
+              index: 0,
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(
+                  1.5 * kDefaultPadding,
+                  kDefaultPadding / 2,
+                  kDefaultPadding,
+                  kDefaultPadding / 2,
+                ),
+                child: Icon(Icons.drag_indicator),
               ),
             ),
-          ),
-          if (icon != null)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
-              child: Icon(icon),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(title, style: textTheme.bodyMedium),
+                    if (songLyric?.secondaryName1?.isNotEmpty ?? false)
+                      Container(
+                          margin: textMargin, child: Text(songLyric!.secondaryName1!, style: textTheme.bodySmall)),
+                    // if (songLyric?.secondaryName2?.isNotEmpty ?? false)
+                    //   Container(margin: textMargin, child: Text(songLyric!.secondaryName2!, style: textTheme.bodySmall)),
+                  ],
+                ),
+              ),
             ),
-        ]),
+            if (icon != null)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
+                child: Icon(icon),
+              ),
+          ]),
+        ),
       ),
     );
   }
