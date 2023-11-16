@@ -132,13 +132,12 @@ class Presentation extends StatelessWidget {
       textPainter.layout();
 
       // for some reason mediaQuery is not aware of added padding from scaffold here, so make sure the used width is correct
-      if (min(size.width, kScaffoldMaxWidth) - (onExternalDisplay ? 12 : 4) * kDefaultPadding >
-              textPainter.size.width &&
-          size.height - (showingName ? 19 : 16) * kDefaultPadding > textPainter.size.height) {
+      if (size.width - (onExternalDisplay ? 3 : 1) * kDefaultPadding * textScaleFactor > textPainter.size.width &&
+          size.height - (showingName ? 5 : 4) * kDefaultPadding * textScaleFactor > textPainter.size.height) {
         return textScaleFactor;
       }
 
-      textScaleFactor -= 0.1;
+      textScaleFactor -= 0.2;
     }
   }
 
