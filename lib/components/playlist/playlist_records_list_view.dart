@@ -7,6 +7,8 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:zpevnik/components/playlist/playlist_record_row.dart';
 import 'package:zpevnik/components/selected_displayable_item_index.dart';
 import 'package:zpevnik/constants.dart';
+import 'package:zpevnik/models/bible_verse.dart';
+import 'package:zpevnik/models/custom_text.dart';
 import 'package:zpevnik/models/model.dart';
 import 'package:zpevnik/models/objectbox.g.dart';
 import 'package:zpevnik/models/playlist.dart';
@@ -83,7 +85,11 @@ class _PlaylistRecordsListViewState extends ConsumerState<PlaylistRecordsListVie
       primary: false,
       itemCount: displayableItems.length,
       itemBuilder: (_, index) => Slidable(
-        key: Key('${displayableItems[index].id}'),
+        key: Key(switch (displayableItems[index]) {
+          (BibleVerse _) => 'bible_verse_${displayableItems[index].id}',
+          (CustomText _) => 'custom_text_${displayableItems[index].id}',
+          _ => '${displayableItems[index].id}',
+        }),
         groupTag: 'playlist_record',
         endActionPane: ActionPane(
           motion: const DrawerMotion(),
