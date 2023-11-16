@@ -264,7 +264,7 @@ class _SelectBibleVerseScreenState extends State<_SelectBibleVerseScreen> {
                     child: Consumer(
                       builder: (_, ref, __) => ref
                           .watch(bibleVerseProvider(
-                            supportedBibleTranslations[0],
+                            supportedBibleTranslations[1],
                             widget.book,
                             widget.chapter,
                             _startVerse,
@@ -288,7 +288,7 @@ class _SelectBibleVerseScreenState extends State<_SelectBibleVerseScreen> {
 
   void _pop() async {
     final text = await context.providers.read(bibleVerseProvider(
-      supportedBibleTranslations[0],
+      supportedBibleTranslations[1],
       widget.book,
       widget.chapter,
       _startVerse,
