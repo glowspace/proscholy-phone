@@ -39,8 +39,9 @@ final class AppRouter {
             return DisplayScreen(
               items: arguments.items,
               initialIndex: arguments.initialIndex,
-              playlist: arguments.playlist,
               showSearchScreen: arguments.showSearchScreen,
+              playlist: arguments.playlist,
+              songbook: arguments.songbook,
             );
           },
           false,

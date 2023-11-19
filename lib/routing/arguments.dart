@@ -4,6 +4,7 @@ import 'package:zpevnik/models/custom_text.dart';
 import 'package:zpevnik/models/model.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
+import 'package:zpevnik/models/songbook.dart';
 
 @immutable
 class DisplayScreenArguments {
@@ -11,13 +12,16 @@ class DisplayScreenArguments {
   final int initialIndex;
 
   final bool showSearchScreen;
+
   final Playlist? playlist;
+  final Songbook? songbook;
 
   const DisplayScreenArguments({
     required this.items,
     this.initialIndex = 0,
     this.showSearchScreen = false,
     this.playlist,
+    this.songbook,
   });
 
   factory DisplayScreenArguments.bibleVerse(BibleVerse bibleVerse) {
@@ -32,7 +36,7 @@ class DisplayScreenArguments {
     return DisplayScreenArguments(items: [songLyric], showSearchScreen: showSearchScreen);
   }
 
-  bool get canShowMenu => playlist != null || showSearchScreen;
+  bool get canShowMenu => playlist != null || songbook != null || showSearchScreen;
 
   @override
   int get hashCode => Object.hash(runtimeType, items, initialIndex);

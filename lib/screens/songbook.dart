@@ -19,9 +19,10 @@ class SongbookScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomScaffold(
       appBar: AppBar(
-        leading: const CustomBackButton(),
+        automaticallyImplyLeading: false,
+        leading: context.isSongbook ? const CustomBackButton() : null,
+        titleSpacing: context.isSongbook ? null : 2 * kDefaultPadding,
         title: Text(songbook.name),
-        leadingWidth: 24 + 4 * kDefaultPadding,
         actions: [
           Highlightable(
             onTap: () => _pushSearch(context),
@@ -31,8 +32,12 @@ class SongbookScreen extends StatelessWidget {
         ],
       ),
       body: SafeArea(
+        bottom: false,
         child: Consumer(
-          builder: (_, ref, __) => SongLyricsListView(songLyrics: ref.watch(songsListSongLyricsProvider(songbook))),
+          builder: (_, ref, __) => SongLyricsListView(
+            songLyrics: ref.watch(songsListSongLyricsProvider(songbook)),
+            songbook: songbook,
+          ),
         ),
       ),
     );

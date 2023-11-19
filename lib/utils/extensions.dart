@@ -43,6 +43,7 @@ extension BuildContextExtension on BuildContext {
   bool get isPlaylist => ModalRoute.of(this)?.settings.name == '/playlist';
   bool get isPlaylists => ModalRoute.of(this)?.settings.name == '/playlists';
   bool get isSearching => ModalRoute.of(this)?.settings.name == '/search';
+  bool get isSongbook => ModalRoute.of(this)?.settings.name == '/songbook';
 
   ProviderContainer get providers => ProviderScope.containerOf(this, listen: false);
 

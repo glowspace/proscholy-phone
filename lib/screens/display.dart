@@ -25,6 +25,7 @@ import 'package:zpevnik/models/custom_text.dart';
 import 'package:zpevnik/models/model.dart';
 import 'package:zpevnik/models/playlist.dart';
 import 'package:zpevnik/models/song_lyric.dart';
+import 'package:zpevnik/models/songbook.dart';
 import 'package:zpevnik/providers/menu_collapsed.dart';
 import 'package:zpevnik/providers/playlists.dart';
 import 'package:zpevnik/providers/presentation.dart';
@@ -34,6 +35,7 @@ import 'package:zpevnik/providers/display_screen_status.dart';
 import 'package:zpevnik/routing/arguments.dart';
 import 'package:zpevnik/screens/playlist.dart';
 import 'package:zpevnik/screens/search.dart';
+import 'package:zpevnik/screens/songbook.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
 class DisplayScreen extends StatelessWidget {
@@ -41,7 +43,9 @@ class DisplayScreen extends StatelessWidget {
   final int initialIndex;
 
   final bool showSearchScreen;
+
   final Playlist? playlist;
+  final Songbook? songbook;
 
   const DisplayScreen({
     super.key,
@@ -49,12 +53,13 @@ class DisplayScreen extends StatelessWidget {
     this.initialIndex = 0,
     this.showSearchScreen = false,
     this.playlist,
+    this.songbook,
   });
 
   @override
   Widget build(BuildContext context) {
-    if (MediaQuery.of(context).isTablet && (showSearchScreen || playlist != null)) {
-      return _DisplayScreenTablet(items: items, initialIndex: initialIndex, playlist: playlist);
+    if (MediaQuery.of(context).isTablet && (showSearchScreen || playlist != null || songbook != null)) {
+      return _DisplayScreenTablet(items: items, initialIndex: initialIndex, playlist: playlist, songbook: songbook);
     }
 
     return _DisplayScaffold(items: items, initialIndex: initialIndex);
@@ -66,8 +71,9 @@ class _DisplayScreenTablet extends ConsumerStatefulWidget {
   final int initialIndex;
 
   final Playlist? playlist;
+  final Songbook? songbook;
 
-  const _DisplayScreenTablet({required this.items, required this.initialIndex, this.playlist});
+  const _DisplayScreenTablet({required this.items, required this.initialIndex, this.playlist, this.songbook});
 
   @override
   ConsumerState<_DisplayScreenTablet> createState() => _DisplayScreenTabletState();
@@ -95,7 +101,9 @@ class _DisplayScreenTabletState extends ConsumerState<_DisplayScreenTablet> {
             initialIndex: arguments.initialIndex,
           ),
         ),
-        child: widget.playlist == null ? const SearchScreen() : PlaylistScreen(playlist: widget.playlist!),
+        child: widget.playlist != null
+            ? PlaylistScreen(playlist: widget.playlist!)
+            : (widget.songbook != null ? SongbookScreen(songbook: widget.songbook!) : const SearchScreen()),
       ),
     );
   }
