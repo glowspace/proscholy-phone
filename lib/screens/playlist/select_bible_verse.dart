@@ -328,6 +328,15 @@ class _SelectBibleVerseScreenState extends State<_SelectBibleVerseScreen> {
                     ),
                   ),
                 ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 2 * kDefaultPadding, vertical: kDefaultPadding) +
+                      EdgeInsets.only(bottom: MediaQuery.paddingOf(context).bottom),
+                  child: Text(
+                    'Chráněno autorskými právy; Oprávnění k distribuci uděleno společnosti CrossWire',
+                    textAlign: TextAlign.end,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ),
               ],
             ),
           ),
