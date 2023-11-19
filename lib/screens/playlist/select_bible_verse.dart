@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zpevnik/components/custom/back_button.dart';
@@ -10,6 +11,7 @@ import 'package:zpevnik/providers/playlists.dart';
 import 'package:zpevnik/routing/safe_area_wrapper.dart';
 import 'package:zpevnik/utils/bible_api_client.dart';
 import 'package:zpevnik/utils/extensions.dart';
+import 'package:zpevnik/utils/url_launcher.dart';
 
 const _failedToLoadVersesMessage = 'Během načítání veršů nastala chyba, zkontrolujte prosím připojení k internetu.';
 
@@ -96,7 +98,9 @@ class _SelectBibleBookScreenState extends State<_SelectBibleBookScreen> {
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: supportedBibleBooks[index].verseCounts.length,
                         itemBuilder: (_, chapterIndex) => Container(
-                          decoration: BoxDecoration(border: Border.all(width: 0.25)),
+                          decoration: BoxDecoration(
+                            border: Border.all(width: 0.25, color: Theme.of(context).colorScheme.outline),
+                          ),
                           margin: const EdgeInsets.all(kDefaultPadding / 2),
                           child: Highlightable(
                             onTap: () {
@@ -183,6 +187,8 @@ class _SelectBibleVerseScreenState extends State<_SelectBibleVerseScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    final infoColorScheme = ColorScheme.fromSeed(seedColor: blue, brightness: theme.brightness);
+
     final startVerseInvalid = _startVerse < 1 || _startVerse > _versesCount;
     final endVerseInvalid = _endVerse != null && (_endVerse! < 1 || _endVerse! > _versesCount);
 
@@ -195,6 +201,10 @@ class _SelectBibleVerseScreenState extends State<_SelectBibleVerseScreen> {
       borderSide: BorderSide(color: endVerseInvalid ? Colors.red : theme.dividerColor),
       borderRadius: BorderRadius.circular(kDefaultRadius),
     );
+
+    final textStyle = theme.textTheme.bodyMedium;
+    final highlightedStyle = textStyle?.copyWith(color: theme.colorScheme.primary);
+    final boldStyle = textStyle?.copyWith(fontWeight: FontWeight.bold);
 
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
@@ -217,6 +227,40 @@ class _SelectBibleVerseScreenState extends State<_SelectBibleVerseScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: infoColorScheme.primary),
+                    color: infoColorScheme.primaryContainer,
+                    borderRadius: BorderRadius.circular(kDefaultRadius),
+                  ),
+                  margin: const EdgeInsets.fromLTRB(kDefaultPadding, kDefaultPadding, kDefaultPadding, 0),
+                  padding: const EdgeInsets.all(kDefaultPadding),
+                  child: Row(children: [
+                    Icon(Icons.info, color: infoColorScheme.onPrimaryContainer),
+                    const SizedBox(width: kDefaultPadding),
+                    Expanded(
+                      child: RichText(
+                        text: TextSpan(
+                          text: 'Pro biblické verše je využíván ',
+                          style: textStyle,
+                          children: [
+                            TextSpan(text: 'Český ekumenický překlad', style: boldStyle),
+                            TextSpan(
+                              text: ', který je získáván prostřednictím volně dostupné API od$unbreakableSpace',
+                              style: textStyle,
+                            ),
+                            TextSpan(
+                              text: 'getbible.net',
+                              style: highlightedStyle,
+                              recognizer: TapGestureRecognizer()..onTap = () => launch('https://getbible.net'),
+                            ),
+                            const TextSpan(text: '.'),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ]),
+                ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding, vertical: kDefaultPadding),
                   child: Text('Zadejte číslo veršů v rozsahu 1-$_versesCount', style: theme.textTheme.bodyLarge),
