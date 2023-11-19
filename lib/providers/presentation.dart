@@ -1,18 +1,41 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zpevnik/components/song_lyric/utils/parser.dart';
 import 'package:zpevnik/models/bible_verse.dart';
 import 'package:zpevnik/models/custom_text.dart';
 import 'package:zpevnik/models/model.dart';
 import 'package:zpevnik/models/presentation.dart';
 import 'package:zpevnik/models/song_lyric.dart';
+import 'package:zpevnik/providers/app_dependencies.dart';
 import 'package:zpevnik/utils/services/presentation.dart';
 
-final presentationProvider = ChangeNotifierProvider((ref) => PresentationProvider());
+const _presentationSettingsKey = 'presentation_settings';
+
+final presentationProvider = ChangeNotifierProvider((ref) {
+  return PresentationProvider(ref.read(appDependenciesProvider).sharedPreferences);
+});
 
 class PresentationProvider extends ChangeNotifier {
+  final SharedPreferences prefs;
+
+  PresentationProvider(this.prefs) {
+    _presentationData = defaultPresentationData;
+
+    final presentationSettingsData = prefs.getString(_presentationSettingsKey);
+
+    if (presentationSettingsData != null) {
+      _presentationData = _presentationData.copyWith(
+        settings: PresentationSettings.fromJson(
+          jsonDecode(presentationSettingsData),
+        ),
+      );
+    }
+  }
+
   SongLyricsParser? _songLyricsParser;
   Function? _nextAction;
 
@@ -32,7 +55,7 @@ class PresentationProvider extends ChangeNotifier {
   int _part = 0;
   int get part => _part;
 
-  PresentationData _presentationData = defaultPresentationData;
+  late PresentationData _presentationData;
   PresentationSettings get settings => _presentationData.settings;
 
   PresentationData get presentationData => _presentationData;
@@ -170,6 +193,8 @@ class PresentationProvider extends ChangeNotifier {
 
   void _changeShowingData(PresentationData data) {
     _presentationData = data;
+
+    prefs.setString(_presentationSettingsKey, jsonEncode(data.settings.copyWith(isVisible: true)));
 
     if (!isPresentingLocally) PresentationService.instance.transferData(data);
 
