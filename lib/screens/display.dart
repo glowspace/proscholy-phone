@@ -307,7 +307,8 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
         Highlightable(
           isEnabled: presentation.hasSongLyricsParser,
           onTap: presentation.prevVerse,
-          icon: Icon(Icons.adaptive.arrow_back),
+          // use arrow_back_ios_new, because arrow_back_ios is not centered
+          icon: Icon(Theme.of(context).platform.isIos ? Icons.arrow_back_ios_new : Icons.arrow_back),
         ),
         Highlightable(
           onTap: presentation.togglePause,
