@@ -8,6 +8,7 @@ import 'package:zpevnik/components/section.dart';
 import 'package:zpevnik/components/selector_widget.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/settings.dart';
+import 'package:zpevnik/routing/safe_area_wrapper.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -18,30 +19,32 @@ class SettingsScreen extends ConsumerWidget {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
 
-    return Scaffold(
-      backgroundColor: theme.colorScheme.background,
-      appBar: AppBar(leading: const CustomCloseButton(), title: const Text('Nastavení')),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              _buildAppSettings(context, ref),
-              _buildSongSettings(context, ref),
-              Highlightable(
-                onTap: ref.read(settingsProvider.notifier).reset,
-                padding: const EdgeInsets.all(kDefaultPadding / 2),
-                textStyle: theme.textTheme.bodySmall,
-                child: const Text('Resetovat nastavení'),
-              ),
-              const SizedBox(height: kDefaultPadding),
-              Highlightable(
-                onTap: () => context.push('/about'),
-                padding: const EdgeInsets.all(kDefaultPadding / 2),
-                textStyle: textTheme.bodySmall,
-                child: const Text('O projektu'),
-              ),
-              const SizedBox(height: kDefaultPadding),
-            ],
+    return SafeAreaWrapper(
+      child: Scaffold(
+        backgroundColor: theme.colorScheme.background,
+        appBar: AppBar(leading: const CustomCloseButton(), title: const Text('Nastavení')),
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                _buildAppSettings(context, ref),
+                _buildSongSettings(context, ref),
+                Highlightable(
+                  onTap: ref.read(settingsProvider.notifier).reset,
+                  padding: const EdgeInsets.all(kDefaultPadding / 2),
+                  textStyle: theme.textTheme.bodySmall,
+                  child: const Text('Resetovat nastavení'),
+                ),
+                const SizedBox(height: kDefaultPadding),
+                Highlightable(
+                  onTap: () => context.push('/about'),
+                  padding: const EdgeInsets.all(kDefaultPadding / 2),
+                  textStyle: textTheme.bodySmall,
+                  child: const Text('O projektu'),
+                ),
+                const SizedBox(height: kDefaultPadding),
+              ],
+            ),
           ),
         ),
       ),

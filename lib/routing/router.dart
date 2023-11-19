@@ -60,7 +60,7 @@ final class AppRouter {
         ),
       '/playlists' => ((_) => const PlaylistsScreen(), false, true),
       '/search' => ((_) => const SearchScreen(), true, true),
-      '/settings' => ((_) => const SettingsScreen(), true, true),
+      '/settings' => ((_) => const SettingsScreen(), true, false),
       '/songbook' => ((_) => SongbookScreen(songbook: settings.arguments as Songbook), false, true),
       '/songbooks' => ((_) => const SongbooksScreen(), false, true),
       '/song_lyric' => (

@@ -7,6 +7,7 @@ import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/bible_verse.dart';
 import 'package:zpevnik/providers/app_dependencies.dart';
 import 'package:zpevnik/providers/playlists.dart';
+import 'package:zpevnik/routing/safe_area_wrapper.dart';
 import 'package:zpevnik/utils/bible_api_client.dart';
 import 'package:zpevnik/utils/extensions.dart';
 
@@ -57,74 +58,76 @@ class _SelectBibleBookScreenState extends State<_SelectBibleBookScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: const CustomCloseButton(),
-        title: const Text('Výběr verše'),
-        actions: [
-          if (_selectedBook != null)
-            Highlightable(
-              onTap: () => _forward(context),
-              padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
-              icon: Icon(Theme.of(context).platform.isIos ? Icons.arrow_forward_ios : Icons.arrow_forward),
-            ),
-        ],
-      ),
-      body: SafeArea(
-        bottom: false,
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              for (int index = 0; index < supportedBibleBooks.length; index++)
-                ExpansionTile(
-                  key: _selectedBook == index ? initiallyExpandedTileKey : null,
-                  shape: const Border(),
-                  expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
-                  tilePadding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
-                  childrenPadding: const EdgeInsets.symmetric(
-                    horizontal: kDefaultPadding,
-                    vertical: kDefaultPadding / 2,
-                  ),
-                  initiallyExpanded: _selectedBook == index,
-                  title: Text(supportedBibleBooks[index].name),
-                  children: [
-                    GridView.builder(
-                      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(maxCrossAxisExtent: 96),
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: supportedBibleBooks[index].verseCounts.length,
-                      itemBuilder: (_, chapterIndex) => Container(
-                        decoration: BoxDecoration(border: Border.all(width: 0.25)),
-                        margin: const EdgeInsets.all(kDefaultPadding / 2),
-                        child: Highlightable(
-                          onTap: () {
-                            setState(() {
-                              _selectedBook = index;
-                              _selectedChapter = chapterIndex + 1;
-                            });
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) => _SelectBibleVerseScreen(
-                                  book: supportedBibleBooks[index],
-                                  chapter: chapterIndex + 1,
-                                  bibleVerse: widget.bibleVerse,
+    return SafeAreaWrapper(
+      child: Scaffold(
+        appBar: AppBar(
+          leading: const CustomCloseButton(),
+          title: const Text('Výběr verše'),
+          actions: [
+            if (_selectedBook != null)
+              Highlightable(
+                onTap: () => _forward(context),
+                padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
+                icon: Icon(Theme.of(context).platform.isIos ? Icons.arrow_forward_ios : Icons.arrow_forward),
+              ),
+          ],
+        ),
+        body: SafeArea(
+          bottom: false,
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                for (int index = 0; index < supportedBibleBooks.length; index++)
+                  ExpansionTile(
+                    key: _selectedBook == index ? initiallyExpandedTileKey : null,
+                    shape: const Border(),
+                    expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
+                    tilePadding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
+                    childrenPadding: const EdgeInsets.symmetric(
+                      horizontal: kDefaultPadding,
+                      vertical: kDefaultPadding / 2,
+                    ),
+                    initiallyExpanded: _selectedBook == index,
+                    title: Text(supportedBibleBooks[index].name),
+                    children: [
+                      GridView.builder(
+                        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(maxCrossAxisExtent: 96),
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: supportedBibleBooks[index].verseCounts.length,
+                        itemBuilder: (_, chapterIndex) => Container(
+                          decoration: BoxDecoration(border: Border.all(width: 0.25)),
+                          margin: const EdgeInsets.all(kDefaultPadding / 2),
+                          child: Highlightable(
+                            onTap: () {
+                              setState(() {
+                                _selectedBook = index;
+                                _selectedChapter = chapterIndex + 1;
+                              });
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => _SelectBibleVerseScreen(
+                                    book: supportedBibleBooks[index],
+                                    chapter: chapterIndex + 1,
+                                    bibleVerse: widget.bibleVerse,
+                                  ),
                                 ),
-                              ),
-                            );
-                          },
-                          highlightBackground: true,
-                          child: Ink(
-                            color: _selectedBook == index && _selectedChapter == chapterIndex + 1
-                                ? Theme.of(context).colorScheme.secondaryContainer
-                                : null,
-                            child: Center(child: Text('${chapterIndex + 1}')),
+                              );
+                            },
+                            highlightBackground: true,
+                            child: Ink(
+                              color: _selectedBook == index && _selectedChapter == chapterIndex + 1
+                                  ? Theme.of(context).colorScheme.secondaryContainer
+                                  : null,
+                              child: Center(child: Text('${chapterIndex + 1}')),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-            ],
+                    ],
+                  ),
+              ],
+            ),
           ),
         ),
       ),
@@ -196,90 +199,93 @@ class _SelectBibleVerseScreenState extends State<_SelectBibleVerseScreen> {
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       onTap: FocusScope.of(context).unfocus,
-      child: Scaffold(
-        appBar: AppBar(
-          leading: const CustomBackButton(),
-          title: const Text('Výběr verše'),
-          actions: [
-            Highlightable(
-              onTap: _pop,
-              padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
-              icon: const Icon(Icons.check),
-            ),
-          ],
-        ),
-        body: SafeArea(
-          bottom: false,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding, vertical: kDefaultPadding),
-                child: Text('Zadejte číslo veršů v rozsahu 1-$_versesCount', style: theme.textTheme.bodyLarge),
+      child: SafeAreaWrapper(
+        child: Scaffold(
+          appBar: AppBar(
+            leading: const CustomBackButton(),
+            title: const Text('Výběr verše'),
+            actions: [
+              Highlightable(
+                onTap: _pop,
+                padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
+                icon: const Icon(Icons.check),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding, vertical: kDefaultPadding),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextFormField(
-                        initialValue: _startVerse.toString(),
-                        keyboardType: TextInputType.number,
-                        onChanged: (value) => setState(() => _startVerse = int.tryParse(value) ?? 1),
-                        decoration: InputDecoration(
-                          labelText: 'Číslo verše',
-                          labelStyle:
-                              startVerseInvalid ? theme.textTheme.labelLarge?.copyWith(color: Colors.red) : null,
-                          border: startVerseBorder,
-                          enabledBorder: startVerseBorder,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: kDefaultPadding),
-                    Expanded(
-                      child: TextFormField(
-                        initialValue: _endVerse?.toString(),
-                        keyboardType: TextInputType.number,
-                        onChanged: (value) => setState(() => _endVerse = int.tryParse(value)),
-                        decoration: InputDecoration(
-                          labelText: 'Konečný verše',
-                          labelStyle: endVerseInvalid ? theme.textTheme.labelLarge?.copyWith(color: Colors.red) : null,
-                          border: endVerseBorder,
-                          enabledBorder: endVerseBorder,
-                        ),
-                      ),
-                    ),
-                  ],
+            ],
+          ),
+          body: SafeArea(
+            bottom: false,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding, vertical: kDefaultPadding),
+                  child: Text('Zadejte číslo veršů v rozsahu 1-$_versesCount', style: theme.textTheme.bodyLarge),
                 ),
-              ),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: EdgeInsets.fromLTRB(
-                      2 * kDefaultPadding,
-                      kDefaultPadding,
-                      2 * kDefaultPadding,
-                      MediaQuery.paddingOf(context).bottom + kDefaultPadding,
-                    ),
-                    child: Consumer(
-                      builder: (_, ref, __) => ref
-                          .watch(bibleVerseProvider(
-                            supportedBibleTranslations[1],
-                            widget.book,
-                            widget.chapter,
-                            _startVerse,
-                            endVerse: _endVerse,
-                          ))
-                          .when(
-                            data: (verses) => Text(verses),
-                            error: (_, __) => const Center(child: Text(_failedToLoadVersesMessage)),
-                            loading: () => const Center(child: CircularProgressIndicator.adaptive()),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding, vertical: kDefaultPadding),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextFormField(
+                          initialValue: _startVerse.toString(),
+                          keyboardType: TextInputType.number,
+                          onChanged: (value) => setState(() => _startVerse = int.tryParse(value) ?? 1),
+                          decoration: InputDecoration(
+                            labelText: 'Číslo verše',
+                            labelStyle:
+                                startVerseInvalid ? theme.textTheme.labelLarge?.copyWith(color: Colors.red) : null,
+                            border: startVerseBorder,
+                            enabledBorder: startVerseBorder,
                           ),
+                        ),
+                      ),
+                      const SizedBox(width: kDefaultPadding),
+                      Expanded(
+                        child: TextFormField(
+                          initialValue: _endVerse?.toString(),
+                          keyboardType: TextInputType.number,
+                          onChanged: (value) => setState(() => _endVerse = int.tryParse(value)),
+                          decoration: InputDecoration(
+                            labelText: 'Konečný verše',
+                            labelStyle:
+                                endVerseInvalid ? theme.textTheme.labelLarge?.copyWith(color: Colors.red) : null,
+                            border: endVerseBorder,
+                            enabledBorder: endVerseBorder,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: EdgeInsets.fromLTRB(
+                        2 * kDefaultPadding,
+                        kDefaultPadding,
+                        2 * kDefaultPadding,
+                        MediaQuery.paddingOf(context).bottom + kDefaultPadding,
+                      ),
+                      child: Consumer(
+                        builder: (_, ref, __) => ref
+                            .watch(bibleVerseProvider(
+                              supportedBibleTranslations[1],
+                              widget.book,
+                              widget.chapter,
+                              _startVerse,
+                              endVerse: _endVerse,
+                            ))
+                            .when(
+                              data: (verses) => Text(verses),
+                              error: (_, __) => const Center(child: Text(_failedToLoadVersesMessage)),
+                              loading: () => const Center(child: CircularProgressIndicator.adaptive()),
+                            ),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
