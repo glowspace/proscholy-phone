@@ -36,8 +36,7 @@ class SplitView extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final childWidth = min(max(kDefaultSplitViewChildMinWidth, childWidthFactor * constraints.maxWidth),
-            kDefaultSplitViewChildMaxWidth);
+        final childWidth = min(max(minChildWidth, childWidthFactor * constraints.maxWidth), maxChildWidth);
 
         if (constraints.maxWidth < childWidth + detailMinWidth) return detail;
 

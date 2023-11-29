@@ -50,7 +50,8 @@ class SearchScreen extends StatelessWidget {
       child = SplitView(
         // we want detail on left
         textDirection: TextDirection.rtl,
-        maxChildWidth: 420.0,
+        maxChildWidth: 520.0,
+        childWidthFactor: 0.4,
         detail: CustomScaffold(appBar: appBar, body: const SearchSongLyricsListView()),
         child: const Scaffold(body: FiltersWidget()),
       );
