@@ -110,7 +110,7 @@ class SongLyric with _$SongLyric implements DisplayableItem, Identifiable, Recen
       } else if (authors.length == 1) {
         return 'Autor: ${authors.first.name}';
       } else {
-        return 'Autor: ${authors.map((author) => author.name).join(", ")}';
+        return 'Autoři: ${authors.map((author) => author.name).join(", ")}';
       }
     } else {
       final original = song.target?.original;

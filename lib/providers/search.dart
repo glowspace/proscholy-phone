@@ -16,14 +16,14 @@ part 'search.g.dart';
 
 final _numberRE = RegExp(r'[1-9]\d*');
 
-// [name, secondary_name_1, secondary_name_2, lyrics]
-const _searchResultsWeights = [40.0, 35.0, 30.0, 1.0];
+// [name, secondary_name_1, secondary_name_2, lyrics, authors]
+const _searchResultsWeights = [40.0, 35.0, 30.0, 1.0, 2.0];
 
 const _createTableQuery =
-    'CREATE VIRTUAL TABLE IF NOT EXISTS song_lyrics_search USING FTS4(name, secondary_name_1, secondary_name_2, lyrics, tokenize=unicode61);';
+    'CREATE VIRTUAL TABLE IF NOT EXISTS song_lyrics_search USING FTS4(name, secondary_name_1, secondary_name_2, lyrics, authors, tokenize=unicode61);';
 
 const _upsertQuery =
-    'INSERT OR REPLACE INTO song_lyrics_search(rowid, name, secondary_name_1, secondary_name_2, lyrics) VALUES(?, ?, ?, ?, ?);';
+    'INSERT OR REPLACE INTO song_lyrics_search(rowid, name, secondary_name_1, secondary_name_2, lyrics, authors) VALUES(?, ?, ?, ?, ?, ?);';
 
 const _selectQuery =
     'SELECT rowid, matchinfo(song_lyrics_search, "pcnalx") as info FROM song_lyrics_search WHERE song_lyrics_search MATCH ?;';
@@ -65,6 +65,7 @@ class SearchedSongLyrics extends _$SearchedSongLyrics {
         songLyric.secondaryName1,
         songLyric.secondaryName2,
         songLyric.lyrics,
+        songLyric.authors.map((author) => author.name).join(','),
       ]);
     }
 

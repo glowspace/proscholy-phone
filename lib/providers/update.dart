@@ -64,6 +64,8 @@ Future<void> loadInitial(AppDependencies appDependencies) async {
   // TODO: remove this after some time, that all users have at least 3.1.0 version
   _removeInvalidPlaylistRecords(appDependencies.store);
 
+  // drop "song_lyrics_search" table as there might be change in structure from last version
+  appDependencies.ftsDatabase.execute('DROP TABLE song_lyrics_search');
   SearchedSongLyrics.update(appDependencies.ftsDatabase, songLyrics);
 
   appDependencies.sharedPreferences.remove(_lastUpdateKey);
