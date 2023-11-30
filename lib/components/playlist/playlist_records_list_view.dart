@@ -51,18 +51,12 @@ class _PlaylistRecordsListViewState extends ConsumerState<PlaylistRecordsListVie
         .listen((_) =>
             setState(() => _recordsOrdered = widget.playlist.records.sorted((a, b) => a.rank.compareTo(b.rank))));
 
-    widget.sortedAlphabeticallyNotifier.addListener(() {
-      if (widget.sortedAlphabeticallyNotifier.value) {
-        setState(() => _recordsOrdered = widget.playlist.records
-            .sorted((a, b) => _unwrapPlaylistRecord(a).name.compareTo(_unwrapPlaylistRecord(b).name)));
-      } else {
-        setState(() => _recordsOrdered = widget.playlist.records.sorted((a, b) => a.rank.compareTo(b.rank)));
-      }
-    });
+    widget.sortedAlphabeticallyNotifier.addListener(_sortedAlphabeticallyChanged);
   }
 
   @override
   void dispose() {
+    widget.sortedAlphabeticallyNotifier.removeListener(_sortedAlphabeticallyChanged);
     _playlistChangesSubscription.cancel();
 
     super.dispose();
@@ -166,6 +160,15 @@ class _PlaylistRecordsListViewState extends ConsumerState<PlaylistRecordsListVie
         initialIndex: index,
         playlist: widget.playlist,
       );
+    }
+  }
+
+  void _sortedAlphabeticallyChanged() {
+    if (widget.sortedAlphabeticallyNotifier.value) {
+      setState(() => _recordsOrdered = widget.playlist.records
+          .sorted((a, b) => _unwrapPlaylistRecord(a).name.compareTo(_unwrapPlaylistRecord(b).name)));
+    } else {
+      setState(() => _recordsOrdered = widget.playlist.records.sorted((a, b) => a.rank.compareTo(b.rank)));
     }
   }
 }
