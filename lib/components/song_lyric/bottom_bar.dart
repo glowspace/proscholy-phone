@@ -32,7 +32,7 @@ class SongLyricBottomBar extends ConsumerWidget {
           child: Row(children: [
             Highlightable(
               padding: const EdgeInsets.all(kDefaultPadding),
-              isEnabled: songLyric?.hasChords ?? false,
+              isEnabled: songLyric?.hasChordsReal ?? false,
               onTap: () => showModalBottomSheet(
                 context: context,
                 builder: (context) => SongLyricSettingsModelWidget(songLyric: songLyric!),

@@ -89,6 +89,9 @@ class SongLyric with _$SongLyric implements DisplayableItem, Identifiable, Recen
   bool get hasLyrics => lyrics != null && lyrics!.isNotEmpty;
   bool get hasLilypond => lilypond != null && lilypond!.isNotEmpty;
 
+  // temporary fix, until API provides correct value
+  bool get hasChordsReal => lyrics?.contains('[') ?? false;
+
   bool get hasFiles {
     return externals.any((external) => external.mediaType == MediaType.pdf || external.mediaType == MediaType.jpg);
   }

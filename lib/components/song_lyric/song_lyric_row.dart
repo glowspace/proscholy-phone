@@ -82,7 +82,7 @@ class SongLyricRow extends StatelessWidget {
                 ),
                 const SizedBox(width: kDefaultPadding),
                 FaIcon(
-                  songLyric.hasChords ? FontAwesomeIcons.guitar : FontAwesomeIcons.alignLeft,
+                  songLyric.hasChordsReal ? FontAwesomeIcons.guitar : FontAwesomeIcons.alignLeft,
                   size: _iconSize,
                   color: blueScheme.primary.withAlpha(songLyric.hasLyrics ? 0xFF : _disabledAlpha),
                 ),
