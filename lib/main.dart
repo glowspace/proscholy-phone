@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -46,7 +44,6 @@ Future<void> main() async {
   final initialRoute = await SpotlightService.instance.getInitialRoute();
 
   appRunner() => runApp(ProviderScope(
-        observers: [MyProviderObserver()],
         overrides: [appDependenciesProvider.overrideWithValue(appDependencies)],
         child: MainWidget(initialRoute: initialRoute),
       ));
@@ -104,35 +101,3 @@ class MainWidget extends ConsumerWidget {
 
 @pragma('vm:entry-point')
 void mainPresentation() => runApp(const MaterialApp(home: PresentationScreen(), debugShowCheckedModeBanner: false));
-
-class MyProviderObserver extends ProviderObserver {
-  @override
-  void didAddProvider(ProviderBase<Object?> provider, Object? value, ProviderContainer container) {
-    super.didAddProvider(provider, value, container);
-
-    log('added provider: $provider');
-  }
-
-  @override
-  void didUpdateProvider(
-      ProviderBase<Object?> provider, Object? previousValue, Object? newValue, ProviderContainer container) {
-    super.didUpdateProvider(provider, previousValue, newValue, container);
-
-    log('updated provider: $provider');
-  }
-
-  @override
-  void didDisposeProvider(ProviderBase<Object?> provider, ProviderContainer container) {
-    super.didDisposeProvider(provider, container);
-
-    log('disposed provider: $provider');
-  }
-
-  @override
-  void providerDidFail(
-      ProviderBase<Object?> provider, Object error, StackTrace stackTrace, ProviderContainer container) {
-    super.providerDidFail(provider, error, stackTrace, container);
-
-    log('provider failed: $provider, $error, $stackTrace');
-  }
-}
