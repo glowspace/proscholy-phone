@@ -33,7 +33,7 @@ final class AppRouter {
       '/' => ((_) => const HomeScreen(), false, true),
       '/about' => ((_) => const AboutScreen(), false, false),
       '/display' => (
-          (context) {
+          (_) {
             final arguments = settings.arguments as DisplayScreenArguments;
 
             return DisplayScreen(

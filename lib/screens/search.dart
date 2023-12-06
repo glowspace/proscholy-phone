@@ -59,14 +59,9 @@ class SearchScreen extends StatelessWidget {
       child = CustomScaffold(appBar: appBar, body: const SearchSongLyricsListView());
     }
 
-    return WillPopScope(
-      onWillPop: () async {
-        if (context.isSearching) {
-          // this is called with delay, so the change is not visible while popping from this screen
-          Future.delayed(const Duration(milliseconds: 20), context.providers.read(selectedTagsProvider.notifier).pop);
-        }
-
-        return true;
+    return PopScope(
+      onPopInvoked: (_) {
+        if (context.isSearching) context.providers.read(selectedTagsProvider.notifier).pop();
       },
       child: child,
     );

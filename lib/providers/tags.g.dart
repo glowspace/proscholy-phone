@@ -6,7 +6,7 @@ part of 'tags.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$tagsHash() => r'074b72e023b471447eb00d117361b526195381af';
+String _$tagHash() => r'2d88379df9977f54db1b1c06806a443c9be9e7ee';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -28,6 +28,130 @@ class _SystemHash {
     return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
   }
 }
+
+/// See also [tag].
+@ProviderFor(tag)
+const tagProvider = TagFamily();
+
+/// See also [tag].
+class TagFamily extends Family<Tag?> {
+  /// See also [tag].
+  const TagFamily();
+
+  /// See also [tag].
+  TagProvider call(
+    int id,
+  ) {
+    return TagProvider(
+      id,
+    );
+  }
+
+  @override
+  TagProvider getProviderOverride(
+    covariant TagProvider provider,
+  ) {
+    return call(
+      provider.id,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'tagProvider';
+}
+
+/// See also [tag].
+class TagProvider extends AutoDisposeProvider<Tag?> {
+  /// See also [tag].
+  TagProvider(
+    int id,
+  ) : this._internal(
+          (ref) => tag(
+            ref as TagRef,
+            id,
+          ),
+          from: tagProvider,
+          name: r'tagProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product') ? null : _$tagHash,
+          dependencies: TagFamily._dependencies,
+          allTransitiveDependencies: TagFamily._allTransitiveDependencies,
+          id: id,
+        );
+
+  TagProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.id,
+  }) : super.internal();
+
+  final int id;
+
+  @override
+  Override overrideWith(
+    Tag? Function(TagRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: TagProvider._internal(
+        (ref) => create(ref as TagRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        id: id,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<Tag?> createElement() {
+    return _TagProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is TagProvider && other.id == id;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, id.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin TagRef on AutoDisposeProviderRef<Tag?> {
+  /// The parameter `id` of this provider.
+  int get id;
+}
+
+class _TagProviderElement extends AutoDisposeProviderElement<Tag?> with TagRef {
+  _TagProviderElement(super.provider);
+
+  @override
+  int get id => (origin as TagProvider).id;
+}
+
+String _$tagsHash() => r'074b72e023b471447eb00d117361b526195381af';
 
 /// See also [tags].
 @ProviderFor(tags)
@@ -152,7 +276,7 @@ class _TagsProviderElement extends AutoDisposeProviderElement<List<Tag>>
   TagType get tagType => (origin as TagsProvider).tagType;
 }
 
-String _$selectedTagsHash() => r'34f8261278fc3879ef3d18390732b4f5f7b10016';
+String _$selectedTagsHash() => r'8506242a9d346751ad92effb99337595e2c17e63';
 
 /// See also [SelectedTags].
 @ProviderFor(SelectedTags)

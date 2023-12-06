@@ -2,12 +2,27 @@ import 'package:collection/collection.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:zpevnik/models/objectbox.g.dart';
 import 'package:zpevnik/models/tag.dart';
+import 'package:zpevnik/providers/app_dependencies.dart';
 import 'package:zpevnik/providers/playlists.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
 import 'package:zpevnik/providers/songbooks.dart';
 import 'package:zpevnik/providers/utils.dart';
 
 part 'tags.g.dart';
+
+@riverpod
+Tag? tag(TagRef ref, int id) {
+  if (id == 0) return null;
+
+  final box = ref.read(appDependenciesProvider).store.box<Tag>();
+
+  final stream = box.query(Tag_.id.equals(id)).watch();
+  final subscription = stream.listen((_) => ref.invalidateSelf());
+
+  ref.onDispose(subscription.cancel);
+
+  return box.get(id);
+}
 
 // provides tags for given `tagType`
 // for songbooks, playlists and languages it creates corresponding tags,
@@ -55,7 +70,7 @@ class SelectedTags extends _$SelectedTags {
 
   // prepares state for new search screen with optional `initialTag` by storing current state and invalidating all providers
   // is called when starting search from `PlaylistScreen`, `SongbookScreen` or `SongLyricTag`
-  void push({Tag? initialTag}) {
+  void push({Tag? initialTag, List<Tag> initialTags = const []}) {
     if (state.isNotEmpty) selectedTagsStack.add(state);
 
     for (final tagType in supportedTagTypes) {
@@ -63,6 +78,9 @@ class SelectedTags extends _$SelectedTags {
     }
 
     if (initialTag != null) toggleSelection(initialTag);
+    for (final tag in initialTags) {
+      toggleSelection(tag);
+    }
   }
 
   // restores state of previous search screen

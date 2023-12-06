@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zpevnik/constants.dart' hide red, green, blue;
+import 'package:zpevnik/models/tag.dart';
+import 'package:zpevnik/providers/tags.dart';
 import 'package:zpevnik/routing/navigator_observer.dart';
 
 extension PlatformExtension on TargetPlatform {
@@ -48,6 +50,22 @@ extension BuildContextExtension on BuildContext {
   ProviderContainer get providers => ProviderScope.containerOf(this, listen: false);
 
   Future<T?> push<T extends Object?>(String routeName, {Object? arguments}) async {
+    // TODO: support better way to redirect
+    final uri = Uri.parse(routeName);
+
+    if (uri.queryParameters.containsKey('stitky')) {
+      final selectedTags = uri.queryParameters['stitky']!
+          .split(',')
+          .map((id) => providers.read(tagProvider(int.parse(id))))
+          .where((tag) => tag != null)
+          .cast<Tag>()
+          .toList();
+
+      providers.read(selectedTagsProvider.notifier).push(initialTags: selectedTags);
+
+      routeName = '/search';
+    }
+
     if (providers.read(appNavigatorObserverProvider).isPathInStack(routeName)) {
       popUntil(routeName);
 
