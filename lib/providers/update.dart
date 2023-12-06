@@ -65,7 +65,7 @@ Future<void> loadInitial(AppDependencies appDependencies) async {
   _removeInvalidPlaylistRecords(appDependencies.store);
 
   // drop "song_lyrics_search" table as there might be change in structure from last version
-  appDependencies.ftsDatabase.execute('DROP TABLE song_lyrics_search');
+  await appDependencies.ftsDatabase.execute('DROP TABLE song_lyrics_search');
   SearchedSongLyrics.update(appDependencies.ftsDatabase, songLyrics);
 
   appDependencies.sharedPreferences.remove(_lastUpdateKey);
