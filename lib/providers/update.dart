@@ -84,6 +84,8 @@ Stream<UpdateStatus> update(UpdateRef ref) async* {
     final newsItems =
         await client.getNews().then((json) => readJsonList(json[NewsItem.fieldKey], mapper: NewsItem.fromJson));
 
+    // remove all news items, that were deleted on server
+    appDependencies.store.box<NewsItem>().removeAll();
     appDependencies.store.box<NewsItem>().putMany(newsItems);
   } on SocketException {
     return;
