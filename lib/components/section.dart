@@ -64,7 +64,7 @@ class Section extends StatelessWidget {
                 children: [
                   if (insideTitle != null)
                     Padding(
-                      padding: const EdgeInsets.all(kDefaultPadding),
+                      padding: padding == null ? const EdgeInsets.all(kDefaultPadding) : EdgeInsets.zero,
                       child: Row(children: [
                         Icon(insideTitleIcon, color: insideTitleIconColor),
                         const SizedBox(width: kDefaultPadding),

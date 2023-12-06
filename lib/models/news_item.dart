@@ -23,6 +23,7 @@ class NewsItem with _$NewsItem implements Identifiable {
   factory NewsItem.fromJson(Map<String, Object?> json) => _$NewsItemFromJson(json);
 
   bool get hasLink => link.isNotEmpty;
+  bool get hasExternalLink => hasLink && link.startsWith('http');
 
   @override
   int get hashCode => id;

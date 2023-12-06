@@ -4,9 +4,10 @@ import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/section.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/news_items.dart';
+import 'package:zpevnik/utils/extensions.dart';
 import 'package:zpevnik/utils/url_launcher.dart';
 
-const double _newsItemHeight = 18;
+const double _newsItemHeight = 32;
 
 class NewsSection extends ConsumerStatefulWidget {
   const NewsSection({super.key});
@@ -20,8 +21,6 @@ class _NewsSectionState extends ConsumerState<NewsSection> {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
     final newsItems = ref.watch(newsItemsProvider);
 
     if (newsItems.isEmpty) return const SizedBox();
@@ -33,32 +32,29 @@ class _NewsSectionState extends ConsumerState<NewsSection> {
       padding: const EdgeInsets.all(kDefaultPadding).copyWith(bottom: kDefaultPadding / 2),
       margin: const EdgeInsets.symmetric(vertical: 2 / 3 * kDefaultPadding),
       children: [
-        if (newsItems.isEmpty)
-          Padding(
-            padding: const EdgeInsets.only(bottom: kDefaultPadding / 2),
-            child: Text('Žádné novinky', style: textTheme.bodyMedium),
-          )
-        else
-          SizedBox(
-            height: _newsItemHeight,
-            child: PageView.builder(
-              controller: _pageController,
-              itemCount: newsItems.length,
-              itemBuilder: (_, index) => Highlightable(
-                alignment: Alignment.centerLeft,
-                textStyle: textTheme.bodyMedium,
-                onTap: newsItems[index].hasLink ? () => launch(newsItems[index].link) : null,
-                child: Row(children: [
-                  Text(newsItems[index].text),
-                  if (newsItems[index].hasLink)
-                    const Padding(
-                      padding: EdgeInsets.only(left: kDefaultPadding / 2),
-                      child: Icon(Icons.open_in_new, size: kDefaultIconSize),
-                    )
-                ]),
-              ),
+        SizedBox(
+          height: _newsItemHeight,
+          child: PageView.builder(
+            controller: _pageController,
+            itemCount: newsItems.length,
+            itemBuilder: (_, index) => Highlightable(
+              padding: EdgeInsets.zero,
+              onTap: newsItems[index].hasLink
+                  ? () => newsItems[index].hasExternalLink
+                      ? launch(newsItems[index].link)
+                      : context.push(newsItems[index].link)
+                  : null,
+              child: Row(children: [
+                Text(newsItems[index].text),
+                if (newsItems[index].hasExternalLink)
+                  const Padding(
+                    padding: EdgeInsets.only(left: kDefaultPadding / 2),
+                    child: Icon(Icons.open_in_new, size: 20),
+                  )
+              ]),
             ),
           ),
+        ),
         if (newsItems.isNotEmpty)
           Row(children: [
             for (int i = 0; i < newsItems.length; i++)
