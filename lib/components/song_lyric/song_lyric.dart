@@ -119,7 +119,7 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
   }
 
   Widget _buildLyrics(BuildContext context) {
-    if (!widget.songLyric.hasLyrics) return const Text('Text písně připravujeme.');
+    if (!widget.songLyric.hasLyrics) return Text('Text písně připravujeme.', style: _textStyle(context, false));
 
     final List<Widget> children = [];
 
