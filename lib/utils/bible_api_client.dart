@@ -32,5 +32,5 @@ Future<String> bibleVerse(
 
   if (endVerse == null) return verses[startVerse - 1]['text'];
 
-  return verses.sublist(startVerse - 1, endVerse).map((verse) => verse['text']).join(' ');
+  return verses.sublist(startVerse - 1, endVerse).map((verse) => verse['text'].trim()).join(' ');
 }
