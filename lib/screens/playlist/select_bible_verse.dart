@@ -320,21 +320,23 @@ class _SelectBibleVerseScreenState extends State<_SelectBibleVerseScreen> {
                               endVerse: _endVerse,
                             ))
                             .when(
-                              data: (verses) => Text(verses),
+                              data: (verses) => Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Text(verses),
+                                  const SizedBox(height: 3 * kDefaultPadding),
+                                  Text(
+                                    'Chráněno autorskými právy; Oprávnění k distribuci uděleno společnosti CrossWire',
+                                    textAlign: TextAlign.end,
+                                    style: Theme.of(context).textTheme.bodySmall,
+                                  ),
+                                ],
+                              ),
                               error: (_, __) => const Center(child: Text(_failedToLoadVersesMessage)),
                               loading: () => const Center(child: CircularProgressIndicator.adaptive()),
                             ),
                       ),
                     ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 2 * kDefaultPadding, vertical: kDefaultPadding) +
-                      EdgeInsets.only(bottom: MediaQuery.paddingOf(context).bottom),
-                  child: Text(
-                    'Chráněno autorskými právy; Oprávnění k distribuci uděleno společnosti CrossWire',
-                    textAlign: TextAlign.end,
-                    style: Theme.of(context).textTheme.bodySmall,
                   ),
                 ),
               ],
