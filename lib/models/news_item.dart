@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:objectbox/objectbox.dart';
+import 'package:zpevnik/links.dart';
 import 'package:zpevnik/models/model.dart';
 
 part 'news_item.freezed.dart';
@@ -23,7 +24,7 @@ class NewsItem with _$NewsItem implements Identifiable {
   factory NewsItem.fromJson(Map<String, Object?> json) => _$NewsItemFromJson(json);
 
   bool get hasLink => link.isNotEmpty;
-  bool get hasExternalLink => hasLink && link.startsWith('http');
+  String get preparedLink => link.startsWith('/') ? '$proscholyUrl$link' : link;
 
   @override
   int get hashCode => id;

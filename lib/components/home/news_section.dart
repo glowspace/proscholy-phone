@@ -4,7 +4,6 @@ import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/components/section.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/news_items.dart';
-import 'package:zpevnik/utils/extensions.dart';
 import 'package:zpevnik/utils/url_launcher.dart';
 
 const double _newsItemHeight = 32;
@@ -39,14 +38,10 @@ class _NewsSectionState extends ConsumerState<NewsSection> {
             itemCount: newsItems.length,
             itemBuilder: (_, index) => Highlightable(
               padding: EdgeInsets.zero,
-              onTap: newsItems[index].hasLink
-                  ? () => newsItems[index].hasExternalLink
-                      ? launch(newsItems[index].link)
-                      : context.push(newsItems[index].link)
-                  : null,
+              onTap: newsItems[index].hasLink ? () => launch(newsItems[index].preparedLink) : null,
               child: Row(children: [
                 Text(newsItems[index].text),
-                if (newsItems[index].hasExternalLink)
+                if (newsItems[index].hasLink)
                   const Padding(
                     padding: EdgeInsets.only(left: kDefaultPadding / 2),
                     child: Icon(Icons.open_in_new, size: 20),
