@@ -25,16 +25,13 @@ class _UpdateSectionState extends ConsumerState<UpdateSection> {
           data: (updateStatus) {
             final updatedSongLyrics = switch (updateStatus) {
               Updating() => null,
-              Updated(songLyrics: final songLyrics) => songLyrics,
+              Updated(songLyrics: final songLyrics) =>
+                songLyrics.where((songLyric) => songLyric.shouldAppearToUser).toList(),
             };
 
             return _build(context, updatedSongLyrics: updatedSongLyrics);
           },
-          error: (error, stackTrace) {
-            print(stackTrace);
-            print(error);
-            return _build(context, error: error);
-          },
+          error: (error, __) => _build(context, error: error),
           loading: () => _build(context, updatedSongLyrics: []),
         );
   }

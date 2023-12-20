@@ -13,11 +13,7 @@ class UpdatedSongLyricsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomScaffold(
       appBar: AppBar(leading: const CustomBackButton(), title: const Text('Naposledy aktualizované')),
-      body: SafeArea(
-        child: SongLyricsListView(
-          songLyrics: songLyrics.where((songLyric) => songLyric.shouldAppearToUser).toList(),
-        ),
-      ),
+      body: SafeArea(child: SongLyricsListView(songLyrics: songLyrics)),
     );
   }
 }
