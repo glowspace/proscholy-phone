@@ -62,9 +62,6 @@ Future<void> loadInitial(AppDependencies appDependencies) async {
     readJsonList(json['data'][SongLyric.fieldKey], mapper: SongLyric.fromJson),
   );
 
-  // TODO: remove this after some time, that all users have at least 3.1.0 version
-  _removeInvalidPlaylistRecords(appDependencies.store);
-
   // drop "song_lyrics_search" table as there might be change in structure from last version
   try {
     await appDependencies.ftsDatabase.execute('DROP TABLE song_lyrics_search');
@@ -170,16 +167,6 @@ Stream<UpdateStatus> update(UpdateRef ref) async* {
   yield Updated(updatedSongLyrics);
 
   appDependencies.sharedPreferences.setString(_lastUpdateKey, _dateFormat.format(now));
-}
-
-// TODO: remove this after some time, that all users have at least 3.1.0 version
-void _removeInvalidPlaylistRecords(Store store) {
-  _removeRelations(
-      store,
-      PlaylistRecord_.songLyric
-          .equals(0)
-          .and(PlaylistRecord_.bibleVerse.equals(0))
-          .and(PlaylistRecord_.customText.equals(0)));
 }
 
 void _removeRelations<T>(Store store, Condition<T> condition) {
