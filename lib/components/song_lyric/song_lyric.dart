@@ -315,7 +315,7 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
             ref.watch(songLyricSettingsProvider(widget.songLyric.id)
                 .select((songLyricSettings) => songLyricSettings.transposition))),
         ref.watch(songLyricSettingsProvider(widget.songLyric.id)
-            .select((songLyricSettings) => songLyricSettings.accidentals)));
+            .select((songLyricSettings) => songLyricSettings.accidentals ?? widget.songLyric.defaultAccidentals)));
 
     int chordNumberIndex = chordText.indexOf('maj');
     if (chordNumberIndex == -1) {
@@ -338,6 +338,7 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
               ? Text(chordText, style: textStyle?.copyWith(color: chordColor))
               : Row(
                   mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       chordText.substring(0, chordNumberIndex),
@@ -347,7 +348,7 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
                       chordText.substring(chordNumberIndex),
                       style: textStyle?.copyWith(
                         color: chordColor,
-                        fontSize: (textStyle.fontSize ?? 17) * 0.6,
+                        fontSize: (textStyle.fontSize ?? 17) * 0.8,
                       ),
                     ),
                   ],

@@ -42,7 +42,7 @@ class SongLyricSettingsModel with _$SongLyricSettingsModel implements Identifiab
     @Id(assignable: true) required int id,
     required bool showChords,
     required bool showMusicalNotes,
-    required int accidentals,
+    int? accidentals,
     required int transposition,
     required ToOne<SongLyric> songLyric,
   }) = _SongLyricSettingsModel;
@@ -52,7 +52,6 @@ class SongLyricSettingsModel with _$SongLyricSettingsModel implements Identifiab
       id: 0,
       showChords: globalSettings.showChords,
       showMusicalNotes: globalSettings.showMusicalNotes,
-      accidentals: 0,
       transposition: 0,
       songLyric: ToOne(),
     );

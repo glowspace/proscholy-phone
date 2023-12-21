@@ -1381,7 +1381,7 @@ ModelDefinition getObjectBoxModel() {
           final showMusicalNotesParam =
               const fb.BoolReader().vTableGet(buffer, rootOffset, 8, false);
           final accidentalsParam =
-              const fb.Int64Reader().vTableGet(buffer, rootOffset, 10, 0);
+              const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 10);
           final transpositionParam =
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 12, 0);
           final songLyricParam = ToOne<SongLyric>(

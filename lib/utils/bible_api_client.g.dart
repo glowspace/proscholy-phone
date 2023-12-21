@@ -189,7 +189,7 @@ class _BibleVersesProviderElement extends FutureProviderElement<List<dynamic>>
   int get chapter => (origin as BibleVersesProvider).chapter;
 }
 
-String _$bibleVerseHash() => r'3233ee174f46b928566a059e30486ca749c7f1f6';
+String _$bibleVerseHash() => r'b01943f2c24dadf7125d7d6a5654fbd89e0966c0';
 
 /// See also [bibleVerse].
 @ProviderFor(bibleVerse)

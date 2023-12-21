@@ -42,8 +42,8 @@ class SongLyricSettingsModelWidget extends ConsumerWidget {
             ButtonSegment(value: 0, label: Text('#', style: accidentalsStyle, textAlign: TextAlign.center)),
             ButtonSegment(value: 1, label: Text('♭', style: accidentalsStyle, textAlign: TextAlign.center)),
           ],
-          selected: ref.watch(
-              songLyricSettingsProvider(songLyric.id).select((songLyricSettings) => songLyricSettings.accidentals)),
+          selected: ref.watch(songLyricSettingsProvider(songLyric.id)
+              .select((songLyricSettings) => songLyricSettings.accidentals ?? songLyric.defaultAccidentals)),
         ),
         SwitchListTile.adaptive(
           title: Text('Akordy', style: theme.textTheme.bodyMedium),

@@ -14,6 +14,8 @@ import 'package:zpevnik/models/utils.dart';
 part 'song_lyric.freezed.dart';
 part 'song_lyric.g.dart';
 
+final _bAccidentalsRE = RegExp(r'\[(B|S|.b|.s)\]');
+
 enum SongLyricType {
   original('Originál'),
   translation('Překlad'),
@@ -105,6 +107,8 @@ class SongLyric with _$SongLyric implements DisplayableItem, Identifiable, Recen
 
   bool get isFavorite =>
       playlistRecords.any((playlistRecord) => playlistRecord.playlist.targetId == favoritesPlaylistId);
+
+  int get defaultAccidentals => _bAccidentalsRE.hasMatch(lyrics ?? '') ? 1 : 0;
 
   String get authorsText {
     if (type == SongLyricType.original) {

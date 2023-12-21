@@ -296,7 +296,7 @@ mixin _$SongLyricSettingsModel {
   int get id => throw _privateConstructorUsedError;
   bool get showChords => throw _privateConstructorUsedError;
   bool get showMusicalNotes => throw _privateConstructorUsedError;
-  int get accidentals => throw _privateConstructorUsedError;
+  int? get accidentals => throw _privateConstructorUsedError;
   int get transposition => throw _privateConstructorUsedError;
   ToOne<SongLyric> get songLyric => throw _privateConstructorUsedError;
 
@@ -315,7 +315,7 @@ abstract class $SongLyricSettingsModelCopyWith<$Res> {
       {@Id(assignable: true) int id,
       bool showChords,
       bool showMusicalNotes,
-      int accidentals,
+      int? accidentals,
       int transposition,
       ToOne<SongLyric> songLyric});
 }
@@ -337,7 +337,7 @@ class _$SongLyricSettingsModelCopyWithImpl<$Res,
     Object? id = null,
     Object? showChords = null,
     Object? showMusicalNotes = null,
-    Object? accidentals = null,
+    Object? accidentals = freezed,
     Object? transposition = null,
     Object? songLyric = null,
   }) {
@@ -354,10 +354,10 @@ class _$SongLyricSettingsModelCopyWithImpl<$Res,
           ? _value.showMusicalNotes
           : showMusicalNotes // ignore: cast_nullable_to_non_nullable
               as bool,
-      accidentals: null == accidentals
+      accidentals: freezed == accidentals
           ? _value.accidentals
           : accidentals // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
       transposition: null == transposition
           ? _value.transposition
           : transposition // ignore: cast_nullable_to_non_nullable
@@ -383,7 +383,7 @@ abstract class _$$SongLyricSettingsModelImplCopyWith<$Res>
       {@Id(assignable: true) int id,
       bool showChords,
       bool showMusicalNotes,
-      int accidentals,
+      int? accidentals,
       int transposition,
       ToOne<SongLyric> songLyric});
 }
@@ -404,7 +404,7 @@ class __$$SongLyricSettingsModelImplCopyWithImpl<$Res>
     Object? id = null,
     Object? showChords = null,
     Object? showMusicalNotes = null,
-    Object? accidentals = null,
+    Object? accidentals = freezed,
     Object? transposition = null,
     Object? songLyric = null,
   }) {
@@ -421,10 +421,10 @@ class __$$SongLyricSettingsModelImplCopyWithImpl<$Res>
           ? _value.showMusicalNotes
           : showMusicalNotes // ignore: cast_nullable_to_non_nullable
               as bool,
-      accidentals: null == accidentals
+      accidentals: freezed == accidentals
           ? _value.accidentals
           : accidentals // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
       transposition: null == transposition
           ? _value.transposition
           : transposition // ignore: cast_nullable_to_non_nullable
@@ -445,7 +445,7 @@ class _$SongLyricSettingsModelImpl extends _SongLyricSettingsModel {
       {@Id(assignable: true) required this.id,
       required this.showChords,
       required this.showMusicalNotes,
-      required this.accidentals,
+      this.accidentals,
       required this.transposition,
       required this.songLyric})
       : super._();
@@ -458,7 +458,7 @@ class _$SongLyricSettingsModelImpl extends _SongLyricSettingsModel {
   @override
   final bool showMusicalNotes;
   @override
-  final int accidentals;
+  final int? accidentals;
   @override
   final int transposition;
   @override
@@ -482,7 +482,7 @@ abstract class _SongLyricSettingsModel extends SongLyricSettingsModel {
           {@Id(assignable: true) required final int id,
           required final bool showChords,
           required final bool showMusicalNotes,
-          required final int accidentals,
+          final int? accidentals,
           required final int transposition,
           required final ToOne<SongLyric> songLyric}) =
       _$SongLyricSettingsModelImpl;
@@ -496,7 +496,7 @@ abstract class _SongLyricSettingsModel extends SongLyricSettingsModel {
   @override
   bool get showMusicalNotes;
   @override
-  int get accidentals;
+  int? get accidentals;
   @override
   int get transposition;
   @override
