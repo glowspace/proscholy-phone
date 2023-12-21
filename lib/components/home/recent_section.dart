@@ -12,6 +12,8 @@ class RecentSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final recentItems = ref.watch(recentItemsProvider);
 
+    if (recentItems.isEmpty) return const SizedBox();
+
     return Section(
       insideTitle: 'POSLEDNÍ POLOŽKY',
       insideTitleIcon: Icons.access_time_outlined,

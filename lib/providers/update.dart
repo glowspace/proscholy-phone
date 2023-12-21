@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:zpevnik/models/news_item.dart';
 import 'package:zpevnik/models/objectbox.g.dart';
 import 'package:zpevnik/models/song_lyric.dart';
@@ -65,7 +66,9 @@ Future<void> loadInitial(AppDependencies appDependencies) async {
   _removeInvalidPlaylistRecords(appDependencies.store);
 
   // drop "song_lyrics_search" table as there might be change in structure from last version
-  await appDependencies.ftsDatabase.execute('DROP TABLE song_lyrics_search');
+  try {
+    await appDependencies.ftsDatabase.execute('DROP TABLE song_lyrics_search');
+  } on DatabaseException {} // ignore exceptions if database does not exist
   SearchedSongLyrics.update(appDependencies.ftsDatabase, songLyrics);
 
   appDependencies.sharedPreferences.remove(_lastUpdateKey);
