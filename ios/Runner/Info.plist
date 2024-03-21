@@ -56,6 +56,8 @@
 		<string>LaunchScreen</string>
 		<key>UIMainStoryboardFile</key>
 		<string>Main</string>
+		<key>MinimumOSVersion</key>
+		<string>10.0</string>
 		<key>UIRequiresPersistentWiFi</key>
 		<true/>
 		<key>UIStatusBarHidden</key>
