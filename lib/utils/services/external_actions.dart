@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:zpevnik/components/playlist/dialogs.dart';
@@ -37,7 +38,16 @@ class ExternalActionsService {
 
     if (context == null) return;
 
-    showAcceptReceivedPlaylistDialog(context, jsonDecode(playlistData));
+    try {
+      showAcceptReceivedPlaylistDialog(context, jsonDecode(playlistData));
+    } on FormatException {
+      showAlertDialog(
+        context: context,
+        title: 'Chyba při importu playlistu.',
+        message: 'Importovaný playlist se nepodařilo načíst, zkontrolujte prosím, že je soubor ve správném formátu.',
+        actions: [const AlertDialogAction(key: '', label: 'Ok')],
+      );
+    }
   }
 
   void _handleSpotlight(String? route) {
