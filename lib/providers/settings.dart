@@ -31,9 +31,9 @@ class Settings extends _$Settings {
     // TODO: copyWith is only used to preserve settings from older versions, remove it after some time
     return defaultGlobalSettings.copyWith(
       darkModeEnabled: prefs.getBool(_darkModeKey),
-      fontSizeScale: prefs.getDouble(_fontSizeScaleScaleKey) ?? 1.0,
-      showChords: prefs.getBool(_showChordsKey) ?? true,
-      accidentals: prefs.getInt(_accidentalsKey) ?? 1,
+      fontSizeScale: prefs.getDouble(_fontSizeScaleScaleKey) ?? defaultGlobalSettings.fontSizeScale,
+      showChords: prefs.getBool(_showChordsKey) ?? defaultGlobalSettings.showChords,
+      accidentals: prefs.getInt(_accidentalsKey) ?? defaultGlobalSettings.accidentals,
     );
   }
 

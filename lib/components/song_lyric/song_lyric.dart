@@ -293,6 +293,7 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
         ref.watch(
             songLyricSettingsProvider(widget.songLyric.id).select((songLyricSettings) => songLyricSettings.showChords));
     final textStyle = Theme.of(context).textTheme.labelLarge?.copyWith(
+          fontSize: 8,
           fontStyle: FontStyle.italic,
           height: showChords ? 2.5 : 1.5,
         );
