@@ -86,11 +86,20 @@ List<T> queryStore<T, D>(
   QueryProperty<T, D>? orderBy,
   // default ascending
   int orderFlags = 0,
+  bool listen = true,
 }) {
   final box = ref.read(appDependenciesProvider).store.box<T>();
   final queryBuilder = box.query(condition);
 
   if (orderBy != null) queryBuilder.order(orderBy, flags: orderFlags);
+
+  if (listen) {
+    // create stream from new query, otherwise crashes (SEGFAULT)
+    final stream = box.query(condition).watch();
+    final subscription = stream.listen((_) => ref.invalidateSelf());
+
+    ref.onDispose(subscription.cancel);
+  }
 
   final query = queryBuilder.build();
   final data = query.find();
