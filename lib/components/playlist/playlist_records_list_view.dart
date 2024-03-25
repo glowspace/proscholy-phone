@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:zpevnik/components/playlist/playlist_record_row.dart';
 import 'package:zpevnik/components/selected_displayable_item_index.dart';
 import 'package:zpevnik/constants.dart';
@@ -35,7 +36,9 @@ class _PlaylistRecordsListViewState extends ConsumerState<PlaylistRecordsListVie
   late StreamSubscription<Query<PlaylistRecord>> _playlistChangesSubscription;
 
   // it is not possible to sort relations yet, so sort it here when displaying
-  late List<PlaylistRecord> _recordsOrdered = widget.playlist.records.sorted((a, b) => a.rank.compareTo(b.rank));
+  late List<PlaylistRecord> _recordsOrdered = widget.playlist.records
+      .where((record) => _unwrapPlaylistRecordSafe(record) != null)
+      .sorted((a, b) => a.rank.compareTo(b.rank));
 
   @override
   void initState() {
@@ -48,8 +51,9 @@ class _PlaylistRecordsListViewState extends ConsumerState<PlaylistRecordsListVie
         .box<PlaylistRecord>()
         .query(PlaylistRecord_.playlist.equals(widget.playlist.id))
         .watch()
-        .listen((_) =>
-            setState(() => _recordsOrdered = widget.playlist.records.sorted((a, b) => a.rank.compareTo(b.rank))));
+        .listen((_) => setState(() => _recordsOrdered = widget.playlist.records
+            .where((record) => _unwrapPlaylistRecordSafe(record) != null)
+            .sorted((a, b) => a.rank.compareTo(b.rank))));
 
     widget.sortedAlphabeticallyNotifier.addListener(_sortedAlphabeticallyChanged);
   }
@@ -104,6 +108,25 @@ class _PlaylistRecordsListViewState extends ConsumerState<PlaylistRecordsListVie
       ),
       onReorder: _reorder,
     );
+  }
+
+  // TODO: temporary solution to find why playlistrecords don't have any item associated with it
+  DisplayableItem? _unwrapPlaylistRecordSafe(PlaylistRecord playlistRecord) {
+    final bibleVerse = ref.watch(bibleVerseProvider(playlistRecord.bibleVerse.targetId));
+    final customText = ref.watch(customTextProvider(playlistRecord.customText.targetId));
+    final songLyric = ref.watch(songLyricProvider(playlistRecord.songLyric.targetId));
+
+    if (bibleVerse != null) {
+      return bibleVerse;
+    } else if (customText != null) {
+      return customText;
+    }
+
+    Sentry.captureMessage(
+      'missing song lyric from playlist record with id: ${playlistRecord.songLyric.targetId}',
+    );
+
+    return songLyric;
   }
 
   DisplayableItem _unwrapPlaylistRecord(PlaylistRecord playlistRecord) {

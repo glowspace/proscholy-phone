@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:collection/collection.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:zpevnik/custom/sqlite-bm25/bm25.dart';
 import 'package:zpevnik/models/objectbox.g.dart';
@@ -98,7 +99,15 @@ class SearchedSongLyrics extends _$SearchedSongLyrics {
         if (matchedIds.contains(songbookRecord.songLyric.targetId)) continue;
 
         matchedIds.add(songbookRecord.songLyric.targetId);
-        matchedBySongbookNumber.add(ref.read(songLyricProvider(songbookRecord.songLyric.targetId))!);
+
+        final songLyric = ref.read(songLyricProvider(songbookRecord.songLyric.targetId));
+        if (songLyric != null) {
+          matchedBySongbookNumber.add(songLyric);
+        } else {
+          Sentry.captureMessage(
+            'missing song lyric from songbook record with id: ${songbookRecord.songLyric.targetId}',
+          );
+        }
       }
     }
 

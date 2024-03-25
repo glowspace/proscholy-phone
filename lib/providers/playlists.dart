@@ -157,9 +157,11 @@ class Playlists extends _$Playlists {
       );
 
       if (playlistRecordData['song_lyric']?.containsKey('accidentals') ?? false) {
-        ref.read(songLyricSettingsProvider(playlistRecordData['song_lyric']['id']).notifier)
-          ..changeAccidentals(playlistRecordData['song_lyric']['accidentals'])
-          ..changeTransposition(playlistRecordData['song_lyric']['transposition']);
+        final settingsNotifier = ref.read(songLyricSettingsProvider(playlistRecordData['song_lyric']['id']).notifier);
+        if (playlistRecordData['song_lyric']['accidentals'] != null) {
+          settingsNotifier.changeAccidentals(playlistRecordData['song_lyric']['accidentals']);
+        }
+        settingsNotifier.changeTransposition(playlistRecordData['song_lyric']['transposition']);
       }
 
       playlistRecords.add(playlistRecord);
