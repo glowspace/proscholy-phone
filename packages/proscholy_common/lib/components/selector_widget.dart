@@ -1,0 +1,50 @@
+import 'package:flutter/material.dart';
+import 'package:proscholy_common/constants.dart';
+
+class SelectorWidget<T> extends StatelessWidget {
+  final String? title;
+
+  final Function(T) onSelected;
+  final List<ButtonSegment<T>> segments;
+  final T selected;
+
+  final bool isEnabled;
+
+  final EdgeInsets padding;
+
+  const SelectorWidget({
+    super.key,
+    this.title,
+    required this.onSelected,
+    required this.segments,
+    required this.selected,
+    this.isEnabled = true,
+    this.padding = const EdgeInsets.all(kDefaultPadding),
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+
+    return Padding(
+      padding: padding,
+      child: Row(children: [
+        if (title != null)
+          Expanded(
+            child: Text(title!, style: textTheme.bodyMedium?.copyWith(color: isEnabled ? null : theme.disabledColor)),
+          ),
+        SegmentedButton<T>(
+          style: SegmentedButton.styleFrom(
+            visualDensity: VisualDensity.compact,
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
+          segments: segments,
+          selected: {selected},
+          onSelectionChanged: isEnabled ? (selected) => onSelected(selected.first) : null,
+          showSelectedIcon: false,
+        ),
+      ]),
+    );
+  }
+}

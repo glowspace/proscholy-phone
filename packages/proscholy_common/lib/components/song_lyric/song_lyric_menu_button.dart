@@ -1,0 +1,111 @@
+import 'package:flutter/material.dart' hide PopupMenuEntry, PopupMenuItem;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:proscholy_common/components/custom/popup_menu_button.dart';
+import 'package:proscholy_common/components/icon_item.dart';
+import 'package:proscholy_common/constants.dart';
+import 'package:proscholy_common/custom/popup_menu.dart';
+import 'package:proscholy_common/links.dart';
+import 'package:proscholy_common/models/song_lyric.dart';
+import 'package:proscholy_common/providers/app_dependencies.dart';
+import 'package:proscholy_common/providers/presentation.dart';
+import 'package:proscholy_common/utils/extensions.dart';
+import 'package:proscholy_common/utils/url_launcher.dart';
+
+enum SongLyricMenuAction {
+  present,
+  share,
+  openInBrowser,
+  report,
+}
+
+class SongLyricMenuButton extends StatelessWidget {
+  final SongLyric songLyric;
+
+  const SongLyricMenuButton({super.key, required this.songLyric});
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPopupMenuButton(
+      items: _buildPopupMenuItems(context),
+      onSelected: (context, action) => _selectedAction(context, action),
+      padding: const EdgeInsets.only(left: kDefaultPadding, right: 1.5 * kDefaultPadding),
+    );
+  }
+
+  List<PopupMenuEntry<SongLyricMenuAction>> _buildPopupMenuItems(BuildContext context) {
+    return [
+      PopupMenuItem(
+        value: SongLyricMenuAction.present,
+        child: Consumer(
+          builder: (_, ref, __) => IconItem(
+            icon: Icons.cast,
+            text: ref.watch(presentationProvider.select((presentationProvider) => presentationProvider.isPresenting))
+                ? 'Ukončit promítání'
+                : 'Spustit promítání',
+          ),
+        ),
+      ),
+      const PopupMenuItem(
+        value: SongLyricMenuAction.share,
+        child: IconItem(icon: Icons.share, text: 'Sdílet'),
+      ),
+      const PopupMenuItem(
+        value: SongLyricMenuAction.openInBrowser,
+        child: IconItem(icon: Icons.language, text: 'Otevřít na webu'),
+      ),
+      const PopupMenuItem(
+        value: SongLyricMenuAction.report,
+        child: IconItem(icon: Icons.warning, text: 'Nahlásit'),
+      ),
+    ];
+  }
+
+  void _selectedAction(BuildContext context, SongLyricMenuAction? action) {
+    if (action == null) return;
+
+    switch (action) {
+      case SongLyricMenuAction.present:
+        final presentationNotifier = context.providers.read(presentationProvider.notifier);
+
+        if (presentationNotifier.isPresenting) {
+          presentationNotifier.stop();
+        } else {
+          context.push('/display/present').then((_) => presentationNotifier.change(songLyric));
+        }
+        break;
+      case SongLyricMenuAction.share:
+        final box = context.findRenderObject() as RenderBox?;
+
+        Share.share(
+          'https://$songUrl/${songLyric.id}/',
+          sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
+        );
+        break;
+      case SongLyricMenuAction.openInBrowser:
+        launch('https://$songUrl/${songLyric.id}/');
+        break;
+      case SongLyricMenuAction.report:
+        final version = context.providers.read(appDependenciesProvider).packageInfo.version;
+        final platform = Theme.of(context).platform == TargetPlatform.iOS ? 'iOS' : 'android';
+
+        final url = 'https://$platform.$baseUrl/v$version/pisen/${songLyric.id}/${_formatName(songLyric.name)}';
+
+        launch('$reportSongLyricUrl?customfield_10056=$url');
+        break;
+    }
+  }
+
+  String _formatName(String name) {
+    name = name.toLowerCase();
+
+    var withDiacritic = 'áčďéěíňóřšťúůýž';
+    var withoutDiacritic = 'acdeeinorstuuyz';
+
+    for (int i = 0; i < withDiacritic.length; i++) {
+      name = name.replaceAll(withDiacritic[i], withoutDiacritic[i]);
+    }
+
+    return name.replaceAll(' ', '-');
+  }
+}

@@ -1,0 +1,66 @@
+name: proscholy_common
+description: "A collection of common sources for proscholy-like songbooks."
+version: 0.0.1
+homepage:
+
+environment:
+  sdk: ^3.6.0
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  collection: ^1.19.0
+  dotted_border: ^2.1.0
+  flutter_riverpod: ^2.6.1
+  freezed_annotation: ^2.4.4
+  intl: ^0.20.2
+  json_annotation: ^4.9.0
+  objectbox: ^4.0.3
+  objectbox_flutter_libs: ^4.0.3
+  riverpod_annotation: ^2.6.1
+  sentry_flutter: ^8.12.0
+  shared_preferences: ^2.4.0
+  sqflite: ^2.4.1
+  package_info_plus: ^8.1.3
+  flutter_quill: ^11.0.0-dev.21
+  adaptive_dialog: ^2.4.0
+  path_provider: ^2.1.5
+  share_plus: ^10.1.4
+  flutter_slidable: ^4.0.0
+  google_fonts: ^6.2.1
+  font_awesome_flutter: ^10.8.0
+  graphql_flutter: ^5.2.0-beta.8
+  just_audio: ^0.9.43
+  rxdart: ^0.28.0
+  flutter_staggered_grid_view: ^0.7.0
+  flutter_svg: ^2.0.17
+  wakelock_plus: ^1.2.10
+  flutter_speed_dial: ^7.0.0
+  flex_color_picker: ^3.7.0
+  cached_network_image: ^3.4.1
+  photo_view: ^0.15.0
+  flutter_cached_pdfview: ^0.4.3
+  youtube_player_flutter: ^9.1.1
+  jovial_svg: ^1.1.24
+
+dev_dependencies:
+  flutter_lints: ^5.0.0
+  build_runner: any
+  freezed: any
+  json_serializable: any
+  objectbox_generator: any
+  riverpod_generator: any
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/images/logos/
+    - assets/images/songbooks/
+    - assets/
+
+objectbox:
+  output_dir: models/generated
