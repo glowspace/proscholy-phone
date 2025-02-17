@@ -23,7 +23,7 @@ part 'generated/update.g.dart';
 const _versionKey = 'current_version';
 
 const _lastUpdateKey = 'last_update';
-const _initialLastUpdate = isZP ? '2024-10-22 09:00:00' : '2024-06-05 09:00:00';
+const _initialLastUpdate = isZP ? '2025-02-17 09:00:00' : '2024-06-05 09:00:00';
 
 const _updatePeriod = Duration(hours: 1);
 
