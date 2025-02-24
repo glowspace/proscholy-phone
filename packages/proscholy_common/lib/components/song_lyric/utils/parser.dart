@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:proscholy_common/models/song_lyric.dart';
 import 'package:proscholy_common/components/song_lyric/utils/converter.dart';
@@ -229,6 +231,8 @@ class _FilledTokensBuilder {
 
     _fillVerseEnd();
 
+    // log(filledTokens.toString());
+
     return filledTokens;
   }
 
@@ -364,11 +368,7 @@ class SongLyricsParser {
         case 'C':
         case 'R':
         case 'm': // starting with "mezizpěv"
-          if (state == _ParserState.lineStart) {
-            chordSubstituteIndex = 0;
-
-            state = _ParserState.possibleVerseNumber;
-          }
+          if (state == _ParserState.lineStart) state = _ParserState.possibleVerseNumber;
 
           currentString += c;
           break;
@@ -384,6 +384,7 @@ class SongLyricsParser {
             tokens.add(VerseNumber(currentString));
 
             currentString = '';
+            chordSubstituteIndex = 0;
             state = _ParserState.verseLine;
 
             isInsideVerse = true;
