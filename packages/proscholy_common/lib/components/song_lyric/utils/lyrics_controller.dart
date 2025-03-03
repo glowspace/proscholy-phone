@@ -10,11 +10,12 @@ final _sizeRE = RegExp(r'width="([\d\.]+)[^"]*" height="([\d\.]+)[^"]*"');
 
 class LyricsController extends AssetBundle {
   final SongLyric songLyric;
+  final String svg;
   final SongLyricsParser parser;
 
   final BuildContext context;
 
-  LyricsController(this.songLyric, this.context) : parser = SongLyricsParser(songLyric);
+  LyricsController(this.songLyric, this.svg, this.context) : parser = SongLyricsParser(songLyric);
 
   double? _musicNotesWidth;
   double? _musicNotesMaxWidth;
@@ -22,7 +23,7 @@ class LyricsController extends AssetBundle {
 
   String get title => songLyric.name;
 
-  bool get hasMusicNotes => songLyric.musicNotes != null;
+  bool get hasMusicNotes => svg.isNotEmpty;
 
   double get musicNotesWidth => _musicNotesWidth ?? 0;
   double get musicNotesMaxWidth => _musicNotesMaxWidth ?? 0;
@@ -30,18 +31,15 @@ class LyricsController extends AssetBundle {
   String get musicNotes {
     if (_musicNotes != null) return _musicNotes!;
 
-    final viewBoxMatch = _viewBoxRE.firstMatch(songLyric.musicNotes ?? '');
+    final viewBoxMatch = _viewBoxRE.firstMatch(svg);
 
     if (viewBoxMatch != null) _musicNotesWidth = double.parse(viewBoxMatch.group(1)!);
 
-    _musicNotes = (songLyric.musicNotes ?? '').replaceFirstMapped(_sizeRE, (match) {
+    _musicNotes = svg.replaceFirstMapped(_sizeRE, (match) {
       _musicNotesMaxWidth = double.parse(match.group(1)!);
 
       return 'viewBox="0 0 ${viewBoxMatch!.group(1)!} ${viewBoxMatch.group(2)!}"';
     }).replaceAll('Times,serif', 'Times New Roman');
-
-    print(musicNotesWidth);
-    print(musicNotesMaxWidth);
 
     return _musicNotes!;
   }

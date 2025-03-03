@@ -14,9 +14,6 @@ _$SongLyricImpl _$$SongLyricImplFromJson(Map<String, dynamic> json) =>
       secondaryName1: json['secondary_name_1'] as String?,
       secondaryName2: json['secondary_name_2'] as String?,
       lyrics: json['lyrics'] as String?,
-      lilypond: json['lilypond_svg'] as String?,
-      externalRenderedScores: _externalRenderedScoresFromJson(
-          json['external_rendered_scores'] as List?),
       hymnology: json['hymnology'] as String? ?? '',
       lang: json['lang'] as String,
       langDescription: json['lang_string'] as String,

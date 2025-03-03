@@ -6,6 +6,7 @@ import 'package:proscholy_common/constants.dart';
 import 'package:proscholy_common/links.dart';
 import 'package:proscholy_common/models/song_lyric.dart';
 import 'package:proscholy_common/providers/app_dependencies.dart';
+import 'package:proscholy_common/providers/svgs.dart';
 import 'package:proscholy_common/providers/update.dart';
 import 'package:proscholy_common/utils/extensions.dart';
 import 'package:proscholy_common/utils/url_launcher.dart';
@@ -26,13 +27,14 @@ class _UpdateSectionState extends ConsumerState<UpdateSection> {
           data: (updateStatus) {
             final updatedSongLyrics = switch (updateStatus) {
               Updating() => null,
-              Updated(songLyrics: final songLyrics) =>
-                songLyrics.where((songLyric) => songLyric.shouldAppearToUser).toList(),
+              Updated(songLyrics: final songLyrics) => songLyrics
+                  .where((songLyric) => songLyric.shouldAppearToUser || ref.read(svgProvider(songLyric.id)).isNotEmpty)
+                  .toList(),
             };
 
             return _build(context, updatedSongLyrics: updatedSongLyrics);
           },
-          error: (error, __) => _build(context, error: error),
+          error: (error, _) => _build(context, error: error),
           loading: () => _build(context, updatedSongLyrics: []),
         );
   }

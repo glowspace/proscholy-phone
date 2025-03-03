@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:archive/archive.dart';
+import 'package:http/http.dart' as http;
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:proscholy_common/constants.dart';
@@ -51,9 +53,6 @@ const _idPlaceholder = '[ID]';
 const _updatedAfterPlaceholder = '[UPDATED_AFTER]';
 
 const _ezAdditionalQueryFields = '''
-    external_rendered_scores {
-      contents
-    }
     hymnology
 ''';
 
@@ -65,7 +64,7 @@ query {
     secondary_name_1
     secondary_name_2
     lyrics
-    lilypond_svg${isEZ ? _ezAdditionalQueryFields : ''}
+    ${isEZ ? _ezAdditionalQueryFields : ''}
     lang
     lang_string
     type_enum
@@ -113,7 +112,7 @@ query {
     secondary_name_1
     secondary_name_2
     lyrics
-    lilypond_svg${isEZ ? _ezAdditionalQueryFields : ''}
+    ${isEZ ? _ezAdditionalQueryFields : ''}
     lang
     lang_string
     type_enum
@@ -187,5 +186,12 @@ class Client {
     final result = await client.query(QueryOptions(document: gql(_songLyricQuery.replaceFirst(_idPlaceholder, '$id'))));
 
     return result.data!['song_lyric'];
+  }
+
+  Future<List<int>> getSvgs(DateTime updatedAfter) async {
+    final response = await http
+        .get(Uri.https('zpevnik.proscholy.cz', 'download-svgs', {'updated_after': _dateFormat.format(updatedAfter)}));
+
+    return response.bodyBytes;
   }
 }

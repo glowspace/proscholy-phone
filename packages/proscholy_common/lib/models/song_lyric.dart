@@ -66,9 +66,6 @@ class SongLyric with _$SongLyric implements DisplayableItem, Identifiable, Recen
     @JsonKey(name: 'secondary_name_1') String? secondaryName1,
     @JsonKey(name: 'secondary_name_2') String? secondaryName2,
     String? lyrics,
-    @JsonKey(name: 'lilypond_svg') String? lilypond,
-    @JsonKey(name: 'external_rendered_scores', fromJson: _externalRenderedScoresFromJson)
-    String? externalRenderedScores,
     @Default('') String hymnology,
     required String lang,
     @JsonKey(name: 'lang_string') required String langDescription,
@@ -91,13 +88,11 @@ class SongLyric with _$SongLyric implements DisplayableItem, Identifiable, Recen
   SongLyricType get type => SongLyricType.fromRawValue(dbType);
 
   // show song lyrics that have lyrics or lilypond or supported external files or supported recordings
-  bool get shouldAppearToUser => hasLyrics || hasMusicNotes || hasFiles || hasRecordings;
+  bool get shouldAppearToUser => hasLyrics || hasFiles || hasRecordings;
 
   bool get hasTranslations => song.target?.hasTranslations ?? false;
 
   bool get hasLyrics => lyrics != null && lyrics!.isNotEmpty;
-  String? get musicNotes => externalRenderedScores ?? lilypond;
-  bool get hasMusicNotes => musicNotes != null && musicNotes!.isNotEmpty;
 
   // temporary fix, until API provides correct value
   bool get hasChordsReal => lyrics?.contains('[') ?? false;
@@ -166,10 +161,6 @@ int _readEzId(Map<dynamic, dynamic> json, String _) {
       .firstWhere((songbookRecord) => songbookRecord['pivot']['songbook']['id'] == '58')['pivot']['number'];
 
   return int.parse(idString);
-}
-
-String? _externalRenderedScoresFromJson(List<dynamic>? json) {
-  return json?.firstOrNull?['contents'];
 }
 
 ToOne<Song> _songFromJson(Map<String, dynamic>? json) {

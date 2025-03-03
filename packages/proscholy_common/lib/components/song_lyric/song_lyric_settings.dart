@@ -7,6 +7,7 @@ import 'package:proscholy_common/components/highlightable_widget.dart';
 import 'package:proscholy_common/components/selector_widget.dart';
 import 'package:proscholy_common/models/song_lyric.dart';
 import 'package:proscholy_common/providers/settings.dart';
+import 'package:proscholy_common/providers/svgs.dart';
 
 class SongLyricSettingsModelWidget extends ConsumerWidget {
   final SongLyric songLyric;
@@ -53,7 +54,7 @@ class SongLyricSettingsModelWidget extends ConsumerWidget {
           dense: true,
           contentPadding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
         ),
-        if (songLyric.hasMusicNotes)
+        if (ref.watch(svgProvider(songLyric.id)).isNotEmpty)
           SwitchListTile.adaptive(
             title: Text('Zobrazit noty', style: theme.textTheme.bodyMedium),
             activeColor: theme.colorScheme.primary,

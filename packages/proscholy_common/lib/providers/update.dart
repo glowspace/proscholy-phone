@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:archive/archive.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:proscholy_common/constants.dart';
+import 'package:proscholy_common/providers/svgs.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:proscholy_common/models/news_item.dart';
@@ -13,7 +15,6 @@ import 'package:proscholy_common/models/utils.dart';
 import 'package:proscholy_common/providers/app_dependencies.dart';
 import 'package:proscholy_common/providers/search.dart';
 import 'package:proscholy_common/providers/song_lyrics.dart';
-import 'package:proscholy_common/providers/songbooks.dart';
 import 'package:proscholy_common/providers/utils.dart';
 import 'package:proscholy_common/utils/client.dart';
 import 'package:proscholy_common/utils/services/spotlight.dart';
@@ -23,7 +24,7 @@ part 'generated/update.g.dart';
 const _versionKey = 'current_version';
 
 const _lastUpdateKey = 'last_update';
-const _initialLastUpdate = isZP ? '2025-02-17 09:00:00' : '2024-06-05 09:00:00';
+const _initialLastUpdate = isZP ? '2024-10-22 09:00:00' : '2024-06-05 09:00:00';
 
 const _updatePeriod = Duration(hours: 1);
 
@@ -50,10 +51,6 @@ Future<void> loadInitial(AppDependencies appDependencies) async {
   final currentVersion = '${appDependencies.packageInfo.version}+${appDependencies.packageInfo.buildNumber}';
 
   if (lastVersion == currentVersion) return;
-
-  // TODO: remove this after some time, that all users have at least 3.1.0 version
-  migratePinnedSongbooks(appDependencies.store, appDependencies.sharedPreferences);
-  migrateSongLyricSettings(appDependencies.store);
 
   // TODO: remove json file after loading, this is not possible right now
   final json = jsonDecode(await rootBundle.loadString('assets/data.json'));
@@ -97,11 +94,14 @@ Stream<UpdateStatus> update(UpdateRef ref) async* {
   final lastUpdate =
       _dateFormat.parseUtc(appDependencies.sharedPreferences.getString(_lastUpdateKey) ?? _initialLastUpdate);
 
+
   if (now.isBefore(lastUpdate.add(_updatePeriod))) return;
 
   yield const Updating();
 
   final data = await client.getData();
+
+  ref.read(svgsProvider.notifier).update(await client.getSvgs(lastUpdate));
 
   await parseAndStoreData(appDependencies.store, data);
 

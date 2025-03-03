@@ -14,6 +14,7 @@ import 'package:proscholy_common/providers/settings.dart';
 import 'package:proscholy_common/components/song_lyric/utils/converter.dart';
 import 'package:proscholy_common/components/song_lyric/utils/lyrics_controller.dart';
 import 'package:proscholy_common/components/song_lyric/utils/parser.dart';
+import 'package:proscholy_common/providers/svgs.dart';
 import 'package:proscholy_common/utils/extensions.dart';
 
 class SongLyricWidget extends ConsumerStatefulWidget {
@@ -27,7 +28,7 @@ class SongLyricWidget extends ConsumerStatefulWidget {
 }
 
 class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
-  late final controller = LyricsController(widget.songLyric, context);
+  late final controller = LyricsController(widget.songLyric, context.providers.read(svgProvider(widget.songLyric.id)), context);
 
   final _presentationPartGlobalKeysMap = <int, GlobalKey>{};
 

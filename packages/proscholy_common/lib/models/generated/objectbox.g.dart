@@ -184,7 +184,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
       id: const obx_int.IdUid(11, 6447883453535376640),
       name: 'SongLyric',
-      lastPropertyId: const obx_int.IdUid(30, 4993132736196042096),
+      lastPropertyId: const obx_int.IdUid(33, 4624595427649584957),
       flags: 0,
       properties: <obx_int.ModelProperty>[
         obx_int.ModelProperty(
@@ -210,11 +210,6 @@ final _entities = <obx_int.ModelEntity>[
         obx_int.ModelProperty(
             id: const obx_int.IdUid(5, 4090781135399724519),
             name: 'lyrics',
-            type: 9,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(6, 3380582964501408304),
-            name: 'lilypond',
             type: 9,
             flags: 0),
         obx_int.ModelProperty(
@@ -270,11 +265,6 @@ final _entities = <obx_int.ModelEntity>[
             id: const obx_int.IdUid(28, 6098338462102959253),
             name: 'ezId',
             type: 6,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(29, 4437772770493527079),
-            name: 'externalRenderedScores',
-            type: 9,
             flags: 0),
         obx_int.ModelProperty(
             id: const obx_int.IdUid(30, 4993132736196042096),
@@ -687,7 +677,12 @@ obx_int.ModelDefinition getObjectBoxModel() {
         5404942060880140897,
         7528607199616284548,
         3483625794157916143,
-        3873057272621101277
+        3873057272621101277,
+        3380582964501408304,
+        4437772770493527079,
+        3715311129381295890,
+        2627035804185762219,
+        4624595427649584957
       ],
       retiredRelationUids: const [
         7916874752771113838,
@@ -971,23 +966,15 @@ obx_int.ModelDefinition getObjectBoxModel() {
               : fbb.writeString(object.secondaryName2!);
           final lyricsOffset =
               object.lyrics == null ? null : fbb.writeString(object.lyrics!);
-          final lilypondOffset = object.lilypond == null
-              ? null
-              : fbb.writeString(object.lilypond!);
           final langOffset = fbb.writeString(object.lang);
           final langDescriptionOffset = fbb.writeString(object.langDescription);
-          final externalRenderedScoresOffset =
-              object.externalRenderedScores == null
-                  ? null
-                  : fbb.writeString(object.externalRenderedScores!);
           final hymnologyOffset = fbb.writeString(object.hymnology);
-          fbb.startTable(31);
+          fbb.startTable(34);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, nameOffset);
           fbb.addOffset(2, secondaryName1Offset);
           fbb.addOffset(3, secondaryName2Offset);
           fbb.addOffset(4, lyricsOffset);
-          fbb.addOffset(5, lilypondOffset);
           fbb.addOffset(6, langOffset);
           fbb.addOffset(7, langDescriptionOffset);
           fbb.addInt64(8, object.song.targetId);
@@ -998,7 +985,6 @@ obx_int.ModelDefinition getObjectBoxModel() {
           fbb.addInt64(23, object.transposition);
           fbb.addInt64(26, object.settings.targetId);
           fbb.addInt64(27, object.ezId);
-          fbb.addOffset(28, externalRenderedScoresOffset);
           fbb.addOffset(29, hymnologyOffset);
           fbb.finish(fbb.endTable());
           return object.id;
@@ -1020,11 +1006,6 @@ obx_int.ModelDefinition getObjectBoxModel() {
                   .vTableGetNullable(buffer, rootOffset, 10);
           final lyricsParam = const fb.StringReader(asciiOptimization: true)
               .vTableGetNullable(buffer, rootOffset, 12);
-          final lilypondParam = const fb.StringReader(asciiOptimization: true)
-              .vTableGetNullable(buffer, rootOffset, 14);
-          final externalRenderedScoresParam =
-              const fb.StringReader(asciiOptimization: true)
-                  .vTableGetNullable(buffer, rootOffset, 60);
           final hymnologyParam = const fb.StringReader(asciiOptimization: true)
               .vTableGet(buffer, rootOffset, 62, '');
           final langParam = const fb.StringReader(asciiOptimization: true)
@@ -1060,8 +1041,6 @@ obx_int.ModelDefinition getObjectBoxModel() {
               secondaryName1: secondaryName1Param,
               secondaryName2: secondaryName2Param,
               lyrics: lyricsParam,
-              lilypond: lilypondParam,
-              externalRenderedScores: externalRenderedScoresParam,
               hymnology: hymnologyParam,
               lang: langParam,
               langDescription: langDescriptionParam,
@@ -1573,58 +1552,50 @@ class SongLyric_ {
   static final lyrics =
       obx.QueryStringProperty<SongLyric>(_entities[5].properties[4]);
 
-  /// See [SongLyric.lilypond].
-  static final lilypond =
-      obx.QueryStringProperty<SongLyric>(_entities[5].properties[5]);
-
   /// See [SongLyric.lang].
   static final lang =
-      obx.QueryStringProperty<SongLyric>(_entities[5].properties[6]);
+      obx.QueryStringProperty<SongLyric>(_entities[5].properties[5]);
 
   /// See [SongLyric.langDescription].
   static final langDescription =
-      obx.QueryStringProperty<SongLyric>(_entities[5].properties[7]);
+      obx.QueryStringProperty<SongLyric>(_entities[5].properties[6]);
 
   /// See [SongLyric.song].
   static final song =
-      obx.QueryRelationToOne<SongLyric, Song>(_entities[5].properties[8]);
+      obx.QueryRelationToOne<SongLyric, Song>(_entities[5].properties[7]);
 
   /// See [SongLyric.dbType].
   static final dbType =
-      obx.QueryIntegerProperty<SongLyric>(_entities[5].properties[9]);
+      obx.QueryIntegerProperty<SongLyric>(_entities[5].properties[8]);
 
   /// See [SongLyric.hasChords].
   static final hasChords =
-      obx.QueryBooleanProperty<SongLyric>(_entities[5].properties[10]);
+      obx.QueryBooleanProperty<SongLyric>(_entities[5].properties[9]);
 
   /// See [SongLyric.accidentals].
   static final accidentals =
-      obx.QueryIntegerProperty<SongLyric>(_entities[5].properties[11]);
+      obx.QueryIntegerProperty<SongLyric>(_entities[5].properties[10]);
 
   /// See [SongLyric.showChords].
   static final showChords =
-      obx.QueryBooleanProperty<SongLyric>(_entities[5].properties[12]);
+      obx.QueryBooleanProperty<SongLyric>(_entities[5].properties[11]);
 
   /// See [SongLyric.transposition].
   static final transposition =
-      obx.QueryIntegerProperty<SongLyric>(_entities[5].properties[13]);
+      obx.QueryIntegerProperty<SongLyric>(_entities[5].properties[12]);
 
   /// See [SongLyric.settings].
   static final settings =
       obx.QueryRelationToOne<SongLyric, SongLyricSettingsModel>(
-          _entities[5].properties[14]);
+          _entities[5].properties[13]);
 
   /// See [SongLyric.ezId].
   static final ezId =
-      obx.QueryIntegerProperty<SongLyric>(_entities[5].properties[15]);
-
-  /// See [SongLyric.externalRenderedScores].
-  static final externalRenderedScores =
-      obx.QueryStringProperty<SongLyric>(_entities[5].properties[16]);
+      obx.QueryIntegerProperty<SongLyric>(_entities[5].properties[14]);
 
   /// See [SongLyric.hymnology].
   static final hymnology =
-      obx.QueryStringProperty<SongLyric>(_entities[5].properties[17]);
+      obx.QueryStringProperty<SongLyric>(_entities[5].properties[15]);
 
   /// see [SongLyric.authors]
   static final authors =

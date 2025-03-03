@@ -31,12 +31,6 @@ mixin _$SongLyric {
   @JsonKey(name: 'secondary_name_2')
   String? get secondaryName2 => throw _privateConstructorUsedError;
   String? get lyrics => throw _privateConstructorUsedError;
-  @JsonKey(name: 'lilypond_svg')
-  String? get lilypond => throw _privateConstructorUsedError;
-  @JsonKey(
-      name: 'external_rendered_scores',
-      fromJson: _externalRenderedScoresFromJson)
-  String? get externalRenderedScores => throw _privateConstructorUsedError;
   String get hymnology => throw _privateConstructorUsedError;
   String get lang => throw _privateConstructorUsedError;
   @JsonKey(name: 'lang_string')
@@ -89,11 +83,6 @@ abstract class $SongLyricCopyWith<$Res> {
       @JsonKey(name: 'secondary_name_1') String? secondaryName1,
       @JsonKey(name: 'secondary_name_2') String? secondaryName2,
       String? lyrics,
-      @JsonKey(name: 'lilypond_svg') String? lilypond,
-      @JsonKey(
-          name: 'external_rendered_scores',
-          fromJson: _externalRenderedScoresFromJson)
-      String? externalRenderedScores,
       String hymnology,
       String lang,
       @JsonKey(name: 'lang_string') String langDescription,
@@ -139,8 +128,6 @@ class _$SongLyricCopyWithImpl<$Res, $Val extends SongLyric>
     Object? secondaryName1 = freezed,
     Object? secondaryName2 = freezed,
     Object? lyrics = freezed,
-    Object? lilypond = freezed,
-    Object? externalRenderedScores = freezed,
     Object? hymnology = null,
     Object? lang = null,
     Object? langDescription = null,
@@ -181,14 +168,6 @@ class _$SongLyricCopyWithImpl<$Res, $Val extends SongLyric>
       lyrics: freezed == lyrics
           ? _value.lyrics
           : lyrics // ignore: cast_nullable_to_non_nullable
-              as String?,
-      lilypond: freezed == lilypond
-          ? _value.lilypond
-          : lilypond // ignore: cast_nullable_to_non_nullable
-              as String?,
-      externalRenderedScores: freezed == externalRenderedScores
-          ? _value.externalRenderedScores
-          : externalRenderedScores // ignore: cast_nullable_to_non_nullable
               as String?,
       hymnology: null == hymnology
           ? _value.hymnology
@@ -269,11 +248,6 @@ abstract class _$$SongLyricImplCopyWith<$Res>
       @JsonKey(name: 'secondary_name_1') String? secondaryName1,
       @JsonKey(name: 'secondary_name_2') String? secondaryName2,
       String? lyrics,
-      @JsonKey(name: 'lilypond_svg') String? lilypond,
-      @JsonKey(
-          name: 'external_rendered_scores',
-          fromJson: _externalRenderedScoresFromJson)
-      String? externalRenderedScores,
       String hymnology,
       String lang,
       @JsonKey(name: 'lang_string') String langDescription,
@@ -317,8 +291,6 @@ class __$$SongLyricImplCopyWithImpl<$Res>
     Object? secondaryName1 = freezed,
     Object? secondaryName2 = freezed,
     Object? lyrics = freezed,
-    Object? lilypond = freezed,
-    Object? externalRenderedScores = freezed,
     Object? hymnology = null,
     Object? lang = null,
     Object? langDescription = null,
@@ -359,14 +331,6 @@ class __$$SongLyricImplCopyWithImpl<$Res>
       lyrics: freezed == lyrics
           ? _value.lyrics
           : lyrics // ignore: cast_nullable_to_non_nullable
-              as String?,
-      lilypond: freezed == lilypond
-          ? _value.lilypond
-          : lilypond // ignore: cast_nullable_to_non_nullable
-              as String?,
-      externalRenderedScores: freezed == externalRenderedScores
-          ? _value.externalRenderedScores
-          : externalRenderedScores // ignore: cast_nullable_to_non_nullable
               as String?,
       hymnology: null == hymnology
           ? _value.hymnology
@@ -444,11 +408,6 @@ class _$SongLyricImpl extends _SongLyric {
       @JsonKey(name: 'secondary_name_1') this.secondaryName1,
       @JsonKey(name: 'secondary_name_2') this.secondaryName2,
       this.lyrics,
-      @JsonKey(name: 'lilypond_svg') this.lilypond,
-      @JsonKey(
-          name: 'external_rendered_scores',
-          fromJson: _externalRenderedScoresFromJson)
-      this.externalRenderedScores,
       this.hymnology = '',
       required this.lang,
       @JsonKey(name: 'lang_string') required this.langDescription,
@@ -492,14 +451,6 @@ class _$SongLyricImpl extends _SongLyric {
   final String? secondaryName2;
   @override
   final String? lyrics;
-  @override
-  @JsonKey(name: 'lilypond_svg')
-  final String? lilypond;
-  @override
-  @JsonKey(
-      name: 'external_rendered_scores',
-      fromJson: _externalRenderedScoresFromJson)
-  final String? externalRenderedScores;
   @override
   @JsonKey()
   final String hymnology;
@@ -548,7 +499,7 @@ class _$SongLyricImpl extends _SongLyric {
 
   @override
   String toString() {
-    return 'SongLyric(id: $id, ezId: $ezId, name: $name, secondaryName1: $secondaryName1, secondaryName2: $secondaryName2, lyrics: $lyrics, lilypond: $lilypond, externalRenderedScores: $externalRenderedScores, hymnology: $hymnology, lang: $lang, langDescription: $langDescription, dbType: $dbType, hasChords: $hasChords, accidentals: $accidentals, showChords: $showChords, transposition: $transposition, song: $song, settings: $settings, authors: $authors, tags: $tags, externals: $externals, songbookRecords: $songbookRecords, playlistRecords: $playlistRecords)';
+    return 'SongLyric(id: $id, ezId: $ezId, name: $name, secondaryName1: $secondaryName1, secondaryName2: $secondaryName2, lyrics: $lyrics, hymnology: $hymnology, lang: $lang, langDescription: $langDescription, dbType: $dbType, hasChords: $hasChords, accidentals: $accidentals, showChords: $showChords, transposition: $transposition, song: $song, settings: $settings, authors: $authors, tags: $tags, externals: $externals, songbookRecords: $songbookRecords, playlistRecords: $playlistRecords)';
   }
 
   /// Create a copy of SongLyric
@@ -570,11 +521,6 @@ abstract class _SongLyric extends SongLyric {
       @JsonKey(name: 'secondary_name_1') final String? secondaryName1,
       @JsonKey(name: 'secondary_name_2') final String? secondaryName2,
       final String? lyrics,
-      @JsonKey(name: 'lilypond_svg') final String? lilypond,
-      @JsonKey(
-          name: 'external_rendered_scores',
-          fromJson: _externalRenderedScoresFromJson)
-      final String? externalRenderedScores,
       final String hymnology,
       required final String lang,
       @JsonKey(name: 'lang_string') required final String langDescription,
@@ -620,14 +566,6 @@ abstract class _SongLyric extends SongLyric {
   String? get secondaryName2;
   @override
   String? get lyrics;
-  @override
-  @JsonKey(name: 'lilypond_svg')
-  String? get lilypond;
-  @override
-  @JsonKey(
-      name: 'external_rendered_scores',
-      fromJson: _externalRenderedScoresFromJson)
-  String? get externalRenderedScores;
   @override
   String get hymnology;
   @override

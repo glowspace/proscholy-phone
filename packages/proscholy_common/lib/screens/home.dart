@@ -17,6 +17,7 @@ import 'package:proscholy_common/components/search/search_field.dart';
 import 'package:proscholy_common/constants.dart';
 import 'package:proscholy_common/providers/home.dart';
 import 'package:proscholy_common/components/home/edit_home_sections_sheet.dart';
+import 'package:proscholy_common/providers/svgs.dart';
 import 'package:proscholy_common/utils/extensions.dart';
 import 'package:proscholy_common/utils/services/external_actions.dart';
 
@@ -36,6 +37,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   void initState() {
     super.initState();
+
+    // FIXME: this just preloads it
+    ref.read(svgsProvider);
 
     // handle file that was used to open this app when we get first time to home screen
     ExternalActionsService.instance.handleInitiallyOpenedFile();
