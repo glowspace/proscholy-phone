@@ -103,6 +103,7 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
                       ]),
                 child: ScalableImageWidget.fromSISource(
                   si: ScalableImageSource.fromSvg(controller, ''),
+                  isComplex: true,
                   scale: min(MediaQuery.sizeOf(context).width, controller.musicNotesMaxWidth / (isZP ? 1 : 2)) /
                       controller.musicNotesWidth,
                 ),
