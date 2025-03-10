@@ -484,7 +484,7 @@ packages:
     source: hosted
     version: "1.4.0"
   flutter_quill:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: flutter_quill
       sha256: "3765d057bb63e6e5b7d5aba7c8fb048ec1b38c8a3428ded8c22e57cf2682a580"

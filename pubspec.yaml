@@ -2,7 +2,7 @@ name: zpevnik
 
 publish_to: 'none'
 
-version: 3.1.8+157
+version: 3.1.9+159
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
@@ -24,6 +24,7 @@ dependencies:
   path: ^1.9.1
   sentry_flutter: ^8.12.0
   shared_preferences: ^2.4.0
+  flutter_quill: ^11.0.0
 
 dev_dependencies:
   flutter_lints: ^5.0.0
