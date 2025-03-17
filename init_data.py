@@ -104,3 +104,8 @@ for i in range(100):
 
 with open('assets/data.json', 'w') as file:
     json.dump(data, file)
+
+
+
+with open('assets/svg.zip', 'wb') as file:
+    file.write(requests.get('https://zpevnik.proscholy.cz/download-svgs').content)
