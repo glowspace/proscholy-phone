@@ -34,12 +34,12 @@ class _UpdateSectionState extends ConsumerState<UpdateSection> {
 
             return _build(context, updatedSongLyrics: updatedSongLyrics);
           },
-          error: (error, _) => _build(context, error: error),
+          error: (error, stackTrace) => _build(context, error: error, stackTrace: stackTrace),
           loading: () => _build(context, updatedSongLyrics: []),
         );
   }
 
-  Widget _build(BuildContext context, {List<SongLyric>? updatedSongLyrics, Object? error}) {
+  Widget _build(BuildContext context, {List<SongLyric>? updatedSongLyrics, Object? error, StackTrace? stackTrace}) {
     final theme = Theme.of(context);
 
     // don't show anything if no song lyric was updated
@@ -54,6 +54,8 @@ class _UpdateSectionState extends ConsumerState<UpdateSection> {
     final version = context.providers.read(appDependenciesProvider).packageInfo.version;
     final platform = theme.platform == TargetPlatform.iOS ? 'iOS' : 'android';
     final url = 'https://$platform.$baseUrl/v$version';
+
+    final description = Uri.encodeComponent('Chyba: $error\n\nStackTrace: $stackTrace');
 
     return AnimatedCrossFade(
       crossFadeState: isShowing ? CrossFadeState.showFirst : CrossFadeState.showSecond,
@@ -80,7 +82,7 @@ class _UpdateSectionState extends ConsumerState<UpdateSection> {
                       foregroundColor: red,
                       padding: const EdgeInsets.only(top: 2 / 3 * kDefaultPadding),
                       onTap: () => launch(
-                          '$reportUrl?customfield_10056=$url&summary=Chyba při aktualizaci písní&description=$error'),
+                          '$reportUrl?customfield_10056=$url&summary=Chyba při aktualizaci písní&description=$description'),
                       child: const Text('Nahlásit chybu'),
                     ),
                 ],
