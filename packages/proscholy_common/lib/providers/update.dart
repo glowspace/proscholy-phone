@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:archive/archive.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:proscholy_common/constants.dart';
@@ -24,7 +23,7 @@ part 'generated/update.g.dart';
 const _versionKey = 'current_version';
 
 const _lastUpdateKey = 'last_update';
-const _initialLastUpdate = isZP ? '2024-10-22 09:00:00' : '2024-06-05 09:00:00';
+const _initialLastUpdate = isZP ? '2025-03-17 09:00:00' : '2024-06-05 09:00:00';
 
 const _updatePeriod = Duration(hours: 1);
 
@@ -101,7 +100,7 @@ Stream<UpdateStatus> update(UpdateRef ref) async* {
 
   final data = await client.getData();
 
-  ref.read(svgsProvider.notifier).update(await client.getSvgs(lastUpdate));
+  ref.read(svgsProvider.notifier).storeSvgs(await client.getSvgs(lastUpdate));
 
   await parseAndStoreData(appDependencies.store, data);
 

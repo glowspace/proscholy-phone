@@ -6,11 +6,12 @@ part of '../svgs.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$svgsHash() => r'45b9cbe15e8f930900f7a955ec603bf1af28969a';
+String _$svgsHash() => r'1b27a273e3d071a402ff874f8865ce7637c011ec';
 
 /// See also [Svgs].
 @ProviderFor(Svgs)
-final svgsProvider = NotifierProvider<Svgs, Map<String, ArchiveFile>>.internal(
+final svgsProvider =
+    NotifierProvider<Svgs, Map<String, FileSystemEntity>>.internal(
   Svgs.new,
   name: r'svgsProvider',
   debugGetCreateSourceHash:
@@ -19,8 +20,8 @@ final svgsProvider = NotifierProvider<Svgs, Map<String, ArchiveFile>>.internal(
   allTransitiveDependencies: null,
 );
 
-typedef _$Svgs = Notifier<Map<String, ArchiveFile>>;
-String _$svgHash() => r'8e539a8cc60900ee81bc01345cc90216375db073';
+typedef _$Svgs = Notifier<Map<String, FileSystemEntity>>;
+String _$svgHash() => r'7b221317fd7702c51c5ec9bc46d51a8e006446f1';
 
 /// Copied from Dart SDK
 class _SystemHash {

@@ -8,28 +8,36 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'generated/svgs.g.dart';
 
-const _svgsPath = 'musicNotes.zip';
+const _svgsPath = 'musicNotes';
 
 @Riverpod(keepAlive: true)
 class Svgs extends _$Svgs {
   @override
-  Map<String, ArchiveFile> build() {
+  Map<String, FileSystemEntity> build() {
     () async {
-      Archive archive;
+      final directory = await getApplicationDocumentsDirectory();
 
       try {
-        final directory = await getApplicationDocumentsDirectory();
-        final file = File('${directory.path}/$_svgsPath');
+        // try removing zip from old version
+        File('${directory.path}/$_svgsPath.zip');
+        // ignore: empty_catches
+      } catch (e) {}
 
-        archive = ZipDecoder().decodeBytes(await file.readAsBytes());
-      } catch (e) {
-        archive = ZipDecoder().decodeBytes((await rootBundle.load('assets/svg.zip')).buffer.asUint8List());
+      final svgsDir = Directory('${directory.path}/$_svgsPath');
+      List<FileSystemEntity> files;
+
+      try {
+        files = svgsDir.listSync().where((file) => file.path.endsWith('.svg.gz')).toList();
+      } on PathNotFoundException {
+        await storeSvgs((await rootBundle.load('assets/svg.zip')).buffer.asUint8List());
+
+        files = svgsDir.listSync().where((file) => file.path.endsWith('.svg.gz')).toList();
       }
 
-      final filesMap = <String, ArchiveFile>{};
+      final filesMap = <String, FileSystemEntity>{};
 
-      for (final file in archive.files) {
-        filesMap[file.name] = file;
+      for (final file in files) {
+        filesMap[file.path.split('/').last] = file;
       }
 
       state = filesMap;
@@ -38,26 +46,17 @@ class Svgs extends _$Svgs {
     return {};
   }
 
-  Future<void> update(List<int> bytes) async {
+  Future<void> storeSvgs(List<int> bytes) async {
     final archive = ZipDecoder().decodeBytes(bytes);
-    final filesMap = <String, ArchiveFile>{...state};
-
-    for (final file in archive.files) {
-      filesMap[file.name] = file;
-    }
-
-    state = filesMap;
-
-    final updatedArchive = Archive();
-
-    for (final file in filesMap.values) {
-      updatedArchive.addFile(file);
-    }
-
     final directory = await getApplicationDocumentsDirectory();
-    final file = File('${directory.path}/$_svgsPath');
 
-    await file.writeAsBytes(ZipEncoder().encode(updatedArchive));
+    for (final entry in archive) {
+      if (entry.isFile) {
+        final file = File('${directory.path}/$_svgsPath/${entry.name}');
+        await file.create(recursive: true);
+        await file.writeAsBytes(entry.content);
+      }
+    }
   }
 }
 
@@ -65,9 +64,10 @@ class Svgs extends _$Svgs {
 class Svg extends _$Svg {
   @override
   String build(int songLyricId) {
+    print(songLyricId);
     final file = ref.watch(svgsProvider)['$songLyricId.svg.gz'];
 
-    if (file != null) return utf8.decode(GZipDecoder().decodeBytes(file.content));
+    if (file != null) return utf8.decode(GZipDecoder().decodeBytes(File(file.path).readAsBytesSync()));
 
     return '';
   }
