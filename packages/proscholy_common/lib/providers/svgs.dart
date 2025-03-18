@@ -64,9 +64,7 @@ class Svgs extends _$Svgs {
 class Svg extends _$Svg {
   @override
   String build(int songLyricId) {
-    print(songLyricId);
     final file = ref.watch(svgsProvider)['$songLyricId.svg.gz'];
-
     if (file != null) return utf8.decode(GZipDecoder().decodeBytes(File(file.path).readAsBytesSync()));
 
     return '';
