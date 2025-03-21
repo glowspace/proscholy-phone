@@ -66,7 +66,8 @@ class SongLyric with _$SongLyric implements DisplayableItem, Identifiable, Recen
     @JsonKey(name: 'secondary_name_1') String? secondaryName1,
     @JsonKey(name: 'secondary_name_2') String? secondaryName2,
     String? lyrics,
-    @Default('') String hymnology,
+    // uses *New* to migrate conflicts between ZP and EZ
+    @JsonKey(name: 'hymnology') @Default('') String hymnologyNew,
     required String lang,
     @JsonKey(name: 'lang_string') required String langDescription,
     @JsonKey(name: 'type_enum', fromJson: SongLyricType.rawValueFromString) required int dbType,
@@ -84,6 +85,8 @@ class SongLyric with _$SongLyric implements DisplayableItem, Identifiable, Recen
   }) = _SongLyric;
 
   factory SongLyric.fromJson(Map<String, Object?> json) => _$SongLyricFromJson(json);
+
+  String get hymnology => hymnologyNew;
 
   SongLyricType get type => SongLyricType.fromRawValue(dbType);
 

@@ -21,7 +21,7 @@ final svgsProvider =
 );
 
 typedef _$Svgs = Notifier<Map<String, FileSystemEntity>>;
-String _$svgHash() => r'7b221317fd7702c51c5ec9bc46d51a8e006446f1';
+String _$svgHash() => r'b914e952dee78cce383080765a1ea85b6ab0694f';
 
 /// Copied from Dart SDK
 class _SystemHash {

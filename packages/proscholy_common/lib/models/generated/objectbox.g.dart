@@ -184,7 +184,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
       id: const obx_int.IdUid(11, 6447883453535376640),
       name: 'SongLyric',
-      lastPropertyId: const obx_int.IdUid(33, 4624595427649584957),
+      lastPropertyId: const obx_int.IdUid(35, 3799126751953551979),
       flags: 0,
       properties: <obx_int.ModelProperty>[
         obx_int.ModelProperty(
@@ -267,8 +267,8 @@ final _entities = <obx_int.ModelEntity>[
             type: 6,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(30, 4993132736196042096),
-            name: 'hymnology',
+            id: const obx_int.IdUid(35, 3799126751953551979),
+            name: 'hymnologyNew',
             type: 9,
             flags: 0)
       ],
@@ -682,7 +682,9 @@ obx_int.ModelDefinition getObjectBoxModel() {
         4437772770493527079,
         3715311129381295890,
         2627035804185762219,
-        4624595427649584957
+        4624595427649584957,
+        4993132736196042096,
+        4119502192344556831
       ],
       retiredRelationUids: const [
         7916874752771113838,
@@ -968,8 +970,8 @@ obx_int.ModelDefinition getObjectBoxModel() {
               object.lyrics == null ? null : fbb.writeString(object.lyrics!);
           final langOffset = fbb.writeString(object.lang);
           final langDescriptionOffset = fbb.writeString(object.langDescription);
-          final hymnologyOffset = fbb.writeString(object.hymnology);
-          fbb.startTable(34);
+          final hymnologyNewOffset = fbb.writeString(object.hymnologyNew);
+          fbb.startTable(36);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, nameOffset);
           fbb.addOffset(2, secondaryName1Offset);
@@ -985,7 +987,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
           fbb.addInt64(23, object.transposition);
           fbb.addInt64(26, object.settings.targetId);
           fbb.addInt64(27, object.ezId);
-          fbb.addOffset(29, hymnologyOffset);
+          fbb.addOffset(34, hymnologyNewOffset);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -1006,8 +1008,9 @@ obx_int.ModelDefinition getObjectBoxModel() {
                   .vTableGetNullable(buffer, rootOffset, 10);
           final lyricsParam = const fb.StringReader(asciiOptimization: true)
               .vTableGetNullable(buffer, rootOffset, 12);
-          final hymnologyParam = const fb.StringReader(asciiOptimization: true)
-              .vTableGet(buffer, rootOffset, 62, '');
+          final hymnologyNewParam =
+              const fb.StringReader(asciiOptimization: true)
+                  .vTableGet(buffer, rootOffset, 72, '');
           final langParam = const fb.StringReader(asciiOptimization: true)
               .vTableGet(buffer, rootOffset, 16, '');
           final langDescriptionParam =
@@ -1041,7 +1044,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
               secondaryName1: secondaryName1Param,
               secondaryName2: secondaryName2Param,
               lyrics: lyricsParam,
-              hymnology: hymnologyParam,
+              hymnologyNew: hymnologyNewParam,
               lang: langParam,
               langDescription: langDescriptionParam,
               dbType: dbTypeParam,
@@ -1593,8 +1596,8 @@ class SongLyric_ {
   static final ezId =
       obx.QueryIntegerProperty<SongLyric>(_entities[5].properties[14]);
 
-  /// See [SongLyric.hymnology].
-  static final hymnology =
+  /// See [SongLyric.hymnologyNew].
+  static final hymnologyNew =
       obx.QueryStringProperty<SongLyric>(_entities[5].properties[15]);
 
   /// see [SongLyric.authors]

@@ -30,8 +30,10 @@ mixin _$SongLyric {
   String? get secondaryName1 => throw _privateConstructorUsedError;
   @JsonKey(name: 'secondary_name_2')
   String? get secondaryName2 => throw _privateConstructorUsedError;
-  String? get lyrics => throw _privateConstructorUsedError;
-  String get hymnology => throw _privateConstructorUsedError;
+  String? get lyrics =>
+      throw _privateConstructorUsedError; // uses *New* to migrate conflicts between ZP and EZ
+  @JsonKey(name: 'hymnology')
+  String get hymnologyNew => throw _privateConstructorUsedError;
   String get lang => throw _privateConstructorUsedError;
   @JsonKey(name: 'lang_string')
   String get langDescription => throw _privateConstructorUsedError;
@@ -83,7 +85,7 @@ abstract class $SongLyricCopyWith<$Res> {
       @JsonKey(name: 'secondary_name_1') String? secondaryName1,
       @JsonKey(name: 'secondary_name_2') String? secondaryName2,
       String? lyrics,
-      String hymnology,
+      @JsonKey(name: 'hymnology') String hymnologyNew,
       String lang,
       @JsonKey(name: 'lang_string') String langDescription,
       @JsonKey(name: 'type_enum', fromJson: SongLyricType.rawValueFromString)
@@ -128,7 +130,7 @@ class _$SongLyricCopyWithImpl<$Res, $Val extends SongLyric>
     Object? secondaryName1 = freezed,
     Object? secondaryName2 = freezed,
     Object? lyrics = freezed,
-    Object? hymnology = null,
+    Object? hymnologyNew = null,
     Object? lang = null,
     Object? langDescription = null,
     Object? dbType = null,
@@ -169,9 +171,9 @@ class _$SongLyricCopyWithImpl<$Res, $Val extends SongLyric>
           ? _value.lyrics
           : lyrics // ignore: cast_nullable_to_non_nullable
               as String?,
-      hymnology: null == hymnology
-          ? _value.hymnology
-          : hymnology // ignore: cast_nullable_to_non_nullable
+      hymnologyNew: null == hymnologyNew
+          ? _value.hymnologyNew
+          : hymnologyNew // ignore: cast_nullable_to_non_nullable
               as String,
       lang: null == lang
           ? _value.lang
@@ -248,7 +250,7 @@ abstract class _$$SongLyricImplCopyWith<$Res>
       @JsonKey(name: 'secondary_name_1') String? secondaryName1,
       @JsonKey(name: 'secondary_name_2') String? secondaryName2,
       String? lyrics,
-      String hymnology,
+      @JsonKey(name: 'hymnology') String hymnologyNew,
       String lang,
       @JsonKey(name: 'lang_string') String langDescription,
       @JsonKey(name: 'type_enum', fromJson: SongLyricType.rawValueFromString)
@@ -291,7 +293,7 @@ class __$$SongLyricImplCopyWithImpl<$Res>
     Object? secondaryName1 = freezed,
     Object? secondaryName2 = freezed,
     Object? lyrics = freezed,
-    Object? hymnology = null,
+    Object? hymnologyNew = null,
     Object? lang = null,
     Object? langDescription = null,
     Object? dbType = null,
@@ -332,9 +334,9 @@ class __$$SongLyricImplCopyWithImpl<$Res>
           ? _value.lyrics
           : lyrics // ignore: cast_nullable_to_non_nullable
               as String?,
-      hymnology: null == hymnology
-          ? _value.hymnology
-          : hymnology // ignore: cast_nullable_to_non_nullable
+      hymnologyNew: null == hymnologyNew
+          ? _value.hymnologyNew
+          : hymnologyNew // ignore: cast_nullable_to_non_nullable
               as String,
       lang: null == lang
           ? _value.lang
@@ -408,7 +410,7 @@ class _$SongLyricImpl extends _SongLyric {
       @JsonKey(name: 'secondary_name_1') this.secondaryName1,
       @JsonKey(name: 'secondary_name_2') this.secondaryName2,
       this.lyrics,
-      this.hymnology = '',
+      @JsonKey(name: 'hymnology') this.hymnologyNew = '',
       required this.lang,
       @JsonKey(name: 'lang_string') required this.langDescription,
       @JsonKey(name: 'type_enum', fromJson: SongLyricType.rawValueFromString)
@@ -451,9 +453,10 @@ class _$SongLyricImpl extends _SongLyric {
   final String? secondaryName2;
   @override
   final String? lyrics;
+// uses *New* to migrate conflicts between ZP and EZ
   @override
-  @JsonKey()
-  final String hymnology;
+  @JsonKey(name: 'hymnology')
+  final String hymnologyNew;
   @override
   final String lang;
   @override
@@ -499,7 +502,7 @@ class _$SongLyricImpl extends _SongLyric {
 
   @override
   String toString() {
-    return 'SongLyric(id: $id, ezId: $ezId, name: $name, secondaryName1: $secondaryName1, secondaryName2: $secondaryName2, lyrics: $lyrics, hymnology: $hymnology, lang: $lang, langDescription: $langDescription, dbType: $dbType, hasChords: $hasChords, accidentals: $accidentals, showChords: $showChords, transposition: $transposition, song: $song, settings: $settings, authors: $authors, tags: $tags, externals: $externals, songbookRecords: $songbookRecords, playlistRecords: $playlistRecords)';
+    return 'SongLyric(id: $id, ezId: $ezId, name: $name, secondaryName1: $secondaryName1, secondaryName2: $secondaryName2, lyrics: $lyrics, hymnologyNew: $hymnologyNew, lang: $lang, langDescription: $langDescription, dbType: $dbType, hasChords: $hasChords, accidentals: $accidentals, showChords: $showChords, transposition: $transposition, song: $song, settings: $settings, authors: $authors, tags: $tags, externals: $externals, songbookRecords: $songbookRecords, playlistRecords: $playlistRecords)';
   }
 
   /// Create a copy of SongLyric
@@ -521,7 +524,7 @@ abstract class _SongLyric extends SongLyric {
       @JsonKey(name: 'secondary_name_1') final String? secondaryName1,
       @JsonKey(name: 'secondary_name_2') final String? secondaryName2,
       final String? lyrics,
-      final String hymnology,
+      @JsonKey(name: 'hymnology') final String hymnologyNew,
       required final String lang,
       @JsonKey(name: 'lang_string') required final String langDescription,
       @JsonKey(name: 'type_enum', fromJson: SongLyricType.rawValueFromString)
@@ -565,9 +568,10 @@ abstract class _SongLyric extends SongLyric {
   @JsonKey(name: 'secondary_name_2')
   String? get secondaryName2;
   @override
-  String? get lyrics;
+  String? get lyrics; // uses *New* to migrate conflicts between ZP and EZ
   @override
-  String get hymnology;
+  @JsonKey(name: 'hymnology')
+  String get hymnologyNew;
   @override
   String get lang;
   @override
