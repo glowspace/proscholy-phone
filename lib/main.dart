@@ -44,10 +44,12 @@ Future<void> main() async {
   // check if app was opened from spotlight search on iOS
   final initialRoute = await SpotlightService.instance.getInitialRoute();
 
-  appRunner() => runApp(ProviderScope(
-        overrides: [appDependenciesProvider.overrideWithValue(appDependencies)],
-        child: MainWidget(initialRoute: initialRoute),
-      ));
+  void appRunner() {
+    runApp(ProviderScope(
+      overrides: [appDependenciesProvider.overrideWithValue(appDependencies)],
+      child: MainWidget(initialRoute: initialRoute),
+    ));
+  }
 
   if (kDebugMode) return appRunner();
 

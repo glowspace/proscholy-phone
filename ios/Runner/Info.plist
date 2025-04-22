@@ -60,9 +60,9 @@
 		<string>12.0</string>
 		<key>UIRequiresPersistentWiFi</key>
 		<true/>
-        <!-- should not be really needed, but is required because of flutter_quill, hopefully it never appears to user -->
-        <key>NSPhotoLibraryUsageDescription</key>
-        <string>Je potřeba přístup ke knihovně fotografií.</string>
+		<!-- should not be really needed, but is required because of flutter_quill, hopefully it never appears to user -->
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>Je potřeba přístup ke knihovně fotografií.</string>
 		<key>UIStatusBarHidden</key>
 		<false/>
 		<key>UISupportedInterfaceOrientations</key>
