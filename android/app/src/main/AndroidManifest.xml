@@ -50,6 +50,9 @@
                 <data android:scheme="file" />
                 <data android:mimeType="application/json" />
             </intent-filter>
+
+            <!-- make sure opening file does not result in opening invalid link -->
+            <meta-data android:name="flutter_deeplinking_enabled" android:value="false" />
         </activity>
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
