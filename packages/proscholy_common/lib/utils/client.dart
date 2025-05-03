@@ -163,11 +163,15 @@ class Client {
   Future<Map<String, dynamic>> getNews() async {
     final result = await client.query(QueryOptions(document: gql(_newsQuery)));
 
+    if (result.hasException) throw result.exception!;
+
     return result.data!;
   }
 
   Future<Map<String, dynamic>> getData() async {
     final result = await client.query(QueryOptions(document: gql(_updateQuery)));
+
+    if (result.hasException) throw result.exception!;
 
     return result.data!;
   }
@@ -179,11 +183,15 @@ class Client {
       ),
     );
 
+    if (result.hasException) throw result.exception!;
+
     return result.data!;
   }
 
   Future<Map<String, dynamic>> getSongLyric(int id) async {
     final result = await client.query(QueryOptions(document: gql(_songLyricQuery.replaceFirst(_idPlaceholder, '$id'))));
+
+    if (result.hasException) throw result.exception!;
 
     return result.data!['song_lyric'];
   }
