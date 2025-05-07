@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,101 +10,38 @@ part of '../playlist_record.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
 mixin _$PlaylistRecord {
   @Id(assignable: true)
-  int get id => throw _privateConstructorUsedError;
-  int get rank => throw _privateConstructorUsedError;
-  ToOne<SongLyric> get songLyric => throw _privateConstructorUsedError;
-  ToOne<CustomText> get customText => throw _privateConstructorUsedError;
-  ToOne<BibleVerse> get bibleVerse => throw _privateConstructorUsedError;
-  ToOne<Playlist> get playlist => throw _privateConstructorUsedError;
+  int get id;
+  int get rank;
+  ToOne<SongLyric> get songLyric;
+  ToOne<CustomText> get customText;
+  ToOne<BibleVerse> get bibleVerse;
+  ToOne<Playlist> get playlist;
 
   /// Create a copy of PlaylistRecord
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $PlaylistRecordCopyWith<PlaylistRecord> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $PlaylistRecordCopyWith<$Res> {
-  factory $PlaylistRecordCopyWith(
-          PlaylistRecord value, $Res Function(PlaylistRecord) then) =
-      _$PlaylistRecordCopyWithImpl<$Res, PlaylistRecord>;
-  @useResult
-  $Res call(
-      {@Id(assignable: true) int id,
-      int rank,
-      ToOne<SongLyric> songLyric,
-      ToOne<CustomText> customText,
-      ToOne<BibleVerse> bibleVerse,
-      ToOne<Playlist> playlist});
-}
-
-/// @nodoc
-class _$PlaylistRecordCopyWithImpl<$Res, $Val extends PlaylistRecord>
-    implements $PlaylistRecordCopyWith<$Res> {
-  _$PlaylistRecordCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of PlaylistRecord
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
+  $PlaylistRecordCopyWith<PlaylistRecord> get copyWith =>
+      _$PlaylistRecordCopyWithImpl<PlaylistRecord>(
+          this as PlaylistRecord, _$identity);
+
   @override
-  $Res call({
-    Object? id = null,
-    Object? rank = null,
-    Object? songLyric = null,
-    Object? customText = null,
-    Object? bibleVerse = null,
-    Object? playlist = null,
-  }) {
-    return _then(_value.copyWith(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      rank: null == rank
-          ? _value.rank
-          : rank // ignore: cast_nullable_to_non_nullable
-              as int,
-      songLyric: null == songLyric
-          ? _value.songLyric
-          : songLyric // ignore: cast_nullable_to_non_nullable
-              as ToOne<SongLyric>,
-      customText: null == customText
-          ? _value.customText
-          : customText // ignore: cast_nullable_to_non_nullable
-              as ToOne<CustomText>,
-      bibleVerse: null == bibleVerse
-          ? _value.bibleVerse
-          : bibleVerse // ignore: cast_nullable_to_non_nullable
-              as ToOne<BibleVerse>,
-      playlist: null == playlist
-          ? _value.playlist
-          : playlist // ignore: cast_nullable_to_non_nullable
-              as ToOne<Playlist>,
-    ) as $Val);
+  String toString() {
+    return 'PlaylistRecord(id: $id, rank: $rank, songLyric: $songLyric, customText: $customText, bibleVerse: $bibleVerse, playlist: $playlist)';
   }
 }
 
 /// @nodoc
-abstract class _$$PlaylistRecordImplCopyWith<$Res>
-    implements $PlaylistRecordCopyWith<$Res> {
-  factory _$$PlaylistRecordImplCopyWith(_$PlaylistRecordImpl value,
-          $Res Function(_$PlaylistRecordImpl) then) =
-      __$$PlaylistRecordImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $PlaylistRecordCopyWith<$Res> {
+  factory $PlaylistRecordCopyWith(
+          PlaylistRecord value, $Res Function(PlaylistRecord) _then) =
+      _$PlaylistRecordCopyWithImpl;
   @useResult
   $Res call(
       {@Id(assignable: true) int id,
@@ -115,12 +53,12 @@ abstract class _$$PlaylistRecordImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$PlaylistRecordImplCopyWithImpl<$Res>
-    extends _$PlaylistRecordCopyWithImpl<$Res, _$PlaylistRecordImpl>
-    implements _$$PlaylistRecordImplCopyWith<$Res> {
-  __$$PlaylistRecordImplCopyWithImpl(
-      _$PlaylistRecordImpl _value, $Res Function(_$PlaylistRecordImpl) _then)
-      : super(_value, _then);
+class _$PlaylistRecordCopyWithImpl<$Res>
+    implements $PlaylistRecordCopyWith<$Res> {
+  _$PlaylistRecordCopyWithImpl(this._self, this._then);
+
+  final PlaylistRecord _self;
+  final $Res Function(PlaylistRecord) _then;
 
   /// Create a copy of PlaylistRecord
   /// with the given fields replaced by the non-null parameter values.
@@ -134,29 +72,29 @@ class __$$PlaylistRecordImplCopyWithImpl<$Res>
     Object? bibleVerse = null,
     Object? playlist = null,
   }) {
-    return _then(_$PlaylistRecordImpl(
+    return _then(_self.copyWith(
       id: null == id
-          ? _value.id
+          ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
       rank: null == rank
-          ? _value.rank
+          ? _self.rank
           : rank // ignore: cast_nullable_to_non_nullable
               as int,
       songLyric: null == songLyric
-          ? _value.songLyric
+          ? _self.songLyric
           : songLyric // ignore: cast_nullable_to_non_nullable
               as ToOne<SongLyric>,
       customText: null == customText
-          ? _value.customText
+          ? _self.customText
           : customText // ignore: cast_nullable_to_non_nullable
               as ToOne<CustomText>,
       bibleVerse: null == bibleVerse
-          ? _value.bibleVerse
+          ? _self.bibleVerse
           : bibleVerse // ignore: cast_nullable_to_non_nullable
               as ToOne<BibleVerse>,
       playlist: null == playlist
-          ? _value.playlist
+          ? _self.playlist
           : playlist // ignore: cast_nullable_to_non_nullable
               as ToOne<Playlist>,
     ));
@@ -166,8 +104,8 @@ class __$$PlaylistRecordImplCopyWithImpl<$Res>
 /// @nodoc
 
 @Entity(realClass: PlaylistRecord)
-class _$PlaylistRecordImpl extends _PlaylistRecord {
-  const _$PlaylistRecordImpl(
+class _PlaylistRecord extends PlaylistRecord {
+  const _PlaylistRecord(
       {@Id(assignable: true) required this.id,
       required this.rank,
       required this.songLyric,
@@ -190,49 +128,84 @@ class _$PlaylistRecordImpl extends _PlaylistRecord {
   @override
   final ToOne<Playlist> playlist;
 
+  /// Create a copy of PlaylistRecord
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$PlaylistRecordCopyWith<_PlaylistRecord> get copyWith =>
+      __$PlaylistRecordCopyWithImpl<_PlaylistRecord>(this, _$identity);
+
   @override
   String toString() {
     return 'PlaylistRecord(id: $id, rank: $rank, songLyric: $songLyric, customText: $customText, bibleVerse: $bibleVerse, playlist: $playlist)';
   }
+}
+
+/// @nodoc
+abstract mixin class _$PlaylistRecordCopyWith<$Res>
+    implements $PlaylistRecordCopyWith<$Res> {
+  factory _$PlaylistRecordCopyWith(
+          _PlaylistRecord value, $Res Function(_PlaylistRecord) _then) =
+      __$PlaylistRecordCopyWithImpl;
+  @override
+  @useResult
+  $Res call(
+      {@Id(assignable: true) int id,
+      int rank,
+      ToOne<SongLyric> songLyric,
+      ToOne<CustomText> customText,
+      ToOne<BibleVerse> bibleVerse,
+      ToOne<Playlist> playlist});
+}
+
+/// @nodoc
+class __$PlaylistRecordCopyWithImpl<$Res>
+    implements _$PlaylistRecordCopyWith<$Res> {
+  __$PlaylistRecordCopyWithImpl(this._self, this._then);
+
+  final _PlaylistRecord _self;
+  final $Res Function(_PlaylistRecord) _then;
 
   /// Create a copy of PlaylistRecord
   /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$PlaylistRecordImplCopyWith<_$PlaylistRecordImpl> get copyWith =>
-      __$$PlaylistRecordImplCopyWithImpl<_$PlaylistRecordImpl>(
-          this, _$identity);
+  $Res call({
+    Object? id = null,
+    Object? rank = null,
+    Object? songLyric = null,
+    Object? customText = null,
+    Object? bibleVerse = null,
+    Object? playlist = null,
+  }) {
+    return _then(_PlaylistRecord(
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      rank: null == rank
+          ? _self.rank
+          : rank // ignore: cast_nullable_to_non_nullable
+              as int,
+      songLyric: null == songLyric
+          ? _self.songLyric
+          : songLyric // ignore: cast_nullable_to_non_nullable
+              as ToOne<SongLyric>,
+      customText: null == customText
+          ? _self.customText
+          : customText // ignore: cast_nullable_to_non_nullable
+              as ToOne<CustomText>,
+      bibleVerse: null == bibleVerse
+          ? _self.bibleVerse
+          : bibleVerse // ignore: cast_nullable_to_non_nullable
+              as ToOne<BibleVerse>,
+      playlist: null == playlist
+          ? _self.playlist
+          : playlist // ignore: cast_nullable_to_non_nullable
+              as ToOne<Playlist>,
+    ));
+  }
 }
 
-abstract class _PlaylistRecord extends PlaylistRecord {
-  const factory _PlaylistRecord(
-      {@Id(assignable: true) required final int id,
-      required final int rank,
-      required final ToOne<SongLyric> songLyric,
-      required final ToOne<CustomText> customText,
-      required final ToOne<BibleVerse> bibleVerse,
-      required final ToOne<Playlist> playlist}) = _$PlaylistRecordImpl;
-  const _PlaylistRecord._() : super._();
-
-  @override
-  @Id(assignable: true)
-  int get id;
-  @override
-  int get rank;
-  @override
-  ToOne<SongLyric> get songLyric;
-  @override
-  ToOne<CustomText> get customText;
-  @override
-  ToOne<BibleVerse> get bibleVerse;
-  @override
-  ToOne<Playlist> get playlist;
-
-  /// Create a copy of PlaylistRecord
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$PlaylistRecordImplCopyWith<_$PlaylistRecordImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
+// dart format on

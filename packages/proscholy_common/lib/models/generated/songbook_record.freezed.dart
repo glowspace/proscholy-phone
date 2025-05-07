@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,94 +10,39 @@ part of '../songbook_record.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-SongbookRecord _$SongbookRecordFromJson(Map<String, dynamic> json) {
-  return _SongbookRecord.fromJson(json);
-}
 
 /// @nodoc
 mixin _$SongbookRecord {
   @Id(assignable: true)
   @JsonKey(fromJson: int.parse)
-  int get id => throw _privateConstructorUsedError;
-  String get number => throw _privateConstructorUsedError;
+  int get id;
+  String get number;
   @JsonKey(fromJson: _songLyricFromJson)
-  ToOne<SongLyric> get songLyric => throw _privateConstructorUsedError;
+  ToOne<SongLyric> get songLyric;
   @JsonKey(fromJson: _songbookFromJson)
-  ToOne<Songbook> get songbook => throw _privateConstructorUsedError;
+  ToOne<Songbook> get songbook;
 
   /// Create a copy of SongbookRecord
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $SongbookRecordCopyWith<SongbookRecord> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $SongbookRecordCopyWith<$Res> {
-  factory $SongbookRecordCopyWith(
-          SongbookRecord value, $Res Function(SongbookRecord) then) =
-      _$SongbookRecordCopyWithImpl<$Res, SongbookRecord>;
-  @useResult
-  $Res call(
-      {@Id(assignable: true) @JsonKey(fromJson: int.parse) int id,
-      String number,
-      @JsonKey(fromJson: _songLyricFromJson) ToOne<SongLyric> songLyric,
-      @JsonKey(fromJson: _songbookFromJson) ToOne<Songbook> songbook});
-}
-
-/// @nodoc
-class _$SongbookRecordCopyWithImpl<$Res, $Val extends SongbookRecord>
-    implements $SongbookRecordCopyWith<$Res> {
-  _$SongbookRecordCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of SongbookRecord
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
+  $SongbookRecordCopyWith<SongbookRecord> get copyWith =>
+      _$SongbookRecordCopyWithImpl<SongbookRecord>(
+          this as SongbookRecord, _$identity);
+
   @override
-  $Res call({
-    Object? id = null,
-    Object? number = null,
-    Object? songLyric = null,
-    Object? songbook = null,
-  }) {
-    return _then(_value.copyWith(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      number: null == number
-          ? _value.number
-          : number // ignore: cast_nullable_to_non_nullable
-              as String,
-      songLyric: null == songLyric
-          ? _value.songLyric
-          : songLyric // ignore: cast_nullable_to_non_nullable
-              as ToOne<SongLyric>,
-      songbook: null == songbook
-          ? _value.songbook
-          : songbook // ignore: cast_nullable_to_non_nullable
-              as ToOne<Songbook>,
-    ) as $Val);
+  String toString() {
+    return 'SongbookRecord(id: $id, number: $number, songLyric: $songLyric, songbook: $songbook)';
   }
 }
 
 /// @nodoc
-abstract class _$$SongbookRecordImplCopyWith<$Res>
-    implements $SongbookRecordCopyWith<$Res> {
-  factory _$$SongbookRecordImplCopyWith(_$SongbookRecordImpl value,
-          $Res Function(_$SongbookRecordImpl) then) =
-      __$$SongbookRecordImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $SongbookRecordCopyWith<$Res> {
+  factory $SongbookRecordCopyWith(
+          SongbookRecord value, $Res Function(SongbookRecord) _then) =
+      _$SongbookRecordCopyWithImpl;
   @useResult
   $Res call(
       {@Id(assignable: true) @JsonKey(fromJson: int.parse) int id,
@@ -106,12 +52,12 @@ abstract class _$$SongbookRecordImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$SongbookRecordImplCopyWithImpl<$Res>
-    extends _$SongbookRecordCopyWithImpl<$Res, _$SongbookRecordImpl>
-    implements _$$SongbookRecordImplCopyWith<$Res> {
-  __$$SongbookRecordImplCopyWithImpl(
-      _$SongbookRecordImpl _value, $Res Function(_$SongbookRecordImpl) _then)
-      : super(_value, _then);
+class _$SongbookRecordCopyWithImpl<$Res>
+    implements $SongbookRecordCopyWith<$Res> {
+  _$SongbookRecordCopyWithImpl(this._self, this._then);
+
+  final SongbookRecord _self;
+  final $Res Function(SongbookRecord) _then;
 
   /// Create a copy of SongbookRecord
   /// with the given fields replaced by the non-null parameter values.
@@ -123,21 +69,21 @@ class __$$SongbookRecordImplCopyWithImpl<$Res>
     Object? songLyric = null,
     Object? songbook = null,
   }) {
-    return _then(_$SongbookRecordImpl(
+    return _then(_self.copyWith(
       id: null == id
-          ? _value.id
+          ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
       number: null == number
-          ? _value.number
+          ? _self.number
           : number // ignore: cast_nullable_to_non_nullable
               as String,
       songLyric: null == songLyric
-          ? _value.songLyric
+          ? _self.songLyric
           : songLyric // ignore: cast_nullable_to_non_nullable
               as ToOne<SongLyric>,
       songbook: null == songbook
-          ? _value.songbook
+          ? _self.songbook
           : songbook // ignore: cast_nullable_to_non_nullable
               as ToOne<Songbook>,
     ));
@@ -148,16 +94,15 @@ class __$$SongbookRecordImplCopyWithImpl<$Res>
 
 @Entity(realClass: SongbookRecord)
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
-class _$SongbookRecordImpl extends _SongbookRecord {
-  const _$SongbookRecordImpl(
+class _SongbookRecord extends SongbookRecord {
+  const _SongbookRecord(
       {@Id(assignable: true) @JsonKey(fromJson: int.parse) required this.id,
       required this.number,
       @JsonKey(fromJson: _songLyricFromJson) required this.songLyric,
       @JsonKey(fromJson: _songbookFromJson) required this.songbook})
       : super._();
-
-  factory _$SongbookRecordImpl.fromJson(Map<String, dynamic> json) =>
-      _$$SongbookRecordImplFromJson(json);
+  factory _SongbookRecord.fromJson(Map<String, dynamic> json) =>
+      _$SongbookRecordFromJson(json);
 
   @override
   @Id(assignable: true)
@@ -172,53 +117,72 @@ class _$SongbookRecordImpl extends _SongbookRecord {
   @JsonKey(fromJson: _songbookFromJson)
   final ToOne<Songbook> songbook;
 
+  /// Create a copy of SongbookRecord
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$SongbookRecordCopyWith<_SongbookRecord> get copyWith =>
+      __$SongbookRecordCopyWithImpl<_SongbookRecord>(this, _$identity);
+
   @override
   String toString() {
     return 'SongbookRecord(id: $id, number: $number, songLyric: $songLyric, songbook: $songbook)';
   }
+}
+
+/// @nodoc
+abstract mixin class _$SongbookRecordCopyWith<$Res>
+    implements $SongbookRecordCopyWith<$Res> {
+  factory _$SongbookRecordCopyWith(
+          _SongbookRecord value, $Res Function(_SongbookRecord) _then) =
+      __$SongbookRecordCopyWithImpl;
+  @override
+  @useResult
+  $Res call(
+      {@Id(assignable: true) @JsonKey(fromJson: int.parse) int id,
+      String number,
+      @JsonKey(fromJson: _songLyricFromJson) ToOne<SongLyric> songLyric,
+      @JsonKey(fromJson: _songbookFromJson) ToOne<Songbook> songbook});
+}
+
+/// @nodoc
+class __$SongbookRecordCopyWithImpl<$Res>
+    implements _$SongbookRecordCopyWith<$Res> {
+  __$SongbookRecordCopyWithImpl(this._self, this._then);
+
+  final _SongbookRecord _self;
+  final $Res Function(_SongbookRecord) _then;
 
   /// Create a copy of SongbookRecord
   /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$SongbookRecordImplCopyWith<_$SongbookRecordImpl> get copyWith =>
-      __$$SongbookRecordImplCopyWithImpl<_$SongbookRecordImpl>(
-          this, _$identity);
+  $Res call({
+    Object? id = null,
+    Object? number = null,
+    Object? songLyric = null,
+    Object? songbook = null,
+  }) {
+    return _then(_SongbookRecord(
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      number: null == number
+          ? _self.number
+          : number // ignore: cast_nullable_to_non_nullable
+              as String,
+      songLyric: null == songLyric
+          ? _self.songLyric
+          : songLyric // ignore: cast_nullable_to_non_nullable
+              as ToOne<SongLyric>,
+      songbook: null == songbook
+          ? _self.songbook
+          : songbook // ignore: cast_nullable_to_non_nullable
+              as ToOne<Songbook>,
+    ));
+  }
 }
 
-abstract class _SongbookRecord extends SongbookRecord {
-  const factory _SongbookRecord(
-      {@Id(assignable: true)
-      @JsonKey(fromJson: int.parse)
-      required final int id,
-      required final String number,
-      @JsonKey(fromJson: _songLyricFromJson)
-      required final ToOne<SongLyric> songLyric,
-      @JsonKey(fromJson: _songbookFromJson)
-      required final ToOne<Songbook> songbook}) = _$SongbookRecordImpl;
-  const _SongbookRecord._() : super._();
-
-  factory _SongbookRecord.fromJson(Map<String, dynamic> json) =
-      _$SongbookRecordImpl.fromJson;
-
-  @override
-  @Id(assignable: true)
-  @JsonKey(fromJson: int.parse)
-  int get id;
-  @override
-  String get number;
-  @override
-  @JsonKey(fromJson: _songLyricFromJson)
-  ToOne<SongLyric> get songLyric;
-  @override
-  @JsonKey(fromJson: _songbookFromJson)
-  ToOne<Songbook> get songbook;
-
-  /// Create a copy of SongbookRecord
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$SongbookRecordImplCopyWith<_$SongbookRecordImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
+// dart format on

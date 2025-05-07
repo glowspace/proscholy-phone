@@ -23,7 +23,7 @@ class DisplayScreenStatus extends _$DisplayScreenStatus {
 }
 
 @freezed
-class DisplayScreenStatusModel with _$DisplayScreenStatusModel {
+sealed class DisplayScreenStatusModel with _$DisplayScreenStatusModel {
   const factory DisplayScreenStatusModel({
     required bool fullScreen,
     required bool showingExternals,

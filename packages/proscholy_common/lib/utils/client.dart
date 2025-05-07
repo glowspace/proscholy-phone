@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:archive/archive.dart';
 import 'package:http/http.dart' as http;
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:intl/intl.dart';

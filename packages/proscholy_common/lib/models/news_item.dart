@@ -7,7 +7,7 @@ part 'generated/news_item.freezed.dart';
 part 'generated/news_item.g.dart';
 
 @Freezed(toJson: false, equal: false)
-class NewsItem with _$NewsItem implements Identifiable {
+sealed class NewsItem with _$NewsItem implements Identifiable {
   static const String fieldKey = 'news_items';
 
   const NewsItem._();

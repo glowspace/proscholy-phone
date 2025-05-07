@@ -91,11 +91,11 @@ class PlaylistButton extends StatelessWidget {
 
     file.writeAsString(playlistData);
 
-    await Share.shareXFiles(
-      [XFile(fileName, mimeType: 'application/json')],
-      sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size,
+    await SharePlus.instance.share(
+      ShareParams(
+        files: [XFile(fileName, mimeType: 'application/json')],
+        sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size,
+      ),
     );
-
-    file.delete();
   }
 }

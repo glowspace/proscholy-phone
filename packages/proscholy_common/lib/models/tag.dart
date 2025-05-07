@@ -138,7 +138,7 @@ enum TagType {
   toJson: false,
   equal: false,
 )
-class Tag with _$Tag implements Identifiable {
+sealed class Tag with _$Tag implements Identifiable {
   static const String fieldKey = 'tags_enum';
 
   const Tag._();

@@ -5,7 +5,7 @@ import 'package:proscholy_common/models/model.dart';
 part 'generated/bible_verse.freezed.dart';
 
 @Freezed(equal: false)
-class BibleVerse with _$BibleVerse implements DisplayableItem, Identifiable, RecentItem {
+sealed class BibleVerse with _$BibleVerse implements DisplayableItem, Identifiable, RecentItem {
   const BibleVerse._();
 
   @Entity(realClass: BibleVerse)

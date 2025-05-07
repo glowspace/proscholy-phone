@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,125 +10,43 @@ part of '../songbook.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-Songbook _$SongbookFromJson(Map<String, dynamic> json) {
-  return _Songbook.fromJson(json);
-}
 
 /// @nodoc
 mixin _$Songbook {
   @Id(assignable: true)
   @JsonKey(fromJson: int.parse)
-  int get id => throw _privateConstructorUsedError;
-  String get name => throw _privateConstructorUsedError;
+  int get id;
+  String get name;
   @JsonKey(defaultValue: '')
-  String get shortcut => throw _privateConstructorUsedError;
-  String? get color => throw _privateConstructorUsedError;
-  String? get colorText => throw _privateConstructorUsedError;
-  bool get isPrivate => throw _privateConstructorUsedError;
+  String get shortcut;
+  String? get color;
+  String? get colorText;
+  bool get isPrivate;
   @Deprecated('is handled independently on model')
-  bool? get isPinned => throw _privateConstructorUsedError;
+  bool? get isPinned;
   @Backlink()
   @JsonKey(fromJson: _songbookRecordsFromJson)
-  ToMany<SongbookRecord> get records => throw _privateConstructorUsedError;
+  ToMany<SongbookRecord> get records;
 
   /// Create a copy of Songbook
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $SongbookCopyWith<Songbook> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $SongbookCopyWith<$Res> {
-  factory $SongbookCopyWith(Songbook value, $Res Function(Songbook) then) =
-      _$SongbookCopyWithImpl<$Res, Songbook>;
-  @useResult
-  $Res call(
-      {@Id(assignable: true) @JsonKey(fromJson: int.parse) int id,
-      String name,
-      @JsonKey(defaultValue: '') String shortcut,
-      String? color,
-      String? colorText,
-      bool isPrivate,
-      @Deprecated('is handled independently on model') bool? isPinned,
-      @Backlink()
-      @JsonKey(fromJson: _songbookRecordsFromJson)
-      ToMany<SongbookRecord> records});
-}
-
-/// @nodoc
-class _$SongbookCopyWithImpl<$Res, $Val extends Songbook>
-    implements $SongbookCopyWith<$Res> {
-  _$SongbookCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of Songbook
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
+  $SongbookCopyWith<Songbook> get copyWith =>
+      _$SongbookCopyWithImpl<Songbook>(this as Songbook, _$identity);
+
   @override
-  $Res call({
-    Object? id = null,
-    Object? name = null,
-    Object? shortcut = null,
-    Object? color = freezed,
-    Object? colorText = freezed,
-    Object? isPrivate = null,
-    Object? isPinned = freezed,
-    Object? records = null,
-  }) {
-    return _then(_value.copyWith(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      shortcut: null == shortcut
-          ? _value.shortcut
-          : shortcut // ignore: cast_nullable_to_non_nullable
-              as String,
-      color: freezed == color
-          ? _value.color
-          : color // ignore: cast_nullable_to_non_nullable
-              as String?,
-      colorText: freezed == colorText
-          ? _value.colorText
-          : colorText // ignore: cast_nullable_to_non_nullable
-              as String?,
-      isPrivate: null == isPrivate
-          ? _value.isPrivate
-          : isPrivate // ignore: cast_nullable_to_non_nullable
-              as bool,
-      isPinned: freezed == isPinned
-          ? _value.isPinned
-          : isPinned // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      records: null == records
-          ? _value.records
-          : records // ignore: cast_nullable_to_non_nullable
-              as ToMany<SongbookRecord>,
-    ) as $Val);
+  String toString() {
+    return 'Songbook(id: $id, name: $name, shortcut: $shortcut, color: $color, colorText: $colorText, isPrivate: $isPrivate, isPinned: $isPinned, records: $records)';
   }
 }
 
 /// @nodoc
-abstract class _$$SongbookImplCopyWith<$Res>
-    implements $SongbookCopyWith<$Res> {
-  factory _$$SongbookImplCopyWith(
-          _$SongbookImpl value, $Res Function(_$SongbookImpl) then) =
-      __$$SongbookImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $SongbookCopyWith<$Res> {
+  factory $SongbookCopyWith(Songbook value, $Res Function(Songbook) _then) =
+      _$SongbookCopyWithImpl;
   @useResult
   $Res call(
       {@Id(assignable: true) @JsonKey(fromJson: int.parse) int id,
@@ -143,12 +62,11 @@ abstract class _$$SongbookImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$SongbookImplCopyWithImpl<$Res>
-    extends _$SongbookCopyWithImpl<$Res, _$SongbookImpl>
-    implements _$$SongbookImplCopyWith<$Res> {
-  __$$SongbookImplCopyWithImpl(
-      _$SongbookImpl _value, $Res Function(_$SongbookImpl) _then)
-      : super(_value, _then);
+class _$SongbookCopyWithImpl<$Res> implements $SongbookCopyWith<$Res> {
+  _$SongbookCopyWithImpl(this._self, this._then);
+
+  final Songbook _self;
+  final $Res Function(Songbook) _then;
 
   /// Create a copy of Songbook
   /// with the given fields replaced by the non-null parameter values.
@@ -164,37 +82,37 @@ class __$$SongbookImplCopyWithImpl<$Res>
     Object? isPinned = freezed,
     Object? records = null,
   }) {
-    return _then(_$SongbookImpl(
+    return _then(_self.copyWith(
       id: null == id
-          ? _value.id
+          ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
       name: null == name
-          ? _value.name
+          ? _self.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
       shortcut: null == shortcut
-          ? _value.shortcut
+          ? _self.shortcut
           : shortcut // ignore: cast_nullable_to_non_nullable
               as String,
       color: freezed == color
-          ? _value.color
+          ? _self.color
           : color // ignore: cast_nullable_to_non_nullable
               as String?,
       colorText: freezed == colorText
-          ? _value.colorText
+          ? _self.colorText
           : colorText // ignore: cast_nullable_to_non_nullable
               as String?,
       isPrivate: null == isPrivate
-          ? _value.isPrivate
+          ? _self.isPrivate
           : isPrivate // ignore: cast_nullable_to_non_nullable
               as bool,
       isPinned: freezed == isPinned
-          ? _value.isPinned
+          ? _self.isPinned
           : isPinned // ignore: cast_nullable_to_non_nullable
               as bool?,
       records: null == records
-          ? _value.records
+          ? _self.records
           : records // ignore: cast_nullable_to_non_nullable
               as ToMany<SongbookRecord>,
     ));
@@ -205,8 +123,8 @@ class __$$SongbookImplCopyWithImpl<$Res>
 
 @Entity(realClass: Songbook)
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
-class _$SongbookImpl extends _Songbook {
-  const _$SongbookImpl(
+class _Songbook extends Songbook {
+  const _Songbook(
       {@Id(assignable: true) @JsonKey(fromJson: int.parse) required this.id,
       required this.name,
       @JsonKey(defaultValue: '') required this.shortcut,
@@ -218,9 +136,8 @@ class _$SongbookImpl extends _Songbook {
       @JsonKey(fromJson: _songbookRecordsFromJson)
       required this.records})
       : super._();
-
-  factory _$SongbookImpl.fromJson(Map<String, dynamic> json) =>
-      _$$SongbookImplFromJson(json);
+  factory _Songbook.fromJson(Map<String, dynamic> json) =>
+      _$SongbookFromJson(json);
 
   @override
   @Id(assignable: true)
@@ -245,66 +162,96 @@ class _$SongbookImpl extends _Songbook {
   @JsonKey(fromJson: _songbookRecordsFromJson)
   final ToMany<SongbookRecord> records;
 
+  /// Create a copy of Songbook
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$SongbookCopyWith<_Songbook> get copyWith =>
+      __$SongbookCopyWithImpl<_Songbook>(this, _$identity);
+
   @override
   String toString() {
     return 'Songbook(id: $id, name: $name, shortcut: $shortcut, color: $color, colorText: $colorText, isPrivate: $isPrivate, isPinned: $isPinned, records: $records)';
   }
-
-  /// Create a copy of Songbook
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$SongbookImplCopyWith<_$SongbookImpl> get copyWith =>
-      __$$SongbookImplCopyWithImpl<_$SongbookImpl>(this, _$identity);
 }
 
-abstract class _Songbook extends Songbook {
-  const factory _Songbook(
-      {@Id(assignable: true)
-      @JsonKey(fromJson: int.parse)
-      required final int id,
-      required final String name,
-      @JsonKey(defaultValue: '') required final String shortcut,
-      final String? color,
-      final String? colorText,
-      required final bool isPrivate,
-      @Deprecated('is handled independently on model') final bool? isPinned,
+/// @nodoc
+abstract mixin class _$SongbookCopyWith<$Res>
+    implements $SongbookCopyWith<$Res> {
+  factory _$SongbookCopyWith(_Songbook value, $Res Function(_Songbook) _then) =
+      __$SongbookCopyWithImpl;
+  @override
+  @useResult
+  $Res call(
+      {@Id(assignable: true) @JsonKey(fromJson: int.parse) int id,
+      String name,
+      @JsonKey(defaultValue: '') String shortcut,
+      String? color,
+      String? colorText,
+      bool isPrivate,
+      @Deprecated('is handled independently on model') bool? isPinned,
       @Backlink()
       @JsonKey(fromJson: _songbookRecordsFromJson)
-      required final ToMany<SongbookRecord> records}) = _$SongbookImpl;
-  const _Songbook._() : super._();
+      ToMany<SongbookRecord> records});
+}
 
-  factory _Songbook.fromJson(Map<String, dynamic> json) =
-      _$SongbookImpl.fromJson;
+/// @nodoc
+class __$SongbookCopyWithImpl<$Res> implements _$SongbookCopyWith<$Res> {
+  __$SongbookCopyWithImpl(this._self, this._then);
 
-  @override
-  @Id(assignable: true)
-  @JsonKey(fromJson: int.parse)
-  int get id;
-  @override
-  String get name;
-  @override
-  @JsonKey(defaultValue: '')
-  String get shortcut;
-  @override
-  String? get color;
-  @override
-  String? get colorText;
-  @override
-  bool get isPrivate;
-  @override
-  @Deprecated('is handled independently on model')
-  bool? get isPinned;
-  @override
-  @Backlink()
-  @JsonKey(fromJson: _songbookRecordsFromJson)
-  ToMany<SongbookRecord> get records;
+  final _Songbook _self;
+  final $Res Function(_Songbook) _then;
 
   /// Create a copy of Songbook
   /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$SongbookImplCopyWith<_$SongbookImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? id = null,
+    Object? name = null,
+    Object? shortcut = null,
+    Object? color = freezed,
+    Object? colorText = freezed,
+    Object? isPrivate = null,
+    Object? isPinned = freezed,
+    Object? records = null,
+  }) {
+    return _then(_Songbook(
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      name: null == name
+          ? _self.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      shortcut: null == shortcut
+          ? _self.shortcut
+          : shortcut // ignore: cast_nullable_to_non_nullable
+              as String,
+      color: freezed == color
+          ? _self.color
+          : color // ignore: cast_nullable_to_non_nullable
+              as String?,
+      colorText: freezed == colorText
+          ? _self.colorText
+          : colorText // ignore: cast_nullable_to_non_nullable
+              as String?,
+      isPrivate: null == isPrivate
+          ? _self.isPrivate
+          : isPrivate // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isPinned: freezed == isPinned
+          ? _self.isPinned
+          : isPinned // ignore: cast_nullable_to_non_nullable
+              as bool?,
+      records: null == records
+          ? _self.records
+          : records // ignore: cast_nullable_to_non_nullable
+              as ToMany<SongbookRecord>,
+    ));
+  }
 }
+
+// dart format on

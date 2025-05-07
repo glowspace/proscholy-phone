@@ -4,7 +4,7 @@ part 'generated/spotlight_item.freezed.dart';
 part 'generated/spotlight_item.g.dart';
 
 @freezed
-class SpotlightItem with _$SpotlightItem {
+sealed class SpotlightItem with _$SpotlightItem {
   const factory SpotlightItem({
     required String identifier,
     required String title,

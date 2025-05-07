@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,90 +10,56 @@ part of '../app_dependencies.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
 mixin _$AppDependencies {
 // reference to simple key-value storage
-  SharedPreferences get sharedPreferences =>
-      throw _privateConstructorUsedError; // objectbox store used as NoSQL database
-  Store get store =>
-      throw _privateConstructorUsedError; // FTS4 database that is used during song lyrics search
-  Database get ftsDatabase =>
-      throw _privateConstructorUsedError; // info about application (used for version and build number)
-  PackageInfo get packageInfo => throw _privateConstructorUsedError;
+  SharedPreferences
+      get sharedPreferences; // objectbox store used as NoSQL database
+  Store get store; // FTS4 database that is used during song lyrics search
+  Database
+      get ftsDatabase; // info about application (used for version and build number)
+  PackageInfo get packageInfo;
 
   /// Create a copy of AppDependencies
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $AppDependenciesCopyWith<AppDependencies> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $AppDependenciesCopyWith<$Res> {
-  factory $AppDependenciesCopyWith(
-          AppDependencies value, $Res Function(AppDependencies) then) =
-      _$AppDependenciesCopyWithImpl<$Res, AppDependencies>;
-  @useResult
-  $Res call(
-      {SharedPreferences sharedPreferences,
-      Store store,
-      Database ftsDatabase,
-      PackageInfo packageInfo});
-}
-
-/// @nodoc
-class _$AppDependenciesCopyWithImpl<$Res, $Val extends AppDependencies>
-    implements $AppDependenciesCopyWith<$Res> {
-  _$AppDependenciesCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of AppDependencies
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
+  $AppDependenciesCopyWith<AppDependencies> get copyWith =>
+      _$AppDependenciesCopyWithImpl<AppDependencies>(
+          this as AppDependencies, _$identity);
+
   @override
-  $Res call({
-    Object? sharedPreferences = null,
-    Object? store = null,
-    Object? ftsDatabase = null,
-    Object? packageInfo = null,
-  }) {
-    return _then(_value.copyWith(
-      sharedPreferences: null == sharedPreferences
-          ? _value.sharedPreferences
-          : sharedPreferences // ignore: cast_nullable_to_non_nullable
-              as SharedPreferences,
-      store: null == store
-          ? _value.store
-          : store // ignore: cast_nullable_to_non_nullable
-              as Store,
-      ftsDatabase: null == ftsDatabase
-          ? _value.ftsDatabase
-          : ftsDatabase // ignore: cast_nullable_to_non_nullable
-              as Database,
-      packageInfo: null == packageInfo
-          ? _value.packageInfo
-          : packageInfo // ignore: cast_nullable_to_non_nullable
-              as PackageInfo,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is AppDependencies &&
+            (identical(other.sharedPreferences, sharedPreferences) ||
+                other.sharedPreferences == sharedPreferences) &&
+            (identical(other.store, store) || other.store == store) &&
+            (identical(other.ftsDatabase, ftsDatabase) ||
+                other.ftsDatabase == ftsDatabase) &&
+            (identical(other.packageInfo, packageInfo) ||
+                other.packageInfo == packageInfo));
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      runtimeType, sharedPreferences, store, ftsDatabase, packageInfo);
+
+  @override
+  String toString() {
+    return 'AppDependencies(sharedPreferences: $sharedPreferences, store: $store, ftsDatabase: $ftsDatabase, packageInfo: $packageInfo)';
   }
 }
 
 /// @nodoc
-abstract class _$$AppDependenciesImplCopyWith<$Res>
-    implements $AppDependenciesCopyWith<$Res> {
-  factory _$$AppDependenciesImplCopyWith(_$AppDependenciesImpl value,
-          $Res Function(_$AppDependenciesImpl) then) =
-      __$$AppDependenciesImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $AppDependenciesCopyWith<$Res> {
+  factory $AppDependenciesCopyWith(
+          AppDependencies value, $Res Function(AppDependencies) _then) =
+      _$AppDependenciesCopyWithImpl;
   @useResult
   $Res call(
       {SharedPreferences sharedPreferences,
@@ -102,12 +69,12 @@ abstract class _$$AppDependenciesImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$AppDependenciesImplCopyWithImpl<$Res>
-    extends _$AppDependenciesCopyWithImpl<$Res, _$AppDependenciesImpl>
-    implements _$$AppDependenciesImplCopyWith<$Res> {
-  __$$AppDependenciesImplCopyWithImpl(
-      _$AppDependenciesImpl _value, $Res Function(_$AppDependenciesImpl) _then)
-      : super(_value, _then);
+class _$AppDependenciesCopyWithImpl<$Res>
+    implements $AppDependenciesCopyWith<$Res> {
+  _$AppDependenciesCopyWithImpl(this._self, this._then);
+
+  final AppDependencies _self;
+  final $Res Function(AppDependencies) _then;
 
   /// Create a copy of AppDependencies
   /// with the given fields replaced by the non-null parameter values.
@@ -119,21 +86,21 @@ class __$$AppDependenciesImplCopyWithImpl<$Res>
     Object? ftsDatabase = null,
     Object? packageInfo = null,
   }) {
-    return _then(_$AppDependenciesImpl(
+    return _then(_self.copyWith(
       sharedPreferences: null == sharedPreferences
-          ? _value.sharedPreferences
+          ? _self.sharedPreferences
           : sharedPreferences // ignore: cast_nullable_to_non_nullable
               as SharedPreferences,
       store: null == store
-          ? _value.store
+          ? _self.store
           : store // ignore: cast_nullable_to_non_nullable
               as Store,
       ftsDatabase: null == ftsDatabase
-          ? _value.ftsDatabase
+          ? _self.ftsDatabase
           : ftsDatabase // ignore: cast_nullable_to_non_nullable
               as Database,
       packageInfo: null == packageInfo
-          ? _value.packageInfo
+          ? _self.packageInfo
           : packageInfo // ignore: cast_nullable_to_non_nullable
               as PackageInfo,
     ));
@@ -142,8 +109,8 @@ class __$$AppDependenciesImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$AppDependenciesImpl implements _AppDependencies {
-  const _$AppDependenciesImpl(
+class _AppDependencies implements AppDependencies {
+  const _AppDependencies(
       {required this.sharedPreferences,
       required this.store,
       required this.ftsDatabase,
@@ -162,16 +129,19 @@ class _$AppDependenciesImpl implements _AppDependencies {
   @override
   final PackageInfo packageInfo;
 
+  /// Create a copy of AppDependencies
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'AppDependencies(sharedPreferences: $sharedPreferences, store: $store, ftsDatabase: $ftsDatabase, packageInfo: $packageInfo)';
-  }
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$AppDependenciesCopyWith<_AppDependencies> get copyWith =>
+      __$AppDependenciesCopyWithImpl<_AppDependencies>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$AppDependenciesImpl &&
+            other is _AppDependencies &&
             (identical(other.sharedPreferences, sharedPreferences) ||
                 other.sharedPreferences == sharedPreferences) &&
             (identical(other.store, store) || other.store == store) &&
@@ -185,39 +155,64 @@ class _$AppDependenciesImpl implements _AppDependencies {
   int get hashCode => Object.hash(
       runtimeType, sharedPreferences, store, ftsDatabase, packageInfo);
 
+  @override
+  String toString() {
+    return 'AppDependencies(sharedPreferences: $sharedPreferences, store: $store, ftsDatabase: $ftsDatabase, packageInfo: $packageInfo)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$AppDependenciesCopyWith<$Res>
+    implements $AppDependenciesCopyWith<$Res> {
+  factory _$AppDependenciesCopyWith(
+          _AppDependencies value, $Res Function(_AppDependencies) _then) =
+      __$AppDependenciesCopyWithImpl;
+  @override
+  @useResult
+  $Res call(
+      {SharedPreferences sharedPreferences,
+      Store store,
+      Database ftsDatabase,
+      PackageInfo packageInfo});
+}
+
+/// @nodoc
+class __$AppDependenciesCopyWithImpl<$Res>
+    implements _$AppDependenciesCopyWith<$Res> {
+  __$AppDependenciesCopyWithImpl(this._self, this._then);
+
+  final _AppDependencies _self;
+  final $Res Function(_AppDependencies) _then;
+
   /// Create a copy of AppDependencies
   /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$AppDependenciesImplCopyWith<_$AppDependenciesImpl> get copyWith =>
-      __$$AppDependenciesImplCopyWithImpl<_$AppDependenciesImpl>(
-          this, _$identity);
+  $Res call({
+    Object? sharedPreferences = null,
+    Object? store = null,
+    Object? ftsDatabase = null,
+    Object? packageInfo = null,
+  }) {
+    return _then(_AppDependencies(
+      sharedPreferences: null == sharedPreferences
+          ? _self.sharedPreferences
+          : sharedPreferences // ignore: cast_nullable_to_non_nullable
+              as SharedPreferences,
+      store: null == store
+          ? _self.store
+          : store // ignore: cast_nullable_to_non_nullable
+              as Store,
+      ftsDatabase: null == ftsDatabase
+          ? _self.ftsDatabase
+          : ftsDatabase // ignore: cast_nullable_to_non_nullable
+              as Database,
+      packageInfo: null == packageInfo
+          ? _self.packageInfo
+          : packageInfo // ignore: cast_nullable_to_non_nullable
+              as PackageInfo,
+    ));
+  }
 }
 
-abstract class _AppDependencies implements AppDependencies {
-  const factory _AppDependencies(
-      {required final SharedPreferences sharedPreferences,
-      required final Store store,
-      required final Database ftsDatabase,
-      required final PackageInfo packageInfo}) = _$AppDependenciesImpl;
-
-// reference to simple key-value storage
-  @override
-  SharedPreferences
-      get sharedPreferences; // objectbox store used as NoSQL database
-  @override
-  Store get store; // FTS4 database that is used during song lyrics search
-  @override
-  Database
-      get ftsDatabase; // info about application (used for version and build number)
-  @override
-  PackageInfo get packageInfo;
-
-  /// Create a copy of AppDependencies
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$AppDependenciesImplCopyWith<_$AppDependenciesImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
+// dart format on

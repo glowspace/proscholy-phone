@@ -6,14 +6,14 @@ part of '../spotlight_item.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$SpotlightItemImpl _$$SpotlightItemImplFromJson(Map<String, dynamic> json) =>
-    _$SpotlightItemImpl(
+_SpotlightItem _$SpotlightItemFromJson(Map<String, dynamic> json) =>
+    _SpotlightItem(
       identifier: json['identifier'] as String,
       title: json['title'] as String,
       description: json['description'] as String,
     );
 
-Map<String, dynamic> _$$SpotlightItemImplToJson(_$SpotlightItemImpl instance) =>
+Map<String, dynamic> _$SpotlightItemToJson(_SpotlightItem instance) =>
     <String, dynamic>{
       'identifier': instance.identifier,
       'title': instance.title,

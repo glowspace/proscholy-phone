@@ -13,7 +13,7 @@ part 'generated/app_dependencies.g.dart';
 AppDependencies appDependencies(AppDependenciesRef ref) => throw UnimplementedError();
 
 @freezed
-class AppDependencies with _$AppDependencies {
+sealed class AppDependencies with _$AppDependencies {
   const factory AppDependencies({
     // reference to simple key-value storage
     required SharedPreferences sharedPreferences,

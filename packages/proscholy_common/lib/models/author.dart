@@ -6,7 +6,7 @@ part 'generated/author.freezed.dart';
 part 'generated/author.g.dart';
 
 @Freezed(toJson: false, equal: false)
-class Author with _$Author implements Identifiable {
+sealed class Author with _$Author implements Identifiable {
   const Author._();
 
   static const String fieldKey = 'authors';

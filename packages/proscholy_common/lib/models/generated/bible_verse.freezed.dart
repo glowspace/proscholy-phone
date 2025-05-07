@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,101 +10,37 @@ part of '../bible_verse.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
 mixin _$BibleVerse {
   @Id(assignable: true)
-  int get id => throw _privateConstructorUsedError;
-  int get book => throw _privateConstructorUsedError;
-  int get chapter => throw _privateConstructorUsedError;
-  int get startVerse => throw _privateConstructorUsedError;
-  int? get endVerse => throw _privateConstructorUsedError;
-  String get text => throw _privateConstructorUsedError;
+  int get id;
+  int get book;
+  int get chapter;
+  int get startVerse;
+  int? get endVerse;
+  String get text;
 
   /// Create a copy of BibleVerse
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $BibleVerseCopyWith<BibleVerse> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $BibleVerseCopyWith<$Res> {
-  factory $BibleVerseCopyWith(
-          BibleVerse value, $Res Function(BibleVerse) then) =
-      _$BibleVerseCopyWithImpl<$Res, BibleVerse>;
-  @useResult
-  $Res call(
-      {@Id(assignable: true) int id,
-      int book,
-      int chapter,
-      int startVerse,
-      int? endVerse,
-      String text});
-}
-
-/// @nodoc
-class _$BibleVerseCopyWithImpl<$Res, $Val extends BibleVerse>
-    implements $BibleVerseCopyWith<$Res> {
-  _$BibleVerseCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of BibleVerse
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
+  $BibleVerseCopyWith<BibleVerse> get copyWith =>
+      _$BibleVerseCopyWithImpl<BibleVerse>(this as BibleVerse, _$identity);
+
   @override
-  $Res call({
-    Object? id = null,
-    Object? book = null,
-    Object? chapter = null,
-    Object? startVerse = null,
-    Object? endVerse = freezed,
-    Object? text = null,
-  }) {
-    return _then(_value.copyWith(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      book: null == book
-          ? _value.book
-          : book // ignore: cast_nullable_to_non_nullable
-              as int,
-      chapter: null == chapter
-          ? _value.chapter
-          : chapter // ignore: cast_nullable_to_non_nullable
-              as int,
-      startVerse: null == startVerse
-          ? _value.startVerse
-          : startVerse // ignore: cast_nullable_to_non_nullable
-              as int,
-      endVerse: freezed == endVerse
-          ? _value.endVerse
-          : endVerse // ignore: cast_nullable_to_non_nullable
-              as int?,
-      text: null == text
-          ? _value.text
-          : text // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
+  String toString() {
+    return 'BibleVerse(id: $id, book: $book, chapter: $chapter, startVerse: $startVerse, endVerse: $endVerse, text: $text)';
   }
 }
 
 /// @nodoc
-abstract class _$$BibleVerseImplCopyWith<$Res>
-    implements $BibleVerseCopyWith<$Res> {
-  factory _$$BibleVerseImplCopyWith(
-          _$BibleVerseImpl value, $Res Function(_$BibleVerseImpl) then) =
-      __$$BibleVerseImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $BibleVerseCopyWith<$Res> {
+  factory $BibleVerseCopyWith(
+          BibleVerse value, $Res Function(BibleVerse) _then) =
+      _$BibleVerseCopyWithImpl;
   @useResult
   $Res call(
       {@Id(assignable: true) int id,
@@ -115,12 +52,11 @@ abstract class _$$BibleVerseImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$BibleVerseImplCopyWithImpl<$Res>
-    extends _$BibleVerseCopyWithImpl<$Res, _$BibleVerseImpl>
-    implements _$$BibleVerseImplCopyWith<$Res> {
-  __$$BibleVerseImplCopyWithImpl(
-      _$BibleVerseImpl _value, $Res Function(_$BibleVerseImpl) _then)
-      : super(_value, _then);
+class _$BibleVerseCopyWithImpl<$Res> implements $BibleVerseCopyWith<$Res> {
+  _$BibleVerseCopyWithImpl(this._self, this._then);
+
+  final BibleVerse _self;
+  final $Res Function(BibleVerse) _then;
 
   /// Create a copy of BibleVerse
   /// with the given fields replaced by the non-null parameter values.
@@ -134,29 +70,29 @@ class __$$BibleVerseImplCopyWithImpl<$Res>
     Object? endVerse = freezed,
     Object? text = null,
   }) {
-    return _then(_$BibleVerseImpl(
+    return _then(_self.copyWith(
       id: null == id
-          ? _value.id
+          ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
       book: null == book
-          ? _value.book
+          ? _self.book
           : book // ignore: cast_nullable_to_non_nullable
               as int,
       chapter: null == chapter
-          ? _value.chapter
+          ? _self.chapter
           : chapter // ignore: cast_nullable_to_non_nullable
               as int,
       startVerse: null == startVerse
-          ? _value.startVerse
+          ? _self.startVerse
           : startVerse // ignore: cast_nullable_to_non_nullable
               as int,
       endVerse: freezed == endVerse
-          ? _value.endVerse
+          ? _self.endVerse
           : endVerse // ignore: cast_nullable_to_non_nullable
               as int?,
       text: null == text
-          ? _value.text
+          ? _self.text
           : text // ignore: cast_nullable_to_non_nullable
               as String,
     ));
@@ -166,8 +102,8 @@ class __$$BibleVerseImplCopyWithImpl<$Res>
 /// @nodoc
 
 @Entity(realClass: BibleVerse)
-class _$BibleVerseImpl extends _BibleVerse {
-  const _$BibleVerseImpl(
+class _BibleVerse extends BibleVerse {
+  const _BibleVerse(
       {@Id(assignable: true) required this.id,
       required this.book,
       required this.chapter,
@@ -190,48 +126,83 @@ class _$BibleVerseImpl extends _BibleVerse {
   @override
   final String text;
 
+  /// Create a copy of BibleVerse
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$BibleVerseCopyWith<_BibleVerse> get copyWith =>
+      __$BibleVerseCopyWithImpl<_BibleVerse>(this, _$identity);
+
   @override
   String toString() {
     return 'BibleVerse(id: $id, book: $book, chapter: $chapter, startVerse: $startVerse, endVerse: $endVerse, text: $text)';
   }
+}
+
+/// @nodoc
+abstract mixin class _$BibleVerseCopyWith<$Res>
+    implements $BibleVerseCopyWith<$Res> {
+  factory _$BibleVerseCopyWith(
+          _BibleVerse value, $Res Function(_BibleVerse) _then) =
+      __$BibleVerseCopyWithImpl;
+  @override
+  @useResult
+  $Res call(
+      {@Id(assignable: true) int id,
+      int book,
+      int chapter,
+      int startVerse,
+      int? endVerse,
+      String text});
+}
+
+/// @nodoc
+class __$BibleVerseCopyWithImpl<$Res> implements _$BibleVerseCopyWith<$Res> {
+  __$BibleVerseCopyWithImpl(this._self, this._then);
+
+  final _BibleVerse _self;
+  final $Res Function(_BibleVerse) _then;
 
   /// Create a copy of BibleVerse
   /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$BibleVerseImplCopyWith<_$BibleVerseImpl> get copyWith =>
-      __$$BibleVerseImplCopyWithImpl<_$BibleVerseImpl>(this, _$identity);
+  $Res call({
+    Object? id = null,
+    Object? book = null,
+    Object? chapter = null,
+    Object? startVerse = null,
+    Object? endVerse = freezed,
+    Object? text = null,
+  }) {
+    return _then(_BibleVerse(
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      book: null == book
+          ? _self.book
+          : book // ignore: cast_nullable_to_non_nullable
+              as int,
+      chapter: null == chapter
+          ? _self.chapter
+          : chapter // ignore: cast_nullable_to_non_nullable
+              as int,
+      startVerse: null == startVerse
+          ? _self.startVerse
+          : startVerse // ignore: cast_nullable_to_non_nullable
+              as int,
+      endVerse: freezed == endVerse
+          ? _self.endVerse
+          : endVerse // ignore: cast_nullable_to_non_nullable
+              as int?,
+      text: null == text
+          ? _self.text
+          : text // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
 }
 
-abstract class _BibleVerse extends BibleVerse {
-  const factory _BibleVerse(
-      {@Id(assignable: true) required final int id,
-      required final int book,
-      required final int chapter,
-      required final int startVerse,
-      final int? endVerse,
-      required final String text}) = _$BibleVerseImpl;
-  const _BibleVerse._() : super._();
-
-  @override
-  @Id(assignable: true)
-  int get id;
-  @override
-  int get book;
-  @override
-  int get chapter;
-  @override
-  int get startVerse;
-  @override
-  int? get endVerse;
-  @override
-  String get text;
-
-  /// Create a copy of BibleVerse
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$BibleVerseImplCopyWith<_$BibleVerseImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
+// dart format on

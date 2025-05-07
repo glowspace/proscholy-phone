@@ -20,7 +20,7 @@ const defaultPresentationSettings = PresentationSettings(
 enum PresentationAlignment { top, center, bottom }
 
 @freezed
-class PresentationData with _$PresentationData {
+sealed class PresentationData with _$PresentationData {
   const factory PresentationData({
     int? songLyricId,
     @Default(false) bool isCustomText,
@@ -33,7 +33,7 @@ class PresentationData with _$PresentationData {
 }
 
 @freezed
-class PresentationSettings with _$PresentationSettings {
+sealed class PresentationSettings with _$PresentationSettings {
   const factory PresentationSettings({
     required bool darkMode,
     required bool showName,

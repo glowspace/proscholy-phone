@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,108 +10,39 @@ part of '../external.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-External _$ExternalFromJson(Map<String, dynamic> json) {
-  return _External.fromJson(json);
-}
 
 /// @nodoc
 mixin _$External {
   @Id(assignable: true)
   @JsonKey(fromJson: int.parse)
-  int get id => throw _privateConstructorUsedError;
-  String get publicName => throw _privateConstructorUsedError;
-  String? get mediaId => throw _privateConstructorUsedError;
-  String? get url => throw _privateConstructorUsedError;
+  int get id;
+  String get publicName;
+  String? get mediaId;
+  String? get url;
   @JsonKey(name: 'media_type', fromJson: MediaType.rawValueFromString)
-  int get dbMediaType => throw _privateConstructorUsedError;
+  int get dbMediaType;
   @JsonKey(fromJson: _songLyricFromJson)
-  ToOne<SongLyric> get songLyric => throw _privateConstructorUsedError;
+  ToOne<SongLyric> get songLyric;
 
   /// Create a copy of External
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $ExternalCopyWith<External> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $ExternalCopyWith<$Res> {
-  factory $ExternalCopyWith(External value, $Res Function(External) then) =
-      _$ExternalCopyWithImpl<$Res, External>;
-  @useResult
-  $Res call(
-      {@Id(assignable: true) @JsonKey(fromJson: int.parse) int id,
-      String publicName,
-      String? mediaId,
-      String? url,
-      @JsonKey(name: 'media_type', fromJson: MediaType.rawValueFromString)
-      int dbMediaType,
-      @JsonKey(fromJson: _songLyricFromJson) ToOne<SongLyric> songLyric});
-}
-
-/// @nodoc
-class _$ExternalCopyWithImpl<$Res, $Val extends External>
-    implements $ExternalCopyWith<$Res> {
-  _$ExternalCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of External
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
+  $ExternalCopyWith<External> get copyWith =>
+      _$ExternalCopyWithImpl<External>(this as External, _$identity);
+
   @override
-  $Res call({
-    Object? id = null,
-    Object? publicName = null,
-    Object? mediaId = freezed,
-    Object? url = freezed,
-    Object? dbMediaType = null,
-    Object? songLyric = null,
-  }) {
-    return _then(_value.copyWith(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      publicName: null == publicName
-          ? _value.publicName
-          : publicName // ignore: cast_nullable_to_non_nullable
-              as String,
-      mediaId: freezed == mediaId
-          ? _value.mediaId
-          : mediaId // ignore: cast_nullable_to_non_nullable
-              as String?,
-      url: freezed == url
-          ? _value.url
-          : url // ignore: cast_nullable_to_non_nullable
-              as String?,
-      dbMediaType: null == dbMediaType
-          ? _value.dbMediaType
-          : dbMediaType // ignore: cast_nullable_to_non_nullable
-              as int,
-      songLyric: null == songLyric
-          ? _value.songLyric
-          : songLyric // ignore: cast_nullable_to_non_nullable
-              as ToOne<SongLyric>,
-    ) as $Val);
+  String toString() {
+    return 'External(id: $id, publicName: $publicName, mediaId: $mediaId, url: $url, dbMediaType: $dbMediaType, songLyric: $songLyric)';
   }
 }
 
 /// @nodoc
-abstract class _$$ExternalImplCopyWith<$Res>
-    implements $ExternalCopyWith<$Res> {
-  factory _$$ExternalImplCopyWith(
-          _$ExternalImpl value, $Res Function(_$ExternalImpl) then) =
-      __$$ExternalImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $ExternalCopyWith<$Res> {
+  factory $ExternalCopyWith(External value, $Res Function(External) _then) =
+      _$ExternalCopyWithImpl;
   @useResult
   $Res call(
       {@Id(assignable: true) @JsonKey(fromJson: int.parse) int id,
@@ -123,12 +55,11 @@ abstract class _$$ExternalImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$ExternalImplCopyWithImpl<$Res>
-    extends _$ExternalCopyWithImpl<$Res, _$ExternalImpl>
-    implements _$$ExternalImplCopyWith<$Res> {
-  __$$ExternalImplCopyWithImpl(
-      _$ExternalImpl _value, $Res Function(_$ExternalImpl) _then)
-      : super(_value, _then);
+class _$ExternalCopyWithImpl<$Res> implements $ExternalCopyWith<$Res> {
+  _$ExternalCopyWithImpl(this._self, this._then);
+
+  final External _self;
+  final $Res Function(External) _then;
 
   /// Create a copy of External
   /// with the given fields replaced by the non-null parameter values.
@@ -142,29 +73,29 @@ class __$$ExternalImplCopyWithImpl<$Res>
     Object? dbMediaType = null,
     Object? songLyric = null,
   }) {
-    return _then(_$ExternalImpl(
+    return _then(_self.copyWith(
       id: null == id
-          ? _value.id
+          ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
       publicName: null == publicName
-          ? _value.publicName
+          ? _self.publicName
           : publicName // ignore: cast_nullable_to_non_nullable
               as String,
       mediaId: freezed == mediaId
-          ? _value.mediaId
+          ? _self.mediaId
           : mediaId // ignore: cast_nullable_to_non_nullable
               as String?,
       url: freezed == url
-          ? _value.url
+          ? _self.url
           : url // ignore: cast_nullable_to_non_nullable
               as String?,
       dbMediaType: null == dbMediaType
-          ? _value.dbMediaType
+          ? _self.dbMediaType
           : dbMediaType // ignore: cast_nullable_to_non_nullable
               as int,
       songLyric: null == songLyric
-          ? _value.songLyric
+          ? _self.songLyric
           : songLyric // ignore: cast_nullable_to_non_nullable
               as ToOne<SongLyric>,
     ));
@@ -175,8 +106,8 @@ class __$$ExternalImplCopyWithImpl<$Res>
 
 @Entity(realClass: External)
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
-class _$ExternalImpl extends _External {
-  const _$ExternalImpl(
+class _External extends External {
+  const _External(
       {@Id(assignable: true) @JsonKey(fromJson: int.parse) required this.id,
       required this.publicName,
       this.mediaId,
@@ -185,9 +116,8 @@ class _$ExternalImpl extends _External {
       required this.dbMediaType,
       @JsonKey(fromJson: _songLyricFromJson) required this.songLyric})
       : super._();
-
-  factory _$ExternalImpl.fromJson(Map<String, dynamic> json) =>
-      _$$ExternalImplFromJson(json);
+  factory _External.fromJson(Map<String, dynamic> json) =>
+      _$ExternalFromJson(json);
 
   @override
   @Id(assignable: true)
@@ -206,58 +136,83 @@ class _$ExternalImpl extends _External {
   @JsonKey(fromJson: _songLyricFromJson)
   final ToOne<SongLyric> songLyric;
 
+  /// Create a copy of External
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$ExternalCopyWith<_External> get copyWith =>
+      __$ExternalCopyWithImpl<_External>(this, _$identity);
+
   @override
   String toString() {
     return 'External(id: $id, publicName: $publicName, mediaId: $mediaId, url: $url, dbMediaType: $dbMediaType, songLyric: $songLyric)';
   }
+}
+
+/// @nodoc
+abstract mixin class _$ExternalCopyWith<$Res>
+    implements $ExternalCopyWith<$Res> {
+  factory _$ExternalCopyWith(_External value, $Res Function(_External) _then) =
+      __$ExternalCopyWithImpl;
+  @override
+  @useResult
+  $Res call(
+      {@Id(assignable: true) @JsonKey(fromJson: int.parse) int id,
+      String publicName,
+      String? mediaId,
+      String? url,
+      @JsonKey(name: 'media_type', fromJson: MediaType.rawValueFromString)
+      int dbMediaType,
+      @JsonKey(fromJson: _songLyricFromJson) ToOne<SongLyric> songLyric});
+}
+
+/// @nodoc
+class __$ExternalCopyWithImpl<$Res> implements _$ExternalCopyWith<$Res> {
+  __$ExternalCopyWithImpl(this._self, this._then);
+
+  final _External _self;
+  final $Res Function(_External) _then;
 
   /// Create a copy of External
   /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$ExternalImplCopyWith<_$ExternalImpl> get copyWith =>
-      __$$ExternalImplCopyWithImpl<_$ExternalImpl>(this, _$identity);
+  $Res call({
+    Object? id = null,
+    Object? publicName = null,
+    Object? mediaId = freezed,
+    Object? url = freezed,
+    Object? dbMediaType = null,
+    Object? songLyric = null,
+  }) {
+    return _then(_External(
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      publicName: null == publicName
+          ? _self.publicName
+          : publicName // ignore: cast_nullable_to_non_nullable
+              as String,
+      mediaId: freezed == mediaId
+          ? _self.mediaId
+          : mediaId // ignore: cast_nullable_to_non_nullable
+              as String?,
+      url: freezed == url
+          ? _self.url
+          : url // ignore: cast_nullable_to_non_nullable
+              as String?,
+      dbMediaType: null == dbMediaType
+          ? _self.dbMediaType
+          : dbMediaType // ignore: cast_nullable_to_non_nullable
+              as int,
+      songLyric: null == songLyric
+          ? _self.songLyric
+          : songLyric // ignore: cast_nullable_to_non_nullable
+              as ToOne<SongLyric>,
+    ));
+  }
 }
 
-abstract class _External extends External {
-  const factory _External(
-      {@Id(assignable: true)
-      @JsonKey(fromJson: int.parse)
-      required final int id,
-      required final String publicName,
-      final String? mediaId,
-      final String? url,
-      @JsonKey(name: 'media_type', fromJson: MediaType.rawValueFromString)
-      required final int dbMediaType,
-      @JsonKey(fromJson: _songLyricFromJson)
-      required final ToOne<SongLyric> songLyric}) = _$ExternalImpl;
-  const _External._() : super._();
-
-  factory _External.fromJson(Map<String, dynamic> json) =
-      _$ExternalImpl.fromJson;
-
-  @override
-  @Id(assignable: true)
-  @JsonKey(fromJson: int.parse)
-  int get id;
-  @override
-  String get publicName;
-  @override
-  String? get mediaId;
-  @override
-  String? get url;
-  @override
-  @JsonKey(name: 'media_type', fromJson: MediaType.rawValueFromString)
-  int get dbMediaType;
-  @override
-  @JsonKey(fromJson: _songLyricFromJson)
-  ToOne<SongLyric> get songLyric;
-
-  /// Create a copy of External
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$ExternalImplCopyWith<_$ExternalImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
+// dart format on

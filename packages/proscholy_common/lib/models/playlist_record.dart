@@ -9,7 +9,7 @@ import 'package:proscholy_common/models/song_lyric.dart';
 part 'generated/playlist_record.freezed.dart';
 
 @Freezed(equal: false)
-class PlaylistRecord with _$PlaylistRecord implements Identifiable, Record {
+sealed class PlaylistRecord with _$PlaylistRecord implements Identifiable, Record {
   const PlaylistRecord._();
 
   @Entity(realClass: PlaylistRecord)

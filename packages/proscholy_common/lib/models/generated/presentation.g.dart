@@ -6,9 +6,8 @@ part of '../presentation.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$PresentationDataImpl _$$PresentationDataImplFromJson(
-        Map<String, dynamic> json) =>
-    _$PresentationDataImpl(
+_PresentationData _$PresentationDataFromJson(Map<String, dynamic> json) =>
+    _PresentationData(
       songLyricId: (json['songLyricId'] as num?)?.toInt(),
       isCustomText: json['isCustomText'] as bool? ?? false,
       name: json['name'] as String,
@@ -17,8 +16,7 @@ _$PresentationDataImpl _$$PresentationDataImplFromJson(
           json['settings'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$$PresentationDataImplToJson(
-        _$PresentationDataImpl instance) =>
+Map<String, dynamic> _$PresentationDataToJson(_PresentationData instance) =>
     <String, dynamic>{
       'songLyricId': instance.songLyricId,
       'isCustomText': instance.isCustomText,
@@ -27,9 +25,9 @@ Map<String, dynamic> _$$PresentationDataImplToJson(
       'settings': instance.settings,
     };
 
-_$PresentationSettingsImpl _$$PresentationSettingsImplFromJson(
+_PresentationSettings _$PresentationSettingsFromJson(
         Map<String, dynamic> json) =>
-    _$PresentationSettingsImpl(
+    _PresentationSettings(
       darkMode: json['darkMode'] as bool,
       showName: json['showName'] as bool,
       allCapital: json['allCapital'] as bool,
@@ -38,8 +36,8 @@ _$PresentationSettingsImpl _$$PresentationSettingsImplFromJson(
           _$PresentationAlignmentEnumMap, json['alignment']),
     );
 
-Map<String, dynamic> _$$PresentationSettingsImplToJson(
-        _$PresentationSettingsImpl instance) =>
+Map<String, dynamic> _$PresentationSettingsToJson(
+        _PresentationSettings instance) =>
     <String, dynamic>{
       'darkMode': instance.darkMode,
       'showName': instance.showName,

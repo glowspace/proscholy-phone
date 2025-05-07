@@ -6,7 +6,7 @@ part of '../tag.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$TagImpl _$$TagImplFromJson(Map<String, dynamic> json) => _$TagImpl(
+_Tag _$TagFromJson(Map<String, dynamic> json) => _Tag(
       id: int.parse(json['id'] as String),
       name: json['name'] as String,
       dbType: TagType.rawValueFromString(json['type_enum'] as String),

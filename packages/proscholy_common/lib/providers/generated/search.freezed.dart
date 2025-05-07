@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,31 +10,58 @@ part of '../search.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
 mixin _$SearchedSongLyricsResult {
-  List<SongLyric>? get songLyrics => throw _privateConstructorUsedError;
-  String? get searchedNumber => throw _privateConstructorUsedError;
-  SongLyric? get matchedById => throw _privateConstructorUsedError;
-  List<SongLyric> get matchedBySongbookNumber =>
-      throw _privateConstructorUsedError;
+  List<SongLyric>? get songLyrics;
+  String? get searchedNumber;
+  SongLyric? get matchedById;
+  List<SongLyric> get matchedBySongbookNumber;
 
   /// Create a copy of SearchedSongLyricsResult
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
   $SearchedSongLyricsResultCopyWith<SearchedSongLyricsResult> get copyWith =>
-      throw _privateConstructorUsedError;
+      _$SearchedSongLyricsResultCopyWithImpl<SearchedSongLyricsResult>(
+          this as SearchedSongLyricsResult, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is SearchedSongLyricsResult &&
+            const DeepCollectionEquality()
+                .equals(other.songLyrics, songLyrics) &&
+            (identical(other.searchedNumber, searchedNumber) ||
+                other.searchedNumber == searchedNumber) &&
+            (identical(other.matchedById, matchedById) ||
+                other.matchedById == matchedById) &&
+            const DeepCollectionEquality().equals(
+                other.matchedBySongbookNumber, matchedBySongbookNumber));
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(songLyrics),
+      searchedNumber,
+      matchedById,
+      const DeepCollectionEquality().hash(matchedBySongbookNumber));
+
+  @override
+  String toString() {
+    return 'SearchedSongLyricsResult(songLyrics: $songLyrics, searchedNumber: $searchedNumber, matchedById: $matchedById, matchedBySongbookNumber: $matchedBySongbookNumber)';
+  }
 }
 
 /// @nodoc
-abstract class $SearchedSongLyricsResultCopyWith<$Res> {
+abstract mixin class $SearchedSongLyricsResultCopyWith<$Res> {
   factory $SearchedSongLyricsResultCopyWith(SearchedSongLyricsResult value,
-          $Res Function(SearchedSongLyricsResult) then) =
-      _$SearchedSongLyricsResultCopyWithImpl<$Res, SearchedSongLyricsResult>;
+          $Res Function(SearchedSongLyricsResult) _then) =
+      _$SearchedSongLyricsResultCopyWithImpl;
   @useResult
   $Res call(
       {List<SongLyric>? songLyrics,
@@ -45,15 +73,12 @@ abstract class $SearchedSongLyricsResultCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$SearchedSongLyricsResultCopyWithImpl<$Res,
-        $Val extends SearchedSongLyricsResult>
+class _$SearchedSongLyricsResultCopyWithImpl<$Res>
     implements $SearchedSongLyricsResultCopyWith<$Res> {
-  _$SearchedSongLyricsResultCopyWithImpl(this._value, this._then);
+  _$SearchedSongLyricsResultCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final SearchedSongLyricsResult _self;
+  final $Res Function(SearchedSongLyricsResult) _then;
 
   /// Create a copy of SearchedSongLyricsResult
   /// with the given fields replaced by the non-null parameter values.
@@ -65,24 +90,24 @@ class _$SearchedSongLyricsResultCopyWithImpl<$Res,
     Object? matchedById = freezed,
     Object? matchedBySongbookNumber = null,
   }) {
-    return _then(_value.copyWith(
+    return _then(_self.copyWith(
       songLyrics: freezed == songLyrics
-          ? _value.songLyrics
+          ? _self.songLyrics
           : songLyrics // ignore: cast_nullable_to_non_nullable
               as List<SongLyric>?,
       searchedNumber: freezed == searchedNumber
-          ? _value.searchedNumber
+          ? _self.searchedNumber
           : searchedNumber // ignore: cast_nullable_to_non_nullable
               as String?,
       matchedById: freezed == matchedById
-          ? _value.matchedById
+          ? _self.matchedById
           : matchedById // ignore: cast_nullable_to_non_nullable
               as SongLyric?,
       matchedBySongbookNumber: null == matchedBySongbookNumber
-          ? _value.matchedBySongbookNumber
+          ? _self.matchedBySongbookNumber
           : matchedBySongbookNumber // ignore: cast_nullable_to_non_nullable
               as List<SongLyric>,
-    ) as $Val);
+    ));
   }
 
   /// Create a copy of SearchedSongLyricsResult
@@ -90,80 +115,20 @@ class _$SearchedSongLyricsResultCopyWithImpl<$Res,
   @override
   @pragma('vm:prefer-inline')
   $SongLyricCopyWith<$Res>? get matchedById {
-    if (_value.matchedById == null) {
+    if (_self.matchedById == null) {
       return null;
     }
 
-    return $SongLyricCopyWith<$Res>(_value.matchedById!, (value) {
-      return _then(_value.copyWith(matchedById: value) as $Val);
+    return $SongLyricCopyWith<$Res>(_self.matchedById!, (value) {
+      return _then(_self.copyWith(matchedById: value));
     });
   }
 }
 
 /// @nodoc
-abstract class _$$SearchedSongLyricsResultImplCopyWith<$Res>
-    implements $SearchedSongLyricsResultCopyWith<$Res> {
-  factory _$$SearchedSongLyricsResultImplCopyWith(
-          _$SearchedSongLyricsResultImpl value,
-          $Res Function(_$SearchedSongLyricsResultImpl) then) =
-      __$$SearchedSongLyricsResultImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call(
-      {List<SongLyric>? songLyrics,
-      String? searchedNumber,
-      SongLyric? matchedById,
-      List<SongLyric> matchedBySongbookNumber});
 
-  @override
-  $SongLyricCopyWith<$Res>? get matchedById;
-}
-
-/// @nodoc
-class __$$SearchedSongLyricsResultImplCopyWithImpl<$Res>
-    extends _$SearchedSongLyricsResultCopyWithImpl<$Res,
-        _$SearchedSongLyricsResultImpl>
-    implements _$$SearchedSongLyricsResultImplCopyWith<$Res> {
-  __$$SearchedSongLyricsResultImplCopyWithImpl(
-      _$SearchedSongLyricsResultImpl _value,
-      $Res Function(_$SearchedSongLyricsResultImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of SearchedSongLyricsResult
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? songLyrics = freezed,
-    Object? searchedNumber = freezed,
-    Object? matchedById = freezed,
-    Object? matchedBySongbookNumber = null,
-  }) {
-    return _then(_$SearchedSongLyricsResultImpl(
-      songLyrics: freezed == songLyrics
-          ? _value._songLyrics
-          : songLyrics // ignore: cast_nullable_to_non_nullable
-              as List<SongLyric>?,
-      searchedNumber: freezed == searchedNumber
-          ? _value.searchedNumber
-          : searchedNumber // ignore: cast_nullable_to_non_nullable
-              as String?,
-      matchedById: freezed == matchedById
-          ? _value.matchedById
-          : matchedById // ignore: cast_nullable_to_non_nullable
-              as SongLyric?,
-      matchedBySongbookNumber: null == matchedBySongbookNumber
-          ? _value._matchedBySongbookNumber
-          : matchedBySongbookNumber // ignore: cast_nullable_to_non_nullable
-              as List<SongLyric>,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$SearchedSongLyricsResultImpl implements _SearchedSongLyricsResult {
-  const _$SearchedSongLyricsResultImpl(
+class _SearchedSongLyricsResult implements SearchedSongLyricsResult {
+  const _SearchedSongLyricsResult(
       {final List<SongLyric>? songLyrics,
       this.searchedNumber,
       this.matchedById,
@@ -195,16 +160,20 @@ class _$SearchedSongLyricsResultImpl implements _SearchedSongLyricsResult {
     return EqualUnmodifiableListView(_matchedBySongbookNumber);
   }
 
+  /// Create a copy of SearchedSongLyricsResult
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'SearchedSongLyricsResult(songLyrics: $songLyrics, searchedNumber: $searchedNumber, matchedById: $matchedById, matchedBySongbookNumber: $matchedBySongbookNumber)';
-  }
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$SearchedSongLyricsResultCopyWith<_SearchedSongLyricsResult> get copyWith =>
+      __$SearchedSongLyricsResultCopyWithImpl<_SearchedSongLyricsResult>(
+          this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$SearchedSongLyricsResultImpl &&
+            other is _SearchedSongLyricsResult &&
             const DeepCollectionEquality()
                 .equals(other._songLyrics, _songLyrics) &&
             (identical(other.searchedNumber, searchedNumber) ||
@@ -223,37 +192,81 @@ class _$SearchedSongLyricsResultImpl implements _SearchedSongLyricsResult {
       matchedById,
       const DeepCollectionEquality().hash(_matchedBySongbookNumber));
 
+  @override
+  String toString() {
+    return 'SearchedSongLyricsResult(songLyrics: $songLyrics, searchedNumber: $searchedNumber, matchedById: $matchedById, matchedBySongbookNumber: $matchedBySongbookNumber)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$SearchedSongLyricsResultCopyWith<$Res>
+    implements $SearchedSongLyricsResultCopyWith<$Res> {
+  factory _$SearchedSongLyricsResultCopyWith(_SearchedSongLyricsResult value,
+          $Res Function(_SearchedSongLyricsResult) _then) =
+      __$SearchedSongLyricsResultCopyWithImpl;
+  @override
+  @useResult
+  $Res call(
+      {List<SongLyric>? songLyrics,
+      String? searchedNumber,
+      SongLyric? matchedById,
+      List<SongLyric> matchedBySongbookNumber});
+
+  @override
+  $SongLyricCopyWith<$Res>? get matchedById;
+}
+
+/// @nodoc
+class __$SearchedSongLyricsResultCopyWithImpl<$Res>
+    implements _$SearchedSongLyricsResultCopyWith<$Res> {
+  __$SearchedSongLyricsResultCopyWithImpl(this._self, this._then);
+
+  final _SearchedSongLyricsResult _self;
+  final $Res Function(_SearchedSongLyricsResult) _then;
+
   /// Create a copy of SearchedSongLyricsResult
   /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$SearchedSongLyricsResultImplCopyWith<_$SearchedSongLyricsResultImpl>
-      get copyWith => __$$SearchedSongLyricsResultImplCopyWithImpl<
-          _$SearchedSongLyricsResultImpl>(this, _$identity);
-}
-
-abstract class _SearchedSongLyricsResult implements SearchedSongLyricsResult {
-  const factory _SearchedSongLyricsResult(
-          {final List<SongLyric>? songLyrics,
-          final String? searchedNumber,
-          final SongLyric? matchedById,
-          final List<SongLyric> matchedBySongbookNumber}) =
-      _$SearchedSongLyricsResultImpl;
-
-  @override
-  List<SongLyric>? get songLyrics;
-  @override
-  String? get searchedNumber;
-  @override
-  SongLyric? get matchedById;
-  @override
-  List<SongLyric> get matchedBySongbookNumber;
+  $Res call({
+    Object? songLyrics = freezed,
+    Object? searchedNumber = freezed,
+    Object? matchedById = freezed,
+    Object? matchedBySongbookNumber = null,
+  }) {
+    return _then(_SearchedSongLyricsResult(
+      songLyrics: freezed == songLyrics
+          ? _self._songLyrics
+          : songLyrics // ignore: cast_nullable_to_non_nullable
+              as List<SongLyric>?,
+      searchedNumber: freezed == searchedNumber
+          ? _self.searchedNumber
+          : searchedNumber // ignore: cast_nullable_to_non_nullable
+              as String?,
+      matchedById: freezed == matchedById
+          ? _self.matchedById
+          : matchedById // ignore: cast_nullable_to_non_nullable
+              as SongLyric?,
+      matchedBySongbookNumber: null == matchedBySongbookNumber
+          ? _self._matchedBySongbookNumber
+          : matchedBySongbookNumber // ignore: cast_nullable_to_non_nullable
+              as List<SongLyric>,
+    ));
+  }
 
   /// Create a copy of SearchedSongLyricsResult
   /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$SearchedSongLyricsResultImplCopyWith<_$SearchedSongLyricsResultImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  @pragma('vm:prefer-inline')
+  $SongLyricCopyWith<$Res>? get matchedById {
+    if (_self.matchedById == null) {
+      return null;
+    }
+
+    return $SongLyricCopyWith<$Res>(_self.matchedById!, (value) {
+      return _then(_self.copyWith(matchedById: value));
+    });
+  }
 }
+
+// dart format on

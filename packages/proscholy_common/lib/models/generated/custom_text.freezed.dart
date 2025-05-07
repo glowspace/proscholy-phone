@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,88 +10,44 @@ part of '../custom_text.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
 mixin _$CustomText {
   @Id(assignable: true)
-  int get id => throw _privateConstructorUsedError;
-  String get name => throw _privateConstructorUsedError;
-  String get content => throw _privateConstructorUsedError;
+  int get id;
+  String get name;
+  String get content;
 
   /// Create a copy of CustomText
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $CustomTextCopyWith<CustomText> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $CustomTextCopyWith<$Res> {
-  factory $CustomTextCopyWith(
-          CustomText value, $Res Function(CustomText) then) =
-      _$CustomTextCopyWithImpl<$Res, CustomText>;
-  @useResult
-  $Res call({@Id(assignable: true) int id, String name, String content});
-}
-
-/// @nodoc
-class _$CustomTextCopyWithImpl<$Res, $Val extends CustomText>
-    implements $CustomTextCopyWith<$Res> {
-  _$CustomTextCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of CustomText
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
+  $CustomTextCopyWith<CustomText> get copyWith =>
+      _$CustomTextCopyWithImpl<CustomText>(this as CustomText, _$identity);
+
   @override
-  $Res call({
-    Object? id = null,
-    Object? name = null,
-    Object? content = null,
-  }) {
-    return _then(_value.copyWith(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      content: null == content
-          ? _value.content
-          : content // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
+  String toString() {
+    return 'CustomText(id: $id, name: $name, content: $content)';
   }
 }
 
 /// @nodoc
-abstract class _$$CustomTextImplCopyWith<$Res>
-    implements $CustomTextCopyWith<$Res> {
-  factory _$$CustomTextImplCopyWith(
-          _$CustomTextImpl value, $Res Function(_$CustomTextImpl) then) =
-      __$$CustomTextImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $CustomTextCopyWith<$Res> {
+  factory $CustomTextCopyWith(
+          CustomText value, $Res Function(CustomText) _then) =
+      _$CustomTextCopyWithImpl;
   @useResult
   $Res call({@Id(assignable: true) int id, String name, String content});
 }
 
 /// @nodoc
-class __$$CustomTextImplCopyWithImpl<$Res>
-    extends _$CustomTextCopyWithImpl<$Res, _$CustomTextImpl>
-    implements _$$CustomTextImplCopyWith<$Res> {
-  __$$CustomTextImplCopyWithImpl(
-      _$CustomTextImpl _value, $Res Function(_$CustomTextImpl) _then)
-      : super(_value, _then);
+class _$CustomTextCopyWithImpl<$Res> implements $CustomTextCopyWith<$Res> {
+  _$CustomTextCopyWithImpl(this._self, this._then);
+
+  final CustomText _self;
+  final $Res Function(CustomText) _then;
 
   /// Create a copy of CustomText
   /// with the given fields replaced by the non-null parameter values.
@@ -101,17 +58,17 @@ class __$$CustomTextImplCopyWithImpl<$Res>
     Object? name = null,
     Object? content = null,
   }) {
-    return _then(_$CustomTextImpl(
+    return _then(_self.copyWith(
       id: null == id
-          ? _value.id
+          ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
       name: null == name
-          ? _value.name
+          ? _self.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
       content: null == content
-          ? _value.content
+          ? _self.content
           : content // ignore: cast_nullable_to_non_nullable
               as String,
     ));
@@ -121,8 +78,8 @@ class __$$CustomTextImplCopyWithImpl<$Res>
 /// @nodoc
 
 @Entity(realClass: CustomText)
-class _$CustomTextImpl extends _CustomText {
-  const _$CustomTextImpl(
+class _CustomText extends CustomText {
+  const _CustomText(
       {@Id(assignable: true) required this.id,
       required this.name,
       required this.content})
@@ -136,39 +93,62 @@ class _$CustomTextImpl extends _CustomText {
   @override
   final String content;
 
+  /// Create a copy of CustomText
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$CustomTextCopyWith<_CustomText> get copyWith =>
+      __$CustomTextCopyWithImpl<_CustomText>(this, _$identity);
+
   @override
   String toString() {
     return 'CustomText(id: $id, name: $name, content: $content)';
   }
+}
+
+/// @nodoc
+abstract mixin class _$CustomTextCopyWith<$Res>
+    implements $CustomTextCopyWith<$Res> {
+  factory _$CustomTextCopyWith(
+          _CustomText value, $Res Function(_CustomText) _then) =
+      __$CustomTextCopyWithImpl;
+  @override
+  @useResult
+  $Res call({@Id(assignable: true) int id, String name, String content});
+}
+
+/// @nodoc
+class __$CustomTextCopyWithImpl<$Res> implements _$CustomTextCopyWith<$Res> {
+  __$CustomTextCopyWithImpl(this._self, this._then);
+
+  final _CustomText _self;
+  final $Res Function(_CustomText) _then;
 
   /// Create a copy of CustomText
   /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$CustomTextImplCopyWith<_$CustomTextImpl> get copyWith =>
-      __$$CustomTextImplCopyWithImpl<_$CustomTextImpl>(this, _$identity);
+  $Res call({
+    Object? id = null,
+    Object? name = null,
+    Object? content = null,
+  }) {
+    return _then(_CustomText(
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      name: null == name
+          ? _self.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      content: null == content
+          ? _self.content
+          : content // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
 }
 
-abstract class _CustomText extends CustomText {
-  const factory _CustomText(
-      {@Id(assignable: true) required final int id,
-      required final String name,
-      required final String content}) = _$CustomTextImpl;
-  const _CustomText._() : super._();
-
-  @override
-  @Id(assignable: true)
-  int get id;
-  @override
-  String get name;
-  @override
-  String get content;
-
-  /// Create a copy of CustomText
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$CustomTextImplCopyWith<_$CustomTextImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
+// dart format on

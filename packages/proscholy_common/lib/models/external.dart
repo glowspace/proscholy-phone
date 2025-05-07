@@ -58,7 +58,7 @@ enum MediaType {
 }
 
 @Freezed(toJson: false, equal: false)
-class External with _$External implements Identifiable {
+sealed class External with _$External implements Identifiable {
   static const String fieldKey = 'externals';
 
   const External._();

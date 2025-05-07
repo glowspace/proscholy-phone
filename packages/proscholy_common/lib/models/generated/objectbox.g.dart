@@ -32,515 +32,615 @@ export 'package:objectbox/objectbox.dart'; // so that callers only have to impor
 
 final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
-      id: const obx_int.IdUid(4, 6296825599350518621),
-      name: 'Tag',
-      lastPropertyId: const obx_int.IdUid(4, 8038639158976530849),
-      flags: 0,
-      properties: <obx_int.ModelProperty>[
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(1, 1202312863979149096),
-            name: 'id',
-            type: 6,
-            flags: 129),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(2, 5611127642092193137),
-            name: 'name',
-            type: 9,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(3, 4931525366191811462),
-            name: 'dbType',
-            type: 6,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(4, 8038639158976530849),
-            name: 'songLyricsCount',
-            type: 6,
-            flags: 0)
-      ],
-      relations: <obx_int.ModelRelation>[],
-      backlinks: <obx_int.ModelBacklink>[]),
+    id: const obx_int.IdUid(4, 6296825599350518621),
+    name: 'Tag',
+    lastPropertyId: const obx_int.IdUid(4, 8038639158976530849),
+    flags: 0,
+    properties: <obx_int.ModelProperty>[
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(1, 1202312863979149096),
+        name: 'id',
+        type: 6,
+        flags: 129,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(2, 5611127642092193137),
+        name: 'name',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(3, 4931525366191811462),
+        name: 'dbType',
+        type: 6,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(4, 8038639158976530849),
+        name: 'songLyricsCount',
+        type: 6,
+        flags: 0,
+      ),
+    ],
+    relations: <obx_int.ModelRelation>[],
+    backlinks: <obx_int.ModelBacklink>[],
+  ),
   obx_int.ModelEntity(
-      id: const obx_int.IdUid(6, 2374131111926575279),
-      name: 'Song',
-      lastPropertyId: const obx_int.IdUid(2, 7814837987719399877),
-      flags: 0,
-      properties: <obx_int.ModelProperty>[
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(1, 8353537239731189981),
-            name: 'id',
-            type: 6,
-            flags: 129),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(2, 7814837987719399877),
-            name: 'name',
-            type: 9,
-            flags: 0)
-      ],
-      relations: <obx_int.ModelRelation>[],
-      backlinks: <obx_int.ModelBacklink>[
-        obx_int.ModelBacklink(
-            name: 'songLyrics', srcEntity: 'SongLyric', srcField: '')
-      ]),
+    id: const obx_int.IdUid(6, 2374131111926575279),
+    name: 'Song',
+    lastPropertyId: const obx_int.IdUid(2, 7814837987719399877),
+    flags: 0,
+    properties: <obx_int.ModelProperty>[
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(1, 8353537239731189981),
+        name: 'id',
+        type: 6,
+        flags: 129,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(2, 7814837987719399877),
+        name: 'name',
+        type: 9,
+        flags: 0,
+      ),
+    ],
+    relations: <obx_int.ModelRelation>[],
+    backlinks: <obx_int.ModelBacklink>[
+      obx_int.ModelBacklink(
+        name: 'songLyrics',
+        srcEntity: 'SongLyric',
+        srcField: '',
+      ),
+    ],
+  ),
   obx_int.ModelEntity(
-      id: const obx_int.IdUid(7, 8797415451663897865),
-      name: 'Author',
-      lastPropertyId: const obx_int.IdUid(2, 4613344973069529154),
-      flags: 0,
-      properties: <obx_int.ModelProperty>[
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(1, 3363642283487101516),
-            name: 'id',
-            type: 6,
-            flags: 129),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(2, 4613344973069529154),
-            name: 'name',
-            type: 9,
-            flags: 0)
-      ],
-      relations: <obx_int.ModelRelation>[],
-      backlinks: <obx_int.ModelBacklink>[]),
+    id: const obx_int.IdUid(7, 8797415451663897865),
+    name: 'Author',
+    lastPropertyId: const obx_int.IdUid(2, 4613344973069529154),
+    flags: 0,
+    properties: <obx_int.ModelProperty>[
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(1, 3363642283487101516),
+        name: 'id',
+        type: 6,
+        flags: 129,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(2, 4613344973069529154),
+        name: 'name',
+        type: 9,
+        flags: 0,
+      ),
+    ],
+    relations: <obx_int.ModelRelation>[],
+    backlinks: <obx_int.ModelBacklink>[],
+  ),
   obx_int.ModelEntity(
-      id: const obx_int.IdUid(8, 2724259771969584896),
-      name: 'Songbook',
-      lastPropertyId: const obx_int.IdUid(7, 6957339251542960973),
-      flags: 0,
-      properties: <obx_int.ModelProperty>[
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(1, 4042315241527544300),
-            name: 'id',
-            type: 6,
-            flags: 129),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(2, 8660858498312652364),
-            name: 'name',
-            type: 9,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(3, 3447729507208907805),
-            name: 'shortcut',
-            type: 9,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(4, 4427598841893313809),
-            name: 'color',
-            type: 9,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(5, 3006707744087714809),
-            name: 'colorText',
-            type: 9,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(6, 7680416521438868557),
-            name: 'isPrivate',
-            type: 1,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(7, 6957339251542960973),
-            name: 'isPinned',
-            type: 1,
-            flags: 0)
-      ],
-      relations: <obx_int.ModelRelation>[],
-      backlinks: <obx_int.ModelBacklink>[
-        obx_int.ModelBacklink(
-            name: 'records', srcEntity: 'SongbookRecord', srcField: '')
-      ]),
+    id: const obx_int.IdUid(8, 2724259771969584896),
+    name: 'Songbook',
+    lastPropertyId: const obx_int.IdUid(7, 6957339251542960973),
+    flags: 0,
+    properties: <obx_int.ModelProperty>[
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(1, 4042315241527544300),
+        name: 'id',
+        type: 6,
+        flags: 129,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(2, 8660858498312652364),
+        name: 'name',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(3, 3447729507208907805),
+        name: 'shortcut',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(4, 4427598841893313809),
+        name: 'color',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(5, 3006707744087714809),
+        name: 'colorText',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(6, 7680416521438868557),
+        name: 'isPrivate',
+        type: 1,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(7, 6957339251542960973),
+        name: 'isPinned',
+        type: 1,
+        flags: 0,
+      ),
+    ],
+    relations: <obx_int.ModelRelation>[],
+    backlinks: <obx_int.ModelBacklink>[
+      obx_int.ModelBacklink(
+        name: 'records',
+        srcEntity: 'SongbookRecord',
+        srcField: '',
+      ),
+    ],
+  ),
   obx_int.ModelEntity(
-      id: const obx_int.IdUid(9, 7232145165103886962),
-      name: 'SongbookRecord',
-      lastPropertyId: const obx_int.IdUid(9, 334605257073641595),
-      flags: 0,
-      properties: <obx_int.ModelProperty>[
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(1, 6054907260033069130),
-            name: 'id',
-            type: 6,
-            flags: 129),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(7, 7196326332169539171),
-            name: 'songLyricId',
-            type: 11,
-            flags: 520,
-            indexId: const obx_int.IdUid(3, 942306867161783693),
-            relationTarget: 'SongLyric'),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(8, 2070073359812025263),
-            name: 'songbookId',
-            type: 11,
-            flags: 520,
-            indexId: const obx_int.IdUid(4, 8918108328092906748),
-            relationTarget: 'Songbook'),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(9, 334605257073641595),
-            name: 'number',
-            type: 9,
-            flags: 0)
-      ],
-      relations: <obx_int.ModelRelation>[],
-      backlinks: <obx_int.ModelBacklink>[]),
+    id: const obx_int.IdUid(9, 7232145165103886962),
+    name: 'SongbookRecord',
+    lastPropertyId: const obx_int.IdUid(9, 334605257073641595),
+    flags: 0,
+    properties: <obx_int.ModelProperty>[
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(1, 6054907260033069130),
+        name: 'id',
+        type: 6,
+        flags: 129,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(7, 7196326332169539171),
+        name: 'songLyricId',
+        type: 11,
+        flags: 520,
+        indexId: const obx_int.IdUid(3, 942306867161783693),
+        relationTarget: 'SongLyric',
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(8, 2070073359812025263),
+        name: 'songbookId',
+        type: 11,
+        flags: 520,
+        indexId: const obx_int.IdUid(4, 8918108328092906748),
+        relationTarget: 'Songbook',
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(9, 334605257073641595),
+        name: 'number',
+        type: 9,
+        flags: 0,
+      ),
+    ],
+    relations: <obx_int.ModelRelation>[],
+    backlinks: <obx_int.ModelBacklink>[],
+  ),
   obx_int.ModelEntity(
-      id: const obx_int.IdUid(11, 6447883453535376640),
-      name: 'SongLyric',
-      lastPropertyId: const obx_int.IdUid(35, 3799126751953551979),
-      flags: 0,
-      properties: <obx_int.ModelProperty>[
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(1, 3863298287914509345),
-            name: 'id',
-            type: 6,
-            flags: 129),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(2, 441804169355063782),
-            name: 'name',
-            type: 9,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(3, 172858861373732984),
-            name: 'secondaryName1',
-            type: 9,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(4, 8016708352967187219),
-            name: 'secondaryName2',
-            type: 9,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(5, 4090781135399724519),
-            name: 'lyrics',
-            type: 9,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(7, 298128507441633315),
-            name: 'lang',
-            type: 9,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(8, 4779117914827910420),
-            name: 'langDescription',
-            type: 9,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(9, 6562831056286277746),
-            name: 'songId',
-            type: 11,
-            flags: 520,
-            indexId: const obx_int.IdUid(6, 6968220845399115842),
-            relationTarget: 'Song'),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(11, 7728117412880047888),
-            name: 'dbType',
-            type: 6,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(12, 4793601887131442231),
-            name: 'hasChords',
-            type: 1,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(22, 4355414326890607438),
-            name: 'accidentals',
-            type: 6,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(23, 7347294181262392126),
-            name: 'showChords',
-            type: 1,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(24, 8592014509296857970),
-            name: 'transposition',
-            type: 6,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(27, 6291458277285942163),
-            name: 'settingsId',
-            type: 11,
-            flags: 520,
-            indexId: const obx_int.IdUid(22, 6689134858203517923),
-            relationTarget: 'SongLyricSettingsModel'),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(28, 6098338462102959253),
-            name: 'ezId',
-            type: 6,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(35, 3799126751953551979),
-            name: 'hymnologyNew',
-            type: 9,
-            flags: 0)
-      ],
-      relations: <obx_int.ModelRelation>[
-        obx_int.ModelRelation(
-            id: const obx_int.IdUid(6, 8595379047063016810),
-            name: 'authors',
-            targetId: const obx_int.IdUid(7, 8797415451663897865)),
-        obx_int.ModelRelation(
-            id: const obx_int.IdUid(7, 8890618311243611972),
-            name: 'tags',
-            targetId: const obx_int.IdUid(4, 6296825599350518621)),
-        obx_int.ModelRelation(
-            id: const obx_int.IdUid(9, 6609909260274628973),
-            name: 'externals',
-            targetId: const obx_int.IdUid(13, 34413049226011067))
-      ],
-      backlinks: <obx_int.ModelBacklink>[
-        obx_int.ModelBacklink(
-            name: 'songbookRecords', srcEntity: 'SongbookRecord', srcField: ''),
-        obx_int.ModelBacklink(
-            name: 'playlistRecords', srcEntity: 'PlaylistRecord', srcField: '')
-      ]),
+    id: const obx_int.IdUid(11, 6447883453535376640),
+    name: 'SongLyric',
+    lastPropertyId: const obx_int.IdUid(35, 3799126751953551979),
+    flags: 0,
+    properties: <obx_int.ModelProperty>[
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(1, 3863298287914509345),
+        name: 'id',
+        type: 6,
+        flags: 129,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(2, 441804169355063782),
+        name: 'name',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(3, 172858861373732984),
+        name: 'secondaryName1',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(4, 8016708352967187219),
+        name: 'secondaryName2',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(5, 4090781135399724519),
+        name: 'lyrics',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(7, 298128507441633315),
+        name: 'lang',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(8, 4779117914827910420),
+        name: 'langDescription',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(9, 6562831056286277746),
+        name: 'songId',
+        type: 11,
+        flags: 520,
+        indexId: const obx_int.IdUid(6, 6968220845399115842),
+        relationTarget: 'Song',
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(11, 7728117412880047888),
+        name: 'dbType',
+        type: 6,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(12, 4793601887131442231),
+        name: 'hasChords',
+        type: 1,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(22, 4355414326890607438),
+        name: 'accidentals',
+        type: 6,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(23, 7347294181262392126),
+        name: 'showChords',
+        type: 1,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(24, 8592014509296857970),
+        name: 'transposition',
+        type: 6,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(27, 6291458277285942163),
+        name: 'settingsId',
+        type: 11,
+        flags: 520,
+        indexId: const obx_int.IdUid(22, 6689134858203517923),
+        relationTarget: 'SongLyricSettingsModel',
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(28, 6098338462102959253),
+        name: 'ezId',
+        type: 6,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(35, 3799126751953551979),
+        name: 'hymnologyNew',
+        type: 9,
+        flags: 0,
+      ),
+    ],
+    relations: <obx_int.ModelRelation>[
+      obx_int.ModelRelation(
+        id: const obx_int.IdUid(6, 8595379047063016810),
+        name: 'authors',
+        targetId: const obx_int.IdUid(7, 8797415451663897865),
+      ),
+      obx_int.ModelRelation(
+        id: const obx_int.IdUid(7, 8890618311243611972),
+        name: 'tags',
+        targetId: const obx_int.IdUid(4, 6296825599350518621),
+      ),
+      obx_int.ModelRelation(
+        id: const obx_int.IdUid(9, 6609909260274628973),
+        name: 'externals',
+        targetId: const obx_int.IdUid(13, 34413049226011067),
+      ),
+    ],
+    backlinks: <obx_int.ModelBacklink>[
+      obx_int.ModelBacklink(
+        name: 'songbookRecords',
+        srcEntity: 'SongbookRecord',
+        srcField: '',
+      ),
+      obx_int.ModelBacklink(
+        name: 'playlistRecords',
+        srcEntity: 'PlaylistRecord',
+        srcField: '',
+      ),
+    ],
+  ),
   obx_int.ModelEntity(
-      id: const obx_int.IdUid(12, 4858060119845349265),
-      name: 'NewsItem',
-      lastPropertyId: const obx_int.IdUid(4, 4137592721431574793),
-      flags: 0,
-      properties: <obx_int.ModelProperty>[
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(1, 3981388212350529487),
-            name: 'id',
-            type: 6,
-            flags: 129),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(2, 7163479903263102026),
-            name: 'text',
-            type: 9,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(3, 6038618770164161164),
-            name: 'link',
-            type: 9,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(4, 4137592721431574793),
-            name: 'expiresAt',
-            type: 10,
-            flags: 0)
-      ],
-      relations: <obx_int.ModelRelation>[],
-      backlinks: <obx_int.ModelBacklink>[]),
+    id: const obx_int.IdUid(12, 4858060119845349265),
+    name: 'NewsItem',
+    lastPropertyId: const obx_int.IdUid(4, 4137592721431574793),
+    flags: 0,
+    properties: <obx_int.ModelProperty>[
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(1, 3981388212350529487),
+        name: 'id',
+        type: 6,
+        flags: 129,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(2, 7163479903263102026),
+        name: 'text',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(3, 6038618770164161164),
+        name: 'link',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(4, 4137592721431574793),
+        name: 'expiresAt',
+        type: 10,
+        flags: 0,
+      ),
+    ],
+    relations: <obx_int.ModelRelation>[],
+    backlinks: <obx_int.ModelBacklink>[],
+  ),
   obx_int.ModelEntity(
-      id: const obx_int.IdUid(13, 34413049226011067),
-      name: 'External',
-      lastPropertyId: const obx_int.IdUid(7, 4552902403603048801),
-      flags: 0,
-      properties: <obx_int.ModelProperty>[
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(1, 5237738498144927746),
-            name: 'id',
-            type: 6,
-            flags: 129),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(2, 6355284715787610869),
-            name: 'publicName',
-            type: 9,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(3, 2268257428856178476),
-            name: 'mediaId',
-            type: 9,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(4, 8053171722983356065),
-            name: 'dbMediaType',
-            type: 6,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(6, 1240759115435120045),
-            name: 'url',
-            type: 9,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(7, 4552902403603048801),
-            name: 'songLyricId',
-            type: 11,
-            flags: 520,
-            indexId: const obx_int.IdUid(25, 6759144687015843733),
-            relationTarget: 'SongLyric')
-      ],
-      relations: <obx_int.ModelRelation>[],
-      backlinks: <obx_int.ModelBacklink>[]),
+    id: const obx_int.IdUid(13, 34413049226011067),
+    name: 'External',
+    lastPropertyId: const obx_int.IdUid(7, 4552902403603048801),
+    flags: 0,
+    properties: <obx_int.ModelProperty>[
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(1, 5237738498144927746),
+        name: 'id',
+        type: 6,
+        flags: 129,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(2, 6355284715787610869),
+        name: 'publicName',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(3, 2268257428856178476),
+        name: 'mediaId',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(4, 8053171722983356065),
+        name: 'dbMediaType',
+        type: 6,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(6, 1240759115435120045),
+        name: 'url',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(7, 4552902403603048801),
+        name: 'songLyricId',
+        type: 11,
+        flags: 520,
+        indexId: const obx_int.IdUid(25, 6759144687015843733),
+        relationTarget: 'SongLyric',
+      ),
+    ],
+    relations: <obx_int.ModelRelation>[],
+    backlinks: <obx_int.ModelBacklink>[],
+  ),
   obx_int.ModelEntity(
-      id: const obx_int.IdUid(16, 2711299414835728808),
-      name: 'Playlist',
-      lastPropertyId: const obx_int.IdUid(4, 344917746087617944),
-      flags: 0,
-      properties: <obx_int.ModelProperty>[
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(1, 5853961398002098718),
-            name: 'id',
-            type: 6,
-            flags: 129),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(2, 4205856836876740672),
-            name: 'name',
-            type: 9,
-            flags: 2080,
-            indexId: const obx_int.IdUid(14, 1347531346618730530)),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(3, 8873413204595320183),
-            name: 'rank',
-            type: 6,
-            flags: 0)
-      ],
-      relations: <obx_int.ModelRelation>[],
-      backlinks: <obx_int.ModelBacklink>[
-        obx_int.ModelBacklink(
-            name: 'records', srcEntity: 'PlaylistRecord', srcField: '')
-      ]),
+    id: const obx_int.IdUid(16, 2711299414835728808),
+    name: 'Playlist',
+    lastPropertyId: const obx_int.IdUid(4, 344917746087617944),
+    flags: 0,
+    properties: <obx_int.ModelProperty>[
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(1, 5853961398002098718),
+        name: 'id',
+        type: 6,
+        flags: 129,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(2, 4205856836876740672),
+        name: 'name',
+        type: 9,
+        flags: 2080,
+        indexId: const obx_int.IdUid(14, 1347531346618730530),
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(3, 8873413204595320183),
+        name: 'rank',
+        type: 6,
+        flags: 0,
+      ),
+    ],
+    relations: <obx_int.ModelRelation>[],
+    backlinks: <obx_int.ModelBacklink>[
+      obx_int.ModelBacklink(
+        name: 'records',
+        srcEntity: 'PlaylistRecord',
+        srcField: '',
+      ),
+    ],
+  ),
   obx_int.ModelEntity(
-      id: const obx_int.IdUid(17, 7654860777539205773),
-      name: 'PlaylistRecord',
-      lastPropertyId: const obx_int.IdUid(8, 3873057272621101277),
-      flags: 0,
-      properties: <obx_int.ModelProperty>[
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(1, 2084793810234461107),
-            name: 'id',
-            type: 6,
-            flags: 129),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(3, 3680925814327867808),
-            name: 'songLyricId',
-            type: 11,
-            flags: 520,
-            indexId: const obx_int.IdUid(12, 1014505544754464940),
-            relationTarget: 'SongLyric'),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(4, 2837928487534816535),
-            name: 'playlistId',
-            type: 11,
-            flags: 520,
-            indexId: const obx_int.IdUid(13, 5091625997565988014),
-            relationTarget: 'Playlist'),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(5, 287030318006723005),
-            name: 'rank',
-            type: 6,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(6, 3910634938425838689),
-            name: 'customTextId',
-            type: 11,
-            flags: 520,
-            indexId: const obx_int.IdUid(20, 4666277981806120726),
-            relationTarget: 'CustomText'),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(7, 5967467250290572620),
-            name: 'bibleVerseId',
-            type: 11,
-            flags: 520,
-            indexId: const obx_int.IdUid(21, 6699618113083989690),
-            relationTarget: 'BibleVerse')
-      ],
-      relations: <obx_int.ModelRelation>[],
-      backlinks: <obx_int.ModelBacklink>[]),
+    id: const obx_int.IdUid(17, 7654860777539205773),
+    name: 'PlaylistRecord',
+    lastPropertyId: const obx_int.IdUid(8, 3873057272621101277),
+    flags: 0,
+    properties: <obx_int.ModelProperty>[
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(1, 2084793810234461107),
+        name: 'id',
+        type: 6,
+        flags: 129,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(3, 3680925814327867808),
+        name: 'songLyricId',
+        type: 11,
+        flags: 520,
+        indexId: const obx_int.IdUid(12, 1014505544754464940),
+        relationTarget: 'SongLyric',
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(4, 2837928487534816535),
+        name: 'playlistId',
+        type: 11,
+        flags: 520,
+        indexId: const obx_int.IdUid(13, 5091625997565988014),
+        relationTarget: 'Playlist',
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(5, 287030318006723005),
+        name: 'rank',
+        type: 6,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(6, 3910634938425838689),
+        name: 'customTextId',
+        type: 11,
+        flags: 520,
+        indexId: const obx_int.IdUid(20, 4666277981806120726),
+        relationTarget: 'CustomText',
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(7, 5967467250290572620),
+        name: 'bibleVerseId',
+        type: 11,
+        flags: 520,
+        indexId: const obx_int.IdUid(21, 6699618113083989690),
+        relationTarget: 'BibleVerse',
+      ),
+    ],
+    relations: <obx_int.ModelRelation>[],
+    backlinks: <obx_int.ModelBacklink>[],
+  ),
   obx_int.ModelEntity(
-      id: const obx_int.IdUid(20, 8093518841538767418),
-      name: 'BibleVerse',
-      lastPropertyId: const obx_int.IdUid(6, 3522228504437507385),
-      flags: 0,
-      properties: <obx_int.ModelProperty>[
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(1, 6112900165100875406),
-            name: 'id',
-            type: 6,
-            flags: 129),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(2, 7350936359569733342),
-            name: 'book',
-            type: 6,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(3, 657723057706050326),
-            name: 'chapter',
-            type: 6,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(4, 9056646853926561691),
-            name: 'startVerse',
-            type: 6,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(5, 2638018248609346393),
-            name: 'endVerse',
-            type: 6,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(6, 3522228504437507385),
-            name: 'text',
-            type: 9,
-            flags: 0)
-      ],
-      relations: <obx_int.ModelRelation>[],
-      backlinks: <obx_int.ModelBacklink>[]),
+    id: const obx_int.IdUid(20, 8093518841538767418),
+    name: 'BibleVerse',
+    lastPropertyId: const obx_int.IdUid(6, 3522228504437507385),
+    flags: 0,
+    properties: <obx_int.ModelProperty>[
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(1, 6112900165100875406),
+        name: 'id',
+        type: 6,
+        flags: 129,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(2, 7350936359569733342),
+        name: 'book',
+        type: 6,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(3, 657723057706050326),
+        name: 'chapter',
+        type: 6,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(4, 9056646853926561691),
+        name: 'startVerse',
+        type: 6,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(5, 2638018248609346393),
+        name: 'endVerse',
+        type: 6,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(6, 3522228504437507385),
+        name: 'text',
+        type: 9,
+        flags: 0,
+      ),
+    ],
+    relations: <obx_int.ModelRelation>[],
+    backlinks: <obx_int.ModelBacklink>[],
+  ),
   obx_int.ModelEntity(
-      id: const obx_int.IdUid(21, 2063445298157793913),
-      name: 'CustomText',
-      lastPropertyId: const obx_int.IdUid(3, 4470839687834790316),
-      flags: 0,
-      properties: <obx_int.ModelProperty>[
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(1, 9044510006860898045),
-            name: 'id',
-            type: 6,
-            flags: 129),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(2, 2865456283844397183),
-            name: 'name',
-            type: 9,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(3, 4470839687834790316),
-            name: 'content',
-            type: 9,
-            flags: 0)
-      ],
-      relations: <obx_int.ModelRelation>[],
-      backlinks: <obx_int.ModelBacklink>[]),
+    id: const obx_int.IdUid(21, 2063445298157793913),
+    name: 'CustomText',
+    lastPropertyId: const obx_int.IdUid(3, 4470839687834790316),
+    flags: 0,
+    properties: <obx_int.ModelProperty>[
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(1, 9044510006860898045),
+        name: 'id',
+        type: 6,
+        flags: 129,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(2, 2865456283844397183),
+        name: 'name',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(3, 4470839687834790316),
+        name: 'content',
+        type: 9,
+        flags: 0,
+      ),
+    ],
+    relations: <obx_int.ModelRelation>[],
+    backlinks: <obx_int.ModelBacklink>[],
+  ),
   obx_int.ModelEntity(
-      id: const obx_int.IdUid(22, 3313311911381561450),
-      name: 'SongLyricSettingsModel',
-      lastPropertyId: const obx_int.IdUid(6, 6538238091134320076),
-      flags: 0,
-      properties: <obx_int.ModelProperty>[
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(1, 6941247299300405071),
-            name: 'id',
-            type: 6,
-            flags: 129),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(2, 2923647185517779947),
-            name: 'showChords',
-            type: 1,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(3, 7697755545499354045),
-            name: 'showMusicalNotes',
-            type: 1,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(4, 7957539658059684623),
-            name: 'accidentals',
-            type: 6,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(5, 4772539694454545900),
-            name: 'transposition',
-            type: 6,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(6, 6538238091134320076),
-            name: 'songLyricId',
-            type: 11,
-            flags: 520,
-            indexId: const obx_int.IdUid(24, 2671655412393307456),
-            relationTarget: 'SongLyric')
-      ],
-      relations: <obx_int.ModelRelation>[],
-      backlinks: <obx_int.ModelBacklink>[])
+    id: const obx_int.IdUid(22, 3313311911381561450),
+    name: 'SongLyricSettingsModel',
+    lastPropertyId: const obx_int.IdUid(6, 6538238091134320076),
+    flags: 0,
+    properties: <obx_int.ModelProperty>[
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(1, 6941247299300405071),
+        name: 'id',
+        type: 6,
+        flags: 129,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(2, 2923647185517779947),
+        name: 'showChords',
+        type: 1,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(3, 7697755545499354045),
+        name: 'showMusicalNotes',
+        type: 1,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(4, 7957539658059684623),
+        name: 'accidentals',
+        type: 6,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(5, 4772539694454545900),
+        name: 'transposition',
+        type: 6,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(6, 6538238091134320076),
+        name: 'songLyricId',
+        type: 11,
+        flags: 520,
+        indexId: const obx_int.IdUid(24, 2671655412393307456),
+        relationTarget: 'SongLyric',
+      ),
+    ],
+    relations: <obx_int.ModelRelation>[],
+    backlinks: <obx_int.ModelBacklink>[],
+  ),
 ];
 
 /// Shortcut for [obx.Store.new] that passes [getObjectBoxModel] and for Flutter
@@ -554,885 +654,1150 @@ final _entities = <obx_int.ModelEntity>[
 /// For Flutter apps, also calls `loadObjectBoxLibraryAndroidCompat()` from
 /// the ObjectBox Flutter library to fix loading the native ObjectBox library
 /// on Android 6 and older.
-Future<obx.Store> openStore(
-    {String? directory,
-    int? maxDBSizeInKB,
-    int? maxDataSizeInKB,
-    int? fileMode,
-    int? maxReaders,
-    bool queriesCaseSensitiveDefault = true,
-    String? macosApplicationGroup}) async {
+Future<obx.Store> openStore({
+  String? directory,
+  int? maxDBSizeInKB,
+  int? maxDataSizeInKB,
+  int? fileMode,
+  int? maxReaders,
+  bool queriesCaseSensitiveDefault = true,
+  String? macosApplicationGroup,
+}) async {
   await loadObjectBoxLibraryAndroidCompat();
-  return obx.Store(getObjectBoxModel(),
-      directory: directory ?? (await defaultStoreDirectory()).path,
-      maxDBSizeInKB: maxDBSizeInKB,
-      maxDataSizeInKB: maxDataSizeInKB,
-      fileMode: fileMode,
-      maxReaders: maxReaders,
-      queriesCaseSensitiveDefault: queriesCaseSensitiveDefault,
-      macosApplicationGroup: macosApplicationGroup);
+  return obx.Store(
+    getObjectBoxModel(),
+    directory: directory ?? (await defaultStoreDirectory()).path,
+    maxDBSizeInKB: maxDBSizeInKB,
+    maxDataSizeInKB: maxDataSizeInKB,
+    fileMode: fileMode,
+    maxReaders: maxReaders,
+    queriesCaseSensitiveDefault: queriesCaseSensitiveDefault,
+    macosApplicationGroup: macosApplicationGroup,
+  );
 }
 
 /// Returns the ObjectBox model definition for this project for use with
 /// [obx.Store.new].
 obx_int.ModelDefinition getObjectBoxModel() {
   final model = obx_int.ModelInfo(
-      entities: _entities,
-      lastEntityId: const obx_int.IdUid(22, 3313311911381561450),
-      lastIndexId: const obx_int.IdUid(25, 6759144687015843733),
-      lastRelationId: const obx_int.IdUid(9, 6609909260274628973),
-      lastSequenceId: const obx_int.IdUid(0, 0),
-      retiredEntityUids: const [
-        6628950258912287707,
-        3997966892313177785,
-        4828503391288265608,
-        5722656750256100534,
-        3974850738104585390,
-        7087359921340693986,
-        3574257195436151857,
-        4289723463740273072,
-        308563676121461278
-      ],
-      retiredIndexUids: const [
-        9023521533068155021,
-        8226372830687146371,
-        7685595388740378375,
-        7916231218966853097,
-        5349464891857123935,
-        1850499091710419784,
-        6416834576335019143,
-        2335111573671041561,
-        1526469212631298588
-      ],
-      retiredPropertyUids: const [
-        1286404604582147955,
-        2045942571545498429,
-        4156807171975174171,
-        2769258185308251592,
-        2750485277817544042,
-        57379581087889430,
-        2303092288825628002,
-        5181839766778648572,
-        1535607057038781256,
-        7214825174623022750,
-        2487210589202474752,
-        391283423985779645,
-        6828233565720179886,
-        2016746920009926401,
-        1866660310130334498,
-        8258290526986479967,
-        9186643213110364361,
-        2012362637196544559,
-        4198504091761231768,
-        2798094153154113871,
-        809050937703252492,
-        4774006349046573734,
-        329289963093354246,
-        1689786811235179787,
-        6671414168712327567,
-        638797381657980389,
-        2411306619182484870,
-        1231181773716438848,
-        7671315634081304656,
-        3009414053170717053,
-        3242483719965434956,
-        3010716229405627844,
-        1606944041271966875,
-        1676604361532699457,
-        3755295400121515026,
-        4796868076728380816,
-        8676940974206202217,
-        5223295552211929436,
-        4602093041782453470,
-        7304637183893981401,
-        7146339985499275782,
-        5949607464601688600,
-        5480375422880047425,
-        5734157863054487677,
-        8389179145585346838,
-        2057466685170398215,
-        2245087066225826105,
-        5458802551295315336,
-        299538624348525419,
-        7917435652412581048,
-        344917746087617944,
-        8296175755256605743,
-        1715249534898951602,
-        9195031951480790049,
-        2394749474446949643,
-        1060045570178656313,
-        2261087093503428517,
-        2772973546189811204,
-        6246097383067926012,
-        1429273622555481500,
-        4919637654774237975,
-        5849904806336203926,
-        3530014358950602617,
-        124942079172408792,
-        8881930723356889494,
-        8434279879851819318,
-        4952449864415835601,
-        2950767695190299953,
-        6120913430319880953,
-        5404942060880140897,
-        7528607199616284548,
-        3483625794157916143,
-        3873057272621101277,
-        3380582964501408304,
-        4437772770493527079,
-        3715311129381295890,
-        2627035804185762219,
-        4624595427649584957,
-        4993132736196042096,
-        4119502192344556831
-      ],
-      retiredRelationUids: const [
-        7916874752771113838,
-        8475939472281092043,
-        908885689419134235,
-        1345337331648128811
-      ],
-      modelVersion: 5,
-      modelVersionParserMinimum: 5,
-      version: 1);
+    entities: _entities,
+    lastEntityId: const obx_int.IdUid(22, 3313311911381561450),
+    lastIndexId: const obx_int.IdUid(25, 6759144687015843733),
+    lastRelationId: const obx_int.IdUid(9, 6609909260274628973),
+    lastSequenceId: const obx_int.IdUid(0, 0),
+    retiredEntityUids: const [
+      6628950258912287707,
+      3997966892313177785,
+      4828503391288265608,
+      5722656750256100534,
+      3974850738104585390,
+      7087359921340693986,
+      3574257195436151857,
+      4289723463740273072,
+      308563676121461278,
+    ],
+    retiredIndexUids: const [
+      9023521533068155021,
+      8226372830687146371,
+      7685595388740378375,
+      7916231218966853097,
+      5349464891857123935,
+      1850499091710419784,
+      6416834576335019143,
+      2335111573671041561,
+      1526469212631298588,
+    ],
+    retiredPropertyUids: const [
+      1286404604582147955,
+      2045942571545498429,
+      4156807171975174171,
+      2769258185308251592,
+      2750485277817544042,
+      57379581087889430,
+      2303092288825628002,
+      5181839766778648572,
+      1535607057038781256,
+      7214825174623022750,
+      2487210589202474752,
+      391283423985779645,
+      6828233565720179886,
+      2016746920009926401,
+      1866660310130334498,
+      8258290526986479967,
+      9186643213110364361,
+      2012362637196544559,
+      4198504091761231768,
+      2798094153154113871,
+      809050937703252492,
+      4774006349046573734,
+      329289963093354246,
+      1689786811235179787,
+      6671414168712327567,
+      638797381657980389,
+      2411306619182484870,
+      1231181773716438848,
+      7671315634081304656,
+      3009414053170717053,
+      3242483719965434956,
+      3010716229405627844,
+      1606944041271966875,
+      1676604361532699457,
+      3755295400121515026,
+      4796868076728380816,
+      8676940974206202217,
+      5223295552211929436,
+      4602093041782453470,
+      7304637183893981401,
+      7146339985499275782,
+      5949607464601688600,
+      5480375422880047425,
+      5734157863054487677,
+      8389179145585346838,
+      2057466685170398215,
+      2245087066225826105,
+      5458802551295315336,
+      299538624348525419,
+      7917435652412581048,
+      344917746087617944,
+      8296175755256605743,
+      1715249534898951602,
+      9195031951480790049,
+      2394749474446949643,
+      1060045570178656313,
+      2261087093503428517,
+      2772973546189811204,
+      6246097383067926012,
+      1429273622555481500,
+      4919637654774237975,
+      5849904806336203926,
+      3530014358950602617,
+      124942079172408792,
+      8881930723356889494,
+      8434279879851819318,
+      4952449864415835601,
+      2950767695190299953,
+      6120913430319880953,
+      5404942060880140897,
+      7528607199616284548,
+      3483625794157916143,
+      3873057272621101277,
+      3380582964501408304,
+      4437772770493527079,
+      3715311129381295890,
+      2627035804185762219,
+      4624595427649584957,
+      4993132736196042096,
+      4119502192344556831,
+    ],
+    retiredRelationUids: const [
+      7916874752771113838,
+      8475939472281092043,
+      908885689419134235,
+      1345337331648128811,
+    ],
+    modelVersion: 5,
+    modelVersionParserMinimum: 5,
+    version: 1,
+  );
 
   final bindings = <Type, obx_int.EntityDefinition>{
     Tag: obx_int.EntityDefinition<Tag>(
-        model: _entities[0],
-        toOneRelations: (Tag object) => [],
-        toManyRelations: (Tag object) => {},
-        getId: (Tag object) => object.id,
-        setId: (Tag object, int id) {
-          if (object.id != id) {
-            throw ArgumentError('Field Tag.id is read-only '
-                '(final or getter-only) and it was declared to be self-assigned. '
-                'However, the currently inserted object (.id=${object.id}) '
-                "doesn't match the inserted ID (ID $id). "
-                'You must assign an ID before calling [box.put()].');
-          }
-        },
-        objectToFB: (Tag object, fb.Builder fbb) {
-          final nameOffset = fbb.writeString(object.name);
-          fbb.startTable(5);
-          fbb.addInt64(0, object.id);
-          fbb.addOffset(1, nameOffset);
-          fbb.addInt64(2, object.dbType);
-          fbb.addInt64(3, object.songLyricsCount);
-          fbb.finish(fbb.endTable());
-          return object.id;
-        },
-        objectFromFB: (obx.Store store, ByteData fbData) {
-          final buffer = fb.BufferContext(fbData);
-          final rootOffset = buffer.derefObject(0);
-          final idParam =
-              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
-          final nameParam = const fb.StringReader(asciiOptimization: true)
-              .vTableGet(buffer, rootOffset, 6, '');
-          final dbTypeParam =
-              const fb.Int64Reader().vTableGet(buffer, rootOffset, 8, 0);
-          final songLyricsCountParam =
-              const fb.Int64Reader().vTableGet(buffer, rootOffset, 10, 0);
-          final object = Tag(
-              id: idParam,
-              name: nameParam,
-              dbType: dbTypeParam,
-              songLyricsCount: songLyricsCountParam);
+      model: _entities[0],
+      toOneRelations: (Tag object) => [],
+      toManyRelations: (Tag object) => {},
+      getId: (Tag object) => object.id,
+      setId: (Tag object, int id) {
+        if (object.id != id) {
+          throw ArgumentError(
+            'Field Tag.id is read-only '
+            '(final or getter-only) and it was declared to be self-assigned. '
+            'However, the currently inserted object (.id=${object.id}) '
+            "doesn't match the inserted ID (ID $id). "
+            'You must assign an ID before calling [box.put()].',
+          );
+        }
+      },
+      objectToFB: (Tag object, fb.Builder fbb) {
+        final nameOffset = fbb.writeString(object.name);
+        fbb.startTable(5);
+        fbb.addInt64(0, object.id);
+        fbb.addOffset(1, nameOffset);
+        fbb.addInt64(2, object.dbType);
+        fbb.addInt64(3, object.songLyricsCount);
+        fbb.finish(fbb.endTable());
+        return object.id;
+      },
+      objectFromFB: (obx.Store store, ByteData fbData) {
+        final buffer = fb.BufferContext(fbData);
+        final rootOffset = buffer.derefObject(0);
+        final idParam = const fb.Int64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          4,
+          0,
+        );
+        final nameParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGet(buffer, rootOffset, 6, '');
+        final dbTypeParam = const fb.Int64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          8,
+          0,
+        );
+        final songLyricsCountParam = const fb.Int64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          10,
+          0,
+        );
+        final object = Tag(
+          id: idParam,
+          name: nameParam,
+          dbType: dbTypeParam,
+          songLyricsCount: songLyricsCountParam,
+        );
 
-          return object;
-        }),
+        return object;
+      },
+    ),
     Song: obx_int.EntityDefinition<Song>(
-        model: _entities[1],
-        toOneRelations: (Song object) => [],
-        toManyRelations: (Song object) => {
-              obx_int.RelInfo<SongLyric>.toOneBacklink(
-                      9, object.id, (SongLyric srcObject) => srcObject.song):
-                  object.songLyrics
-            },
-        getId: (Song object) => object.id,
-        setId: (Song object, int id) {
-          if (object.id != id) {
-            throw ArgumentError('Field Song.id is read-only '
-                '(final or getter-only) and it was declared to be self-assigned. '
-                'However, the currently inserted object (.id=${object.id}) '
-                "doesn't match the inserted ID (ID $id). "
-                'You must assign an ID before calling [box.put()].');
-          }
-        },
-        objectToFB: (Song object, fb.Builder fbb) {
-          final nameOffset = fbb.writeString(object.name);
-          fbb.startTable(3);
-          fbb.addInt64(0, object.id);
-          fbb.addOffset(1, nameOffset);
-          fbb.finish(fbb.endTable());
-          return object.id;
-        },
-        objectFromFB: (obx.Store store, ByteData fbData) {
-          final buffer = fb.BufferContext(fbData);
-          final rootOffset = buffer.derefObject(0);
-          final idParam =
-              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
-          final nameParam = const fb.StringReader(asciiOptimization: true)
-              .vTableGet(buffer, rootOffset, 6, '');
-          final songLyricsParam = obx.ToMany<SongLyric>();
-          final object =
-              Song(id: idParam, name: nameParam, songLyrics: songLyricsParam);
-          obx_int.InternalToManyAccess.setRelInfo<Song>(
-              object.songLyrics,
-              store,
-              obx_int.RelInfo<SongLyric>.toOneBacklink(
-                  9, object.id, (SongLyric srcObject) => srcObject.song));
-          return object;
-        }),
+      model: _entities[1],
+      toOneRelations: (Song object) => [],
+      toManyRelations:
+          (Song object) => {
+            obx_int.RelInfo<SongLyric>.toOneBacklink(
+                  9,
+                  object.id,
+                  (SongLyric srcObject) => srcObject.song,
+                ):
+                object.songLyrics,
+          },
+      getId: (Song object) => object.id,
+      setId: (Song object, int id) {
+        if (object.id != id) {
+          throw ArgumentError(
+            'Field Song.id is read-only '
+            '(final or getter-only) and it was declared to be self-assigned. '
+            'However, the currently inserted object (.id=${object.id}) '
+            "doesn't match the inserted ID (ID $id). "
+            'You must assign an ID before calling [box.put()].',
+          );
+        }
+      },
+      objectToFB: (Song object, fb.Builder fbb) {
+        final nameOffset = fbb.writeString(object.name);
+        fbb.startTable(3);
+        fbb.addInt64(0, object.id);
+        fbb.addOffset(1, nameOffset);
+        fbb.finish(fbb.endTable());
+        return object.id;
+      },
+      objectFromFB: (obx.Store store, ByteData fbData) {
+        final buffer = fb.BufferContext(fbData);
+        final rootOffset = buffer.derefObject(0);
+        final idParam = const fb.Int64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          4,
+          0,
+        );
+        final nameParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGet(buffer, rootOffset, 6, '');
+        final songLyricsParam = obx.ToMany<SongLyric>();
+        final object = Song(
+          id: idParam,
+          name: nameParam,
+          songLyrics: songLyricsParam,
+        );
+        obx_int.InternalToManyAccess.setRelInfo<Song>(
+          object.songLyrics,
+          store,
+          obx_int.RelInfo<SongLyric>.toOneBacklink(
+            9,
+            object.id,
+            (SongLyric srcObject) => srcObject.song,
+          ),
+        );
+        return object;
+      },
+    ),
     Author: obx_int.EntityDefinition<Author>(
-        model: _entities[2],
-        toOneRelations: (Author object) => [],
-        toManyRelations: (Author object) => {},
-        getId: (Author object) => object.id,
-        setId: (Author object, int id) {
-          if (object.id != id) {
-            throw ArgumentError('Field Author.id is read-only '
-                '(final or getter-only) and it was declared to be self-assigned. '
-                'However, the currently inserted object (.id=${object.id}) '
-                "doesn't match the inserted ID (ID $id). "
-                'You must assign an ID before calling [box.put()].');
-          }
-        },
-        objectToFB: (Author object, fb.Builder fbb) {
-          final nameOffset = fbb.writeString(object.name);
-          fbb.startTable(3);
-          fbb.addInt64(0, object.id);
-          fbb.addOffset(1, nameOffset);
-          fbb.finish(fbb.endTable());
-          return object.id;
-        },
-        objectFromFB: (obx.Store store, ByteData fbData) {
-          final buffer = fb.BufferContext(fbData);
-          final rootOffset = buffer.derefObject(0);
-          final idParam =
-              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
-          final nameParam = const fb.StringReader(asciiOptimization: true)
-              .vTableGet(buffer, rootOffset, 6, '');
-          final object = Author(id: idParam, name: nameParam);
+      model: _entities[2],
+      toOneRelations: (Author object) => [],
+      toManyRelations: (Author object) => {},
+      getId: (Author object) => object.id,
+      setId: (Author object, int id) {
+        if (object.id != id) {
+          throw ArgumentError(
+            'Field Author.id is read-only '
+            '(final or getter-only) and it was declared to be self-assigned. '
+            'However, the currently inserted object (.id=${object.id}) '
+            "doesn't match the inserted ID (ID $id). "
+            'You must assign an ID before calling [box.put()].',
+          );
+        }
+      },
+      objectToFB: (Author object, fb.Builder fbb) {
+        final nameOffset = fbb.writeString(object.name);
+        fbb.startTable(3);
+        fbb.addInt64(0, object.id);
+        fbb.addOffset(1, nameOffset);
+        fbb.finish(fbb.endTable());
+        return object.id;
+      },
+      objectFromFB: (obx.Store store, ByteData fbData) {
+        final buffer = fb.BufferContext(fbData);
+        final rootOffset = buffer.derefObject(0);
+        final idParam = const fb.Int64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          4,
+          0,
+        );
+        final nameParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGet(buffer, rootOffset, 6, '');
+        final object = Author(id: idParam, name: nameParam);
 
-          return object;
-        }),
+        return object;
+      },
+    ),
     Songbook: obx_int.EntityDefinition<Songbook>(
-        model: _entities[3],
-        toOneRelations: (Songbook object) => [],
-        toManyRelations: (Songbook object) => {
-              obx_int.RelInfo<SongbookRecord>.toOneBacklink(8, object.id,
-                      (SongbookRecord srcObject) => srcObject.songbook):
-                  object.records
-            },
-        getId: (Songbook object) => object.id,
-        setId: (Songbook object, int id) {
-          if (object.id != id) {
-            throw ArgumentError('Field Songbook.id is read-only '
-                '(final or getter-only) and it was declared to be self-assigned. '
-                'However, the currently inserted object (.id=${object.id}) '
-                "doesn't match the inserted ID (ID $id). "
-                'You must assign an ID before calling [box.put()].');
-          }
-        },
-        objectToFB: (Songbook object, fb.Builder fbb) {
-          final nameOffset = fbb.writeString(object.name);
-          final shortcutOffset = fbb.writeString(object.shortcut);
-          final colorOffset =
-              object.color == null ? null : fbb.writeString(object.color!);
-          final colorTextOffset = object.colorText == null
-              ? null
-              : fbb.writeString(object.colorText!);
-          fbb.startTable(8);
-          fbb.addInt64(0, object.id);
-          fbb.addOffset(1, nameOffset);
-          fbb.addOffset(2, shortcutOffset);
-          fbb.addOffset(3, colorOffset);
-          fbb.addOffset(4, colorTextOffset);
-          fbb.addBool(5, object.isPrivate);
-          fbb.addBool(6, object.isPinned);
-          fbb.finish(fbb.endTable());
-          return object.id;
-        },
-        objectFromFB: (obx.Store store, ByteData fbData) {
-          final buffer = fb.BufferContext(fbData);
-          final rootOffset = buffer.derefObject(0);
-          final idParam =
-              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
-          final nameParam = const fb.StringReader(asciiOptimization: true)
-              .vTableGet(buffer, rootOffset, 6, '');
-          final shortcutParam = const fb.StringReader(asciiOptimization: true)
-              .vTableGet(buffer, rootOffset, 8, '');
-          final colorParam = const fb.StringReader(asciiOptimization: true)
-              .vTableGetNullable(buffer, rootOffset, 10);
-          final colorTextParam = const fb.StringReader(asciiOptimization: true)
-              .vTableGetNullable(buffer, rootOffset, 12);
-          final isPrivateParam =
-              const fb.BoolReader().vTableGet(buffer, rootOffset, 14, false);
-          final isPinnedParam =
-              const fb.BoolReader().vTableGetNullable(buffer, rootOffset, 16);
-          final recordsParam = obx.ToMany<SongbookRecord>();
-          final object = Songbook(
-              id: idParam,
-              name: nameParam,
-              shortcut: shortcutParam,
-              color: colorParam,
-              colorText: colorTextParam,
-              isPrivate: isPrivateParam,
-              isPinned: isPinnedParam,
-              records: recordsParam);
-          obx_int.InternalToManyAccess.setRelInfo<Songbook>(
-              object.records,
-              store,
-              obx_int.RelInfo<SongbookRecord>.toOneBacklink(8, object.id,
-                  (SongbookRecord srcObject) => srcObject.songbook));
-          return object;
-        }),
+      model: _entities[3],
+      toOneRelations: (Songbook object) => [],
+      toManyRelations:
+          (Songbook object) => {
+            obx_int.RelInfo<SongbookRecord>.toOneBacklink(
+                  8,
+                  object.id,
+                  (SongbookRecord srcObject) => srcObject.songbook,
+                ):
+                object.records,
+          },
+      getId: (Songbook object) => object.id,
+      setId: (Songbook object, int id) {
+        if (object.id != id) {
+          throw ArgumentError(
+            'Field Songbook.id is read-only '
+            '(final or getter-only) and it was declared to be self-assigned. '
+            'However, the currently inserted object (.id=${object.id}) '
+            "doesn't match the inserted ID (ID $id). "
+            'You must assign an ID before calling [box.put()].',
+          );
+        }
+      },
+      objectToFB: (Songbook object, fb.Builder fbb) {
+        final nameOffset = fbb.writeString(object.name);
+        final shortcutOffset = fbb.writeString(object.shortcut);
+        final colorOffset =
+            object.color == null ? null : fbb.writeString(object.color!);
+        final colorTextOffset =
+            object.colorText == null
+                ? null
+                : fbb.writeString(object.colorText!);
+        fbb.startTable(8);
+        fbb.addInt64(0, object.id);
+        fbb.addOffset(1, nameOffset);
+        fbb.addOffset(2, shortcutOffset);
+        fbb.addOffset(3, colorOffset);
+        fbb.addOffset(4, colorTextOffset);
+        fbb.addBool(5, object.isPrivate);
+        fbb.addBool(6, object.isPinned);
+        fbb.finish(fbb.endTable());
+        return object.id;
+      },
+      objectFromFB: (obx.Store store, ByteData fbData) {
+        final buffer = fb.BufferContext(fbData);
+        final rootOffset = buffer.derefObject(0);
+        final idParam = const fb.Int64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          4,
+          0,
+        );
+        final nameParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGet(buffer, rootOffset, 6, '');
+        final shortcutParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGet(buffer, rootOffset, 8, '');
+        final colorParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 10);
+        final colorTextParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 12);
+        final isPrivateParam = const fb.BoolReader().vTableGet(
+          buffer,
+          rootOffset,
+          14,
+          false,
+        );
+        final isPinnedParam = const fb.BoolReader().vTableGetNullable(
+          buffer,
+          rootOffset,
+          16,
+        );
+        final recordsParam = obx.ToMany<SongbookRecord>();
+        final object = Songbook(
+          id: idParam,
+          name: nameParam,
+          shortcut: shortcutParam,
+          color: colorParam,
+          colorText: colorTextParam,
+          isPrivate: isPrivateParam,
+          isPinned: isPinnedParam,
+          records: recordsParam,
+        );
+        obx_int.InternalToManyAccess.setRelInfo<Songbook>(
+          object.records,
+          store,
+          obx_int.RelInfo<SongbookRecord>.toOneBacklink(
+            8,
+            object.id,
+            (SongbookRecord srcObject) => srcObject.songbook,
+          ),
+        );
+        return object;
+      },
+    ),
     SongbookRecord: obx_int.EntityDefinition<SongbookRecord>(
-        model: _entities[4],
-        toOneRelations: (SongbookRecord object) =>
-            [object.songLyric, object.songbook],
-        toManyRelations: (SongbookRecord object) => {},
-        getId: (SongbookRecord object) => object.id,
-        setId: (SongbookRecord object, int id) {
-          if (object.id != id) {
-            throw ArgumentError('Field SongbookRecord.id is read-only '
-                '(final or getter-only) and it was declared to be self-assigned. '
-                'However, the currently inserted object (.id=${object.id}) '
-                "doesn't match the inserted ID (ID $id). "
-                'You must assign an ID before calling [box.put()].');
-          }
-        },
-        objectToFB: (SongbookRecord object, fb.Builder fbb) {
-          final numberOffset = fbb.writeString(object.number);
-          fbb.startTable(10);
-          fbb.addInt64(0, object.id);
-          fbb.addInt64(6, object.songLyric.targetId);
-          fbb.addInt64(7, object.songbook.targetId);
-          fbb.addOffset(8, numberOffset);
-          fbb.finish(fbb.endTable());
-          return object.id;
-        },
-        objectFromFB: (obx.Store store, ByteData fbData) {
-          final buffer = fb.BufferContext(fbData);
-          final rootOffset = buffer.derefObject(0);
-          final idParam =
-              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
-          final numberParam = const fb.StringReader(asciiOptimization: true)
-              .vTableGet(buffer, rootOffset, 20, '');
-          final songLyricParam = obx.ToOne<SongLyric>(
-              targetId:
-                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 16, 0));
-          final songbookParam = obx.ToOne<Songbook>(
-              targetId:
-                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 18, 0));
-          final object = SongbookRecord(
-              id: idParam,
-              number: numberParam,
-              songLyric: songLyricParam,
-              songbook: songbookParam);
-          object.songLyric.attach(store);
-          object.songbook.attach(store);
-          return object;
-        }),
+      model: _entities[4],
+      toOneRelations:
+          (SongbookRecord object) => [object.songLyric, object.songbook],
+      toManyRelations: (SongbookRecord object) => {},
+      getId: (SongbookRecord object) => object.id,
+      setId: (SongbookRecord object, int id) {
+        if (object.id != id) {
+          throw ArgumentError(
+            'Field SongbookRecord.id is read-only '
+            '(final or getter-only) and it was declared to be self-assigned. '
+            'However, the currently inserted object (.id=${object.id}) '
+            "doesn't match the inserted ID (ID $id). "
+            'You must assign an ID before calling [box.put()].',
+          );
+        }
+      },
+      objectToFB: (SongbookRecord object, fb.Builder fbb) {
+        final numberOffset = fbb.writeString(object.number);
+        fbb.startTable(10);
+        fbb.addInt64(0, object.id);
+        fbb.addInt64(6, object.songLyric.targetId);
+        fbb.addInt64(7, object.songbook.targetId);
+        fbb.addOffset(8, numberOffset);
+        fbb.finish(fbb.endTable());
+        return object.id;
+      },
+      objectFromFB: (obx.Store store, ByteData fbData) {
+        final buffer = fb.BufferContext(fbData);
+        final rootOffset = buffer.derefObject(0);
+        final idParam = const fb.Int64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          4,
+          0,
+        );
+        final numberParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGet(buffer, rootOffset, 20, '');
+        final songLyricParam = obx.ToOne<SongLyric>(
+          targetId: const fb.Int64Reader().vTableGet(buffer, rootOffset, 16, 0),
+        );
+        final songbookParam = obx.ToOne<Songbook>(
+          targetId: const fb.Int64Reader().vTableGet(buffer, rootOffset, 18, 0),
+        );
+        final object = SongbookRecord(
+          id: idParam,
+          number: numberParam,
+          songLyric: songLyricParam,
+          songbook: songbookParam,
+        );
+        object.songLyric.attach(store);
+        object.songbook.attach(store);
+        return object;
+      },
+    ),
     SongLyric: obx_int.EntityDefinition<SongLyric>(
-        model: _entities[5],
-        toOneRelations: (SongLyric object) => [object.song, object.settings],
-        toManyRelations: (SongLyric object) => {
-              obx_int.RelInfo<SongLyric>.toMany(6, object.id): object.authors,
-              obx_int.RelInfo<SongLyric>.toMany(7, object.id): object.tags,
-              obx_int.RelInfo<SongLyric>.toMany(9, object.id): object.externals,
-              obx_int.RelInfo<SongbookRecord>.toOneBacklink(7, object.id,
-                      (SongbookRecord srcObject) => srcObject.songLyric):
-                  object.songbookRecords,
-              obx_int.RelInfo<PlaylistRecord>.toOneBacklink(3, object.id,
-                      (PlaylistRecord srcObject) => srcObject.songLyric):
-                  object.playlistRecords
-            },
-        getId: (SongLyric object) => object.id,
-        setId: (SongLyric object, int id) {
-          if (object.id != id) {
-            throw ArgumentError('Field SongLyric.id is read-only '
-                '(final or getter-only) and it was declared to be self-assigned. '
-                'However, the currently inserted object (.id=${object.id}) '
-                "doesn't match the inserted ID (ID $id). "
-                'You must assign an ID before calling [box.put()].');
-          }
-        },
-        objectToFB: (SongLyric object, fb.Builder fbb) {
-          final nameOffset = fbb.writeString(object.name);
-          final secondaryName1Offset = object.secondaryName1 == null
-              ? null
-              : fbb.writeString(object.secondaryName1!);
-          final secondaryName2Offset = object.secondaryName2 == null
-              ? null
-              : fbb.writeString(object.secondaryName2!);
-          final lyricsOffset =
-              object.lyrics == null ? null : fbb.writeString(object.lyrics!);
-          final langOffset = fbb.writeString(object.lang);
-          final langDescriptionOffset = fbb.writeString(object.langDescription);
-          final hymnologyNewOffset = fbb.writeString(object.hymnologyNew);
-          fbb.startTable(36);
-          fbb.addInt64(0, object.id);
-          fbb.addOffset(1, nameOffset);
-          fbb.addOffset(2, secondaryName1Offset);
-          fbb.addOffset(3, secondaryName2Offset);
-          fbb.addOffset(4, lyricsOffset);
-          fbb.addOffset(6, langOffset);
-          fbb.addOffset(7, langDescriptionOffset);
-          fbb.addInt64(8, object.song.targetId);
-          fbb.addInt64(10, object.dbType);
-          fbb.addBool(11, object.hasChords);
-          fbb.addInt64(21, object.accidentals);
-          fbb.addBool(22, object.showChords);
-          fbb.addInt64(23, object.transposition);
-          fbb.addInt64(26, object.settings.targetId);
-          fbb.addInt64(27, object.ezId);
-          fbb.addOffset(34, hymnologyNewOffset);
-          fbb.finish(fbb.endTable());
-          return object.id;
-        },
-        objectFromFB: (obx.Store store, ByteData fbData) {
-          final buffer = fb.BufferContext(fbData);
-          final rootOffset = buffer.derefObject(0);
-          final idParam =
-              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
-          final ezIdParam =
-              const fb.Int64Reader().vTableGet(buffer, rootOffset, 58, 0);
-          final nameParam = const fb.StringReader(asciiOptimization: true)
-              .vTableGet(buffer, rootOffset, 6, '');
-          final secondaryName1Param =
-              const fb.StringReader(asciiOptimization: true)
-                  .vTableGetNullable(buffer, rootOffset, 8);
-          final secondaryName2Param =
-              const fb.StringReader(asciiOptimization: true)
-                  .vTableGetNullable(buffer, rootOffset, 10);
-          final lyricsParam = const fb.StringReader(asciiOptimization: true)
-              .vTableGetNullable(buffer, rootOffset, 12);
-          final hymnologyNewParam =
-              const fb.StringReader(asciiOptimization: true)
-                  .vTableGet(buffer, rootOffset, 72, '');
-          final langParam = const fb.StringReader(asciiOptimization: true)
-              .vTableGet(buffer, rootOffset, 16, '');
-          final langDescriptionParam =
-              const fb.StringReader(asciiOptimization: true)
-                  .vTableGet(buffer, rootOffset, 18, '');
-          final dbTypeParam =
-              const fb.Int64Reader().vTableGet(buffer, rootOffset, 24, 0);
-          final hasChordsParam =
-              const fb.BoolReader().vTableGet(buffer, rootOffset, 26, false);
-          final accidentalsParam =
-              const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 46);
-          final showChordsParam =
-              const fb.BoolReader().vTableGetNullable(buffer, rootOffset, 48);
-          final transpositionParam =
-              const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 50);
-          final songParam = obx.ToOne<Song>(
-              targetId:
-                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 20, 0));
-          final settingsParam = obx.ToOne<SongLyricSettingsModel>(
-              targetId:
-                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 56, 0));
-          final authorsParam = obx.ToMany<Author>();
-          final tagsParam = obx.ToMany<Tag>();
-          final externalsParam = obx.ToMany<External>();
-          final songbookRecordsParam = obx.ToMany<SongbookRecord>();
-          final playlistRecordsParam = obx.ToMany<PlaylistRecord>();
-          final object = SongLyric(
-              id: idParam,
-              ezId: ezIdParam,
-              name: nameParam,
-              secondaryName1: secondaryName1Param,
-              secondaryName2: secondaryName2Param,
-              lyrics: lyricsParam,
-              hymnologyNew: hymnologyNewParam,
-              lang: langParam,
-              langDescription: langDescriptionParam,
-              dbType: dbTypeParam,
-              hasChords: hasChordsParam,
-              accidentals: accidentalsParam,
-              showChords: showChordsParam,
-              transposition: transpositionParam,
-              song: songParam,
-              settings: settingsParam,
-              authors: authorsParam,
-              tags: tagsParam,
-              externals: externalsParam,
-              songbookRecords: songbookRecordsParam,
-              playlistRecords: playlistRecordsParam);
-          object.song.attach(store);
-          object.settings.attach(store);
-          obx_int.InternalToManyAccess.setRelInfo<SongLyric>(object.authors,
-              store, obx_int.RelInfo<SongLyric>.toMany(6, object.id));
-          obx_int.InternalToManyAccess.setRelInfo<SongLyric>(object.tags, store,
-              obx_int.RelInfo<SongLyric>.toMany(7, object.id));
-          obx_int.InternalToManyAccess.setRelInfo<SongLyric>(object.externals,
-              store, obx_int.RelInfo<SongLyric>.toMany(9, object.id));
-          obx_int.InternalToManyAccess.setRelInfo<SongLyric>(
-              object.songbookRecords,
-              store,
-              obx_int.RelInfo<SongbookRecord>.toOneBacklink(7, object.id,
-                  (SongbookRecord srcObject) => srcObject.songLyric));
-          obx_int.InternalToManyAccess.setRelInfo<SongLyric>(
-              object.playlistRecords,
-              store,
-              obx_int.RelInfo<PlaylistRecord>.toOneBacklink(3, object.id,
-                  (PlaylistRecord srcObject) => srcObject.songLyric));
-          return object;
-        }),
+      model: _entities[5],
+      toOneRelations: (SongLyric object) => [object.song, object.settings],
+      toManyRelations:
+          (SongLyric object) => {
+            obx_int.RelInfo<SongLyric>.toMany(6, object.id): object.authors,
+            obx_int.RelInfo<SongLyric>.toMany(7, object.id): object.tags,
+            obx_int.RelInfo<SongLyric>.toMany(9, object.id): object.externals,
+            obx_int.RelInfo<SongbookRecord>.toOneBacklink(
+                  7,
+                  object.id,
+                  (SongbookRecord srcObject) => srcObject.songLyric,
+                ):
+                object.songbookRecords,
+            obx_int.RelInfo<PlaylistRecord>.toOneBacklink(
+                  3,
+                  object.id,
+                  (PlaylistRecord srcObject) => srcObject.songLyric,
+                ):
+                object.playlistRecords,
+          },
+      getId: (SongLyric object) => object.id,
+      setId: (SongLyric object, int id) {
+        if (object.id != id) {
+          throw ArgumentError(
+            'Field SongLyric.id is read-only '
+            '(final or getter-only) and it was declared to be self-assigned. '
+            'However, the currently inserted object (.id=${object.id}) '
+            "doesn't match the inserted ID (ID $id). "
+            'You must assign an ID before calling [box.put()].',
+          );
+        }
+      },
+      objectToFB: (SongLyric object, fb.Builder fbb) {
+        final nameOffset = fbb.writeString(object.name);
+        final secondaryName1Offset =
+            object.secondaryName1 == null
+                ? null
+                : fbb.writeString(object.secondaryName1!);
+        final secondaryName2Offset =
+            object.secondaryName2 == null
+                ? null
+                : fbb.writeString(object.secondaryName2!);
+        final lyricsOffset =
+            object.lyrics == null ? null : fbb.writeString(object.lyrics!);
+        final langOffset = fbb.writeString(object.lang);
+        final langDescriptionOffset = fbb.writeString(object.langDescription);
+        final hymnologyNewOffset = fbb.writeString(object.hymnologyNew);
+        fbb.startTable(36);
+        fbb.addInt64(0, object.id);
+        fbb.addOffset(1, nameOffset);
+        fbb.addOffset(2, secondaryName1Offset);
+        fbb.addOffset(3, secondaryName2Offset);
+        fbb.addOffset(4, lyricsOffset);
+        fbb.addOffset(6, langOffset);
+        fbb.addOffset(7, langDescriptionOffset);
+        fbb.addInt64(8, object.song.targetId);
+        fbb.addInt64(10, object.dbType);
+        fbb.addBool(11, object.hasChords);
+        fbb.addInt64(21, object.accidentals);
+        fbb.addBool(22, object.showChords);
+        fbb.addInt64(23, object.transposition);
+        fbb.addInt64(26, object.settings.targetId);
+        fbb.addInt64(27, object.ezId);
+        fbb.addOffset(34, hymnologyNewOffset);
+        fbb.finish(fbb.endTable());
+        return object.id;
+      },
+      objectFromFB: (obx.Store store, ByteData fbData) {
+        final buffer = fb.BufferContext(fbData);
+        final rootOffset = buffer.derefObject(0);
+        final idParam = const fb.Int64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          4,
+          0,
+        );
+        final ezIdParam = const fb.Int64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          58,
+          0,
+        );
+        final nameParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGet(buffer, rootOffset, 6, '');
+        final secondaryName1Param = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 8);
+        final secondaryName2Param = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 10);
+        final lyricsParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 12);
+        final hymnologyNewParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGet(buffer, rootOffset, 72, '');
+        final langParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGet(buffer, rootOffset, 16, '');
+        final langDescriptionParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGet(buffer, rootOffset, 18, '');
+        final dbTypeParam = const fb.Int64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          24,
+          0,
+        );
+        final hasChordsParam = const fb.BoolReader().vTableGet(
+          buffer,
+          rootOffset,
+          26,
+          false,
+        );
+        final accidentalsParam = const fb.Int64Reader().vTableGetNullable(
+          buffer,
+          rootOffset,
+          46,
+        );
+        final showChordsParam = const fb.BoolReader().vTableGetNullable(
+          buffer,
+          rootOffset,
+          48,
+        );
+        final transpositionParam = const fb.Int64Reader().vTableGetNullable(
+          buffer,
+          rootOffset,
+          50,
+        );
+        final songParam = obx.ToOne<Song>(
+          targetId: const fb.Int64Reader().vTableGet(buffer, rootOffset, 20, 0),
+        );
+        final settingsParam = obx.ToOne<SongLyricSettingsModel>(
+          targetId: const fb.Int64Reader().vTableGet(buffer, rootOffset, 56, 0),
+        );
+        final authorsParam = obx.ToMany<Author>();
+        final tagsParam = obx.ToMany<Tag>();
+        final externalsParam = obx.ToMany<External>();
+        final songbookRecordsParam = obx.ToMany<SongbookRecord>();
+        final playlistRecordsParam = obx.ToMany<PlaylistRecord>();
+        final object = SongLyric(
+          id: idParam,
+          ezId: ezIdParam,
+          name: nameParam,
+          secondaryName1: secondaryName1Param,
+          secondaryName2: secondaryName2Param,
+          lyrics: lyricsParam,
+          hymnologyNew: hymnologyNewParam,
+          lang: langParam,
+          langDescription: langDescriptionParam,
+          dbType: dbTypeParam,
+          hasChords: hasChordsParam,
+          accidentals: accidentalsParam,
+          showChords: showChordsParam,
+          transposition: transpositionParam,
+          song: songParam,
+          settings: settingsParam,
+          authors: authorsParam,
+          tags: tagsParam,
+          externals: externalsParam,
+          songbookRecords: songbookRecordsParam,
+          playlistRecords: playlistRecordsParam,
+        );
+        object.song.attach(store);
+        object.settings.attach(store);
+        obx_int.InternalToManyAccess.setRelInfo<SongLyric>(
+          object.authors,
+          store,
+          obx_int.RelInfo<SongLyric>.toMany(6, object.id),
+        );
+        obx_int.InternalToManyAccess.setRelInfo<SongLyric>(
+          object.tags,
+          store,
+          obx_int.RelInfo<SongLyric>.toMany(7, object.id),
+        );
+        obx_int.InternalToManyAccess.setRelInfo<SongLyric>(
+          object.externals,
+          store,
+          obx_int.RelInfo<SongLyric>.toMany(9, object.id),
+        );
+        obx_int.InternalToManyAccess.setRelInfo<SongLyric>(
+          object.songbookRecords,
+          store,
+          obx_int.RelInfo<SongbookRecord>.toOneBacklink(
+            7,
+            object.id,
+            (SongbookRecord srcObject) => srcObject.songLyric,
+          ),
+        );
+        obx_int.InternalToManyAccess.setRelInfo<SongLyric>(
+          object.playlistRecords,
+          store,
+          obx_int.RelInfo<PlaylistRecord>.toOneBacklink(
+            3,
+            object.id,
+            (PlaylistRecord srcObject) => srcObject.songLyric,
+          ),
+        );
+        return object;
+      },
+    ),
     NewsItem: obx_int.EntityDefinition<NewsItem>(
-        model: _entities[6],
-        toOneRelations: (NewsItem object) => [],
-        toManyRelations: (NewsItem object) => {},
-        getId: (NewsItem object) => object.id,
-        setId: (NewsItem object, int id) {
-          if (object.id != id) {
-            throw ArgumentError('Field NewsItem.id is read-only '
-                '(final or getter-only) and it was declared to be self-assigned. '
-                'However, the currently inserted object (.id=${object.id}) '
-                "doesn't match the inserted ID (ID $id). "
-                'You must assign an ID before calling [box.put()].');
-          }
-        },
-        objectToFB: (NewsItem object, fb.Builder fbb) {
-          final textOffset = fbb.writeString(object.text);
-          final linkOffset = fbb.writeString(object.link);
-          fbb.startTable(5);
-          fbb.addInt64(0, object.id);
-          fbb.addOffset(1, textOffset);
-          fbb.addOffset(2, linkOffset);
-          fbb.addInt64(3, object.expiresAt?.millisecondsSinceEpoch);
-          fbb.finish(fbb.endTable());
-          return object.id;
-        },
-        objectFromFB: (obx.Store store, ByteData fbData) {
-          final buffer = fb.BufferContext(fbData);
-          final rootOffset = buffer.derefObject(0);
-          final expiresAtValue =
-              const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 10);
-          final idParam =
-              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
-          final textParam = const fb.StringReader(asciiOptimization: true)
-              .vTableGet(buffer, rootOffset, 6, '');
-          final linkParam = const fb.StringReader(asciiOptimization: true)
-              .vTableGet(buffer, rootOffset, 8, '');
-          final expiresAtParam = expiresAtValue == null
-              ? null
-              : DateTime.fromMillisecondsSinceEpoch(expiresAtValue);
-          final object = NewsItem(
-              id: idParam,
-              text: textParam,
-              link: linkParam,
-              expiresAt: expiresAtParam);
+      model: _entities[6],
+      toOneRelations: (NewsItem object) => [],
+      toManyRelations: (NewsItem object) => {},
+      getId: (NewsItem object) => object.id,
+      setId: (NewsItem object, int id) {
+        if (object.id != id) {
+          throw ArgumentError(
+            'Field NewsItem.id is read-only '
+            '(final or getter-only) and it was declared to be self-assigned. '
+            'However, the currently inserted object (.id=${object.id}) '
+            "doesn't match the inserted ID (ID $id). "
+            'You must assign an ID before calling [box.put()].',
+          );
+        }
+      },
+      objectToFB: (NewsItem object, fb.Builder fbb) {
+        final textOffset = fbb.writeString(object.text);
+        final linkOffset = fbb.writeString(object.link);
+        fbb.startTable(5);
+        fbb.addInt64(0, object.id);
+        fbb.addOffset(1, textOffset);
+        fbb.addOffset(2, linkOffset);
+        fbb.addInt64(3, object.expiresAt?.millisecondsSinceEpoch);
+        fbb.finish(fbb.endTable());
+        return object.id;
+      },
+      objectFromFB: (obx.Store store, ByteData fbData) {
+        final buffer = fb.BufferContext(fbData);
+        final rootOffset = buffer.derefObject(0);
+        final expiresAtValue = const fb.Int64Reader().vTableGetNullable(
+          buffer,
+          rootOffset,
+          10,
+        );
+        final idParam = const fb.Int64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          4,
+          0,
+        );
+        final textParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGet(buffer, rootOffset, 6, '');
+        final linkParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGet(buffer, rootOffset, 8, '');
+        final expiresAtParam =
+            expiresAtValue == null
+                ? null
+                : DateTime.fromMillisecondsSinceEpoch(expiresAtValue);
+        final object = NewsItem(
+          id: idParam,
+          text: textParam,
+          link: linkParam,
+          expiresAt: expiresAtParam,
+        );
 
-          return object;
-        }),
+        return object;
+      },
+    ),
     External: obx_int.EntityDefinition<External>(
-        model: _entities[7],
-        toOneRelations: (External object) => [object.songLyric],
-        toManyRelations: (External object) => {},
-        getId: (External object) => object.id,
-        setId: (External object, int id) {
-          if (object.id != id) {
-            throw ArgumentError('Field External.id is read-only '
-                '(final or getter-only) and it was declared to be self-assigned. '
-                'However, the currently inserted object (.id=${object.id}) '
-                "doesn't match the inserted ID (ID $id). "
-                'You must assign an ID before calling [box.put()].');
-          }
-        },
-        objectToFB: (External object, fb.Builder fbb) {
-          final publicNameOffset = fbb.writeString(object.publicName);
-          final mediaIdOffset =
-              object.mediaId == null ? null : fbb.writeString(object.mediaId!);
-          final urlOffset =
-              object.url == null ? null : fbb.writeString(object.url!);
-          fbb.startTable(8);
-          fbb.addInt64(0, object.id);
-          fbb.addOffset(1, publicNameOffset);
-          fbb.addOffset(2, mediaIdOffset);
-          fbb.addInt64(3, object.dbMediaType);
-          fbb.addOffset(5, urlOffset);
-          fbb.addInt64(6, object.songLyric.targetId);
-          fbb.finish(fbb.endTable());
-          return object.id;
-        },
-        objectFromFB: (obx.Store store, ByteData fbData) {
-          final buffer = fb.BufferContext(fbData);
-          final rootOffset = buffer.derefObject(0);
-          final idParam =
-              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
-          final publicNameParam = const fb.StringReader(asciiOptimization: true)
-              .vTableGet(buffer, rootOffset, 6, '');
-          final mediaIdParam = const fb.StringReader(asciiOptimization: true)
-              .vTableGetNullable(buffer, rootOffset, 8);
-          final urlParam = const fb.StringReader(asciiOptimization: true)
-              .vTableGetNullable(buffer, rootOffset, 14);
-          final dbMediaTypeParam =
-              const fb.Int64Reader().vTableGet(buffer, rootOffset, 10, 0);
-          final songLyricParam = obx.ToOne<SongLyric>(
-              targetId:
-                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 16, 0));
-          final object = External(
-              id: idParam,
-              publicName: publicNameParam,
-              mediaId: mediaIdParam,
-              url: urlParam,
-              dbMediaType: dbMediaTypeParam,
-              songLyric: songLyricParam);
-          object.songLyric.attach(store);
-          return object;
-        }),
+      model: _entities[7],
+      toOneRelations: (External object) => [object.songLyric],
+      toManyRelations: (External object) => {},
+      getId: (External object) => object.id,
+      setId: (External object, int id) {
+        if (object.id != id) {
+          throw ArgumentError(
+            'Field External.id is read-only '
+            '(final or getter-only) and it was declared to be self-assigned. '
+            'However, the currently inserted object (.id=${object.id}) '
+            "doesn't match the inserted ID (ID $id). "
+            'You must assign an ID before calling [box.put()].',
+          );
+        }
+      },
+      objectToFB: (External object, fb.Builder fbb) {
+        final publicNameOffset = fbb.writeString(object.publicName);
+        final mediaIdOffset =
+            object.mediaId == null ? null : fbb.writeString(object.mediaId!);
+        final urlOffset =
+            object.url == null ? null : fbb.writeString(object.url!);
+        fbb.startTable(8);
+        fbb.addInt64(0, object.id);
+        fbb.addOffset(1, publicNameOffset);
+        fbb.addOffset(2, mediaIdOffset);
+        fbb.addInt64(3, object.dbMediaType);
+        fbb.addOffset(5, urlOffset);
+        fbb.addInt64(6, object.songLyric.targetId);
+        fbb.finish(fbb.endTable());
+        return object.id;
+      },
+      objectFromFB: (obx.Store store, ByteData fbData) {
+        final buffer = fb.BufferContext(fbData);
+        final rootOffset = buffer.derefObject(0);
+        final idParam = const fb.Int64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          4,
+          0,
+        );
+        final publicNameParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGet(buffer, rootOffset, 6, '');
+        final mediaIdParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 8);
+        final urlParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 14);
+        final dbMediaTypeParam = const fb.Int64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          10,
+          0,
+        );
+        final songLyricParam = obx.ToOne<SongLyric>(
+          targetId: const fb.Int64Reader().vTableGet(buffer, rootOffset, 16, 0),
+        );
+        final object = External(
+          id: idParam,
+          publicName: publicNameParam,
+          mediaId: mediaIdParam,
+          url: urlParam,
+          dbMediaType: dbMediaTypeParam,
+          songLyric: songLyricParam,
+        );
+        object.songLyric.attach(store);
+        return object;
+      },
+    ),
     Playlist: obx_int.EntityDefinition<Playlist>(
-        model: _entities[8],
-        toOneRelations: (Playlist object) => [],
-        toManyRelations: (Playlist object) => {
-              obx_int.RelInfo<PlaylistRecord>.toOneBacklink(4, object.id,
-                      (PlaylistRecord srcObject) => srcObject.playlist):
-                  object.records
-            },
-        getId: (Playlist object) => object.id,
-        setId: (Playlist object, int id) {
-          if (object.id != id) {
-            throw ArgumentError('Field Playlist.id is read-only '
-                '(final or getter-only) and it was declared to be self-assigned. '
-                'However, the currently inserted object (.id=${object.id}) '
-                "doesn't match the inserted ID (ID $id). "
-                'You must assign an ID before calling [box.put()].');
-          }
-        },
-        objectToFB: (Playlist object, fb.Builder fbb) {
-          final nameOffset = fbb.writeString(object.name);
-          fbb.startTable(5);
-          fbb.addInt64(0, object.id);
-          fbb.addOffset(1, nameOffset);
-          fbb.addInt64(2, object.rank);
-          fbb.finish(fbb.endTable());
-          return object.id;
-        },
-        objectFromFB: (obx.Store store, ByteData fbData) {
-          final buffer = fb.BufferContext(fbData);
-          final rootOffset = buffer.derefObject(0);
-          final idParam =
-              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
-          final nameParam = const fb.StringReader(asciiOptimization: true)
-              .vTableGet(buffer, rootOffset, 6, '');
-          final rankParam =
-              const fb.Int64Reader().vTableGet(buffer, rootOffset, 8, 0);
-          final recordsParam = obx.ToMany<PlaylistRecord>();
-          final object = Playlist(
-              id: idParam,
-              name: nameParam,
-              rank: rankParam,
-              records: recordsParam);
-          obx_int.InternalToManyAccess.setRelInfo<Playlist>(
-              object.records,
-              store,
-              obx_int.RelInfo<PlaylistRecord>.toOneBacklink(4, object.id,
-                  (PlaylistRecord srcObject) => srcObject.playlist));
-          return object;
-        }),
+      model: _entities[8],
+      toOneRelations: (Playlist object) => [],
+      toManyRelations:
+          (Playlist object) => {
+            obx_int.RelInfo<PlaylistRecord>.toOneBacklink(
+                  4,
+                  object.id,
+                  (PlaylistRecord srcObject) => srcObject.playlist,
+                ):
+                object.records,
+          },
+      getId: (Playlist object) => object.id,
+      setId: (Playlist object, int id) {
+        if (object.id != id) {
+          throw ArgumentError(
+            'Field Playlist.id is read-only '
+            '(final or getter-only) and it was declared to be self-assigned. '
+            'However, the currently inserted object (.id=${object.id}) '
+            "doesn't match the inserted ID (ID $id). "
+            'You must assign an ID before calling [box.put()].',
+          );
+        }
+      },
+      objectToFB: (Playlist object, fb.Builder fbb) {
+        final nameOffset = fbb.writeString(object.name);
+        fbb.startTable(5);
+        fbb.addInt64(0, object.id);
+        fbb.addOffset(1, nameOffset);
+        fbb.addInt64(2, object.rank);
+        fbb.finish(fbb.endTable());
+        return object.id;
+      },
+      objectFromFB: (obx.Store store, ByteData fbData) {
+        final buffer = fb.BufferContext(fbData);
+        final rootOffset = buffer.derefObject(0);
+        final idParam = const fb.Int64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          4,
+          0,
+        );
+        final nameParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGet(buffer, rootOffset, 6, '');
+        final rankParam = const fb.Int64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          8,
+          0,
+        );
+        final recordsParam = obx.ToMany<PlaylistRecord>();
+        final object = Playlist(
+          id: idParam,
+          name: nameParam,
+          rank: rankParam,
+          records: recordsParam,
+        );
+        obx_int.InternalToManyAccess.setRelInfo<Playlist>(
+          object.records,
+          store,
+          obx_int.RelInfo<PlaylistRecord>.toOneBacklink(
+            4,
+            object.id,
+            (PlaylistRecord srcObject) => srcObject.playlist,
+          ),
+        );
+        return object;
+      },
+    ),
     PlaylistRecord: obx_int.EntityDefinition<PlaylistRecord>(
-        model: _entities[9],
-        toOneRelations: (PlaylistRecord object) => [
-              object.songLyric,
-              object.playlist,
-              object.customText,
-              object.bibleVerse
-            ],
-        toManyRelations: (PlaylistRecord object) => {},
-        getId: (PlaylistRecord object) => object.id,
-        setId: (PlaylistRecord object, int id) {
-          if (object.id != id) {
-            throw ArgumentError('Field PlaylistRecord.id is read-only '
-                '(final or getter-only) and it was declared to be self-assigned. '
-                'However, the currently inserted object (.id=${object.id}) '
-                "doesn't match the inserted ID (ID $id). "
-                'You must assign an ID before calling [box.put()].');
-          }
-        },
-        objectToFB: (PlaylistRecord object, fb.Builder fbb) {
-          fbb.startTable(9);
-          fbb.addInt64(0, object.id);
-          fbb.addInt64(2, object.songLyric.targetId);
-          fbb.addInt64(3, object.playlist.targetId);
-          fbb.addInt64(4, object.rank);
-          fbb.addInt64(5, object.customText.targetId);
-          fbb.addInt64(6, object.bibleVerse.targetId);
-          fbb.finish(fbb.endTable());
-          return object.id;
-        },
-        objectFromFB: (obx.Store store, ByteData fbData) {
-          final buffer = fb.BufferContext(fbData);
-          final rootOffset = buffer.derefObject(0);
-          final idParam =
-              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
-          final rankParam =
-              const fb.Int64Reader().vTableGet(buffer, rootOffset, 12, 0);
-          final songLyricParam = obx.ToOne<SongLyric>(
-              targetId:
-                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 8, 0));
-          final customTextParam = obx.ToOne<CustomText>(
-              targetId:
-                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 14, 0));
-          final bibleVerseParam = obx.ToOne<BibleVerse>(
-              targetId:
-                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 16, 0));
-          final playlistParam = obx.ToOne<Playlist>(
-              targetId:
-                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 10, 0));
-          final object = PlaylistRecord(
-              id: idParam,
-              rank: rankParam,
-              songLyric: songLyricParam,
-              customText: customTextParam,
-              bibleVerse: bibleVerseParam,
-              playlist: playlistParam);
-          object.songLyric.attach(store);
-          object.playlist.attach(store);
-          object.customText.attach(store);
-          object.bibleVerse.attach(store);
-          return object;
-        }),
+      model: _entities[9],
+      toOneRelations:
+          (PlaylistRecord object) => [
+            object.songLyric,
+            object.playlist,
+            object.customText,
+            object.bibleVerse,
+          ],
+      toManyRelations: (PlaylistRecord object) => {},
+      getId: (PlaylistRecord object) => object.id,
+      setId: (PlaylistRecord object, int id) {
+        if (object.id != id) {
+          throw ArgumentError(
+            'Field PlaylistRecord.id is read-only '
+            '(final or getter-only) and it was declared to be self-assigned. '
+            'However, the currently inserted object (.id=${object.id}) '
+            "doesn't match the inserted ID (ID $id). "
+            'You must assign an ID before calling [box.put()].',
+          );
+        }
+      },
+      objectToFB: (PlaylistRecord object, fb.Builder fbb) {
+        fbb.startTable(9);
+        fbb.addInt64(0, object.id);
+        fbb.addInt64(2, object.songLyric.targetId);
+        fbb.addInt64(3, object.playlist.targetId);
+        fbb.addInt64(4, object.rank);
+        fbb.addInt64(5, object.customText.targetId);
+        fbb.addInt64(6, object.bibleVerse.targetId);
+        fbb.finish(fbb.endTable());
+        return object.id;
+      },
+      objectFromFB: (obx.Store store, ByteData fbData) {
+        final buffer = fb.BufferContext(fbData);
+        final rootOffset = buffer.derefObject(0);
+        final idParam = const fb.Int64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          4,
+          0,
+        );
+        final rankParam = const fb.Int64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          12,
+          0,
+        );
+        final songLyricParam = obx.ToOne<SongLyric>(
+          targetId: const fb.Int64Reader().vTableGet(buffer, rootOffset, 8, 0),
+        );
+        final customTextParam = obx.ToOne<CustomText>(
+          targetId: const fb.Int64Reader().vTableGet(buffer, rootOffset, 14, 0),
+        );
+        final bibleVerseParam = obx.ToOne<BibleVerse>(
+          targetId: const fb.Int64Reader().vTableGet(buffer, rootOffset, 16, 0),
+        );
+        final playlistParam = obx.ToOne<Playlist>(
+          targetId: const fb.Int64Reader().vTableGet(buffer, rootOffset, 10, 0),
+        );
+        final object = PlaylistRecord(
+          id: idParam,
+          rank: rankParam,
+          songLyric: songLyricParam,
+          customText: customTextParam,
+          bibleVerse: bibleVerseParam,
+          playlist: playlistParam,
+        );
+        object.songLyric.attach(store);
+        object.playlist.attach(store);
+        object.customText.attach(store);
+        object.bibleVerse.attach(store);
+        return object;
+      },
+    ),
     BibleVerse: obx_int.EntityDefinition<BibleVerse>(
-        model: _entities[10],
-        toOneRelations: (BibleVerse object) => [],
-        toManyRelations: (BibleVerse object) => {},
-        getId: (BibleVerse object) => object.id,
-        setId: (BibleVerse object, int id) {
-          if (object.id != id) {
-            throw ArgumentError('Field BibleVerse.id is read-only '
-                '(final or getter-only) and it was declared to be self-assigned. '
-                'However, the currently inserted object (.id=${object.id}) '
-                "doesn't match the inserted ID (ID $id). "
-                'You must assign an ID before calling [box.put()].');
-          }
-        },
-        objectToFB: (BibleVerse object, fb.Builder fbb) {
-          final textOffset = fbb.writeString(object.text);
-          fbb.startTable(7);
-          fbb.addInt64(0, object.id);
-          fbb.addInt64(1, object.book);
-          fbb.addInt64(2, object.chapter);
-          fbb.addInt64(3, object.startVerse);
-          fbb.addInt64(4, object.endVerse);
-          fbb.addOffset(5, textOffset);
-          fbb.finish(fbb.endTable());
-          return object.id;
-        },
-        objectFromFB: (obx.Store store, ByteData fbData) {
-          final buffer = fb.BufferContext(fbData);
-          final rootOffset = buffer.derefObject(0);
-          final idParam =
-              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
-          final bookParam =
-              const fb.Int64Reader().vTableGet(buffer, rootOffset, 6, 0);
-          final chapterParam =
-              const fb.Int64Reader().vTableGet(buffer, rootOffset, 8, 0);
-          final startVerseParam =
-              const fb.Int64Reader().vTableGet(buffer, rootOffset, 10, 0);
-          final endVerseParam =
-              const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 12);
-          final textParam = const fb.StringReader(asciiOptimization: true)
-              .vTableGet(buffer, rootOffset, 14, '');
-          final object = BibleVerse(
-              id: idParam,
-              book: bookParam,
-              chapter: chapterParam,
-              startVerse: startVerseParam,
-              endVerse: endVerseParam,
-              text: textParam);
+      model: _entities[10],
+      toOneRelations: (BibleVerse object) => [],
+      toManyRelations: (BibleVerse object) => {},
+      getId: (BibleVerse object) => object.id,
+      setId: (BibleVerse object, int id) {
+        if (object.id != id) {
+          throw ArgumentError(
+            'Field BibleVerse.id is read-only '
+            '(final or getter-only) and it was declared to be self-assigned. '
+            'However, the currently inserted object (.id=${object.id}) '
+            "doesn't match the inserted ID (ID $id). "
+            'You must assign an ID before calling [box.put()].',
+          );
+        }
+      },
+      objectToFB: (BibleVerse object, fb.Builder fbb) {
+        final textOffset = fbb.writeString(object.text);
+        fbb.startTable(7);
+        fbb.addInt64(0, object.id);
+        fbb.addInt64(1, object.book);
+        fbb.addInt64(2, object.chapter);
+        fbb.addInt64(3, object.startVerse);
+        fbb.addInt64(4, object.endVerse);
+        fbb.addOffset(5, textOffset);
+        fbb.finish(fbb.endTable());
+        return object.id;
+      },
+      objectFromFB: (obx.Store store, ByteData fbData) {
+        final buffer = fb.BufferContext(fbData);
+        final rootOffset = buffer.derefObject(0);
+        final idParam = const fb.Int64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          4,
+          0,
+        );
+        final bookParam = const fb.Int64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          6,
+          0,
+        );
+        final chapterParam = const fb.Int64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          8,
+          0,
+        );
+        final startVerseParam = const fb.Int64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          10,
+          0,
+        );
+        final endVerseParam = const fb.Int64Reader().vTableGetNullable(
+          buffer,
+          rootOffset,
+          12,
+        );
+        final textParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGet(buffer, rootOffset, 14, '');
+        final object = BibleVerse(
+          id: idParam,
+          book: bookParam,
+          chapter: chapterParam,
+          startVerse: startVerseParam,
+          endVerse: endVerseParam,
+          text: textParam,
+        );
 
-          return object;
-        }),
+        return object;
+      },
+    ),
     CustomText: obx_int.EntityDefinition<CustomText>(
-        model: _entities[11],
-        toOneRelations: (CustomText object) => [],
-        toManyRelations: (CustomText object) => {},
-        getId: (CustomText object) => object.id,
-        setId: (CustomText object, int id) {
-          if (object.id != id) {
-            throw ArgumentError('Field CustomText.id is read-only '
-                '(final or getter-only) and it was declared to be self-assigned. '
-                'However, the currently inserted object (.id=${object.id}) '
-                "doesn't match the inserted ID (ID $id). "
-                'You must assign an ID before calling [box.put()].');
-          }
-        },
-        objectToFB: (CustomText object, fb.Builder fbb) {
-          final nameOffset = fbb.writeString(object.name);
-          final contentOffset = fbb.writeString(object.content);
-          fbb.startTable(4);
-          fbb.addInt64(0, object.id);
-          fbb.addOffset(1, nameOffset);
-          fbb.addOffset(2, contentOffset);
-          fbb.finish(fbb.endTable());
-          return object.id;
-        },
-        objectFromFB: (obx.Store store, ByteData fbData) {
-          final buffer = fb.BufferContext(fbData);
-          final rootOffset = buffer.derefObject(0);
-          final idParam =
-              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
-          final nameParam = const fb.StringReader(asciiOptimization: true)
-              .vTableGet(buffer, rootOffset, 6, '');
-          final contentParam = const fb.StringReader(asciiOptimization: true)
-              .vTableGet(buffer, rootOffset, 8, '');
-          final object =
-              CustomText(id: idParam, name: nameParam, content: contentParam);
+      model: _entities[11],
+      toOneRelations: (CustomText object) => [],
+      toManyRelations: (CustomText object) => {},
+      getId: (CustomText object) => object.id,
+      setId: (CustomText object, int id) {
+        if (object.id != id) {
+          throw ArgumentError(
+            'Field CustomText.id is read-only '
+            '(final or getter-only) and it was declared to be self-assigned. '
+            'However, the currently inserted object (.id=${object.id}) '
+            "doesn't match the inserted ID (ID $id). "
+            'You must assign an ID before calling [box.put()].',
+          );
+        }
+      },
+      objectToFB: (CustomText object, fb.Builder fbb) {
+        final nameOffset = fbb.writeString(object.name);
+        final contentOffset = fbb.writeString(object.content);
+        fbb.startTable(4);
+        fbb.addInt64(0, object.id);
+        fbb.addOffset(1, nameOffset);
+        fbb.addOffset(2, contentOffset);
+        fbb.finish(fbb.endTable());
+        return object.id;
+      },
+      objectFromFB: (obx.Store store, ByteData fbData) {
+        final buffer = fb.BufferContext(fbData);
+        final rootOffset = buffer.derefObject(0);
+        final idParam = const fb.Int64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          4,
+          0,
+        );
+        final nameParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGet(buffer, rootOffset, 6, '');
+        final contentParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGet(buffer, rootOffset, 8, '');
+        final object = CustomText(
+          id: idParam,
+          name: nameParam,
+          content: contentParam,
+        );
 
-          return object;
-        }),
+        return object;
+      },
+    ),
     SongLyricSettingsModel: obx_int.EntityDefinition<SongLyricSettingsModel>(
-        model: _entities[12],
-        toOneRelations: (SongLyricSettingsModel object) => [object.songLyric],
-        toManyRelations: (SongLyricSettingsModel object) => {},
-        getId: (SongLyricSettingsModel object) => object.id,
-        setId: (SongLyricSettingsModel object, int id) {
-          if (object.id != id) {
-            throw ArgumentError('Field SongLyricSettingsModel.id is read-only '
-                '(final or getter-only) and it was declared to be self-assigned. '
-                'However, the currently inserted object (.id=${object.id}) '
-                "doesn't match the inserted ID (ID $id). "
-                'You must assign an ID before calling [box.put()].');
-          }
-        },
-        objectToFB: (SongLyricSettingsModel object, fb.Builder fbb) {
-          fbb.startTable(7);
-          fbb.addInt64(0, object.id);
-          fbb.addBool(1, object.showChords);
-          fbb.addBool(2, object.showMusicalNotes);
-          fbb.addInt64(3, object.accidentals);
-          fbb.addInt64(4, object.transposition);
-          fbb.addInt64(5, object.songLyric.targetId);
-          fbb.finish(fbb.endTable());
-          return object.id;
-        },
-        objectFromFB: (obx.Store store, ByteData fbData) {
-          final buffer = fb.BufferContext(fbData);
-          final rootOffset = buffer.derefObject(0);
-          final idParam =
-              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
-          final showChordsParam =
-              const fb.BoolReader().vTableGet(buffer, rootOffset, 6, false);
-          final showMusicalNotesParam =
-              const fb.BoolReader().vTableGet(buffer, rootOffset, 8, false);
-          final accidentalsParam =
-              const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 10);
-          final transpositionParam =
-              const fb.Int64Reader().vTableGet(buffer, rootOffset, 12, 0);
-          final songLyricParam = obx.ToOne<SongLyric>(
-              targetId:
-                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 14, 0));
-          final object = SongLyricSettingsModel(
-              id: idParam,
-              showChords: showChordsParam,
-              showMusicalNotes: showMusicalNotesParam,
-              accidentals: accidentalsParam,
-              transposition: transpositionParam,
-              songLyric: songLyricParam);
-          object.songLyric.attach(store);
-          return object;
-        })
+      model: _entities[12],
+      toOneRelations: (SongLyricSettingsModel object) => [object.songLyric],
+      toManyRelations: (SongLyricSettingsModel object) => {},
+      getId: (SongLyricSettingsModel object) => object.id,
+      setId: (SongLyricSettingsModel object, int id) {
+        if (object.id != id) {
+          throw ArgumentError(
+            'Field SongLyricSettingsModel.id is read-only '
+            '(final or getter-only) and it was declared to be self-assigned. '
+            'However, the currently inserted object (.id=${object.id}) '
+            "doesn't match the inserted ID (ID $id). "
+            'You must assign an ID before calling [box.put()].',
+          );
+        }
+      },
+      objectToFB: (SongLyricSettingsModel object, fb.Builder fbb) {
+        fbb.startTable(7);
+        fbb.addInt64(0, object.id);
+        fbb.addBool(1, object.showChords);
+        fbb.addBool(2, object.showMusicalNotes);
+        fbb.addInt64(3, object.accidentals);
+        fbb.addInt64(4, object.transposition);
+        fbb.addInt64(5, object.songLyric.targetId);
+        fbb.finish(fbb.endTable());
+        return object.id;
+      },
+      objectFromFB: (obx.Store store, ByteData fbData) {
+        final buffer = fb.BufferContext(fbData);
+        final rootOffset = buffer.derefObject(0);
+        final idParam = const fb.Int64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          4,
+          0,
+        );
+        final showChordsParam = const fb.BoolReader().vTableGet(
+          buffer,
+          rootOffset,
+          6,
+          false,
+        );
+        final showMusicalNotesParam = const fb.BoolReader().vTableGet(
+          buffer,
+          rootOffset,
+          8,
+          false,
+        );
+        final accidentalsParam = const fb.Int64Reader().vTableGetNullable(
+          buffer,
+          rootOffset,
+          10,
+        );
+        final transpositionParam = const fb.Int64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          12,
+          0,
+        );
+        final songLyricParam = obx.ToOne<SongLyric>(
+          targetId: const fb.Int64Reader().vTableGet(buffer, rootOffset, 14, 0),
+        );
+        final object = SongLyricSettingsModel(
+          id: idParam,
+          showChords: showChordsParam,
+          showMusicalNotes: showMusicalNotesParam,
+          accidentals: accidentalsParam,
+          transposition: transpositionParam,
+          songLyric: songLyricParam,
+        );
+        object.songLyric.attach(store);
+        return object;
+      },
+    ),
   };
 
   return obx_int.ModelDefinition(model, bindings);
@@ -1447,12 +1812,14 @@ class Tag_ {
   static final name = obx.QueryStringProperty<Tag>(_entities[0].properties[1]);
 
   /// See [Tag.dbType].
-  static final dbType =
-      obx.QueryIntegerProperty<Tag>(_entities[0].properties[2]);
+  static final dbType = obx.QueryIntegerProperty<Tag>(
+    _entities[0].properties[2],
+  );
 
   /// See [Tag.songLyricsCount].
-  static final songLyricsCount =
-      obx.QueryIntegerProperty<Tag>(_entities[0].properties[3]);
+  static final songLyricsCount = obx.QueryIntegerProperty<Tag>(
+    _entities[0].properties[3],
+  );
 }
 
 /// [Song] entity fields to define ObjectBox queries.
@@ -1464,324 +1831,395 @@ class Song_ {
   static final name = obx.QueryStringProperty<Song>(_entities[1].properties[1]);
 
   /// see [Song.songLyrics]
-  static final songLyrics =
-      obx.QueryBacklinkToMany<SongLyric, Song>(SongLyric_.song);
+  static final songLyrics = obx.QueryBacklinkToMany<SongLyric, Song>(
+    SongLyric_.song,
+  );
 }
 
 /// [Author] entity fields to define ObjectBox queries.
 class Author_ {
   /// See [Author.id].
-  static final id =
-      obx.QueryIntegerProperty<Author>(_entities[2].properties[0]);
+  static final id = obx.QueryIntegerProperty<Author>(
+    _entities[2].properties[0],
+  );
 
   /// See [Author.name].
-  static final name =
-      obx.QueryStringProperty<Author>(_entities[2].properties[1]);
+  static final name = obx.QueryStringProperty<Author>(
+    _entities[2].properties[1],
+  );
 }
 
 /// [Songbook] entity fields to define ObjectBox queries.
 class Songbook_ {
   /// See [Songbook.id].
-  static final id =
-      obx.QueryIntegerProperty<Songbook>(_entities[3].properties[0]);
+  static final id = obx.QueryIntegerProperty<Songbook>(
+    _entities[3].properties[0],
+  );
 
   /// See [Songbook.name].
-  static final name =
-      obx.QueryStringProperty<Songbook>(_entities[3].properties[1]);
+  static final name = obx.QueryStringProperty<Songbook>(
+    _entities[3].properties[1],
+  );
 
   /// See [Songbook.shortcut].
-  static final shortcut =
-      obx.QueryStringProperty<Songbook>(_entities[3].properties[2]);
+  static final shortcut = obx.QueryStringProperty<Songbook>(
+    _entities[3].properties[2],
+  );
 
   /// See [Songbook.color].
-  static final color =
-      obx.QueryStringProperty<Songbook>(_entities[3].properties[3]);
+  static final color = obx.QueryStringProperty<Songbook>(
+    _entities[3].properties[3],
+  );
 
   /// See [Songbook.colorText].
-  static final colorText =
-      obx.QueryStringProperty<Songbook>(_entities[3].properties[4]);
+  static final colorText = obx.QueryStringProperty<Songbook>(
+    _entities[3].properties[4],
+  );
 
   /// See [Songbook.isPrivate].
-  static final isPrivate =
-      obx.QueryBooleanProperty<Songbook>(_entities[3].properties[5]);
+  static final isPrivate = obx.QueryBooleanProperty<Songbook>(
+    _entities[3].properties[5],
+  );
 
   /// See [Songbook.isPinned].
-  static final isPinned =
-      obx.QueryBooleanProperty<Songbook>(_entities[3].properties[6]);
+  static final isPinned = obx.QueryBooleanProperty<Songbook>(
+    _entities[3].properties[6],
+  );
 
   /// see [Songbook.records]
   static final records = obx.QueryBacklinkToMany<SongbookRecord, Songbook>(
-      SongbookRecord_.songbook);
+    SongbookRecord_.songbook,
+  );
 }
 
 /// [SongbookRecord] entity fields to define ObjectBox queries.
 class SongbookRecord_ {
   /// See [SongbookRecord.id].
-  static final id =
-      obx.QueryIntegerProperty<SongbookRecord>(_entities[4].properties[0]);
+  static final id = obx.QueryIntegerProperty<SongbookRecord>(
+    _entities[4].properties[0],
+  );
 
   /// See [SongbookRecord.songLyric].
   static final songLyric = obx.QueryRelationToOne<SongbookRecord, SongLyric>(
-      _entities[4].properties[1]);
+    _entities[4].properties[1],
+  );
 
   /// See [SongbookRecord.songbook].
   static final songbook = obx.QueryRelationToOne<SongbookRecord, Songbook>(
-      _entities[4].properties[2]);
+    _entities[4].properties[2],
+  );
 
   /// See [SongbookRecord.number].
-  static final number =
-      obx.QueryStringProperty<SongbookRecord>(_entities[4].properties[3]);
+  static final number = obx.QueryStringProperty<SongbookRecord>(
+    _entities[4].properties[3],
+  );
 }
 
 /// [SongLyric] entity fields to define ObjectBox queries.
 class SongLyric_ {
   /// See [SongLyric.id].
-  static final id =
-      obx.QueryIntegerProperty<SongLyric>(_entities[5].properties[0]);
+  static final id = obx.QueryIntegerProperty<SongLyric>(
+    _entities[5].properties[0],
+  );
 
   /// See [SongLyric.name].
-  static final name =
-      obx.QueryStringProperty<SongLyric>(_entities[5].properties[1]);
+  static final name = obx.QueryStringProperty<SongLyric>(
+    _entities[5].properties[1],
+  );
 
   /// See [SongLyric.secondaryName1].
-  static final secondaryName1 =
-      obx.QueryStringProperty<SongLyric>(_entities[5].properties[2]);
+  static final secondaryName1 = obx.QueryStringProperty<SongLyric>(
+    _entities[5].properties[2],
+  );
 
   /// See [SongLyric.secondaryName2].
-  static final secondaryName2 =
-      obx.QueryStringProperty<SongLyric>(_entities[5].properties[3]);
+  static final secondaryName2 = obx.QueryStringProperty<SongLyric>(
+    _entities[5].properties[3],
+  );
 
   /// See [SongLyric.lyrics].
-  static final lyrics =
-      obx.QueryStringProperty<SongLyric>(_entities[5].properties[4]);
+  static final lyrics = obx.QueryStringProperty<SongLyric>(
+    _entities[5].properties[4],
+  );
 
   /// See [SongLyric.lang].
-  static final lang =
-      obx.QueryStringProperty<SongLyric>(_entities[5].properties[5]);
+  static final lang = obx.QueryStringProperty<SongLyric>(
+    _entities[5].properties[5],
+  );
 
   /// See [SongLyric.langDescription].
-  static final langDescription =
-      obx.QueryStringProperty<SongLyric>(_entities[5].properties[6]);
+  static final langDescription = obx.QueryStringProperty<SongLyric>(
+    _entities[5].properties[6],
+  );
 
   /// See [SongLyric.song].
-  static final song =
-      obx.QueryRelationToOne<SongLyric, Song>(_entities[5].properties[7]);
+  static final song = obx.QueryRelationToOne<SongLyric, Song>(
+    _entities[5].properties[7],
+  );
 
   /// See [SongLyric.dbType].
-  static final dbType =
-      obx.QueryIntegerProperty<SongLyric>(_entities[5].properties[8]);
+  static final dbType = obx.QueryIntegerProperty<SongLyric>(
+    _entities[5].properties[8],
+  );
 
   /// See [SongLyric.hasChords].
-  static final hasChords =
-      obx.QueryBooleanProperty<SongLyric>(_entities[5].properties[9]);
+  static final hasChords = obx.QueryBooleanProperty<SongLyric>(
+    _entities[5].properties[9],
+  );
 
   /// See [SongLyric.accidentals].
-  static final accidentals =
-      obx.QueryIntegerProperty<SongLyric>(_entities[5].properties[10]);
+  static final accidentals = obx.QueryIntegerProperty<SongLyric>(
+    _entities[5].properties[10],
+  );
 
   /// See [SongLyric.showChords].
-  static final showChords =
-      obx.QueryBooleanProperty<SongLyric>(_entities[5].properties[11]);
+  static final showChords = obx.QueryBooleanProperty<SongLyric>(
+    _entities[5].properties[11],
+  );
 
   /// See [SongLyric.transposition].
-  static final transposition =
-      obx.QueryIntegerProperty<SongLyric>(_entities[5].properties[12]);
+  static final transposition = obx.QueryIntegerProperty<SongLyric>(
+    _entities[5].properties[12],
+  );
 
   /// See [SongLyric.settings].
   static final settings =
       obx.QueryRelationToOne<SongLyric, SongLyricSettingsModel>(
-          _entities[5].properties[13]);
+        _entities[5].properties[13],
+      );
 
   /// See [SongLyric.ezId].
-  static final ezId =
-      obx.QueryIntegerProperty<SongLyric>(_entities[5].properties[14]);
+  static final ezId = obx.QueryIntegerProperty<SongLyric>(
+    _entities[5].properties[14],
+  );
 
   /// See [SongLyric.hymnologyNew].
-  static final hymnologyNew =
-      obx.QueryStringProperty<SongLyric>(_entities[5].properties[15]);
+  static final hymnologyNew = obx.QueryStringProperty<SongLyric>(
+    _entities[5].properties[15],
+  );
 
   /// see [SongLyric.authors]
-  static final authors =
-      obx.QueryRelationToMany<SongLyric, Author>(_entities[5].relations[0]);
+  static final authors = obx.QueryRelationToMany<SongLyric, Author>(
+    _entities[5].relations[0],
+  );
 
   /// see [SongLyric.tags]
-  static final tags =
-      obx.QueryRelationToMany<SongLyric, Tag>(_entities[5].relations[1]);
+  static final tags = obx.QueryRelationToMany<SongLyric, Tag>(
+    _entities[5].relations[1],
+  );
 
   /// see [SongLyric.externals]
-  static final externals =
-      obx.QueryRelationToMany<SongLyric, External>(_entities[5].relations[2]);
+  static final externals = obx.QueryRelationToMany<SongLyric, External>(
+    _entities[5].relations[2],
+  );
 
   /// see [SongLyric.songbookRecords]
   static final songbookRecords =
       obx.QueryBacklinkToMany<SongbookRecord, SongLyric>(
-          SongbookRecord_.songLyric);
+        SongbookRecord_.songLyric,
+      );
 
   /// see [SongLyric.playlistRecords]
   static final playlistRecords =
       obx.QueryBacklinkToMany<PlaylistRecord, SongLyric>(
-          PlaylistRecord_.songLyric);
+        PlaylistRecord_.songLyric,
+      );
 }
 
 /// [NewsItem] entity fields to define ObjectBox queries.
 class NewsItem_ {
   /// See [NewsItem.id].
-  static final id =
-      obx.QueryIntegerProperty<NewsItem>(_entities[6].properties[0]);
+  static final id = obx.QueryIntegerProperty<NewsItem>(
+    _entities[6].properties[0],
+  );
 
   /// See [NewsItem.text].
-  static final text =
-      obx.QueryStringProperty<NewsItem>(_entities[6].properties[1]);
+  static final text = obx.QueryStringProperty<NewsItem>(
+    _entities[6].properties[1],
+  );
 
   /// See [NewsItem.link].
-  static final link =
-      obx.QueryStringProperty<NewsItem>(_entities[6].properties[2]);
+  static final link = obx.QueryStringProperty<NewsItem>(
+    _entities[6].properties[2],
+  );
 
   /// See [NewsItem.expiresAt].
-  static final expiresAt =
-      obx.QueryDateProperty<NewsItem>(_entities[6].properties[3]);
+  static final expiresAt = obx.QueryDateProperty<NewsItem>(
+    _entities[6].properties[3],
+  );
 }
 
 /// [External] entity fields to define ObjectBox queries.
 class External_ {
   /// See [External.id].
-  static final id =
-      obx.QueryIntegerProperty<External>(_entities[7].properties[0]);
+  static final id = obx.QueryIntegerProperty<External>(
+    _entities[7].properties[0],
+  );
 
   /// See [External.publicName].
-  static final publicName =
-      obx.QueryStringProperty<External>(_entities[7].properties[1]);
+  static final publicName = obx.QueryStringProperty<External>(
+    _entities[7].properties[1],
+  );
 
   /// See [External.mediaId].
-  static final mediaId =
-      obx.QueryStringProperty<External>(_entities[7].properties[2]);
+  static final mediaId = obx.QueryStringProperty<External>(
+    _entities[7].properties[2],
+  );
 
   /// See [External.dbMediaType].
-  static final dbMediaType =
-      obx.QueryIntegerProperty<External>(_entities[7].properties[3]);
+  static final dbMediaType = obx.QueryIntegerProperty<External>(
+    _entities[7].properties[3],
+  );
 
   /// See [External.url].
-  static final url =
-      obx.QueryStringProperty<External>(_entities[7].properties[4]);
+  static final url = obx.QueryStringProperty<External>(
+    _entities[7].properties[4],
+  );
 
   /// See [External.songLyric].
-  static final songLyric =
-      obx.QueryRelationToOne<External, SongLyric>(_entities[7].properties[5]);
+  static final songLyric = obx.QueryRelationToOne<External, SongLyric>(
+    _entities[7].properties[5],
+  );
 }
 
 /// [Playlist] entity fields to define ObjectBox queries.
 class Playlist_ {
   /// See [Playlist.id].
-  static final id =
-      obx.QueryIntegerProperty<Playlist>(_entities[8].properties[0]);
+  static final id = obx.QueryIntegerProperty<Playlist>(
+    _entities[8].properties[0],
+  );
 
   /// See [Playlist.name].
-  static final name =
-      obx.QueryStringProperty<Playlist>(_entities[8].properties[1]);
+  static final name = obx.QueryStringProperty<Playlist>(
+    _entities[8].properties[1],
+  );
 
   /// See [Playlist.rank].
-  static final rank =
-      obx.QueryIntegerProperty<Playlist>(_entities[8].properties[2]);
+  static final rank = obx.QueryIntegerProperty<Playlist>(
+    _entities[8].properties[2],
+  );
 
   /// see [Playlist.records]
   static final records = obx.QueryBacklinkToMany<PlaylistRecord, Playlist>(
-      PlaylistRecord_.playlist);
+    PlaylistRecord_.playlist,
+  );
 }
 
 /// [PlaylistRecord] entity fields to define ObjectBox queries.
 class PlaylistRecord_ {
   /// See [PlaylistRecord.id].
-  static final id =
-      obx.QueryIntegerProperty<PlaylistRecord>(_entities[9].properties[0]);
+  static final id = obx.QueryIntegerProperty<PlaylistRecord>(
+    _entities[9].properties[0],
+  );
 
   /// See [PlaylistRecord.songLyric].
   static final songLyric = obx.QueryRelationToOne<PlaylistRecord, SongLyric>(
-      _entities[9].properties[1]);
+    _entities[9].properties[1],
+  );
 
   /// See [PlaylistRecord.playlist].
   static final playlist = obx.QueryRelationToOne<PlaylistRecord, Playlist>(
-      _entities[9].properties[2]);
+    _entities[9].properties[2],
+  );
 
   /// See [PlaylistRecord.rank].
-  static final rank =
-      obx.QueryIntegerProperty<PlaylistRecord>(_entities[9].properties[3]);
+  static final rank = obx.QueryIntegerProperty<PlaylistRecord>(
+    _entities[9].properties[3],
+  );
 
   /// See [PlaylistRecord.customText].
   static final customText = obx.QueryRelationToOne<PlaylistRecord, CustomText>(
-      _entities[9].properties[4]);
+    _entities[9].properties[4],
+  );
 
   /// See [PlaylistRecord.bibleVerse].
   static final bibleVerse = obx.QueryRelationToOne<PlaylistRecord, BibleVerse>(
-      _entities[9].properties[5]);
+    _entities[9].properties[5],
+  );
 }
 
 /// [BibleVerse] entity fields to define ObjectBox queries.
 class BibleVerse_ {
   /// See [BibleVerse.id].
-  static final id =
-      obx.QueryIntegerProperty<BibleVerse>(_entities[10].properties[0]);
+  static final id = obx.QueryIntegerProperty<BibleVerse>(
+    _entities[10].properties[0],
+  );
 
   /// See [BibleVerse.book].
-  static final book =
-      obx.QueryIntegerProperty<BibleVerse>(_entities[10].properties[1]);
+  static final book = obx.QueryIntegerProperty<BibleVerse>(
+    _entities[10].properties[1],
+  );
 
   /// See [BibleVerse.chapter].
-  static final chapter =
-      obx.QueryIntegerProperty<BibleVerse>(_entities[10].properties[2]);
+  static final chapter = obx.QueryIntegerProperty<BibleVerse>(
+    _entities[10].properties[2],
+  );
 
   /// See [BibleVerse.startVerse].
-  static final startVerse =
-      obx.QueryIntegerProperty<BibleVerse>(_entities[10].properties[3]);
+  static final startVerse = obx.QueryIntegerProperty<BibleVerse>(
+    _entities[10].properties[3],
+  );
 
   /// See [BibleVerse.endVerse].
-  static final endVerse =
-      obx.QueryIntegerProperty<BibleVerse>(_entities[10].properties[4]);
+  static final endVerse = obx.QueryIntegerProperty<BibleVerse>(
+    _entities[10].properties[4],
+  );
 
   /// See [BibleVerse.text].
-  static final text =
-      obx.QueryStringProperty<BibleVerse>(_entities[10].properties[5]);
+  static final text = obx.QueryStringProperty<BibleVerse>(
+    _entities[10].properties[5],
+  );
 }
 
 /// [CustomText] entity fields to define ObjectBox queries.
 class CustomText_ {
   /// See [CustomText.id].
-  static final id =
-      obx.QueryIntegerProperty<CustomText>(_entities[11].properties[0]);
+  static final id = obx.QueryIntegerProperty<CustomText>(
+    _entities[11].properties[0],
+  );
 
   /// See [CustomText.name].
-  static final name =
-      obx.QueryStringProperty<CustomText>(_entities[11].properties[1]);
+  static final name = obx.QueryStringProperty<CustomText>(
+    _entities[11].properties[1],
+  );
 
   /// See [CustomText.content].
-  static final content =
-      obx.QueryStringProperty<CustomText>(_entities[11].properties[2]);
+  static final content = obx.QueryStringProperty<CustomText>(
+    _entities[11].properties[2],
+  );
 }
 
 /// [SongLyricSettingsModel] entity fields to define ObjectBox queries.
 class SongLyricSettingsModel_ {
   /// See [SongLyricSettingsModel.id].
   static final id = obx.QueryIntegerProperty<SongLyricSettingsModel>(
-      _entities[12].properties[0]);
+    _entities[12].properties[0],
+  );
 
   /// See [SongLyricSettingsModel.showChords].
   static final showChords = obx.QueryBooleanProperty<SongLyricSettingsModel>(
-      _entities[12].properties[1]);
+    _entities[12].properties[1],
+  );
 
   /// See [SongLyricSettingsModel.showMusicalNotes].
   static final showMusicalNotes =
       obx.QueryBooleanProperty<SongLyricSettingsModel>(
-          _entities[12].properties[2]);
+        _entities[12].properties[2],
+      );
 
   /// See [SongLyricSettingsModel.accidentals].
   static final accidentals = obx.QueryIntegerProperty<SongLyricSettingsModel>(
-      _entities[12].properties[3]);
+    _entities[12].properties[3],
+  );
 
   /// See [SongLyricSettingsModel.transposition].
   static final transposition = obx.QueryIntegerProperty<SongLyricSettingsModel>(
-      _entities[12].properties[4]);
+    _entities[12].properties[4],
+  );
 
   /// See [SongLyricSettingsModel.songLyric].
   static final songLyric =
       obx.QueryRelationToOne<SongLyricSettingsModel, SongLyric>(
-          _entities[12].properties[5]);
+        _entities[12].properties[5],
+      );
 }

@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,75 +10,33 @@ part of '../author.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-Author _$AuthorFromJson(Map<String, dynamic> json) {
-  return _Author.fromJson(json);
-}
 
 /// @nodoc
 mixin _$Author {
   @Id(assignable: true)
   @JsonKey(fromJson: int.parse)
-  int get id => throw _privateConstructorUsedError;
-  String get name => throw _privateConstructorUsedError;
+  int get id;
+  String get name;
 
   /// Create a copy of Author
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $AuthorCopyWith<Author> get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $AuthorCopyWith<$Res> {
-  factory $AuthorCopyWith(Author value, $Res Function(Author) then) =
-      _$AuthorCopyWithImpl<$Res, Author>;
-  @useResult
-  $Res call(
-      {@Id(assignable: true) @JsonKey(fromJson: int.parse) int id,
-      String name});
-}
-
-/// @nodoc
-class _$AuthorCopyWithImpl<$Res, $Val extends Author>
-    implements $AuthorCopyWith<$Res> {
-  _$AuthorCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of Author
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
+  $AuthorCopyWith<Author> get copyWith =>
+      _$AuthorCopyWithImpl<Author>(this as Author, _$identity);
+
   @override
-  $Res call({
-    Object? id = null,
-    Object? name = null,
-  }) {
-    return _then(_value.copyWith(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
+  String toString() {
+    return 'Author(id: $id, name: $name)';
   }
 }
 
 /// @nodoc
-abstract class _$$AuthorImplCopyWith<$Res> implements $AuthorCopyWith<$Res> {
-  factory _$$AuthorImplCopyWith(
-          _$AuthorImpl value, $Res Function(_$AuthorImpl) then) =
-      __$$AuthorImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $AuthorCopyWith<$Res> {
+  factory $AuthorCopyWith(Author value, $Res Function(Author) _then) =
+      _$AuthorCopyWithImpl;
   @useResult
   $Res call(
       {@Id(assignable: true) @JsonKey(fromJson: int.parse) int id,
@@ -85,12 +44,11 @@ abstract class _$$AuthorImplCopyWith<$Res> implements $AuthorCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$AuthorImplCopyWithImpl<$Res>
-    extends _$AuthorCopyWithImpl<$Res, _$AuthorImpl>
-    implements _$$AuthorImplCopyWith<$Res> {
-  __$$AuthorImplCopyWithImpl(
-      _$AuthorImpl _value, $Res Function(_$AuthorImpl) _then)
-      : super(_value, _then);
+class _$AuthorCopyWithImpl<$Res> implements $AuthorCopyWith<$Res> {
+  _$AuthorCopyWithImpl(this._self, this._then);
+
+  final Author _self;
+  final $Res Function(Author) _then;
 
   /// Create a copy of Author
   /// with the given fields replaced by the non-null parameter values.
@@ -100,13 +58,13 @@ class __$$AuthorImplCopyWithImpl<$Res>
     Object? id = null,
     Object? name = null,
   }) {
-    return _then(_$AuthorImpl(
+    return _then(_self.copyWith(
       id: null == id
-          ? _value.id
+          ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
       name: null == name
-          ? _value.name
+          ? _self.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
     ));
@@ -117,14 +75,12 @@ class __$$AuthorImplCopyWithImpl<$Res>
 
 @Entity(realClass: Author)
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
-class _$AuthorImpl extends _Author {
-  const _$AuthorImpl(
+class _Author extends Author {
+  const _Author(
       {@Id(assignable: true) @JsonKey(fromJson: int.parse) required this.id,
       required this.name})
       : super._();
-
-  factory _$AuthorImpl.fromJson(Map<String, dynamic> json) =>
-      _$$AuthorImplFromJson(json);
+  factory _Author.fromJson(Map<String, dynamic> json) => _$AuthorFromJson(json);
 
   @override
   @Id(assignable: true)
@@ -133,41 +89,57 @@ class _$AuthorImpl extends _Author {
   @override
   final String name;
 
+  /// Create a copy of Author
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$AuthorCopyWith<_Author> get copyWith =>
+      __$AuthorCopyWithImpl<_Author>(this, _$identity);
+
   @override
   String toString() {
     return 'Author(id: $id, name: $name)';
   }
+}
+
+/// @nodoc
+abstract mixin class _$AuthorCopyWith<$Res> implements $AuthorCopyWith<$Res> {
+  factory _$AuthorCopyWith(_Author value, $Res Function(_Author) _then) =
+      __$AuthorCopyWithImpl;
+  @override
+  @useResult
+  $Res call(
+      {@Id(assignable: true) @JsonKey(fromJson: int.parse) int id,
+      String name});
+}
+
+/// @nodoc
+class __$AuthorCopyWithImpl<$Res> implements _$AuthorCopyWith<$Res> {
+  __$AuthorCopyWithImpl(this._self, this._then);
+
+  final _Author _self;
+  final $Res Function(_Author) _then;
 
   /// Create a copy of Author
   /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$AuthorImplCopyWith<_$AuthorImpl> get copyWith =>
-      __$$AuthorImplCopyWithImpl<_$AuthorImpl>(this, _$identity);
+  $Res call({
+    Object? id = null,
+    Object? name = null,
+  }) {
+    return _then(_Author(
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      name: null == name
+          ? _self.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
 }
 
-abstract class _Author extends Author {
-  const factory _Author(
-      {@Id(assignable: true)
-      @JsonKey(fromJson: int.parse)
-      required final int id,
-      required final String name}) = _$AuthorImpl;
-  const _Author._() : super._();
-
-  factory _Author.fromJson(Map<String, dynamic> json) = _$AuthorImpl.fromJson;
-
-  @override
-  @Id(assignable: true)
-  @JsonKey(fromJson: int.parse)
-  int get id;
-  @override
-  String get name;
-
-  /// Create a copy of Author
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$AuthorImplCopyWith<_$AuthorImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
+// dart format on

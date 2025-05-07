@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,92 +10,36 @@ part of '../news_item.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-NewsItem _$NewsItemFromJson(Map<String, dynamic> json) {
-  return _NewsItem.fromJson(json);
-}
 
 /// @nodoc
 mixin _$NewsItem {
   @Id(assignable: true)
   @JsonKey(fromJson: int.parse)
-  int get id => throw _privateConstructorUsedError;
-  String get text => throw _privateConstructorUsedError;
-  String get link => throw _privateConstructorUsedError;
+  int get id;
+  String get text;
+  String get link;
   @Property(type: PropertyType.date)
-  DateTime? get expiresAt => throw _privateConstructorUsedError;
+  DateTime? get expiresAt;
 
   /// Create a copy of NewsItem
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $NewsItemCopyWith<NewsItem> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $NewsItemCopyWith<$Res> {
-  factory $NewsItemCopyWith(NewsItem value, $Res Function(NewsItem) then) =
-      _$NewsItemCopyWithImpl<$Res, NewsItem>;
-  @useResult
-  $Res call(
-      {@Id(assignable: true) @JsonKey(fromJson: int.parse) int id,
-      String text,
-      String link,
-      @Property(type: PropertyType.date) DateTime? expiresAt});
-}
-
-/// @nodoc
-class _$NewsItemCopyWithImpl<$Res, $Val extends NewsItem>
-    implements $NewsItemCopyWith<$Res> {
-  _$NewsItemCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of NewsItem
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
+  $NewsItemCopyWith<NewsItem> get copyWith =>
+      _$NewsItemCopyWithImpl<NewsItem>(this as NewsItem, _$identity);
+
   @override
-  $Res call({
-    Object? id = null,
-    Object? text = null,
-    Object? link = null,
-    Object? expiresAt = freezed,
-  }) {
-    return _then(_value.copyWith(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      text: null == text
-          ? _value.text
-          : text // ignore: cast_nullable_to_non_nullable
-              as String,
-      link: null == link
-          ? _value.link
-          : link // ignore: cast_nullable_to_non_nullable
-              as String,
-      expiresAt: freezed == expiresAt
-          ? _value.expiresAt
-          : expiresAt // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
-    ) as $Val);
+  String toString() {
+    return 'NewsItem(id: $id, text: $text, link: $link, expiresAt: $expiresAt)';
   }
 }
 
 /// @nodoc
-abstract class _$$NewsItemImplCopyWith<$Res>
-    implements $NewsItemCopyWith<$Res> {
-  factory _$$NewsItemImplCopyWith(
-          _$NewsItemImpl value, $Res Function(_$NewsItemImpl) then) =
-      __$$NewsItemImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $NewsItemCopyWith<$Res> {
+  factory $NewsItemCopyWith(NewsItem value, $Res Function(NewsItem) _then) =
+      _$NewsItemCopyWithImpl;
   @useResult
   $Res call(
       {@Id(assignable: true) @JsonKey(fromJson: int.parse) int id,
@@ -104,12 +49,11 @@ abstract class _$$NewsItemImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$NewsItemImplCopyWithImpl<$Res>
-    extends _$NewsItemCopyWithImpl<$Res, _$NewsItemImpl>
-    implements _$$NewsItemImplCopyWith<$Res> {
-  __$$NewsItemImplCopyWithImpl(
-      _$NewsItemImpl _value, $Res Function(_$NewsItemImpl) _then)
-      : super(_value, _then);
+class _$NewsItemCopyWithImpl<$Res> implements $NewsItemCopyWith<$Res> {
+  _$NewsItemCopyWithImpl(this._self, this._then);
+
+  final NewsItem _self;
+  final $Res Function(NewsItem) _then;
 
   /// Create a copy of NewsItem
   /// with the given fields replaced by the non-null parameter values.
@@ -121,21 +65,21 @@ class __$$NewsItemImplCopyWithImpl<$Res>
     Object? link = null,
     Object? expiresAt = freezed,
   }) {
-    return _then(_$NewsItemImpl(
+    return _then(_self.copyWith(
       id: null == id
-          ? _value.id
+          ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
       text: null == text
-          ? _value.text
+          ? _self.text
           : text // ignore: cast_nullable_to_non_nullable
               as String,
       link: null == link
-          ? _value.link
+          ? _self.link
           : link // ignore: cast_nullable_to_non_nullable
               as String,
       expiresAt: freezed == expiresAt
-          ? _value.expiresAt
+          ? _self.expiresAt
           : expiresAt // ignore: cast_nullable_to_non_nullable
               as DateTime?,
     ));
@@ -146,16 +90,15 @@ class __$$NewsItemImplCopyWithImpl<$Res>
 
 @Entity(realClass: NewsItem)
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
-class _$NewsItemImpl extends _NewsItem {
-  const _$NewsItemImpl(
+class _NewsItem extends NewsItem {
+  const _NewsItem(
       {@Id(assignable: true) @JsonKey(fromJson: int.parse) required this.id,
       required this.text,
       required this.link,
       @Property(type: PropertyType.date) this.expiresAt})
       : super._();
-
-  factory _$NewsItemImpl.fromJson(Map<String, dynamic> json) =>
-      _$$NewsItemImplFromJson(json);
+  factory _NewsItem.fromJson(Map<String, dynamic> json) =>
+      _$NewsItemFromJson(json);
 
   @override
   @Id(assignable: true)
@@ -169,50 +112,70 @@ class _$NewsItemImpl extends _NewsItem {
   @Property(type: PropertyType.date)
   final DateTime? expiresAt;
 
+  /// Create a copy of NewsItem
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$NewsItemCopyWith<_NewsItem> get copyWith =>
+      __$NewsItemCopyWithImpl<_NewsItem>(this, _$identity);
+
   @override
   String toString() {
     return 'NewsItem(id: $id, text: $text, link: $link, expiresAt: $expiresAt)';
   }
+}
+
+/// @nodoc
+abstract mixin class _$NewsItemCopyWith<$Res>
+    implements $NewsItemCopyWith<$Res> {
+  factory _$NewsItemCopyWith(_NewsItem value, $Res Function(_NewsItem) _then) =
+      __$NewsItemCopyWithImpl;
+  @override
+  @useResult
+  $Res call(
+      {@Id(assignable: true) @JsonKey(fromJson: int.parse) int id,
+      String text,
+      String link,
+      @Property(type: PropertyType.date) DateTime? expiresAt});
+}
+
+/// @nodoc
+class __$NewsItemCopyWithImpl<$Res> implements _$NewsItemCopyWith<$Res> {
+  __$NewsItemCopyWithImpl(this._self, this._then);
+
+  final _NewsItem _self;
+  final $Res Function(_NewsItem) _then;
 
   /// Create a copy of NewsItem
   /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$NewsItemImplCopyWith<_$NewsItemImpl> get copyWith =>
-      __$$NewsItemImplCopyWithImpl<_$NewsItemImpl>(this, _$identity);
+  $Res call({
+    Object? id = null,
+    Object? text = null,
+    Object? link = null,
+    Object? expiresAt = freezed,
+  }) {
+    return _then(_NewsItem(
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      text: null == text
+          ? _self.text
+          : text // ignore: cast_nullable_to_non_nullable
+              as String,
+      link: null == link
+          ? _self.link
+          : link // ignore: cast_nullable_to_non_nullable
+              as String,
+      expiresAt: freezed == expiresAt
+          ? _self.expiresAt
+          : expiresAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+    ));
+  }
 }
 
-abstract class _NewsItem extends NewsItem {
-  const factory _NewsItem(
-          {@Id(assignable: true)
-          @JsonKey(fromJson: int.parse)
-          required final int id,
-          required final String text,
-          required final String link,
-          @Property(type: PropertyType.date) final DateTime? expiresAt}) =
-      _$NewsItemImpl;
-  const _NewsItem._() : super._();
-
-  factory _NewsItem.fromJson(Map<String, dynamic> json) =
-      _$NewsItemImpl.fromJson;
-
-  @override
-  @Id(assignable: true)
-  @JsonKey(fromJson: int.parse)
-  int get id;
-  @override
-  String get text;
-  @override
-  String get link;
-  @override
-  @Property(type: PropertyType.date)
-  DateTime? get expiresAt;
-
-  /// Create a copy of NewsItem
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$NewsItemImplCopyWith<_$NewsItemImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
+// dart format on

@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,89 +10,35 @@ part of '../tag.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-Tag _$TagFromJson(Map<String, dynamic> json) {
-  return _Tag.fromJson(json);
-}
 
 /// @nodoc
 mixin _$Tag {
   @Id(assignable: true)
   @JsonKey(fromJson: int.parse)
-  int get id => throw _privateConstructorUsedError;
-  String get name => throw _privateConstructorUsedError;
+  int get id;
+  String get name;
   @JsonKey(name: 'type_enum', fromJson: TagType.rawValueFromString)
-  int get dbType => throw _privateConstructorUsedError;
-  int get songLyricsCount => throw _privateConstructorUsedError;
+  int get dbType;
+  int get songLyricsCount;
 
   /// Create a copy of Tag
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $TagCopyWith<Tag> get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $TagCopyWith<$Res> {
-  factory $TagCopyWith(Tag value, $Res Function(Tag) then) =
-      _$TagCopyWithImpl<$Res, Tag>;
-  @useResult
-  $Res call(
-      {@Id(assignable: true) @JsonKey(fromJson: int.parse) int id,
-      String name,
-      @JsonKey(name: 'type_enum', fromJson: TagType.rawValueFromString)
-      int dbType,
-      int songLyricsCount});
-}
-
-/// @nodoc
-class _$TagCopyWithImpl<$Res, $Val extends Tag> implements $TagCopyWith<$Res> {
-  _$TagCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of Tag
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
+  $TagCopyWith<Tag> get copyWith =>
+      _$TagCopyWithImpl<Tag>(this as Tag, _$identity);
+
   @override
-  $Res call({
-    Object? id = null,
-    Object? name = null,
-    Object? dbType = null,
-    Object? songLyricsCount = null,
-  }) {
-    return _then(_value.copyWith(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      dbType: null == dbType
-          ? _value.dbType
-          : dbType // ignore: cast_nullable_to_non_nullable
-              as int,
-      songLyricsCount: null == songLyricsCount
-          ? _value.songLyricsCount
-          : songLyricsCount // ignore: cast_nullable_to_non_nullable
-              as int,
-    ) as $Val);
+  String toString() {
+    return 'Tag(id: $id, name: $name, dbType: $dbType, songLyricsCount: $songLyricsCount)';
   }
 }
 
 /// @nodoc
-abstract class _$$TagImplCopyWith<$Res> implements $TagCopyWith<$Res> {
-  factory _$$TagImplCopyWith(_$TagImpl value, $Res Function(_$TagImpl) then) =
-      __$$TagImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $TagCopyWith<$Res> {
+  factory $TagCopyWith(Tag value, $Res Function(Tag) _then) = _$TagCopyWithImpl;
   @useResult
   $Res call(
       {@Id(assignable: true) @JsonKey(fromJson: int.parse) int id,
@@ -102,10 +49,11 @@ abstract class _$$TagImplCopyWith<$Res> implements $TagCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$TagImplCopyWithImpl<$Res> extends _$TagCopyWithImpl<$Res, _$TagImpl>
-    implements _$$TagImplCopyWith<$Res> {
-  __$$TagImplCopyWithImpl(_$TagImpl _value, $Res Function(_$TagImpl) _then)
-      : super(_value, _then);
+class _$TagCopyWithImpl<$Res> implements $TagCopyWith<$Res> {
+  _$TagCopyWithImpl(this._self, this._then);
+
+  final Tag _self;
+  final $Res Function(Tag) _then;
 
   /// Create a copy of Tag
   /// with the given fields replaced by the non-null parameter values.
@@ -117,21 +65,21 @@ class __$$TagImplCopyWithImpl<$Res> extends _$TagCopyWithImpl<$Res, _$TagImpl>
     Object? dbType = null,
     Object? songLyricsCount = null,
   }) {
-    return _then(_$TagImpl(
+    return _then(_self.copyWith(
       id: null == id
-          ? _value.id
+          ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
       name: null == name
-          ? _value.name
+          ? _self.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
       dbType: null == dbType
-          ? _value.dbType
+          ? _self.dbType
           : dbType // ignore: cast_nullable_to_non_nullable
               as int,
       songLyricsCount: null == songLyricsCount
-          ? _value.songLyricsCount
+          ? _self.songLyricsCount
           : songLyricsCount // ignore: cast_nullable_to_non_nullable
               as int,
     ));
@@ -142,17 +90,15 @@ class __$$TagImplCopyWithImpl<$Res> extends _$TagCopyWithImpl<$Res, _$TagImpl>
 
 @Entity(realClass: Tag)
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
-class _$TagImpl extends _Tag {
-  const _$TagImpl(
+class _Tag extends Tag {
+  const _Tag(
       {@Id(assignable: true) @JsonKey(fromJson: int.parse) required this.id,
       required this.name,
       @JsonKey(name: 'type_enum', fromJson: TagType.rawValueFromString)
       required this.dbType,
       required this.songLyricsCount})
       : super._();
-
-  factory _$TagImpl.fromJson(Map<String, dynamic> json) =>
-      _$$TagImplFromJson(json);
+  factory _Tag.fromJson(Map<String, dynamic> json) => _$TagFromJson(json);
 
   @override
   @Id(assignable: true)
@@ -166,49 +112,70 @@ class _$TagImpl extends _Tag {
   @override
   final int songLyricsCount;
 
+  /// Create a copy of Tag
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$TagCopyWith<_Tag> get copyWith =>
+      __$TagCopyWithImpl<_Tag>(this, _$identity);
+
   @override
   String toString() {
     return 'Tag(id: $id, name: $name, dbType: $dbType, songLyricsCount: $songLyricsCount)';
   }
+}
+
+/// @nodoc
+abstract mixin class _$TagCopyWith<$Res> implements $TagCopyWith<$Res> {
+  factory _$TagCopyWith(_Tag value, $Res Function(_Tag) _then) =
+      __$TagCopyWithImpl;
+  @override
+  @useResult
+  $Res call(
+      {@Id(assignable: true) @JsonKey(fromJson: int.parse) int id,
+      String name,
+      @JsonKey(name: 'type_enum', fromJson: TagType.rawValueFromString)
+      int dbType,
+      int songLyricsCount});
+}
+
+/// @nodoc
+class __$TagCopyWithImpl<$Res> implements _$TagCopyWith<$Res> {
+  __$TagCopyWithImpl(this._self, this._then);
+
+  final _Tag _self;
+  final $Res Function(_Tag) _then;
 
   /// Create a copy of Tag
   /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$TagImplCopyWith<_$TagImpl> get copyWith =>
-      __$$TagImplCopyWithImpl<_$TagImpl>(this, _$identity);
+  $Res call({
+    Object? id = null,
+    Object? name = null,
+    Object? dbType = null,
+    Object? songLyricsCount = null,
+  }) {
+    return _then(_Tag(
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      name: null == name
+          ? _self.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      dbType: null == dbType
+          ? _self.dbType
+          : dbType // ignore: cast_nullable_to_non_nullable
+              as int,
+      songLyricsCount: null == songLyricsCount
+          ? _self.songLyricsCount
+          : songLyricsCount // ignore: cast_nullable_to_non_nullable
+              as int,
+    ));
+  }
 }
 
-abstract class _Tag extends Tag {
-  const factory _Tag(
-      {@Id(assignable: true)
-      @JsonKey(fromJson: int.parse)
-      required final int id,
-      required final String name,
-      @JsonKey(name: 'type_enum', fromJson: TagType.rawValueFromString)
-      required final int dbType,
-      required final int songLyricsCount}) = _$TagImpl;
-  const _Tag._() : super._();
-
-  factory _Tag.fromJson(Map<String, dynamic> json) = _$TagImpl.fromJson;
-
-  @override
-  @Id(assignable: true)
-  @JsonKey(fromJson: int.parse)
-  int get id;
-  @override
-  String get name;
-  @override
-  @JsonKey(name: 'type_enum', fromJson: TagType.rawValueFromString)
-  int get dbType;
-  @override
-  int get songLyricsCount;
-
-  /// Create a copy of Tag
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$TagImplCopyWith<_$TagImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
+// dart format on

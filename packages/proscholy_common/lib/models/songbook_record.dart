@@ -9,7 +9,7 @@ part 'generated/songbook_record.freezed.dart';
 part 'generated/songbook_record.g.dart';
 
 @Freezed(toJson: false, equal: false)
-class SongbookRecord with _$SongbookRecord implements Comparable<SongbookRecord>, Identifiable, Record {
+sealed class SongbookRecord with _$SongbookRecord implements Comparable<SongbookRecord>, Identifiable, Record {
   static const String fieldKey = 'songbook_records';
 
   const SongbookRecord._();

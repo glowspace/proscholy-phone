@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:proscholy_common/constants.dart';
 import 'package:proscholy_common/providers/svgs.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -28,6 +29,9 @@ const _initialLastUpdate = isZP ? '2025-03-17 09:00:00' : '2025-03-17 09:00:00';
 const _updatePeriod = Duration(hours: 1);
 
 final _dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
+
+@Riverpod(keepAlive: true)
+Client graphQLClient(GraphQLClientRef ref) => Client();
 
 sealed class UpdateStatus {
   const UpdateStatus();
@@ -73,7 +77,7 @@ Future<void> loadInitial(AppDependencies appDependencies) async {
 
 @riverpod
 Stream<UpdateStatus> update(UpdateRef ref) async* {
-  final client = Client();
+  final client = ref.read(graphQLClientProvider);
   final appDependencies = ref.read(appDependenciesProvider);
 
   // update news
@@ -92,7 +96,6 @@ Stream<UpdateStatus> update(UpdateRef ref) async* {
   final now = DateTime.now().toUtc();
   final lastUpdate =
       _dateFormat.parseUtc(appDependencies.sharedPreferences.getString(_lastUpdateKey) ?? _initialLastUpdate);
-
 
   if (now.isBefore(lastUpdate.add(_updatePeriod))) return;
 
@@ -157,7 +160,7 @@ Stream<UpdateStatus> update(UpdateRef ref) async* {
 }
 
 // FIXME: does not seem to work correctly? try removing based on song_lyric ids
-void _cleanup(AppDependencies appDependencies) {
+void _cleanup(AppDependencies appDependencies) async {
   // remove externals that were associated with removed song lyrics
   _removeRelations(appDependencies.store, External_.songLyric.equals(0));
 
@@ -172,6 +175,19 @@ void _cleanup(AppDependencies appDependencies) {
         .and(PlaylistRecord_.bibleVerse.equals(0))
         .and(PlaylistRecord_.customText.equals(0)),
   );
+
+  // remove shared playlists
+  final dir = await getApplicationDocumentsDirectory();
+  final files = dir.listSync();
+
+  for (final file in files) {
+    if (file is File && file.path.endsWith('.proscholy')) {
+      print(file);
+      try {
+        await file.delete();
+      } catch (_) {}
+    }
+  }
 }
 
 void _removeRelations<T>(Store store, Condition<T> condition) {

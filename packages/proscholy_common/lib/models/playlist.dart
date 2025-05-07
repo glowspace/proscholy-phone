@@ -13,7 +13,7 @@ const _favoritesName = 'Písně s hvězdičkou';
 const playlistIdOffset = -2000;
 
 @Freezed(equal: false)
-class Playlist with _$Playlist implements Identifiable, RecentItem, SongsList {
+sealed class Playlist with _$Playlist implements Identifiable, RecentItem, SongsList {
   const Playlist._();
 
   @Entity(realClass: Playlist)

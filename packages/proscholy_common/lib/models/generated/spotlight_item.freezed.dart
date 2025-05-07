@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,149 +10,31 @@ part of '../spotlight_item.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-SpotlightItem _$SpotlightItemFromJson(Map<String, dynamic> json) {
-  return _SpotlightItem.fromJson(json);
-}
 
 /// @nodoc
 mixin _$SpotlightItem {
-  String get identifier => throw _privateConstructorUsedError;
-  String get title => throw _privateConstructorUsedError;
-  String get description => throw _privateConstructorUsedError;
-
-  /// Serializes this SpotlightItem to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  String get identifier;
+  String get title;
+  String get description;
 
   /// Create a copy of SpotlightItem
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
   $SpotlightItemCopyWith<SpotlightItem> get copyWith =>
-      throw _privateConstructorUsedError;
-}
+      _$SpotlightItemCopyWithImpl<SpotlightItem>(
+          this as SpotlightItem, _$identity);
 
-/// @nodoc
-abstract class $SpotlightItemCopyWith<$Res> {
-  factory $SpotlightItemCopyWith(
-          SpotlightItem value, $Res Function(SpotlightItem) then) =
-      _$SpotlightItemCopyWithImpl<$Res, SpotlightItem>;
-  @useResult
-  $Res call({String identifier, String title, String description});
-}
-
-/// @nodoc
-class _$SpotlightItemCopyWithImpl<$Res, $Val extends SpotlightItem>
-    implements $SpotlightItemCopyWith<$Res> {
-  _$SpotlightItemCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of SpotlightItem
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? identifier = null,
-    Object? title = null,
-    Object? description = null,
-  }) {
-    return _then(_value.copyWith(
-      identifier: null == identifier
-          ? _value.identifier
-          : identifier // ignore: cast_nullable_to_non_nullable
-              as String,
-      title: null == title
-          ? _value.title
-          : title // ignore: cast_nullable_to_non_nullable
-              as String,
-      description: null == description
-          ? _value.description
-          : description // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
-  }
-}
-
-/// @nodoc
-abstract class _$$SpotlightItemImplCopyWith<$Res>
-    implements $SpotlightItemCopyWith<$Res> {
-  factory _$$SpotlightItemImplCopyWith(
-          _$SpotlightItemImpl value, $Res Function(_$SpotlightItemImpl) then) =
-      __$$SpotlightItemImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({String identifier, String title, String description});
-}
-
-/// @nodoc
-class __$$SpotlightItemImplCopyWithImpl<$Res>
-    extends _$SpotlightItemCopyWithImpl<$Res, _$SpotlightItemImpl>
-    implements _$$SpotlightItemImplCopyWith<$Res> {
-  __$$SpotlightItemImplCopyWithImpl(
-      _$SpotlightItemImpl _value, $Res Function(_$SpotlightItemImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of SpotlightItem
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? identifier = null,
-    Object? title = null,
-    Object? description = null,
-  }) {
-    return _then(_$SpotlightItemImpl(
-      identifier: null == identifier
-          ? _value.identifier
-          : identifier // ignore: cast_nullable_to_non_nullable
-              as String,
-      title: null == title
-          ? _value.title
-          : title // ignore: cast_nullable_to_non_nullable
-              as String,
-      description: null == description
-          ? _value.description
-          : description // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
-  }
-}
-
-/// @nodoc
-@JsonSerializable()
-class _$SpotlightItemImpl implements _SpotlightItem {
-  const _$SpotlightItemImpl(
-      {required this.identifier,
-      required this.title,
-      required this.description});
-
-  factory _$SpotlightItemImpl.fromJson(Map<String, dynamic> json) =>
-      _$$SpotlightItemImplFromJson(json);
-
-  @override
-  final String identifier;
-  @override
-  final String title;
-  @override
-  final String description;
-
-  @override
-  String toString() {
-    return 'SpotlightItem(identifier: $identifier, title: $title, description: $description)';
-  }
+  /// Serializes this SpotlightItem to a JSON map.
+  Map<String, dynamic> toJson();
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$SpotlightItemImpl &&
+            other is SpotlightItem &&
             (identical(other.identifier, identifier) ||
                 other.identifier == identifier) &&
             (identical(other.title, title) || other.title == title) &&
@@ -163,42 +46,152 @@ class _$SpotlightItemImpl implements _SpotlightItem {
   @override
   int get hashCode => Object.hash(runtimeType, identifier, title, description);
 
-  /// Create a copy of SpotlightItem
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  @pragma('vm:prefer-inline')
-  _$$SpotlightItemImplCopyWith<_$SpotlightItemImpl> get copyWith =>
-      __$$SpotlightItemImplCopyWithImpl<_$SpotlightItemImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$SpotlightItemImplToJson(
-      this,
-    );
+  String toString() {
+    return 'SpotlightItem(identifier: $identifier, title: $title, description: $description)';
   }
 }
 
-abstract class _SpotlightItem implements SpotlightItem {
-  const factory _SpotlightItem(
-      {required final String identifier,
-      required final String title,
-      required final String description}) = _$SpotlightItemImpl;
+/// @nodoc
+abstract mixin class $SpotlightItemCopyWith<$Res> {
+  factory $SpotlightItemCopyWith(
+          SpotlightItem value, $Res Function(SpotlightItem) _then) =
+      _$SpotlightItemCopyWithImpl;
+  @useResult
+  $Res call({String identifier, String title, String description});
+}
 
-  factory _SpotlightItem.fromJson(Map<String, dynamic> json) =
-      _$SpotlightItemImpl.fromJson;
+/// @nodoc
+class _$SpotlightItemCopyWithImpl<$Res>
+    implements $SpotlightItemCopyWith<$Res> {
+  _$SpotlightItemCopyWithImpl(this._self, this._then);
+
+  final SpotlightItem _self;
+  final $Res Function(SpotlightItem) _then;
+
+  /// Create a copy of SpotlightItem
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? identifier = null,
+    Object? title = null,
+    Object? description = null,
+  }) {
+    return _then(_self.copyWith(
+      identifier: null == identifier
+          ? _self.identifier
+          : identifier // ignore: cast_nullable_to_non_nullable
+              as String,
+      title: null == title
+          ? _self.title
+          : title // ignore: cast_nullable_to_non_nullable
+              as String,
+      description: null == description
+          ? _self.description
+          : description // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _SpotlightItem implements SpotlightItem {
+  const _SpotlightItem(
+      {required this.identifier,
+      required this.title,
+      required this.description});
+  factory _SpotlightItem.fromJson(Map<String, dynamic> json) =>
+      _$SpotlightItemFromJson(json);
 
   @override
-  String get identifier;
+  final String identifier;
   @override
-  String get title;
+  final String title;
   @override
-  String get description;
+  final String description;
 
   /// Create a copy of SpotlightItem
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$SpotlightItemImplCopyWith<_$SpotlightItemImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  @pragma('vm:prefer-inline')
+  _$SpotlightItemCopyWith<_SpotlightItem> get copyWith =>
+      __$SpotlightItemCopyWithImpl<_SpotlightItem>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$SpotlightItemToJson(
+      this,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _SpotlightItem &&
+            (identical(other.identifier, identifier) ||
+                other.identifier == identifier) &&
+            (identical(other.title, title) || other.title == title) &&
+            (identical(other.description, description) ||
+                other.description == description));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, identifier, title, description);
+
+  @override
+  String toString() {
+    return 'SpotlightItem(identifier: $identifier, title: $title, description: $description)';
+  }
 }
+
+/// @nodoc
+abstract mixin class _$SpotlightItemCopyWith<$Res>
+    implements $SpotlightItemCopyWith<$Res> {
+  factory _$SpotlightItemCopyWith(
+          _SpotlightItem value, $Res Function(_SpotlightItem) _then) =
+      __$SpotlightItemCopyWithImpl;
+  @override
+  @useResult
+  $Res call({String identifier, String title, String description});
+}
+
+/// @nodoc
+class __$SpotlightItemCopyWithImpl<$Res>
+    implements _$SpotlightItemCopyWith<$Res> {
+  __$SpotlightItemCopyWithImpl(this._self, this._then);
+
+  final _SpotlightItem _self;
+  final $Res Function(_SpotlightItem) _then;
+
+  /// Create a copy of SpotlightItem
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? identifier = null,
+    Object? title = null,
+    Object? description = null,
+  }) {
+    return _then(_SpotlightItem(
+      identifier: null == identifier
+          ? _self.identifier
+          : identifier // ignore: cast_nullable_to_non_nullable
+              as String,
+      title: null == title
+          ? _self.title
+          : title // ignore: cast_nullable_to_non_nullable
+              as String,
+      description: null == description
+          ? _self.description
+          : description // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+// dart format on

@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,128 +10,27 @@ part of '../display_screen_status.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
 mixin _$DisplayScreenStatusModel {
-  bool get fullScreen => throw _privateConstructorUsedError;
-  bool get showingExternals => throw _privateConstructorUsedError;
+  bool get fullScreen;
+  bool get showingExternals;
 
   /// Create a copy of DisplayScreenStatusModel
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
   $DisplayScreenStatusModelCopyWith<DisplayScreenStatusModel> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $DisplayScreenStatusModelCopyWith<$Res> {
-  factory $DisplayScreenStatusModelCopyWith(DisplayScreenStatusModel value,
-          $Res Function(DisplayScreenStatusModel) then) =
-      _$DisplayScreenStatusModelCopyWithImpl<$Res, DisplayScreenStatusModel>;
-  @useResult
-  $Res call({bool fullScreen, bool showingExternals});
-}
-
-/// @nodoc
-class _$DisplayScreenStatusModelCopyWithImpl<$Res,
-        $Val extends DisplayScreenStatusModel>
-    implements $DisplayScreenStatusModelCopyWith<$Res> {
-  _$DisplayScreenStatusModelCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of DisplayScreenStatusModel
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? fullScreen = null,
-    Object? showingExternals = null,
-  }) {
-    return _then(_value.copyWith(
-      fullScreen: null == fullScreen
-          ? _value.fullScreen
-          : fullScreen // ignore: cast_nullable_to_non_nullable
-              as bool,
-      showingExternals: null == showingExternals
-          ? _value.showingExternals
-          : showingExternals // ignore: cast_nullable_to_non_nullable
-              as bool,
-    ) as $Val);
-  }
-}
-
-/// @nodoc
-abstract class _$$DisplayScreenStatusModelImplCopyWith<$Res>
-    implements $DisplayScreenStatusModelCopyWith<$Res> {
-  factory _$$DisplayScreenStatusModelImplCopyWith(
-          _$DisplayScreenStatusModelImpl value,
-          $Res Function(_$DisplayScreenStatusModelImpl) then) =
-      __$$DisplayScreenStatusModelImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({bool fullScreen, bool showingExternals});
-}
-
-/// @nodoc
-class __$$DisplayScreenStatusModelImplCopyWithImpl<$Res>
-    extends _$DisplayScreenStatusModelCopyWithImpl<$Res,
-        _$DisplayScreenStatusModelImpl>
-    implements _$$DisplayScreenStatusModelImplCopyWith<$Res> {
-  __$$DisplayScreenStatusModelImplCopyWithImpl(
-      _$DisplayScreenStatusModelImpl _value,
-      $Res Function(_$DisplayScreenStatusModelImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of DisplayScreenStatusModel
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? fullScreen = null,
-    Object? showingExternals = null,
-  }) {
-    return _then(_$DisplayScreenStatusModelImpl(
-      fullScreen: null == fullScreen
-          ? _value.fullScreen
-          : fullScreen // ignore: cast_nullable_to_non_nullable
-              as bool,
-      showingExternals: null == showingExternals
-          ? _value.showingExternals
-          : showingExternals // ignore: cast_nullable_to_non_nullable
-              as bool,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$DisplayScreenStatusModelImpl implements _DisplayScreenStatusModel {
-  const _$DisplayScreenStatusModelImpl(
-      {required this.fullScreen, required this.showingExternals});
-
-  @override
-  final bool fullScreen;
-  @override
-  final bool showingExternals;
-
-  @override
-  String toString() {
-    return 'DisplayScreenStatusModel(fullScreen: $fullScreen, showingExternals: $showingExternals)';
-  }
+      _$DisplayScreenStatusModelCopyWithImpl<DisplayScreenStatusModel>(
+          this as DisplayScreenStatusModel, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$DisplayScreenStatusModelImpl &&
+            other is DisplayScreenStatusModel &&
             (identical(other.fullScreen, fullScreen) ||
                 other.fullScreen == fullScreen) &&
             (identical(other.showingExternals, showingExternals) ||
@@ -140,30 +40,128 @@ class _$DisplayScreenStatusModelImpl implements _DisplayScreenStatusModel {
   @override
   int get hashCode => Object.hash(runtimeType, fullScreen, showingExternals);
 
+  @override
+  String toString() {
+    return 'DisplayScreenStatusModel(fullScreen: $fullScreen, showingExternals: $showingExternals)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $DisplayScreenStatusModelCopyWith<$Res> {
+  factory $DisplayScreenStatusModelCopyWith(DisplayScreenStatusModel value,
+          $Res Function(DisplayScreenStatusModel) _then) =
+      _$DisplayScreenStatusModelCopyWithImpl;
+  @useResult
+  $Res call({bool fullScreen, bool showingExternals});
+}
+
+/// @nodoc
+class _$DisplayScreenStatusModelCopyWithImpl<$Res>
+    implements $DisplayScreenStatusModelCopyWith<$Res> {
+  _$DisplayScreenStatusModelCopyWithImpl(this._self, this._then);
+
+  final DisplayScreenStatusModel _self;
+  final $Res Function(DisplayScreenStatusModel) _then;
+
   /// Create a copy of DisplayScreenStatusModel
   /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? fullScreen = null,
+    Object? showingExternals = null,
+  }) {
+    return _then(_self.copyWith(
+      fullScreen: null == fullScreen
+          ? _self.fullScreen
+          : fullScreen // ignore: cast_nullable_to_non_nullable
+              as bool,
+      showingExternals: null == showingExternals
+          ? _self.showingExternals
+          : showingExternals // ignore: cast_nullable_to_non_nullable
+              as bool,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _DisplayScreenStatusModel implements DisplayScreenStatusModel {
+  const _DisplayScreenStatusModel(
+      {required this.fullScreen, required this.showingExternals});
+
+  @override
+  final bool fullScreen;
+  @override
+  final bool showingExternals;
+
+  /// Create a copy of DisplayScreenStatusModel
+  /// with the given fields replaced by the non-null parameter values.
+  @override
   @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$DisplayScreenStatusModelCopyWith<_DisplayScreenStatusModel> get copyWith =>
+      __$DisplayScreenStatusModelCopyWithImpl<_DisplayScreenStatusModel>(
+          this, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _DisplayScreenStatusModel &&
+            (identical(other.fullScreen, fullScreen) ||
+                other.fullScreen == fullScreen) &&
+            (identical(other.showingExternals, showingExternals) ||
+                other.showingExternals == showingExternals));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, fullScreen, showingExternals);
+
+  @override
+  String toString() {
+    return 'DisplayScreenStatusModel(fullScreen: $fullScreen, showingExternals: $showingExternals)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$DisplayScreenStatusModelCopyWith<$Res>
+    implements $DisplayScreenStatusModelCopyWith<$Res> {
+  factory _$DisplayScreenStatusModelCopyWith(_DisplayScreenStatusModel value,
+          $Res Function(_DisplayScreenStatusModel) _then) =
+      __$DisplayScreenStatusModelCopyWithImpl;
+  @override
+  @useResult
+  $Res call({bool fullScreen, bool showingExternals});
+}
+
+/// @nodoc
+class __$DisplayScreenStatusModelCopyWithImpl<$Res>
+    implements _$DisplayScreenStatusModelCopyWith<$Res> {
+  __$DisplayScreenStatusModelCopyWithImpl(this._self, this._then);
+
+  final _DisplayScreenStatusModel _self;
+  final $Res Function(_DisplayScreenStatusModel) _then;
+
+  /// Create a copy of DisplayScreenStatusModel
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  _$$DisplayScreenStatusModelImplCopyWith<_$DisplayScreenStatusModelImpl>
-      get copyWith => __$$DisplayScreenStatusModelImplCopyWithImpl<
-          _$DisplayScreenStatusModelImpl>(this, _$identity);
+  $Res call({
+    Object? fullScreen = null,
+    Object? showingExternals = null,
+  }) {
+    return _then(_DisplayScreenStatusModel(
+      fullScreen: null == fullScreen
+          ? _self.fullScreen
+          : fullScreen // ignore: cast_nullable_to_non_nullable
+              as bool,
+      showingExternals: null == showingExternals
+          ? _self.showingExternals
+          : showingExternals // ignore: cast_nullable_to_non_nullable
+              as bool,
+    ));
+  }
 }
 
-abstract class _DisplayScreenStatusModel implements DisplayScreenStatusModel {
-  const factory _DisplayScreenStatusModel(
-      {required final bool fullScreen,
-      required final bool showingExternals}) = _$DisplayScreenStatusModelImpl;
-
-  @override
-  bool get fullScreen;
-  @override
-  bool get showingExternals;
-
-  /// Create a copy of DisplayScreenStatusModel
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$DisplayScreenStatusModelImplCopyWith<_$DisplayScreenStatusModelImpl>
-      get copyWith => throw _privateConstructorUsedError;
-}
+// dart format on

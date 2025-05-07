@@ -20,7 +20,7 @@ const defaultGlobalSettings = GlobalSettings(
 );
 
 @freezed
-class GlobalSettings with _$GlobalSettings {
+sealed class GlobalSettings with _$GlobalSettings {
   const factory GlobalSettings({
     bool? darkModeEnabled,
     required int seedColor,
@@ -35,7 +35,7 @@ class GlobalSettings with _$GlobalSettings {
 }
 
 @Freezed(equal: false)
-class SongLyricSettingsModel with _$SongLyricSettingsModel implements Identifiable {
+sealed class SongLyricSettingsModel with _$SongLyricSettingsModel implements Identifiable {
   const SongLyricSettingsModel._();
 
   @Entity(realClass: SongLyricSettingsModel)

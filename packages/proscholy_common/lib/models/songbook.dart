@@ -14,7 +14,7 @@ const prioritized = {'H1': 0, 'H2': 1, 'K': 2, 'Kan': 3};
 const _songbookIdOffset = -1000;
 
 @Freezed(toJson: false, equal: false)
-class Songbook with _$Songbook implements Comparable<Songbook>, Identifiable, SongsList, RecentItem {
+sealed class Songbook with _$Songbook implements Comparable<Songbook>, Identifiable, SongsList, RecentItem {
   static const String fieldKey = 'songbooks';
 
   const Songbook._();

@@ -6,8 +6,7 @@ part of '../news_item.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$NewsItemImpl _$$NewsItemImplFromJson(Map<String, dynamic> json) =>
-    _$NewsItemImpl(
+_NewsItem _$NewsItemFromJson(Map<String, dynamic> json) => _NewsItem(
       id: int.parse(json['id'] as String),
       text: json['text'] as String,
       link: json['link'] as String,

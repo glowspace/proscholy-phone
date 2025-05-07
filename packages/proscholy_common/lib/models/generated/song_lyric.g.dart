@@ -6,8 +6,7 @@ part of '../song_lyric.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$SongLyricImpl _$$SongLyricImplFromJson(Map<String, dynamic> json) =>
-    _$SongLyricImpl(
+_SongLyric _$SongLyricFromJson(Map<String, dynamic> json) => _SongLyric(
       id: int.parse(json['id'] as String),
       ezId: (_readEzId(json, 'ez_id') as num).toInt(),
       name: json['name'] as String,

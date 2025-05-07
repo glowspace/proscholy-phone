@@ -146,7 +146,7 @@ class SearchedSongLyrics extends _$SearchedSongLyrics {
 }
 
 @freezed
-class SearchedSongLyricsResult with _$SearchedSongLyricsResult {
+sealed class SearchedSongLyricsResult with _$SearchedSongLyricsResult {
   const factory SearchedSongLyricsResult({
     List<SongLyric>? songLyrics,
     String? searchedNumber,

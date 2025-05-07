@@ -6,7 +6,24 @@ part of '../update.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$updateHash() => r'0334eb1201d1f5b60aeafaea81565fb8a1381aa8';
+String _$graphQLClientHash() => r'64a66c01751ad42509b410f348790661f8d53244';
+
+/// See also [graphQLClient].
+@ProviderFor(graphQLClient)
+final graphQLClientProvider = Provider<Client>.internal(
+  graphQLClient,
+  name: r'graphQLClientProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$graphQLClientHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef GraphQLClientRef = ProviderRef<Client>;
+String _$updateHash() => r'91809ecc65c3bcc4955d1010e05255e2f34e4611';
 
 /// See also [update].
 @ProviderFor(update)

@@ -8,7 +8,7 @@ part 'generated/song.freezed.dart';
 part 'generated/song.g.dart';
 
 @Freezed(toJson: false, equal: false)
-class Song with _$Song implements Identifiable {
+sealed class Song with _$Song implements Identifiable {
   static const String fieldKey = 'songs';
 
   const Song._();

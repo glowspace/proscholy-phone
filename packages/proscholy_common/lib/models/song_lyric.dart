@@ -52,7 +52,7 @@ enum SongLyricType {
 }
 
 @Freezed(toJson: false, equal: false)
-class SongLyric with _$SongLyric implements DisplayableItem, Identifiable, RecentItem {
+sealed class SongLyric with _$SongLyric implements DisplayableItem, Identifiable, RecentItem {
   static const String fieldKey = 'song_lyrics';
 
   const SongLyric._();
