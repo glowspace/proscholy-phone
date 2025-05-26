@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/services.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:proscholy_common/constants.dart';
@@ -88,6 +89,8 @@ Stream<UpdateStatus> update(UpdateRef ref) async* {
     // remove all news items, that were deleted on server
     appDependencies.store.box<NewsItem>().removeAll();
     appDependencies.store.box<NewsItem>().putMany(newsItems);
+  } on OperationException catch (e) {
+    if (e.linkException?.originalException is SocketException) return;
   } on SocketException {
     return;
   }
