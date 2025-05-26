@@ -48,7 +48,7 @@
                 <data android:host="*" />
                 <data android:scheme="content" />
                 <data android:scheme="file" />
-                <data android:mimeType="application/json" />
+                <data android:mimeType="application/*" />
             </intent-filter>
 
             <!-- make sure opening file does not result in opening invalid link -->
