@@ -89,7 +89,7 @@ class PlaylistButton extends StatelessWidget {
         '${(await getApplicationDocumentsDirectory()).path}/${playlist.name.replaceAll("/", "-")}.proscholy';
     final file = File(fileName);
 
-    file.writeAsString(playlistData);
+    await file.writeAsString(playlistData);
 
     await SharePlus.instance.share(
       ShareParams(
