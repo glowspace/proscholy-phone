@@ -102,7 +102,7 @@ class Presentation extends StatelessWidget {
               alignment: Alignment.bottomRight,
               child: Padding(
                 padding: const EdgeInsets.all(2 * kDefaultPadding),
-                child: Image.asset('assets/images/songbooks/default.png', width: width / 20),
+                child: Image.asset('$imagesPath/songbooks/default.png', width: width / 20, package: 'proscholy_common'),
               ),
             ),
         ],
