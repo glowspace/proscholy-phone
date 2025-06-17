@@ -34,8 +34,8 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <!-- Accepts URIs that begin with "zpevnik.proscholy.cz” -->
-                <data android:scheme="https"
-                    android:host="www.zpevnik.proscholy.cz" />
+                <data android:scheme="http" android:host="zpevnik.proscholy.cz" />
+                <data android:scheme="https" android:host="zpevnik.proscholy.cz" />
             </intent-filter>
 
             <!-- Accept files with ".proscholy" extension and JSON mimetype -->
