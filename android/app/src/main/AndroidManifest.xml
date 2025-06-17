@@ -38,17 +38,24 @@
                     android:host="www.zpevnik.proscholy.cz" />
             </intent-filter>
 
-            <!-- Accept files with ".proscholy" extension, will enable to appear our app in "Open with app". -->
+            <!-- Accept files with ".proscholy" extension and JSON mimetype -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.OPENABLE" />
 
-                <data android:host="*" />
-                <data android:scheme="content" />
-                <data android:scheme="file" />
-                <data android:mimeType="application/json" />
+                <data android:mimeType="application/json" android:pathPattern=".*\\.proscholy"/>
+                <data android:mimeType="application/json" android:scheme="file"/>
+                <data android:mimeType="application/json" android:scheme="content"/>
+
+                <data android:mimeType="text/json" android:pathPattern=".*\\.proscholy"/>
+                <data android:mimeType="text/json" android:scheme="file"/>
+                <data android:mimeType="text/json" android:scheme="content"/>
+
+                <data android:mimeType="*/*" android:pathPattern=".*\\.proscholy"/>
+                <data android:mimeType="*/*" android:scheme="file" android:pathPattern=".*\\.proscholy"/>
+                <data android:mimeType="*/*" android:scheme="content" android:pathPattern=".*\\.proscholy"/>
             </intent-filter>
 
             <!-- make sure opening file does not result in opening invalid link -->
