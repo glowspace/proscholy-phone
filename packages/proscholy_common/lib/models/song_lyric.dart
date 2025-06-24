@@ -61,7 +61,7 @@ sealed class SongLyric with _$SongLyric implements DisplayableItem, Identifiable
   @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
   const factory SongLyric({
     @Id(assignable: true) @JsonKey(fromJson: int.parse) required int id,
-    @JsonKey(readValue: _readEzId) required int ezId,
+    @JsonKey(readValue: _readDisplayId) required String displayId,
     required String name,
     @JsonKey(name: 'secondary_name_1') String? secondaryName1,
     @JsonKey(name: 'secondary_name_2') String? secondaryName2,
@@ -157,13 +157,22 @@ sealed class SongLyric with _$SongLyric implements DisplayableItem, Identifiable
   bool operator ==(Object other) => other is SongLyric && id == other.id;
 }
 
-int _readEzId(Map<dynamic, dynamic> json, String _) {
-  if (isZP) return -1;
+String _readDisplayId(Map<dynamic, dynamic> json, String _) {
+  if (isEZ) {
+    final idString = json['songbook_records']
+        .firstWhere((songbookRecord) => songbookRecord['pivot']['songbook']['id'] == '58')['pivot']['number'];
 
-  final idString = json['songbook_records']
-      .firstWhere((songbookRecord) => songbookRecord['pivot']['songbook']['id'] == '58')['pivot']['number'];
+    return idString;
+  }
 
-  return int.parse(idString);
+  if (isEK) {
+    final idString = json['songbook_records']
+        .firstWhere((songbookRecord) => songbookRecord['pivot']['songbook']['id'] == '63')['pivot']['number'];
+
+    return idString;
+  }
+
+  return json['id'];
 }
 
 ToOne<Song> _songFromJson(Map<String, dynamic>? json) {

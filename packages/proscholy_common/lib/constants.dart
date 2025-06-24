@@ -25,3 +25,5 @@ const imagesPath = 'assets/images';
 const isZP = String.fromEnvironment('ZPEVNIK_TARGET') == 'ZP';
 // building for evangelickyzpevnik.cz
 const isEZ = String.fromEnvironment('ZPEVNIK_TARGET') == 'EZ';
+// building for evangelickykancional.cz
+const isEK = String.fromEnvironment('ZPEVNIK_TARGET') == 'EK';

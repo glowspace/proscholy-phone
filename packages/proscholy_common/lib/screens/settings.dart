@@ -38,7 +38,11 @@ class SettingsScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: kDefaultPadding),
                 HighlightableWidget(
-                  onTap: () => isZP ? context.push('/about') : launch('https://evangelickyzpevnik.cz/o-zpevniku'),
+                  onTap: () => isZP
+                      ? context.push('/about')
+                      : (isEZ
+                          ? launch('https://evangelickyzpevnik.cz/o-zpevniku')
+                          : launch('https://evangelickykancional.cz/o-zpevniku')),
                   padding: const EdgeInsets.all(kDefaultPadding / 2),
                   textStyle: textTheme.bodySmall,
                   child: const Text('O projektu'),

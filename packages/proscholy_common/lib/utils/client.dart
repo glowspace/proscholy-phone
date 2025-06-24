@@ -7,7 +7,7 @@ import 'package:proscholy_common/constants.dart';
 
 final _dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
 
-final _link = HttpLink('https://zpevnik.proscholy.cz/graphql', defaultHeaders: {if (isEZ) 'Filter-Content': 'ez'});
+final _link = HttpLink('https://zpevnik.proscholy.cz/graphql', defaultHeaders: {if (isEZ) 'Filter-Content': 'ez' else if (isEK) 'Filter-Content': 'ek'});
 
 const _newsQuery = '''
 query {
@@ -63,7 +63,7 @@ query {
     secondary_name_1
     secondary_name_2
     lyrics
-    ${isEZ ? _ezAdditionalQueryFields : ''}
+    ${isEZ || isEK ? _ezAdditionalQueryFields : ''}
     lang
     lang_string
     type_enum
@@ -111,7 +111,7 @@ query {
     secondary_name_1
     secondary_name_2
     lyrics
-    ${isEZ ? _ezAdditionalQueryFields : ''}
+    ${isEZ || isEK ? _ezAdditionalQueryFields : ''}
     lang
     lang_string
     type_enum

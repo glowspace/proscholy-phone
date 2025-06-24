@@ -276,7 +276,7 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
           ],
         ),
       (SongLyric songLyric) => AppBar(
-          title: Text('${isZP ? songLyric.id : songLyric.ezId}'),
+          title: Text(songLyric.displayId),
           leading: const CustomBackButton(),
           actions: [
             StatefulBuilder(

@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:collection/collection.dart';
 import 'package:proscholy_common/providers/svgs.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:proscholy_common/models/model.dart';
@@ -28,7 +29,7 @@ List<SongLyric> songLyrics(SongLyricsRef ref) {
   return switch (ref.watch(sortProvider)) {
     SortType.random => songLyrics..sort((_, __) => random.nextDouble().compareTo(random.nextDouble())),
     SortType.alpha => songLyrics..sort((a, b) => a.name.compareTo(b.name)),
-    SortType.numeric => songLyrics..sort((a, b) => a.id.compareTo(b.id)),
+    SortType.numeric => songLyrics..sort((a, b) => compareNatural(a.displayId, b.displayId)),
   };
 }
 

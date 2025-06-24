@@ -109,6 +109,8 @@ class SearchedSongLyrics extends _$SearchedSongLyrics {
         if (songLyric != null) {
           if (isEZ && songbookRecord.songbook.targetId == 58) {
             matchedById = songLyric;
+          } else if (isEK && songbookRecord.songbook.targetId == 63) {
+            matchedById = songLyric;
           } else {
             matchedBySongbookNumber.add(songLyric);
           }

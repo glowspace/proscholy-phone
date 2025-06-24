@@ -18,8 +18,8 @@ mixin _$SongLyric {
   @Id(assignable: true)
   @JsonKey(fromJson: int.parse)
   int get id;
-  @JsonKey(readValue: _readEzId)
-  int get ezId;
+  @JsonKey(readValue: _readDisplayId)
+  String get displayId;
   String get name;
   @JsonKey(name: 'secondary_name_1')
   String? get secondaryName1;
@@ -66,7 +66,7 @@ mixin _$SongLyric {
 
   @override
   String toString() {
-    return 'SongLyric(id: $id, ezId: $ezId, name: $name, secondaryName1: $secondaryName1, secondaryName2: $secondaryName2, lyrics: $lyrics, hymnologyNew: $hymnologyNew, lang: $lang, langDescription: $langDescription, dbType: $dbType, hasChords: $hasChords, accidentals: $accidentals, showChords: $showChords, transposition: $transposition, song: $song, settings: $settings, authors: $authors, tags: $tags, externals: $externals, songbookRecords: $songbookRecords, playlistRecords: $playlistRecords)';
+    return 'SongLyric(id: $id, displayId: $displayId, name: $name, secondaryName1: $secondaryName1, secondaryName2: $secondaryName2, lyrics: $lyrics, hymnologyNew: $hymnologyNew, lang: $lang, langDescription: $langDescription, dbType: $dbType, hasChords: $hasChords, accidentals: $accidentals, showChords: $showChords, transposition: $transposition, song: $song, settings: $settings, authors: $authors, tags: $tags, externals: $externals, songbookRecords: $songbookRecords, playlistRecords: $playlistRecords)';
   }
 }
 
@@ -77,7 +77,7 @@ abstract mixin class $SongLyricCopyWith<$Res> {
   @useResult
   $Res call(
       {@Id(assignable: true) @JsonKey(fromJson: int.parse) int id,
-      @JsonKey(readValue: _readEzId) int ezId,
+      @JsonKey(readValue: _readDisplayId) String displayId,
       String name,
       @JsonKey(name: 'secondary_name_1') String? secondaryName1,
       @JsonKey(name: 'secondary_name_2') String? secondaryName2,
@@ -119,7 +119,7 @@ class _$SongLyricCopyWithImpl<$Res> implements $SongLyricCopyWith<$Res> {
   @override
   $Res call({
     Object? id = null,
-    Object? ezId = null,
+    Object? displayId = null,
     Object? name = null,
     Object? secondaryName1 = freezed,
     Object? secondaryName2 = freezed,
@@ -145,10 +145,10 @@ class _$SongLyricCopyWithImpl<$Res> implements $SongLyricCopyWith<$Res> {
           ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
-      ezId: null == ezId
-          ? _self.ezId
-          : ezId // ignore: cast_nullable_to_non_nullable
-              as int,
+      displayId: null == displayId
+          ? _self.displayId
+          : displayId // ignore: cast_nullable_to_non_nullable
+              as String,
       name: null == name
           ? _self.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -236,7 +236,7 @@ class _$SongLyricCopyWithImpl<$Res> implements $SongLyricCopyWith<$Res> {
 class _SongLyric extends SongLyric {
   const _SongLyric(
       {@Id(assignable: true) @JsonKey(fromJson: int.parse) required this.id,
-      @JsonKey(readValue: _readEzId) required this.ezId,
+      @JsonKey(readValue: _readDisplayId) required this.displayId,
       required this.name,
       @JsonKey(name: 'secondary_name_1') this.secondaryName1,
       @JsonKey(name: 'secondary_name_2') this.secondaryName2,
@@ -271,8 +271,8 @@ class _SongLyric extends SongLyric {
   @JsonKey(fromJson: int.parse)
   final int id;
   @override
-  @JsonKey(readValue: _readEzId)
-  final int ezId;
+  @JsonKey(readValue: _readDisplayId)
+  final String displayId;
   @override
   final String name;
   @override
@@ -340,7 +340,7 @@ class _SongLyric extends SongLyric {
 
   @override
   String toString() {
-    return 'SongLyric(id: $id, ezId: $ezId, name: $name, secondaryName1: $secondaryName1, secondaryName2: $secondaryName2, lyrics: $lyrics, hymnologyNew: $hymnologyNew, lang: $lang, langDescription: $langDescription, dbType: $dbType, hasChords: $hasChords, accidentals: $accidentals, showChords: $showChords, transposition: $transposition, song: $song, settings: $settings, authors: $authors, tags: $tags, externals: $externals, songbookRecords: $songbookRecords, playlistRecords: $playlistRecords)';
+    return 'SongLyric(id: $id, displayId: $displayId, name: $name, secondaryName1: $secondaryName1, secondaryName2: $secondaryName2, lyrics: $lyrics, hymnologyNew: $hymnologyNew, lang: $lang, langDescription: $langDescription, dbType: $dbType, hasChords: $hasChords, accidentals: $accidentals, showChords: $showChords, transposition: $transposition, song: $song, settings: $settings, authors: $authors, tags: $tags, externals: $externals, songbookRecords: $songbookRecords, playlistRecords: $playlistRecords)';
   }
 }
 
@@ -354,7 +354,7 @@ abstract mixin class _$SongLyricCopyWith<$Res>
   @useResult
   $Res call(
       {@Id(assignable: true) @JsonKey(fromJson: int.parse) int id,
-      @JsonKey(readValue: _readEzId) int ezId,
+      @JsonKey(readValue: _readDisplayId) String displayId,
       String name,
       @JsonKey(name: 'secondary_name_1') String? secondaryName1,
       @JsonKey(name: 'secondary_name_2') String? secondaryName2,
@@ -396,7 +396,7 @@ class __$SongLyricCopyWithImpl<$Res> implements _$SongLyricCopyWith<$Res> {
   @pragma('vm:prefer-inline')
   $Res call({
     Object? id = null,
-    Object? ezId = null,
+    Object? displayId = null,
     Object? name = null,
     Object? secondaryName1 = freezed,
     Object? secondaryName2 = freezed,
@@ -422,10 +422,10 @@ class __$SongLyricCopyWithImpl<$Res> implements _$SongLyricCopyWith<$Res> {
           ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
-      ezId: null == ezId
-          ? _self.ezId
-          : ezId // ignore: cast_nullable_to_non_nullable
-              as int,
+      displayId: null == displayId
+          ? _self.displayId
+          : displayId // ignore: cast_nullable_to_non_nullable
+              as String,
       name: null == name
           ? _self.name
           : name // ignore: cast_nullable_to_non_nullable

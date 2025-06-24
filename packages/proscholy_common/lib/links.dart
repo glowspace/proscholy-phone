@@ -1,6 +1,6 @@
 import 'package:proscholy_common/constants.dart';
 
-const baseUrl = isZP ? 'zpevnik.proscholy.cz' : 'evangelickyzpevnik.cz';
+const baseUrl = isZP ? 'zpevnik.proscholy.cz' : (isEZ ? 'evangelickyzpevnik.cz' : 'evangelickykancional.cz');
 
 const songUrl = '$baseUrl/pisen';
 

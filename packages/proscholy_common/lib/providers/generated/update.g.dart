@@ -23,7 +23,7 @@ final graphQLClientProvider = Provider<Client>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef GraphQLClientRef = ProviderRef<Client>;
-String _$updateHash() => r'91809ecc65c3bcc4955d1010e05255e2f34e4611';
+String _$updateHash() => r'750ab02cb407c3e1c213e049ed79e4030496b9b6';
 
 /// See also [update].
 @ProviderFor(update)

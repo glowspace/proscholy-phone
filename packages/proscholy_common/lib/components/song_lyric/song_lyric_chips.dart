@@ -60,7 +60,7 @@ class SongLyricChips extends StatelessWidget {
               builder: (_) => SongLyricTags(songLyric: songLyric),
             ),
           ),
-        if (isEZ && songLyric.hasHymnology)
+        if ((isEZ || isEK) && songLyric.hasHymnology)
           SongLyricChip(
             text: 'O písni',
             icon: Icons.info,

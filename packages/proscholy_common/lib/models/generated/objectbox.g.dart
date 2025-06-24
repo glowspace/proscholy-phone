@@ -214,7 +214,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
     id: const obx_int.IdUid(11, 6447883453535376640),
     name: 'SongLyric',
-    lastPropertyId: const obx_int.IdUid(35, 3799126751953551979),
+    lastPropertyId: const obx_int.IdUid(37, 6486511720887642649),
     flags: 0,
     properties: <obx_int.ModelProperty>[
       obx_int.ModelProperty(
@@ -306,14 +306,14 @@ final _entities = <obx_int.ModelEntity>[
         relationTarget: 'SongLyricSettingsModel',
       ),
       obx_int.ModelProperty(
-        id: const obx_int.IdUid(28, 6098338462102959253),
-        name: 'ezId',
-        type: 6,
+        id: const obx_int.IdUid(35, 3799126751953551979),
+        name: 'hymnologyNew',
+        type: 9,
         flags: 0,
       ),
       obx_int.ModelProperty(
-        id: const obx_int.IdUid(35, 3799126751953551979),
-        name: 'hymnologyNew',
+        id: const obx_int.IdUid(37, 6486511720887642649),
+        name: 'displayId',
         type: 9,
         flags: 0,
       ),
@@ -788,6 +788,8 @@ obx_int.ModelDefinition getObjectBoxModel() {
       4624595427649584957,
       4993132736196042096,
       4119502192344556831,
+      6098338462102959253,
+      3138933648918384884,
     ],
     retiredRelationUids: const [
       7916874752771113838,
@@ -864,15 +866,13 @@ obx_int.ModelDefinition getObjectBoxModel() {
     Song: obx_int.EntityDefinition<Song>(
       model: _entities[1],
       toOneRelations: (Song object) => [],
-      toManyRelations:
-          (Song object) => {
-            obx_int.RelInfo<SongLyric>.toOneBacklink(
-                  9,
-                  object.id,
-                  (SongLyric srcObject) => srcObject.song,
-                ):
-                object.songLyrics,
-          },
+      toManyRelations: (Song object) => {
+        obx_int.RelInfo<SongLyric>.toOneBacklink(
+          9,
+          object.id,
+          (SongLyric srcObject) => srcObject.song,
+        ): object.songLyrics,
+      },
       getId: (Song object) => object.id,
       setId: (Song object, int id) {
         if (object.id != id) {
@@ -967,15 +967,13 @@ obx_int.ModelDefinition getObjectBoxModel() {
     Songbook: obx_int.EntityDefinition<Songbook>(
       model: _entities[3],
       toOneRelations: (Songbook object) => [],
-      toManyRelations:
-          (Songbook object) => {
-            obx_int.RelInfo<SongbookRecord>.toOneBacklink(
-                  8,
-                  object.id,
-                  (SongbookRecord srcObject) => srcObject.songbook,
-                ):
-                object.records,
-          },
+      toManyRelations: (Songbook object) => {
+        obx_int.RelInfo<SongbookRecord>.toOneBacklink(
+          8,
+          object.id,
+          (SongbookRecord srcObject) => srcObject.songbook,
+        ): object.records,
+      },
       getId: (Songbook object) => object.id,
       setId: (Songbook object, int id) {
         if (object.id != id) {
@@ -991,12 +989,12 @@ obx_int.ModelDefinition getObjectBoxModel() {
       objectToFB: (Songbook object, fb.Builder fbb) {
         final nameOffset = fbb.writeString(object.name);
         final shortcutOffset = fbb.writeString(object.shortcut);
-        final colorOffset =
-            object.color == null ? null : fbb.writeString(object.color!);
-        final colorTextOffset =
-            object.colorText == null
-                ? null
-                : fbb.writeString(object.colorText!);
+        final colorOffset = object.color == null
+            ? null
+            : fbb.writeString(object.color!);
+        final colorTextOffset = object.colorText == null
+            ? null
+            : fbb.writeString(object.colorText!);
         fbb.startTable(8);
         fbb.addInt64(0, object.id);
         fbb.addOffset(1, nameOffset);
@@ -1065,8 +1063,10 @@ obx_int.ModelDefinition getObjectBoxModel() {
     ),
     SongbookRecord: obx_int.EntityDefinition<SongbookRecord>(
       model: _entities[4],
-      toOneRelations:
-          (SongbookRecord object) => [object.songLyric, object.songbook],
+      toOneRelations: (SongbookRecord object) => [
+        object.songLyric,
+        object.songbook,
+      ],
       toManyRelations: (SongbookRecord object) => {},
       getId: (SongbookRecord object) => object.id,
       setId: (SongbookRecord object, int id) {
@@ -1122,24 +1122,21 @@ obx_int.ModelDefinition getObjectBoxModel() {
     SongLyric: obx_int.EntityDefinition<SongLyric>(
       model: _entities[5],
       toOneRelations: (SongLyric object) => [object.song, object.settings],
-      toManyRelations:
-          (SongLyric object) => {
-            obx_int.RelInfo<SongLyric>.toMany(6, object.id): object.authors,
-            obx_int.RelInfo<SongLyric>.toMany(7, object.id): object.tags,
-            obx_int.RelInfo<SongLyric>.toMany(9, object.id): object.externals,
-            obx_int.RelInfo<SongbookRecord>.toOneBacklink(
-                  7,
-                  object.id,
-                  (SongbookRecord srcObject) => srcObject.songLyric,
-                ):
-                object.songbookRecords,
-            obx_int.RelInfo<PlaylistRecord>.toOneBacklink(
-                  3,
-                  object.id,
-                  (PlaylistRecord srcObject) => srcObject.songLyric,
-                ):
-                object.playlistRecords,
-          },
+      toManyRelations: (SongLyric object) => {
+        obx_int.RelInfo<SongLyric>.toMany(6, object.id): object.authors,
+        obx_int.RelInfo<SongLyric>.toMany(7, object.id): object.tags,
+        obx_int.RelInfo<SongLyric>.toMany(9, object.id): object.externals,
+        obx_int.RelInfo<SongbookRecord>.toOneBacklink(
+          7,
+          object.id,
+          (SongbookRecord srcObject) => srcObject.songLyric,
+        ): object.songbookRecords,
+        obx_int.RelInfo<PlaylistRecord>.toOneBacklink(
+          3,
+          object.id,
+          (PlaylistRecord srcObject) => srcObject.songLyric,
+        ): object.playlistRecords,
+      },
       getId: (SongLyric object) => object.id,
       setId: (SongLyric object, int id) {
         if (object.id != id) {
@@ -1154,20 +1151,20 @@ obx_int.ModelDefinition getObjectBoxModel() {
       },
       objectToFB: (SongLyric object, fb.Builder fbb) {
         final nameOffset = fbb.writeString(object.name);
-        final secondaryName1Offset =
-            object.secondaryName1 == null
-                ? null
-                : fbb.writeString(object.secondaryName1!);
-        final secondaryName2Offset =
-            object.secondaryName2 == null
-                ? null
-                : fbb.writeString(object.secondaryName2!);
-        final lyricsOffset =
-            object.lyrics == null ? null : fbb.writeString(object.lyrics!);
+        final secondaryName1Offset = object.secondaryName1 == null
+            ? null
+            : fbb.writeString(object.secondaryName1!);
+        final secondaryName2Offset = object.secondaryName2 == null
+            ? null
+            : fbb.writeString(object.secondaryName2!);
+        final lyricsOffset = object.lyrics == null
+            ? null
+            : fbb.writeString(object.lyrics!);
         final langOffset = fbb.writeString(object.lang);
         final langDescriptionOffset = fbb.writeString(object.langDescription);
         final hymnologyNewOffset = fbb.writeString(object.hymnologyNew);
-        fbb.startTable(36);
+        final displayIdOffset = fbb.writeString(object.displayId);
+        fbb.startTable(38);
         fbb.addInt64(0, object.id);
         fbb.addOffset(1, nameOffset);
         fbb.addOffset(2, secondaryName1Offset);
@@ -1182,8 +1179,8 @@ obx_int.ModelDefinition getObjectBoxModel() {
         fbb.addBool(22, object.showChords);
         fbb.addInt64(23, object.transposition);
         fbb.addInt64(26, object.settings.targetId);
-        fbb.addInt64(27, object.ezId);
         fbb.addOffset(34, hymnologyNewOffset);
+        fbb.addOffset(36, displayIdOffset);
         fbb.finish(fbb.endTable());
         return object.id;
       },
@@ -1196,12 +1193,9 @@ obx_int.ModelDefinition getObjectBoxModel() {
           4,
           0,
         );
-        final ezIdParam = const fb.Int64Reader().vTableGet(
-          buffer,
-          rootOffset,
-          58,
-          0,
-        );
+        final displayIdParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGet(buffer, rootOffset, 76, '');
         final nameParam = const fb.StringReader(
           asciiOptimization: true,
         ).vTableGet(buffer, rootOffset, 6, '');
@@ -1263,7 +1257,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final playlistRecordsParam = obx.ToMany<PlaylistRecord>();
         final object = SongLyric(
           id: idParam,
-          ezId: ezIdParam,
+          displayId: displayIdParam,
           name: nameParam,
           secondaryName1: secondaryName1Param,
           secondaryName2: secondaryName2Param,
@@ -1369,10 +1363,9 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final linkParam = const fb.StringReader(
           asciiOptimization: true,
         ).vTableGet(buffer, rootOffset, 8, '');
-        final expiresAtParam =
-            expiresAtValue == null
-                ? null
-                : DateTime.fromMillisecondsSinceEpoch(expiresAtValue);
+        final expiresAtParam = expiresAtValue == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(expiresAtValue);
         final object = NewsItem(
           id: idParam,
           text: textParam,
@@ -1401,10 +1394,12 @@ obx_int.ModelDefinition getObjectBoxModel() {
       },
       objectToFB: (External object, fb.Builder fbb) {
         final publicNameOffset = fbb.writeString(object.publicName);
-        final mediaIdOffset =
-            object.mediaId == null ? null : fbb.writeString(object.mediaId!);
-        final urlOffset =
-            object.url == null ? null : fbb.writeString(object.url!);
+        final mediaIdOffset = object.mediaId == null
+            ? null
+            : fbb.writeString(object.mediaId!);
+        final urlOffset = object.url == null
+            ? null
+            : fbb.writeString(object.url!);
         fbb.startTable(8);
         fbb.addInt64(0, object.id);
         fbb.addOffset(1, publicNameOffset);
@@ -1457,15 +1452,13 @@ obx_int.ModelDefinition getObjectBoxModel() {
     Playlist: obx_int.EntityDefinition<Playlist>(
       model: _entities[8],
       toOneRelations: (Playlist object) => [],
-      toManyRelations:
-          (Playlist object) => {
-            obx_int.RelInfo<PlaylistRecord>.toOneBacklink(
-                  4,
-                  object.id,
-                  (PlaylistRecord srcObject) => srcObject.playlist,
-                ):
-                object.records,
-          },
+      toManyRelations: (Playlist object) => {
+        obx_int.RelInfo<PlaylistRecord>.toOneBacklink(
+          4,
+          object.id,
+          (PlaylistRecord srcObject) => srcObject.playlist,
+        ): object.records,
+      },
       getId: (Playlist object) => object.id,
       setId: (Playlist object, int id) {
         if (object.id != id) {
@@ -1526,13 +1519,12 @@ obx_int.ModelDefinition getObjectBoxModel() {
     ),
     PlaylistRecord: obx_int.EntityDefinition<PlaylistRecord>(
       model: _entities[9],
-      toOneRelations:
-          (PlaylistRecord object) => [
-            object.songLyric,
-            object.playlist,
-            object.customText,
-            object.bibleVerse,
-          ],
+      toOneRelations: (PlaylistRecord object) => [
+        object.songLyric,
+        object.playlist,
+        object.customText,
+        object.bibleVerse,
+      ],
       toManyRelations: (PlaylistRecord object) => {},
       getId: (PlaylistRecord object) => object.id,
       setId: (PlaylistRecord object, int id) {
@@ -1988,13 +1980,13 @@ class SongLyric_ {
         _entities[5].properties[13],
       );
 
-  /// See [SongLyric.ezId].
-  static final ezId = obx.QueryIntegerProperty<SongLyric>(
+  /// See [SongLyric.hymnologyNew].
+  static final hymnologyNew = obx.QueryStringProperty<SongLyric>(
     _entities[5].properties[14],
   );
 
-  /// See [SongLyric.hymnologyNew].
-  static final hymnologyNew = obx.QueryStringProperty<SongLyric>(
+  /// See [SongLyric.displayId].
+  static final displayId = obx.QueryStringProperty<SongLyric>(
     _entities[5].properties[15],
   );
 

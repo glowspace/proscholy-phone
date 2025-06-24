@@ -79,12 +79,12 @@ class AdditionalSection extends StatelessWidget {
             ),
           ),
         ],
-        if (isEZ)
+        if (isEZ || isEK)
           HighlightableWidget(
             highlightBackground: true,
             padding: const EdgeInsets.all(kDefaultPadding),
             onTap: () => launch('$reportUrl?customfield_10056=$url'),
-            child: const IconItem(icon: Icons.feedback, text: 'Darovat', trailingIcon: Icons.open_in_new),
+            child: const IconItem(icon: Icons.feedback, text: 'Nahlásit chybu', trailingIcon: Icons.open_in_new),
           ),
       ],
     );
