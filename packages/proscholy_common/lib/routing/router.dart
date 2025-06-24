@@ -86,7 +86,21 @@ final class AppRouter {
           false,
           true
         ),
-      _ => throw 'Unknown route: ${settings.name}',
+      String path when path.startsWith('/pisen/') => (
+          (BuildContext context) {
+            final id = int.parse(uri.pathSegments[1]);
+            final songLyric = context.providers.read(songLyricProvider(id));
+
+            if (songLyric != null) return DisplayScreen(items: [songLyric]);
+
+            // should not get here
+            throw UnimplementedError();
+          },
+          false,
+          true
+      ),
+
+      _ => ((_) => const HomeScreen(), false, true),
     };
 
     return MaterialPageRoute(
