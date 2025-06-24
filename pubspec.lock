@@ -1032,9 +1032,11 @@ packages:
   proscholy_common:
     dependency: "direct main"
     description:
-      path: proscholy-phone-common
-      relative: true
-    source: path
+      path: "."
+      ref: HEAD
+      resolved-ref: f27f237b74150fcfb228757e53d86c26089e53e9
+      url: "https://github.com/glowspace/proscholy-phone-common.git"
+    source: git
     version: "0.0.1"
   quill_native_bridge:
     dependency: transitive
