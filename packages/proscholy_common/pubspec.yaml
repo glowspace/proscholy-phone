@@ -29,7 +29,6 @@ dependencies:
   path_provider: ^2.1.5
   share_plus: ^11.0.0
   flutter_slidable: ^4.0.0
-  google_fonts: ^6.2.1
   font_awesome_flutter: ^10.8.0
   graphql_flutter: ^5.2.0-beta.8
   just_audio: ^0.10.2
@@ -57,6 +56,14 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  fonts:
+    - family: Roboto
+      fonts:
+        - asset: packages/proscholy_common/assets/fonts/Roboto-Medium.ttf
+          weight: 500
+        - asset: packages/proscholy_common/assets/fonts/Roboto-Bold.ttf
+          weight: 700
 
   assets:
     - assets/images/

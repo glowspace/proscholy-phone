@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:proscholy_common/constants.dart';
 import 'package:proscholy_common/theme.dart';
 import 'package:proscholy_common/utils/extensions.dart';
@@ -17,7 +16,7 @@ class Logo extends StatelessWidget {
       children: [
         Image.asset('assets/images/logos/logo.png'),
         const SizedBox(width: kDefaultPadding),
-        Text('Zpěvník', style: GoogleFonts.roboto(fontSize: 34, fontWeight: FontWeight.w700)),
+        Text('Zpěvník', style: TextStyle(fontFamily: 'Roboto', fontSize: 34, fontWeight: FontWeight.w700)),
       ],
     );
   }
@@ -38,7 +37,7 @@ class GlowspaceLogo extends StatelessWidget {
       children: [
         Image.asset('assets/images/logos/gs_logo.png'),
         const SizedBox(width: kDefaultPadding),
-        Text(text, style: GoogleFonts.roboto(fontSize: 17, color: textColor, fontWeight: FontWeight.w500)),
+        Text(text, style: TextStyle(fontFamily: 'Roboto', fontSize: 17, color: textColor, fontWeight: FontWeight.w500)),
       ],
     );
   }
