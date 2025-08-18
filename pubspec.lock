@@ -581,14 +581,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.0"
-  google_fonts:
-    dependency: transitive
-    description:
-      name: google_fonts
-      sha256: b1ac0fe2832c9cc95e5e88b57d627c5e68c223b9657f4b96e1487aa9098c7b82
-      url: "https://pub.dev"
-    source: hosted
-    version: "6.2.1"
   gql:
     dependency: transitive
     description:
@@ -1034,7 +1026,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: f27f237b74150fcfb228757e53d86c26089e53e9
+      resolved-ref: "076cae93f29726e138f984c65da3d2e15a5de9bd"
       url: "https://github.com/glowspace/proscholy-phone-common.git"
     source: git
     version: "0.0.1"

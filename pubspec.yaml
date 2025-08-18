@@ -33,19 +33,6 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
-  fonts:
-    - family: CustomIcon
-      fonts:
-        - asset: packages/proscholy_common/assets/fonts/CustomIcon.ttf
-
-    - family: KaiseiHarunoUmi
-      fonts:
-        - asset: packages/proscholy_common/assets/fonts/KaiseiHarunoUmi-Regular.ttf
-
-    - family: Amiri
-      fonts:
-        - asset: packages/proscholy_common/assets/fonts/Amiri-Regular.ttf
-
   assets:
     - assets/data.json
     - assets/svg.zip
