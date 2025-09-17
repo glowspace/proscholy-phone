@@ -95,20 +95,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       ...columnSections.first
     ];
 
-    columnSections.last.add(
-      HighlightableWidget(
-        padding: const EdgeInsets.only(top: 2 / 3 * kDefaultPadding, bottom: 2 * kDefaultPadding),
-        onTap: () => showModalBottomSheet(context: context, builder: (context) => const EditHomeSectionsSheet()),
-        child: const Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Icon(Icons.edit, size: kDefaultIconSize),
-            SizedBox(width: kDefaultPadding / 2),
-            Text('Upravit nástěnku')
-          ],
+    if (isZP) {
+      columnSections.last.add(
+        HighlightableWidget(
+          padding: const EdgeInsets.only(top: 2 / 3 * kDefaultPadding, bottom: 2 * kDefaultPadding),
+          onTap: () => showModalBottomSheet(context: context, builder: (context) => const EditHomeSectionsSheet()),
+          child: const Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Icon(Icons.edit, size: kDefaultIconSize),
+              SizedBox(width: kDefaultPadding / 2),
+              Text('Upravit nástěnku')
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    }
 
     final theme = Theme.of(context);
 
