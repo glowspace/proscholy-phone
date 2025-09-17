@@ -57,24 +57,6 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
-  fonts:
-    - family: Roboto
-      fonts:
-        - asset: packages/proscholy_common/assets/fonts/Roboto-Medium.ttf
-          weight: 500
-        - asset: packages/proscholy_common/assets/fonts/Roboto-Bold.ttf
-          weight: 700
-    - family: CustomIcon
-      fonts:
-        - asset: packages/proscholy_common/assets/fonts/CustomIcon.ttf
-    - family: KaiseiHarunoUmi
-      fonts:
-        - asset: packages/proscholy_common/assets/fonts/KaiseiHarunoUmi-Regular.ttf
-    - family: Amiri
-      fonts:
-        - asset: packages/proscholy_common/assets/fonts/Amiri-Regular.ttf
-
-
   assets:
     - assets/images/
     - assets/images/logos/
