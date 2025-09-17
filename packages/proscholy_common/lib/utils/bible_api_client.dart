@@ -11,7 +11,7 @@ final _bibleApiUrl = Uri.https('api.getbible.net');
 // TODO: make this work without riverpod
 
 @Riverpod(keepAlive: true)
-Future<List<dynamic>> bibleVerses(BibleVersesRef ref, BibleTranslation translation, BibleBook book, int chapter) async {
+Future<List<dynamic>> bibleVerses(Ref ref, BibleTranslation translation, BibleBook book, int chapter) async {
   final response = await http.get(_bibleApiUrl.resolve('v2/${translation.abbreviation}/${book.number}/$chapter.json'));
 
   final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
@@ -21,7 +21,7 @@ Future<List<dynamic>> bibleVerses(BibleVersesRef ref, BibleTranslation translati
 
 @riverpod
 Future<String> bibleVerse(
-  BibleVerseRef ref,
+  Ref ref,
   BibleTranslation translation,
   BibleBook book,
   int chapter,

@@ -24,7 +24,7 @@ class Settings extends _$Settings {
     final prefs = ref.read(appDependenciesProvider).sharedPreferences;
     final settingsData = prefs.getString(_settingsKey);
 
-    ref.listenSelf((_, next) => prefs.setString(_settingsKey, jsonEncode(next)));
+    listenSelf((_, next) => prefs.setString(_settingsKey, jsonEncode(next)));
 
     if (settingsData != null) return GlobalSettings.fromJson(jsonDecode(settingsData));
 

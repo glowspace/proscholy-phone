@@ -6,7 +6,7 @@ import 'package:proscholy_common/providers/app_dependencies.dart';
 part 'generated/bible_verse.g.dart';
 
 @riverpod
-BibleVerse? bibleVerse(BibleVerseRef ref, int id) {
+BibleVerse? bibleVerse(Ref ref, int id) {
   if (id == 0) return null;
 
   final box = ref.read(appDependenciesProvider).store.box<BibleVerse>();

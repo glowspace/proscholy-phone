@@ -15,7 +15,7 @@ import 'package:proscholy_common/providers/utils.dart';
 part 'generated/playlists.g.dart';
 
 @riverpod
-Playlist? playlist(PlaylistRef ref, int id) {
+Playlist? playlist(Ref ref, int id) {
   if (id == 0) return null;
 
   final box = ref.read(appDependenciesProvider).store.box<Playlist>();
@@ -29,7 +29,7 @@ Playlist? playlist(PlaylistRef ref, int id) {
 }
 
 @Riverpod(keepAlive: true)
-Playlist favoritePlaylist(FavoritePlaylistRef ref) {
+Playlist favoritePlaylist(Ref ref) {
   final box = ref.read(appDependenciesProvider).store.box<Playlist>();
 
   if (!box.contains(favoritesPlaylistId)) box.put(Playlist.favorites());

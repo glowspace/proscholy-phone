@@ -36,7 +36,7 @@ class PinnedSongbookIds extends _$PinnedSongbookIds {
 }
 
 @riverpod
-List<Songbook> songbooks(SongbooksRef ref) {
+List<Songbook> songbooks(Ref ref) {
   final songbooks = queryStore(ref, condition: Songbook_.isPrivate.equals(false));
   final pinnedSongbookIds = ref.watch(pinnedSongbookIdsProvider);
 

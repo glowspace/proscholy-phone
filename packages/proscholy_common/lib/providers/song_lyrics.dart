@@ -13,14 +13,14 @@ import 'package:proscholy_common/providers/utils.dart';
 part 'generated/song_lyrics.g.dart';
 
 @riverpod
-SongLyric? songLyric(SongLyricRef ref, int id) {
+SongLyric? songLyric(Ref ref, int id) {
   if (id == 0) return null;
 
   return ref.read(appDependenciesProvider).store.box<SongLyric>().get(id);
 }
 
 @Riverpod(keepAlive: true)
-List<SongLyric> songLyrics(SongLyricsRef ref) {
+List<SongLyric> songLyrics(Ref ref) {
   final random = Random();
   final songLyrics = queryStore(ref, orderBy: SongLyric_.name)
       .where((songLyric) => songLyric.shouldAppearToUser || ref.read(svgProvider(songLyric.id)).isNotEmpty)
@@ -34,7 +34,7 @@ List<SongLyric> songLyrics(SongLyricsRef ref) {
 }
 
 @riverpod
-List<SongLyric> songsListSongLyrics(SongsListSongLyricsRef ref, SongsList songsList) {
+List<SongLyric> songsListSongLyrics(Ref ref, SongsList songsList) {
   songsList.records.sort();
 
   return [

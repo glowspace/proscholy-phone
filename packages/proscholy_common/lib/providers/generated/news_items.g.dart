@@ -6,21 +6,46 @@ part of '../news_items.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$newsItemsHash() => r'8f1b8cf0ea268427b1bb3aef4888b7bb3f8ec010';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 
-/// See also [newsItems].
 @ProviderFor(newsItems)
-final newsItemsProvider = AutoDisposeProvider<List<NewsItem>>.internal(
-  newsItems,
-  name: r'newsItemsProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$newsItemsHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+const newsItemsProvider = NewsItemsProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef NewsItemsRef = AutoDisposeProviderRef<List<NewsItem>>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+final class NewsItemsProvider
+    extends $FunctionalProvider<List<NewsItem>, List<NewsItem>, List<NewsItem>>
+    with $Provider<List<NewsItem>> {
+  const NewsItemsProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'newsItemsProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$newsItemsHash();
+
+  @$internal
+  @override
+  $ProviderElement<List<NewsItem>> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  List<NewsItem> create(Ref ref) {
+    return newsItems(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(List<NewsItem> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<List<NewsItem>>(value),
+    );
+  }
+}
+
+String _$newsItemsHash() => r'8f1b8cf0ea268427b1bb3aef4888b7bb3f8ec010';

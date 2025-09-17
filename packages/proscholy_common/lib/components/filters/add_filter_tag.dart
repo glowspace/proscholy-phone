@@ -20,11 +20,12 @@ class AddFilterTag extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 4, vertical: 2),
       padding: const EdgeInsets.only(right: kDefaultPadding),
       child: DottedBorder(
-        dashPattern: const [7, 3],
-        color: addFilterButtonColor,
-        borderType: BorderType.RRect,
-        radius: const Radius.circular(_addFilterRadius),
-        padding: EdgeInsets.zero,
+        options: RoundedRectDottedBorderOptions(
+          dashPattern: const [7, 3],
+          color: addFilterButtonColor,
+          radius: const Radius.circular(_addFilterRadius),
+          padding: EdgeInsets.zero,
+        ),
         child: HighlightableWidget(
           highlightBackground: true,
           borderRadius: BorderRadius.circular(_addFilterRadius),

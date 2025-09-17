@@ -6,6 +6,6 @@ import 'package:proscholy_common/providers/utils.dart';
 part 'generated/news_items.g.dart';
 
 @riverpod
-List<NewsItem> newsItems(NewsItemsRef ref) {
+List<NewsItem> newsItems(Ref ref) {
   return queryStore(ref, condition: NewsItem_.expiresAt.greaterOrEqual(DateTime.now().millisecondsSinceEpoch));
 }

@@ -11,7 +11,7 @@ import 'package:proscholy_common/providers/utils.dart';
 part 'generated/tags.g.dart';
 
 @riverpod
-Tag? tag(TagRef ref, int id) {
+Tag? tag(Ref ref, int id) {
   if (id == 0) return null;
 
   final box = ref.read(appDependenciesProvider).store.box<Tag>();
@@ -28,7 +28,7 @@ Tag? tag(TagRef ref, int id) {
 // for songbooks, playlists and languages it creates corresponding tags,
 // remaining tags are queried from objectbox store
 @riverpod
-List<Tag> tags(TagsRef ref, TagType tagType) {
+List<Tag> tags(Ref ref, TagType tagType) {
   switch (tagType) {
     case TagType.songbook:
       final songbooks = ref.watch(songbooksProvider);

@@ -13,7 +13,7 @@ class Sort extends _$Sort {
     final prefs = ref.read(appDependenciesProvider).sharedPreferences;
     final sortTypeData = prefs.getInt(_sortTypeKey);
 
-    ref.listenSelf((_, next) => prefs.setInt(_sortTypeKey, next.index));
+    listenSelf((_, next) => prefs.setInt(_sortTypeKey, next.index));
 
     if (sortTypeData != null) return SortType.values[sortTypeData];
 

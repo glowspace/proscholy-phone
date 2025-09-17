@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:proscholy_common/models/song_lyric.dart';
 import 'package:proscholy_common/components/song_lyric/utils/converter.dart';

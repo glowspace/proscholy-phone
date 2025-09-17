@@ -1,6 +1,5 @@
-// dart format width=80
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -140,6 +139,204 @@ class _$GlobalSettingsCopyWithImpl<$Res>
           : autoScrollSpeedIndex // ignore: cast_nullable_to_non_nullable
               as int,
     ));
+  }
+}
+
+/// Adds pattern-matching-related methods to [GlobalSettings].
+extension GlobalSettingsPatterns on GlobalSettings {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_GlobalSettings value)? $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _GlobalSettings() when $default != null:
+        return $default(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_GlobalSettings value) $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _GlobalSettings():
+        return $default(_that);
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_GlobalSettings value)? $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _GlobalSettings() when $default != null:
+        return $default(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(
+            bool? darkModeEnabled,
+            int seedColor,
+            double fontSizeScale,
+            bool showChords,
+            bool showMusicalNotes,
+            int accidentals,
+            int autoScrollSpeedIndex)?
+        $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _GlobalSettings() when $default != null:
+        return $default(
+            _that.darkModeEnabled,
+            _that.seedColor,
+            _that.fontSizeScale,
+            _that.showChords,
+            _that.showMusicalNotes,
+            _that.accidentals,
+            _that.autoScrollSpeedIndex);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(
+            bool? darkModeEnabled,
+            int seedColor,
+            double fontSizeScale,
+            bool showChords,
+            bool showMusicalNotes,
+            int accidentals,
+            int autoScrollSpeedIndex)
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _GlobalSettings():
+        return $default(
+            _that.darkModeEnabled,
+            _that.seedColor,
+            _that.fontSizeScale,
+            _that.showChords,
+            _that.showMusicalNotes,
+            _that.accidentals,
+            _that.autoScrollSpeedIndex);
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function(
+            bool? darkModeEnabled,
+            int seedColor,
+            double fontSizeScale,
+            bool showChords,
+            bool showMusicalNotes,
+            int accidentals,
+            int autoScrollSpeedIndex)?
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _GlobalSettings() when $default != null:
+        return $default(
+            _that.darkModeEnabled,
+            _that.seedColor,
+            _that.fontSizeScale,
+            _that.showChords,
+            _that.showMusicalNotes,
+            _that.accidentals,
+            _that.autoScrollSpeedIndex);
+      case _:
+        return null;
+    }
   }
 }
 
@@ -383,6 +580,183 @@ class _$SongLyricSettingsModelCopyWithImpl<$Res>
           : songLyric // ignore: cast_nullable_to_non_nullable
               as ToOne<SongLyric>,
     ));
+  }
+}
+
+/// Adds pattern-matching-related methods to [SongLyricSettingsModel].
+extension SongLyricSettingsModelPatterns on SongLyricSettingsModel {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_SongLyricSettingsModel value)? $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _SongLyricSettingsModel() when $default != null:
+        return $default(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_SongLyricSettingsModel value) $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _SongLyricSettingsModel():
+        return $default(_that);
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_SongLyricSettingsModel value)? $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _SongLyricSettingsModel() when $default != null:
+        return $default(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(
+            @Id(assignable: true) int id,
+            bool showChords,
+            bool showMusicalNotes,
+            int? accidentals,
+            int transposition,
+            ToOne<SongLyric> songLyric)?
+        $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _SongLyricSettingsModel() when $default != null:
+        return $default(_that.id, _that.showChords, _that.showMusicalNotes,
+            _that.accidentals, _that.transposition, _that.songLyric);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(
+            @Id(assignable: true) int id,
+            bool showChords,
+            bool showMusicalNotes,
+            int? accidentals,
+            int transposition,
+            ToOne<SongLyric> songLyric)
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _SongLyricSettingsModel():
+        return $default(_that.id, _that.showChords, _that.showMusicalNotes,
+            _that.accidentals, _that.transposition, _that.songLyric);
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function(
+            @Id(assignable: true) int id,
+            bool showChords,
+            bool showMusicalNotes,
+            int? accidentals,
+            int transposition,
+            ToOne<SongLyric> songLyric)?
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _SongLyricSettingsModel() when $default != null:
+        return $default(_that.id, _that.showChords, _that.showMusicalNotes,
+            _that.accidentals, _that.transposition, _that.songLyric);
+      case _:
+        return null;
+    }
   }
 }
 

@@ -8,6 +8,9 @@ targets:
           build_extensions:
             '^lib/models/{{}}.dart': 'lib/models/generated/{{}}.g.dart'
             '^lib/providers/{{}}.dart': 'lib/providers/generated/{{}}.g.dart'
+            '^lib/components/song_lyric/utils/active_player_controller.dart': 'lib/components/song_lyric/utils/active_player_controller.g.dart'
+            '^lib/routing/navigator_observer.dart': 'lib/routing/navigator_observer.g.dart'
+            '^lib/utils/bible_api_client.dart': 'lib/utils/bible_api_client.g.dart'
       freezed|freezed:
         enabled: true
         options:

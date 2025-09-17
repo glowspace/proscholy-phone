@@ -32,7 +32,7 @@ const _updatePeriod = Duration(hours: 1);
 final _dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
 
 @Riverpod(keepAlive: true)
-Client graphQLClient(GraphQLClientRef ref) => Client();
+Client graphQLClient(Ref ref) => Client();
 
 sealed class UpdateStatus {
   const UpdateStatus();
@@ -77,7 +77,7 @@ Future<void> loadInitial(AppDependencies appDependencies) async {
 }
 
 @riverpod
-Stream<UpdateStatus> update(UpdateRef ref) async* {
+Stream<UpdateStatus> update(Ref ref) async* {
   final client = ref.read(graphQLClientProvider);
   final appDependencies = ref.read(appDependenciesProvider);
 

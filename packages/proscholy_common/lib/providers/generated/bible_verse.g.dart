@@ -6,155 +6,86 @@ part of '../bible_verse.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$bibleVerseHash() => r'6b25a087a61b5f9e885865beb46134e34c92e272';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
-
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
-
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}
-
-/// See also [bibleVerse].
 @ProviderFor(bibleVerse)
-const bibleVerseProvider = BibleVerseFamily();
+const bibleVerseProvider = BibleVerseFamily._();
 
-/// See also [bibleVerse].
-class BibleVerseFamily extends Family<BibleVerse?> {
-  /// See also [bibleVerse].
-  const BibleVerseFamily();
-
-  /// See also [bibleVerse].
-  BibleVerseProvider call(
-    int id,
-  ) {
-    return BibleVerseProvider(
-      id,
-    );
-  }
-
-  @override
-  BibleVerseProvider getProviderOverride(
-    covariant BibleVerseProvider provider,
-  ) {
-    return call(
-      provider.id,
-    );
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'bibleVerseProvider';
-}
-
-/// See also [bibleVerse].
-class BibleVerseProvider extends AutoDisposeProvider<BibleVerse?> {
-  /// See also [bibleVerse].
-  BibleVerseProvider(
-    int id,
-  ) : this._internal(
-          (ref) => bibleVerse(
-            ref as BibleVerseRef,
-            id,
-          ),
-          from: bibleVerseProvider,
+final class BibleVerseProvider
+    extends $FunctionalProvider<BibleVerse?, BibleVerse?, BibleVerse?>
+    with $Provider<BibleVerse?> {
+  const BibleVerseProvider._(
+      {required BibleVerseFamily super.from, required int super.argument})
+      : super(
+          retry: null,
           name: r'bibleVerseProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$bibleVerseHash,
-          dependencies: BibleVerseFamily._dependencies,
-          allTransitiveDependencies:
-              BibleVerseFamily._allTransitiveDependencies,
-          id: id,
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
         );
 
-  BibleVerseProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.id,
-  }) : super.internal();
-
-  final int id;
+  @override
+  String debugGetCreateSourceHash() => _$bibleVerseHash();
 
   @override
-  Override overrideWith(
-    BibleVerse? Function(BibleVerseRef provider) create,
-  ) {
-    return ProviderOverride(
-      origin: this,
-      override: BibleVerseProvider._internal(
-        (ref) => create(ref as BibleVerseRef),
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        id: id,
-      ),
+  String toString() {
+    return r'bibleVerseProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  $ProviderElement<BibleVerse?> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  BibleVerse? create(Ref ref) {
+    final argument = this.argument as int;
+    return bibleVerse(
+      ref,
+      argument,
     );
   }
 
-  @override
-  AutoDisposeProviderElement<BibleVerse?> createElement() {
-    return _BibleVerseProviderElement(this);
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(BibleVerse? value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<BibleVerse?>(value),
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return other is BibleVerseProvider && other.id == id;
+    return other is BibleVerseProvider && other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, id.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
 }
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin BibleVerseRef on AutoDisposeProviderRef<BibleVerse?> {
-  /// The parameter `id` of this provider.
-  int get id;
-}
+String _$bibleVerseHash() => r'6b25a087a61b5f9e885865beb46134e34c92e272';
 
-class _BibleVerseProviderElement extends AutoDisposeProviderElement<BibleVerse?>
-    with BibleVerseRef {
-  _BibleVerseProviderElement(super.provider);
+final class BibleVerseFamily extends $Family
+    with $FunctionalFamilyOverride<BibleVerse?, int> {
+  const BibleVerseFamily._()
+      : super(
+          retry: null,
+          name: r'bibleVerseProvider',
+          dependencies: null,
+          $allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  BibleVerseProvider call(
+    int id,
+  ) =>
+      BibleVerseProvider._(argument: id, from: this);
 
   @override
-  int get id => (origin as BibleVerseProvider).id;
+  String toString() => r'bibleVerseProvider';
 }
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

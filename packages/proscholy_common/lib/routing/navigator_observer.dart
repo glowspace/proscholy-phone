@@ -13,7 +13,7 @@ import 'package:proscholy_common/utils/extensions.dart';
 part 'navigator_observer.g.dart';
 
 @Riverpod(keepAlive: true)
-AppNavigatorObserver appNavigatorObserver(AppNavigatorObserverRef ref) => AppNavigatorObserver();
+AppNavigatorObserver appNavigatorObserver(Ref ref) => AppNavigatorObserver();
 
 class AppNavigatorObserver extends NavigatorObserver {
   final Set<String> _pathsInStack = {};

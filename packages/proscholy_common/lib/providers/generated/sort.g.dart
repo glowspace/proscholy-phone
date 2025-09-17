@@ -6,19 +6,51 @@ part of '../sort.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
+@ProviderFor(Sort)
+const sortProvider = SortProvider._();
+
+final class SortProvider extends $NotifierProvider<Sort, SortType> {
+  const SortProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'sortProvider',
+          isAutoDispose: false,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$sortHash();
+
+  @$internal
+  @override
+  Sort create() => Sort();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(SortType value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<SortType>(value),
+    );
+  }
+}
+
 String _$sortHash() => r'a686bd00b89b3b40ce868b41b0cddd508358124c';
 
-/// See also [Sort].
-@ProviderFor(Sort)
-final sortProvider = NotifierProvider<Sort, SortType>.internal(
-  Sort.new,
-  name: r'sortProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$sortHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef _$Sort = Notifier<SortType>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+abstract class _$Sort extends $Notifier<SortType> {
+  SortType build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<SortType, SortType>;
+    final element = ref.element as $ClassProviderElement<
+        AnyNotifier<SortType, SortType>, SortType, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
+}

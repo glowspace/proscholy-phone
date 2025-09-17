@@ -10,7 +10,7 @@ part 'generated/app_dependencies.g.dart';
 
 // Value will be overriden in `main.dart` with real.
 @Riverpod(keepAlive: true)
-AppDependencies appDependencies(AppDependenciesRef ref) => throw UnimplementedError();
+AppDependencies appDependencies(Ref ref) => throw UnimplementedError();
 
 @freezed
 sealed class AppDependencies with _$AppDependencies {
