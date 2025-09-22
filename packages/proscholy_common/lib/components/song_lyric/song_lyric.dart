@@ -28,7 +28,8 @@ class SongLyricWidget extends ConsumerStatefulWidget {
 }
 
 class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
-  late final controller = LyricsController(widget.songLyric, context.providers.read(svgProvider(widget.songLyric.id)), context);
+  late final controller =
+      LyricsController(widget.songLyric, context.providers.read(svgProvider(widget.songLyric.id)), context);
 
   final _presentationPartGlobalKeysMap = <int, GlobalKey>{};
 
@@ -334,42 +335,32 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
         ref.watch(songLyricSettingsProvider(widget.songLyric.id)
             .select((songLyricSettings) => songLyricSettings.accidentals ?? widget.songLyric.defaultAccidentals)));
 
-    int chordNumberIndex = chordText.indexOf('maj');
-    if (chordNumberIndex == -1) {
-      for (int i = 0; i < chordText.length; i++) {
-        if (int.tryParse(chordText[i]) != null) {
-          chordNumberIndex = i;
-          break;
-        }
-      }
-    }
-
     final chordColor = Theme.of(context).colorScheme.primary;
+
+    final majIndex = chordText.indexOf('maj');
+    final susIndex = chordText.indexOf('sus');
+
+    bool shouldBeSuperscript(int index) {
+      return (majIndex != -1 && index >= majIndex && index < majIndex + 3) ||
+          (susIndex != -1 && index >= susIndex && index < susIndex + 3) ||
+          int.tryParse(chordText[index]) != null;
+    }
 
     return WidgetSpan(
       child: Stack(children: [
         Container(
           transform: Matrix4.translationValues(0, chordOffset, 0),
           padding: EdgeInsets.only(right: MediaQuery.textScaleFactorOf(context) * kDefaultPadding / 2),
-          child: chordNumberIndex == -1
-              ? Text(chordText, style: textStyle?.copyWith(color: chordColor))
-              : Row(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      chordText.substring(0, chordNumberIndex),
-                      style: textStyle?.copyWith(color: chordColor),
-                    ),
-                    Text(
-                      chordText.substring(chordNumberIndex),
-                      style: textStyle?.copyWith(
-                        color: chordColor,
-                        fontSize: (textStyle.fontSize ?? 17) * 0.8,
-                      ),
-                    ),
-                  ],
+          child: Text.rich(TextSpan(children: [
+            for (int i = 0; i < chordText.length; i++)
+              TextSpan(
+                text: chordText[i],
+                style: textStyle?.copyWith(
+                  color: chordColor,
+                  fontFeatures: [if (shouldBeSuperscript(i)) FontFeature.superscripts()],
                 ),
+              )
+          ])),
         ),
         if (versePart != null) Text(versePart.value, style: textStyle),
       ]),
