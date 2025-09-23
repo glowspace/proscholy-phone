@@ -73,7 +73,7 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 2 * kDefaultPadding),
-              child: Text(widget.songLyric.name, style: theme.textTheme.titleLarge),
+              child: Text(widget.songLyric.displayName, style: theme.textTheme.titleLarge),
             ),
             SizedBox(height: fontSizeScale * kDefaultPadding / 2),
             if (!widget.songLyric.hasHymnology || widget.songLyric.authors.isNotEmpty) ...[

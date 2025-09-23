@@ -62,6 +62,7 @@ sealed class SongLyric with _$SongLyric implements DisplayableItem, Identifiable
   const factory SongLyric({
     @Id(assignable: true) @JsonKey(fromJson: int.parse) required int id,
     @JsonKey(readValue: _readDisplayId) required String displayId,
+    @JsonKey(readValue: _readDisplayName) required String displayName,
     required String name,
     @JsonKey(name: 'secondary_name_1') String? secondaryName1,
     @JsonKey(name: 'secondary_name_2') String? secondaryName2,
@@ -173,6 +174,24 @@ String _readDisplayId(Map<dynamic, dynamic> json, String _) {
   }
 
   return json['id'];
+}
+
+String _readDisplayName(Map<dynamic, dynamic> json, String _) {
+  if (isEZ) {
+    final name = json['songbook_records']
+        .firstWhere((songbookRecord) => songbookRecord['pivot']['songbook']['id'] == '58')['pivot']['song_name'];
+
+    return name ?? json['name'];
+  }
+
+  if (isEK) {
+    final name = json['songbook_records']
+        .firstWhere((songbookRecord) => songbookRecord['pivot']['songbook']['id'] == '63')['pivot']['song_name'];
+
+    return name ?? json['name'];
+  }
+
+  return json['name'];
 }
 
 ToOne<Song> _songFromJson(Map<String, dynamic>? json) {

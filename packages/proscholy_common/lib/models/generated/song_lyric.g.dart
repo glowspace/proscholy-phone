@@ -9,6 +9,7 @@ part of '../song_lyric.dart';
 _SongLyric _$SongLyricFromJson(Map<String, dynamic> json) => _SongLyric(
       id: int.parse(json['id'] as String),
       displayId: _readDisplayId(json, 'display_id') as String,
+      displayName: _readDisplayName(json, 'display_name') as String,
       name: json['name'] as String,
       secondaryName1: json['secondary_name_1'] as String?,
       secondaryName2: json['secondary_name_2'] as String?,

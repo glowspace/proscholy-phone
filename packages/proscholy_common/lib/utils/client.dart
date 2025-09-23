@@ -75,6 +75,7 @@ query {
       pivot {
         id
         number
+        ${isEZ || isEK ? 'song_name' : ''}
         song_lyric {
           id
         }

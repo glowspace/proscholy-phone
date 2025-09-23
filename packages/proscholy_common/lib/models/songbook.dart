@@ -55,6 +55,9 @@ sealed class Songbook with _$Songbook implements Comparable<Songbook>, Identifia
   }
 
   @override
+  String get displayName => name;
+
+  @override
   RecentItemType get recentItemType => RecentItemType.songbook;
 
   @override

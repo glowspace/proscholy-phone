@@ -143,7 +143,7 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
                   if (ref.watch(presentationProvider
                       .select((presentation) => presentation.isPresenting && presentation.isPresentingLocally))) {
                     if (ref.watch(presentationProvider
-                        .select((presentation) => presentation.presentationData.name == item.name))) {
+                        .select((presentation) => presentation.presentationData.name == item.displayName))) {
                       return Consumer(
                         builder: (_, ref, __) => Presentation(
                           onExternalDisplay: false,
@@ -237,7 +237,7 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
     return switch (_currentItem) {
       (BibleVerse bibleVerse) => AppBar(
           leading: const CustomBackButton(),
-          title: Text(bibleVerse.name),
+          title: Text(bibleVerse.displayName),
           actions: [
             HighlightableWidget(
               onTap: () => _editBibleVerse(bibleVerse),

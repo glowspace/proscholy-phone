@@ -43,7 +43,7 @@ enum RecentItemType {
 }
 
 abstract class RecentItem extends Identifiable {
-  String get name;
+  String get displayName;
 
   RecentItemType get recentItemType;
 }

@@ -68,7 +68,7 @@ final class SongLyricProvider
   }
 }
 
-String _$songLyricHash() => r'f0c87289772047b9bd148c8929f6f1e95a630e74';
+String _$songLyricHash() => r'cc851ffdfc3ce3c5239ce1f07bea15b9359e4f27';
 
 final class SongLyricFamily extends $Family
     with $FunctionalFamilyOverride<SongLyric?, int> {
@@ -128,7 +128,7 @@ final class SongLyricsProvider extends $FunctionalProvider<List<SongLyric>,
   }
 }
 
-String _$songLyricsHash() => r'f315b02e2aaaed18d27f54f17de7f699e6223d25';
+String _$songLyricsHash() => r'b24a72d219c4ada10938de8b6135aab500e3f41f';
 
 @ProviderFor(songsListSongLyrics)
 const songsListSongLyricsProvider = SongsListSongLyricsFamily._();
@@ -192,7 +192,7 @@ final class SongsListSongLyricsProvider extends $FunctionalProvider<
 }
 
 String _$songsListSongLyricsHash() =>
-    r'f7453854225630fcd3b1ab2d8c093243f7985c9d';
+    r'5efbca6a484f513653ec5de22242a9bf34f6c122';
 
 final class SongsListSongLyricsFamily extends $Family
     with $FunctionalFamilyOverride<List<SongLyric>, SongsList> {

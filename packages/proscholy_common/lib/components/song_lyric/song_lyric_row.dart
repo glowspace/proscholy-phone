@@ -54,7 +54,7 @@ class SongLyricRow extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(songLyric.name, style: textTheme.bodyMedium),
+                      Text(songLyric.displayName, style: textTheme.bodyMedium),
                       Consumer(builder: (_, ref, __) {
                         final searchText = ref.watch(searchTextProvider);
 
@@ -93,7 +93,7 @@ class SongLyricRow extends StatelessWidget {
                 ),
                 const SizedBox(width: kDefaultPadding),
                 FaIcon(
-                  FontAwesomeIcons.headphones,
+                  Icons.headphones,
                   size: _iconSize,
                   color: greenScheme.primary.withAlpha(songLyric.hasRecordings ? 0xFF : _disabledAlpha),
                 ),

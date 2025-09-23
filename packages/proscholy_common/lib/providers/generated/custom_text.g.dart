@@ -68,7 +68,7 @@ final class CustomTextProvider
   }
 }
 
-String _$customTextHash() => r'c2c0c983d6ba1a1983fa7fea32febded91d7be04';
+String _$customTextHash() => r'73a8abd66b7804a6291dbd7d640efaf466af491d';
 
 final class CustomTextFamily extends $Family
     with $FunctionalFamilyOverride<CustomText?, int> {

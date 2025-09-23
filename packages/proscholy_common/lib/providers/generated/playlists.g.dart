@@ -68,7 +68,7 @@ final class PlaylistProvider
   }
 }
 
-String _$playlistHash() => r'0e19b9c0f0b1e05dc464265228ade9d17786531d';
+String _$playlistHash() => r'248d46b5af00839aeccd7a0cf30044b3988535f4';
 
 final class PlaylistFamily extends $Family
     with $FunctionalFamilyOverride<Playlist?, int> {
@@ -129,7 +129,7 @@ final class FavoritePlaylistProvider
   }
 }
 
-String _$favoritePlaylistHash() => r'9fd754a0465c892225006c5bc0d42cc9c4d8abd2';
+String _$favoritePlaylistHash() => r'dfe94b6c75bb3cfd09516fac9736fdf0af014456';
 
 @ProviderFor(Playlists)
 const playlistsProvider = PlaylistsProvider._();

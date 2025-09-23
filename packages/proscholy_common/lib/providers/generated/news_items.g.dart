@@ -48,4 +48,4 @@ final class NewsItemsProvider
   }
 }
 
-String _$newsItemsHash() => r'8f1b8cf0ea268427b1bb3aef4888b7bb3f8ec010';
+String _$newsItemsHash() => r'0470596684bab5ed9daeda3553dcf366e4e3aacb';

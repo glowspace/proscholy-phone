@@ -40,7 +40,7 @@ final class SortProvider extends $NotifierProvider<Sort, SortType> {
   }
 }
 
-String _$sortHash() => r'a686bd00b89b3b40ce868b41b0cddd508358124c';
+String _$sortHash() => r'd36b9b8948691e96f8fe6e125069284432701592';
 
 abstract class _$Sort extends $Notifier<SortType> {
   SortType build();

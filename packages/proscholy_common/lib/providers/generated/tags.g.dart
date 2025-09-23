@@ -67,7 +67,7 @@ final class TagProvider extends $FunctionalProvider<Tag?, Tag?, Tag?>
   }
 }
 
-String _$tagHash() => r'2d88379df9977f54db1b1c06806a443c9be9e7ee';
+String _$tagHash() => r'415f0496af28772c9735fa6e7f2dc8ef80c632de';
 
 final class TagFamily extends $Family
     with $FunctionalFamilyOverride<Tag?, int> {
@@ -148,7 +148,7 @@ final class TagsProvider
   }
 }
 
-String _$tagsHash() => r'122ab1c1801b1bdbfef67e404e58ea86f31304ba';
+String _$tagsHash() => r'c00876b414b3add119c7d09973a4144a6c9982a1';
 
 final class TagsFamily extends $Family
     with $FunctionalFamilyOverride<List<Tag>, TagType> {

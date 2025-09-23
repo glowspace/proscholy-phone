@@ -19,7 +19,7 @@ sealed class BibleVerse with _$BibleVerse implements DisplayableItem, Identifiab
   }) = _BibleVerse;
 
   @override
-  String get name => endVerse == null
+  String get displayName => endVerse == null
       ? '${supportedBibleBooks[book]} $chapter:$startVerse'
       : '${supportedBibleBooks[book]} $chapter:$startVerse-$endVerse';
 
@@ -30,7 +30,7 @@ sealed class BibleVerse with _$BibleVerse implements DisplayableItem, Identifiab
   int get hashCode => id;
 
   @override
-  bool operator ==(Object other) => other is BibleVerse && id == other.id && name == other.name;
+  bool operator ==(Object other) => other is BibleVerse && id == other.id && displayName == other.displayName;
 }
 
 @immutable

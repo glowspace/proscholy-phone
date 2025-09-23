@@ -30,7 +30,7 @@ class PlaylistRecordRow extends ConsumerWidget {
     final String title;
     final IconData? icon;
     if (bibleVerse != null) {
-      title = bibleVerse.name;
+      title = bibleVerse.displayName;
       icon = Icons.book_outlined;
     } else if (customText != null) {
       title = customText.name;

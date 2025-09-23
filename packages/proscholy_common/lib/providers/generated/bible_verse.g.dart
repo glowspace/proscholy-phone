@@ -68,7 +68,7 @@ final class BibleVerseProvider
   }
 }
 
-String _$bibleVerseHash() => r'6b25a087a61b5f9e885865beb46134e34c92e272';
+String _$bibleVerseHash() => r'd4e6136f55d09731ce14ca63679f131a13c438ec';
 
 final class BibleVerseFamily extends $Family
     with $FunctionalFamilyOverride<BibleVerse?, int> {

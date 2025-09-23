@@ -63,7 +63,7 @@ class SearchedSongLyrics extends _$SearchedSongLyrics {
     for (final songLyric in songLyrics) {
       batch.execute(_upsertQuery, [
         songLyric.id,
-        songLyric.name,
+        songLyric.displayName,
         songLyric.secondaryName1,
         songLyric.secondaryName2,
         songLyric.lyrics,

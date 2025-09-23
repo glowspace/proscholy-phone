@@ -41,6 +41,9 @@ sealed class Playlist with _$Playlist implements Identifiable, RecentItem, Songs
   bool get isFavorites => id == favoritesPlaylistId;
 
   @override
+  String get displayName => name;
+
+  @override
   RecentItemType get recentItemType => RecentItemType.playlist;
 
   @override

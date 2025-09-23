@@ -16,6 +16,9 @@ sealed class CustomText with _$CustomText implements DisplayableItem, Identifiab
   }) = _CustomText;
 
   @override
+  String get displayName => name;
+
+  @override
   RecentItemType get recentItemType => RecentItemType.customText;
 
   @override

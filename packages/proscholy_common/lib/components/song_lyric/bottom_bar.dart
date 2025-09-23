@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:proscholy_common/components/highlightable_widget.dart';
 import 'package:proscholy_common/components/song_lyric/song_lyric_settings.dart';
 import 'package:proscholy_common/components/song_lyric/utils/auto_scroll.dart';
@@ -44,7 +43,7 @@ class SongLyricBottomBar extends ConsumerWidget {
               padding: const EdgeInsets.all(kDefaultPadding),
               isEnabled: songLyric?.hasRecordings ?? false,
               onTap: ref.read(displayScreenStatusProvider.notifier).showExternals,
-              icon: const Icon(FontAwesomeIcons.headphones),
+              icon: const Icon(Icons.headphones),
               child: constraints.maxWidth > kTabletSizeBreakpoint ? const Text('Nahrávky') : null,
             ),
             HighlightableWidget(

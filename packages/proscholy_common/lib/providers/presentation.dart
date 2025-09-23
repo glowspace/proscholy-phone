@@ -154,7 +154,7 @@ class PresentationProvider extends ChangeNotifier {
           _changeShowingData(_presentationData.copyWith(
             songLyricId: null,
             isCustomText: false,
-            name: bibleVerse.name,
+            name: bibleVerse.displayName,
             text: bibleVerse.text,
           ));
         },

@@ -16,7 +16,7 @@ class Logo extends StatelessWidget {
       children: [
         Image.asset('assets/images/logos/logo.png'),
         const SizedBox(width: kDefaultPadding),
-        Text('Zpěvník', style: TextStyle(fontFamily: 'Roboto', fontSize: 34, fontWeight: FontWeight.w700)),
+        Text('Zpěvník', style: TextStyle(fontSize: 34, fontWeight: FontWeight.w700)),
       ],
     );
   }
@@ -37,7 +37,7 @@ class GlowspaceLogo extends StatelessWidget {
       children: [
         Image.asset('assets/images/logos/gs_logo.png'),
         const SizedBox(width: kDefaultPadding),
-        Text(text, style: TextStyle(fontFamily: 'Roboto', fontSize: 17, color: textColor, fontWeight: FontWeight.w500)),
+        Text(text, style: TextStyle(fontSize: 17, color: textColor, fontWeight: FontWeight.w500)),
       ],
     );
   }

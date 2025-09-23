@@ -41,7 +41,7 @@ final class SettingsProvider
   }
 }
 
-String _$settingsHash() => r'5f759c44ed9c0788c5edd58a53da9bf93560284f';
+String _$settingsHash() => r'3865fec1760197f83958e92eb2b8d99cea92d030';
 
 abstract class _$Settings extends $Notifier<GlobalSettings> {
   GlobalSettings build();

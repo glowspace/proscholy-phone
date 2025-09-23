@@ -35,7 +35,7 @@ class RecentItemRow extends StatelessWidget {
         Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2, vertical: kDefaultPadding / 2),
-            child: Text(recentItem.name),
+            child: Text(recentItem.displayName),
           ),
         ),
       ]),

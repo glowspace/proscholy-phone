@@ -176,7 +176,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
     id: const obx_int.IdUid(9, 7232145165103886962),
     name: 'SongbookRecord',
-    lastPropertyId: const obx_int.IdUid(9, 334605257073641595),
+    lastPropertyId: const obx_int.IdUid(10, 7820390369179908800),
     flags: 0,
     properties: <obx_int.ModelProperty>[
       obx_int.ModelProperty(
@@ -214,7 +214,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
     id: const obx_int.IdUid(11, 6447883453535376640),
     name: 'SongLyric',
-    lastPropertyId: const obx_int.IdUid(37, 6486511720887642649),
+    lastPropertyId: const obx_int.IdUid(38, 4191559352941742932),
     flags: 0,
     properties: <obx_int.ModelProperty>[
       obx_int.ModelProperty(
@@ -314,6 +314,12 @@ final _entities = <obx_int.ModelEntity>[
       obx_int.ModelProperty(
         id: const obx_int.IdUid(37, 6486511720887642649),
         name: 'displayId',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(38, 4191559352941742932),
+        name: 'displayName',
         type: 9,
         flags: 0,
       ),
@@ -790,6 +796,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
       4119502192344556831,
       6098338462102959253,
       3138933648918384884,
+      7820390369179908800,
     ],
     retiredRelationUids: const [
       7916874752771113838,
@@ -1082,7 +1089,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
       },
       objectToFB: (SongbookRecord object, fb.Builder fbb) {
         final numberOffset = fbb.writeString(object.number);
-        fbb.startTable(10);
+        fbb.startTable(11);
         fbb.addInt64(0, object.id);
         fbb.addInt64(6, object.songLyric.targetId);
         fbb.addInt64(7, object.songbook.targetId);
@@ -1164,7 +1171,8 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final langDescriptionOffset = fbb.writeString(object.langDescription);
         final hymnologyNewOffset = fbb.writeString(object.hymnologyNew);
         final displayIdOffset = fbb.writeString(object.displayId);
-        fbb.startTable(38);
+        final displayNameOffset = fbb.writeString(object.displayName);
+        fbb.startTable(39);
         fbb.addInt64(0, object.id);
         fbb.addOffset(1, nameOffset);
         fbb.addOffset(2, secondaryName1Offset);
@@ -1181,6 +1189,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
         fbb.addInt64(26, object.settings.targetId);
         fbb.addOffset(34, hymnologyNewOffset);
         fbb.addOffset(36, displayIdOffset);
+        fbb.addOffset(37, displayNameOffset);
         fbb.finish(fbb.endTable());
         return object.id;
       },
@@ -1196,6 +1205,9 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final displayIdParam = const fb.StringReader(
           asciiOptimization: true,
         ).vTableGet(buffer, rootOffset, 76, '');
+        final displayNameParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGet(buffer, rootOffset, 78, '');
         final nameParam = const fb.StringReader(
           asciiOptimization: true,
         ).vTableGet(buffer, rootOffset, 6, '');
@@ -1258,6 +1270,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final object = SongLyric(
           id: idParam,
           displayId: displayIdParam,
+          displayName: displayNameParam,
           name: nameParam,
           secondaryName1: secondaryName1Param,
           secondaryName2: secondaryName2Param,
@@ -1988,6 +2001,11 @@ class SongLyric_ {
   /// See [SongLyric.displayId].
   static final displayId = obx.QueryStringProperty<SongLyric>(
     _entities[5].properties[15],
+  );
+
+  /// See [SongLyric.displayName].
+  static final displayName = obx.QueryStringProperty<SongLyric>(
+    _entities[5].properties[16],
   );
 
   /// see [SongLyric.authors]

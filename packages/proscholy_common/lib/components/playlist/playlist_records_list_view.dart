@@ -210,7 +210,7 @@ class _PlaylistRecordsListViewState extends ConsumerState<PlaylistRecordsListVie
   void _sortedAlphabeticallyChanged() {
     if (widget.sortedAlphabeticallyNotifier.value) {
       setState(() => _recordsOrdered = widget.playlist.records
-          .sorted((a, b) => _unwrapPlaylistRecord(a).name.compareTo(_unwrapPlaylistRecord(b).name)));
+          .sorted((a, b) => _unwrapPlaylistRecord(a).displayName.compareTo(_unwrapPlaylistRecord(b).displayName)));
     } else {
       setState(() => _recordsOrdered = widget.playlist.records.sorted((a, b) => a.rank.compareTo(b.rank)));
     }

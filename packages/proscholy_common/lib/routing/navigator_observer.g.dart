@@ -51,4 +51,4 @@ final class AppNavigatorObserverProvider extends $FunctionalProvider<
 }
 
 String _$appNavigatorObserverHash() =>
-    r'3bd0d3b1719efb0611bf729a068a3fe5f69de570';
+    r'e30c3d136f5b21016597ed11c6eb238d58c6acd9';
