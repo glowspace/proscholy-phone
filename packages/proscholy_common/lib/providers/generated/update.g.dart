@@ -81,4 +81,4 @@ final class UpdateProvider extends $FunctionalProvider<AsyncValue<UpdateStatus>,
   }
 }
 
-String _$updateHash() => r'414e6ba8dfeab996560461466a49932a1019692b';
+String _$updateHash() => r'7ead73603f283ea32549861fa3385ef8f92c25db';

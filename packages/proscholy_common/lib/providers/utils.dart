@@ -30,6 +30,9 @@ Future<void> parseAndStoreData(Store store, Map<String, dynamic> json) async {
 }
 
 Future<List<SongLyric>> storeSongLyrics(Store store, List<SongLyric> songLyrics) async {
+  // filter arrangements
+  songLyrics = songLyrics.where((songLyric) => !songLyric.isArrangement).toList();
+
   final externals = <External>[];
   final songbookRecords = <SongbookRecord>[];
 

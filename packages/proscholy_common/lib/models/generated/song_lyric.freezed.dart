@@ -35,6 +35,7 @@ mixin _$SongLyric {
   @JsonKey(name: 'type_enum', fromJson: SongLyricType.rawValueFromString)
   int get dbType;
   bool get hasChords;
+  bool get isArrangement;
   @Deprecated('is handled independently on model')
   int? get accidentals;
   @Deprecated('is handled independently on model')
@@ -67,7 +68,7 @@ mixin _$SongLyric {
 
   @override
   String toString() {
-    return 'SongLyric(id: $id, displayId: $displayId, displayName: $displayName, name: $name, secondaryName1: $secondaryName1, secondaryName2: $secondaryName2, lyrics: $lyrics, hymnologyNew: $hymnologyNew, lang: $lang, langDescription: $langDescription, dbType: $dbType, hasChords: $hasChords, accidentals: $accidentals, showChords: $showChords, transposition: $transposition, song: $song, settings: $settings, authors: $authors, tags: $tags, externals: $externals, songbookRecords: $songbookRecords, playlistRecords: $playlistRecords)';
+    return 'SongLyric(id: $id, displayId: $displayId, displayName: $displayName, name: $name, secondaryName1: $secondaryName1, secondaryName2: $secondaryName2, lyrics: $lyrics, hymnologyNew: $hymnologyNew, lang: $lang, langDescription: $langDescription, dbType: $dbType, hasChords: $hasChords, isArrangement: $isArrangement, accidentals: $accidentals, showChords: $showChords, transposition: $transposition, song: $song, settings: $settings, authors: $authors, tags: $tags, externals: $externals, songbookRecords: $songbookRecords, playlistRecords: $playlistRecords)';
   }
 }
 
@@ -90,6 +91,7 @@ abstract mixin class $SongLyricCopyWith<$Res> {
       @JsonKey(name: 'type_enum', fromJson: SongLyricType.rawValueFromString)
       int dbType,
       bool hasChords,
+      bool isArrangement,
       @Deprecated('is handled independently on model') int? accidentals,
       @Deprecated('is handled independently on model') bool? showChords,
       @Deprecated('is handled independently on model') int? transposition,
@@ -132,6 +134,7 @@ class _$SongLyricCopyWithImpl<$Res> implements $SongLyricCopyWith<$Res> {
     Object? langDescription = null,
     Object? dbType = null,
     Object? hasChords = null,
+    Object? isArrangement = null,
     Object? accidentals = freezed,
     Object? showChords = freezed,
     Object? transposition = freezed,
@@ -191,6 +194,10 @@ class _$SongLyricCopyWithImpl<$Res> implements $SongLyricCopyWith<$Res> {
       hasChords: null == hasChords
           ? _self.hasChords
           : hasChords // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isArrangement: null == isArrangement
+          ? _self.isArrangement
+          : isArrangement // ignore: cast_nullable_to_non_nullable
               as bool,
       accidentals: freezed == accidentals
           ? _self.accidentals
@@ -342,6 +349,7 @@ extension SongLyricPatterns on SongLyric {
                 name: 'type_enum', fromJson: SongLyricType.rawValueFromString)
             int dbType,
             bool hasChords,
+            bool isArrangement,
             @Deprecated('is handled independently on model') int? accidentals,
             @Deprecated('is handled independently on model') bool? showChords,
             @Deprecated('is handled independently on model') int? transposition,
@@ -377,6 +385,7 @@ extension SongLyricPatterns on SongLyric {
             _that.langDescription,
             _that.dbType,
             _that.hasChords,
+            _that.isArrangement,
             _that.accidentals,
             _that.showChords,
             _that.transposition,
@@ -422,6 +431,7 @@ extension SongLyricPatterns on SongLyric {
                 name: 'type_enum', fromJson: SongLyricType.rawValueFromString)
             int dbType,
             bool hasChords,
+            bool isArrangement,
             @Deprecated('is handled independently on model') int? accidentals,
             @Deprecated('is handled independently on model') bool? showChords,
             @Deprecated('is handled independently on model') int? transposition,
@@ -456,6 +466,7 @@ extension SongLyricPatterns on SongLyric {
             _that.langDescription,
             _that.dbType,
             _that.hasChords,
+            _that.isArrangement,
             _that.accidentals,
             _that.showChords,
             _that.transposition,
@@ -498,6 +509,7 @@ extension SongLyricPatterns on SongLyric {
                 name: 'type_enum', fromJson: SongLyricType.rawValueFromString)
             int dbType,
             bool hasChords,
+            bool isArrangement,
             @Deprecated('is handled independently on model') int? accidentals,
             @Deprecated('is handled independently on model') bool? showChords,
             @Deprecated('is handled independently on model') int? transposition,
@@ -532,6 +544,7 @@ extension SongLyricPatterns on SongLyric {
             _that.langDescription,
             _that.dbType,
             _that.hasChords,
+            _that.isArrangement,
             _that.accidentals,
             _that.showChords,
             _that.transposition,
@@ -567,6 +580,7 @@ class _SongLyric extends SongLyric {
       @JsonKey(name: 'type_enum', fromJson: SongLyricType.rawValueFromString)
       required this.dbType,
       required this.hasChords,
+      required this.isArrangement,
       @Deprecated('is handled independently on model') this.accidentals,
       @Deprecated('is handled independently on model') this.showChords,
       @Deprecated('is handled independently on model') this.transposition,
@@ -621,6 +635,8 @@ class _SongLyric extends SongLyric {
   @override
   final bool hasChords;
   @override
+  final bool isArrangement;
+  @override
   @Deprecated('is handled independently on model')
   final int? accidentals;
   @override
@@ -663,7 +679,7 @@ class _SongLyric extends SongLyric {
 
   @override
   String toString() {
-    return 'SongLyric(id: $id, displayId: $displayId, displayName: $displayName, name: $name, secondaryName1: $secondaryName1, secondaryName2: $secondaryName2, lyrics: $lyrics, hymnologyNew: $hymnologyNew, lang: $lang, langDescription: $langDescription, dbType: $dbType, hasChords: $hasChords, accidentals: $accidentals, showChords: $showChords, transposition: $transposition, song: $song, settings: $settings, authors: $authors, tags: $tags, externals: $externals, songbookRecords: $songbookRecords, playlistRecords: $playlistRecords)';
+    return 'SongLyric(id: $id, displayId: $displayId, displayName: $displayName, name: $name, secondaryName1: $secondaryName1, secondaryName2: $secondaryName2, lyrics: $lyrics, hymnologyNew: $hymnologyNew, lang: $lang, langDescription: $langDescription, dbType: $dbType, hasChords: $hasChords, isArrangement: $isArrangement, accidentals: $accidentals, showChords: $showChords, transposition: $transposition, song: $song, settings: $settings, authors: $authors, tags: $tags, externals: $externals, songbookRecords: $songbookRecords, playlistRecords: $playlistRecords)';
   }
 }
 
@@ -689,6 +705,7 @@ abstract mixin class _$SongLyricCopyWith<$Res>
       @JsonKey(name: 'type_enum', fromJson: SongLyricType.rawValueFromString)
       int dbType,
       bool hasChords,
+      bool isArrangement,
       @Deprecated('is handled independently on model') int? accidentals,
       @Deprecated('is handled independently on model') bool? showChords,
       @Deprecated('is handled independently on model') int? transposition,
@@ -731,6 +748,7 @@ class __$SongLyricCopyWithImpl<$Res> implements _$SongLyricCopyWith<$Res> {
     Object? langDescription = null,
     Object? dbType = null,
     Object? hasChords = null,
+    Object? isArrangement = null,
     Object? accidentals = freezed,
     Object? showChords = freezed,
     Object? transposition = freezed,
@@ -790,6 +808,10 @@ class __$SongLyricCopyWithImpl<$Res> implements _$SongLyricCopyWith<$Res> {
       hasChords: null == hasChords
           ? _self.hasChords
           : hasChords // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isArrangement: null == isArrangement
+          ? _self.isArrangement
+          : isArrangement // ignore: cast_nullable_to_non_nullable
               as bool,
       accidentals: freezed == accidentals
           ? _self.accidentals

@@ -214,7 +214,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
     id: const obx_int.IdUid(11, 6447883453535376640),
     name: 'SongLyric',
-    lastPropertyId: const obx_int.IdUid(38, 4191559352941742932),
+    lastPropertyId: const obx_int.IdUid(39, 383183850334553038),
     flags: 0,
     properties: <obx_int.ModelProperty>[
       obx_int.ModelProperty(
@@ -321,6 +321,12 @@ final _entities = <obx_int.ModelEntity>[
         id: const obx_int.IdUid(38, 4191559352941742932),
         name: 'displayName',
         type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(39, 383183850334553038),
+        name: 'isArrangement',
+        type: 1,
         flags: 0,
       ),
     ],
@@ -1172,7 +1178,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final hymnologyNewOffset = fbb.writeString(object.hymnologyNew);
         final displayIdOffset = fbb.writeString(object.displayId);
         final displayNameOffset = fbb.writeString(object.displayName);
-        fbb.startTable(39);
+        fbb.startTable(40);
         fbb.addInt64(0, object.id);
         fbb.addOffset(1, nameOffset);
         fbb.addOffset(2, secondaryName1Offset);
@@ -1190,6 +1196,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
         fbb.addOffset(34, hymnologyNewOffset);
         fbb.addOffset(36, displayIdOffset);
         fbb.addOffset(37, displayNameOffset);
+        fbb.addBool(38, object.isArrangement);
         fbb.finish(fbb.endTable());
         return object.id;
       },
@@ -1241,6 +1248,12 @@ obx_int.ModelDefinition getObjectBoxModel() {
           26,
           false,
         );
+        final isArrangementParam = const fb.BoolReader().vTableGet(
+          buffer,
+          rootOffset,
+          80,
+          false,
+        );
         final accidentalsParam = const fb.Int64Reader().vTableGetNullable(
           buffer,
           rootOffset,
@@ -1280,6 +1293,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
           langDescription: langDescriptionParam,
           dbType: dbTypeParam,
           hasChords: hasChordsParam,
+          isArrangement: isArrangementParam,
           accidentals: accidentalsParam,
           showChords: showChordsParam,
           transposition: transpositionParam,
@@ -2006,6 +2020,11 @@ class SongLyric_ {
   /// See [SongLyric.displayName].
   static final displayName = obx.QueryStringProperty<SongLyric>(
     _entities[5].properties[16],
+  );
+
+  /// See [SongLyric.isArrangement].
+  static final isArrangement = obx.QueryBooleanProperty<SongLyric>(
+    _entities[5].properties[17],
   );
 
   /// see [SongLyric.authors]

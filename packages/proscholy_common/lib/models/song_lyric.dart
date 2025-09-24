@@ -73,6 +73,7 @@ sealed class SongLyric with _$SongLyric implements DisplayableItem, Identifiable
     @JsonKey(name: 'lang_string') required String langDescription,
     @JsonKey(name: 'type_enum', fromJson: SongLyricType.rawValueFromString) required int dbType,
     required bool hasChords,
+    required bool isArrangement,
     @Deprecated('is handled independently on model') int? accidentals,
     @Deprecated('is handled independently on model') bool? showChords,
     @Deprecated('is handled independently on model') int? transposition,
@@ -160,15 +161,17 @@ sealed class SongLyric with _$SongLyric implements DisplayableItem, Identifiable
 
 String _readDisplayId(Map<dynamic, dynamic> json, String _) {
   if (isEZ) {
-    final idString = json['songbook_records']
-        .firstWhere((songbookRecord) => songbookRecord['pivot']['songbook']['id'] == '58')['pivot']['number'];
+    final idString = json['songbook_records'].firstWhere(
+      (songbookRecord) => songbookRecord['pivot']['songbook']['id'] == '58',
+    )['pivot']['number'];
 
     return idString;
   }
 
   if (isEK) {
-    final idString = json['songbook_records']
-        .firstWhere((songbookRecord) => songbookRecord['pivot']['songbook']['id'] == '63')['pivot']['number'];
+    final idString = json['songbook_records'].firstWhere(
+      (songbookRecord) => songbookRecord['pivot']['songbook']['id'] == '63',
+    )['pivot']['number'];
 
     return idString;
   }
@@ -178,17 +181,19 @@ String _readDisplayId(Map<dynamic, dynamic> json, String _) {
 
 String _readDisplayName(Map<dynamic, dynamic> json, String _) {
   if (isEZ) {
-    final name = json['songbook_records']
-        .firstWhere((songbookRecord) => songbookRecord['pivot']['songbook']['id'] == '58')['pivot']['song_name'];
+    final name = json['songbook_records'].firstWhere(
+      (songbookRecord) => songbookRecord['pivot']['songbook']['id'] == '58',
+    )['pivot']['song_name'];
 
-    return name ?? json['name'];
+    if (name?.isNotEmpty ?? false) return name;
   }
 
   if (isEK) {
-    final name = json['songbook_records']
-        .firstWhere((songbookRecord) => songbookRecord['pivot']['songbook']['id'] == '63')['pivot']['song_name'];
+    final name = json['songbook_records'].firstWhere(
+      (songbookRecord) => songbookRecord['pivot']['songbook']['id'] == '63',
+    )['pivot']['song_name'];
 
-    return name ?? json['name'];
+    if (name?.isNotEmpty ?? false) return name;
   }
 
   return json['name'];

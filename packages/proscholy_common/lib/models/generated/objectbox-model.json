@@ -151,7 +151,7 @@
     },
     {
       "id": "11:6447883453535376640",
-      "lastPropertyId": "38:4191559352941742932",
+      "lastPropertyId": "39:383183850334553038",
       "name": "SongLyric",
       "properties": [
         {
@@ -245,6 +245,11 @@
           "id": "38:4191559352941742932",
           "name": "displayName",
           "type": 9
+        },
+        {
+          "id": "39:383183850334553038",
+          "name": "isArrangement",
+          "type": 1
         }
       ],
       "relations": [

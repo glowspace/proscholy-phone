@@ -19,6 +19,7 @@ _SongLyric _$SongLyricFromJson(Map<String, dynamic> json) => _SongLyric(
       langDescription: json['lang_string'] as String,
       dbType: SongLyricType.rawValueFromString(json['type_enum'] as String?),
       hasChords: json['has_chords'] as bool,
+      isArrangement: json['is_arrangement'] as bool,
       accidentals: (json['accidentals'] as num?)?.toInt(),
       showChords: json['show_chords'] as bool?,
       transposition: (json['transposition'] as num?)?.toInt(),
