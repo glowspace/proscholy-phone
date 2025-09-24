@@ -70,7 +70,7 @@ class AdditionalSection extends StatelessWidget {
           HighlightableWidget(
             highlightBackground: true,
             padding: const EdgeInsets.all(kDefaultPadding),
-            onTap: () => launch(dontaionsUrl),
+            onTap: () => launch(donationsUrl),
             child: const IconItem(
               icon: Icons.favorite,
               text: 'Darovat',
