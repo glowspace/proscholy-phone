@@ -424,24 +424,26 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
       final scrollController = _autoScrollController(_currentIndex);
       final step = _scrollStep * ref.watch(settingsProvider.select((settings) => settings.fontSizeScale));
 
-      print(ref.watch(settingsProvider.select((settings) => settings.fontSizeScale)));
-
       if (key == LogicalKeyboardKey.arrowUp || key == LogicalKeyboardKey.pageUp) {
         scrollController.animateTo(
           max(0, scrollController.offset - step),
           duration: kDefaultAnimationDuration,
           curve: Curves.easeInOut,
         );
+
+        return KeyEventResult.handled;
       } else if (key == LogicalKeyboardKey.arrowDown || key == LogicalKeyboardKey.pageDown) {
         scrollController.animateTo(
           min(scrollController.position.maxScrollExtent, scrollController.offset + step),
           duration: kDefaultAnimationDuration,
           curve: Curves.easeInOut,
         );
+
+        return KeyEventResult.handled;
       }
     }
 
-    return KeyEventResult.handled;
+    return KeyEventResult.ignored;
   }
 }
 

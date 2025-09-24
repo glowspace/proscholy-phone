@@ -99,7 +99,6 @@ final class AppRouter {
           false,
           true
       ),
-
       _ => ((_) => const HomeScreen(), false, true),
     };
 

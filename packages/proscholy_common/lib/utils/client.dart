@@ -7,7 +7,10 @@ import 'package:proscholy_common/constants.dart';
 
 final _dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
 
-final _link = HttpLink('https://zpevnik.proscholy.cz/graphql', defaultHeaders: {if (isEZ) 'Filter-Content': 'ez' else if (isEK) 'Filter-Content': 'ek'});
+final _link = HttpLink(
+  'https://zpevnik.proscholy.cz/graphql',
+  defaultHeaders: {if (isEZ) 'Filter-Content': 'ez' else if (isEK) 'Filter-Content': 'ek'},
+);
 
 const _newsQuery = '''
 query {

@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jovial_svg/jovial_svg.dart';
@@ -53,6 +54,8 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
         );
       }
     });
+
+    FirebaseAnalytics.instance.logScreenView(screenName: widget.songLyric.name);
   }
 
   @override

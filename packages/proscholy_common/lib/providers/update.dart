@@ -91,6 +91,8 @@ Stream<UpdateStatus> update(Ref ref) async* {
     appDependencies.store.box<NewsItem>().putMany(newsItems);
   } on OperationException catch (e) {
     if (e.linkException?.originalException is SocketException) return;
+
+    rethrow;
   } on SocketException {
     return;
   }
