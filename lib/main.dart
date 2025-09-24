@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +28,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  FirebaseAnalytics.instance.setUserProperty(name: 'app', value: 'ZPS');
 
   final appDependencies = AppDependencies(
     sharedPreferences: await SharedPreferences.getInstance(),
@@ -98,7 +100,10 @@ class MainWidget extends ConsumerWidget {
       themeMode: themeMode,
       initialRoute: initialRoute ?? '/',
       onGenerateRoute: AppRouter.generateRoute,
-      navigatorObservers: [ref.read(appNavigatorObserverProvider)],
+      navigatorObservers: [
+        ref.read(appNavigatorObserverProvider),
+        FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance),
+      ],
     );
   }
 }

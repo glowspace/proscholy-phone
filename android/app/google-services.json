@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1053312555544",
+    "firebase_url": "https://proscholycz.firebaseio.com",
+    "project_id": "proscholycz",
+    "storage_bucket": "proscholycz.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1053312555544:android:d5af5b8eae512622f1c16d",
+        "android_client_info": {
+          "package_name": "jozkar.mladez"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1053312555544-p6lcndga3218a158il7npcicgh7mf7jo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnU4_dIWi6H_gSa-8ZbSd5zHTmIUmPoX0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1053312555544-p6lcndga3218a158il7npcicgh7mf7jo.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1053312555544-rubd9dm06da6qqv3dppg5ht7cqfrqqbp.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "cz.proscholy.id.Zpevnik",
+                "app_store_id": "1475375453"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

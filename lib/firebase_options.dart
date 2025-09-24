@@ -55,7 +55,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '1053312555544',
     projectId: 'proscholycz',
     databaseURL: 'https://proscholycz.firebaseio.com',
-    storageBucket: 'proscholycz.appspot.com',
+    storageBucket: 'proscholycz.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
@@ -64,8 +64,9 @@ class DefaultFirebaseOptions {
     messagingSenderId: '1053312555544',
     projectId: 'proscholycz',
     databaseURL: 'https://proscholycz.firebaseio.com',
-    storageBucket: 'proscholycz.appspot.com',
+    storageBucket: 'proscholycz.firebasestorage.app',
     iosClientId: '1053312555544-rubd9dm06da6qqv3dppg5ht7cqfrqqbp.apps.googleusercontent.com',
     iosBundleId: 'cz.proscholy.id.Zpevnik',
   );
+
 }
