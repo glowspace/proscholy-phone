@@ -187,7 +187,6 @@ void _cleanup(AppDependencies appDependencies) async {
 
   for (final file in files) {
     if (file is File && file.path.endsWith('.proscholy')) {
-      print(file);
       try {
         await file.delete();
       } catch (_) {}

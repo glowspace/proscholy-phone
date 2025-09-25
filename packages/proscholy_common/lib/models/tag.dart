@@ -1,20 +1,23 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:objectbox/objectbox.dart';
+import 'package:proscholy_common/constants.dart';
 import 'package:proscholy_common/models/model.dart';
 
 part 'generated/tag.freezed.dart';
 part 'generated/tag.g.dart';
 
-const List<TagType> supportedTagTypes = [
-  TagType.liturgyPart,
-  TagType.liturgyPeriod,
-  TagType.sacredOccasion,
-  TagType.generic,
-  TagType.saints,
-  TagType.songbook,
-  TagType.playlist,
-  TagType.language,
-];
+const List<TagType> supportedTagTypes = isZPS
+    ? [
+        TagType.liturgyPart,
+        TagType.liturgyPeriod,
+        TagType.sacredOccasion,
+        TagType.generic,
+        TagType.saints,
+        TagType.songbook,
+        TagType.playlist,
+        TagType.language,
+      ]
+    : [];
 
 enum TagType {
   liturgyPart('Mše svatá'),
