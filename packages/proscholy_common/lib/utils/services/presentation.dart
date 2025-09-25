@@ -4,8 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:proscholy_common/models/presentation.dart';
 
 class PresentationService {
-  final methodChannel = const MethodChannel('presentation');
-  final streamChannel = const EventChannel('presentation/stream');
+  final methodChannel = const MethodChannel('proscholyCommon/presentation');
+  final streamChannel = const EventChannel('proscholyCommon/presentation/stream');
 
   const PresentationService._();
 

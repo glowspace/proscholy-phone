@@ -7,7 +7,7 @@ import 'package:proscholy_common/models/spotlight_item.dart';
 final spotlightSongLyricRE = RegExp(r'^song_lyric_(\d+)$');
 
 class SpotlightService {
-  final methodChannel = const MethodChannel('spotlight');
+  final methodChannel = const MethodChannel('proscholyCommon/spotlight');
 
   const SpotlightService._();
 

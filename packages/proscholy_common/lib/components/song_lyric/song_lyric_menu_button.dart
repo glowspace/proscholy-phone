@@ -78,12 +78,12 @@ class SongLyricMenuButton extends StatelessWidget {
         final box = context.findRenderObject() as RenderBox?;
 
         Share.share(
-          'https://$songUrl/${songLyric.id}/',
+          'https://${isZP ? "" : "www."}$songUrl/${songLyric.id}/',
           sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
         );
         break;
       case SongLyricMenuAction.openInBrowser:
-        launch('https://$songUrl/${songLyric.id}/');
+        launch('https://${isZP ? "www." : ""}$songUrl/${songLyric.id}/');
         break;
       case SongLyricMenuAction.report:
         final version = context.providers.read(appDependenciesProvider).packageInfo.version;

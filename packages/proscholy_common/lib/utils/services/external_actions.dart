@@ -11,7 +11,7 @@ import 'package:proscholy_common/utils/services/spotlight.dart';
 class ExternalActionsService {
   final navigatorKey = GlobalKey<NavigatorState>();
 
-  final channel = const MethodChannel('opened_file');
+  final channel = const MethodChannel('proscholyCommon/openedFile');
 
   ExternalActionsService._();
 
