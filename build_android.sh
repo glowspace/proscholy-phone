@@ -1,2 +1,2 @@
 #!/bin/zsh
-flutter build appbundle --dart-define=ZPEVNIK_TARGET=ZP
+flutter build appbundle --dart-define=ZPEVNIK_TARGET=ZPS
