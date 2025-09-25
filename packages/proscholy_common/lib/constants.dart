@@ -22,7 +22,7 @@ const kTabletSizeBreakpoint = 600;
 const imagesPath = 'assets/images';
 
 // building for zpevnik.proscholy.cz
-const isZP = String.fromEnvironment('ZPEVNIK_TARGET') == 'ZP';
+const isZPS = String.fromEnvironment('ZPEVNIK_TARGET') == 'ZPS';
 // building for evangelickyzpevnik.cz
 const isEZ = String.fromEnvironment('ZPEVNIK_TARGET') == 'EZ';
 // building for evangelickykancional.cz

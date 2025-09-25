@@ -52,7 +52,7 @@ class AdditionalSection extends StatelessWidget {
           child: const IconItem(icon: Icons.language, text: 'Webová verze', trailingIcon: Icons.open_in_new),
         ),
         const Divider(),
-        if (isZP) ...[
+        if (isZPS) ...[
           HighlightableWidget(
             highlightBackground: true,
             padding: const EdgeInsets.all(kDefaultPadding),

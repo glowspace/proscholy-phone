@@ -90,7 +90,7 @@ class SearchedSongLyrics extends _$SearchedSongLyrics {
     if (searchedNumber == null) {
       searchText = '${searchText.replaceAll(' ', '* ')}*';
     } else {
-      if (isZP) {
+      if (isZPS) {
         final searchId = int.tryParse(searchedNumber);
         if (searchId != null) matchedById = songLyricBox.get(searchId);
 

@@ -95,7 +95,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       ...columnSections.first
     ];
 
-    if (isZP) {
+    if (isZPS) {
       columnSections.last.add(
         HighlightableWidget(
           padding: const EdgeInsets.only(top: 2 / 3 * kDefaultPadding, bottom: 2 * kDefaultPadding),

@@ -7,7 +7,7 @@ part 'generated/home.g.dart';
 
 const _homeSectionsKey = 'home_screen_sections';
 
-const _defaultHomeSections = isZP ? HomeSection.values : [HomeSection.recent];
+const _defaultHomeSections = isZPS ? HomeSection.values : [HomeSection.recent];
 
 enum HomeSection {
   news('Novinky'),

@@ -38,7 +38,7 @@ class SettingsScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: kDefaultPadding),
                 HighlightableWidget(
-                  onTap: () => isZP
+                  onTap: () => isZPS
                       ? context.push('/about')
                       : (isEZ
                           ? launch('https://evangelickyzpevnik.cz/o-zpevniku')

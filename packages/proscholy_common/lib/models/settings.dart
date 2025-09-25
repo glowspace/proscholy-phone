@@ -11,7 +11,7 @@ part 'generated/settings.g.dart';
 const autoScrollSpeeds = [120, 90, 72, 60, 54, 45, 39, 36, 33, 30, 27, 24];
 
 const defaultGlobalSettings = GlobalSettings(
-  seedColor: isZP ? 0xFF673AB7 : 0xFF2196F3, // Colors.deepPurlple
+  seedColor: isZPS ? 0xFF673AB7 : 0xFF2196F3, // Colors.deepPurlple
   fontSizeScale: 1,
   showChords: true,
   showMusicalNotes: true,

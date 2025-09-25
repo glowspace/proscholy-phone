@@ -51,7 +51,7 @@ class SongLyricChips extends StatelessWidget {
               },
             ),
           ),
-        if (isZP && (songLyric.hasTags || songLyric.hasSongbooks))
+        if (isZPS && (songLyric.hasTags || songLyric.hasSongbooks))
           SongLyricChip(
             text: songLyric.hasTags ? (songLyric.hasSongbooks ? 'Štítky, zpěvníky' : 'Štítky') : 'Zpěvníky',
             icon: FontAwesomeIcons.tags,
