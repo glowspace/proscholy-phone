@@ -53,7 +53,6 @@ Future<void> main() async {
     ));
   }
 
-  return appRunner();
   if (kDebugMode) return appRunner();
 
   await SentryFlutter.init(
