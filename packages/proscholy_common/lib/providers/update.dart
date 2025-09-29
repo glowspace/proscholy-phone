@@ -108,7 +108,7 @@ Stream<UpdateStatus> update(Ref ref) async* {
 
   final data = await client.getData();
 
-  ref.read(svgsProvider.notifier).storeSvgs(await client.getSvgs(lastUpdate));
+  if (ref.mounted) ref.read(svgsProvider.notifier).storeSvgs(await client.getSvgs(lastUpdate));
 
   await parseAndStoreData(appDependencies.store, data);
 

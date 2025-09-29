@@ -35,7 +35,9 @@ class SearchText extends _$SearchText {
   @override
   String build() => '';
 
-  void change(String searchText) => state = searchText;
+  void change(String searchText) {
+    if (ref.mounted) state = searchText;
+  }
 }
 
 @riverpod
