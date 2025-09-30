@@ -116,7 +116,8 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
             MediaQuery(
               // double the text scale factor for lyrics as they look wrong with text scale factor < 1 and minimum is 0.5
               // font size is changed according to it
-              data: MediaQuery.of(context).copyWith(textScaler: MediaQuery.textScalerOf(context)),
+              data: MediaQuery.of(context)
+                  .copyWith(textScaler: TextScaler.linear(MediaQuery.textScalerOf(context).scale(1) * 2)),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 2 * kDefaultPadding),
                 child: _buildLyrics(context),
@@ -328,7 +329,9 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
     VersePart? versePart,
     bool isInterlude = false,
   }) {
-    final chordOffset = MediaQuery.textScalerOf(context).scale(isInterlude ? 0.0 : -(textStyle?.fontSize ?? 0) * 2);
+    final chordOffset = isInterlude || textStyle?.fontSize == null
+        ? 0.0
+        : -2 * MediaQuery.textScalerOf(context).scale(textStyle!.fontSize!);
 
     String chordText = convertAccidentals(
         transpose(
