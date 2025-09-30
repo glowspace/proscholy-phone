@@ -60,7 +60,7 @@ class SearchScreen extends StatelessWidget {
     }
 
     return PopScope(
-      onPopInvoked: (_) {
+      onPopInvokedWithResult: (_, __) {
         if (context.isSearching) context.providers.read(selectedTagsProvider.notifier).pop();
       },
       child: child,

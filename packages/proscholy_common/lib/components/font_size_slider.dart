@@ -11,7 +11,7 @@ class FontSizeSlider extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Row(children: [
-      Text('A', style: theme.textTheme.bodyMedium, textScaleFactor: kMinimumFontSizeScale),
+      Text('A', style: theme.textTheme.bodyMedium, textScaler: TextScaler.linear(kMinimumFontSizeScale)),
       Expanded(
         child: Consumer(
           builder: (_, ref, __) => Slider.adaptive(
@@ -24,7 +24,7 @@ class FontSizeSlider extends StatelessWidget {
           ),
         ),
       ),
-      Text('A', style: theme.textTheme.bodyMedium, textScaleFactor: kMaximumFontSizeScale),
+      Text('A', style: theme.textTheme.bodyMedium, textScaler: TextScaler.linear(kMaximumFontSizeScale)),
     ]);
   }
 }

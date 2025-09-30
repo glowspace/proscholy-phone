@@ -9,12 +9,6 @@ import 'package:proscholy_common/providers/utils.dart';
 
 part 'generated/settings.g.dart';
 
-// TODO: these keys are only used to preserve settings from older versions, remove them after some time
-const String _darkModeKey = 'dark_mode_key';
-const String _fontSizeScaleScaleKey = 'font_size_scale';
-const String _showChordsKey = 'show_chords';
-const String _accidentalsKey = 'accidentals';
-
 const String _settingsKey = 'settings';
 
 @riverpod
@@ -28,13 +22,7 @@ class Settings extends _$Settings {
 
     if (settingsData != null) return GlobalSettings.fromJson(jsonDecode(settingsData));
 
-    // TODO: copyWith is only used to preserve settings from older versions, remove it after some time
-    return defaultGlobalSettings.copyWith(
-      darkModeEnabled: prefs.getBool(_darkModeKey),
-      fontSizeScale: prefs.getDouble(_fontSizeScaleScaleKey) ?? defaultGlobalSettings.fontSizeScale,
-      showChords: prefs.getBool(_showChordsKey) ?? defaultGlobalSettings.showChords,
-      accidentals: prefs.getInt(_accidentalsKey) ?? defaultGlobalSettings.accidentals,
-    );
+    return defaultGlobalSettings;
   }
 
   void changeDarkModeEnabled(bool? darkModeEnabled) => state = state.copyWith(darkModeEnabled: darkModeEnabled);

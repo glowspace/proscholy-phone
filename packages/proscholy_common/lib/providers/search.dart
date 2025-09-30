@@ -1,6 +1,5 @@
 import 'dart:typed_data';
 
-import 'package:collection/collection.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:proscholy_common/constants.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -141,7 +140,7 @@ class SearchedSongLyrics extends _$SearchedSongLyrics {
     final songLyrics = await songLyricBox.getManyAsync(searchResults);
 
     return SearchedSongLyricsResult(
-      songLyrics: songLyrics.whereNotNull().toList(),
+      songLyrics: songLyrics.nonNulls.toList(),
       searchedNumber: searchedNumber,
       matchedById: matchedById,
       matchedBySongbookNumber: matchedBySongbookNumber,

@@ -54,6 +54,9 @@ class _PlaylistRecordsListViewState extends ConsumerState<PlaylistRecordsListVie
       setState(() =>
           _recordsOrdered = _filterInvalidRecords(widget.playlist.records.sorted((a, b) => a.rank.compareTo(b.rank))));
 
+      final context = this.context;
+      if (!context.mounted) return;
+
       final selectedDisplayableItemArgumentsNotifier = SelectedDisplayableItemArguments.of(context, listen: false);
 
       if (selectedDisplayableItemArgumentsNotifier != null) {
@@ -143,8 +146,9 @@ class _PlaylistRecordsListViewState extends ConsumerState<PlaylistRecordsListVie
       final customText = ref.watch(customTextProvider(playlistRecord.customText.targetId));
       final songLyric = ref.watch(songLyricProvider(playlistRecord.songLyric.targetId));
 
-      if (bibleVerse == null && customText == null && songLyric == null)
+      if (bibleVerse == null && customText == null && songLyric == null) {
         Sentry.captureMessage('had to filter invalid record');
+      }
 
       return bibleVerse != null || customText != null || songLyric != null;
     }).toList();

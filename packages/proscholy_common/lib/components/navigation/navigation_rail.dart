@@ -33,7 +33,7 @@ class CustomNavigationRail extends StatelessWidget {
           boxShadow: [
             if (context.isHome)
               BoxShadow(
-                color: theme.shadowColor.withOpacity(0.2),
+                color: theme.shadowColor.withValues(alpha: 0.2),
                 spreadRadius: 0,
                 blurRadius: 6,
                 offset: const Offset(2, 0),

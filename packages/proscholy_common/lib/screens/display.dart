@@ -103,8 +103,9 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
   @override
   Widget build(BuildContext context) {
     // update media query with font size scale from settings, so all children has correct font size scale and it does not have to be set individually
-    final newMediaQuery = MediaQuery.of(context)
-        .copyWith(textScaleFactor: ref.watch(settingsProvider.select((settings) => settings.fontSizeScale)));
+    final newMediaQuery = MediaQuery.of(context).copyWith(
+      textScaler: TextScaler.linear(ref.watch(settingsProvider.select((settings) => settings.fontSizeScale))),
+    );
 
     final fullScreen = ref.watch(displayScreenStatusProvider.select((status) => status.fullScreen));
 

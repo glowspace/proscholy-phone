@@ -348,6 +348,7 @@ class _SelectBibleVerseScreenState extends State<_SelectBibleVerseScreen> {
   }
 
   void _pop() async {
+    final context = this.context;
     final text = await context.providers.read(bibleVerseProvider(
       supportedBibleTranslations[1],
       widget.book,

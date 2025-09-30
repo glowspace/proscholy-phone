@@ -27,7 +27,11 @@ class _AudioPlayerWrapperState extends State<AudioPlayerWrapper> {
     final activePlayerController = ActivePlayerController(widget.external, audioPlayer: _controller);
 
     _controller.playingStream.listen((isPlaying) {
-      if (isPlaying) context.providers.read(activePlayerProvider.notifier).changePlayer(activePlayerController);
+      final context = this.context;
+
+      if (isPlaying && context.mounted) {
+        context.providers.read(activePlayerProvider.notifier).changePlayer(activePlayerController);
+      }
     });
   }
 

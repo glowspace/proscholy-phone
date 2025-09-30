@@ -56,7 +56,6 @@ Future<void> loadInitial(AppDependencies appDependencies) async {
 
   if (lastVersion == currentVersion) return;
 
-  // TODO: remove json file after loading, this is not possible right now
   final json = jsonDecode(await rootBundle.loadString('assets/data.json'));
 
   await parseAndStoreData(appDependencies.store, json['data']);

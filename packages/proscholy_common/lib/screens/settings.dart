@@ -66,7 +66,7 @@ class SettingsScreen extends ConsumerWidget {
       children: [
         SwitchListTile.adaptive(
           title: Text('Tmavý mód', style: textTheme.bodyMedium),
-          activeColor: theme.colorScheme.primary,
+          activeTrackColor: theme.colorScheme.primary,
           value: ref.watch(settingsProvider.select((settings) => settings.darkModeEnabled)) ?? systemDarkModeEnabled,
           onChanged: (value) =>
               ref.read(settingsProvider.notifier).changeDarkModeEnabled(value == systemDarkModeEnabled ? null : value),
@@ -86,7 +86,7 @@ class SettingsScreen extends ConsumerWidget {
                   ref.watch(settingsProvider.select((settings) => Color(settings.seedColor))),
                   pickersEnabled: {ColorPickerType.primary: true, ColorPickerType.accent: false},
                   enableShadesSelection: false,
-                ).then((color) => ref.read(settingsProvider.notifier).changeSeedColor(color.value)),
+                ).then((color) => ref.read(settingsProvider.notifier).changeSeedColor(color.toARGB32())),
                 child: Ink(
                   width: 24,
                   height: 24,
@@ -132,7 +132,7 @@ class SettingsScreen extends ConsumerWidget {
         const Divider(),
         SwitchListTile.adaptive(
           title: Text('Akordy', style: textTheme.bodyMedium),
-          activeColor: theme.colorScheme.primary,
+          activeTrackColor: theme.colorScheme.primary,
           value: showChords,
           onChanged: (value) => ref.read(settingsProvider.notifier).changeShowChords(value),
           contentPadding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
@@ -140,7 +140,7 @@ class SettingsScreen extends ConsumerWidget {
         const Divider(),
         SwitchListTile.adaptive(
           title: Text('Zobrazit noty', style: textTheme.bodyMedium),
-          activeColor: theme.colorScheme.primary,
+          activeTrackColor: theme.colorScheme.primary,
           value: showMusicalNotes,
           onChanged: (value) => ref.read(settingsProvider.notifier).changeShowMusicalNotes(value),
           contentPadding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),

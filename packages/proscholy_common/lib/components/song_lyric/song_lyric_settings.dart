@@ -48,7 +48,7 @@ class SongLyricSettingsModelWidget extends ConsumerWidget {
         ),
         SwitchListTile.adaptive(
           title: Text('Akordy', style: theme.textTheme.bodyMedium),
-          activeColor: theme.colorScheme.primary,
+          activeTrackColor: theme.colorScheme.primary,
           value: showChords,
           onChanged: (value) => ref.read(songLyricSettingsProvider(songLyric.id).notifier).changeShowChords(value),
           dense: true,
@@ -57,7 +57,7 @@ class SongLyricSettingsModelWidget extends ConsumerWidget {
         if (ref.watch(svgProvider(songLyric.id)).isNotEmpty)
           SwitchListTile.adaptive(
             title: Text('Zobrazit noty', style: theme.textTheme.bodyMedium),
-            activeColor: theme.colorScheme.primary,
+            activeTrackColor: theme.colorScheme.primary,
             contentPadding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
             dense: true,
             value: ref.watch(songLyricSettingsProvider(songLyric.id)

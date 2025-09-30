@@ -28,7 +28,7 @@ class CustomPopupMenuButton<T> extends StatelessWidget {
     );
   }
 
-  void _showMenu(BuildContext context) {
+  void _showMenu(BuildContext context) async {
     final button = context.findRenderObject()! as RenderBox;
     final overlay = Navigator.of(context).overlay!.context.findRenderObject()! as RenderBox;
 
@@ -50,12 +50,14 @@ class CustomPopupMenuButton<T> extends StatelessWidget {
       Offset.zero & overlay.size,
     );
 
-    showMenu(
+    final value = await showMenu(
       context: context,
       items: items,
       shape: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
       position: position,
       color: Theme.of(context).scaffoldBackgroundColor,
-    ).then((value) => onSelected(context, value));
+    );
+
+    if (context.mounted) onSelected(context, value);
   }
 }

@@ -57,10 +57,4 @@ sealed class SongLyricSettingsModel with _$SongLyricSettingsModel implements Ide
       songLyric: ToOne(),
     );
   }
-
-  @override
-  int get hashCode => id;
-
-  @override
-  bool operator ==(Object other) => other is SongLyricSettingsModel && id == other.id;
 }

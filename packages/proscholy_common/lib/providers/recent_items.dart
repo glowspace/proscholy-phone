@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:collection/collection.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:proscholy_common/models/bible_verse.dart';
 import 'package:proscholy_common/models/custom_text.dart';
@@ -55,14 +54,14 @@ class RecentItems extends _$RecentItems {
     final recentItems = appDependencies.store
         .box<BibleVerse>()
         .getMany(bibleVerseIds, growableResult: true)
-        .whereNotNull()
+        .nonNulls
         .cast<RecentItem>()
         .toList();
 
-    recentItems.addAll(appDependencies.store.box<CustomText>().getMany(customTextIds).whereNotNull());
-    recentItems.addAll(appDependencies.store.box<Playlist>().getMany(playlistIds).whereNotNull());
-    recentItems.addAll(appDependencies.store.box<Songbook>().getMany(songbookIds).whereNotNull());
-    recentItems.addAll(appDependencies.store.box<SongLyric>().getMany(songLyricIds).whereNotNull());
+    recentItems.addAll(appDependencies.store.box<CustomText>().getMany(customTextIds).nonNulls);
+    recentItems.addAll(appDependencies.store.box<Playlist>().getMany(playlistIds).nonNulls);
+    recentItems.addAll(appDependencies.store.box<Songbook>().getMany(songbookIds).nonNulls);
+    recentItems.addAll(appDependencies.store.box<SongLyric>().getMany(songLyricIds).nonNulls);
 
     recentItems.forEach(_watchForChanges);
 
@@ -147,7 +146,7 @@ class RecentSongLyrics extends _$RecentSongLyrics {
         .map((id) => int.parse(id))
         .toList();
 
-    return appDependencies.store.box<SongLyric>().getMany(ids).whereNotNull().toList();
+    return appDependencies.store.box<SongLyric>().getMany(ids).nonNulls.toList();
   }
 
   void add(SongLyric songLyric) {

@@ -273,7 +273,9 @@ class Playlists extends _$Playlists {
     if (playlist.records.any((playlistRecord) =>
         playlistRecord.songLyric.targetId == songLyric?.id ||
         playlistRecord.customText.targetId == customText?.id ||
-        playlistRecord.bibleVerse.targetId == bibleVerse?.id)) return;
+        playlistRecord.bibleVerse.targetId == bibleVerse?.id)) {
+      return;
+    }
 
     // first find next rank
     final queryBuilder = _playlistRecordsBox.query(PlaylistRecord_.playlist.equals(playlist.id));

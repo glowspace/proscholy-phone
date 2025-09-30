@@ -25,7 +25,7 @@ class FlexibleTopSection extends StatelessWidget {
               borderRadius: BorderRadius.circular(kDefaultRadius),
               boxShadow: [
                 BoxShadow(
-                  color: theme.shadowColor.withOpacity(0.5 * (1 - expansion)),
+                  color: theme.shadowColor.withValues(alpha: 0.5 * (1 - expansion)),
                   spreadRadius: 0,
                   blurRadius: 6,
                   offset: const Offset(2, 4),
