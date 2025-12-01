@@ -48,7 +48,7 @@ class AdditionalSection extends StatelessWidget {
         HighlightableWidget(
           highlightBackground: true,
           padding: const EdgeInsets.all(kDefaultPadding),
-          onTap: () => launch('https://$baseUrl'),
+          onTap: () => launch('https://${isZPS ? "www." : ""}$baseUrl'),
           child: const IconItem(icon: Icons.language, text: 'Webová verze', trailingIcon: Icons.open_in_new),
         ),
         const Divider(),
