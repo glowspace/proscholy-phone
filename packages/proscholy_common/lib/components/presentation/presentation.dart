@@ -35,7 +35,15 @@ class Presentation extends StatelessWidget {
 
     if (!presentationData.settings.isVisible) return Container(color: backgroundColor);
 
-    return Container(
+    return RotatedBox(
+      quarterTurns: switch(presentationData.settings.rotation) {
+        PresentationRotation.none => 0,
+        PresentationRotation.right90 => 1,
+        PresentationRotation.upsideDown => 2,
+        PresentationRotation.left90 => 3,
+        _ => 0,
+      },
+      child: Container(
       color: backgroundColor,
       child: Stack(
         children: [
@@ -106,6 +114,7 @@ class Presentation extends StatelessWidget {
               ),
             ),
         ],
+      ),
       ),
     );
   }
