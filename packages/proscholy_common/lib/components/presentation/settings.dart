@@ -59,6 +59,19 @@ class PresentationSettingsWidget extends ConsumerWidget {
           onSelected: (value) =>
               ref.read(presentationProvider.notifier).changeSettings(settings.copyWith(alignment: value)),
         ),
+        SelectorWidget(
+          title: 'Otočení obrazu',
+          segments: const [
+            ButtonSegment(value: PresentationRotation.left90, icon: Icon(Icons.rotate_90_degrees_ccw)),
+            ButtonSegment(value: PresentationRotation.none, icon: Icon(Icons.horizontal_rule)),
+            ButtonSegment(value: PresentationRotation.right90, icon: Icon(Icons.rotate_90_degrees_cw)),
+            ButtonSegment(value: PresentationRotation.upsideDown, icon: Icon(Icons.swap_vert)),
+          ],
+          selected: ref.watch(presentationProvider.select((presentation) => presentation.settings.rotation)) ??
+              PresentationRotation.none,
+          onSelected: (value) =>
+              ref.read(presentationProvider.notifier).changeSettings(settings.copyWith(rotation: value)),
+        ),
       ],
     );
   }
