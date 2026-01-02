@@ -123,20 +123,35 @@ class Presentation extends StatelessWidget {
     final size = MediaQuery.sizeOf(context);
 
     double textScaleFactor = 20;
+    double? bestScaleFactor;
+    int? lines;
 
     while (true) {
       final textPainter = TextPainter(
         text: TextSpan(text: lyrics, style: Theme.of(context).textTheme.bodyMedium),
         textDirection: TextDirection.ltr,
         textScaleFactor: textScaleFactor,
+        textWidthBasis: TextWidthBasis.longestLine,
       );
 
       textPainter.layout();
 
+      final int numLines = textPainter.computeLineMetrics().length;
+
       // for some reason mediaQuery is not aware of added padding from scaffold here, so make sure the used width is correct
       if (size.width - (onExternalDisplay ? 3 : 1) * kDefaultPadding * textScaleFactor > textPainter.size.width &&
           size.height - (showingName ? 5 : 4) * kDefaultPadding * textScaleFactor > textPainter.size.height) {
-        return textScaleFactor;
+        if (bestScaleFactor == null) {
+          bestScaleFactor = textScaleFactor;
+          lines = numLines;
+        } else {
+          if (textScaleFactor < bestScaleFactor - kMaxScaleStepDown) {
+            return bestScaleFactor;
+          }
+          if (numLines < lines!) {
+            return textScaleFactor;
+          }
+        }
       }
 
       textScaleFactor -= 0.2;

@@ -4,6 +4,7 @@ const double kDefaultPadding = 12;
 const double kDefaultRadius = 12;
 const double kDefaultIconSize = 24;
 const kDefaultAnimationDuration = Duration(milliseconds: 300);
+const double kMaxScaleStepDown = 1;
 
 const kScaffoldMaxWidth = 768;
 
