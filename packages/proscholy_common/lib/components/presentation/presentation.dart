@@ -120,6 +120,7 @@ class Presentation extends StatelessWidget {
   }
 
   double _computeTextScaleFactor(BuildContext context, String lyrics, bool showingName) {
+    const double kMaxScaleStepDown = 1;
     final size = MediaQuery.sizeOf(context);
 
     double textScaleFactor = 20;
