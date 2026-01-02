@@ -34,6 +34,8 @@ _PresentationSettings _$PresentationSettingsFromJson(
       isVisible: json['isVisible'] as bool,
       alignment: $enumDecodeNullable(
           _$PresentationAlignmentEnumMap, json['alignment']),
+      rotation:
+          $enumDecodeNullable(_$PresentationRotationEnumMap, json['rotation']),
     );
 
 Map<String, dynamic> _$PresentationSettingsToJson(
@@ -44,10 +46,18 @@ Map<String, dynamic> _$PresentationSettingsToJson(
       'allCapital': instance.allCapital,
       'isVisible': instance.isVisible,
       'alignment': _$PresentationAlignmentEnumMap[instance.alignment],
+      'rotation': _$PresentationRotationEnumMap[instance.rotation],
     };
 
 const _$PresentationAlignmentEnumMap = {
   PresentationAlignment.top: 'top',
   PresentationAlignment.center: 'center',
   PresentationAlignment.bottom: 'bottom',
+};
+
+const _$PresentationRotationEnumMap = {
+  PresentationRotation.none: 'none',
+  PresentationRotation.left90: 'left90',
+  PresentationRotation.right90: 'right90',
+  PresentationRotation.upsideDown: 'upsideDown',
 };

@@ -41,7 +41,7 @@ final class RecentItemsProvider
   }
 }
 
-String _$recentItemsHash() => r'f41c42bd527e0eb5869ddba62965c5ede44897d2';
+String _$recentItemsHash() => r'605476a151c75f454d997425e82c98d1c55210b8';
 
 abstract class _$RecentItems extends $Notifier<List<RecentItem>> {
   List<RecentItem> build();
@@ -91,7 +91,7 @@ final class RecentSongLyricsProvider
   }
 }
 
-String _$recentSongLyricsHash() => r'3d79c59c446f062b4b608636ef8cb8bdf8f87fef';
+String _$recentSongLyricsHash() => r'7b1db55b92f0aeb61db2f8576488ffaee5f2aa94';
 
 abstract class _$RecentSongLyrics extends $Notifier<List<SongLyric>> {
   List<SongLyric> build();
