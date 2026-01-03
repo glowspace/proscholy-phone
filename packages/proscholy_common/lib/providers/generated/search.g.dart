@@ -40,7 +40,7 @@ final class SearchTextProvider extends $NotifierProvider<SearchText, String> {
   }
 }
 
-String _$searchTextHash() => r'06d1464ddb2f82005d57e4b9f987001295cf096f';
+String _$searchTextHash() => r'b17c635662bd91780aef35b821e444e47e8c3692';
 
 abstract class _$SearchText extends $Notifier<String> {
   String build();
@@ -88,7 +88,7 @@ final class SearchedSongLyricsProvider
 }
 
 String _$searchedSongLyricsHash() =>
-    r'f5e99607d3aa4f36201ad673e4ca9a946c6f04c4';
+    r'1e4bb7dfd06fc5310d43aba0e839613ad08d9afb';
 
 abstract class _$SearchedSongLyrics
     extends $Notifier<SearchedSongLyricsResult> {

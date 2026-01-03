@@ -18,6 +18,7 @@ const defaultPresentationSettings = PresentationSettings(
 );
 
 enum PresentationAlignment { top, center, bottom }
+enum PresentationRotation { none, left90, right90, upsideDown }
 
 @freezed
 sealed class PresentationData with _$PresentationData {
@@ -40,6 +41,7 @@ sealed class PresentationSettings with _$PresentationSettings {
     required bool allCapital,
     required bool isVisible,
     PresentationAlignment? alignment,
+    PresentationRotation? rotation,
   }) = _PresentationSettings;
 
   factory PresentationSettings.fromJson(Map<String, Object?> json) => _$PresentationSettingsFromJson(json);

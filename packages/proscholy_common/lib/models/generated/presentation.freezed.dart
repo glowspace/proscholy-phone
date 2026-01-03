@@ -434,6 +434,7 @@ mixin _$PresentationSettings {
   bool get allCapital;
   bool get isVisible;
   PresentationAlignment? get alignment;
+  PresentationRotation? get rotation;
 
   /// Create a copy of PresentationSettings
   /// with the given fields replaced by the non-null parameter values.
@@ -460,17 +461,19 @@ mixin _$PresentationSettings {
             (identical(other.isVisible, isVisible) ||
                 other.isVisible == isVisible) &&
             (identical(other.alignment, alignment) ||
-                other.alignment == alignment));
+                other.alignment == alignment) &&
+            (identical(other.rotation, rotation) ||
+                other.rotation == rotation));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, darkMode, showName, allCapital, isVisible, alignment);
+  int get hashCode => Object.hash(runtimeType, darkMode, showName, allCapital,
+      isVisible, alignment, rotation);
 
   @override
   String toString() {
-    return 'PresentationSettings(darkMode: $darkMode, showName: $showName, allCapital: $allCapital, isVisible: $isVisible, alignment: $alignment)';
+    return 'PresentationSettings(darkMode: $darkMode, showName: $showName, allCapital: $allCapital, isVisible: $isVisible, alignment: $alignment, rotation: $rotation)';
   }
 }
 
@@ -485,7 +488,8 @@ abstract mixin class $PresentationSettingsCopyWith<$Res> {
       bool showName,
       bool allCapital,
       bool isVisible,
-      PresentationAlignment? alignment});
+      PresentationAlignment? alignment,
+      PresentationRotation? rotation});
 }
 
 /// @nodoc
@@ -506,6 +510,7 @@ class _$PresentationSettingsCopyWithImpl<$Res>
     Object? allCapital = null,
     Object? isVisible = null,
     Object? alignment = freezed,
+    Object? rotation = freezed,
   }) {
     return _then(_self.copyWith(
       darkMode: null == darkMode
@@ -528,6 +533,10 @@ class _$PresentationSettingsCopyWithImpl<$Res>
           ? _self.alignment
           : alignment // ignore: cast_nullable_to_non_nullable
               as PresentationAlignment?,
+      rotation: freezed == rotation
+          ? _self.rotation
+          : rotation // ignore: cast_nullable_to_non_nullable
+              as PresentationRotation?,
     ));
   }
 }
@@ -623,8 +632,13 @@ extension PresentationSettingsPatterns on PresentationSettings {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(bool darkMode, bool showName, bool allCapital,
-            bool isVisible, PresentationAlignment? alignment)?
+    TResult Function(
+            bool darkMode,
+            bool showName,
+            bool allCapital,
+            bool isVisible,
+            PresentationAlignment? alignment,
+            PresentationRotation? rotation)?
         $default, {
     required TResult orElse(),
   }) {
@@ -632,7 +646,7 @@ extension PresentationSettingsPatterns on PresentationSettings {
     switch (_that) {
       case _PresentationSettings() when $default != null:
         return $default(_that.darkMode, _that.showName, _that.allCapital,
-            _that.isVisible, _that.alignment);
+            _that.isVisible, _that.alignment, _that.rotation);
       case _:
         return orElse();
     }
@@ -653,15 +667,20 @@ extension PresentationSettingsPatterns on PresentationSettings {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(bool darkMode, bool showName, bool allCapital,
-            bool isVisible, PresentationAlignment? alignment)
+    TResult Function(
+            bool darkMode,
+            bool showName,
+            bool allCapital,
+            bool isVisible,
+            PresentationAlignment? alignment,
+            PresentationRotation? rotation)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _PresentationSettings():
         return $default(_that.darkMode, _that.showName, _that.allCapital,
-            _that.isVisible, _that.alignment);
+            _that.isVisible, _that.alignment, _that.rotation);
     }
   }
 
@@ -679,15 +698,20 @@ extension PresentationSettingsPatterns on PresentationSettings {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(bool darkMode, bool showName, bool allCapital,
-            bool isVisible, PresentationAlignment? alignment)?
+    TResult? Function(
+            bool darkMode,
+            bool showName,
+            bool allCapital,
+            bool isVisible,
+            PresentationAlignment? alignment,
+            PresentationRotation? rotation)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _PresentationSettings() when $default != null:
         return $default(_that.darkMode, _that.showName, _that.allCapital,
-            _that.isVisible, _that.alignment);
+            _that.isVisible, _that.alignment, _that.rotation);
       case _:
         return null;
     }
@@ -702,7 +726,8 @@ class _PresentationSettings implements PresentationSettings {
       required this.showName,
       required this.allCapital,
       required this.isVisible,
-      this.alignment});
+      this.alignment,
+      this.rotation});
   factory _PresentationSettings.fromJson(Map<String, dynamic> json) =>
       _$PresentationSettingsFromJson(json);
 
@@ -716,6 +741,8 @@ class _PresentationSettings implements PresentationSettings {
   final bool isVisible;
   @override
   final PresentationAlignment? alignment;
+  @override
+  final PresentationRotation? rotation;
 
   /// Create a copy of PresentationSettings
   /// with the given fields replaced by the non-null parameter values.
@@ -747,17 +774,19 @@ class _PresentationSettings implements PresentationSettings {
             (identical(other.isVisible, isVisible) ||
                 other.isVisible == isVisible) &&
             (identical(other.alignment, alignment) ||
-                other.alignment == alignment));
+                other.alignment == alignment) &&
+            (identical(other.rotation, rotation) ||
+                other.rotation == rotation));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, darkMode, showName, allCapital, isVisible, alignment);
+  int get hashCode => Object.hash(runtimeType, darkMode, showName, allCapital,
+      isVisible, alignment, rotation);
 
   @override
   String toString() {
-    return 'PresentationSettings(darkMode: $darkMode, showName: $showName, allCapital: $allCapital, isVisible: $isVisible, alignment: $alignment)';
+    return 'PresentationSettings(darkMode: $darkMode, showName: $showName, allCapital: $allCapital, isVisible: $isVisible, alignment: $alignment, rotation: $rotation)';
   }
 }
 
@@ -774,7 +803,8 @@ abstract mixin class _$PresentationSettingsCopyWith<$Res>
       bool showName,
       bool allCapital,
       bool isVisible,
-      PresentationAlignment? alignment});
+      PresentationAlignment? alignment,
+      PresentationRotation? rotation});
 }
 
 /// @nodoc
@@ -795,6 +825,7 @@ class __$PresentationSettingsCopyWithImpl<$Res>
     Object? allCapital = null,
     Object? isVisible = null,
     Object? alignment = freezed,
+    Object? rotation = freezed,
   }) {
     return _then(_PresentationSettings(
       darkMode: null == darkMode
@@ -817,6 +848,10 @@ class __$PresentationSettingsCopyWithImpl<$Res>
           ? _self.alignment
           : alignment // ignore: cast_nullable_to_non_nullable
               as PresentationAlignment?,
+      rotation: freezed == rotation
+          ? _self.rotation
+          : rotation // ignore: cast_nullable_to_non_nullable
+              as PresentationRotation?,
     ));
   }
 }

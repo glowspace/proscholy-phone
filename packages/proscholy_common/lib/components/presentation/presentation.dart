@@ -35,7 +35,15 @@ class Presentation extends StatelessWidget {
 
     if (!presentationData.settings.isVisible) return Container(color: backgroundColor);
 
-    return Container(
+    return RotatedBox(
+      quarterTurns: switch(presentationData.settings.rotation) {
+        PresentationRotation.none => 0,
+        PresentationRotation.right90 => 1,
+        PresentationRotation.upsideDown => 2,
+        PresentationRotation.left90 => 3,
+        _ => 0,
+      },
+      child: Container(
       color: backgroundColor,
       child: Stack(
         children: [
@@ -107,27 +115,44 @@ class Presentation extends StatelessWidget {
             ),
         ],
       ),
+      ),
     );
   }
 
   double _computeTextScaleFactor(BuildContext context, String lyrics, bool showingName) {
+    const double kMaxScaleStepDown = 1;
     final size = MediaQuery.sizeOf(context);
 
     double textScaleFactor = 20;
+    double? bestScaleFactor;
+    int? lines;
 
     while (true) {
       final textPainter = TextPainter(
         text: TextSpan(text: lyrics, style: Theme.of(context).textTheme.bodyMedium),
         textDirection: TextDirection.ltr,
         textScaleFactor: textScaleFactor,
+        textWidthBasis: TextWidthBasis.longestLine,
       );
 
       textPainter.layout();
 
+      final int numLines = textPainter.computeLineMetrics().length;
+
       // for some reason mediaQuery is not aware of added padding from scaffold here, so make sure the used width is correct
       if (size.width - (onExternalDisplay ? 3 : 1) * kDefaultPadding * textScaleFactor > textPainter.size.width &&
           size.height - (showingName ? 5 : 4) * kDefaultPadding * textScaleFactor > textPainter.size.height) {
-        return textScaleFactor;
+        if (bestScaleFactor == null) {
+          bestScaleFactor = textScaleFactor;
+          lines = numLines;
+        } else {
+          if (textScaleFactor < bestScaleFactor - kMaxScaleStepDown) {
+            return bestScaleFactor;
+          }
+          if (numLines < lines!) {
+            return textScaleFactor;
+          }
+        }
       }
 
       textScaleFactor -= 0.2;
