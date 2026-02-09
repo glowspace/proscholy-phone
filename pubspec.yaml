@@ -2,7 +2,7 @@ name: zpevnik
 
 publish_to: 'none'
 
-version: 3.2.1+184
+version: 3.2.3+188
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
