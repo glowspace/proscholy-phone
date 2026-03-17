@@ -3,6 +3,7 @@ import 'package:proscholy_common/components/bottom_sheet_section.dart';
 import 'package:proscholy_common/components/song_lyric/song_lyric_tag.dart';
 import 'package:proscholy_common/constants.dart';
 import 'package:proscholy_common/models/song_lyric.dart';
+import 'package:proscholy_common/views/tag.dart';
 
 class SongLyricTags extends StatelessWidget {
   final SongLyric songLyric;
@@ -17,7 +18,7 @@ class SongLyricTags extends StatelessWidget {
         Wrap(
           spacing: kDefaultPadding / 2,
           runSpacing: kDefaultPadding / 2,
-          children: songLyric.tags.where((tag) => tag.type.isSupported).map((tag) => SongLyricTag(tag: tag)).toList(),
+          children: songLyric.tags.where((tag) => tag.isSupported).map((tag) => SongLyricTag(tag: tag)).toList(),
         ),
         const SizedBox(height: kDefaultPadding / 2),
         Wrap(

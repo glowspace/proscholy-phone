@@ -7,6 +7,7 @@ import 'package:proscholy_common/providers/playlists.dart';
 import 'package:proscholy_common/providers/song_lyrics.dart';
 import 'package:proscholy_common/providers/songbooks.dart';
 import 'package:proscholy_common/providers/utils.dart';
+import 'package:proscholy_common/views/tag.dart';
 
 part 'generated/tags.g.dart';
 
@@ -33,26 +34,21 @@ List<Tag> tags(Ref ref, TagType tagType) {
     case TagType.songbook:
       final songbooks = ref.watch(songbooksProvider);
 
-      return songbooks.map((songbook) => songbook.tag).toList();
+      return songbooks.map((songbook) => Tag.fromSongbook(songbook)).toList();
     case TagType.playlist:
       final playlists = [ref.read(favoritePlaylistProvider)] + ref.watch(playlistsProvider);
 
-      return playlists.map((playlist) => playlist.tag).toList();
+      return playlists.map((playlist) => Tag.fromPlaylist(playlist)).toList();
     case TagType.language:
       final languageCounts = <String, int>{};
 
-      for (final songLyric in ref.read(songLyricsProvider)) {
+      for (final songLyric in ref.watch(songLyricsProvider)) {
         languageCounts[songLyric.langDescription] = (languageCounts[songLyric.langDescription] ?? 0) + 1;
       }
 
       final languages = languageCounts.keys.sorted((a, b) => languageCounts[b]!.compareTo(languageCounts[a]!));
 
-      int id = -1;
-
-      return [
-        for (final language in languages)
-          Tag(id: id--, name: language, dbType: tagType.rawValue, songLyricsCount: languageCounts[language]!)
-      ];
+      return [for (final (i, language) in languages.indexed) Tag.fromLanguage(i, language, languageCounts[language]!)];
     default:
       final tags = queryStore(
         ref,
@@ -71,7 +67,7 @@ class SelectedTags extends _$SelectedTags {
 
   @override
   Set<Tag> build() {
-    return {for (final tagType in supportedTagTypes) ...ref.watch(selectedTagsByTypeProvider(tagType))};
+    return {for (final tagType in kSupportedTagTypes) ...ref.watch(selectedTagsByTypeProvider(tagType))};
   }
 
   // prepares state for new search screen with optional `initialTag` by storing current state and invalidating all providers
@@ -79,7 +75,7 @@ class SelectedTags extends _$SelectedTags {
   void push({Tag? initialTag, List<Tag> initialTags = const []}) {
     if (state.isNotEmpty) selectedTagsStack.add(state);
 
-    for (final tagType in supportedTagTypes) {
+    for (final tagType in kSupportedTagTypes) {
       ref.invalidate(selectedTagsByTypeProvider(tagType));
     }
 
@@ -92,7 +88,7 @@ class SelectedTags extends _$SelectedTags {
   // restores state of previous search screen
   // is called in `onWillPop` function in `SearchScreen`
   void pop() {
-    for (final tagType in supportedTagTypes) {
+    for (final tagType in kSupportedTagTypes) {
       ref.invalidate(selectedTagsByTypeProvider(tagType));
     }
 

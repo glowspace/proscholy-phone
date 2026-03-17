@@ -19,7 +19,7 @@ Future<void> parseAndStoreData(Store store, Map<String, dynamic> json) async {
   final authors = readJsonList(json[Author.fieldKey], mapper: Author.fromJson);
   final songs = readJsonList(json[Song.fieldKey], mapper: Song.fromJson);
   final songbooks = readJsonList(json[Songbook.fieldKey], mapper: Songbook.fromJson);
-  final tags = readJsonList(json[Tag.fieldKey], mapper: Tag.fromJson);
+  final tags = readJsonList(json['tags_enum'], mapper: Tag.fromJson);
 
   await Future.wait([
     store.box<Author>().putManyAsync(authors),

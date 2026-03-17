@@ -15,6 +15,7 @@ import 'package:proscholy_common/providers/songbooks.dart';
 import 'package:proscholy_common/providers/sort.dart';
 import 'package:proscholy_common/providers/tags.dart';
 import 'package:proscholy_common/routing/arguments.dart';
+import 'package:proscholy_common/views/tag.dart';
 
 class SearchSongLyricsListView extends ConsumerWidget {
   const SearchSongLyricsListView({super.key});
@@ -180,7 +181,7 @@ class SearchSongLyricsListView extends ConsumerWidget {
     for (int i = filteredSongLyrics.length - 1; i >= 0; i--) {
       final songLyric = filteredSongLyrics[i];
 
-      for (final tagType in supportedTagTypes) {
+      for (final tagType in kSupportedTagTypes) {
         final selectedTags = ref.watch(selectedTagsByTypeProvider(tagType));
 
         if (selectedTags.isEmpty) continue;

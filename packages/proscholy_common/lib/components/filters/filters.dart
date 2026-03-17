@@ -3,10 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:proscholy_common/components/selector_widget.dart';
 import 'package:proscholy_common/constants.dart';
 import 'package:proscholy_common/models/song_lyric.dart';
-import 'package:proscholy_common/models/tag.dart';
 import 'package:proscholy_common/components/filters/filters_section.dart';
 import 'package:proscholy_common/providers/sort.dart';
 import 'package:proscholy_common/providers/tags.dart';
+import 'package:proscholy_common/views/tag.dart';
 import 'package:proscholy_common/utils/extensions.dart';
 
 class FiltersWidget extends ConsumerWidget {
@@ -23,7 +23,7 @@ class FiltersWidget extends ConsumerWidget {
           bottom: MediaQuery.paddingOf(context).bottom,
         ),
         addRepaintBoundaries: false,
-        itemCount: supportedTagTypes.length + 1,
+        itemCount: kSupportedTagTypes.length + 1,
         itemBuilder: (_, index) {
           // first row is sorting options for song lyrics
           if (index == 0) {
@@ -51,8 +51,8 @@ class FiltersWidget extends ConsumerWidget {
           index--;
 
           return FiltersSection(
-            title: supportedTagTypes[index].description,
-            tags: ref.watch(tagsProvider(supportedTagTypes[index])),
+            title: kSupportedTagTypes[index].title,
+            tags: ref.watch(tagsProvider(kSupportedTagTypes[index])),
           );
         },
       ),

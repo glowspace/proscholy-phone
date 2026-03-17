@@ -12,3 +12,10 @@ _Tag _$TagFromJson(Map<String, dynamic> json) => _Tag(
       dbType: TagType.rawValueFromString(json['type_enum'] as String),
       songLyricsCount: (json['song_lyrics_count'] as num).toInt(),
     );
+
+Map<String, dynamic> _$TagToJson(_Tag instance) => <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'type_enum': instance.dbType,
+      'song_lyrics_count': instance.songLyricsCount,
+    };

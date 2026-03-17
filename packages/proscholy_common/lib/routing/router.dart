@@ -61,7 +61,7 @@ final class AppRouter {
                             .split(',')
                             .map((id) => context.providers
                                 .read(tagsProvider(TagType.songbook))
-                                .firstWhere((tag) => tag.id == int.parse(id) - 1000))
+                                .firstWhere((tag) => tag.id == int.parse(id) + kSongbookTagIdOffset))
                             .toList()
                             .cast());
                   }
