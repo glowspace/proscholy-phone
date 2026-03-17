@@ -35,6 +35,21 @@
                 <!-- Accepts URIs that begin with "zpevnik.proscholy.cz” -->
                 <data android:scheme="http" android:host="zpevnik.proscholy.cz" />
                 <data android:scheme="https" android:host="zpevnik.proscholy.cz" />
+
+                <!-- exact path value must be "/" -->
+                <data android:path="/" />
+
+                <!-- exact path value must be "/hledani" -->
+                <data android:path="/hledani" />
+
+                <!-- exact path value must be "/zpevniky" -->
+                <data android:path="/zpevniky" />
+
+                <!-- path must start with "/pisen/" -->
+                <data android:pathPrefix="/pisen/" />
+
+                <!-- path must start with "/zpevnik/" -->
+                <data android:pathPrefix="/zpevnik/" />
             </intent-filter>
 
             <!-- Accept files with ".proscholy" extension and JSON mimetype -->

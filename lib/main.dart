@@ -99,6 +99,10 @@ class MainWidget extends ConsumerWidget {
       darkTheme: AppTheme.dark(seedColor),
       themeMode: themeMode,
       initialRoute: initialRoute ?? '/',
+      onGenerateInitialRoutes: (initialRoute) => [
+        AppRouter.generateRoute(const RouteSettings(name: '/')),
+        if (initialRoute != '/') AppRouter.generateRoute(RouteSettings(name: initialRoute))
+      ],
       onGenerateRoute: AppRouter.generateRoute,
       navigatorObservers: [
         ref.read(appNavigatorObserverProvider),
