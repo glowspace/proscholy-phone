@@ -9,7 +9,7 @@ struct SpotlightItem: Codable {
     let description: String
 }
 
-class SpotlightPlugin: NSObject, FlutterPlugin {
+class SpotlightPlugin: NSObject, FlutterPlugin, FlutterSceneLifeCycleDelegate {
     private var channel: FlutterMethodChannel!
     private var initiallyOpenedItemIdentifier: String?
 
@@ -22,7 +22,7 @@ class SpotlightPlugin: NSObject, FlutterPlugin {
         instance.channel = channel
 
         registrar.addMethodCallDelegate(instance, channel: channel)
-        registrar.addApplicationDelegate(instance)
+        registrar.addSceneDelegate(instance)
     }
 
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -83,7 +83,7 @@ class SpotlightPlugin: NSObject, FlutterPlugin {
 
     // MARK: - Handle Spotlight activity
 
-    public func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]) -> Void) -> Bool {
+    public func scene(_ scene: UIScene, continue userActivity: NSUserActivity) -> Bool {
         if userActivity.activityType == CSSearchableItemActionType {
             userActivity.resignCurrent()
             userActivity.invalidate()

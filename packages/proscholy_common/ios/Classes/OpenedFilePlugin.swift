@@ -1,7 +1,7 @@
 import Flutter
 import UIKit
 
-class OpenedFilePlugin: NSObject, FlutterPlugin {
+class OpenedFilePlugin: NSObject, FlutterPlugin, FlutterSceneLifeCycleDelegate {
     private var channel: FlutterMethodChannel!
     private var initiallyOpenedFile: String?
 
@@ -14,7 +14,7 @@ class OpenedFilePlugin: NSObject, FlutterPlugin {
         instance.channel = channel
 
         registrar.addMethodCallDelegate(instance, channel: channel)
-        registrar.addApplicationDelegate(instance)
+        registrar.addSceneDelegate(instance)
     }
 
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -34,7 +34,9 @@ class OpenedFilePlugin: NSObject, FlutterPlugin {
 
     // MARK: - Handle opened file activity
 
-    public func application(_ application: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+    public func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) -> Bool {
+        guard let url = URLContexts.first?.url else { return false }
+
         _ = url.startAccessingSecurityScopedResource()
 
         if dartReady {
