@@ -27,7 +27,7 @@ class SongLyricChips extends StatelessWidget {
         if (songLyric.hasFiles)
           SongLyricChip(
             text: 'Noty',
-            icon: FontAwesomeIcons.music,
+            icon: FontAwesomeIcons.music.data,
             onTap: () => showModalBottomSheet(
               context: context,
               builder: (_) => SongLyricFilesWidget(songLyric: songLyric),
@@ -54,7 +54,7 @@ class SongLyricChips extends StatelessWidget {
         if (isZPS && (songLyric.hasTags || songLyric.hasSongbooks))
           SongLyricChip(
             text: songLyric.hasTags ? (songLyric.hasSongbooks ? 'Štítky, zpěvníky' : 'Štítky') : 'Zpěvníky',
-            icon: FontAwesomeIcons.tags,
+            icon: FontAwesomeIcons.tags.data,
             onTap: () => showModalBottomSheet(
               context: context,
               builder: (_) => SongLyricTags(songLyric: songLyric),

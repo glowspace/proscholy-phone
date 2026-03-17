@@ -31,8 +31,12 @@ const _selectQuery =
 
 @riverpod
 class SearchText extends _$SearchText {
+  final String? initialText;
+
+  SearchText({this.initialText});
+
   @override
-  String build() => '';
+  String build() => initialText ?? '';
 
   void change(String searchText) {
     if (ref.mounted) state = searchText;
@@ -45,6 +49,16 @@ class SearchedSongLyrics extends _$SearchedSongLyrics {
 
   @override
   SearchedSongLyricsResult build() {
+    final initialSearchText = ref.read(searchTextProvider.notifier).initialText;
+
+    if (initialSearchText != null) {
+      _currentSearchText = initialSearchText;
+
+      _search(initialSearchText).then((result) {
+        if (_currentSearchText == initialSearchText) state = result;
+      });
+    }
+
     ref.listen(searchTextProvider, (_, searchText) async {
       _currentSearchText = searchText;
 

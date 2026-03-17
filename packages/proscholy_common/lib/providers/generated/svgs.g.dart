@@ -10,11 +10,11 @@ part of '../svgs.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(Svgs)
-const svgsProvider = SvgsProvider._();
+final svgsProvider = SvgsProvider._();
 
 final class SvgsProvider
     extends $NotifierProvider<Svgs, Map<String, FileSystemEntity>> {
-  const SvgsProvider._()
+  SvgsProvider._()
       : super(
           from: null,
           argument: null,
@@ -49,7 +49,6 @@ abstract class _$Svgs extends $Notifier<Map<String, FileSystemEntity>> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref
         as $Ref<Map<String, FileSystemEntity>, Map<String, FileSystemEntity>>;
     final element = ref.element as $ClassProviderElement<
@@ -58,16 +57,15 @@ abstract class _$Svgs extends $Notifier<Map<String, FileSystemEntity>> {
         Map<String, FileSystemEntity>,
         Object?,
         Object?>;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
 @ProviderFor(Svg)
-const svgProvider = SvgFamily._();
+final svgProvider = SvgFamily._();
 
 final class SvgProvider extends $NotifierProvider<Svg, String> {
-  const SvgProvider._(
-      {required SvgFamily super.from, required int super.argument})
+  SvgProvider._({required SvgFamily super.from, required int super.argument})
       : super(
           retry: null,
           name: r'svgProvider',
@@ -113,7 +111,7 @@ String _$svgHash() => r'b914e952dee78cce383080765a1ea85b6ab0694f';
 
 final class SvgFamily extends $Family
     with $ClassFamilyOverride<Svg, String, String, String, int> {
-  const SvgFamily._()
+  SvgFamily._()
       : super(
           retry: null,
           name: r'svgProvider',
@@ -141,12 +139,13 @@ abstract class _$Svg extends $Notifier<String> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(
-      _$args,
-    );
     final ref = this.ref as $Ref<String, String>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<String, String>, String, Object?, Object?>;
-    element.handleValue(ref, created);
+    element.handleCreate(
+        ref,
+        () => build(
+              _$args,
+            ));
   }
 }

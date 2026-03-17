@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:proscholy_common/models/bible_verse.dart';
 import 'package:proscholy_common/models/custom_text.dart';
 import 'package:proscholy_common/models/external.dart';
 import 'package:proscholy_common/models/playlist.dart';
 import 'package:proscholy_common/models/song_lyric.dart';
 import 'package:proscholy_common/models/songbook.dart';
+import 'package:proscholy_common/models/tag.dart';
+import 'package:proscholy_common/providers/search.dart';
 import 'package:proscholy_common/providers/song_lyrics.dart';
+import 'package:proscholy_common/providers/songbooks.dart';
+import 'package:proscholy_common/providers/tags.dart';
 import 'package:proscholy_common/routing/arguments.dart';
 import 'package:proscholy_common/routing/navigation_rail_wrapper.dart';
 import 'package:proscholy_common/screens/about.dart';
@@ -30,7 +35,54 @@ final class AppRouter {
     final uri = Uri.parse(settings.name ?? '/');
 
     final (builder, fullScreenDialog, showNavigationRail) = switch (uri.path) {
-      '/' => ((_) => const HomeScreen(), false, true),
+      '/' || '/hledani' => () {
+          // cleanup query parameters
+          if (uri.queryParameters.containsKey('text') || uri.queryParameters.containsKey('stitky') || uri.queryParameters.containsKey('zpevniky')) {
+            settings = RouteSettings(name: '/search');
+          } else {
+            settings = RouteSettings(name: '/');
+          }
+
+          return (
+            (BuildContext context) {
+              if (uri.queryParameters.containsKey('text') || uri.queryParameters.containsKey('stitky') || uri.queryParameters.containsKey('zpevniky')) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  if (uri.queryParameters['stitky'] != null) {
+                    context.providers.read(selectedTagsProvider.notifier).push(
+                        initialTags: uri.queryParameters['stitky']!
+                            .split(',')
+                            .map((id) => context.providers.read(tagProvider(int.parse(id))))
+                            .toList()
+                            .cast());
+                  }
+                  if (uri.queryParameters['zpevniky'] != null) {
+                    context.providers.read(selectedTagsProvider.notifier).push(
+                        initialTags: uri.queryParameters['zpevniky']!
+                            .split(',')
+                            .map((id) => context.providers
+                                .read(tagsProvider(TagType.songbook))
+                                .firstWhere((tag) => tag.id == int.parse(id) - 1000))
+                            .toList()
+                            .cast());
+                  }
+                });
+
+                return ProviderScope(
+                  overrides: [
+                    searchTextProvider
+                        .overrideWith(() => SearchText(initialText: uri.queryParameters['text']?.replaceAll('_', ' '))),
+                    searchedSongLyricsProvider.overrideWith(() => SearchedSongLyrics()),
+                  ],
+                  child: const SearchScreen(),
+                );
+              }
+
+              return const HomeScreen();
+            },
+            uri.queryParameters.containsKey('text') || uri.queryParameters.containsKey('stitky') || uri.queryParameters.containsKey('zpevniky'),
+            true
+          );
+        }(),
       '/about' => ((_) => const AboutScreen(), false, false),
       '/display' => (
           (_) {
@@ -86,6 +138,7 @@ final class AppRouter {
           false,
           true
         ),
+      '/zpevniky' => ((_) => const SongbooksScreen(), false, true),
       String path when path.startsWith('/pisen/') => (
           (BuildContext context) {
             final id = int.parse(uri.pathSegments[1]);
@@ -98,7 +151,20 @@ final class AppRouter {
           },
           false,
           true
-      ),
+        ),
+      String path when path.startsWith('/zpevnik/') => (
+          (BuildContext context) {
+            final id = int.parse(uri.pathSegments[1]);
+            final songbook = context.providers.read(songbookProvider(id));
+
+            if (songbook != null) return SongbookScreen(songbook: songbook);
+
+            // should not get here
+            throw UnimplementedError();
+          },
+          false,
+          true
+        ),
       _ => ((_) => const HomeScreen(), false, true),
     };
 

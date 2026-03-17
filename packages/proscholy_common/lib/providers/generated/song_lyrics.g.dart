@@ -10,12 +10,12 @@ part of '../song_lyrics.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(songLyric)
-const songLyricProvider = SongLyricFamily._();
+final songLyricProvider = SongLyricFamily._();
 
 final class SongLyricProvider
     extends $FunctionalProvider<SongLyric?, SongLyric?, SongLyric?>
     with $Provider<SongLyric?> {
-  const SongLyricProvider._(
+  SongLyricProvider._(
       {required SongLyricFamily super.from, required int super.argument})
       : super(
           retry: null,
@@ -72,7 +72,7 @@ String _$songLyricHash() => r'cc851ffdfc3ce3c5239ce1f07bea15b9359e4f27';
 
 final class SongLyricFamily extends $Family
     with $FunctionalFamilyOverride<SongLyric?, int> {
-  const SongLyricFamily._()
+  SongLyricFamily._()
       : super(
           retry: null,
           name: r'songLyricProvider',
@@ -91,11 +91,11 @@ final class SongLyricFamily extends $Family
 }
 
 @ProviderFor(songLyrics)
-const songLyricsProvider = SongLyricsProvider._();
+final songLyricsProvider = SongLyricsProvider._();
 
 final class SongLyricsProvider extends $FunctionalProvider<List<SongLyric>,
     List<SongLyric>, List<SongLyric>> with $Provider<List<SongLyric>> {
-  const SongLyricsProvider._()
+  SongLyricsProvider._()
       : super(
           from: null,
           argument: null,
@@ -131,13 +131,13 @@ final class SongLyricsProvider extends $FunctionalProvider<List<SongLyric>,
 String _$songLyricsHash() => r'b24a72d219c4ada10938de8b6135aab500e3f41f';
 
 @ProviderFor(songsListSongLyrics)
-const songsListSongLyricsProvider = SongsListSongLyricsFamily._();
+final songsListSongLyricsProvider = SongsListSongLyricsFamily._();
 
 final class SongsListSongLyricsProvider extends $FunctionalProvider<
     List<SongLyric>,
     List<SongLyric>,
     List<SongLyric>> with $Provider<List<SongLyric>> {
-  const SongsListSongLyricsProvider._(
+  SongsListSongLyricsProvider._(
       {required SongsListSongLyricsFamily super.from,
       required SongsList super.argument})
       : super(
@@ -196,7 +196,7 @@ String _$songsListSongLyricsHash() =>
 
 final class SongsListSongLyricsFamily extends $Family
     with $FunctionalFamilyOverride<List<SongLyric>, SongsList> {
-  const SongsListSongLyricsFamily._()
+  SongsListSongLyricsFamily._()
       : super(
           retry: null,
           name: r'songsListSongLyricsProvider',

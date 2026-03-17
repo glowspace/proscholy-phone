@@ -10,12 +10,12 @@ part of '../bible_verse.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(bibleVerse)
-const bibleVerseProvider = BibleVerseFamily._();
+final bibleVerseProvider = BibleVerseFamily._();
 
 final class BibleVerseProvider
     extends $FunctionalProvider<BibleVerse?, BibleVerse?, BibleVerse?>
     with $Provider<BibleVerse?> {
-  const BibleVerseProvider._(
+  BibleVerseProvider._(
       {required BibleVerseFamily super.from, required int super.argument})
       : super(
           retry: null,
@@ -72,7 +72,7 @@ String _$bibleVerseHash() => r'd4e6136f55d09731ce14ca63679f131a13c438ec';
 
 final class BibleVerseFamily extends $Family
     with $FunctionalFamilyOverride<BibleVerse?, int> {
-  const BibleVerseFamily._()
+  BibleVerseFamily._()
       : super(
           retry: null,
           name: r'bibleVerseProvider',

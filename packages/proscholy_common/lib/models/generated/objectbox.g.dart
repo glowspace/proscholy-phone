@@ -191,6 +191,7 @@ final _entities = <obx_int.ModelEntity>[
         type: 11,
         flags: 520,
         indexId: const obx_int.IdUid(3, 942306867161783693),
+        relationField: 'songLyric',
         relationTarget: 'SongLyric',
       ),
       obx_int.ModelProperty(
@@ -199,6 +200,7 @@ final _entities = <obx_int.ModelEntity>[
         type: 11,
         flags: 520,
         indexId: const obx_int.IdUid(4, 8918108328092906748),
+        relationField: 'songbook',
         relationTarget: 'Songbook',
       ),
       obx_int.ModelProperty(
@@ -265,6 +267,7 @@ final _entities = <obx_int.ModelEntity>[
         type: 11,
         flags: 520,
         indexId: const obx_int.IdUid(6, 6968220845399115842),
+        relationField: 'song',
         relationTarget: 'Song',
       ),
       obx_int.ModelProperty(
@@ -303,6 +306,7 @@ final _entities = <obx_int.ModelEntity>[
         type: 11,
         flags: 520,
         indexId: const obx_int.IdUid(22, 6689134858203517923),
+        relationField: 'settings',
         relationTarget: 'SongLyricSettingsModel',
       ),
       obx_int.ModelProperty(
@@ -436,6 +440,7 @@ final _entities = <obx_int.ModelEntity>[
         type: 11,
         flags: 520,
         indexId: const obx_int.IdUid(25, 6759144687015843733),
+        relationField: 'songLyric',
         relationTarget: 'SongLyric',
       ),
     ],
@@ -495,6 +500,7 @@ final _entities = <obx_int.ModelEntity>[
         type: 11,
         flags: 520,
         indexId: const obx_int.IdUid(12, 1014505544754464940),
+        relationField: 'songLyric',
         relationTarget: 'SongLyric',
       ),
       obx_int.ModelProperty(
@@ -503,6 +509,7 @@ final _entities = <obx_int.ModelEntity>[
         type: 11,
         flags: 520,
         indexId: const obx_int.IdUid(13, 5091625997565988014),
+        relationField: 'playlist',
         relationTarget: 'Playlist',
       ),
       obx_int.ModelProperty(
@@ -517,6 +524,7 @@ final _entities = <obx_int.ModelEntity>[
         type: 11,
         flags: 520,
         indexId: const obx_int.IdUid(20, 4666277981806120726),
+        relationField: 'customText',
         relationTarget: 'CustomText',
       ),
       obx_int.ModelProperty(
@@ -525,6 +533,7 @@ final _entities = <obx_int.ModelEntity>[
         type: 11,
         flags: 520,
         indexId: const obx_int.IdUid(21, 6699618113083989690),
+        relationField: 'bibleVerse',
         relationTarget: 'BibleVerse',
       ),
     ],
@@ -647,6 +656,7 @@ final _entities = <obx_int.ModelEntity>[
         type: 11,
         flags: 520,
         indexId: const obx_int.IdUid(24, 2671655412393307456),
+        relationField: 'songLyric',
         relationTarget: 'SongLyric',
       ),
     ],
@@ -692,6 +702,11 @@ Future<obx.Store> openStore({
 /// [obx.Store.new].
 obx_int.ModelDefinition getObjectBoxModel() {
   final model = obx_int.ModelInfo(
+    // If this version is not found, it means that this file was generated
+    // with an older version of the ObjectBox Dart generator.
+    // Please regenerate this file with the current generator version.
+    // Typically, this is done with `dart run build_runner build`.
+    generatorVersion: obx_int.GeneratorVersion.v2025_12_16,
     entities: _entities,
     lastEntityId: const obx_int.IdUid(22, 3313311911381561450),
     lastIndexId: const obx_int.IdUid(25, 6759144687015843733),

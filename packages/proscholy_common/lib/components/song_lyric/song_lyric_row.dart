@@ -93,7 +93,7 @@ class SongLyricRow extends StatelessWidget {
                 ),
                 const SizedBox(width: kDefaultPadding),
                 FaIcon(
-                  Icons.headphones,
+                  FaIconData(Icons.headphones),
                   size: _iconSize,
                   color: greenScheme.primary.withAlpha(songLyric.hasRecordings ? 0xFF : _disabledAlpha),
                 ),

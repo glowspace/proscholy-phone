@@ -10,11 +10,11 @@ part of '../settings.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(Settings)
-const settingsProvider = SettingsProvider._();
+final settingsProvider = SettingsProvider._();
 
 final class SettingsProvider
     extends $NotifierProvider<Settings, GlobalSettings> {
-  const SettingsProvider._()
+  SettingsProvider._()
       : super(
           from: null,
           argument: null,
@@ -48,23 +48,22 @@ abstract class _$Settings extends $Notifier<GlobalSettings> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<GlobalSettings, GlobalSettings>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<GlobalSettings, GlobalSettings>,
         GlobalSettings,
         Object?,
         Object?>;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
 @ProviderFor(SongLyricSettings)
-const songLyricSettingsProvider = SongLyricSettingsFamily._();
+final songLyricSettingsProvider = SongLyricSettingsFamily._();
 
 final class SongLyricSettingsProvider
     extends $NotifierProvider<SongLyricSettings, SongLyricSettingsModel> {
-  const SongLyricSettingsProvider._(
+  SongLyricSettingsProvider._(
       {required SongLyricSettingsFamily super.from,
       required int super.argument})
       : super(
@@ -114,7 +113,7 @@ final class SongLyricSettingsFamily extends $Family
     with
         $ClassFamilyOverride<SongLyricSettings, SongLyricSettingsModel,
             SongLyricSettingsModel, SongLyricSettingsModel, int> {
-  const SongLyricSettingsFamily._()
+  SongLyricSettingsFamily._()
       : super(
           retry: null,
           name: r'songLyricSettingsProvider',
@@ -142,9 +141,6 @@ abstract class _$SongLyricSettings extends $Notifier<SongLyricSettingsModel> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(
-      _$args,
-    );
     final ref =
         this.ref as $Ref<SongLyricSettingsModel, SongLyricSettingsModel>;
     final element = ref.element as $ClassProviderElement<
@@ -152,6 +148,10 @@ abstract class _$SongLyricSettings extends $Notifier<SongLyricSettingsModel> {
         SongLyricSettingsModel,
         Object?,
         Object?>;
-    element.handleValue(ref, created);
+    element.handleCreate(
+        ref,
+        () => build(
+              _$args,
+            ));
   }
 }

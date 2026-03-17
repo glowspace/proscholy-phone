@@ -10,11 +10,11 @@ part of '../display_screen_status.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(DisplayScreenStatus)
-const displayScreenStatusProvider = DisplayScreenStatusProvider._();
+final displayScreenStatusProvider = DisplayScreenStatusProvider._();
 
 final class DisplayScreenStatusProvider
     extends $NotifierProvider<DisplayScreenStatus, DisplayScreenStatusModel> {
-  const DisplayScreenStatusProvider._()
+  DisplayScreenStatusProvider._()
       : super(
           from: null,
           argument: null,
@@ -50,7 +50,6 @@ abstract class _$DisplayScreenStatus
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref =
         this.ref as $Ref<DisplayScreenStatusModel, DisplayScreenStatusModel>;
     final element = ref.element as $ClassProviderElement<
@@ -58,6 +57,6 @@ abstract class _$DisplayScreenStatus
         DisplayScreenStatusModel,
         Object?,
         Object?>;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }

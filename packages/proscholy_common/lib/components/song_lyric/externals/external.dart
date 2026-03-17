@@ -57,8 +57,8 @@ class _ExternalWidgetState extends State<ExternalWidget> {
             child: Row(
               children: [
                 Icon(switch (widget.external.mediaType) {
-                  MediaType.youtube => FontAwesomeIcons.youtube,
-                  _ => FontAwesomeIcons.music,
+                  MediaType.youtube => FontAwesomeIcons.youtube.data,
+                  _ => FontAwesomeIcons.music.data,
                 }),
                 const SizedBox(width: kDefaultPadding),
                 Expanded(child: Text(widget.external.name)),

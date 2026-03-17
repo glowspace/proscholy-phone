@@ -10,11 +10,11 @@ part of '../update.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(graphQLClient)
-const graphQLClientProvider = GraphQLClientProvider._();
+final graphQLClientProvider = GraphQLClientProvider._();
 
 final class GraphQLClientProvider
     extends $FunctionalProvider<Client, Client, Client> with $Provider<Client> {
-  const GraphQLClientProvider._()
+  GraphQLClientProvider._()
       : super(
           from: null,
           argument: null,
@@ -50,12 +50,12 @@ final class GraphQLClientProvider
 String _$graphQLClientHash() => r'9f6e28b05c9d7c2b492b193f830631ce52f58d46';
 
 @ProviderFor(update)
-const updateProvider = UpdateProvider._();
+final updateProvider = UpdateProvider._();
 
 final class UpdateProvider extends $FunctionalProvider<AsyncValue<UpdateStatus>,
         UpdateStatus, Stream<UpdateStatus>>
     with $FutureModifier<UpdateStatus>, $StreamProvider<UpdateStatus> {
-  const UpdateProvider._()
+  UpdateProvider._()
       : super(
           from: null,
           argument: null,
@@ -81,4 +81,4 @@ final class UpdateProvider extends $FunctionalProvider<AsyncValue<UpdateStatus>,
   }
 }
 
-String _$updateHash() => r'f87c4dd64a366a03129d04bd7f6a41ff3af0f58b';
+String _$updateHash() => r'f4314c4e65ff80265e8789f27b719d93ed846156';

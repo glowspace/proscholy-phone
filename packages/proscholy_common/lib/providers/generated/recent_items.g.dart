@@ -10,11 +10,11 @@ part of '../recent_items.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(RecentItems)
-const recentItemsProvider = RecentItemsProvider._();
+final recentItemsProvider = RecentItemsProvider._();
 
 final class RecentItemsProvider
     extends $NotifierProvider<RecentItems, List<RecentItem>> {
-  const RecentItemsProvider._()
+  RecentItemsProvider._()
       : super(
           from: null,
           argument: null,
@@ -48,23 +48,22 @@ abstract class _$RecentItems extends $Notifier<List<RecentItem>> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<List<RecentItem>, List<RecentItem>>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<List<RecentItem>, List<RecentItem>>,
         List<RecentItem>,
         Object?,
         Object?>;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
 @ProviderFor(RecentSongLyrics)
-const recentSongLyricsProvider = RecentSongLyricsProvider._();
+final recentSongLyricsProvider = RecentSongLyricsProvider._();
 
 final class RecentSongLyricsProvider
     extends $NotifierProvider<RecentSongLyrics, List<SongLyric>> {
-  const RecentSongLyricsProvider._()
+  RecentSongLyricsProvider._()
       : super(
           from: null,
           argument: null,
@@ -98,13 +97,12 @@ abstract class _$RecentSongLyrics extends $Notifier<List<SongLyric>> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<List<SongLyric>, List<SongLyric>>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<List<SongLyric>, List<SongLyric>>,
         List<SongLyric>,
         Object?,
         Object?>;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }

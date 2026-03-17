@@ -10,12 +10,12 @@ part of '../playlists.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(playlist)
-const playlistProvider = PlaylistFamily._();
+final playlistProvider = PlaylistFamily._();
 
 final class PlaylistProvider
     extends $FunctionalProvider<Playlist?, Playlist?, Playlist?>
     with $Provider<Playlist?> {
-  const PlaylistProvider._(
+  PlaylistProvider._(
       {required PlaylistFamily super.from, required int super.argument})
       : super(
           retry: null,
@@ -72,7 +72,7 @@ String _$playlistHash() => r'248d46b5af00839aeccd7a0cf30044b3988535f4';
 
 final class PlaylistFamily extends $Family
     with $FunctionalFamilyOverride<Playlist?, int> {
-  const PlaylistFamily._()
+  PlaylistFamily._()
       : super(
           retry: null,
           name: r'playlistProvider',
@@ -91,12 +91,12 @@ final class PlaylistFamily extends $Family
 }
 
 @ProviderFor(favoritePlaylist)
-const favoritePlaylistProvider = FavoritePlaylistProvider._();
+final favoritePlaylistProvider = FavoritePlaylistProvider._();
 
 final class FavoritePlaylistProvider
     extends $FunctionalProvider<Playlist, Playlist, Playlist>
     with $Provider<Playlist> {
-  const FavoritePlaylistProvider._()
+  FavoritePlaylistProvider._()
       : super(
           from: null,
           argument: null,
@@ -132,11 +132,11 @@ final class FavoritePlaylistProvider
 String _$favoritePlaylistHash() => r'dfe94b6c75bb3cfd09516fac9736fdf0af014456';
 
 @ProviderFor(Playlists)
-const playlistsProvider = PlaylistsProvider._();
+final playlistsProvider = PlaylistsProvider._();
 
 final class PlaylistsProvider
     extends $NotifierProvider<Playlists, List<Playlist>> {
-  const PlaylistsProvider._()
+  PlaylistsProvider._()
       : super(
           from: null,
           argument: null,
@@ -170,13 +170,12 @@ abstract class _$Playlists extends $Notifier<List<Playlist>> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<List<Playlist>, List<Playlist>>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<List<Playlist>, List<Playlist>>,
         List<Playlist>,
         Object?,
         Object?>;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }

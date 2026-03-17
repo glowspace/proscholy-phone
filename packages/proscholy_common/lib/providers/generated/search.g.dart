@@ -10,10 +10,10 @@ part of '../search.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(SearchText)
-const searchTextProvider = SearchTextProvider._();
+final searchTextProvider = SearchTextProvider._();
 
 final class SearchTextProvider extends $NotifierProvider<SearchText, String> {
-  const SearchTextProvider._()
+  SearchTextProvider._()
       : super(
           from: null,
           argument: null,
@@ -40,27 +40,26 @@ final class SearchTextProvider extends $NotifierProvider<SearchText, String> {
   }
 }
 
-String _$searchTextHash() => r'b17c635662bd91780aef35b821e444e47e8c3692';
+String _$searchTextHash() => r'96b6c748a31a65dfcba1567c22aea95bbd1c600b';
 
 abstract class _$SearchText extends $Notifier<String> {
   String build();
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<String, String>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<String, String>, String, Object?, Object?>;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
 @ProviderFor(SearchedSongLyrics)
-const searchedSongLyricsProvider = SearchedSongLyricsProvider._();
+final searchedSongLyricsProvider = SearchedSongLyricsProvider._();
 
 final class SearchedSongLyricsProvider
     extends $NotifierProvider<SearchedSongLyrics, SearchedSongLyricsResult> {
-  const SearchedSongLyricsProvider._()
+  SearchedSongLyricsProvider._()
       : super(
           from: null,
           argument: null,
@@ -88,7 +87,7 @@ final class SearchedSongLyricsProvider
 }
 
 String _$searchedSongLyricsHash() =>
-    r'1e4bb7dfd06fc5310d43aba0e839613ad08d9afb';
+    r'0d46f0ae5a8f8c97d5d371bc5f16caebda36880e';
 
 abstract class _$SearchedSongLyrics
     extends $Notifier<SearchedSongLyricsResult> {
@@ -96,7 +95,6 @@ abstract class _$SearchedSongLyrics
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref =
         this.ref as $Ref<SearchedSongLyricsResult, SearchedSongLyricsResult>;
     final element = ref.element as $ClassProviderElement<
@@ -104,6 +102,6 @@ abstract class _$SearchedSongLyrics
         SearchedSongLyricsResult,
         Object?,
         Object?>;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }

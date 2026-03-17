@@ -10,12 +10,12 @@ part of '../news_items.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(newsItems)
-const newsItemsProvider = NewsItemsProvider._();
+final newsItemsProvider = NewsItemsProvider._();
 
 final class NewsItemsProvider
     extends $FunctionalProvider<List<NewsItem>, List<NewsItem>, List<NewsItem>>
     with $Provider<List<NewsItem>> {
-  const NewsItemsProvider._()
+  NewsItemsProvider._()
       : super(
           from: null,
           argument: null,

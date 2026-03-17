@@ -10,12 +10,12 @@ part of '../custom_text.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(customText)
-const customTextProvider = CustomTextFamily._();
+final customTextProvider = CustomTextFamily._();
 
 final class CustomTextProvider
     extends $FunctionalProvider<CustomText?, CustomText?, CustomText?>
     with $Provider<CustomText?> {
-  const CustomTextProvider._(
+  CustomTextProvider._(
       {required CustomTextFamily super.from, required int super.argument})
       : super(
           retry: null,
@@ -72,7 +72,7 @@ String _$customTextHash() => r'73a8abd66b7804a6291dbd7d640efaf466af491d';
 
 final class CustomTextFamily extends $Family
     with $FunctionalFamilyOverride<CustomText?, int> {
-  const CustomTextFamily._()
+  CustomTextFamily._()
       : super(
           retry: null,
           name: r'customTextProvider',

@@ -10,11 +10,11 @@ part of '../home.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(HomeSectionSettings)
-const homeSectionSettingsProvider = HomeSectionSettingsProvider._();
+final homeSectionSettingsProvider = HomeSectionSettingsProvider._();
 
 final class HomeSectionSettingsProvider
     extends $NotifierProvider<HomeSectionSettings, List<HomeSection>> {
-  const HomeSectionSettingsProvider._()
+  HomeSectionSettingsProvider._()
       : super(
           from: null,
           argument: null,
@@ -49,13 +49,12 @@ abstract class _$HomeSectionSettings extends $Notifier<List<HomeSection>> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<List<HomeSection>, List<HomeSection>>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<List<HomeSection>, List<HomeSection>>,
         List<HomeSection>,
         Object?,
         Object?>;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }

@@ -10,10 +10,10 @@ part of '../sort.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(Sort)
-const sortProvider = SortProvider._();
+final sortProvider = SortProvider._();
 
 final class SortProvider extends $NotifierProvider<Sort, SortType> {
-  const SortProvider._()
+  SortProvider._()
       : super(
           from: null,
           argument: null,
@@ -47,10 +47,9 @@ abstract class _$Sort extends $Notifier<SortType> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<SortType, SortType>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<SortType, SortType>, SortType, Object?, Object?>;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }

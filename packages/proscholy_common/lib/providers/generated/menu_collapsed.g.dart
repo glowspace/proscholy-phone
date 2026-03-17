@@ -10,11 +10,11 @@ part of '../menu_collapsed.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(MenuCollapsed)
-const menuCollapsedProvider = MenuCollapsedProvider._();
+final menuCollapsedProvider = MenuCollapsedProvider._();
 
 final class MenuCollapsedProvider
     extends $NotifierProvider<MenuCollapsed, bool> {
-  const MenuCollapsedProvider._()
+  MenuCollapsedProvider._()
       : super(
           from: null,
           argument: null,
@@ -48,10 +48,9 @@ abstract class _$MenuCollapsed extends $Notifier<bool> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<bool, bool>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<bool, bool>, bool, Object?, Object?>;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }

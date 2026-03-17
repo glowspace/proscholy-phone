@@ -10,11 +10,11 @@ part of 'active_player_controller.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(ActivePlayer)
-const activePlayerProvider = ActivePlayerProvider._();
+final activePlayerProvider = ActivePlayerProvider._();
 
 final class ActivePlayerProvider
     extends $NotifierProvider<ActivePlayer, ActivePlayerController?> {
-  const ActivePlayerProvider._()
+  ActivePlayerProvider._()
       : super(
           from: null,
           argument: null,
@@ -48,7 +48,6 @@ abstract class _$ActivePlayer extends $Notifier<ActivePlayerController?> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref =
         this.ref as $Ref<ActivePlayerController?, ActivePlayerController?>;
     final element = ref.element as $ClassProviderElement<
@@ -56,6 +55,6 @@ abstract class _$ActivePlayer extends $Notifier<ActivePlayerController?> {
         ActivePlayerController?,
         Object?,
         Object?>;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }

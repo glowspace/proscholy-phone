@@ -156,7 +156,7 @@ class _PlaylistScaffold extends StatelessWidget {
                   right: (playlist.isFavorites ? 1.5 : 1) * kDefaultPadding,
                 ),
                 icon: Icon(
-                  FontAwesomeIcons.arrowDownAZ,
+                  FontAwesomeIcons.arrowDownAZ.data,
                   color: sortedAlphabetically ? theme.colorScheme.primary : null,
                 ),
               ),

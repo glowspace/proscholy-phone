@@ -10,11 +10,11 @@ part of '../app_dependencies.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(appDependencies)
-const appDependenciesProvider = AppDependenciesProvider._();
+final appDependenciesProvider = AppDependenciesProvider._();
 
 final class AppDependenciesProvider extends $FunctionalProvider<AppDependencies,
     AppDependencies, AppDependencies> with $Provider<AppDependencies> {
-  const AppDependenciesProvider._()
+  AppDependenciesProvider._()
       : super(
           from: null,
           argument: null,

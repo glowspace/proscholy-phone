@@ -10,12 +10,12 @@ part of 'bible_api_client.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(bibleVerses)
-const bibleVersesProvider = BibleVersesFamily._();
+final bibleVersesProvider = BibleVersesFamily._();
 
 final class BibleVersesProvider extends $FunctionalProvider<
         AsyncValue<List<dynamic>>, List<dynamic>, FutureOr<List<dynamic>>>
     with $FutureModifier<List<dynamic>>, $FutureProvider<List<dynamic>> {
-  const BibleVersesProvider._(
+  BibleVersesProvider._(
       {required BibleVersesFamily super.from,
       required (
         BibleTranslation,
@@ -84,7 +84,7 @@ final class BibleVersesFamily extends $Family
               BibleBook,
               int,
             )> {
-  const BibleVersesFamily._()
+  BibleVersesFamily._()
       : super(
           retry: null,
           name: r'bibleVersesProvider',
@@ -109,12 +109,12 @@ final class BibleVersesFamily extends $Family
 }
 
 @ProviderFor(bibleVerse)
-const bibleVerseProvider = BibleVerseFamily._();
+final bibleVerseProvider = BibleVerseFamily._();
 
 final class BibleVerseProvider
     extends $FunctionalProvider<AsyncValue<String>, String, FutureOr<String>>
     with $FutureModifier<String>, $FutureProvider<String> {
-  const BibleVerseProvider._(
+  BibleVerseProvider._(
       {required BibleVerseFamily super.from,
       required (
         BibleTranslation,
@@ -190,7 +190,7 @@ final class BibleVerseFamily extends $Family
               int, {
               int? endVerse,
             })> {
-  const BibleVerseFamily._()
+  BibleVerseFamily._()
       : super(
           retry: null,
           name: r'bibleVerseProvider',

@@ -10,12 +10,11 @@ part of '../tags.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(tag)
-const tagProvider = TagFamily._();
+final tagProvider = TagFamily._();
 
 final class TagProvider extends $FunctionalProvider<Tag?, Tag?, Tag?>
     with $Provider<Tag?> {
-  const TagProvider._(
-      {required TagFamily super.from, required int super.argument})
+  TagProvider._({required TagFamily super.from, required int super.argument})
       : super(
           retry: null,
           name: r'tagProvider',
@@ -71,7 +70,7 @@ String _$tagHash() => r'415f0496af28772c9735fa6e7f2dc8ef80c632de';
 
 final class TagFamily extends $Family
     with $FunctionalFamilyOverride<Tag?, int> {
-  const TagFamily._()
+  TagFamily._()
       : super(
           retry: null,
           name: r'tagProvider',
@@ -90,12 +89,12 @@ final class TagFamily extends $Family
 }
 
 @ProviderFor(tags)
-const tagsProvider = TagsFamily._();
+final tagsProvider = TagsFamily._();
 
 final class TagsProvider
     extends $FunctionalProvider<List<Tag>, List<Tag>, List<Tag>>
     with $Provider<List<Tag>> {
-  const TagsProvider._(
+  TagsProvider._(
       {required TagsFamily super.from, required TagType super.argument})
       : super(
           retry: null,
@@ -152,7 +151,7 @@ String _$tagsHash() => r'c00876b414b3add119c7d09973a4144a6c9982a1';
 
 final class TagsFamily extends $Family
     with $FunctionalFamilyOverride<List<Tag>, TagType> {
-  const TagsFamily._()
+  TagsFamily._()
       : super(
           retry: null,
           name: r'tagsProvider',
@@ -171,11 +170,11 @@ final class TagsFamily extends $Family
 }
 
 @ProviderFor(SelectedTags)
-const selectedTagsProvider = SelectedTagsProvider._();
+final selectedTagsProvider = SelectedTagsProvider._();
 
 final class SelectedTagsProvider
     extends $NotifierProvider<SelectedTags, Set<Tag>> {
-  const SelectedTagsProvider._()
+  SelectedTagsProvider._()
       : super(
           from: null,
           argument: null,
@@ -209,20 +208,19 @@ abstract class _$SelectedTags extends $Notifier<Set<Tag>> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<Set<Tag>, Set<Tag>>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<Set<Tag>, Set<Tag>>, Set<Tag>, Object?, Object?>;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
 @ProviderFor(SelectedTagsByType)
-const selectedTagsByTypeProvider = SelectedTagsByTypeFamily._();
+final selectedTagsByTypeProvider = SelectedTagsByTypeFamily._();
 
 final class SelectedTagsByTypeProvider
     extends $NotifierProvider<SelectedTagsByType, Set<Tag>> {
-  const SelectedTagsByTypeProvider._(
+  SelectedTagsByTypeProvider._(
       {required SelectedTagsByTypeFamily super.from,
       required TagType super.argument})
       : super(
@@ -273,7 +271,7 @@ final class SelectedTagsByTypeFamily extends $Family
     with
         $ClassFamilyOverride<SelectedTagsByType, Set<Tag>, Set<Tag>, Set<Tag>,
             TagType> {
-  const SelectedTagsByTypeFamily._()
+  SelectedTagsByTypeFamily._()
       : super(
           retry: null,
           name: r'selectedTagsByTypeProvider',
@@ -301,12 +299,13 @@ abstract class _$SelectedTagsByType extends $Notifier<Set<Tag>> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(
-      _$args,
-    );
     final ref = this.ref as $Ref<Set<Tag>, Set<Tag>>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<Set<Tag>, Set<Tag>>, Set<Tag>, Object?, Object?>;
-    element.handleValue(ref, created);
+    element.handleCreate(
+        ref,
+        () => build(
+              _$args,
+            ));
   }
 }

@@ -10,13 +10,13 @@ part of 'navigator_observer.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(appNavigatorObserver)
-const appNavigatorObserverProvider = AppNavigatorObserverProvider._();
+final appNavigatorObserverProvider = AppNavigatorObserverProvider._();
 
 final class AppNavigatorObserverProvider extends $FunctionalProvider<
     AppNavigatorObserver,
     AppNavigatorObserver,
     AppNavigatorObserver> with $Provider<AppNavigatorObserver> {
-  const AppNavigatorObserverProvider._()
+  AppNavigatorObserverProvider._()
       : super(
           from: null,
           argument: null,
