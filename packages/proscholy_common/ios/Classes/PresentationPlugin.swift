@@ -51,24 +51,28 @@ class PresentationPlugin: NSObject, FlutterPlugin, FlutterStreamHandler {
     }
 
     private func startPresentation() {
-        if let externalScreen = externalScreen {
-            let externalWindow = UIWindow(frame: externalScreen.bounds)
-            externalWindow.screen = externalScreen
-            externalWindow.isHidden = false
+        let scenes = UIApplication.shared.connectedScenes
 
-            let engine = FlutterEngine()
-            engine.run(withEntrypoint: "mainPresentation", initialRoute: "/")
-
-            let flutterViewController = FlutterViewController(engine: engine, nibName: nil, bundle: nil)
-            flutterViewController.view.frame = externalWindow.screen.bounds
-
-            externalWindow.rootViewController = flutterViewController
-
-            let eventChannel = FlutterEventChannel(name: "proscholyCommon/presentation/stream", binaryMessenger: flutterViewController.binaryMessenger)
-            eventChannel.setStreamHandler(self)
-
-            self.externalWindow = externalWindow
+        guard let windowScene = scenes.first { $0.session.role == .windowExternalDisplay } as? UIWindowScene else {
+            print("No external window scene found")
+            return
         }
+
+        let externalWindow = UIWindow(windowScene: windowScene)
+
+        let engine = FlutterEngine(name: "presentation_engine")
+        engine.run(withEntrypoint: "mainPresentation", initialRoute: "/")
+
+        let flutterViewController = FlutterViewController(engine: engine, nibName: nil, bundle: nil)
+
+        externalWindow.frame = windowScene.screen.bounds
+        externalWindow.rootViewController = flutterViewController
+        externalWindow.isHidden = false
+
+        let eventChannel = FlutterEventChannel(name: "proscholyCommon/presentation/stream", binaryMessenger: flutterViewController.binaryMessenger)
+        eventChannel.setStreamHandler(self)
+
+        self.externalWindow = externalWindow
     }
 
     private func stopPresentation() {
