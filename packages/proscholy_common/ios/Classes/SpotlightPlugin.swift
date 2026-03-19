@@ -95,8 +95,17 @@ class SpotlightPlugin: NSObject, FlutterPlugin, FlutterSceneLifeCycleDelegate {
                     initiallyOpenedItemIdentifier = uniqueIdentifier
                 }
             }
+            return true
         }
 
-        return true
+        if userActivity.activityType == NSUserActivityTypeBrowsingWeb {
+            return (UIApplication.shared.delegate as? FlutterAppDelegate)?.application(
+                UIApplication.shared,
+                continue: userActivity,
+                restorationHandler: { _ in }
+            ) ?? false
+        }
+
+        return false
     }
 }
