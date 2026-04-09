@@ -97,7 +97,12 @@ class _SearchFieldState extends State<SearchField> {
     _focusNode = FocusNode();
 
     if (!widget.isHome) {
-      searchTextSubscription = context.providers.listen(searchTextProvider, (_, text) => _controller.text = text);
+      searchTextSubscription = context.providers.listen(searchTextProvider, (_, text) {
+        // avoid IME restart by not mutating text during composing
+        if (_controller.text != text && !_controller.value.composing.isValid) {
+          _controller.text = text;
+        }
+      });
     }
 
     // autofocus on search screen
