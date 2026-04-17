@@ -44,7 +44,7 @@ class Stepper extends StatelessWidget {
           child: Text(title, style: textTheme.bodyMedium?.copyWith(color: isEnabled ? null : theme.disabledColor)),
         ),
         SizedBox(
-          width: 112,
+          width: 144,
           child: IntrinsicHeight(
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -56,7 +56,7 @@ class Stepper extends StatelessWidget {
                   ),
                   child: HighlightableWidget(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: kDefaultPadding / 2,
+                      horizontal: kDefaultPadding,
                       vertical: kDefaultPadding / 4,
                     ),
                     borderRadius: leftButtonBorderRadius,
@@ -69,18 +69,24 @@ class Stepper extends StatelessWidget {
                   ),
                 ),
                 Expanded(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      border: Border.symmetric(
-                        horizontal: BorderSide(color: isEnabled ? theme.dividerColor : disabledColor),
+                  child: HighlightableWidget(
+                    padding: EdgeInsets.zero,
+                    highlightBackground: true,
+                    isEnabled: isEnabled,
+                    onTap: context.providers.read(songLyricSettingsProvider(songLyric.id).notifier).resetTransposition,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.symmetric(
+                          horizontal: BorderSide(color: isEnabled ? theme.dividerColor : disabledColor),
+                        ),
                       ),
-                    ),
-                    alignment: Alignment.center,
-                    child: Consumer(
-                      builder: (_, ref, __) => Text(
-                        '${ref.watch(songLyricSettingsProvider(songLyric.id).select((songLyricSettings) => songLyricSettings.transposition))}',
-                        textAlign: TextAlign.center,
-                        style: textTheme.bodyMedium?.copyWith(color: isEnabled ? null : disabledColor),
+                      alignment: Alignment.center,
+                      child: Consumer(
+                        builder: (_, ref, __) => Text(
+                          '${ref.watch(songLyricSettingsProvider(songLyric.id).select((songLyricSettings) => songLyricSettings.transposition))}',
+                          textAlign: TextAlign.center,
+                          style: textTheme.bodyMedium?.copyWith(color: isEnabled ? null : disabledColor),
+                        ),
                       ),
                     ),
                   ),
@@ -93,7 +99,7 @@ class Stepper extends StatelessWidget {
                   ),
                   child: HighlightableWidget(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: kDefaultPadding / 2,
+                      horizontal: kDefaultPadding,
                       vertical: kDefaultPadding / 4,
                     ),
                     borderRadius: rightButtonBorderRadius,
