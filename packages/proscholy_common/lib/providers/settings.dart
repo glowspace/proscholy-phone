@@ -81,8 +81,14 @@ class SongLyricSettings extends _$SongLyricSettings {
 
   void changeTransposition(int transposition) {
     transposition = state.transposition + transposition;
-    if (transposition % 12 == 0) transposition = 0;
 
+    transposition = ((transposition + 12) % 24) - 12;
+
+    if (transposition == -12) transposition = 0;
+
+    _updateState(state.copyWith(transposition: transposition));
+  }
+  void setTransposition(int transposition) {
     _updateState(state.copyWith(transposition: transposition));
   }
 
