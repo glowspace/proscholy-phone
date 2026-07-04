@@ -67,6 +67,7 @@ song_lyrics_data = {
                     url
                     media_id
                     media_type
+                    content_type
                 }
                 authors_pivot {
                     pivot {
