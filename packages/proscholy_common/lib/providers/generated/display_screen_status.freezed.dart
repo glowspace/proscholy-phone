@@ -11,49 +11,47 @@ part of '../display_screen_status.dart';
 
 // dart format off
 T _$identity<T>(T value) => value;
-
 /// @nodoc
 mixin _$DisplayScreenStatusModel {
-  bool get fullScreen;
-  bool get showingExternals;
 
-  /// Create a copy of DisplayScreenStatusModel
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
-  $DisplayScreenStatusModelCopyWith<DisplayScreenStatusModel> get copyWith =>
-      _$DisplayScreenStatusModelCopyWithImpl<DisplayScreenStatusModel>(
-          this as DisplayScreenStatusModel, _$identity);
+ bool get fullScreen; bool get showingExternals;
+/// Create a copy of DisplayScreenStatusModel
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$DisplayScreenStatusModelCopyWith<DisplayScreenStatusModel> get copyWith => _$DisplayScreenStatusModelCopyWithImpl<DisplayScreenStatusModel>(this as DisplayScreenStatusModel, _$identity);
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is DisplayScreenStatusModel &&
-            (identical(other.fullScreen, fullScreen) ||
-                other.fullScreen == fullScreen) &&
-            (identical(other.showingExternals, showingExternals) ||
-                other.showingExternals == showingExternals));
-  }
 
-  @override
-  int get hashCode => Object.hash(runtimeType, fullScreen, showingExternals);
 
-  @override
-  String toString() {
-    return 'DisplayScreenStatusModel(fullScreen: $fullScreen, showingExternals: $showingExternals)';
-  }
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DisplayScreenStatusModel&&(identical(other.fullScreen, fullScreen) || other.fullScreen == fullScreen)&&(identical(other.showingExternals, showingExternals) || other.showingExternals == showingExternals));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,fullScreen,showingExternals);
+
+@override
+String toString() {
+  return 'DisplayScreenStatusModel(fullScreen: $fullScreen, showingExternals: $showingExternals)';
+}
+
+
 }
 
 /// @nodoc
-abstract mixin class $DisplayScreenStatusModelCopyWith<$Res> {
-  factory $DisplayScreenStatusModelCopyWith(DisplayScreenStatusModel value,
-          $Res Function(DisplayScreenStatusModel) _then) =
-      _$DisplayScreenStatusModelCopyWithImpl;
-  @useResult
-  $Res call({bool fullScreen, bool showingExternals});
-}
+abstract mixin class $DisplayScreenStatusModelCopyWith<$Res>  {
+  factory $DisplayScreenStatusModelCopyWith(DisplayScreenStatusModel value, $Res Function(DisplayScreenStatusModel) _then) = _$DisplayScreenStatusModelCopyWithImpl;
+@useResult
+$Res call({
+ bool fullScreen, bool showingExternals
+});
 
+
+
+
+}
 /// @nodoc
 class _$DisplayScreenStatusModelCopyWithImpl<$Res>
     implements $DisplayScreenStatusModelCopyWith<$Res> {
@@ -62,231 +60,190 @@ class _$DisplayScreenStatusModelCopyWithImpl<$Res>
   final DisplayScreenStatusModel _self;
   final $Res Function(DisplayScreenStatusModel) _then;
 
-  /// Create a copy of DisplayScreenStatusModel
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? fullScreen = null,
-    Object? showingExternals = null,
-  }) {
-    return _then(_self.copyWith(
-      fullScreen: null == fullScreen
-          ? _self.fullScreen
-          : fullScreen // ignore: cast_nullable_to_non_nullable
-              as bool,
-      showingExternals: null == showingExternals
-          ? _self.showingExternals
-          : showingExternals // ignore: cast_nullable_to_non_nullable
-              as bool,
-    ));
-  }
+/// Create a copy of DisplayScreenStatusModel
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? fullScreen = null,Object? showingExternals = null,}) {
+  return _then(_self.copyWith(
+fullScreen: null == fullScreen ? _self.fullScreen : fullScreen // ignore: cast_nullable_to_non_nullable
+as bool,showingExternals: null == showingExternals ? _self.showingExternals : showingExternals // ignore: cast_nullable_to_non_nullable
+as bool,
+  ));
 }
+
+}
+
 
 /// Adds pattern-matching-related methods to [DisplayScreenStatusModel].
 extension DisplayScreenStatusModelPatterns on DisplayScreenStatusModel {
-  /// A variant of `map` that fallback to returning `orElse`.
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case final Subclass value:
-  ///     return ...;
-  ///   case _:
-  ///     return orElse();
-  /// }
-  /// ```
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
 
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>(
-    TResult Function(_DisplayScreenStatusModel value)? $default, {
-    required TResult orElse(),
-  }) {
-    final _that = this;
-    switch (_that) {
-      case _DisplayScreenStatusModel() when $default != null:
-        return $default(_that);
-      case _:
-        return orElse();
-    }
-  }
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _DisplayScreenStatusModel value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _DisplayScreenStatusModel() when $default != null:
+return $default(_that);case _:
+  return orElse();
 
-  /// A `switch`-like method, using callbacks.
-  ///
-  /// Callbacks receives the raw object, upcasted.
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case final Subclass value:
-  ///     return ...;
-  ///   case final Subclass2 value:
-  ///     return ...;
-  /// }
-  /// ```
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
 
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>(
-    TResult Function(_DisplayScreenStatusModel value) $default,
-  ) {
-    final _that = this;
-    switch (_that) {
-      case _DisplayScreenStatusModel():
-        return $default(_that);
-    }
-  }
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _DisplayScreenStatusModel value)  $default,){
+final _that = this;
+switch (_that) {
+case _DisplayScreenStatusModel():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
 
-  /// A variant of `map` that fallback to returning `null`.
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case final Subclass value:
-  ///     return ...;
-  ///   case _:
-  ///     return null;
-  /// }
-  /// ```
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _DisplayScreenStatusModel value)?  $default,){
+final _that = this;
+switch (_that) {
+case _DisplayScreenStatusModel() when $default != null:
+return $default(_that);case _:
+  return null;
 
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>(
-    TResult? Function(_DisplayScreenStatusModel value)? $default,
-  ) {
-    final _that = this;
-    switch (_that) {
-      case _DisplayScreenStatusModel() when $default != null:
-        return $default(_that);
-      case _:
-        return null;
-    }
-  }
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
 
-  /// A variant of `when` that fallback to an `orElse` callback.
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case Subclass(:final field):
-  ///     return ...;
-  ///   case _:
-  ///     return orElse();
-  /// }
-  /// ```
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool fullScreen,  bool showingExternals)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _DisplayScreenStatusModel() when $default != null:
+return $default(_that.fullScreen,_that.showingExternals);case _:
+  return orElse();
 
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>(
-    TResult Function(bool fullScreen, bool showingExternals)? $default, {
-    required TResult orElse(),
-  }) {
-    final _that = this;
-    switch (_that) {
-      case _DisplayScreenStatusModel() when $default != null:
-        return $default(_that.fullScreen, _that.showingExternals);
-      case _:
-        return orElse();
-    }
-  }
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
 
-  /// A `switch`-like method, using callbacks.
-  ///
-  /// As opposed to `map`, this offers destructuring.
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case Subclass(:final field):
-  ///     return ...;
-  ///   case Subclass2(:final field2):
-  ///     return ...;
-  /// }
-  /// ```
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool fullScreen,  bool showingExternals)  $default,) {final _that = this;
+switch (_that) {
+case _DisplayScreenStatusModel():
+return $default(_that.fullScreen,_that.showingExternals);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
 
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>(
-    TResult Function(bool fullScreen, bool showingExternals) $default,
-  ) {
-    final _that = this;
-    switch (_that) {
-      case _DisplayScreenStatusModel():
-        return $default(_that.fullScreen, _that.showingExternals);
-    }
-  }
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool fullScreen,  bool showingExternals)?  $default,) {final _that = this;
+switch (_that) {
+case _DisplayScreenStatusModel() when $default != null:
+return $default(_that.fullScreen,_that.showingExternals);case _:
+  return null;
 
-  /// A variant of `when` that fallback to returning `null`
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case Subclass(:final field):
-  ///     return ...;
-  ///   case _:
-  ///     return null;
-  /// }
-  /// ```
+}
+}
 
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(bool fullScreen, bool showingExternals)? $default,
-  ) {
-    final _that = this;
-    switch (_that) {
-      case _DisplayScreenStatusModel() when $default != null:
-        return $default(_that.fullScreen, _that.showingExternals);
-      case _:
-        return null;
-    }
-  }
 }
 
 /// @nodoc
+
 
 class _DisplayScreenStatusModel implements DisplayScreenStatusModel {
-  const _DisplayScreenStatusModel(
-      {required this.fullScreen, required this.showingExternals});
+  const _DisplayScreenStatusModel({required this.fullScreen, required this.showingExternals});
+  
 
-  @override
-  final bool fullScreen;
-  @override
-  final bool showingExternals;
+@override final  bool fullScreen;
+@override final  bool showingExternals;
 
-  /// Create a copy of DisplayScreenStatusModel
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
-  _$DisplayScreenStatusModelCopyWith<_DisplayScreenStatusModel> get copyWith =>
-      __$DisplayScreenStatusModelCopyWithImpl<_DisplayScreenStatusModel>(
-          this, _$identity);
+/// Create a copy of DisplayScreenStatusModel
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$DisplayScreenStatusModelCopyWith<_DisplayScreenStatusModel> get copyWith => __$DisplayScreenStatusModelCopyWithImpl<_DisplayScreenStatusModel>(this, _$identity);
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _DisplayScreenStatusModel &&
-            (identical(other.fullScreen, fullScreen) ||
-                other.fullScreen == fullScreen) &&
-            (identical(other.showingExternals, showingExternals) ||
-                other.showingExternals == showingExternals));
-  }
 
-  @override
-  int get hashCode => Object.hash(runtimeType, fullScreen, showingExternals);
 
-  @override
-  String toString() {
-    return 'DisplayScreenStatusModel(fullScreen: $fullScreen, showingExternals: $showingExternals)';
-  }
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DisplayScreenStatusModel&&(identical(other.fullScreen, fullScreen) || other.fullScreen == fullScreen)&&(identical(other.showingExternals, showingExternals) || other.showingExternals == showingExternals));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,fullScreen,showingExternals);
+
+@override
+String toString() {
+  return 'DisplayScreenStatusModel(fullScreen: $fullScreen, showingExternals: $showingExternals)';
+}
+
+
 }
 
 /// @nodoc
-abstract mixin class _$DisplayScreenStatusModelCopyWith<$Res>
-    implements $DisplayScreenStatusModelCopyWith<$Res> {
-  factory _$DisplayScreenStatusModelCopyWith(_DisplayScreenStatusModel value,
-          $Res Function(_DisplayScreenStatusModel) _then) =
-      __$DisplayScreenStatusModelCopyWithImpl;
-  @override
-  @useResult
-  $Res call({bool fullScreen, bool showingExternals});
-}
+abstract mixin class _$DisplayScreenStatusModelCopyWith<$Res> implements $DisplayScreenStatusModelCopyWith<$Res> {
+  factory _$DisplayScreenStatusModelCopyWith(_DisplayScreenStatusModel value, $Res Function(_DisplayScreenStatusModel) _then) = __$DisplayScreenStatusModelCopyWithImpl;
+@override @useResult
+$Res call({
+ bool fullScreen, bool showingExternals
+});
 
+
+
+
+}
 /// @nodoc
 class __$DisplayScreenStatusModelCopyWithImpl<$Res>
     implements _$DisplayScreenStatusModelCopyWith<$Res> {
@@ -295,25 +252,17 @@ class __$DisplayScreenStatusModelCopyWithImpl<$Res>
   final _DisplayScreenStatusModel _self;
   final $Res Function(_DisplayScreenStatusModel) _then;
 
-  /// Create a copy of DisplayScreenStatusModel
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $Res call({
-    Object? fullScreen = null,
-    Object? showingExternals = null,
-  }) {
-    return _then(_DisplayScreenStatusModel(
-      fullScreen: null == fullScreen
-          ? _self.fullScreen
-          : fullScreen // ignore: cast_nullable_to_non_nullable
-              as bool,
-      showingExternals: null == showingExternals
-          ? _self.showingExternals
-          : showingExternals // ignore: cast_nullable_to_non_nullable
-              as bool,
-    ));
-  }
+/// Create a copy of DisplayScreenStatusModel
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? fullScreen = null,Object? showingExternals = null,}) {
+  return _then(_DisplayScreenStatusModel(
+fullScreen: null == fullScreen ? _self.fullScreen : fullScreen // ignore: cast_nullable_to_non_nullable
+as bool,showingExternals: null == showingExternals ? _self.showingExternals : showingExternals // ignore: cast_nullable_to_non_nullable
+as bool,
+  ));
+}
+
+
 }
 
 // dart format on

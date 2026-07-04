@@ -13,17 +13,18 @@ part of '../update.dart';
 final graphQLClientProvider = GraphQLClientProvider._();
 
 final class GraphQLClientProvider
-    extends $FunctionalProvider<Client, Client, Client> with $Provider<Client> {
+    extends $FunctionalProvider<Client, Client, Client>
+    with $Provider<Client> {
   GraphQLClientProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'graphQLClientProvider',
-          isAutoDispose: false,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'graphQLClientProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$graphQLClientHash();
@@ -52,19 +53,24 @@ String _$graphQLClientHash() => r'9f6e28b05c9d7c2b492b193f830631ce52f58d46';
 @ProviderFor(update)
 final updateProvider = UpdateProvider._();
 
-final class UpdateProvider extends $FunctionalProvider<AsyncValue<UpdateStatus>,
-        UpdateStatus, Stream<UpdateStatus>>
+final class UpdateProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<UpdateStatus>,
+          UpdateStatus,
+          Stream<UpdateStatus>
+        >
     with $FutureModifier<UpdateStatus>, $StreamProvider<UpdateStatus> {
   UpdateProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'updateProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'updateProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$updateHash();
@@ -72,8 +78,8 @@ final class UpdateProvider extends $FunctionalProvider<AsyncValue<UpdateStatus>,
   @$internal
   @override
   $StreamProviderElement<UpdateStatus> $createElement(
-          $ProviderPointer pointer) =>
-      $StreamProviderElement(pointer);
+    $ProviderPointer pointer,
+  ) => $StreamProviderElement(pointer);
 
   @override
   Stream<UpdateStatus> create(Ref ref) {

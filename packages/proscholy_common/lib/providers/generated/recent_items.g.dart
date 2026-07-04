@@ -15,15 +15,15 @@ final recentItemsProvider = RecentItemsProvider._();
 final class RecentItemsProvider
     extends $NotifierProvider<RecentItems, List<RecentItem>> {
   RecentItemsProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'recentItemsProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'recentItemsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$recentItemsHash();
@@ -49,11 +49,14 @@ abstract class _$RecentItems extends $Notifier<List<RecentItem>> {
   @override
   void runBuild() {
     final ref = this.ref as $Ref<List<RecentItem>, List<RecentItem>>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<List<RecentItem>, List<RecentItem>>,
-        List<RecentItem>,
-        Object?,
-        Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<List<RecentItem>, List<RecentItem>>,
+              List<RecentItem>,
+              Object?,
+              Object?
+            >;
     element.handleCreate(ref, build);
   }
 }
@@ -64,15 +67,15 @@ final recentSongLyricsProvider = RecentSongLyricsProvider._();
 final class RecentSongLyricsProvider
     extends $NotifierProvider<RecentSongLyrics, List<SongLyric>> {
   RecentSongLyricsProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'recentSongLyricsProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'recentSongLyricsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$recentSongLyricsHash();
@@ -98,11 +101,14 @@ abstract class _$RecentSongLyrics extends $Notifier<List<SongLyric>> {
   @override
   void runBuild() {
     final ref = this.ref as $Ref<List<SongLyric>, List<SongLyric>>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<List<SongLyric>, List<SongLyric>>,
-        List<SongLyric>,
-        Object?,
-        Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<List<SongLyric>, List<SongLyric>>,
+              List<SongLyric>,
+              Object?,
+              Object?
+            >;
     element.handleCreate(ref, build);
   }
 }

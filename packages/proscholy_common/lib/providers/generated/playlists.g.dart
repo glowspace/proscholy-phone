@@ -15,15 +15,16 @@ final playlistProvider = PlaylistFamily._();
 final class PlaylistProvider
     extends $FunctionalProvider<Playlist?, Playlist?, Playlist?>
     with $Provider<Playlist?> {
-  PlaylistProvider._(
-      {required PlaylistFamily super.from, required int super.argument})
-      : super(
-          retry: null,
-          name: r'playlistProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+  PlaylistProvider._({
+    required PlaylistFamily super.from,
+    required int super.argument,
+  }) : super(
+         retry: null,
+         name: r'playlistProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$playlistHash();
@@ -43,10 +44,7 @@ final class PlaylistProvider
   @override
   Playlist? create(Ref ref) {
     final argument = this.argument as int;
-    return playlist(
-      ref,
-      argument,
-    );
+    return playlist(ref, argument);
   }
 
   /// {@macro riverpod.override_with_value}
@@ -73,18 +71,15 @@ String _$playlistHash() => r'248d46b5af00839aeccd7a0cf30044b3988535f4';
 final class PlaylistFamily extends $Family
     with $FunctionalFamilyOverride<Playlist?, int> {
   PlaylistFamily._()
-      : super(
-          retry: null,
-          name: r'playlistProvider',
-          dependencies: null,
-          $allTransitiveDependencies: null,
-          isAutoDispose: true,
-        );
+    : super(
+        retry: null,
+        name: r'playlistProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
 
-  PlaylistProvider call(
-    int id,
-  ) =>
-      PlaylistProvider._(argument: id, from: this);
+  PlaylistProvider call(int id) => PlaylistProvider._(argument: id, from: this);
 
   @override
   String toString() => r'playlistProvider';
@@ -97,15 +92,15 @@ final class FavoritePlaylistProvider
     extends $FunctionalProvider<Playlist, Playlist, Playlist>
     with $Provider<Playlist> {
   FavoritePlaylistProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'favoritePlaylistProvider',
-          isAutoDispose: false,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'favoritePlaylistProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$favoritePlaylistHash();
@@ -137,15 +132,15 @@ final playlistsProvider = PlaylistsProvider._();
 final class PlaylistsProvider
     extends $NotifierProvider<Playlists, List<Playlist>> {
   PlaylistsProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'playlistsProvider',
-          isAutoDispose: false,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'playlistsProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$playlistsHash();
@@ -163,7 +158,7 @@ final class PlaylistsProvider
   }
 }
 
-String _$playlistsHash() => r'925b65859f9c410bf667dfaba25b8094f6010b82';
+String _$playlistsHash() => r'7b94a16a2497464ec0c313f0cb38e9ac18c4315e';
 
 abstract class _$Playlists extends $Notifier<List<Playlist>> {
   List<Playlist> build();
@@ -171,11 +166,14 @@ abstract class _$Playlists extends $Notifier<List<Playlist>> {
   @override
   void runBuild() {
     final ref = this.ref as $Ref<List<Playlist>, List<Playlist>>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<List<Playlist>, List<Playlist>>,
-        List<Playlist>,
-        Object?,
-        Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<List<Playlist>, List<Playlist>>,
+              List<Playlist>,
+              Object?,
+              Object?
+            >;
     element.handleCreate(ref, build);
   }
 }

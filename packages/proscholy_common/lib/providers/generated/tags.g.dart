@@ -15,13 +15,13 @@ final tagProvider = TagFamily._();
 final class TagProvider extends $FunctionalProvider<Tag?, Tag?, Tag?>
     with $Provider<Tag?> {
   TagProvider._({required TagFamily super.from, required int super.argument})
-      : super(
-          retry: null,
-          name: r'tagProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        retry: null,
+        name: r'tagProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$tagHash();
@@ -41,10 +41,7 @@ final class TagProvider extends $FunctionalProvider<Tag?, Tag?, Tag?>
   @override
   Tag? create(Ref ref) {
     final argument = this.argument as int;
-    return tag(
-      ref,
-      argument,
-    );
+    return tag(ref, argument);
   }
 
   /// {@macro riverpod.override_with_value}
@@ -71,18 +68,15 @@ String _$tagHash() => r'415f0496af28772c9735fa6e7f2dc8ef80c632de';
 final class TagFamily extends $Family
     with $FunctionalFamilyOverride<Tag?, int> {
   TagFamily._()
-      : super(
-          retry: null,
-          name: r'tagProvider',
-          dependencies: null,
-          $allTransitiveDependencies: null,
-          isAutoDispose: true,
-        );
+    : super(
+        retry: null,
+        name: r'tagProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
 
-  TagProvider call(
-    int id,
-  ) =>
-      TagProvider._(argument: id, from: this);
+  TagProvider call(int id) => TagProvider._(argument: id, from: this);
 
   @override
   String toString() => r'tagProvider';
@@ -94,15 +88,16 @@ final tagsProvider = TagsFamily._();
 final class TagsProvider
     extends $FunctionalProvider<List<Tag>, List<Tag>, List<Tag>>
     with $Provider<List<Tag>> {
-  TagsProvider._(
-      {required TagsFamily super.from, required TagType super.argument})
-      : super(
-          retry: null,
-          name: r'tagsProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+  TagsProvider._({
+    required TagsFamily super.from,
+    required TagType super.argument,
+  }) : super(
+         retry: null,
+         name: r'tagsProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$tagsHash();
@@ -122,10 +117,7 @@ final class TagsProvider
   @override
   List<Tag> create(Ref ref) {
     final argument = this.argument as TagType;
-    return tags(
-      ref,
-      argument,
-    );
+    return tags(ref, argument);
   }
 
   /// {@macro riverpod.override_with_value}
@@ -152,17 +144,15 @@ String _$tagsHash() => r'fadc644898d46366b52f4001d1e761d15816d9bb';
 final class TagsFamily extends $Family
     with $FunctionalFamilyOverride<List<Tag>, TagType> {
   TagsFamily._()
-      : super(
-          retry: null,
-          name: r'tagsProvider',
-          dependencies: null,
-          $allTransitiveDependencies: null,
-          isAutoDispose: true,
-        );
+    : super(
+        retry: null,
+        name: r'tagsProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
 
-  TagsProvider call(
-    TagType tagType,
-  ) =>
+  TagsProvider call(TagType tagType) =>
       TagsProvider._(argument: tagType, from: this);
 
   @override
@@ -175,15 +165,15 @@ final selectedTagsProvider = SelectedTagsProvider._();
 final class SelectedTagsProvider
     extends $NotifierProvider<SelectedTags, Set<Tag>> {
   SelectedTagsProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'selectedTagsProvider',
-          isAutoDispose: false,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'selectedTagsProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$selectedTagsHash();
@@ -209,8 +199,14 @@ abstract class _$SelectedTags extends $Notifier<Set<Tag>> {
   @override
   void runBuild() {
     final ref = this.ref as $Ref<Set<Tag>, Set<Tag>>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<Set<Tag>, Set<Tag>>, Set<Tag>, Object?, Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<Set<Tag>, Set<Tag>>,
+              Set<Tag>,
+              Object?,
+              Object?
+            >;
     element.handleCreate(ref, build);
   }
 }
@@ -220,16 +216,16 @@ final selectedTagsByTypeProvider = SelectedTagsByTypeFamily._();
 
 final class SelectedTagsByTypeProvider
     extends $NotifierProvider<SelectedTagsByType, Set<Tag>> {
-  SelectedTagsByTypeProvider._(
-      {required SelectedTagsByTypeFamily super.from,
-      required TagType super.argument})
-      : super(
-          retry: null,
-          name: r'selectedTagsByTypeProvider',
-          isAutoDispose: false,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+  SelectedTagsByTypeProvider._({
+    required SelectedTagsByTypeFamily super.from,
+    required TagType super.argument,
+  }) : super(
+         retry: null,
+         name: r'selectedTagsByTypeProvider',
+         isAutoDispose: false,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$selectedTagsByTypeHash();
@@ -269,20 +265,23 @@ String _$selectedTagsByTypeHash() =>
 
 final class SelectedTagsByTypeFamily extends $Family
     with
-        $ClassFamilyOverride<SelectedTagsByType, Set<Tag>, Set<Tag>, Set<Tag>,
-            TagType> {
+        $ClassFamilyOverride<
+          SelectedTagsByType,
+          Set<Tag>,
+          Set<Tag>,
+          Set<Tag>,
+          TagType
+        > {
   SelectedTagsByTypeFamily._()
-      : super(
-          retry: null,
-          name: r'selectedTagsByTypeProvider',
-          dependencies: null,
-          $allTransitiveDependencies: null,
-          isAutoDispose: false,
-        );
+    : super(
+        retry: null,
+        name: r'selectedTagsByTypeProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: false,
+      );
 
-  SelectedTagsByTypeProvider call(
-    TagType tagType,
-  ) =>
+  SelectedTagsByTypeProvider call(TagType tagType) =>
       SelectedTagsByTypeProvider._(argument: tagType, from: this);
 
   @override
@@ -293,19 +292,19 @@ abstract class _$SelectedTagsByType extends $Notifier<Set<Tag>> {
   late final _$args = ref.$arg as TagType;
   TagType get tagType => _$args;
 
-  Set<Tag> build(
-    TagType tagType,
-  );
+  Set<Tag> build(TagType tagType);
   @$mustCallSuper
   @override
   void runBuild() {
     final ref = this.ref as $Ref<Set<Tag>, Set<Tag>>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<Set<Tag>, Set<Tag>>, Set<Tag>, Object?, Object?>;
-    element.handleCreate(
-        ref,
-        () => build(
-              _$args,
-            ));
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<Set<Tag>, Set<Tag>>,
+              Set<Tag>,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, () => build(_$args));
   }
 }

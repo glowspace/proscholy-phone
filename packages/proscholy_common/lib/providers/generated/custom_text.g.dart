@@ -15,15 +15,16 @@ final customTextProvider = CustomTextFamily._();
 final class CustomTextProvider
     extends $FunctionalProvider<CustomText?, CustomText?, CustomText?>
     with $Provider<CustomText?> {
-  CustomTextProvider._(
-      {required CustomTextFamily super.from, required int super.argument})
-      : super(
-          retry: null,
-          name: r'customTextProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+  CustomTextProvider._({
+    required CustomTextFamily super.from,
+    required int super.argument,
+  }) : super(
+         retry: null,
+         name: r'customTextProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$customTextHash();
@@ -43,10 +44,7 @@ final class CustomTextProvider
   @override
   CustomText? create(Ref ref) {
     final argument = this.argument as int;
-    return customText(
-      ref,
-      argument,
-    );
+    return customText(ref, argument);
   }
 
   /// {@macro riverpod.override_with_value}
@@ -73,17 +71,15 @@ String _$customTextHash() => r'73a8abd66b7804a6291dbd7d640efaf466af491d';
 final class CustomTextFamily extends $Family
     with $FunctionalFamilyOverride<CustomText?, int> {
   CustomTextFamily._()
-      : super(
-          retry: null,
-          name: r'customTextProvider',
-          dependencies: null,
-          $allTransitiveDependencies: null,
-          isAutoDispose: true,
-        );
+    : super(
+        retry: null,
+        name: r'customTextProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
 
-  CustomTextProvider call(
-    int id,
-  ) =>
+  CustomTextProvider call(int id) =>
       CustomTextProvider._(argument: id, from: this);
 
   @override

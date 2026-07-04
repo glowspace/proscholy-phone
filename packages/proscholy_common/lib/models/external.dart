@@ -9,6 +9,28 @@ part 'generated/external.g.dart';
 // `publicName` property of `External` is in this format "(NAME | AUTHOR_NAME)", this regex will extract only NAME from this
 final RegExp _nameRe = RegExp(r'\(([^|]+\|\s?)?(.+)\)');
 
+enum ContentType {
+  record,
+  score,
+  unsupported;
+
+  factory ContentType.fromRawValue(int rawValue) {
+    return switch (rawValue) {
+      0 => ContentType.record,
+      1 => ContentType.score,
+      _ => ContentType.unsupported,
+    };
+  }
+
+  static int rawValueFromString(String? string) {
+    return switch (string) {
+      'RECORD' => 0,
+      'SCORE' => 1,
+      _ => -1,
+    };
+  }
+}
+
 enum MediaType {
   soundcloud,
   spotify,
@@ -71,6 +93,7 @@ sealed class External with _$External implements Identifiable {
     String? mediaId,
     String? url,
     @JsonKey(name: 'media_type', fromJson: MediaType.rawValueFromString) required int dbMediaType,
+    @JsonKey(name: 'content_type', fromJson: ContentType.rawValueFromString) required int dbContentType,
     @JsonKey(fromJson: _songLyricFromJson) required ToOne<SongLyric> songLyric,
   }) = _External;
 
@@ -85,11 +108,15 @@ sealed class External with _$External implements Identifiable {
       case MediaType.jpg:
         return mediaId ?? name;
       default:
+        if (contentType == ContentType.score) return '${songLyric.target!.name} - Noty';
+
         return name;
     }
   }
 
   MediaType get mediaType => MediaType.fromRawValue(dbMediaType);
+
+  ContentType get contentType => ContentType.fromRawValue(dbContentType);
 
   @override
   int get hashCode => id;

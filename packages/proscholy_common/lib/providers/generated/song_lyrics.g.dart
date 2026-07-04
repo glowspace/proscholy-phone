@@ -15,15 +15,16 @@ final songLyricProvider = SongLyricFamily._();
 final class SongLyricProvider
     extends $FunctionalProvider<SongLyric?, SongLyric?, SongLyric?>
     with $Provider<SongLyric?> {
-  SongLyricProvider._(
-      {required SongLyricFamily super.from, required int super.argument})
-      : super(
-          retry: null,
-          name: r'songLyricProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+  SongLyricProvider._({
+    required SongLyricFamily super.from,
+    required int super.argument,
+  }) : super(
+         retry: null,
+         name: r'songLyricProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$songLyricHash();
@@ -43,10 +44,7 @@ final class SongLyricProvider
   @override
   SongLyric? create(Ref ref) {
     final argument = this.argument as int;
-    return songLyric(
-      ref,
-      argument,
-    );
+    return songLyric(ref, argument);
   }
 
   /// {@macro riverpod.override_with_value}
@@ -73,17 +71,15 @@ String _$songLyricHash() => r'cc851ffdfc3ce3c5239ce1f07bea15b9359e4f27';
 final class SongLyricFamily extends $Family
     with $FunctionalFamilyOverride<SongLyric?, int> {
   SongLyricFamily._()
-      : super(
-          retry: null,
-          name: r'songLyricProvider',
-          dependencies: null,
-          $allTransitiveDependencies: null,
-          isAutoDispose: true,
-        );
+    : super(
+        retry: null,
+        name: r'songLyricProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
 
-  SongLyricProvider call(
-    int id,
-  ) =>
+  SongLyricProvider call(int id) =>
       SongLyricProvider._(argument: id, from: this);
 
   @override
@@ -93,18 +89,20 @@ final class SongLyricFamily extends $Family
 @ProviderFor(songLyrics)
 final songLyricsProvider = SongLyricsProvider._();
 
-final class SongLyricsProvider extends $FunctionalProvider<List<SongLyric>,
-    List<SongLyric>, List<SongLyric>> with $Provider<List<SongLyric>> {
+final class SongLyricsProvider
+    extends
+        $FunctionalProvider<List<SongLyric>, List<SongLyric>, List<SongLyric>>
+    with $Provider<List<SongLyric>> {
   SongLyricsProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'songLyricsProvider',
-          isAutoDispose: false,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'songLyricsProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$songLyricsHash();
@@ -133,20 +131,20 @@ String _$songLyricsHash() => r'b24a72d219c4ada10938de8b6135aab500e3f41f';
 @ProviderFor(songsListSongLyrics)
 final songsListSongLyricsProvider = SongsListSongLyricsFamily._();
 
-final class SongsListSongLyricsProvider extends $FunctionalProvider<
-    List<SongLyric>,
-    List<SongLyric>,
-    List<SongLyric>> with $Provider<List<SongLyric>> {
-  SongsListSongLyricsProvider._(
-      {required SongsListSongLyricsFamily super.from,
-      required SongsList super.argument})
-      : super(
-          retry: null,
-          name: r'songsListSongLyricsProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+final class SongsListSongLyricsProvider
+    extends
+        $FunctionalProvider<List<SongLyric>, List<SongLyric>, List<SongLyric>>
+    with $Provider<List<SongLyric>> {
+  SongsListSongLyricsProvider._({
+    required SongsListSongLyricsFamily super.from,
+    required SongsList super.argument,
+  }) : super(
+         retry: null,
+         name: r'songsListSongLyricsProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$songsListSongLyricsHash();
@@ -166,10 +164,7 @@ final class SongsListSongLyricsProvider extends $FunctionalProvider<
   @override
   List<SongLyric> create(Ref ref) {
     final argument = this.argument as SongsList;
-    return songsListSongLyrics(
-      ref,
-      argument,
-    );
+    return songsListSongLyrics(ref, argument);
   }
 
   /// {@macro riverpod.override_with_value}
@@ -197,17 +192,15 @@ String _$songsListSongLyricsHash() =>
 final class SongsListSongLyricsFamily extends $Family
     with $FunctionalFamilyOverride<List<SongLyric>, SongsList> {
   SongsListSongLyricsFamily._()
-      : super(
-          retry: null,
-          name: r'songsListSongLyricsProvider',
-          dependencies: null,
-          $allTransitiveDependencies: null,
-          isAutoDispose: true,
-        );
+    : super(
+        retry: null,
+        name: r'songsListSongLyricsProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
 
-  SongsListSongLyricsProvider call(
-    SongsList songsList,
-  ) =>
+  SongsListSongLyricsProvider call(SongsList songsList) =>
       SongsListSongLyricsProvider._(argument: songsList, from: this);
 
   @override

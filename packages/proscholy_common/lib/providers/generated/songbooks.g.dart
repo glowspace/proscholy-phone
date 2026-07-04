@@ -15,15 +15,16 @@ final songbookProvider = SongbookFamily._();
 final class SongbookProvider
     extends $FunctionalProvider<Songbook?, Songbook?, Songbook?>
     with $Provider<Songbook?> {
-  SongbookProvider._(
-      {required SongbookFamily super.from, required int super.argument})
-      : super(
-          retry: null,
-          name: r'songbookProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+  SongbookProvider._({
+    required SongbookFamily super.from,
+    required int super.argument,
+  }) : super(
+         retry: null,
+         name: r'songbookProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$songbookHash();
@@ -43,10 +44,7 @@ final class SongbookProvider
   @override
   Songbook? create(Ref ref) {
     final argument = this.argument as int;
-    return songbook(
-      ref,
-      argument,
-    );
+    return songbook(ref, argument);
   }
 
   /// {@macro riverpod.override_with_value}
@@ -73,18 +71,15 @@ String _$songbookHash() => r'2856322be94db22ad46965b2371a2578999681db';
 final class SongbookFamily extends $Family
     with $FunctionalFamilyOverride<Songbook?, int> {
   SongbookFamily._()
-      : super(
-          retry: null,
-          name: r'songbookProvider',
-          dependencies: null,
-          $allTransitiveDependencies: null,
-          isAutoDispose: true,
-        );
+    : super(
+        retry: null,
+        name: r'songbookProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
 
-  SongbookProvider call(
-    int id,
-  ) =>
-      SongbookProvider._(argument: id, from: this);
+  SongbookProvider call(int id) => SongbookProvider._(argument: id, from: this);
 
   @override
   String toString() => r'songbookProvider';
@@ -96,15 +91,15 @@ final pinnedSongbookIdsProvider = PinnedSongbookIdsProvider._();
 final class PinnedSongbookIdsProvider
     extends $NotifierProvider<PinnedSongbookIds, Set<int>> {
   PinnedSongbookIdsProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'pinnedSongbookIdsProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'pinnedSongbookIdsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$pinnedSongbookIdsHash();
@@ -130,8 +125,14 @@ abstract class _$PinnedSongbookIds extends $Notifier<Set<int>> {
   @override
   void runBuild() {
     final ref = this.ref as $Ref<Set<int>, Set<int>>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<Set<int>, Set<int>>, Set<int>, Object?, Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<Set<int>, Set<int>>,
+              Set<int>,
+              Object?,
+              Object?
+            >;
     element.handleCreate(ref, build);
   }
 }
@@ -143,15 +144,15 @@ final class SongbooksProvider
     extends $FunctionalProvider<List<Songbook>, List<Songbook>, List<Songbook>>
     with $Provider<List<Songbook>> {
   SongbooksProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'songbooksProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'songbooksProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$songbooksHash();

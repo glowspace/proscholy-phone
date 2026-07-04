@@ -103,7 +103,12 @@ sealed class SongLyric with _$SongLyric implements DisplayableItem, Identifiable
   bool get hasChordsReal => lyrics?.contains('[') ?? false;
 
   bool get hasFiles {
-    return externals.any((external) => external.mediaType == MediaType.pdf || external.mediaType == MediaType.jpg);
+    return externals.any(
+      (external) =>
+          external.mediaType == MediaType.pdf ||
+          external.mediaType == MediaType.jpg ||
+          (external.contentType == ContentType.score && external.url != null),
+    );
   }
 
   bool get hasRecordings {
@@ -145,7 +150,12 @@ sealed class SongLyric with _$SongLyric implements DisplayableItem, Identifiable
 
   List<External> get files {
     return externals
-        .where((external) => external.mediaType == MediaType.pdf || external.mediaType == MediaType.jpg)
+        .where(
+          (external) =>
+              external.mediaType == MediaType.pdf ||
+              external.mediaType == MediaType.jpg ||
+              (external.contentType == ContentType.score && external.url != null),
+        )
         .toList();
   }
 

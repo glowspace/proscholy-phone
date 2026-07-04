@@ -15,15 +15,15 @@ final svgsProvider = SvgsProvider._();
 final class SvgsProvider
     extends $NotifierProvider<Svgs, Map<String, FileSystemEntity>> {
   SvgsProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'svgsProvider',
-          isAutoDispose: false,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'svgsProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$svgsHash();
@@ -36,8 +36,9 @@ final class SvgsProvider
   Override overrideWithValue(Map<String, FileSystemEntity> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride:
-          $SyncValueProvider<Map<String, FileSystemEntity>>(value),
+      providerOverride: $SyncValueProvider<Map<String, FileSystemEntity>>(
+        value,
+      ),
     );
   }
 }
@@ -49,14 +50,23 @@ abstract class _$Svgs extends $Notifier<Map<String, FileSystemEntity>> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final ref = this.ref
-        as $Ref<Map<String, FileSystemEntity>, Map<String, FileSystemEntity>>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<Map<String, FileSystemEntity>,
-            Map<String, FileSystemEntity>>,
-        Map<String, FileSystemEntity>,
-        Object?,
-        Object?>;
+    final ref =
+        this.ref
+            as $Ref<
+              Map<String, FileSystemEntity>,
+              Map<String, FileSystemEntity>
+            >;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<
+                Map<String, FileSystemEntity>,
+                Map<String, FileSystemEntity>
+              >,
+              Map<String, FileSystemEntity>,
+              Object?,
+              Object?
+            >;
     element.handleCreate(ref, build);
   }
 }
@@ -66,13 +76,13 @@ final svgProvider = SvgFamily._();
 
 final class SvgProvider extends $NotifierProvider<Svg, String> {
   SvgProvider._({required SvgFamily super.from, required int super.argument})
-      : super(
-          retry: null,
-          name: r'svgProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        retry: null,
+        name: r'svgProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$svgHash();
@@ -112,17 +122,15 @@ String _$svgHash() => r'b914e952dee78cce383080765a1ea85b6ab0694f';
 final class SvgFamily extends $Family
     with $ClassFamilyOverride<Svg, String, String, String, int> {
   SvgFamily._()
-      : super(
-          retry: null,
-          name: r'svgProvider',
-          dependencies: null,
-          $allTransitiveDependencies: null,
-          isAutoDispose: true,
-        );
+    : super(
+        retry: null,
+        name: r'svgProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
 
-  SvgProvider call(
-    int songLyricId,
-  ) =>
+  SvgProvider call(int songLyricId) =>
       SvgProvider._(argument: songLyricId, from: this);
 
   @override
@@ -133,19 +141,19 @@ abstract class _$Svg extends $Notifier<String> {
   late final _$args = ref.$arg as int;
   int get songLyricId => _$args;
 
-  String build(
-    int songLyricId,
-  );
+  String build(int songLyricId);
   @$mustCallSuper
   @override
   void runBuild() {
     final ref = this.ref as $Ref<String, String>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<String, String>, String, Object?, Object?>;
-    element.handleCreate(
-        ref,
-        () => build(
-              _$args,
-            ));
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<String, String>,
+              String,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, () => build(_$args));
   }
 }

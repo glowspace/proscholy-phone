@@ -14,15 +14,15 @@ final searchTextProvider = SearchTextProvider._();
 
 final class SearchTextProvider extends $NotifierProvider<SearchText, String> {
   SearchTextProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'searchTextProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'searchTextProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$searchTextHash();
@@ -48,8 +48,14 @@ abstract class _$SearchText extends $Notifier<String> {
   @override
   void runBuild() {
     final ref = this.ref as $Ref<String, String>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<String, String>, String, Object?, Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<String, String>,
+              String,
+              Object?,
+              Object?
+            >;
     element.handleCreate(ref, build);
   }
 }
@@ -60,15 +66,15 @@ final searchedSongLyricsProvider = SearchedSongLyricsProvider._();
 final class SearchedSongLyricsProvider
     extends $NotifierProvider<SearchedSongLyrics, SearchedSongLyricsResult> {
   SearchedSongLyricsProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'searchedSongLyricsProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'searchedSongLyricsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$searchedSongLyricsHash();
@@ -97,11 +103,14 @@ abstract class _$SearchedSongLyrics
   void runBuild() {
     final ref =
         this.ref as $Ref<SearchedSongLyricsResult, SearchedSongLyricsResult>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<SearchedSongLyricsResult, SearchedSongLyricsResult>,
-        SearchedSongLyricsResult,
-        Object?,
-        Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<SearchedSongLyricsResult, SearchedSongLyricsResult>,
+              SearchedSongLyricsResult,
+              Object?,
+              Object?
+            >;
     element.handleCreate(ref, build);
   }
 }

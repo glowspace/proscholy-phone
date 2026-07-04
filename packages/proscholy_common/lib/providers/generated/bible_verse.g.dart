@@ -15,15 +15,16 @@ final bibleVerseProvider = BibleVerseFamily._();
 final class BibleVerseProvider
     extends $FunctionalProvider<BibleVerse?, BibleVerse?, BibleVerse?>
     with $Provider<BibleVerse?> {
-  BibleVerseProvider._(
-      {required BibleVerseFamily super.from, required int super.argument})
-      : super(
-          retry: null,
-          name: r'bibleVerseProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+  BibleVerseProvider._({
+    required BibleVerseFamily super.from,
+    required int super.argument,
+  }) : super(
+         retry: null,
+         name: r'bibleVerseProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$bibleVerseHash();
@@ -43,10 +44,7 @@ final class BibleVerseProvider
   @override
   BibleVerse? create(Ref ref) {
     final argument = this.argument as int;
-    return bibleVerse(
-      ref,
-      argument,
-    );
+    return bibleVerse(ref, argument);
   }
 
   /// {@macro riverpod.override_with_value}
@@ -73,17 +71,15 @@ String _$bibleVerseHash() => r'd4e6136f55d09731ce14ca63679f131a13c438ec';
 final class BibleVerseFamily extends $Family
     with $FunctionalFamilyOverride<BibleVerse?, int> {
   BibleVerseFamily._()
-      : super(
-          retry: null,
-          name: r'bibleVerseProvider',
-          dependencies: null,
-          $allTransitiveDependencies: null,
-          isAutoDispose: true,
-        );
+    : super(
+        retry: null,
+        name: r'bibleVerseProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
 
-  BibleVerseProvider call(
-    int id,
-  ) =>
+  BibleVerseProvider call(int id) =>
       BibleVerseProvider._(argument: id, from: this);
 
   @override

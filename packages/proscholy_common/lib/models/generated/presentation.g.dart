@@ -13,7 +13,8 @@ _PresentationData _$PresentationDataFromJson(Map<String, dynamic> json) =>
       name: json['name'] as String,
       text: json['text'] as String,
       settings: PresentationSettings.fromJson(
-          json['settings'] as Map<String, dynamic>),
+        json['settings'] as Map<String, dynamic>,
+      ),
     );
 
 Map<String, dynamic> _$PresentationDataToJson(_PresentationData instance) =>
@@ -26,28 +27,32 @@ Map<String, dynamic> _$PresentationDataToJson(_PresentationData instance) =>
     };
 
 _PresentationSettings _$PresentationSettingsFromJson(
-        Map<String, dynamic> json) =>
-    _PresentationSettings(
-      darkMode: json['darkMode'] as bool,
-      showName: json['showName'] as bool,
-      allCapital: json['allCapital'] as bool,
-      isVisible: json['isVisible'] as bool,
-      alignment: $enumDecodeNullable(
-          _$PresentationAlignmentEnumMap, json['alignment']),
-      rotation:
-          $enumDecodeNullable(_$PresentationRotationEnumMap, json['rotation']),
-    );
+  Map<String, dynamic> json,
+) => _PresentationSettings(
+  darkMode: json['darkMode'] as bool,
+  showName: json['showName'] as bool,
+  allCapital: json['allCapital'] as bool,
+  isVisible: json['isVisible'] as bool,
+  alignment: $enumDecodeNullable(
+    _$PresentationAlignmentEnumMap,
+    json['alignment'],
+  ),
+  rotation: $enumDecodeNullable(
+    _$PresentationRotationEnumMap,
+    json['rotation'],
+  ),
+);
 
 Map<String, dynamic> _$PresentationSettingsToJson(
-        _PresentationSettings instance) =>
-    <String, dynamic>{
-      'darkMode': instance.darkMode,
-      'showName': instance.showName,
-      'allCapital': instance.allCapital,
-      'isVisible': instance.isVisible,
-      'alignment': _$PresentationAlignmentEnumMap[instance.alignment],
-      'rotation': _$PresentationRotationEnumMap[instance.rotation],
-    };
+  _PresentationSettings instance,
+) => <String, dynamic>{
+  'darkMode': instance.darkMode,
+  'showName': instance.showName,
+  'allCapital': instance.allCapital,
+  'isVisible': instance.isVisible,
+  'alignment': _$PresentationAlignmentEnumMap[instance.alignment],
+  'rotation': _$PresentationRotationEnumMap[instance.rotation],
+};
 
 const _$PresentationAlignmentEnumMap = {
   PresentationAlignment.top: 'top',

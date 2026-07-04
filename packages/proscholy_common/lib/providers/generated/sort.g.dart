@@ -14,15 +14,15 @@ final sortProvider = SortProvider._();
 
 final class SortProvider extends $NotifierProvider<Sort, SortType> {
   SortProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'sortProvider',
-          isAutoDispose: false,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'sortProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$sortHash();
@@ -48,8 +48,14 @@ abstract class _$Sort extends $Notifier<SortType> {
   @override
   void runBuild() {
     final ref = this.ref as $Ref<SortType, SortType>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<SortType, SortType>, SortType, Object?, Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<SortType, SortType>,
+              SortType,
+              Object?,
+              Object?
+            >;
     element.handleCreate(ref, build);
   }
 }

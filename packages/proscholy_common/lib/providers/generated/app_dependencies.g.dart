@@ -12,18 +12,20 @@ part of '../app_dependencies.dart';
 @ProviderFor(appDependencies)
 final appDependenciesProvider = AppDependenciesProvider._();
 
-final class AppDependenciesProvider extends $FunctionalProvider<AppDependencies,
-    AppDependencies, AppDependencies> with $Provider<AppDependencies> {
+final class AppDependenciesProvider
+    extends
+        $FunctionalProvider<AppDependencies, AppDependencies, AppDependencies>
+    with $Provider<AppDependencies> {
   AppDependenciesProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'appDependenciesProvider',
-          isAutoDispose: false,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'appDependenciesProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$appDependenciesHash();

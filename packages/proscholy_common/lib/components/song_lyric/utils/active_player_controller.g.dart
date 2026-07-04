@@ -15,15 +15,15 @@ final activePlayerProvider = ActivePlayerProvider._();
 final class ActivePlayerProvider
     extends $NotifierProvider<ActivePlayer, ActivePlayerController?> {
   ActivePlayerProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'activePlayerProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'activePlayerProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$activePlayerHash();
@@ -50,11 +50,14 @@ abstract class _$ActivePlayer extends $Notifier<ActivePlayerController?> {
   void runBuild() {
     final ref =
         this.ref as $Ref<ActivePlayerController?, ActivePlayerController?>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<ActivePlayerController?, ActivePlayerController?>,
-        ActivePlayerController?,
-        Object?,
-        Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<ActivePlayerController?, ActivePlayerController?>,
+              ActivePlayerController?,
+              Object?,
+              Object?
+            >;
     element.handleCreate(ref, build);
   }
 }

@@ -15,15 +15,15 @@ final settingsProvider = SettingsProvider._();
 final class SettingsProvider
     extends $NotifierProvider<Settings, GlobalSettings> {
   SettingsProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'settingsProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'settingsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$settingsHash();
@@ -49,11 +49,14 @@ abstract class _$Settings extends $Notifier<GlobalSettings> {
   @override
   void runBuild() {
     final ref = this.ref as $Ref<GlobalSettings, GlobalSettings>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<GlobalSettings, GlobalSettings>,
-        GlobalSettings,
-        Object?,
-        Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<GlobalSettings, GlobalSettings>,
+              GlobalSettings,
+              Object?,
+              Object?
+            >;
     element.handleCreate(ref, build);
   }
 }
@@ -63,16 +66,16 @@ final songLyricSettingsProvider = SongLyricSettingsFamily._();
 
 final class SongLyricSettingsProvider
     extends $NotifierProvider<SongLyricSettings, SongLyricSettingsModel> {
-  SongLyricSettingsProvider._(
-      {required SongLyricSettingsFamily super.from,
-      required int super.argument})
-      : super(
-          retry: null,
-          name: r'songLyricSettingsProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+  SongLyricSettingsProvider._({
+    required SongLyricSettingsFamily super.from,
+    required int super.argument,
+  }) : super(
+         retry: null,
+         name: r'songLyricSettingsProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$songLyricSettingsHash();
@@ -107,24 +110,27 @@ final class SongLyricSettingsProvider
   }
 }
 
-String _$songLyricSettingsHash() => r'0ad88059920a88656e392a95d62829c72dc878b8';
+String _$songLyricSettingsHash() => r'de1e3690b2c74088a4e94e71d3bf3a2ec7b66abb';
 
 final class SongLyricSettingsFamily extends $Family
     with
-        $ClassFamilyOverride<SongLyricSettings, SongLyricSettingsModel,
-            SongLyricSettingsModel, SongLyricSettingsModel, int> {
+        $ClassFamilyOverride<
+          SongLyricSettings,
+          SongLyricSettingsModel,
+          SongLyricSettingsModel,
+          SongLyricSettingsModel,
+          int
+        > {
   SongLyricSettingsFamily._()
-      : super(
-          retry: null,
-          name: r'songLyricSettingsProvider',
-          dependencies: null,
-          $allTransitiveDependencies: null,
-          isAutoDispose: true,
-        );
+    : super(
+        retry: null,
+        name: r'songLyricSettingsProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
 
-  SongLyricSettingsProvider call(
-    int songLyricId,
-  ) =>
+  SongLyricSettingsProvider call(int songLyricId) =>
       SongLyricSettingsProvider._(argument: songLyricId, from: this);
 
   @override
@@ -135,23 +141,20 @@ abstract class _$SongLyricSettings extends $Notifier<SongLyricSettingsModel> {
   late final _$args = ref.$arg as int;
   int get songLyricId => _$args;
 
-  SongLyricSettingsModel build(
-    int songLyricId,
-  );
+  SongLyricSettingsModel build(int songLyricId);
   @$mustCallSuper
   @override
   void runBuild() {
     final ref =
         this.ref as $Ref<SongLyricSettingsModel, SongLyricSettingsModel>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<SongLyricSettingsModel, SongLyricSettingsModel>,
-        SongLyricSettingsModel,
-        Object?,
-        Object?>;
-    element.handleCreate(
-        ref,
-        () => build(
-              _$args,
-            ));
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<SongLyricSettingsModel, SongLyricSettingsModel>,
+              SongLyricSettingsModel,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, () => build(_$args));
   }
 }

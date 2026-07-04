@@ -301,7 +301,7 @@
     },
     {
       "id": "13:34413049226011067",
-      "lastPropertyId": "7:4552902403603048801",
+      "lastPropertyId": "8:8265578410790763645",
       "name": "External",
       "properties": [
         {
@@ -337,6 +337,11 @@
           "type": 11,
           "flags": 520,
           "relationTarget": "SongLyric"
+        },
+        {
+          "id": "8:8265578410790763645",
+          "name": "dbContentType",
+          "type": 6
         }
       ],
       "relations": []

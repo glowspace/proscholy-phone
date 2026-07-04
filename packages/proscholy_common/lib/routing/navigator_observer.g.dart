@@ -12,20 +12,24 @@ part of 'navigator_observer.dart';
 @ProviderFor(appNavigatorObserver)
 final appNavigatorObserverProvider = AppNavigatorObserverProvider._();
 
-final class AppNavigatorObserverProvider extends $FunctionalProvider<
-    AppNavigatorObserver,
-    AppNavigatorObserver,
-    AppNavigatorObserver> with $Provider<AppNavigatorObserver> {
+final class AppNavigatorObserverProvider
+    extends
+        $FunctionalProvider<
+          AppNavigatorObserver,
+          AppNavigatorObserver,
+          AppNavigatorObserver
+        >
+    with $Provider<AppNavigatorObserver> {
   AppNavigatorObserverProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'appNavigatorObserverProvider',
-          isAutoDispose: false,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'appNavigatorObserverProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$appNavigatorObserverHash();
@@ -33,8 +37,8 @@ final class AppNavigatorObserverProvider extends $FunctionalProvider<
   @$internal
   @override
   $ProviderElement<AppNavigatorObserver> $createElement(
-          $ProviderPointer pointer) =>
-      $ProviderElement(pointer);
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
 
   @override
   AppNavigatorObserver create(Ref ref) {

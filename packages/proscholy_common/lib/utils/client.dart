@@ -94,6 +94,7 @@ query {
       url
       media_id
       media_type
+      content_type
     }
     authors_pivot {
       pivot {
@@ -143,6 +144,7 @@ query {
       url
       media_id
       media_type
+      content_type
       authors {
         id
       }

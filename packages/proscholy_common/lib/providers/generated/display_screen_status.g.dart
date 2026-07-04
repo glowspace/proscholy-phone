@@ -15,15 +15,15 @@ final displayScreenStatusProvider = DisplayScreenStatusProvider._();
 final class DisplayScreenStatusProvider
     extends $NotifierProvider<DisplayScreenStatus, DisplayScreenStatusModel> {
   DisplayScreenStatusProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'displayScreenStatusProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'displayScreenStatusProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$displayScreenStatusHash();
@@ -52,11 +52,14 @@ abstract class _$DisplayScreenStatus
   void runBuild() {
     final ref =
         this.ref as $Ref<DisplayScreenStatusModel, DisplayScreenStatusModel>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<DisplayScreenStatusModel, DisplayScreenStatusModel>,
-        DisplayScreenStatusModel,
-        Object?,
-        Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<DisplayScreenStatusModel, DisplayScreenStatusModel>,
+              DisplayScreenStatusModel,
+              Object?,
+              Object?
+            >;
     element.handleCreate(ref, build);
   }
 }

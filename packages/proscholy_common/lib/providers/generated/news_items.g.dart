@@ -16,15 +16,15 @@ final class NewsItemsProvider
     extends $FunctionalProvider<List<NewsItem>, List<NewsItem>, List<NewsItem>>
     with $Provider<List<NewsItem>> {
   NewsItemsProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'newsItemsProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'newsItemsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$newsItemsHash();

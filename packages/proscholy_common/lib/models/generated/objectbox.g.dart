@@ -401,7 +401,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
     id: const obx_int.IdUid(13, 34413049226011067),
     name: 'External',
-    lastPropertyId: const obx_int.IdUid(7, 4552902403603048801),
+    lastPropertyId: const obx_int.IdUid(8, 8265578410790763645),
     flags: 0,
     properties: <obx_int.ModelProperty>[
       obx_int.ModelProperty(
@@ -442,6 +442,12 @@ final _entities = <obx_int.ModelEntity>[
         indexId: const obx_int.IdUid(25, 6759144687015843733),
         relationField: 'songLyric',
         relationTarget: 'SongLyric',
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(8, 8265578410790763645),
+        name: 'dbContentType',
+        type: 6,
+        flags: 0,
       ),
     ],
     relations: <obx_int.ModelRelation>[],
@@ -1442,13 +1448,14 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final urlOffset = object.url == null
             ? null
             : fbb.writeString(object.url!);
-        fbb.startTable(8);
+        fbb.startTable(9);
         fbb.addInt64(0, object.id);
         fbb.addOffset(1, publicNameOffset);
         fbb.addOffset(2, mediaIdOffset);
         fbb.addInt64(3, object.dbMediaType);
         fbb.addOffset(5, urlOffset);
         fbb.addInt64(6, object.songLyric.targetId);
+        fbb.addInt64(7, object.dbContentType);
         fbb.finish(fbb.endTable());
         return object.id;
       },
@@ -1476,6 +1483,12 @@ obx_int.ModelDefinition getObjectBoxModel() {
           10,
           0,
         );
+        final dbContentTypeParam = const fb.Int64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          18,
+          0,
+        );
         final songLyricParam = obx.ToOne<SongLyric>(
           targetId: const fb.Int64Reader().vTableGet(buffer, rootOffset, 16, 0),
         );
@@ -1485,6 +1498,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
           mediaId: mediaIdParam,
           url: urlParam,
           dbMediaType: dbMediaTypeParam,
+          dbContentType: dbContentTypeParam,
           songLyric: songLyricParam,
         );
         object.songLyric.attach(store);
@@ -2123,6 +2137,11 @@ class External_ {
   /// See [External.songLyric].
   static final songLyric = obx.QueryRelationToOne<External, SongLyric>(
     _entities[7].properties[5],
+  );
+
+  /// See [External.dbContentType].
+  static final dbContentType = obx.QueryIntegerProperty<External>(
+    _entities[7].properties[6],
   );
 }
 

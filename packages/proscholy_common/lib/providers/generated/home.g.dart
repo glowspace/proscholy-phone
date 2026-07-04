@@ -15,15 +15,15 @@ final homeSectionSettingsProvider = HomeSectionSettingsProvider._();
 final class HomeSectionSettingsProvider
     extends $NotifierProvider<HomeSectionSettings, List<HomeSection>> {
   HomeSectionSettingsProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'homeSectionSettingsProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'homeSectionSettingsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$homeSectionSettingsHash();
@@ -50,11 +50,14 @@ abstract class _$HomeSectionSettings extends $Notifier<List<HomeSection>> {
   @override
   void runBuild() {
     final ref = this.ref as $Ref<List<HomeSection>, List<HomeSection>>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<List<HomeSection>, List<HomeSection>>,
-        List<HomeSection>,
-        Object?,
-        Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<List<HomeSection>, List<HomeSection>>,
+              List<HomeSection>,
+              Object?,
+              Object?
+            >;
     element.handleCreate(ref, build);
   }
 }
