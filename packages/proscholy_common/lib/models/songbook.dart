@@ -8,7 +8,7 @@ part 'generated/songbook.freezed.dart';
 part 'generated/songbook.g.dart';
 
 // prioritized songbook shortcuts in sorting
-const prioritized = {'H1': 0, 'H2': 1, 'K': 2, 'Kan': 3};
+const prioritized = {'CSMOv': -1, 'H1': 0, 'H2': 1, 'K': 2, 'Kan': 3};
 
 // offset for songbook tags, tags from API have id > 0, language tags have negative id starting from -1, so offset -1000 should be enough
 const _songbookIdOffset = -1000;

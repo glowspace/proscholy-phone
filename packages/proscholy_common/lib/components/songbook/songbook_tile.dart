@@ -24,6 +24,7 @@ const _existingLogos = [
   'csmta',
   'csmzd',
   'csmhk',
+  'csmov',
   'dbl',
   'k',
   'kan',
