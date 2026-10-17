@@ -19,11 +19,11 @@ import 'package:proscholy_common/providers/app_dependencies.dart';
 import 'package:proscholy_common/providers/svgs.dart';
 import 'package:proscholy_common/providers/update.dart';
 import 'package:proscholy_common/providers/utils.dart';
-import 'package:proscholy_common/utils/client.dart';
+import 'package:proscholy_common/utils/api_client.dart';
 
 import '../utils.dart';
 
-class _MockClient extends Mock implements Client {}
+class _MockClient extends Mock implements ApiClient {}
 
 class _FakeSvgs extends Svgs {
   @override

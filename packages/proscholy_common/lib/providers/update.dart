@@ -20,7 +20,7 @@ import 'package:proscholy_common/providers/app_dependencies.dart';
 import 'package:proscholy_common/providers/search.dart';
 import 'package:proscholy_common/providers/song_lyrics.dart';
 import 'package:proscholy_common/providers/utils.dart';
-import 'package:proscholy_common/utils/client.dart';
+import 'package:proscholy_common/utils/api_client.dart';
 import 'package:proscholy_common/utils/services/spotlight.dart';
 
 part 'generated/update.g.dart';
@@ -35,7 +35,7 @@ const _updatePeriod = Duration(hours: 1);
 final _dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
 
 @Riverpod(keepAlive: true)
-Client graphQLClient(Ref ref) => Client();
+ApiClient graphQLClient(Ref ref) => ApiClient();
 
 sealed class UpdateStatus {
   const UpdateStatus();
@@ -196,7 +196,7 @@ Stream<UpdateStatus> _update(Ref ref) async* {
 }
 
 // returns null, when song lyric could not be fetched
-Future<SongLyric?> _fetchSongLyric(Client client, int id) async {
+Future<SongLyric?> _fetchSongLyric(ApiClient client, int id) async {
   try {
     return SongLyric.fromJson(await client.getSongLyric(id));
   } catch (error, stackTrace) {

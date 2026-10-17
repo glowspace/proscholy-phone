@@ -2,7 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:gql/ast.dart';
 import 'package:gql/language.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:proscholy_common/utils/client.dart';
+import 'package:proscholy_common/utils/api_client.dart';
 
 class _FakeLink extends Link {
   final requests = <Request>[];
@@ -47,7 +47,7 @@ String _songLyricFields(Request request) {
 void main() {
   test('responses are not cached', () async {
     final link = _FakeLink();
-    final client = Client(link: link);
+    final client = ApiClient(link: link);
 
     await client.getNews();
     final news = await client.getNews();
@@ -59,11 +59,22 @@ void main() {
   // e.g. EZ and EK take names of song lyrics from their songbook records
   test('updated and missing song lyrics are fetched with same fields', () async {
     final link = _FakeLink();
-    final client = Client(link: link);
+    final client = ApiClient(link: link);
 
     await client.getSongLyrics(DateTime(2026));
     await client.getSongLyric(1);
 
     expect(_songLyricFields(link.requests[1]), _songLyricFields(link.requests[0]));
+  });
+
+  test('date and id are sent as variables', () async {
+    final link = _FakeLink();
+    final client = ApiClient(link: link);
+
+    await client.getSongLyrics(DateTime(2026, 1, 2, 3, 4, 5));
+    await client.getSongLyric(1);
+
+    expect(link.requests[0].variables, {'updated_after': '2026-01-02 03:04:05'});
+    expect(link.requests[1].variables, {'id': 1});
   });
 }

@@ -52,23 +52,15 @@ query {
   }
 }''';
 
-const _idPlaceholder = '[ID]';
-const _updatedAfterPlaceholder = '[UPDATED_AFTER]';
-
-const _ezAdditionalQueryFields = '''
-    hymnology
-''';
-
-const _songLyricsQuery =
+// same fields are needed for updated and missing song lyrics
+const _songLyricFields =
     '''
-query {
-  song_lyrics(updated_after: $_updatedAfterPlaceholder) {
     id
     name
     secondary_name_1
     secondary_name_2
     lyrics
-    ${isEZ || isEK ? _ezAdditionalQueryFields : ''}
+    ${isEZ || isEK ? 'hymnology' : ''}
     lang
     lang_string
     type_enum
@@ -107,66 +99,28 @@ query {
     }
     tags {
       id
-    }
+    }''';
+
+const _songLyricsQuery =
+    '''
+query(\$updated_after: DateTime!) {
+  song_lyrics(updated_after: \$updated_after) {
+$_songLyricFields
   }
 }''';
 
 const _songLyricQuery =
     '''
-query {
-  song_lyric(id: $_idPlaceholder) {
-    id
-    name
-    secondary_name_1
-    secondary_name_2
-    lyrics
-    ${isEZ || isEK ? _ezAdditionalQueryFields : ''}
-    lang
-    lang_string
-    type_enum
-    is_arrangement
-    has_chords
-    song {
-      id
-    }
-    songbook_records {
-      pivot {
-        id
-        number
-        ${isEZ || isEK ? 'song_name' : ''}
-        song_lyric {
-          id
-        }
-        songbook {
-          id
-        }
-      }
-    }
-    externals {
-      id
-      public_name
-      url
-      media_id
-      media_type
-      content_type
-    }
-    authors_pivot {
-      pivot {
-        author {
-          id
-        }
-      }
-    }
-    tags {
-      id
-    }
+query(\$id: ID!) {
+  song_lyric(id: \$id) {
+$_songLyricFields
   }
 }''';
 
-class Client {
+class ApiClient {
   final GraphQLClient client;
 
-  Client({Link? link})
+  ApiClient({Link? link})
     : client = GraphQLClient(
         link: link ?? _link,
         cache: GraphQLCache(),
@@ -176,39 +130,23 @@ class Client {
       );
 
   Future<Map<String, dynamic>> getNews() async {
-    final result = await client.query(QueryOptions(document: gql(_newsQuery)));
-
-    if (result.hasException) throw result.exception!;
-
-    return result.data!;
+    return _query(QueryOptions(document: gql(_newsQuery)));
   }
 
   Future<Map<String, dynamic>> getData() async {
-    final result = await client.query(QueryOptions(document: gql(_updateQuery)));
-
-    if (result.hasException) throw result.exception!;
-
-    return result.data!;
+    return _query(QueryOptions(document: gql(_updateQuery)));
   }
 
   Future<Map<String, dynamic>> getSongLyrics(DateTime updatedAfter) async {
-    final result = await client.query(
-      QueryOptions(
-        document: gql(_songLyricsQuery.replaceFirst(_updatedAfterPlaceholder, '"${_dateFormat.format(updatedAfter)}"')),
-      ),
+    return _query(
+      QueryOptions(document: gql(_songLyricsQuery), variables: {'updated_after': _dateFormat.format(updatedAfter)}),
     );
-
-    if (result.hasException) throw result.exception!;
-
-    return result.data!;
   }
 
   Future<Map<String, dynamic>> getSongLyric(int id) async {
-    final result = await client.query(QueryOptions(document: gql(_songLyricQuery.replaceFirst(_idPlaceholder, '$id'))));
+    final data = await _query(QueryOptions(document: gql(_songLyricQuery), variables: {'id': id}));
 
-    if (result.hasException) throw result.exception!;
-
-    return result.data!['song_lyric'];
+    return data['song_lyric'];
   }
 
   Future<List<int>> getSvgs(DateTime updatedAfter) async {
@@ -217,5 +155,13 @@ class Client {
     );
 
     return response.bodyBytes;
+  }
+
+  Future<Map<String, dynamic>> _query(QueryOptions options) async {
+    final result = await client.query(options);
+
+    if (result.hasException) throw result.exception!;
+
+    return result.data!;
   }
 }
