@@ -1,18 +1,11 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:flutter/material.dart' hide PopupMenuEntry, PopupMenuItem;
-import 'package:path_provider/path_provider.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:proscholy_common/components/custom/popup_menu_button.dart';
 import 'package:proscholy_common/components/icon_item.dart';
-import 'package:proscholy_common/components/playlist/dialogs.dart';
+import 'package:proscholy_common/components/playlist/dialog_extensions.dart';
 import 'package:proscholy_common/constants.dart';
 import 'package:proscholy_common/custom/custom_icon_icons.dart';
 import 'package:proscholy_common/custom/popup_menu.dart';
 import 'package:proscholy_common/models/playlist.dart';
-import 'package:proscholy_common/providers/playlists.dart';
-import 'package:proscholy_common/utils/extensions.dart';
 
 enum PlaylistAction {
   rename,
@@ -67,35 +60,17 @@ class PlaylistButton extends StatelessWidget {
 
     switch (action) {
       case PlaylistAction.rename:
-        showRenamePlaylistDialog(context, playlist);
+        playlist.renameWithDialog(context);
         break;
       case PlaylistAction.share:
-        _sharePlaylist(context, playlist);
+        playlist.share(context);
         break;
       case PlaylistAction.duplicate:
-        showDuplicatePlaylistDialog(context, playlist);
+        playlist.duplicateWithDialog(context);
         break;
       case PlaylistAction.remove:
-        showRemovePlaylistDialog(context, playlist);
+        playlist.removeWithDialog(context);
         break;
     }
-  }
-
-  void _sharePlaylist(BuildContext context, Playlist playlist) async {
-    final box = context.findRenderObject() as RenderBox;
-
-    final playlistData = jsonEncode(context.providers.read(playlistsProvider.notifier).playlistToMap(playlist));
-    final fileName =
-        '${(await getApplicationDocumentsDirectory()).path}/${playlist.name.replaceAll("/", "-")}.proscholy';
-    final file = File(fileName);
-
-    await file.writeAsString(playlistData);
-
-    await SharePlus.instance.share(
-      ShareParams(
-        files: [XFile(fileName, mimeType: 'application/json')],
-        sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size,
-      ),
-    );
   }
 }

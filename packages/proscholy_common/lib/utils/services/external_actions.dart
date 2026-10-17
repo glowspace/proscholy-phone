@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:proscholy_common/components/playlist/dialogs.dart';
+import 'package:proscholy_common/components/playlist/dialog_extensions.dart';
 import 'package:proscholy_common/utils/extensions.dart';
 import 'package:proscholy_common/utils/services/spotlight.dart';
 
@@ -49,7 +49,7 @@ class ExternalActionsService {
         actions: [const AlertDialogAction(key: '', label: 'Ok')],
       );
     } else {
-      showAcceptReceivedPlaylistDialog(context, playlist);
+      PlaylistDialogsExtension.acceptPlaylistWithDialog(context, playlist);
     }
   }
 
