@@ -42,6 +42,10 @@ void main() {
     );
   }
 
+  List<String?> initialRoutes(String initialRoute) {
+    return [for (final route in AppRouter.generateInitialRoutes(initialRoute)) route.settings.name];
+  }
+
   MaterialPageRoute route(String name) => AppRouter.generateRoute(RouteSettings(name: name)) as MaterialPageRoute;
 
   Widget screen(String name) => (route(name).builder(context) as NavigationRailWrapper).builder(context);
@@ -90,5 +94,20 @@ void main() {
     await pumpProviderScope(tester);
 
     expect(screen('/neznama/stranka'), isA<HomeScreen>());
+  });
+
+  test('initial routes', () {
+    expect(initialRoutes('/'), ['/']);
+    expect(initialRoutes('/song_lyric?id=1'), ['/', '/song_lyric?id=1']);
+    expect(initialRoutes('https://zpevnik.proscholy.cz/pisen/1/at-srdce'), [
+      '/',
+      'https://zpevnik.proscholy.cz/pisen/1/at-srdce',
+    ]);
+  });
+
+  // opened files are handled by `ExternalActionsService`, but their uri is also used as initial route
+  test('initial routes of opened files', () {
+    expect(initialRoutes('content://com.microsoft.office.outlook.fileprovider/attachment/hodina.docx'), ['/']);
+    expect(initialRoutes('file:///storage/emulated/0/Download/Mše.proscholy'), ['/']);
   });
 }

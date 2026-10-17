@@ -31,6 +31,17 @@ import 'package:proscholy_common/screens/settings.dart';
 import 'package:proscholy_common/utils/extensions.dart';
 
 final class AppRouter {
+  // uri of opened file is used as initial route too, but files are handled by `ExternalActionsService`
+  static List<Route<dynamic>> generateInitialRoutes(String initialRoute) {
+    final uri = Uri.tryParse(initialRoute);
+    final isLink = uri != null && (!uri.hasScheme || uri.isScheme('http') || uri.isScheme('https'));
+
+    return [
+      generateRoute(const RouteSettings(name: '/')),
+      if (initialRoute != '/' && isLink) generateRoute(RouteSettings(name: initialRoute)),
+    ];
+  }
+
   static Route<dynamic> generateRoute(RouteSettings settings) {
     final uri = Uri.parse(settings.name ?? '/');
 
