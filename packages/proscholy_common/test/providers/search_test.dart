@@ -94,6 +94,28 @@ void main() {
     expect(result.matchedById?.id, isZPS ? 10 : null);
   });
 
+  test('searches by number in songbook with shortcut', () async {
+    // song lyric 1 has number 12 in EZ, song lyric 10 doesn't have number in songbooks
+    final result = await search('ez 12');
+
+    expect(result.searchedNumber, '12');
+
+    if (isEZ) {
+      expect(result.matchedById?.id, 1);
+      expect(result.matchedBySongbookNumber, isEmpty);
+    } else {
+      expect(result.matchedById, isNull);
+      expect(result.matchedBySongbookNumber.map((songLyric) => songLyric.id), [1]);
+    }
+  });
+
+  test('word before number that is not shortcut of songbook is searched as text', () async {
+    final result = await search('chválím 10');
+
+    expect(result.matchedById?.id, isZPS ? 10 : null);
+    expect(result.matchedBySongbookNumber, isEmpty);
+  });
+
   group('filters', skip: isZPS ? false : 'filters are only in ZPS', () {
     List<int> filteredIds() => [
       for (final songLyric in container.read(filteredSongLyricsProvider).songLyrics!) songLyric.id,

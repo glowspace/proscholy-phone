@@ -20,6 +20,8 @@ part 'generated/search.freezed.dart';
 part 'generated/search.g.dart';
 
 final _numberRE = RegExp(r'[1-9]\d*[A-Z]?');
+// number in songbook preceded by shortcut of the songbook, e.g. "EZ 12"
+final _shortcutNumberRE = RegExp(r'^(\S+)\s+([1-9]\d*[A-Z]?)$');
 
 @riverpod
 class SearchText extends _$SearchText {
@@ -77,14 +79,26 @@ class SearchedSongLyrics extends _$SearchedSongLyrics {
     if (searchedNumber == null) {
       searchText = '${searchText.replaceAll(' ', '* ')}*';
     } else {
-      if (isZPS) {
+      final shortcutNumberMatch = _shortcutNumberRE.firstMatch(searchText);
+      final songbookIds = {
+        if (shortcutNumberMatch != null)
+          for (final songbook in ref.read(appDependenciesProvider).store.box<Songbook>().getAll())
+            if (songbook.shortcut.toLowerCase() == shortcutNumberMatch.group(1)!.toLowerCase()) songbook.id,
+      };
+
+      if (isZPS && songbookIds.isEmpty) {
         final searchId = int.tryParse(searchedNumber);
         if (searchId != null) matchedById = songLyricBox.get(searchId);
 
         if (matchedById != null) matchedIds.add(matchedById.id);
       }
 
-      final songbookRecords = queryStore(ref, condition: SongbookRecord_.number.equals(searchText));
+      final songbookRecords = songbookIds.isEmpty
+          ? queryStore(ref, condition: SongbookRecord_.number.equals(searchText))
+          : queryStore(
+              ref,
+              condition: SongbookRecord_.number.equals(shortcutNumberMatch!.group(2)!),
+            ).where((songbookRecord) => songbookIds.contains(songbookRecord.songbook.targetId)).toList();
       songbookRecords.sort((a, b) => a.songbook.target!.compareTo(b.songbook.target!));
 
       for (final songbookRecord in songbookRecords) {
