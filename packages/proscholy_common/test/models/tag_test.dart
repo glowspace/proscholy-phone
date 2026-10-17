@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:proscholy_common/models/generated/objectbox.g.dart';
+import 'package:proscholy_common/models/playlist.dart';
 import 'package:proscholy_common/models/songbook.dart';
 import 'package:proscholy_common/models/tag.dart';
 
@@ -31,5 +32,15 @@ void main() {
     expect(tag.id, kSongbookTagIdOffset - 9);
     expect(tag.type, TagType.songbook);
     expect(tag.name, 'Chvalozpěvy 3');
+  });
+
+  // ids of these tags are converted back to ids of songbooks and playlists
+  test('songbook and playlist tags have same id, however they are created', () {
+    final songbook = Songbook(id: 9, name: 'Chvalozpěvy 3', shortcut: '3Ch', isPrivate: false, records: ToMany());
+    final playlist = Playlist.favorites();
+
+    expect(Tag.fromSongbook(songbook).id, songbook.tag.id);
+    expect(Tag.fromPlaylist(playlist).id, playlist.tag.id);
+    expect(kPlaylistTagIdOffset - playlist.tag.id, playlist.id);
   });
 }

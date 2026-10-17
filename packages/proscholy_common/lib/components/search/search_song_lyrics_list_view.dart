@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:proscholy_common/components/song_lyric/song_lyrics_section_title.dart';
 import 'package:proscholy_common/components/song_lyric/song_lyric_row.dart';
 import 'package:proscholy_common/constants.dart';
-import 'package:proscholy_common/models/playlist.dart';
 import 'package:proscholy_common/models/song_lyric.dart';
 import 'package:proscholy_common/models/tag.dart';
 import 'package:proscholy_common/providers/playlists.dart';
@@ -64,7 +63,7 @@ class SearchSongLyricsListView extends ConsumerWidget {
     final selectedTags = ref.read(selectedTagsProvider);
     final playlist = selectedTags.length != 1 || selectedTags.firstOrNull?.type != TagType.playlist
         ? null
-        : ref.read(playlistProvider(selectedTags.first.id - playlistIdOffset));
+        : ref.read(playlistProvider(kPlaylistTagIdOffset - selectedTags.first.id));
 
     return SafeArea(
       bottom: false,
