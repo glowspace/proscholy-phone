@@ -190,7 +190,7 @@ Future<void> pumpUntil(
 
   while (!condition() && DateTime.now().isBefore(end)) {
     await tester.runAsync(() => Future.delayed(const Duration(milliseconds: 20)));
-    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 20));
   }
 }
 

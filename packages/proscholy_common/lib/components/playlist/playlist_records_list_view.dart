@@ -34,9 +34,12 @@ class PlaylistRecordsListView extends ConsumerStatefulWidget {
 class _PlaylistRecordsListViewState extends ConsumerState<PlaylistRecordsListView> {
   late StreamSubscription<Query<PlaylistRecord>> _playlistChangesSubscription;
 
+  // records are read from store, as `widget.playlist` might not have them up to date
+  late List<PlaylistRecord> _records = widget.playlist.records.toList();
+
   // it is not possible to sort relations yet, so sort it here when displaying
   late List<PlaylistRecord> _recordsOrdered = _filterInvalidRecords(
-    widget.playlist.records.sorted((a, b) => a.rank.compareTo(b.rank)),
+    _records.sorted((a, b) => a.rank.compareTo(b.rank)),
   );
 
   @override
@@ -50,11 +53,11 @@ class _PlaylistRecordsListViewState extends ConsumerState<PlaylistRecordsListVie
         .box<PlaylistRecord>()
         .query(PlaylistRecord_.playlist.equals(widget.playlist.id))
         .watch()
-        .listen((_) {
+        .listen((query) {
+          _records = query.find();
+
           setState(
-            () => _recordsOrdered = _filterInvalidRecords(
-              widget.playlist.records.sorted((a, b) => a.rank.compareTo(b.rank)),
-            ),
+            () => _recordsOrdered = _filterInvalidRecords(_records.sorted((a, b) => a.rank.compareTo(b.rank))),
           );
 
           final context = this.context;
@@ -175,10 +178,11 @@ class _PlaylistRecordsListViewState extends ConsumerState<PlaylistRecordsListVie
 
     _recordsOrdered.insert(newIndex, _recordsOrdered.removeAt(oldIndex));
 
-    widget.playlist.records.setAll(0, _recordsOrdered.mapIndexed((index, record) => record.copyWith(rank: index)));
-
-    // `widget.playlist.records.applyToDb` saves sometimes incorrectly new ranks, so save it using `putMany`
-    context.providers.read(appDependenciesProvider).store.box<PlaylistRecord>().putMany(widget.playlist.records);
+    context.providers
+        .read(appDependenciesProvider)
+        .store
+        .box<PlaylistRecord>()
+        .putMany(_recordsOrdered.mapIndexed((index, record) => record.copyWith(rank: index)).toList());
 
     widget.sortedAlphabeticallyNotifier.value = false;
   }
@@ -214,7 +218,7 @@ class _PlaylistRecordsListViewState extends ConsumerState<PlaylistRecordsListVie
   }
 
   void _sortedAlphabeticallyChanged() {
-    final playlistRecords = _filterInvalidRecords(widget.playlist.records);
+    final playlistRecords = _filterInvalidRecords(_records);
 
     if (widget.sortedAlphabeticallyNotifier.value) {
       setState(

@@ -65,7 +65,7 @@ class _PlaylistScreenTabletState extends ConsumerState<_PlaylistScreenTablet> {
   }
 }
 
-class _PlaylistScaffold extends StatelessWidget {
+class _PlaylistScaffold extends ConsumerWidget {
   final Playlist playlist;
 
   _PlaylistScaffold({super.key, required this.playlist});
@@ -73,8 +73,11 @@ class _PlaylistScaffold extends StatelessWidget {
   final ValueNotifier<bool> sortedAlphabeticallyNotifier = ValueNotifier(false);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+
+    // playlist changes e.g. when renamed, while it is being closed after removal, it is not in store anymore
+    final playlist = ref.watch(playlistProvider(this.playlist.id)) ?? this.playlist;
 
     final Widget floatingActionButton;
 

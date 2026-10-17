@@ -18,12 +18,20 @@ part 'generated/playlists.g.dart';
 Playlist? playlist(Ref ref, int id) {
   if (id == 0) return null;
 
-  final box = ref.read(appDependenciesProvider).store.box<Playlist>();
+  final store = ref.read(appDependenciesProvider).store;
+  final box = store.box<Playlist>();
 
-  final stream = box.query(Playlist_.id.equals(id)).watch();
-  final subscription = stream.listen((_) => ref.invalidateSelf());
+  // records are watched too, so they are up to date
+  final subscriptions = [
+    box.query(Playlist_.id.equals(id)).watch().listen((_) => ref.invalidateSelf()),
+    store.box<PlaylistRecord>().query(PlaylistRecord_.playlist.equals(id)).watch().listen((_) => ref.invalidateSelf()),
+  ];
 
-  ref.onDispose(subscription.cancel);
+  ref.onDispose(() {
+    for (final subscription in subscriptions) {
+      subscription.cancel();
+    }
+  });
 
   return box.get(id);
 }
