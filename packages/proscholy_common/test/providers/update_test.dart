@@ -11,11 +11,16 @@ import 'package:mocktail/mocktail.dart';
 import 'package:proscholy_common/models/external.dart';
 import 'package:proscholy_common/models/generated/objectbox.g.dart';
 import 'package:proscholy_common/models/news_item.dart';
+import 'package:proscholy_common/models/playlist.dart';
 import 'package:proscholy_common/models/playlist_record.dart';
+import 'package:proscholy_common/models/settings.dart';
 import 'package:proscholy_common/models/song_lyric.dart';
+import 'package:proscholy_common/models/songbook.dart';
 import 'package:proscholy_common/models/songbook_record.dart';
 import 'package:proscholy_common/models/utils.dart';
 import 'package:proscholy_common/providers/app_dependencies.dart';
+import 'package:proscholy_common/providers/playlists.dart';
+import 'package:proscholy_common/providers/settings.dart';
 import 'package:proscholy_common/providers/svgs.dart';
 import 'package:proscholy_common/providers/update.dart';
 import 'package:proscholy_common/providers/utils.dart';
@@ -46,6 +51,30 @@ final _serverError = OperationException(
 final _connectionError = OperationException(
   linkException: ServerException(originalException: http.ClientException('Failed host lookup')),
 );
+
+// relations of all stored song lyrics, songbooks and playlists
+Map<String, Object?> _relations(Store store) {
+  List<int> ids(Iterable<Object> objects) => [for (final object in objects) (object as dynamic).id as int]..sort();
+
+  return {
+    for (final songLyric in store.box<SongLyric>().getAll())
+      'song lyric ${songLyric.id}': {
+        'song': songLyric.song.targetId,
+        'authors': ids(songLyric.authors),
+        'tags': ids(songLyric.tags),
+        'externals': ids(songLyric.externals),
+        'songbook records': ids(songLyric.songbookRecords),
+        'playlist records': ids(songLyric.playlistRecords),
+      },
+    for (final songbook in store.box<Songbook>().getAll()) 'songbook ${songbook.id}': ids(songbook.records),
+    for (final playlist in store.box<Playlist>().getAll()) 'playlist ${playlist.id}': ids(playlist.records),
+    for (final record in store.box<SongbookRecord>().getAll())
+      'songbook record ${record.id}': [record.songLyric.targetId, record.songbook.targetId, record.number],
+    for (final external in store.box<External>().getAll()) 'external ${external.id}': external.songLyric.targetId,
+    for (final settings in store.box<SongLyricSettingsModel>().getAll())
+      'settings ${settings.id}': [settings.songLyric.targetId, settings.transposition],
+  };
+}
 
 void main() {
   setUpAll(() => registerFallbackValue(DateTime(0)));
@@ -240,6 +269,42 @@ void main() {
       await eventually(
         () => expect(appDependencies.sharedPreferences.getString('last_update'), isNot('2026-01-01 00:00:00')),
       );
+    });
+
+    test('keeps relations of song lyrics and user data', () async {
+      final appDependencies = await createAppDependencies(preferences: {'last_update': '2026-01-01 00:00:00'});
+      final store = appDependencies.store;
+
+      await storeTestData(appDependencies);
+
+      final container = createUpdateContainer(appDependencies);
+      final playlists = container.read(playlistsProvider.notifier);
+      final playlist = playlists.createPlaylist('Mše');
+
+      playlists.addToPlaylist(playlist, songLyric: store.box<SongLyric>().get(1));
+      playlists.addToPlaylist(playlist, songLyric: store.box<SongLyric>().get(2));
+      playlists.toggleFavorite(store.box<SongLyric>().get(1)!);
+      container.read(songLyricSettingsProvider(1).notifier).changeTransposition(2);
+
+      final relations = _relations(store);
+
+      expect(relations['song lyric 1'], {
+        'song': isNot(0),
+        'authors': hasLength(2),
+        'tags': hasLength(2),
+        'externals': hasLength(2),
+        'songbook records': hasLength(3),
+        'playlist records': hasLength(2),
+      });
+      expect(relations.keys, contains(startsWith('settings')));
+
+      when(
+        () => client.getSongLyrics(any()),
+      ).thenAnswer((_) async => {SongLyric.fieldKey: songLyricsJson.sublist(1, 2)});
+
+      await runUpdate(appDependencies);
+
+      expect(_relations(store), relations);
     });
 
     test('does not fetch arrangements and keeps the ones stored by older versions', () async {
