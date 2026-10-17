@@ -1,9 +1,15 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:proscholy_common/models/generated/objectbox.g.dart';
 import 'package:proscholy_common/models/song_lyric.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 var _storeCounter = 0;
+
+// data in the same format as API response and `assets/data.json` of the apps
+Map<String, dynamic> readTestData() => jsonDecode(File('test/data/data.json').readAsStringSync())['data'];
 
 SongLyric createSongLyric({int id = 1, String name = 'Píseň', String? lyrics}) {
   return SongLyric(
