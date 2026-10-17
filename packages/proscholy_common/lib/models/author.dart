@@ -6,7 +6,7 @@ part 'generated/author.freezed.dart';
 part 'generated/author.g.dart';
 
 @freezed
-sealed class Author with _$Author implements Identifiable {
+sealed class Author extends Model with _$Author {
   const Author._();
 
   static const String fieldKey = 'authors';
@@ -18,10 +18,4 @@ sealed class Author with _$Author implements Identifiable {
   }) = _Author;
 
   factory Author.fromJson(Map<String, Object?> json) => _$AuthorFromJson(json);
-
-  @override
-  int get hashCode => id;
-
-  @override
-  bool operator ==(Object other) => other is Author && id == other.id;
 }
