@@ -77,7 +77,7 @@ sealed class SongLyric with _$SongLyric implements DisplayableItem, Identifiable
     @JsonKey(fromJson: _settingsFromJson) required ToOne<SongLyricSettingsModel> settings,
     @JsonKey(name: 'authors_pivot', fromJson: _authorsFromJson) required ToMany<Author> authors,
     @JsonKey(fromJson: _tagsFromJson) required ToMany<Tag> tags,
-    @JsonKey(fromJson: _externalsFromJson) required ToMany<External> externals,
+    @Backlink() @JsonKey(fromJson: _externalsFromJson) required ToMany<External> externals,
     @Backlink() @JsonKey(fromJson: _songbookRecordsFromJson) required ToMany<SongbookRecord> songbookRecords,
     @Backlink() @JsonKey(fromJson: _playlistRecordsFromJson) required ToMany<PlaylistRecord> playlistRecords,
   }) = _SongLyric;

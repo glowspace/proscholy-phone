@@ -8,7 +8,8 @@ import 'package:proscholy_common/models/settings.dart';
 import 'package:proscholy_common/models/song_lyric.dart';
 
 // `test/data/old_store` was saved by the app before models were renamed, it contains playlist with song lyric, custom
-// text and bible verse, favorite song lyric and its transposition, these must not be lost when models change
+// text and bible verse, favorite song lyric and its transposition, these must not be lost when models change, and
+// externals of song lyrics, as their relation changes
 void main() {
   test('user data are kept after upgrade of old store', () async {
     final directory = await Directory.systemTemp.createTemp('proscholy_store_');
@@ -42,6 +43,6 @@ void main() {
 
     settingsQuery.close();
 
-    expect(store.box<SongLyric>().get(1), isNotNull);
+    expect(store.box<SongLyric>().get(1)?.externals, hasLength(2));
   });
 }
