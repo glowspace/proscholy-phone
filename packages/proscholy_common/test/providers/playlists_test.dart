@@ -2,10 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:proscholy_common/models/user_text.dart';
+import 'package:proscholy_common/models/bible_passage.dart';
 import 'package:proscholy_common/models/playlist.dart';
 import 'package:proscholy_common/models/playlist_record.dart';
 import 'package:proscholy_common/models/song_lyric.dart';
+import 'package:proscholy_common/models/user_text.dart';
 import 'package:proscholy_common/models/utils.dart';
 import 'package:proscholy_common/providers/app_dependencies.dart';
 import 'package:proscholy_common/providers/playlists.dart';
@@ -35,6 +36,10 @@ void main() {
     ];
   }
 
+  Playlist createPlaylist(String name) => notifier.addPlaylist(Playlist.empty(name));
+
+  PlaylistNotifier edit(Playlist playlist) => container.read(playlistProvider(playlist.id).notifier);
+
   setUp(() async {
     final appDependencies = await createAppDependencies();
     final data = readTestData();
@@ -49,7 +54,7 @@ void main() {
 
   // e.g. first playlist created from song lyric, before favorite playlist was ever shown
   test('new playlist does not take id of favorite playlist', () {
-    final created = notifier.createPlaylist('První');
+    final created = createPlaylist('První');
 
     notifier.toggleFavorite(songLyric(1));
 
@@ -59,8 +64,8 @@ void main() {
   });
 
   test('new playlist is first', () {
-    final first = notifier.createPlaylist('První');
-    final second = notifier.createPlaylist('Druhý');
+    final first = createPlaylist('První');
+    final second = createPlaylist('Druhý');
 
     expect(container.read(playlistsProvider).map((playlist) => playlist.name), ['Druhý', 'První']);
     expect(playlist(first.id).rank, 1);
@@ -68,36 +73,32 @@ void main() {
   });
 
   test('rename, reorder and remove', () {
-    final first = notifier.createPlaylist('První');
-    notifier.createPlaylist('Druhý');
-    notifier.createPlaylist('Třetí');
+    final first = createPlaylist('První');
+    createPlaylist('Druhý');
+    createPlaylist('Třetí');
 
-    notifier.renamePlaylist(first, 'Přejmenovaný');
+    edit(first).rename('Přejmenovaný');
     notifier.reorderPlaylists(2, 0);
 
     expect(container.read(playlistsProvider).map((playlist) => playlist.name), ['Přejmenovaný', 'Třetí', 'Druhý']);
 
-    notifier.removePlaylist(container.read(playlistsProvider).first);
+    edit(container.read(playlistsProvider).first).remove();
 
     expect(container.read(playlistsProvider).map((playlist) => playlist.name), ['Třetí', 'Druhý']);
   });
 
   test('add records', () {
-    final newPlaylist = notifier.createPlaylist('Mše');
+    final newPlaylist = createPlaylist('Mše');
 
-    notifier.addToPlaylist(newPlaylist, songLyric: songLyric(1));
-    notifier.addToPlaylist(
+    edit(newPlaylist).addSongLyric(songLyric(1));
+    edit(newPlaylist).addUserText(const UserText(name: 'Ohlášky', content: 'text'));
+    edit(
       newPlaylist,
-      userText: notifier.createUserText(name: 'Ohlášky', content: 'text'),
-    );
-    notifier.addToPlaylist(
-      newPlaylist,
-      biblePassage: notifier.createBiblePassage(book: 18, chapter: 23, startVerse: 1, text: 'Hospodin je můj pastýř'),
-    );
+    ).addBiblePassage(const BiblePassage(book: 18, chapter: 23, startVerse: 1, text: 'Hospodin je můj pastýř'));
     // inserted after first record
-    notifier.addToPlaylist(newPlaylist, songLyric: songLyric(2), afterRank: 0);
+    edit(newPlaylist).addSongLyric(songLyric(2), afterRank: 0);
     // duplicate is ignored
-    notifier.addToPlaylist(newPlaylist, songLyric: songLyric(1));
+    edit(newPlaylist).addSongLyric(songLyric(1));
 
     expect(records(playlist(newPlaylist.id)), [
       'Ať srdce mé tebe vídá',
@@ -110,10 +111,10 @@ void main() {
   // records of playlist loaded from store are not in order of their ranks after reordering
   test('record added after another keeps order of reordered records', () {
     final store = container.read(appDependenciesProvider).store;
-    final newPlaylist = notifier.createPlaylist('Mše');
+    final newPlaylist = createPlaylist('Mše');
 
-    notifier.addToPlaylist(newPlaylist, songLyric: songLyric(1));
-    notifier.addToPlaylist(newPlaylist, songLyric: songLyric(2));
+    edit(newPlaylist).addSongLyric(songLyric(1));
+    edit(newPlaylist).addSongLyric(songLyric(2));
 
     // song lyric 2 is moved to the top
     store.box<PlaylistRecord>().putMany([
@@ -121,41 +122,34 @@ void main() {
         playlistRecord.copyWith(rank: playlistRecord.songLyric.targetId == 2 ? 0 : 1),
     ]);
 
-    notifier.addToPlaylist(
-      playlist(newPlaylist.id),
-      userText: notifier.createUserText(name: 'Ohlášky', content: 'text'),
-      afterRank: 0,
-    );
+    edit(playlist(newPlaylist.id)).addUserText(const UserText(name: 'Ohlášky', content: 'text'), afterRank: 0);
 
     expect(records(playlist(newPlaylist.id)), [songLyric(2).name, 'Ohlášky', songLyric(1).name]);
   });
 
   test('removing record removes its custom text', () {
-    final newPlaylist = notifier.createPlaylist('Mše');
-    final userText = notifier.createUserText(name: 'Ohlášky', content: 'text');
+    final newPlaylist = createPlaylist('Mše');
 
-    notifier.addToPlaylist(newPlaylist, userText: userText);
+    edit(newPlaylist).addUserText(const UserText(name: 'Ohlášky', content: 'text'));
 
     final playlistRecord = playlist(newPlaylist.id).records.single;
-
-    notifier.removeFromPlaylist(newPlaylist, playlistRecord);
-
     final store = container.read(appDependenciesProvider).store;
 
+    expect(store.box<UserText>().get(playlistRecord.userText.targetId), isNotNull);
+
+    edit(newPlaylist).removeRecord(playlistRecord);
+
     expect(store.box<PlaylistRecord>().get(playlistRecord.id), isNull);
-    expect(store.box<UserText>().get(userText.id), isNull);
+    expect(store.box<UserText>().get(playlistRecord.userText.targetId), isNull);
   });
 
   test('duplicated playlist has own custom texts', () {
-    final original = notifier.createPlaylist('Mše');
+    final original = createPlaylist('Mše');
 
-    notifier.addToPlaylist(original, songLyric: songLyric(1));
-    notifier.addToPlaylist(
-      original,
-      userText: notifier.createUserText(name: 'Ohlášky', content: 'text'),
-    );
+    edit(original).addSongLyric(songLyric(1));
+    edit(original).addUserText(const UserText(name: 'Ohlášky', content: 'text'));
 
-    final duplicate = notifier.duplicatePlaylist(playlist(original.id), 'Mše (kopie)');
+    final duplicate = edit(original).duplicate('Mše (kopie)');
 
     expect(records(playlist(duplicate.id)), records(playlist(original.id)));
 
@@ -166,17 +160,13 @@ void main() {
   });
 
   test('shared playlist is accepted with song lyric settings', () {
-    final original = notifier.createPlaylist('Mše');
+    final original = createPlaylist('Mše');
 
-    notifier.addToPlaylist(original, songLyric: songLyric(1));
-    notifier.addToPlaylist(
+    edit(original).addSongLyric(songLyric(1));
+    edit(original).addUserText(const UserText(name: 'Ohlášky', content: 'text'));
+    edit(
       original,
-      userText: notifier.createUserText(name: 'Ohlášky', content: 'text'),
-    );
-    notifier.addToPlaylist(
-      original,
-      biblePassage: notifier.createBiblePassage(book: 18, chapter: 23, startVerse: 1, endVerse: 2, text: 'Hospodin'),
-    );
+    ).addBiblePassage(const BiblePassage(book: 18, chapter: 23, startVerse: 1, endVerse: 2, text: 'Hospodin'));
 
     container.listen(songLyricSettingsProvider(1), (_, _) {});
     container.read(songLyricSettingsProvider(1).notifier).changeTransposition(3);

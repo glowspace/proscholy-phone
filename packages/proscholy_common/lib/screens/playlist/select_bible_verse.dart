@@ -7,7 +7,6 @@ import 'package:proscholy_common/components/highlightable_widget.dart';
 import 'package:proscholy_common/constants.dart';
 import 'package:proscholy_common/models/bible_passage.dart';
 import 'package:proscholy_common/providers/app_dependencies.dart';
-import 'package:proscholy_common/providers/playlists.dart';
 import 'package:proscholy_common/routing/safe_area_wrapper.dart';
 import 'package:proscholy_common/utils/bible_api_client.dart';
 import 'package:proscholy_common/utils/extensions.dart';
@@ -371,15 +370,14 @@ class _SelectBiblePassageScreenState extends State<_SelectBiblePassageScreen> {
     final BiblePassage biblePassage;
 
     if (widget.biblePassage == null) {
-      biblePassage = context.providers
-          .read(playlistsProvider.notifier)
-          .createBiblePassage(
-            book: widget.book.number - 1,
-            chapter: widget.chapter,
-            startVerse: _startVerse,
-            endVerse: _endVerse,
-            text: text,
-          );
+      // it is stored when it is added to playlist
+      biblePassage = BiblePassage(
+        book: widget.book.number - 1,
+        chapter: widget.chapter,
+        startVerse: _startVerse,
+        endVerse: _endVerse,
+        text: text,
+      );
     } else {
       biblePassage = widget.biblePassage!.copyWith(
         book: widget.book.number - 1,

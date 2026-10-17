@@ -14,6 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$BiblePassage {
 
+// 0 until it is stored
 @Id(assignable: true) int get id; int get book; int get chapter; int get startVerse; int? get endVerse; String get text;
 /// Create a copy of BiblePassage
 /// with the given fields replaced by the non-null parameter values.
@@ -198,10 +199,11 @@ return $default(_that.id,_that.book,_that.chapter,_that.startVerse,_that.endVers
 
 @Entity(realClass: BiblePassage)
 class _BiblePassage extends BiblePassage {
-  const _BiblePassage({@Id(assignable: true) required this.id, required this.book, required this.chapter, required this.startVerse, this.endVerse, required this.text}): super._();
+  const _BiblePassage({@Id(assignable: true) this.id = 0, required this.book, required this.chapter, required this.startVerse, this.endVerse, required this.text}): super._();
   
 
-@override@Id(assignable: true) final  int id;
+// 0 until it is stored
+@override@JsonKey()@Id(assignable: true) final  int id;
 @override final  int book;
 @override final  int chapter;
 @override final  int startVerse;

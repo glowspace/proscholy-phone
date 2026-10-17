@@ -88,11 +88,11 @@ void main() {
 
     final container = createContainer(appDependencies);
     container.listen(recentItemsProvider, (_, _) {});
-    final playlist = container.read(playlistsProvider.notifier).createPlaylist('Mše');
+    final playlist = container.read(playlistsProvider.notifier).addPlaylist(Playlist.empty('Mše'));
 
     container.read(recentItemsProvider.notifier).add(playlist);
     container.read(recentItemsProvider.notifier).add(songbook(2));
-    container.read(playlistsProvider.notifier).renamePlaylist(playlist, 'Adorace');
+    container.read(playlistProvider(playlist.id).notifier).rename('Adorace');
 
     await eventually(() {
       expect(_describe(container.read(recentItemsProvider)), ['songbook 2', 'playlist ${playlist.id}']);
@@ -103,11 +103,11 @@ void main() {
   test('removed playlist is removed from recent items', () async {
     final container = createContainer(appDependencies);
     container.listen(recentItemsProvider, (_, _) {});
-    final playlist = container.read(playlistsProvider.notifier).createPlaylist('Mše');
+    final playlist = container.read(playlistsProvider.notifier).addPlaylist(Playlist.empty('Mše'));
 
     container.read(recentItemsProvider.notifier).add(songLyric(1));
     container.read(recentItemsProvider.notifier).add(playlist);
-    container.read(playlistsProvider.notifier).removePlaylist(playlist);
+    container.read(playlistProvider(playlist.id).notifier).remove();
 
     await eventually(() => expect(_describe(container.read(recentItemsProvider)), ['songLyric 1']));
   });

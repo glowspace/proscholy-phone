@@ -10,7 +10,8 @@ sealed class BiblePassage with _$BiblePassage implements DisplayableItem, Identi
 
   @Entity(realClass: BiblePassage)
   const factory BiblePassage({
-    @Id(assignable: true) required int id,
+    // 0 until it is stored
+    @Id(assignable: true) @Default(0) int id,
     required int book,
     required int chapter,
     required int startVerse,

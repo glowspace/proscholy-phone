@@ -103,8 +103,6 @@ void main() {
 
     await tester.tap(find.text('Smazat'));
     await tester.pumpAndSettle();
-    // texts are removed with delay
-    await tester.pump(const Duration(seconds: 1));
 
     expect(find.byType(PlaylistScreen), findsNothing);
     expect(find.text('Mše'), findsNothing);

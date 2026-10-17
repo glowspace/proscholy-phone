@@ -10,7 +10,8 @@ sealed class UserText with _$UserText implements DisplayableItem, Identifiable, 
 
   @Entity(realClass: UserText)
   const factory UserText({
-    @Id(assignable: true) required int id,
+    // 0 until it is stored
+    @Id(assignable: true) @Default(0) int id,
     required String name,
     required String content,
   }) = _UserText;

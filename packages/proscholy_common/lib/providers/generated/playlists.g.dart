@@ -9,14 +9,13 @@ part of '../playlists.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(playlist)
-final playlistProvider = PlaylistFamily._();
+@ProviderFor(PlaylistNotifier)
+final playlistProvider = PlaylistNotifierFamily._();
 
-final class PlaylistProvider
-    extends $FunctionalProvider<Playlist?, Playlist?, Playlist?>
-    with $Provider<Playlist?> {
-  PlaylistProvider._({
-    required PlaylistFamily super.from,
+final class PlaylistNotifierProvider
+    extends $NotifierProvider<PlaylistNotifier, Playlist?> {
+  PlaylistNotifierProvider._({
+    required PlaylistNotifierFamily super.from,
     required int super.argument,
   }) : super(
          retry: null,
@@ -27,7 +26,7 @@ final class PlaylistProvider
        );
 
   @override
-  String debugGetCreateSourceHash() => _$playlistHash();
+  String debugGetCreateSourceHash() => _$playlistNotifierHash();
 
   @override
   String toString() {
@@ -38,14 +37,7 @@ final class PlaylistProvider
 
   @$internal
   @override
-  $ProviderElement<Playlist?> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
-
-  @override
-  Playlist? create(Ref ref) {
-    final argument = this.argument as int;
-    return playlist(ref, argument);
-  }
+  PlaylistNotifier create() => PlaylistNotifier();
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(Playlist? value) {
@@ -57,7 +49,7 @@ final class PlaylistProvider
 
   @override
   bool operator ==(Object other) {
-    return other is PlaylistProvider && other.argument == argument;
+    return other is PlaylistNotifierProvider && other.argument == argument;
   }
 
   @override
@@ -66,11 +58,18 @@ final class PlaylistProvider
   }
 }
 
-String _$playlistHash() => r'fa13f90fa2a52bb5f6a18e6e21417c8d4bb02623';
+String _$playlistNotifierHash() => r'8918c6b85d3bedc7f0b14f0ed45f0d06eebebc78';
 
-final class PlaylistFamily extends $Family
-    with $FunctionalFamilyOverride<Playlist?, int> {
-  PlaylistFamily._()
+final class PlaylistNotifierFamily extends $Family
+    with
+        $ClassFamilyOverride<
+          PlaylistNotifier,
+          Playlist?,
+          Playlist?,
+          Playlist?,
+          int
+        > {
+  PlaylistNotifierFamily._()
     : super(
         retry: null,
         name: r'playlistProvider',
@@ -79,10 +78,32 @@ final class PlaylistFamily extends $Family
         isAutoDispose: true,
       );
 
-  PlaylistProvider call(int id) => PlaylistProvider._(argument: id, from: this);
+  PlaylistNotifierProvider call(int id) =>
+      PlaylistNotifierProvider._(argument: id, from: this);
 
   @override
   String toString() => r'playlistProvider';
+}
+
+abstract class _$PlaylistNotifier extends $Notifier<Playlist?> {
+  late final _$args = ref.$arg as int;
+  int get id => _$args;
+
+  Playlist? build(int id);
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<Playlist?, Playlist?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<Playlist?, Playlist?>,
+              Playlist?,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, () => build(_$args));
+  }
 }
 
 @ProviderFor(favoritePlaylist)
@@ -158,7 +179,7 @@ final class PlaylistsProvider
   }
 }
 
-String _$playlistsHash() => r'ad230129a49c797718dee753c9f1e5227ab59de4';
+String _$playlistsHash() => r'fd7af90e297843a163dd22efed7fd6fb4f888a65';
 
 abstract class _$Playlists extends $Notifier<List<Playlist>> {
   List<Playlist> build();

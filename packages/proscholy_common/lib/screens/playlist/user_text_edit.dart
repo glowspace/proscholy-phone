@@ -8,7 +8,6 @@ import 'package:proscholy_common/components/navigation/scaffold.dart';
 import 'package:proscholy_common/constants.dart';
 import 'package:proscholy_common/models/user_text.dart';
 import 'package:proscholy_common/providers/app_dependencies.dart';
-import 'package:proscholy_common/providers/playlists.dart';
 import 'package:proscholy_common/utils/extensions.dart';
 
 class UserTextEditScreen extends StatefulWidget {
@@ -94,9 +93,8 @@ class _UserTextEditScreenState extends State<UserTextEditScreen> {
     final UserText userText;
 
     if (widget.userText == null) {
-      userText = context.providers
-          .read(playlistsProvider.notifier)
-          .createUserText(name: name, content: _serializeDocumentToMarkdown(_controller.document) ?? '');
+      // it is stored when it is added to playlist
+      userText = UserText(name: name, content: _serializeDocumentToMarkdown(_controller.document) ?? '');
     } else {
       userText = widget.userText!.copyWith(
         name: name,

@@ -21,10 +21,10 @@ void showPlaylistDialog(BuildContext context, {SongLyric? selectedSongLyric}) as
   );
 
   if (results != null && context.mounted) {
-    final playlist = context.providers.read(playlistsProvider.notifier).createPlaylist(results.first);
+    final playlist = context.providers.read(playlistsProvider.notifier).addPlaylist(Playlist.empty(results.first));
 
     if (selectedSongLyric != null) {
-      context.providers.read(playlistsProvider.notifier).addToPlaylist(playlist, songLyric: selectedSongLyric);
+      context.providers.read(playlistProvider(playlist.id).notifier).addSongLyric(selectedSongLyric);
       context.popAndPush('/playlist', arguments: playlist);
     }
   }
@@ -48,7 +48,7 @@ void showRenamePlaylistDialog(BuildContext context, Playlist playlist) async {
   );
 
   if (results != null && context.mounted) {
-    final renamedPlaylist = context.providers.read(playlistsProvider.notifier).renamePlaylist(playlist, results.first);
+    final renamedPlaylist = context.providers.read(playlistProvider(playlist.id).notifier).rename(results.first);
 
     final selectedPlaylistNotifier = SelectedPlaylist.of(context);
 
@@ -76,9 +76,7 @@ void showDuplicatePlaylistDialog(BuildContext context, Playlist playlist) async 
   );
 
   if (results != null && context.mounted) {
-    final duplicatedPlaylist = context.providers
-        .read(playlistsProvider.notifier)
-        .duplicatePlaylist(playlist, results.first);
+    final duplicatedPlaylist = context.providers.read(playlistProvider(playlist.id).notifier).duplicate(results.first);
 
     final selectedPlaylistNotifier = SelectedPlaylist.of(context);
 
@@ -126,7 +124,7 @@ void showRemovePlaylistDialog(BuildContext context, Playlist playlist) async {
   );
 
   if (result == OkCancelResult.ok && context.mounted) {
-    context.providers.read(playlistsProvider.notifier).removePlaylist(playlist);
+    context.providers.read(playlistProvider(playlist.id).notifier).remove();
 
     final selectedPlaylistNotifier = SelectedPlaylist.of(context);
 

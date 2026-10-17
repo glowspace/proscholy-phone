@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:proscholy_common/constants.dart';
 import 'package:proscholy_common/models/generated/objectbox.g.dart';
+import 'package:proscholy_common/models/playlist.dart';
 import 'package:proscholy_common/models/song_lyric.dart';
 import 'package:proscholy_common/models/songbook.dart';
 import 'package:proscholy_common/models/songbook_record.dart';
@@ -145,13 +146,11 @@ void main() {
     });
 
     test('song lyrics in selected playlist', () {
-      final playlists = container.read(playlistsProvider.notifier);
-      final playlist = playlists.createPlaylist('Mše');
+      final playlist = container.read(playlistsProvider.notifier).addPlaylist(Playlist.empty('Mše'));
 
-      playlists.addToPlaylist(
-        playlist,
-        songLyric: container.read(appDependenciesProvider).store.box<SongLyric>().get(2),
-      );
+      container
+          .read(playlistProvider(playlist.id).notifier)
+          .addSongLyric(container.read(appDependenciesProvider).store.box<SongLyric>().get(2)!);
       container.read(selectedTagsProvider.notifier).toggleSelection(Tag.fromPlaylist(playlist));
 
       expect(filteredIds(), [2]);

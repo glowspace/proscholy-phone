@@ -14,6 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$UserText {
 
+// 0 until it is stored
 @Id(assignable: true) int get id; String get name; String get content;
 /// Create a copy of UserText
 /// with the given fields replaced by the non-null parameter values.
@@ -195,10 +196,11 @@ return $default(_that.id,_that.name,_that.content);case _:
 
 @Entity(realClass: UserText)
 class _UserText extends UserText {
-  const _UserText({@Id(assignable: true) required this.id, required this.name, required this.content}): super._();
+  const _UserText({@Id(assignable: true) this.id = 0, required this.name, required this.content}): super._();
   
 
-@override@Id(assignable: true) final  int id;
+// 0 until it is stored
+@override@JsonKey()@Id(assignable: true) final  int id;
 @override final  String name;
 @override final  String content;
 

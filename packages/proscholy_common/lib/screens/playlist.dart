@@ -196,10 +196,9 @@ class _PlaylistScaffold extends ConsumerWidget {
 
     if (context.mounted && userText != null) {
       context.providers
-          .read(playlistsProvider.notifier)
-          .addToPlaylist(
-            playlist,
-            userText: userText,
+          .read(playlistProvider(playlist.id).notifier)
+          .addUserText(
+            userText,
             afterRank: SelectedDisplayableItemArguments.of(context, listen: false)?.value.initialIndex,
           );
     }
@@ -210,10 +209,9 @@ class _PlaylistScaffold extends ConsumerWidget {
 
     if (context.mounted && biblePassage != null) {
       context.providers
-          .read(playlistsProvider.notifier)
-          .addToPlaylist(
-            playlist,
-            biblePassage: biblePassage,
+          .read(playlistProvider(playlist.id).notifier)
+          .addBiblePassage(
+            biblePassage,
             afterRank: SelectedDisplayableItemArguments.of(context, listen: false)?.value.initialIndex,
           );
     }
@@ -224,10 +222,9 @@ class _PlaylistScaffold extends ConsumerWidget {
 
     if (context.mounted && songLyric != null) {
       context.providers
-          .read(playlistsProvider.notifier)
-          .addToPlaylist(
-            playlist,
-            songLyric: songLyric,
+          .read(playlistProvider(playlist.id).notifier)
+          .addSongLyric(
+            songLyric,
             afterRank: SelectedDisplayableItemArguments.of(context, listen: false)?.value.initialIndex,
           );
     }

@@ -21,6 +21,9 @@ sealed class Playlist with _$Playlist implements Identifiable, RecentItem, Songs
     @Backlink() required ToMany<PlaylistRecord> records,
   }) = _Playlist;
 
+  // its id is set when it is added to playlists
+  factory Playlist.empty(String name) => Playlist(id: 0, name: name, rank: 0, records: ToMany());
+
   factory Playlist.favorites() => Playlist(
     id: favoritesPlaylistId,
     name: _favoritesName,

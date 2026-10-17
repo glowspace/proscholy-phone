@@ -282,10 +282,10 @@ void main() {
 
       final container = createUpdateContainer(appDependencies);
       final playlists = container.read(playlistsProvider.notifier);
-      final playlist = playlists.createPlaylist('Mše');
+      final playlist = playlists.addPlaylist(Playlist.empty('Mše'));
 
-      playlists.addToPlaylist(playlist, songLyric: store.box<SongLyric>().get(1));
-      playlists.addToPlaylist(playlist, songLyric: store.box<SongLyric>().get(2));
+      container.read(playlistProvider(playlist.id).notifier).addSongLyric(store.box<SongLyric>().get(1)!);
+      container.read(playlistProvider(playlist.id).notifier).addSongLyric(store.box<SongLyric>().get(2)!);
       playlists.toggleFavorite(store.box<SongLyric>().get(1)!);
       container.read(songLyricSettingsProvider(1).notifier).changeTransposition(2);
 
