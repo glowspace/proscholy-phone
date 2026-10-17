@@ -87,4 +87,4 @@ final class UpdateProvider
   }
 }
 
-String _$updateHash() => r'f87c4dd64a366a03129d04bd7f6a41ff3af0f58b';
+String _$updateHash() => r'cb1ac9e8d590d1054c85ee8350a8294060da3549';

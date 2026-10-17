@@ -8,6 +8,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:proscholy_common/constants.dart';
 import 'package:proscholy_common/providers/svgs.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:proscholy_common/models/news_item.dart';
 import 'package:proscholy_common/models/generated/objectbox.g.dart';
@@ -148,14 +149,14 @@ Stream<UpdateStatus> update(Ref ref) async* {
     missingSongLyricIds.remove(songLyric.id);
   }
 
-  // fetch missing song lyrics
-  final List<Future<SongLyric>> futures = [];
+  // fetch missing song lyrics, the ones that fail will be still missing and fetched again during next update
+  final List<Future<SongLyric?>> futures = [];
 
   for (final songLyricId in missingSongLyricIds) {
-    futures.add(client.getSongLyric(songLyricId).then((json) => SongLyric.fromJson(json)));
+    futures.add(_fetchSongLyric(client, songLyricId));
   }
 
-  songLyrics.addAll(await Future.wait(futures));
+  songLyrics.addAll((await Future.wait(futures)).nonNulls);
 
   final updatedSongLyrics = await storeSongLyrics(appDependencies.store, songLyrics);
 
@@ -166,6 +167,17 @@ Stream<UpdateStatus> update(Ref ref) async* {
   yield Updated(updatedSongLyrics);
 
   appDependencies.sharedPreferences.setString(_lastUpdateKey, _dateFormat.format(now));
+}
+
+// returns null, when song lyric could not be fetched
+Future<SongLyric?> _fetchSongLyric(Client client, int id) async {
+  try {
+    return SongLyric.fromJson(await client.getSongLyric(id));
+  } catch (error, stackTrace) {
+    Sentry.captureException(error, stackTrace: stackTrace);
+
+    return null;
+  }
 }
 
 // FIXME: does not seem to work correctly? try removing based on song_lyric ids

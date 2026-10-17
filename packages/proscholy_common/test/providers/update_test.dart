@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:graphql_flutter/graphql_flutter.dart' hide Store;
 import 'package:intl/intl.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:proscholy_common/models/news_item.dart';
@@ -26,6 +27,13 @@ class _FakeSvgs extends Svgs {
 }
 
 final _dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
+
+// same as reported by users, server responded with status code 500
+final _serverError = OperationException(
+  linkException: ServerException(
+    parsedResponse: const Response(response: {'message': 'Server Error'}, context: Context()),
+  ),
+);
 
 void main() {
   setUpAll(() => registerFallbackValue(DateTime(0)));
@@ -202,6 +210,31 @@ void main() {
 
       verifyNever(() => client.getSongLyric(any()));
       expect(appDependencies.store.box<SongLyric>().get(3), isNotNull);
+    });
+
+    test('song lyric that failed to download does not fail update', () async {
+      final appDependencies = await createAppDependencies(preferences: {'last_update': '2026-01-01 00:00:00'});
+
+      when(() => client.getData()).thenAnswer(
+        (_) async => {
+          ...readTestData(),
+          SongLyric.fieldKey: [
+            {'id': '1', 'is_arrangement': false},
+            {'id': '5', 'is_arrangement': false},
+          ],
+        },
+      );
+      when(() => client.getSongLyrics(any())).thenAnswer((_) async => {SongLyric.fieldKey: []});
+      when(() => client.getSongLyric(1)).thenAnswer((_) async => songLyricsJson[0]);
+      when(() => client.getSongLyric(5)).thenAnswer((_) => Future.error(_serverError));
+
+      final states = await runUpdate(appDependencies);
+
+      expect((states.last as Updated).songLyrics.map((songLyric) => songLyric.id), [1]);
+
+      await eventually(
+        () => expect(appDependencies.sharedPreferences.getString('last_update'), isNot('2026-01-01 00:00:00')),
+      );
     });
   });
 }
