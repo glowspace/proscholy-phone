@@ -168,7 +168,14 @@ query {
 class Client {
   final GraphQLClient client;
 
-  Client() : client = GraphQLClient(link: _link, cache: GraphQLCache(), queryRequestTimeout: Duration(seconds: 60));
+  Client({Link? link})
+    : client = GraphQLClient(
+        link: link ?? _link,
+        cache: GraphQLCache(),
+        // by default results are cached, so later updates would get old data and cache would keep all data in memory
+        defaultPolicies: DefaultPolicies(query: Policies(fetch: FetchPolicy.noCache)),
+        queryRequestTimeout: Duration(seconds: 60),
+      );
 
   Future<Map<String, dynamic>> getNews() async {
     final result = await client.query(QueryOptions(document: gql(_newsQuery)));
