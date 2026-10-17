@@ -25,6 +25,19 @@ import 'package:proscholy_common/utils/services/spotlight.dart';
 const _title = 'Zpěvník';
 
 Future<void> main() async {
+  if (kDebugMode) return _start();
+
+  // app is started inside, so errors during its start are reported too
+  await SentryFlutter.init(
+    (options) {
+      options.dsn = 'https://4398b4421c372b093c4f88c16dff9c63@o4506177850572800.ingest.sentry.io/4506177851621376';
+      options.tracesSampleRate = 1.0;
+    },
+    appRunner: _start,
+  );
+}
+
+Future<void> _start() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -46,22 +59,10 @@ Future<void> main() async {
   // check if app was opened from spotlight search on iOS
   final initialRoute = await SpotlightService.instance.getInitialRoute();
 
-  void appRunner() {
-    runApp(ProviderScope(
-      overrides: [appDependenciesProvider.overrideWithValue(appDependencies)],
-      child: MainWidget(initialRoute: initialRoute),
-    ));
-  }
-
-  if (kDebugMode) return appRunner();
-
-  await SentryFlutter.init(
-    (options) {
-      options.dsn = 'https://4398b4421c372b093c4f88c16dff9c63@o4506177850572800.ingest.sentry.io/4506177851621376';
-      options.tracesSampleRate = 1.0;
-    },
-    appRunner: appRunner,
-  );
+  runApp(ProviderScope(
+    overrides: [appDependenciesProvider.overrideWithValue(appDependencies)],
+    child: MainWidget(initialRoute: initialRoute),
+  ));
 }
 
 class MainWidget extends ConsumerWidget {
