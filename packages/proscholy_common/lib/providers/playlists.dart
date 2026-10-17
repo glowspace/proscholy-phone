@@ -315,6 +315,8 @@ class Playlists extends _$Playlists {
     );
 
     if (afterRank != null) {
+      // records loaded from store are not ordered by their ranks
+      playlist.records.sort((a, b) => a.rank.compareTo(b.rank));
       playlist.records.insert(afterRank + 1, playlistRecord);
 
       final playlistRecords = playlist.records

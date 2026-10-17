@@ -107,6 +107,29 @@ void main() {
     ]);
   });
 
+  // records of playlist loaded from store are not in order of their ranks after reordering
+  test('record added after another keeps order of reordered records', () {
+    final store = container.read(appDependenciesProvider).store;
+    final newPlaylist = notifier.createPlaylist('Mše');
+
+    notifier.addToPlaylist(newPlaylist, songLyric: songLyric(1));
+    notifier.addToPlaylist(newPlaylist, songLyric: songLyric(2));
+
+    // song lyric 2 is moved to the top
+    store.box<PlaylistRecord>().putMany([
+      for (final playlistRecord in playlist(newPlaylist.id).records)
+        playlistRecord.copyWith(rank: playlistRecord.songLyric.targetId == 2 ? 0 : 1),
+    ]);
+
+    notifier.addToPlaylist(
+      playlist(newPlaylist.id),
+      userText: notifier.createUserText(name: 'Ohlášky', content: 'text'),
+      afterRank: 0,
+    );
+
+    expect(records(playlist(newPlaylist.id)), [songLyric(2).name, 'Ohlášky', songLyric(1).name]);
+  });
+
   test('removing record removes its custom text', () {
     final newPlaylist = notifier.createPlaylist('Mše');
     final userText = notifier.createUserText(name: 'Ohlášky', content: 'text');
