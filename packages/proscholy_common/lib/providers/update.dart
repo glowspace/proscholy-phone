@@ -141,6 +141,7 @@ Stream<UpdateStatus> _update(Ref ref) async* {
   if (ref.mounted) ref.read(svgsProvider.notifier).storeSvgs(await client.getSvgs(lastUpdate));
 
   await parseAndStoreData(appDependencies.store, data);
+  removeMissingData(appDependencies.store, data);
 
   // query existing song lyrics to check song lyrics that are missing in local db or that were removed on server
   final box = appDependencies.store.box<SongLyric>();

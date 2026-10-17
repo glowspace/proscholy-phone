@@ -8,15 +8,18 @@ import 'package:graphql_flutter/graphql_flutter.dart' hide Store;
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:proscholy_common/models/author.dart';
 import 'package:proscholy_common/models/external.dart';
 import 'package:proscholy_common/models/generated/objectbox.g.dart';
 import 'package:proscholy_common/models/news_item.dart';
 import 'package:proscholy_common/models/playlist.dart';
 import 'package:proscholy_common/models/playlist_record.dart';
 import 'package:proscholy_common/models/settings.dart';
+import 'package:proscholy_common/models/song.dart';
 import 'package:proscholy_common/models/song_lyric.dart';
 import 'package:proscholy_common/models/songbook.dart';
 import 'package:proscholy_common/models/songbook_record.dart';
+import 'package:proscholy_common/models/tag.dart';
 import 'package:proscholy_common/models/utils.dart';
 import 'package:proscholy_common/providers/app_dependencies.dart';
 import 'package:proscholy_common/providers/playlists.dart';
@@ -305,6 +308,60 @@ void main() {
       await runUpdate(appDependencies);
 
       expect(_relations(store), relations);
+    });
+
+    test('removes authors, songs, songbooks and tags removed on server', () async {
+      final appDependencies = await createAppDependencies(preferences: {'last_update': '2026-01-01 00:00:00'});
+      final store = appDependencies.store;
+
+      await storeTestData(appDependencies);
+
+      store.box<Author>().put(const Author(id: 99, name: 'Autor'));
+      store.box<Song>().put(Song(id: 99, name: 'Píseň', songLyrics: ToMany()));
+      store.box<Tag>().put(const Tag(id: 99, name: 'Štítek', dbType: 0, songLyricsCount: 1));
+      store.box<Songbook>().put(Songbook(id: 99, name: 'Zpěvník', shortcut: 'Z', isPrivate: false, records: ToMany()));
+      store.box<SongbookRecord>().put(
+        SongbookRecord(id: 99, number: '1', songLyric: ToOne(targetId: 1), songbook: ToOne(targetId: 99)),
+      );
+
+      when(() => client.getSongLyrics(any())).thenAnswer((_) async => {SongLyric.fieldKey: []});
+
+      await runUpdate(appDependencies);
+
+      expect(store.box<Author>().get(99), isNull);
+      expect(store.box<Song>().get(99), isNull);
+      expect(store.box<Tag>().get(99), isNull);
+      expect(store.box<Songbook>().get(99), isNull);
+      expect(store.box<SongbookRecord>().get(99), isNull);
+      expect(store.box<SongLyric>().get(1)!.songbookRecords, hasLength(3));
+    });
+
+    // more likely an error on server, everything would be removed otherwise
+    test('empty lists from server do not remove anything', () async {
+      final appDependencies = await createAppDependencies(preferences: {'last_update': '2026-01-01 00:00:00'});
+      final store = appDependencies.store;
+
+      await storeTestData(appDependencies);
+
+      when(() => client.getData()).thenAnswer(
+        (_) async => {
+          Author.fieldKey: [],
+          Song.fieldKey: [],
+          Songbook.fieldKey: [],
+          'tags_enum': [],
+          SongLyric.fieldKey: [
+            for (final json in songLyricsJson) {'id': json['id'], 'is_arrangement': json['is_arrangement']},
+          ],
+        },
+      );
+      when(() => client.getSongLyrics(any())).thenAnswer((_) async => {SongLyric.fieldKey: []});
+
+      await runUpdate(appDependencies);
+
+      expect(store.box<Author>().count(), 2);
+      expect(store.box<Songbook>().count(), 3);
+      expect(store.box<SongbookRecord>().count(), 5);
+      expect(store.box<Tag>().count(), 2);
     });
 
     test('does not fetch arrangements and keeps the ones stored by older versions', () async {

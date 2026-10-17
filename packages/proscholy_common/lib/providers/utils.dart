@@ -29,6 +29,33 @@ Future<void> parseAndStoreData(Store store, Map<String, dynamic> json) async {
   ]);
 }
 
+// removes authors, songs, songbooks and tags that were removed on server
+void removeMissingData(Store store, Map<String, dynamic> json) {
+  _removeMissing(store, Author_.id, json[Author.fieldKey]);
+  _removeMissing(store, Song_.id, json[Song.fieldKey]);
+  _removeMissing(store, Songbook_.id, json[Songbook.fieldKey]);
+  _removeMissing(store, Tag_.id, json['tags_enum']);
+
+  // removing songbooks sets relations of their records to 0, records without songbook can't be shown
+  final query = store.box<SongbookRecord>().query(SongbookRecord_.songbook.equals(0)).build();
+
+  query.remove();
+  query.close();
+}
+
+void _removeMissing<T>(Store store, QueryIntegerProperty<T> idProperty, List<dynamic>? jsonList) {
+  // empty list is more likely an error on server, it would remove everything
+  if (jsonList == null || jsonList.isEmpty) return;
+
+  final ids = {for (final json in jsonList) int.parse(json['id'])};
+  final query = store.box<T>().query().build();
+  final removedIds = query.property(idProperty).find().where((id) => !ids.contains(id)).toList();
+
+  query.close();
+
+  store.box<T>().removeMany(removedIds);
+}
+
 Future<List<SongLyric>> storeSongLyrics(Store store, List<SongLyric> songLyrics) async {
   // filter arrangements
   songLyrics = songLyrics.where((songLyric) => !songLyric.isArrangement).toList();
