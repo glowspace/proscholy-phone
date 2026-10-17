@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:graphql_flutter/graphql_flutter.dart' hide Store;
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:proscholy_common/models/news_item.dart';
@@ -33,6 +34,11 @@ final _serverError = OperationException(
   linkException: ServerException(
     parsedResponse: const Response(response: {'message': 'Server Error'}, context: Context()),
   ),
+);
+
+// request could not be sent, e.g. without internet
+final _connectionError = OperationException(
+  linkException: ServerException(originalException: http.ClientException('Failed host lookup')),
 );
 
 void main() {
@@ -91,7 +97,7 @@ void main() {
       );
     }
 
-    // runs update and returns all its statuses
+    // runs update and returns all its statuses until it finishes
     Future<List<UpdateStatus>> runUpdate(AppDependencies appDependencies) {
       final states = <UpdateStatus>[];
       final finished = Completer<List<UpdateStatus>>();
@@ -101,7 +107,7 @@ void main() {
           case AsyncData(:final value):
             states.add(value);
 
-            if (value is Updated) finished.complete(states);
+            if (value is Updated || value is UpdateInterrupted) finished.complete(states);
           case AsyncError(:final error, :final stackTrace):
             finished.completeError(error, stackTrace);
           default:
@@ -235,6 +241,30 @@ void main() {
       await eventually(
         () => expect(appDependencies.sharedPreferences.getString('last_update'), isNot('2026-01-01 00:00:00')),
       );
+    });
+
+    test('connection error interrupts update without showing error', () async {
+      final appDependencies = await createAppDependencies(preferences: {'last_update': '2026-01-01 00:00:00'});
+
+      when(() => client.getData()).thenAnswer((_) => Future.error(_connectionError));
+
+      final states = await runUpdate(appDependencies);
+
+      expect(states, [isA<Updating>(), isA<UpdateInterrupted>()]);
+      expect(appDependencies.sharedPreferences.getString('last_update'), '2026-01-01 00:00:00');
+    });
+
+    test('server errors are shown and update is not retried', () async {
+      final appDependencies = await createAppDependencies(preferences: {'last_update': '2026-01-01 00:00:00'});
+
+      when(() => client.getData()).thenAnswer((_) => Future.error(_serverError));
+
+      await expectLater(runUpdate(appDependencies), throwsA(_serverError));
+
+      // automatic retry would happen after 200 ms
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      verify(() => client.getData()).called(1);
     });
   });
 }

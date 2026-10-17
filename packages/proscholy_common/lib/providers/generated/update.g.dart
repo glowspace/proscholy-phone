@@ -65,7 +65,7 @@ final class UpdateProvider
     : super(
         from: null,
         argument: null,
-        retry: null,
+        retry: _noRetry,
         name: r'updateProvider',
         isAutoDispose: true,
         dependencies: null,
@@ -87,4 +87,4 @@ final class UpdateProvider
   }
 }
 
-String _$updateHash() => r'cb1ac9e8d590d1054c85ee8350a8294060da3549';
+String _$updateHash() => r'9bd4400e3bb918b45d4271eda9ce7f94212366e9';

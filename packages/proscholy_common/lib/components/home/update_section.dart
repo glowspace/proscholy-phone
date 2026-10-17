@@ -29,6 +29,7 @@ class _UpdateSectionState extends ConsumerState<UpdateSection> {
           data: (updateStatus) {
             final updatedSongLyrics = switch (updateStatus) {
               Updating() => null,
+              UpdateInterrupted() => const <SongLyric>[],
               Updated(songLyrics: final songLyrics) =>
                 songLyrics
                     .where(

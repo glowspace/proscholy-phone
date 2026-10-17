@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:graphql_flutter/graphql_flutter.dart' hide Store;
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:proscholy_common/constants.dart';
@@ -49,6 +51,11 @@ class Updated extends UpdateStatus {
   const Updated(this.songLyrics);
 }
 
+// update failed because of connection and it will be tried again later
+class UpdateInterrupted extends UpdateStatus {
+  const UpdateInterrupted();
+}
+
 Future<void> loadInitial(AppDependencies appDependencies) async {
   assert(isZPS || isEZ || isEK, 'Unknown target, run with `--dart-define=ZPEVNIK_TARGET=<ZPS|EZ|EK>`.');
 
@@ -78,27 +85,46 @@ Future<void> loadInitial(AppDependencies appDependencies) async {
   appDependencies.sharedPreferences.setString(_versionKey, currentVersion);
 }
 
-@riverpod
+// update is not retried automatically, as all requests would be made again, it will be tried again later
+@Riverpod(retry: _noRetry)
 Stream<UpdateStatus> update(Ref ref) async* {
+  try {
+    // `yield*` would pass errors directly to listeners, so they could not be caught here
+    await for (final status in _update(ref)) {
+      yield status;
+    }
+  } catch (error) {
+    if (!_isConnectionError(error)) rethrow;
+
+    yield const UpdateInterrupted();
+  }
+}
+
+Duration? _noRetry(int retryCount, Object error) => null;
+
+// errors caused by connection, errors from server are not included, so they can be reported
+bool _isConnectionError(Object? error) {
+  return switch (error) {
+    OperationException(:final linkException) => _isConnectionError(linkException),
+    // failed requests are wrapped in link exceptions
+    LinkException(:final originalException) => _isConnectionError(originalException),
+    SocketException() || HttpException() || TlsException() || TimeoutException() || http.ClientException() => true,
+    _ => false,
+  };
+}
+
+Stream<UpdateStatus> _update(Ref ref) async* {
   final client = ref.read(graphQLClientProvider);
   final appDependencies = ref.read(appDependenciesProvider);
 
   // update news
-  try {
-    final newsItems = await client.getNews().then(
-      (json) => readJsonList(json[NewsItem.fieldKey], mapper: NewsItem.fromJson),
-    );
+  final newsItems = await client.getNews().then(
+    (json) => readJsonList(json[NewsItem.fieldKey], mapper: NewsItem.fromJson),
+  );
 
-    // remove all news items, that were deleted on server
-    appDependencies.store.box<NewsItem>().removeAll();
-    appDependencies.store.box<NewsItem>().putMany(newsItems);
-  } on OperationException catch (e) {
-    if (e.linkException?.originalException is SocketException) return;
-
-    rethrow;
-  } on SocketException {
-    return;
-  }
+  // remove all news items, that were deleted on server
+  appDependencies.store.box<NewsItem>().removeAll();
+  appDependencies.store.box<NewsItem>().putMany(newsItems);
 
   // check if update should happen
   final now = DateTime.now().toUtc();
@@ -174,7 +200,7 @@ Future<SongLyric?> _fetchSongLyric(Client client, int id) async {
   try {
     return SongLyric.fromJson(await client.getSongLyric(id));
   } catch (error, stackTrace) {
-    Sentry.captureException(error, stackTrace: stackTrace);
+    if (!_isConnectionError(error)) Sentry.captureException(error, stackTrace: stackTrace);
 
     return null;
   }

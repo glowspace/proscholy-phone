@@ -53,6 +53,12 @@ void main() {
     expect(isShowing(tester), isFalse);
   });
 
+  testWidgets('is hidden when update was interrupted', (tester) async {
+    await pumpUpdateSection(tester, Stream.value(const UpdateInterrupted()));
+
+    expect(isShowing(tester), isFalse);
+  });
+
   testWidgets('shows error with option to report it', (tester) async {
     await pumpUpdateSection(tester, Stream.error(Exception('Server Error')));
 
