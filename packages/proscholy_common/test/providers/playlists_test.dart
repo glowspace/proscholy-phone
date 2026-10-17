@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:proscholy_common/models/custom_text.dart';
@@ -167,6 +169,22 @@ void main() {
 
     expect(records(playlist(accepted.id)), records(playlist(original.id)));
     expect(container.read(songLyricSettingsProvider(1)).transposition, 3);
+  });
+
+  // files are shared between different versions of the apps, so their keys must not change
+  test('shared playlist from previous versions is accepted', () {
+    final accepted = notifier.acceptPlaylist(
+      jsonDecode(
+        '{"name":"Mše","records":['
+        '{"rank":0,"song_lyric":{"id":1,"accidentals":null,"transposition":2}},'
+        '{"rank":1,"custom_text":{"name":"Ohlášky","content":"text"}},'
+        '{"rank":2,"bible_verse":{"book":18,"chapter":23,"start_verse":1,"end_verse":2,"text":"Hospodin"}}]}',
+      ),
+      'Přijatý',
+    );
+
+    expect(records(playlist(accepted.id)), [songLyric(1).name, 'Ohlášky', endsWith('23:1-2')]);
+    expect(container.read(songLyricSettingsProvider(1)).transposition, 2);
   });
 
   test('toggle favorite', () {
