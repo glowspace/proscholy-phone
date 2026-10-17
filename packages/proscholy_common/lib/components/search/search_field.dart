@@ -97,7 +97,12 @@ class _SearchFieldState extends State<SearchField> {
     _focusNode = FocusNode();
 
     if (!widget.isHome) {
-      searchTextSubscription = context.providers.listen(searchTextProvider, (_, text) => _controller.text = text);
+      searchTextSubscription = context.providers.listen(searchTextProvider, (_, text) {
+        // setting the same text again resets the keyboard (composing region, cursor)
+        if (_controller.text != text) {
+          _controller.text = text;
+        }
+      });
     }
 
     // autofocus on search screen
