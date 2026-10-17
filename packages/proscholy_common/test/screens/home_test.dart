@@ -1,11 +1,25 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:plugin_platform_interface/plugin_platform_interface.dart';
+import 'package:proscholy_common/links.dart';
 import 'package:proscholy_common/models/news_item.dart';
 import 'package:proscholy_common/models/song_lyric.dart';
 import 'package:proscholy_common/providers/app_dependencies.dart';
 import 'package:proscholy_common/providers/home.dart';
 import 'package:proscholy_common/screens/songbook.dart';
+import 'package:url_launcher_platform_interface/url_launcher_platform_interface.dart';
 
 import '../utils.dart';
+
+class _FakeUrlLauncher extends Fake with MockPlatformInterfaceMixin implements UrlLauncherPlatform {
+  final launchedUrls = <String>[];
+
+  @override
+  Future<bool> launchUrl(String url, LaunchOptions options) async {
+    launchedUrls.add(url);
+
+    return true;
+  }
+}
 
 void main() {
   setUpAll(mockFirebase);
@@ -67,5 +81,23 @@ void main() {
     await pumpApp(tester, appDependencies);
 
     expect(find.textContaining('Vyšla nová verze'), findsOneWidget);
+  });
+
+  testWidgets('opens link of news on website', (tester) async {
+    final appDependencies = await createAppDependenciesWithData(tester, [HomeSection.news]);
+    final urlLauncher = _FakeUrlLauncher();
+
+    UrlLauncherPlatform.instance = urlLauncher;
+
+    appDependencies.store.box<NewsItem>().put(
+      NewsItem(id: 1, text: 'Nová verze', link: '/novinky', expiresAt: DateTime.now().add(const Duration(days: 1))),
+    );
+
+    await pumpApp(tester, appDependencies);
+
+    await tester.tap(find.text('Nová verze'));
+    await tester.pumpAndSettle();
+
+    expect(urlLauncher.launchedUrls, ['https://$baseUrl/novinky']);
   });
 }
