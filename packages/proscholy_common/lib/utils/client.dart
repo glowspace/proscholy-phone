@@ -133,6 +133,7 @@ query {
       pivot {
         id
         number
+        ${isEZ || isEK ? 'song_name' : ''}
         song_lyric {
           id
         }
@@ -148,9 +149,6 @@ query {
       media_id
       media_type
       content_type
-      authors {
-        id
-      }
     }
     authors_pivot {
       pivot {
