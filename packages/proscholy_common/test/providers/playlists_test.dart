@@ -41,10 +41,19 @@ void main() {
     await storeSongLyrics(appDependencies.store, readJsonList(data[SongLyric.fieldKey], mapper: SongLyric.fromJson));
 
     container = createContainer(appDependencies);
-    // favorites playlist is created during start of the app
-    container.read(favoritePlaylistProvider);
     container.listen(playlistsProvider, (_, _) {});
     notifier = container.read(playlistsProvider.notifier);
+  });
+
+  // e.g. first playlist created from song lyric, before favorite playlist was ever shown
+  test('new playlist does not take id of favorite playlist', () {
+    final created = notifier.createPlaylist('První');
+
+    notifier.toggleFavorite(songLyric(1));
+
+    expect(created.id, isNot(favoritesPlaylistId));
+    expect(playlist(favoritesPlaylistId).name, 'Písně s hvězdičkou');
+    expect(records(playlist(created.id)), isEmpty);
   });
 
   test('new playlist is first', () {

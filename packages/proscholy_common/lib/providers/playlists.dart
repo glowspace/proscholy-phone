@@ -52,6 +52,9 @@ class Playlists extends _$Playlists {
 
   @override
   List<Playlist> build() {
+    // favorite playlist must exist before next id is found, otherwise new playlist would get its id
+    ref.read(favoritePlaylistProvider);
+
     // initialize next ids needed when creating new objects
     _nextPlaylistId = nextId(ref, Playlist_.id);
     _nextPlaylistRecordId = nextId(ref, PlaylistRecord_.id);
