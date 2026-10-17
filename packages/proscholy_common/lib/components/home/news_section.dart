@@ -41,7 +41,7 @@ class _NewsSectionState extends ConsumerState<NewsSection> {
               onTap: newsItems[index].hasLink ? () => launch(newsItems[index].preparedLink) : null,
               child: Row(
                 children: [
-                  Text(newsItems[index].text),
+                  Expanded(child: Text(newsItems[index].text, maxLines: 1, overflow: TextOverflow.ellipsis)),
                   if (newsItems[index].hasLink)
                     const Padding(
                       padding: EdgeInsets.only(left: kDefaultPadding / 2),

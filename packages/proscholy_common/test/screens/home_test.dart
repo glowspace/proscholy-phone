@@ -51,4 +51,21 @@ void main() {
     expect(find.text('Nová verze'), findsOneWidget);
     expect(find.text('Stará verze'), findsNothing);
   });
+
+  testWidgets('long news text does not overflow', (tester) async {
+    final appDependencies = await createAppDependenciesWithData(tester, [HomeSection.news]);
+
+    appDependencies.store.box<NewsItem>().put(
+      NewsItem(
+        id: 1,
+        text: 'Vyšla nová verze zpěvníku s mnoha novými písněmi',
+        link: '/novinky',
+        expiresAt: DateTime.now().add(const Duration(days: 1)),
+      ),
+    );
+
+    await pumpApp(tester, appDependencies);
+
+    expect(find.textContaining('Vyšla nová verze'), findsOneWidget);
+  });
 }
