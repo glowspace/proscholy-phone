@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:rxdart/rxdart.dart';
@@ -20,16 +22,16 @@ class AudioPlayerWrapper extends StatefulWidget {
 class _AudioPlayerWrapperState extends State<AudioPlayerWrapper> {
   late final _controller = AudioPlayer()..setUrl(widget.external.url!, preload: false);
 
+  late final StreamSubscription<bool> _playingSubscription;
+
   @override
   void initState() {
     super.initState();
 
     final activePlayerController = ActivePlayerController(widget.external, audioPlayer: _controller);
 
-    _controller.playingStream.listen((isPlaying) {
-      final context = this.context;
-
-      if (isPlaying && context.mounted) {
+    _playingSubscription = _controller.playingStream.listen((isPlaying) {
+      if (isPlaying && mounted) {
         context.providers.read(activePlayerProvider.notifier).changePlayer(activePlayerController);
       }
     });
@@ -37,6 +39,7 @@ class _AudioPlayerWrapperState extends State<AudioPlayerWrapper> {
 
   @override
   void dispose() {
+    _playingSubscription.cancel();
     _controller.dispose();
 
     super.dispose();
