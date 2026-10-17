@@ -79,7 +79,10 @@ every target. Format only handwritten files, generated ones are excluded.
   that rewrites unrelated files: commit that on its own.
 - **`lib/models/generated/objectbox-model.json` holds entity and property UIDs.** Renaming an entity or property
   without keeping its UID drops that data on update. That includes user data: playlists, user texts, song settings.
-  Rename with `@Entity(uid: ...)` / `@Property(uid: ...)` and check the diff of `objectbox-model.json`.
+  Rename with `@Entity(uid: ...)` / `@Property(uid: ...)` and check the diff of `objectbox-model.json`. Once it has
+  the new names, the annotations can be removed again.
+  `test/models/store_upgrade_test.dart` opens a store saved by the app before the renames and checks that user data
+  are kept.
 - **Fonts** in `assets/fonts` must also be declared in each app's `pubspec.yaml`, otherwise they are not bundled.
 
 ## Style
