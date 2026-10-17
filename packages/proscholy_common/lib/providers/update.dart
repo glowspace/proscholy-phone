@@ -219,7 +219,7 @@ void _cleanup(AppDependencies appDependencies) async {
     appDependencies.store,
     PlaylistRecord_.songLyric
         .equals(0)
-        .and(PlaylistRecord_.bibleVerse.equals(0))
+        .and(PlaylistRecord_.biblePassage.equals(0))
         .and(PlaylistRecord_.customText.equals(0)),
   );
 

@@ -5,7 +5,7 @@ import 'package:proscholy_common/components/selected_displayable_item_arguments.
 import 'package:proscholy_common/components/selected_row_highlight.dart';
 import 'package:proscholy_common/constants.dart';
 import 'package:proscholy_common/models/playlist_record.dart';
-import 'package:proscholy_common/providers/bible_verse.dart';
+import 'package:proscholy_common/providers/bible_passage.dart';
 import 'package:proscholy_common/providers/custom_text.dart';
 import 'package:proscholy_common/providers/song_lyrics.dart';
 import 'package:proscholy_common/routing/arguments.dart';
@@ -23,14 +23,14 @@ class PlaylistRecordRow extends ConsumerWidget {
 
     const textMargin = EdgeInsets.only(top: 2);
 
-    final bibleVerse = ref.watch(bibleVerseProvider(playlistRecord.bibleVerse.targetId));
+    final biblePassage = ref.watch(biblePassageProvider(playlistRecord.biblePassage.targetId));
     final customText = ref.watch(customTextProvider(playlistRecord.customText.targetId));
     final songLyric = ref.watch(songLyricProvider(playlistRecord.songLyric.targetId));
 
     final String title;
     final IconData? icon;
-    if (bibleVerse != null) {
-      title = bibleVerse.displayName;
+    if (biblePassage != null) {
+      title = biblePassage.displayName;
       icon = Icons.book_outlined;
     } else if (customText != null) {
       title = customText.name;
@@ -48,7 +48,7 @@ class PlaylistRecordRow extends ConsumerWidget {
       onTap: () => _pushPlaylistRecord(context),
       child: SelectedRowHighlight(
         selectedObjectNotifier: SelectedDisplayableItemArguments.of(context),
-        object: bibleVerse ?? customText ?? songLyric,
+        object: biblePassage ?? customText ?? songLyric,
         mapSelectedObject: (arguments) => arguments.items[arguments.initialIndex],
         child: Container(
           constraints: const BoxConstraints(minHeight: 40),

@@ -29,7 +29,7 @@ void main() {
       for (final playlistRecord in sortedRecords(playlist))
         playlistRecord.songLyric.target?.name ??
             playlistRecord.customText.target?.name ??
-            playlistRecord.bibleVerse.target!.displayName,
+            playlistRecord.biblePassage.target!.displayName,
     ];
   }
 
@@ -90,7 +90,7 @@ void main() {
     );
     notifier.addToPlaylist(
       newPlaylist,
-      bibleVerse: notifier.createBibleVerse(book: 18, chapter: 23, startVerse: 1, text: 'Hospodin je můj pastýř'),
+      biblePassage: notifier.createBiblePassage(book: 18, chapter: 23, startVerse: 1, text: 'Hospodin je můj pastýř'),
     );
     // inserted after first record
     notifier.addToPlaylist(newPlaylist, songLyric: songLyric(2), afterRank: 0);
@@ -150,7 +150,7 @@ void main() {
     );
     notifier.addToPlaylist(
       original,
-      bibleVerse: notifier.createBibleVerse(book: 18, chapter: 23, startVerse: 1, endVerse: 2, text: 'Hospodin'),
+      biblePassage: notifier.createBiblePassage(book: 18, chapter: 23, startVerse: 1, endVerse: 2, text: 'Hospodin'),
     );
 
     container.listen(songLyricSettingsProvider(1), (_, _) {});

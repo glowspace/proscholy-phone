@@ -12,7 +12,7 @@ import 'package:proscholy_common/components/playlist/selected_playlist.dart';
 import 'package:proscholy_common/components/selected_displayable_item_arguments.dart';
 import 'package:proscholy_common/components/split_view.dart';
 import 'package:proscholy_common/constants.dart';
-import 'package:proscholy_common/models/bible_verse.dart';
+import 'package:proscholy_common/models/bible_passage.dart';
 import 'package:proscholy_common/models/custom_text.dart';
 import 'package:proscholy_common/models/playlist.dart';
 import 'package:proscholy_common/models/song_lyric.dart';
@@ -116,7 +116,7 @@ class _PlaylistScaffold extends StatelessWidget {
               ),
               SpeedDialChild(
                 label: 'biblický úryvek',
-                onTap: () => _addBibleVerse(context),
+                onTap: () => _addBiblePassage(context),
                 child: const Icon(Icons.book_outlined),
               ),
               SpeedDialChild(
@@ -202,15 +202,15 @@ class _PlaylistScaffold extends StatelessWidget {
     }
   }
 
-  void _addBibleVerse(BuildContext context) async {
-    final bibleVerse = (await context.push('/playlist/bible_verse/select_verse')) as BibleVerse?;
+  void _addBiblePassage(BuildContext context) async {
+    final biblePassage = (await context.push('/playlist/bible_verse/select_verse')) as BiblePassage?;
 
-    if (context.mounted && bibleVerse != null) {
+    if (context.mounted && biblePassage != null) {
       context.providers
           .read(playlistsProvider.notifier)
           .addToPlaylist(
             playlist,
-            bibleVerse: bibleVerse,
+            biblePassage: biblePassage,
             afterRank: SelectedDisplayableItemArguments.of(context, listen: false)?.value.initialIndex,
           );
     }

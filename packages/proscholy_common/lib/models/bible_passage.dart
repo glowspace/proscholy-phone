@@ -2,21 +2,21 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:objectbox/objectbox.dart';
 import 'package:proscholy_common/models/model.dart';
 
-part 'generated/bible_verse.freezed.dart';
+part 'generated/bible_passage.freezed.dart';
 
 @freezed
-sealed class BibleVerse with _$BibleVerse implements DisplayableItem, Identifiable, RecentItem {
-  const BibleVerse._();
+sealed class BiblePassage with _$BiblePassage implements DisplayableItem, Identifiable, RecentItem {
+  const BiblePassage._();
 
-  @Entity(realClass: BibleVerse)
-  const factory BibleVerse({
+  @Entity(realClass: BiblePassage)
+  const factory BiblePassage({
     @Id(assignable: true) required int id,
     required int book,
     required int chapter,
     required int startVerse,
     int? endVerse,
     required String text,
-  }) = _BibleVerse;
+  }) = _BiblePassage;
 
   @override
   String get displayName => endVerse == null
@@ -24,13 +24,13 @@ sealed class BibleVerse with _$BibleVerse implements DisplayableItem, Identifiab
       : '${supportedBibleBooks[book]} $chapter:$startVerse-$endVerse';
 
   @override
-  RecentItemType get recentItemType => RecentItemType.bibleVerse;
+  RecentItemType get recentItemType => RecentItemType.biblePassage;
 
   @override
   int get hashCode => id;
 
   @override
-  bool operator ==(Object other) => other is BibleVerse && id == other.id && displayName == other.displayName;
+  bool operator ==(Object other) => other is BiblePassage && id == other.id && displayName == other.displayName;
 }
 
 @immutable

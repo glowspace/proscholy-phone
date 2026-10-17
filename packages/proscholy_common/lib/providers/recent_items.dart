@@ -1,14 +1,14 @@
 import 'dart:math';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:proscholy_common/models/bible_verse.dart';
+import 'package:proscholy_common/models/bible_passage.dart';
 import 'package:proscholy_common/models/custom_text.dart';
 import 'package:proscholy_common/models/model.dart';
 import 'package:proscholy_common/models/playlist.dart';
 import 'package:proscholy_common/models/song_lyric.dart';
 import 'package:proscholy_common/models/songbook.dart';
 import 'package:proscholy_common/providers/app_dependencies.dart';
-import 'package:proscholy_common/providers/bible_verse.dart';
+import 'package:proscholy_common/providers/bible_passage.dart';
 import 'package:proscholy_common/providers/custom_text.dart';
 import 'package:proscholy_common/providers/playlists.dart';
 
@@ -23,7 +23,7 @@ class RecentItems extends _$RecentItems {
   List<RecentItem> build() {
     final appDependencies = ref.read(appDependenciesProvider);
 
-    final bibleVerseIds = <int>[];
+    final biblePassageIds = <int>[];
     final customTextIds = <int>[];
     final playlistIds = <int>[];
     final songbookIds = <int>[];
@@ -33,8 +33,8 @@ class RecentItems extends _$RecentItems {
       final splitted = recentItemString.split(';');
 
       switch (RecentItemType.fromRawValue(int.parse(splitted[0]))) {
-        case RecentItemType.bibleVerse:
-          bibleVerseIds.add(int.parse(splitted[1]));
+        case RecentItemType.biblePassage:
+          biblePassageIds.add(int.parse(splitted[1]));
           break;
         case RecentItemType.customText:
           customTextIds.add(int.parse(splitted[1]));
@@ -52,8 +52,8 @@ class RecentItems extends _$RecentItems {
     }
 
     final recentItems = appDependencies.store
-        .box<BibleVerse>()
-        .getMany(bibleVerseIds, growableResult: true)
+        .box<BiblePassage>()
+        .getMany(biblePassageIds, growableResult: true)
         .nonNulls
         .cast<RecentItem>()
         .toList();
@@ -81,10 +81,10 @@ class RecentItems extends _$RecentItems {
 
   void _watchForChanges(RecentItem recentItem) {
     switch (recentItem) {
-      case (BibleVerse bibleVerse):
+      case (BiblePassage biblePassage):
         final subscription = ref.listen(
-          bibleVerseProvider(bibleVerse.id),
-          (_, newBibleVerse) => _updateItem(newBibleVerse, bibleVerse.id),
+          biblePassageProvider(biblePassage.id),
+          (_, newBiblePassage) => _updateItem(newBiblePassage, biblePassage.id),
         );
 
         ref.onDispose(subscription.close);

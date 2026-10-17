@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:proscholy_common/components/custom/back_button.dart';
 import 'package:proscholy_common/components/highlightable_widget.dart';
 import 'package:proscholy_common/components/navigation/scaffold.dart';
-import 'package:proscholy_common/components/playlist/bible_verse.dart';
+import 'package:proscholy_common/components/playlist/bible_passage.dart';
 import 'package:proscholy_common/components/playlist/custom_text.dart';
 import 'package:proscholy_common/components/playlist/playlists_sheet.dart';
 import 'package:proscholy_common/components/presentation/presentation.dart';
@@ -22,7 +22,7 @@ import 'package:proscholy_common/components/song_lyric/utils/active_player_contr
 import 'package:proscholy_common/components/song_lyric/utils/auto_scroll.dart';
 import 'package:proscholy_common/components/split_view.dart';
 import 'package:proscholy_common/constants.dart';
-import 'package:proscholy_common/models/bible_verse.dart';
+import 'package:proscholy_common/models/bible_passage.dart';
 import 'package:proscholy_common/models/custom_text.dart';
 import 'package:proscholy_common/models/model.dart';
 import 'package:proscholy_common/models/playlist.dart';
@@ -167,8 +167,8 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
                   }
 
                   return switch (item) {
-                    (BibleVerse bibleVerse) => BibleVerseWidget(
-                      bibleVerse: bibleVerse,
+                    (BiblePassage biblePassage) => BiblePassageWidget(
+                      biblePassage: biblePassage,
                       autoScrollController: _autoScrollController(index),
                     ),
                     (CustomText customText) => CustomTextWidget(
@@ -247,19 +247,19 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
     final presentationNotifier = ref.read(presentationProvider.notifier);
 
     return switch (_currentItem) {
-      (BibleVerse bibleVerse) => AppBar(
+      (BiblePassage biblePassage) => AppBar(
         leading: const CustomBackButton(),
-        title: Text(bibleVerse.displayName),
+        title: Text(biblePassage.displayName),
         actions: [
           HighlightableWidget(
-            onTap: () => _editBibleVerse(bibleVerse),
+            onTap: () => _editBiblePassage(biblePassage),
             padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
             icon: const Icon(Icons.edit),
           ),
           HighlightableWidget(
             onTap: () => presentationNotifier.isPresenting
                 ? presentationNotifier.stop()
-                : context.push('/display/present').then((_) => presentationNotifier.change(bibleVerse)),
+                : context.push('/display/present').then((_) => presentationNotifier.change(biblePassage)),
             padding: const EdgeInsets.only(left: kDefaultPadding, right: 1.5 * kDefaultPadding),
             icon: Icon(
               ref.watch(presentationProvider.select((presentation) => presentation.isPresenting))
@@ -386,12 +386,12 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
     return null;
   }
 
-  void _editBibleVerse(BibleVerse bibleVerse) async {
-    final editedBibleVerse =
-        (await context.push('/playlist/bible_verse/select_verse', arguments: bibleVerse)) as BibleVerse?;
+  void _editBiblePassage(BiblePassage biblePassage) async {
+    final editedBiblePassage =
+        (await context.push('/playlist/bible_verse/select_verse', arguments: biblePassage)) as BiblePassage?;
 
-    if (editedBibleVerse != null) {
-      setState(() => _items[_currentIndex] = editedBibleVerse);
+    if (editedBiblePassage != null) {
+      setState(() => _items[_currentIndex] = editedBiblePassage);
     }
   }
 

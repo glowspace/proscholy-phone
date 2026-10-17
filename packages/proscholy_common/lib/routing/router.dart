@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:proscholy_common/models/bible_verse.dart';
+import 'package:proscholy_common/models/bible_passage.dart';
 import 'package:proscholy_common/models/custom_text.dart';
 import 'package:proscholy_common/models/external.dart';
 import 'package:proscholy_common/models/playlist.dart';
@@ -128,7 +128,7 @@ final class AppRouter {
       '/display/present' => ((_) => const StartPresentationScreen(), true, false),
       '/playlist' => ((_) => PlaylistScreen(playlist: settings.arguments as Playlist), false, true),
       '/playlist/bible_verse/select_verse' => (
-        (_) => SelectBibleVerseScreen(bibleVerse: settings.arguments as BibleVerse?),
+        (_) => SelectBiblePassageScreen(biblePassage: settings.arguments as BiblePassage?),
         true,
         false,
       ),

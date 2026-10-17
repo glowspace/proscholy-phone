@@ -1,13 +1,13 @@
 import 'package:collection/collection.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:proscholy_common/models/bible_verse.dart';
+import 'package:proscholy_common/models/bible_passage.dart';
 import 'package:proscholy_common/models/custom_text.dart';
 import 'package:proscholy_common/models/generated/objectbox.g.dart';
 import 'package:proscholy_common/models/playlist.dart';
 import 'package:proscholy_common/models/playlist_record.dart';
 import 'package:proscholy_common/models/song_lyric.dart';
 import 'package:proscholy_common/providers/app_dependencies.dart';
-import 'package:proscholy_common/providers/bible_verse.dart';
+import 'package:proscholy_common/providers/bible_passage.dart';
 import 'package:proscholy_common/providers/custom_text.dart';
 import 'package:proscholy_common/providers/settings.dart';
 import 'package:proscholy_common/providers/utils.dart';
@@ -41,13 +41,13 @@ Playlist favoritePlaylist(Ref ref) {
 class Playlists extends _$Playlists {
   Box<Playlist> get _playlistsBox => ref.read(appDependenciesProvider).store.box<Playlist>();
   Box<PlaylistRecord> get _playlistRecordsBox => ref.read(appDependenciesProvider).store.box<PlaylistRecord>();
-  Box<BibleVerse> get _bibleVerseBox => ref.read(appDependenciesProvider).store.box<BibleVerse>();
+  Box<BiblePassage> get _biblePassageBox => ref.read(appDependenciesProvider).store.box<BiblePassage>();
   Box<CustomText> get _customTextBox => ref.read(appDependenciesProvider).store.box<CustomText>();
 
   late int _nextPlaylistId;
   late int _nextPlaylistRecordId;
 
-  late int _nextBibleVerseId;
+  late int _nextBiblePassageId;
   late int _nextCustomTextId;
 
   @override
@@ -58,7 +58,7 @@ class Playlists extends _$Playlists {
     // initialize next ids needed when creating new objects
     _nextPlaylistId = nextId(ref, Playlist_.id);
     _nextPlaylistRecordId = nextId(ref, PlaylistRecord_.id);
-    _nextBibleVerseId = nextId(ref, BibleVerse_.id);
+    _nextBiblePassageId = nextId(ref, BiblePassage_.id);
     _nextCustomTextId = nextId(ref, CustomText_.id);
 
     final playlists = queryStore(ref, condition: Playlist_.id.notEquals(favoritesPlaylistId), orderBy: Playlist_.rank);
@@ -93,18 +93,18 @@ class Playlists extends _$Playlists {
 
     // for bible verses and custom texts make also duplicates, so that changes in duplicated playlist don't alter records in previous
     for (final playlistRecord in playlist.records) {
-      final bibleVerse = ref.read(bibleVerseProvider(playlistRecord.bibleVerse.targetId));
+      final biblePassage = ref.read(biblePassageProvider(playlistRecord.biblePassage.targetId));
       final customText = ref.read(customTextProvider(playlistRecord.customText.targetId));
 
-      if (bibleVerse != null) {
-        final duplicatedBibleVerse = bibleVerse.copyWith(id: _nextBibleVerseId++);
+      if (biblePassage != null) {
+        final duplicatedBiblePassage = biblePassage.copyWith(id: _nextBiblePassageId++);
 
-        _bibleVerseBox.put(duplicatedBibleVerse);
+        _biblePassageBox.put(duplicatedBiblePassage);
 
         playlistRecords.add(
           playlistRecord.copyWith(
             id: _nextPlaylistRecordId++,
-            bibleVerse: ToOne(target: duplicatedBibleVerse),
+            biblePassage: ToOne(target: duplicatedBiblePassage),
           ),
         );
       } else if (customText != null) {
@@ -154,9 +154,9 @@ class Playlists extends _$Playlists {
                 )
               : null,
         ),
-        bibleVerse: ToOne(
+        biblePassage: ToOne(
           target: playlistRecordData.containsKey('bible_verse')
-              ? createBibleVerse(
+              ? createBiblePassage(
                   book: playlistRecordData['bible_verse']['book'],
                   chapter: playlistRecordData['bible_verse']['chapter'],
                   startVerse: playlistRecordData['bible_verse']['start_verse'],
@@ -200,7 +200,7 @@ class Playlists extends _$Playlists {
     final records = <Map<String, dynamic>>[];
 
     for (final playlistRecord in playlist.records) {
-      final bibleVerse = ref.read(bibleVerseProvider(playlistRecord.bibleVerse.targetId));
+      final biblePassage = ref.read(biblePassageProvider(playlistRecord.biblePassage.targetId));
       final customText = ref.read(customTextProvider(playlistRecord.customText.targetId));
       final songLyricSettings = ref.read(songLyricSettingsProvider(playlistRecord.songLyric.targetId));
 
@@ -214,13 +214,13 @@ class Playlists extends _$Playlists {
               'transposition': songLyricSettings.transposition,
             },
           },
-        if (bibleVerse != null)
+        if (biblePassage != null)
           'bible_verse': {
-            'book': bibleVerse.book,
-            'chapter': bibleVerse.chapter,
-            'start_verse': bibleVerse.startVerse,
-            'end_verse': bibleVerse.endVerse,
-            'text': bibleVerse.text,
+            'book': biblePassage.book,
+            'chapter': biblePassage.chapter,
+            'start_verse': biblePassage.startVerse,
+            'end_verse': biblePassage.endVerse,
+            'text': biblePassage.text,
           },
         if (customText != null)
           'custom_text': {
@@ -269,9 +269,9 @@ class Playlists extends _$Playlists {
             .where((id) => id != 0)
             .toList(),
       );
-      _bibleVerseBox.removeMany(
+      _biblePassageBox.removeMany(
         playlistToRemove.records
-            .map((playlistRecord) => playlistRecord.bibleVerse.targetId)
+            .map((playlistRecord) => playlistRecord.biblePassage.targetId)
             .where((id) => id != 0)
             .toList(),
       );
@@ -282,7 +282,7 @@ class Playlists extends _$Playlists {
     Playlist playlist, {
     SongLyric? songLyric,
     CustomText? customText,
-    BibleVerse? bibleVerse,
+    BiblePassage? biblePassage,
     int? afterRank,
   }) {
     // prevent duplicates
@@ -290,7 +290,7 @@ class Playlists extends _$Playlists {
       (playlistRecord) =>
           playlistRecord.songLyric.targetId == songLyric?.id ||
           playlistRecord.customText.targetId == customText?.id ||
-          playlistRecord.bibleVerse.targetId == bibleVerse?.id,
+          playlistRecord.biblePassage.targetId == biblePassage?.id,
     )) {
       return;
     }
@@ -310,7 +310,7 @@ class Playlists extends _$Playlists {
       rank: lastRank + 1,
       songLyric: ToOne(target: songLyric),
       customText: ToOne(target: customText),
-      bibleVerse: ToOne(target: bibleVerse),
+      biblePassage: ToOne(target: biblePassage),
       playlist: ToOne(target: playlist),
     );
 
@@ -341,8 +341,8 @@ class Playlists extends _$Playlists {
 
     if (playlistRecordToRemove.customText.targetId != 0) {
       _customTextBox.remove(playlistRecordToRemove.customText.targetId);
-    } else if (playlistRecordToRemove.bibleVerse.targetId != 0) {
-      _bibleVerseBox.remove(playlistRecordToRemove.bibleVerse.targetId);
+    } else if (playlistRecordToRemove.biblePassage.targetId != 0) {
+      _biblePassageBox.remove(playlistRecordToRemove.biblePassage.targetId);
     }
   }
 
@@ -376,15 +376,15 @@ class Playlists extends _$Playlists {
     _playlistsBox.putMany(state);
   }
 
-  BibleVerse createBibleVerse({
+  BiblePassage createBiblePassage({
     required int book,
     required int chapter,
     required int startVerse,
     int? endVerse,
     required String text,
   }) {
-    final bibleVerse = BibleVerse(
-      id: _nextBibleVerseId++,
+    final biblePassage = BiblePassage(
+      id: _nextBiblePassageId++,
       book: book,
       chapter: chapter,
       startVerse: startVerse,
@@ -392,9 +392,9 @@ class Playlists extends _$Playlists {
       text: text,
     );
 
-    _bibleVerseBox.put(bibleVerse);
+    _biblePassageBox.put(biblePassage);
 
-    return bibleVerse;
+    return biblePassage;
   }
 
   CustomText createCustomText({required String name, required String content}) {

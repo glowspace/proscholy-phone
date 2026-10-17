@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:objectbox/objectbox.dart';
-import 'package:proscholy_common/models/bible_verse.dart';
+import 'package:proscholy_common/models/bible_passage.dart';
 import 'package:proscholy_common/models/custom_text.dart';
 import 'package:proscholy_common/models/model.dart';
 import 'package:proscholy_common/models/playlist.dart';
@@ -18,7 +18,7 @@ sealed class PlaylistRecord with _$PlaylistRecord implements Identifiable, Recor
     required int rank,
     required ToOne<SongLyric> songLyric,
     required ToOne<CustomText> customText,
-    required ToOne<BibleVerse> bibleVerse,
+    required ToOne<BiblePassage> biblePassage,
     required ToOne<Playlist> playlist,
   }) = _PlaylistRecord;
 

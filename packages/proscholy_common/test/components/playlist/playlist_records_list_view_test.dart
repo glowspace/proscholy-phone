@@ -19,7 +19,7 @@ PlaylistRecord _record(int id, int songLyricId) {
     rank: id,
     songLyric: ToOne(targetId: songLyricId),
     customText: ToOne(),
-    bibleVerse: ToOne(),
+    biblePassage: ToOne(),
     playlist: ToOne(targetId: 2),
   );
 }

@@ -15,7 +15,7 @@ import 'package:objectbox/objectbox.dart' as obx;
 import 'package:objectbox_flutter_libs/objectbox_flutter_libs.dart';
 
 import '../../models/author.dart';
-import '../../models/bible_verse.dart';
+import '../../models/bible_passage.dart';
 import '../../models/custom_text.dart';
 import '../../models/external.dart';
 import '../../models/news_item.dart';
@@ -535,12 +535,12 @@ final _entities = <obx_int.ModelEntity>[
       ),
       obx_int.ModelProperty(
         id: const obx_int.IdUid(7, 5967467250290572620),
-        name: 'bibleVerseId',
+        name: 'biblePassageId',
         type: 11,
         flags: 520,
         indexId: const obx_int.IdUid(21, 6699618113083989690),
-        relationField: 'bibleVerse',
-        relationTarget: 'BibleVerse',
+        relationField: 'biblePassage',
+        relationTarget: 'BiblePassage',
       ),
     ],
     relations: <obx_int.ModelRelation>[],
@@ -548,7 +548,7 @@ final _entities = <obx_int.ModelEntity>[
   ),
   obx_int.ModelEntity(
     id: const obx_int.IdUid(20, 8093518841538767418),
-    name: 'BibleVerse',
+    name: 'BiblePassage',
     lastPropertyId: const obx_int.IdUid(6, 3522228504437507385),
     flags: 0,
     properties: <obx_int.ModelProperty>[
@@ -1579,7 +1579,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
         object.songLyric,
         object.playlist,
         object.customText,
-        object.bibleVerse,
+        object.biblePassage,
       ],
       toManyRelations: (PlaylistRecord object) => {},
       getId: (PlaylistRecord object) => object.id,
@@ -1601,7 +1601,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
         fbb.addInt64(3, object.playlist.targetId);
         fbb.addInt64(4, object.rank);
         fbb.addInt64(5, object.customText.targetId);
-        fbb.addInt64(6, object.bibleVerse.targetId);
+        fbb.addInt64(6, object.biblePassage.targetId);
         fbb.finish(fbb.endTable());
         return object.id;
       },
@@ -1626,7 +1626,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final customTextParam = obx.ToOne<CustomText>(
           targetId: const fb.Int64Reader().vTableGet(buffer, rootOffset, 14, 0),
         );
-        final bibleVerseParam = obx.ToOne<BibleVerse>(
+        final biblePassageParam = obx.ToOne<BiblePassage>(
           targetId: const fb.Int64Reader().vTableGet(buffer, rootOffset, 16, 0),
         );
         final playlistParam = obx.ToOne<Playlist>(
@@ -1637,25 +1637,25 @@ obx_int.ModelDefinition getObjectBoxModel() {
           rank: rankParam,
           songLyric: songLyricParam,
           customText: customTextParam,
-          bibleVerse: bibleVerseParam,
+          biblePassage: biblePassageParam,
           playlist: playlistParam,
         );
         object.songLyric.attach(store);
         object.playlist.attach(store);
         object.customText.attach(store);
-        object.bibleVerse.attach(store);
+        object.biblePassage.attach(store);
         return object;
       },
     ),
-    BibleVerse: obx_int.EntityDefinition<BibleVerse>(
+    BiblePassage: obx_int.EntityDefinition<BiblePassage>(
       model: _entities[10],
-      toOneRelations: (BibleVerse object) => [],
-      toManyRelations: (BibleVerse object) => {},
-      getId: (BibleVerse object) => object.id,
-      setId: (BibleVerse object, int id) {
+      toOneRelations: (BiblePassage object) => [],
+      toManyRelations: (BiblePassage object) => {},
+      getId: (BiblePassage object) => object.id,
+      setId: (BiblePassage object, int id) {
         if (object.id != id) {
           throw ArgumentError(
-            'Field BibleVerse.id is read-only '
+            'Field BiblePassage.id is read-only '
             '(final or getter-only) and it was declared to be self-assigned. '
             'However, the currently inserted object (.id=${object.id}) '
             "doesn't match the inserted ID (ID $id). "
@@ -1663,7 +1663,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
           );
         }
       },
-      objectToFB: (BibleVerse object, fb.Builder fbb) {
+      objectToFB: (BiblePassage object, fb.Builder fbb) {
         final textOffset = fbb.writeString(object.text);
         fbb.startTable(7);
         fbb.addInt64(0, object.id);
@@ -1710,7 +1710,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final textParam = const fb.StringReader(
           asciiOptimization: true,
         ).vTableGet(buffer, rootOffset, 14, '');
-        final object = BibleVerse(
+        final object = BiblePassage(
           id: idParam,
           book: bookParam,
           chapter: chapterParam,
@@ -2195,41 +2195,42 @@ class PlaylistRecord_ {
     _entities[9].properties[4],
   );
 
-  /// See [PlaylistRecord.bibleVerse].
-  static final bibleVerse = obx.QueryRelationToOne<PlaylistRecord, BibleVerse>(
-    _entities[9].properties[5],
-  );
+  /// See [PlaylistRecord.biblePassage].
+  static final biblePassage =
+      obx.QueryRelationToOne<PlaylistRecord, BiblePassage>(
+        _entities[9].properties[5],
+      );
 }
 
-/// [BibleVerse] entity fields to define ObjectBox queries.
-class BibleVerse_ {
-  /// See [BibleVerse.id].
-  static final id = obx.QueryIntegerProperty<BibleVerse>(
+/// [BiblePassage] entity fields to define ObjectBox queries.
+class BiblePassage_ {
+  /// See [BiblePassage.id].
+  static final id = obx.QueryIntegerProperty<BiblePassage>(
     _entities[10].properties[0],
   );
 
-  /// See [BibleVerse.book].
-  static final book = obx.QueryIntegerProperty<BibleVerse>(
+  /// See [BiblePassage.book].
+  static final book = obx.QueryIntegerProperty<BiblePassage>(
     _entities[10].properties[1],
   );
 
-  /// See [BibleVerse.chapter].
-  static final chapter = obx.QueryIntegerProperty<BibleVerse>(
+  /// See [BiblePassage.chapter].
+  static final chapter = obx.QueryIntegerProperty<BiblePassage>(
     _entities[10].properties[2],
   );
 
-  /// See [BibleVerse.startVerse].
-  static final startVerse = obx.QueryIntegerProperty<BibleVerse>(
+  /// See [BiblePassage.startVerse].
+  static final startVerse = obx.QueryIntegerProperty<BiblePassage>(
     _entities[10].properties[3],
   );
 
-  /// See [BibleVerse.endVerse].
-  static final endVerse = obx.QueryIntegerProperty<BibleVerse>(
+  /// See [BiblePassage.endVerse].
+  static final endVerse = obx.QueryIntegerProperty<BiblePassage>(
     _entities[10].properties[4],
   );
 
-  /// See [BibleVerse.text].
-  static final text = obx.QueryStringProperty<BibleVerse>(
+  /// See [BiblePassage.text].
+  static final text = obx.QueryStringProperty<BiblePassage>(
     _entities[10].properties[5],
   );
 }

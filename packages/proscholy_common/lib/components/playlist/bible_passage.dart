@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:proscholy_common/components/song_lyric/utils/auto_scroll.dart';
 import 'package:proscholy_common/constants.dart';
-import 'package:proscholy_common/models/bible_verse.dart';
+import 'package:proscholy_common/models/bible_passage.dart';
 
-class BibleVerseWidget extends StatelessWidget {
-  final BibleVerse bibleVerse;
+class BiblePassageWidget extends StatelessWidget {
+  final BiblePassage biblePassage;
   final AutoScrollController autoScrollController;
 
-  const BibleVerseWidget({super.key, required this.bibleVerse, required this.autoScrollController});
+  const BiblePassageWidget({super.key, required this.biblePassage, required this.autoScrollController});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class BibleVerseWidget extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Text(bibleVerse.text),
+                  Text(biblePassage.text),
                   const SizedBox(height: 3 * kDefaultPadding),
                   Text(
                     'Chráněno autorskými právy; Oprávnění k distribuci uděleno společnosti CrossWire',

@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:proscholy_common/models/bible_verse.dart';
+import 'package:proscholy_common/models/bible_passage.dart';
 import 'package:proscholy_common/models/custom_text.dart';
 import 'package:proscholy_common/models/model.dart';
 import 'package:proscholy_common/models/playlist.dart';
@@ -24,8 +24,8 @@ class DisplayScreenArguments {
     this.songbook,
   });
 
-  factory DisplayScreenArguments.bibleVerse(BibleVerse bibleVerse) {
-    return DisplayScreenArguments(items: [bibleVerse]);
+  factory DisplayScreenArguments.biblePassage(BiblePassage biblePassage) {
+    return DisplayScreenArguments(items: [biblePassage]);
   }
 
   factory DisplayScreenArguments.customText(CustomText customText) {

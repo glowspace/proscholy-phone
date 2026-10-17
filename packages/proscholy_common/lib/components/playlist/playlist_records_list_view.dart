@@ -12,7 +12,7 @@ import 'package:proscholy_common/models/generated/objectbox.g.dart';
 import 'package:proscholy_common/models/playlist.dart';
 import 'package:proscholy_common/models/playlist_record.dart';
 import 'package:proscholy_common/providers/app_dependencies.dart';
-import 'package:proscholy_common/providers/bible_verse.dart';
+import 'package:proscholy_common/providers/bible_passage.dart';
 import 'package:proscholy_common/providers/custom_text.dart';
 import 'package:proscholy_common/providers/playlists.dart';
 import 'package:proscholy_common/providers/song_lyrics.dart';
@@ -146,21 +146,21 @@ class _PlaylistRecordsListViewState extends ConsumerState<PlaylistRecordsListVie
   // TODO: temporary fix, so there are playlist records can't fail during _unwrapPlaylistRecord
   List<PlaylistRecord> _filterInvalidRecords(List<PlaylistRecord> playlistRecords) {
     return playlistRecords.where((playlistRecord) {
-      final bibleVerse = ref.watch(bibleVerseProvider(playlistRecord.bibleVerse.targetId));
+      final biblePassage = ref.watch(biblePassageProvider(playlistRecord.biblePassage.targetId));
       final customText = ref.watch(customTextProvider(playlistRecord.customText.targetId));
       final songLyric = ref.watch(songLyricProvider(playlistRecord.songLyric.targetId));
 
-      return bibleVerse != null || customText != null || songLyric != null;
+      return biblePassage != null || customText != null || songLyric != null;
     }).toList();
   }
 
   DisplayableItem _unwrapPlaylistRecord(PlaylistRecord playlistRecord) {
-    final bibleVerse = ref.watch(bibleVerseProvider(playlistRecord.bibleVerse.targetId));
+    final biblePassage = ref.watch(biblePassageProvider(playlistRecord.biblePassage.targetId));
     final customText = ref.watch(customTextProvider(playlistRecord.customText.targetId));
     final songLyric = ref.watch(songLyricProvider(playlistRecord.songLyric.targetId));
 
-    if (bibleVerse != null) {
-      return bibleVerse;
+    if (biblePassage != null) {
+      return biblePassage;
     } else if (customText != null) {
       return customText;
     }

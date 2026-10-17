@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:proscholy_common/components/highlightable_widget.dart';
 import 'package:proscholy_common/constants.dart';
-import 'package:proscholy_common/models/bible_verse.dart';
+import 'package:proscholy_common/models/bible_passage.dart';
 import 'package:proscholy_common/models/custom_text.dart';
 import 'package:proscholy_common/models/model.dart';
 import 'package:proscholy_common/models/playlist.dart';
@@ -26,7 +26,7 @@ class RecentItemRow extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
             child: Icon(switch (recentItem.recentItemType) {
-              RecentItemType.bibleVerse => Icons.book_outlined,
+              RecentItemType.biblePassage => Icons.book_outlined,
               RecentItemType.customText => Icons.edit_note,
               RecentItemType.playlist => Icons.playlist_play_rounded,
               RecentItemType.songbook => Icons.book,
@@ -46,8 +46,8 @@ class RecentItemRow extends StatelessWidget {
 
   void _push(BuildContext context) {
     switch (recentItem.recentItemType) {
-      case RecentItemType.bibleVerse:
-        context.push('/display', arguments: DisplayScreenArguments.bibleVerse(recentItem as BibleVerse));
+      case RecentItemType.biblePassage:
+        context.push('/display', arguments: DisplayScreenArguments.biblePassage(recentItem as BiblePassage));
         break;
       case RecentItemType.customText:
         context.push('/display', arguments: DisplayScreenArguments.customText(recentItem as CustomText));
