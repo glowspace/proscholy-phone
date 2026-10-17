@@ -206,7 +206,7 @@ Future<SongLyric?> _fetchSongLyric(Client client, int id) async {
   }
 }
 
-// FIXME: does not seem to work correctly? try removing based on song_lyric ids
+// removing song lyric sets relations pointing to it to 0, so these relations are removed here
 void _cleanup(AppDependencies appDependencies) async {
   // remove externals that were associated with removed song lyrics
   _removeRelations(appDependencies.store, External_.songLyric.equals(0));

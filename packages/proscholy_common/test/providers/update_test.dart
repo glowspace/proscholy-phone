@@ -8,11 +8,17 @@ import 'package:graphql_flutter/graphql_flutter.dart' hide Store;
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:proscholy_common/models/external.dart';
+import 'package:proscholy_common/models/generated/objectbox.g.dart';
 import 'package:proscholy_common/models/news_item.dart';
+import 'package:proscholy_common/models/playlist_record.dart';
 import 'package:proscholy_common/models/song_lyric.dart';
+import 'package:proscholy_common/models/songbook_record.dart';
+import 'package:proscholy_common/models/utils.dart';
 import 'package:proscholy_common/providers/app_dependencies.dart';
 import 'package:proscholy_common/providers/svgs.dart';
 import 'package:proscholy_common/providers/update.dart';
+import 'package:proscholy_common/providers/utils.dart';
 import 'package:proscholy_common/utils/client.dart';
 
 import '../utils.dart';
@@ -84,6 +90,39 @@ void main() {
       await eventually(() => expect(playlistFile.existsSync(), isFalse));
       expect(otherFile.existsSync(), isTrue);
     });
+  });
+
+  test('relations of removed song lyrics are removed', () async {
+    await mockDocumentsDirectory();
+
+    final appDependencies = await createAppDependencies(preferences: {'current_version': '1.0.0+1'});
+    final store = appDependencies.store;
+    final data = readTestData();
+
+    await parseAndStoreData(store, data);
+    await storeSongLyrics(store, readJsonList(data[SongLyric.fieldKey], mapper: SongLyric.fromJson));
+
+    store.box<PlaylistRecord>().put(
+      PlaylistRecord(
+        id: 1,
+        rank: 0,
+        songLyric: ToOne(targetId: 1),
+        customText: ToOne(),
+        bibleVerse: ToOne(),
+        playlist: ToOne(targetId: 1),
+      ),
+    );
+
+    // removed during update, as it was removed on server
+    store.box<SongLyric>().remove(1);
+
+    await loadInitial(appDependencies);
+
+    await eventually(() {
+      expect(store.box<External>().isEmpty(), isTrue);
+      expect(store.box<SongbookRecord>().getAll().map((songbookRecord) => songbookRecord.songLyric.targetId), [2, 2]);
+    });
+    expect(store.box<PlaylistRecord>().get(1), isNull);
   });
 
   group('update', () {
