@@ -133,15 +133,13 @@ final class AppRouter {
       '/songbooks' => ((_) => const SongbooksScreen(), false, true),
       '/song_lyric' => (
         (BuildContext context) {
-          if (uri.queryParameters.containsKey('id')) {
-            final id = int.parse(uri.queryParameters['id']!);
-            final songLyric = context.providers.read(songLyricProvider(id));
+          final id = int.tryParse(uri.queryParameters['id'] ?? '');
+          final songLyric = id == null ? null : context.providers.read(songLyricProvider(id));
 
-            if (songLyric != null) return DisplayScreen(items: [songLyric]);
-          }
+          if (songLyric != null) return DisplayScreen(items: [songLyric]);
 
-          // should not get here
-          throw UnimplementedError();
+          // song lyric might not be downloaded yet or link is invalid
+          return const HomeScreen();
         },
         false,
         true,
@@ -156,26 +154,26 @@ final class AppRouter {
       '/zpevniky' => ((_) => const SongbooksScreen(), false, true),
       String path when path.startsWith('/pisen/') => (
         (BuildContext context) {
-          final id = int.parse(uri.pathSegments[1]);
-          final songLyric = context.providers.read(songLyricProvider(id));
+          final id = int.tryParse(uri.pathSegments[1]);
+          final songLyric = id == null ? null : context.providers.read(songLyricProvider(id));
 
           if (songLyric != null) return DisplayScreen(items: [songLyric]);
 
-          // should not get here
-          throw UnimplementedError();
+          // song lyric might not be downloaded yet or link is invalid
+          return const HomeScreen();
         },
         false,
         true,
       ),
       String path when path.startsWith('/zpevnik/') => (
         (BuildContext context) {
-          final id = int.parse(uri.pathSegments[1]);
-          final songbook = context.providers.read(songbookProvider(id));
+          final id = int.tryParse(uri.pathSegments[1]);
+          final songbook = id == null ? null : context.providers.read(songbookProvider(id));
 
           if (songbook != null) return SongbookScreen(songbook: songbook);
 
-          // should not get here
-          throw UnimplementedError();
+          // link might be invalid
+          return const HomeScreen();
         },
         false,
         true,

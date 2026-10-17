@@ -68,6 +68,24 @@ void main() {
     expect(route('/hledani').settings.name, '/');
   });
 
+  testWidgets('link to missing song lyric or songbook opens home', (tester) async {
+    await pumpProviderScope(tester);
+
+    // arrangements are not stored
+    expect(screen('/pisen/3/aranzma'), isA<HomeScreen>());
+    expect(screen('/song_lyric?id=999'), isA<HomeScreen>());
+    expect(screen('/zpevnik/999/neznamy'), isA<HomeScreen>());
+  });
+
+  testWidgets('invalid link opens home', (tester) async {
+    await pumpProviderScope(tester);
+
+    expect(screen('/pisen/'), isA<HomeScreen>());
+    expect(screen('/pisen/abc'), isA<HomeScreen>());
+    expect(screen('/song_lyric?id=abc'), isA<HomeScreen>());
+    expect(screen('/zpevnik/abc'), isA<HomeScreen>());
+  });
+
   testWidgets('unknown link opens home', (tester) async {
     await pumpProviderScope(tester);
 
