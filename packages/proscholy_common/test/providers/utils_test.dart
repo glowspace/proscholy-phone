@@ -76,4 +76,29 @@ void main() {
 
     expect(store.box<SongLyric>().get(1)!.settings.target?.transposition, 2);
   });
+
+  // e.g. recording was removed or song lyric was removed from songbook on server
+  test('removed externals and songbook records of updated song lyric are removed', () async {
+    final store = await openTestStore();
+
+    await _parseAndStore(store);
+
+    final json = <String, dynamic>{...readTestData()[SongLyric.fieldKey][0]};
+    json['externals'] = [];
+    // records of EZ and EK are kept, as they are needed by these apps
+    json['songbook_records'] = [
+      for (final songbookRecord in json['songbook_records'])
+        if (songbookRecord['pivot']['songbook']['id'] != '9') songbookRecord,
+    ];
+
+    await storeSongLyrics(store, [SongLyric.fromJson(json)]);
+
+    final songLyric = store.box<SongLyric>().get(1)!;
+
+    expect(songLyric.externals, isEmpty);
+    expect(
+      songLyric.songbookRecords.map((songbookRecord) => songbookRecord.songbook.target?.shortcut),
+      unorderedEquals(['EZ', 'EK']),
+    );
+  });
 }

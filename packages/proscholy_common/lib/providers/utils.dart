@@ -55,6 +55,18 @@ Future<List<SongLyric>> storeSongLyrics(Store store, List<SongLyric> songLyrics)
 
   final songLyricIds = await store.box<SongLyric>().putManyAsync(songLyrics);
 
+  // previous externals and songbook records are removed, as some of them might have been removed on server
+  final externalsQuery = (store.box<External>().query()..link(External_.songLyric, SongLyric_.id.oneOf(songLyricIds)))
+      .build();
+  final songbookRecordsQuery =
+      (store.box<SongbookRecord>().query()..link(SongbookRecord_.songLyric, SongLyric_.id.oneOf(songLyricIds))).build();
+
+  externalsQuery.remove();
+  songbookRecordsQuery.remove();
+
+  externalsQuery.close();
+  songbookRecordsQuery.close();
+
   await Future.wait([
     store.box<External>().putManyAsync(externals),
     store.box<SongbookRecord>().putManyAsync(songbookRecords),
