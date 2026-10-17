@@ -1,6 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:proscholy_common/constants.dart';
+import 'package:proscholy_common/models/presentation.dart';
 import 'package:proscholy_common/models/settings.dart';
+import 'package:proscholy_common/providers/presentation.dart';
 import 'package:proscholy_common/providers/settings.dart';
 
 import '../utils.dart';
@@ -25,6 +27,23 @@ void main() {
 
       expect(settings.showChords, isFalse);
       expect(settings.darkModeEnabled, isTrue);
+    });
+
+    // keys must not change, otherwise saved settings would be lost
+    test('settings saved by previous versions are loaded', () async {
+      final appDependencies = await createAppDependencies(
+        preferences: {
+          'settings':
+              '{"darkModeEnabled":true,"seedColor":4284955319,"fontSizeScale":1.5,"showChords":false,'
+              '"showMusicalNotes":true,"accidentals":1,"autoScrollSpeedIndex":3}',
+        },
+      );
+
+      final settings = createContainer(appDependencies).read(settingsProvider);
+
+      expect(settings.darkModeEnabled, isTrue);
+      expect(settings.fontSizeScale, 1.5);
+      expect(settings.autoScrollSpeedIndex, 3);
     });
 
     test('font size scale is limited', () async {
@@ -86,5 +105,21 @@ void main() {
       expect(songLyricSettings.accidentals, 1);
       expect(createContainer(appDependencies).read(songLyricSettingsProvider(2)).transposition, 0);
     });
+  });
+
+  // keys must not change, otherwise saved settings would be lost
+  test('presentation settings saved by previous versions are loaded', () async {
+    final appDependencies = await createAppDependencies(
+      preferences: {
+        'presentation_settings':
+            '{"darkMode":false,"showName":false,"allCapital":true,"isVisible":true,"alignment":"top","rotation":"left90"}',
+      },
+    );
+
+    final settings = PresentationProvider(appDependencies.sharedPreferences).settings;
+
+    expect(settings.darkMode, isFalse);
+    expect(settings.allCapital, isTrue);
+    expect(settings.rotation, PresentationRotation.left90);
   });
 }
