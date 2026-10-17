@@ -42,6 +42,7 @@ query {
   }
   song_lyrics {
     id
+    is_arrangement
   }
   tags_enum {
     id

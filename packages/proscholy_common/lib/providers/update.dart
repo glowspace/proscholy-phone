@@ -127,7 +127,8 @@ Stream<UpdateStatus> update(Ref ref) async* {
   for (final songLyric in data['song_lyrics']) {
     final id = int.parse(songLyric['id']);
 
-    if (!existingSongLyricsIds.contains(id)) missingSongLyricIds.add(id);
+    // arrangements are not stored, so they would be always missing and fetched again during every update
+    if (!existingSongLyricsIds.contains(id) && songLyric['is_arrangement'] != true) missingSongLyricIds.add(id);
 
     existingSongLyricsIds.remove(id);
   }

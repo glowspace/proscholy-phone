@@ -83,6 +83,26 @@ void main() {
       );
     }
 
+    // runs update and returns all its statuses
+    Future<List<UpdateStatus>> runUpdate(AppDependencies appDependencies) {
+      final states = <UpdateStatus>[];
+      final finished = Completer<List<UpdateStatus>>();
+
+      createUpdateContainer(appDependencies).listen(updateProvider, (_, state) {
+        switch (state) {
+          case AsyncData(:final value):
+            states.add(value);
+
+            if (value is Updated) finished.complete(states);
+          case AsyncError(:final error, :final stackTrace):
+            finished.completeError(error, stackTrace);
+          default:
+        }
+      });
+
+      return finished.future.timeout(const Duration(seconds: 5));
+    }
+
     setUp(() async {
       await mockDocumentsDirectory();
 
@@ -102,7 +122,7 @@ void main() {
         (_) async => {
           ...data,
           SongLyric.fieldKey: [
-            for (final json in songLyricsJson) {'id': json['id']},
+            for (final json in songLyricsJson) {'id': json['id'], 'is_arrangement': json['is_arrangement']},
           ],
         },
       );
@@ -153,27 +173,11 @@ void main() {
         },
       );
       when(() => client.getSongLyric(1)).thenAnswer((_) async => songLyricsJson[0]);
-      when(() => client.getSongLyric(3)).thenAnswer((_) async => songLyricsJson[2]);
 
-      final states = <UpdateStatus>[];
-      final updated = Completer<List<SongLyric>>();
-
-      createUpdateContainer(appDependencies).listen(updateProvider, (_, state) {
-        switch (state) {
-          case AsyncData(:final value):
-            states.add(value);
-
-            if (value is Updated) updated.complete(value.songLyrics);
-          case AsyncError(:final error, :final stackTrace):
-            updated.completeError(error, stackTrace);
-          default:
-        }
-      });
-
-      final updatedSongLyrics = await updated.future.timeout(const Duration(seconds: 5));
+      final states = await runUpdate(appDependencies);
 
       expect(states.first, isA<Updating>());
-      expect(updatedSongLyrics.map((songLyric) => songLyric.id), [2, 1]);
+      expect((states.last as Updated).songLyrics.map((songLyric) => songLyric.id), [2, 1]);
       expect(box.get(99), isNull);
       expect(box.get(1), isNotNull);
       expect(box.get(2)!.name, 'Bože, chválíme tebe');
@@ -183,6 +187,21 @@ void main() {
       await eventually(
         () => expect(appDependencies.sharedPreferences.getString('last_update'), isNot('2026-01-01 00:00:00')),
       );
+    });
+
+    test('does not fetch arrangements and keeps the ones stored by older versions', () async {
+      final appDependencies = await createAppDependencies(preferences: {'last_update': '2026-01-01 00:00:00'});
+
+      appDependencies.store.box<SongLyric>().put(createSongLyric(id: 3));
+
+      when(() => client.getSongLyrics(any())).thenAnswer(
+        (_) async => {SongLyric.fieldKey: songLyricsJson.sublist(0, 2)},
+      );
+
+      await runUpdate(appDependencies);
+
+      verifyNever(() => client.getSongLyric(any()));
+      expect(appDependencies.store.box<SongLyric>().get(3), isNotNull);
     });
   });
 }
