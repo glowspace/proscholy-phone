@@ -214,9 +214,8 @@ return $default(_that.id,_that.displayId,_that.displayName,_that.name,_that.seco
 }
 
 /// @nodoc
-
+@JsonSerializable(createToJson: false)
 @Entity(realClass: SongLyric)
-@JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
 class _SongLyric extends SongLyric {
   const _SongLyric({@Id(assignable: true)@JsonKey(fromJson: int.parse) required this.id, @JsonKey(readValue: _readDisplayId) required this.displayId, @JsonKey(readValue: _readDisplayName) required this.displayName, required this.name, @JsonKey(name: 'secondary_name_1') this.secondaryName1, @JsonKey(name: 'secondary_name_2') this.secondaryName2, this.lyrics, @JsonKey(name: 'hymnology') this.hymnologyNew = '', required this.lang, @JsonKey(name: 'lang_string') required this.langDescription, @JsonKey(name: 'type_enum', fromJson: SongLyricType.rawValueFromString) required this.dbType, required this.hasChords, required this.isArrangement, @Deprecated('is handled independently on model') this.accidentals, @Deprecated('is handled independently on model') this.showChords, @Deprecated('is handled independently on model') this.transposition, @JsonKey(fromJson: _songFromJson) required this.song, @JsonKey(fromJson: _settingsFromJson) required this.settings, @JsonKey(name: 'authors_pivot', fromJson: _authorsFromJson) required this.authors, @JsonKey(fromJson: _tagsFromJson) required this.tags, @JsonKey(fromJson: _externalsFromJson) required this.externals, @Backlink()@JsonKey(fromJson: _songbookRecordsFromJson) required this.songbookRecords, @Backlink()@JsonKey(fromJson: _playlistRecordsFromJson) required this.playlistRecords}): super._();
   factory _SongLyric.fromJson(Map<String, dynamic> json) => _$SongLyricFromJson(json);

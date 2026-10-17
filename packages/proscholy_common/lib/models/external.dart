@@ -79,14 +79,13 @@ enum MediaType {
   }
 }
 
-@Freezed(toJson: false, equal: false)
+@freezed
 sealed class External with _$External implements Identifiable {
   static const String fieldKey = 'externals';
 
   const External._();
 
   @Entity(realClass: External)
-  @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
   const factory External({
     @Id(assignable: true) @JsonKey(fromJson: int.parse) required int id,
     required String publicName,

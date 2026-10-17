@@ -3,7 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'generated/spotlight_item.freezed.dart';
 part 'generated/spotlight_item.g.dart';
 
-@freezed
+@Freezed(equal: true, toJson: true)
 sealed class SpotlightItem with _$SpotlightItem {
   const factory SpotlightItem({
     required String identifier,

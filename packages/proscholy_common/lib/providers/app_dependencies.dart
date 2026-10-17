@@ -12,7 +12,7 @@ part 'generated/app_dependencies.g.dart';
 @Riverpod(keepAlive: true)
 AppDependencies appDependencies(Ref ref) => throw UnimplementedError();
 
-@freezed
+@Freezed(equal: true)
 sealed class AppDependencies with _$AppDependencies {
   const factory AppDependencies({
     // reference to simple key-value storage

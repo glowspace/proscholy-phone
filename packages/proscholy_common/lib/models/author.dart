@@ -5,14 +5,13 @@ import 'package:proscholy_common/models/model.dart';
 part 'generated/author.freezed.dart';
 part 'generated/author.g.dart';
 
-@Freezed(toJson: false, equal: false)
+@freezed
 sealed class Author with _$Author implements Identifiable {
   const Author._();
 
   static const String fieldKey = 'authors';
 
   @Entity(realClass: Author)
-  @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
   const factory Author({
     @Id(assignable: true) @JsonKey(fromJson: int.parse) required int id,
     required String name,

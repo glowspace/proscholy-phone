@@ -213,8 +213,8 @@ return $default(_that.songLyricId,_that.isCustomText,_that.name,_that.text,_that
 }
 
 /// @nodoc
-@JsonSerializable()
 
+@JsonSerializable(fieldRename: FieldRename.none)
 class _PresentationData implements PresentationData {
   const _PresentationData({this.songLyricId, this.isCustomText = false, required this.name, required this.text, required this.settings});
   factory _PresentationData.fromJson(Map<String, dynamic> json) => _$PresentationDataFromJson(json);
@@ -492,8 +492,8 @@ return $default(_that.darkMode,_that.showName,_that.allCapital,_that.isVisible,_
 }
 
 /// @nodoc
-@JsonSerializable()
 
+@JsonSerializable(fieldRename: FieldRename.none)
 class _PresentationSettings implements PresentationSettings {
   const _PresentationSettings({required this.darkMode, required this.showName, required this.allCapital, required this.isVisible, this.alignment, this.rotation});
   factory _PresentationSettings.fromJson(Map<String, dynamic> json) => _$PresentationSettingsFromJson(json);

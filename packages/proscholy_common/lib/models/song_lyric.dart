@@ -51,14 +51,13 @@ enum SongLyricType {
   }
 }
 
-@Freezed(toJson: false, equal: false)
+@freezed
 sealed class SongLyric with _$SongLyric implements DisplayableItem, Identifiable, RecentItem {
   static const String fieldKey = 'song_lyrics';
 
   const SongLyric._();
 
   @Entity(realClass: SongLyric)
-  @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
   const factory SongLyric({
     @Id(assignable: true) @JsonKey(fromJson: int.parse) required int id,
     @JsonKey(readValue: _readDisplayId) required String displayId,

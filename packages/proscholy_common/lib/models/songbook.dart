@@ -10,14 +10,13 @@ part 'generated/songbook.g.dart';
 // prioritized songbook shortcuts in sorting
 const prioritized = {'CSMOv': -1, 'H1': 0, 'H2': 1, 'K': 2, 'Kan': 3};
 
-@Freezed(toJson: false, equal: false)
+@freezed
 sealed class Songbook with _$Songbook implements Comparable<Songbook>, Identifiable, SongsList, RecentItem {
   static const String fieldKey = 'songbooks';
 
   const Songbook._();
 
   @Entity(realClass: Songbook)
-  @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
   const factory Songbook({
     @Id(assignable: true) @JsonKey(fromJson: int.parse) required int id,
     required String name,

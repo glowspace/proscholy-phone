@@ -194,9 +194,8 @@ return $default(_that.id,_that.text,_that.link,_that.expiresAt);case _:
 }
 
 /// @nodoc
-
+@JsonSerializable(createToJson: false)
 @Entity(realClass: NewsItem)
-@JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
 class _NewsItem extends NewsItem {
   const _NewsItem({@Id(assignable: true)@JsonKey(fromJson: int.parse) required this.id, required this.text, required this.link, @Property(type: PropertyType.date) this.expiresAt}): super._();
   factory _NewsItem.fromJson(Map<String, dynamic> json) => _$NewsItemFromJson(json);

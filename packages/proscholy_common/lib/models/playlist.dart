@@ -9,7 +9,7 @@ part 'generated/playlist.freezed.dart';
 const favoritesPlaylistId = 1;
 const _favoritesName = 'Písně s hvězdičkou';
 
-@Freezed(equal: false)
+@freezed
 sealed class Playlist with _$Playlist implements Identifiable, RecentItem, SongsList {
   const Playlist._();
 

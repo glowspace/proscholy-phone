@@ -197,9 +197,8 @@ return $default(_that.id,_that.publicName,_that.mediaId,_that.url,_that.dbMediaT
 }
 
 /// @nodoc
-
+@JsonSerializable(createToJson: false)
 @Entity(realClass: External)
-@JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
 class _External extends External {
   const _External({@Id(assignable: true)@JsonKey(fromJson: int.parse) required this.id, required this.publicName, this.mediaId, this.url, @JsonKey(name: 'media_type', fromJson: MediaType.rawValueFromString) required this.dbMediaType, @JsonKey(name: 'content_type', fromJson: ContentType.rawValueFromString) required this.dbContentType, @JsonKey(fromJson: _songLyricFromJson) required this.songLyric}): super._();
   factory _External.fromJson(Map<String, dynamic> json) => _$ExternalFromJson(json);

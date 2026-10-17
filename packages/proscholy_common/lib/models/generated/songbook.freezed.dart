@@ -198,9 +198,8 @@ return $default(_that.id,_that.name,_that.shortcut,_that.color,_that.colorText,_
 }
 
 /// @nodoc
-
+@JsonSerializable(createToJson: false)
 @Entity(realClass: Songbook)
-@JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
 class _Songbook extends Songbook {
   const _Songbook({@Id(assignable: true)@JsonKey(fromJson: int.parse) required this.id, required this.name, @JsonKey(defaultValue: '') required this.shortcut, this.color, this.colorText, required this.isPrivate, @Deprecated('is handled independently on model') this.isPinned, @Backlink()@JsonKey(fromJson: _songbookRecordsFromJson) required this.records}): super._();
   factory _Songbook.fromJson(Map<String, dynamic> json) => _$SongbookFromJson(json);

@@ -22,7 +22,7 @@ class DisplayScreenStatus extends _$DisplayScreenStatus {
   void hideExternals() => state = state.copyWith(showingExternals: false);
 }
 
-@freezed
+@Freezed(equal: true)
 sealed class DisplayScreenStatusModel with _$DisplayScreenStatusModel {
   const factory DisplayScreenStatusModel({
     required bool fullScreen,

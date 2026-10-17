@@ -162,7 +162,7 @@ class SearchedSongLyrics extends _$SearchedSongLyrics {
   }
 }
 
-@freezed
+@Freezed(equal: true)
 sealed class SearchedSongLyricsResult with _$SearchedSongLyricsResult {
   const factory SearchedSongLyricsResult({
     List<SongLyric>? songLyrics,

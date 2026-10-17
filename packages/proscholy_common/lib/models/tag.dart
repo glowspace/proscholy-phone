@@ -80,12 +80,11 @@ enum TagType {
   };
 }
 
-@Freezed(toJson: false, equal: false)
+@freezed
 sealed class Tag extends Model with _$Tag {
   const Tag._();
 
   @Entity(realClass: Tag)
-  @JsonSerializable(fieldRename: FieldRename.snake)
   const factory Tag({
     @Id(assignable: true) @JsonKey(fromJson: int.parse) required int id,
     required String name,

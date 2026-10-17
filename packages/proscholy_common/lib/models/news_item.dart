@@ -6,14 +6,13 @@ import 'package:proscholy_common/models/model.dart';
 part 'generated/news_item.freezed.dart';
 part 'generated/news_item.g.dart';
 
-@Freezed(toJson: false, equal: false)
+@freezed
 sealed class NewsItem with _$NewsItem implements Identifiable {
   static const String fieldKey = 'news_items';
 
   const NewsItem._();
 
   @Entity(realClass: NewsItem)
-  @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
   const factory NewsItem({
     @Id(assignable: true) @JsonKey(fromJson: int.parse) required int id,
     required String text,

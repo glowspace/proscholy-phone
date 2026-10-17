@@ -14,6 +14,12 @@ targets:
       freezed|freezed:
         enabled: true
         options:
+          # models are compared by id and parsed from API, so these are defaults, other classes enable what they need
+          equal: false
+          to_json: false
           build_extensions:
             '^lib/models/{{}}.dart': 'lib/models/generated/{{}}.freezed.dart'
             '^lib/providers/{{}}.dart': 'lib/providers/generated/{{}}.freezed.dart'
+      json_serializable:
+        options:
+          field_rename: snake

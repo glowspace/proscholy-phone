@@ -4,7 +4,7 @@ import 'package:proscholy_common/models/model.dart';
 
 part 'generated/custom_text.freezed.dart';
 
-@Freezed(equal: false)
+@freezed
 sealed class CustomText with _$CustomText implements DisplayableItem, Identifiable, RecentItem {
   const CustomText._();
 
