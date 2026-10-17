@@ -217,14 +217,16 @@ class _PlaylistRecordsListViewState extends ConsumerState<PlaylistRecordsListVie
   }
 
   void _sortedAlphabeticallyChanged() {
+    final playlistRecords = _filterInvalidRecords(widget.playlist.records);
+
     if (widget.sortedAlphabeticallyNotifier.value) {
       setState(
-        () => _recordsOrdered = widget.playlist.records.sorted(
+        () => _recordsOrdered = playlistRecords.sorted(
           (a, b) => _unwrapPlaylistRecord(a).displayName.compareTo(_unwrapPlaylistRecord(b).displayName),
         ),
       );
     } else {
-      setState(() => _recordsOrdered = widget.playlist.records.sorted((a, b) => a.rank.compareTo(b.rank)));
+      setState(() => _recordsOrdered = playlistRecords.sorted((a, b) => a.rank.compareTo(b.rank)));
     }
   }
 }
