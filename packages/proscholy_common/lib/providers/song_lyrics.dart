@@ -28,7 +28,7 @@ List<SongLyric> songLyrics(Ref ref) {
   ).where((songLyric) => songLyric.shouldAppearToUser || ref.read(svgProvider(songLyric.id)).isNotEmpty).toList();
 
   return switch (ref.watch(sortProvider)) {
-    SortType.random => songLyrics..sort((_, __) => random.nextDouble().compareTo(random.nextDouble())),
+    SortType.random => songLyrics..shuffle(random),
     SortType.alpha => songLyrics..sort((a, b) => a.name.compareTo(b.name)),
     SortType.numeric => songLyrics..sort((a, b) => compareNatural(a.displayId, b.displayId)),
   };
