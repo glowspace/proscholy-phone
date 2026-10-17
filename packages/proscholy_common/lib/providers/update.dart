@@ -160,7 +160,7 @@ Stream<UpdateStatus> update(Ref ref) async* {
 
   _cleanup(appDependencies);
 
-  SearchedSongLyrics.update(appDependencies.ftsDatabase, updatedSongLyrics);
+  await SearchedSongLyrics.update(appDependencies.ftsDatabase, updatedSongLyrics);
 
   yield Updated(updatedSongLyrics);
 

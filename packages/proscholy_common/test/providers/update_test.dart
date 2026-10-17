@@ -178,10 +178,11 @@ void main() {
       expect(box.get(1), isNotNull);
       expect(box.get(2)!.name, 'Bože, chválíme tebe');
 
-      await eventually(() async {
-        expect(await appDependencies.ftsDatabase.query('song_lyrics_search'), hasLength(2));
-        expect(appDependencies.sharedPreferences.getString('last_update'), isNot('2026-01-01 00:00:00'));
-      });
+      expect(await appDependencies.ftsDatabase.query('song_lyrics_search'), hasLength(2));
+
+      await eventually(
+        () => expect(appDependencies.sharedPreferences.getString('last_update'), isNot('2026-01-01 00:00:00')),
+      );
     });
   });
 }
