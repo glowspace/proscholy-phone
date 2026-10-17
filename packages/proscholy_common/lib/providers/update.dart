@@ -82,8 +82,9 @@ Stream<UpdateStatus> update(Ref ref) async* {
 
   // update news
   try {
-    final newsItems =
-        await client.getNews().then((json) => readJsonList(json[NewsItem.fieldKey], mapper: NewsItem.fromJson));
+    final newsItems = await client.getNews().then(
+      (json) => readJsonList(json[NewsItem.fieldKey], mapper: NewsItem.fromJson),
+    );
 
     // remove all news items, that were deleted on server
     appDependencies.store.box<NewsItem>().removeAll();
@@ -98,8 +99,9 @@ Stream<UpdateStatus> update(Ref ref) async* {
 
   // check if update should happen
   final now = DateTime.now().toUtc();
-  final lastUpdate =
-      _dateFormat.parseUtc(appDependencies.sharedPreferences.getString(_lastUpdateKey) ?? _initialLastUpdate);
+  final lastUpdate = _dateFormat.parseUtc(
+    appDependencies.sharedPreferences.getString(_lastUpdateKey) ?? _initialLastUpdate,
+  );
 
   if (now.isBefore(lastUpdate.add(_updatePeriod))) return;
 

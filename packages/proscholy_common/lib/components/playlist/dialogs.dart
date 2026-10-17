@@ -43,7 +43,7 @@ void showRenamePlaylistDialog(BuildContext context, Playlist playlist) async {
         hintText: 'Název',
         initialText: playlist.name,
         validator: _playlistNameValidator(playlists, originalPlaylist: playlist),
-      )
+      ),
     ],
   );
 
@@ -76,8 +76,9 @@ void showDuplicatePlaylistDialog(BuildContext context, Playlist playlist) async 
   );
 
   if (results != null && context.mounted) {
-    final duplicatedPlaylist =
-        context.providers.read(playlistsProvider.notifier).duplicatePlaylist(playlist, results.first);
+    final duplicatedPlaylist = context.providers
+        .read(playlistsProvider.notifier)
+        .duplicatePlaylist(playlist, results.first);
 
     final selectedPlaylistNotifier = SelectedPlaylist.of(context);
 
@@ -102,13 +103,14 @@ void showAcceptReceivedPlaylistDialog(BuildContext context, Map<String, dynamic>
         hintText: 'Název',
         initialText: playlistData['name'],
         validator: _playlistNameValidator(playlists),
-      )
+      ),
     ],
   );
 
   if (results != null && context.mounted) {
-    final acceptedPlaylist =
-        context.providers.read(playlistsProvider.notifier).acceptPlaylist(playlistData, results.first);
+    final acceptedPlaylist = context.providers
+        .read(playlistsProvider.notifier)
+        .acceptPlaylist(playlistData, results.first);
 
     context.push('/playlist', arguments: acceptedPlaylist);
   }
@@ -142,6 +144,6 @@ String? Function(String?) _playlistNameValidator(List<Playlist> playlists, {Play
   return (text) => (text?.isEmpty ?? true)
       ? _emptyPlaylistNameMessage
       : (playlists.any((playlist) => playlist.name == text && playlist != originalPlaylist)
-          ? _playlistWithSameNameMessage
-          : null);
+            ? _playlistWithSameNameMessage
+            : null);
 }

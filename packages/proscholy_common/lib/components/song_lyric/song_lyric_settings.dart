@@ -18,8 +18,9 @@ class SongLyricSettingsModelWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
 
-    final showChords =
-        ref.watch(songLyricSettingsProvider(songLyric.id).select((songLyricSettings) => songLyricSettings.showChords));
+    final showChords = ref.watch(
+      songLyricSettingsProvider(songLyric.id).select((songLyricSettings) => songLyricSettings.showChords),
+    );
 
     final accidentalsStyle = theme.textTheme.bodyMedium?.copyWith(
       fontFamily: 'KaiseiHarunoUmi',
@@ -40,11 +41,20 @@ class SongLyricSettingsModelWidget extends ConsumerWidget {
           isEnabled: showChords,
           onSelected: ref.read(songLyricSettingsProvider(songLyric.id).notifier).changeAccidentals,
           segments: [
-            ButtonSegment(value: 0, label: Text('#', style: accidentalsStyle, textAlign: TextAlign.center)),
-            ButtonSegment(value: 1, label: Text('♭', style: accidentalsStyle, textAlign: TextAlign.center)),
+            ButtonSegment(
+              value: 0,
+              label: Text('#', style: accidentalsStyle, textAlign: TextAlign.center),
+            ),
+            ButtonSegment(
+              value: 1,
+              label: Text('♭', style: accidentalsStyle, textAlign: TextAlign.center),
+            ),
           ],
-          selected: ref.watch(songLyricSettingsProvider(songLyric.id)
-              .select((songLyricSettings) => songLyricSettings.accidentals ?? songLyric.defaultAccidentals)),
+          selected: ref.watch(
+            songLyricSettingsProvider(
+              songLyric.id,
+            ).select((songLyricSettings) => songLyricSettings.accidentals ?? songLyric.defaultAccidentals),
+          ),
         ),
         SwitchListTile.adaptive(
           title: Text('Akordy', style: theme.textTheme.bodyMedium),
@@ -60,8 +70,9 @@ class SongLyricSettingsModelWidget extends ConsumerWidget {
             activeTrackColor: theme.colorScheme.primary,
             contentPadding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
             dense: true,
-            value: ref.watch(songLyricSettingsProvider(songLyric.id)
-                .select((songLyricSettings) => songLyricSettings.showMusicalNotes)),
+            value: ref.watch(
+              songLyricSettingsProvider(songLyric.id).select((songLyricSettings) => songLyricSettings.showMusicalNotes),
+            ),
             onChanged: ref.read(songLyricSettingsProvider(songLyric.id).notifier).changeShowMusicalNotes,
           ),
         const SizedBox(height: kDefaultPadding),

@@ -41,8 +41,8 @@ class SettingsScreen extends ConsumerWidget {
                   onTap: () => isZPS
                       ? context.push('/about')
                       : (isEZ
-                          ? launch('https://evangelickyzpevnik.cz/o-zpevniku')
-                          : launch('https://evangelickykancional.cz/o-zpevniku')),
+                            ? launch('https://evangelickyzpevnik.cz/o-zpevniku')
+                            : launch('https://evangelickykancional.cz/o-zpevniku')),
                   padding: const EdgeInsets.all(kDefaultPadding / 2),
                   textStyle: textTheme.bodySmall,
                   child: const Text('O projektu'),
@@ -124,8 +124,14 @@ class SettingsScreen extends ConsumerWidget {
           onSelected: ref.read(settingsProvider.notifier).changeAccidentals,
           isEnabled: showChords,
           segments: [
-            ButtonSegment(value: 0, label: Text('#', style: accidentalsStyle, textAlign: TextAlign.center)),
-            ButtonSegment(value: 1, label: Text('♭', style: accidentalsStyle, textAlign: TextAlign.center)),
+            ButtonSegment(
+              value: 0,
+              label: Text('#', style: accidentalsStyle, textAlign: TextAlign.center),
+            ),
+            ButtonSegment(
+              value: 1,
+              label: Text('♭', style: accidentalsStyle, textAlign: TextAlign.center),
+            ),
           ],
           selected: ref.watch(settingsProvider.select((settings) => settings.accidentals)),
         ),

@@ -18,6 +18,7 @@ const defaultPresentationSettings = PresentationSettings(
 );
 
 enum PresentationAlignment { top, center, bottom }
+
 enum PresentationRotation { none, left90, right90, upsideDown }
 
 @freezed

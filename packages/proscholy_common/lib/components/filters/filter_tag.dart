@@ -37,8 +37,8 @@ class FilterTag extends StatelessWidget {
           color: isRemovable
               ? Colors.transparent
               : (ref.watch(selectedTagsByTypeProvider(tag.type).select((selectedTags) => selectedTags.contains(tag)))
-                  ? theme.colorScheme.secondaryContainer
-                  : Colors.transparent),
+                    ? theme.colorScheme.secondaryContainer
+                    : Colors.transparent),
           child: child,
         ),
         child: HighlightableWidget(

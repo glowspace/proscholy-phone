@@ -10,21 +10,23 @@ class FontSizeSlider extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Row(children: [
-      Text('A', style: theme.textTheme.bodyMedium, textScaler: TextScaler.linear(kMinimumFontSizeScale)),
-      Expanded(
-        child: Consumer(
-          builder: (_, ref, __) => Slider.adaptive(
-            min: kMinimumFontSizeScale,
-            max: kMaximumFontSizeScale,
-            value: ref.watch(settingsProvider.select((settings) => settings.fontSizeScale)),
-            onChanged: ref.read(settingsProvider.notifier).changeFontSizeScale,
-            activeColor: theme.colorScheme.primary,
-            inactiveColor: theme.disabledColor,
+    return Row(
+      children: [
+        Text('A', style: theme.textTheme.bodyMedium, textScaler: TextScaler.linear(kMinimumFontSizeScale)),
+        Expanded(
+          child: Consumer(
+            builder: (_, ref, __) => Slider.adaptive(
+              min: kMinimumFontSizeScale,
+              max: kMaximumFontSizeScale,
+              value: ref.watch(settingsProvider.select((settings) => settings.fontSizeScale)),
+              onChanged: ref.read(settingsProvider.notifier).changeFontSizeScale,
+              activeColor: theme.colorScheme.primary,
+              inactiveColor: theme.disabledColor,
+            ),
           ),
         ),
-      ),
-      Text('A', style: theme.textTheme.bodyMedium, textScaler: TextScaler.linear(kMaximumFontSizeScale)),
-    ]);
+        Text('A', style: theme.textTheme.bodyMedium, textScaler: TextScaler.linear(kMaximumFontSizeScale)),
+      ],
+    );
   }
 }

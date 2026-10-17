@@ -22,9 +22,10 @@ SongLyric? songLyric(Ref ref, int id) {
 @Riverpod(keepAlive: true)
 List<SongLyric> songLyrics(Ref ref) {
   final random = Random();
-  final songLyrics = queryStore(ref, orderBy: SongLyric_.name)
-      .where((songLyric) => songLyric.shouldAppearToUser || ref.read(svgProvider(songLyric.id)).isNotEmpty)
-      .toList();
+  final songLyrics = queryStore(
+    ref,
+    orderBy: SongLyric_.name,
+  ).where((songLyric) => songLyric.shouldAppearToUser || ref.read(svgProvider(songLyric.id)).isNotEmpty).toList();
 
   return switch (ref.watch(sortProvider)) {
     SortType.random => songLyrics..sort((_, __) => random.nextDouble().compareTo(random.nextDouble())),
@@ -39,6 +40,6 @@ List<SongLyric> songsListSongLyrics(Ref ref, SongsList songsList) {
 
   return [
     for (final record in songsList.records)
-      if (record.songLyric.target != null) record.songLyric.target!
+      if (record.songLyric.target != null) record.songLyric.target!,
   ];
 }

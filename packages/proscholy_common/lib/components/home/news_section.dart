@@ -39,38 +39,42 @@ class _NewsSectionState extends ConsumerState<NewsSection> {
             itemBuilder: (_, index) => HighlightableWidget(
               padding: EdgeInsets.zero,
               onTap: newsItems[index].hasLink ? () => launch(newsItems[index].preparedLink) : null,
-              child: Row(children: [
-                Text(newsItems[index].text),
-                if (newsItems[index].hasLink)
-                  const Padding(
-                    padding: EdgeInsets.only(left: kDefaultPadding / 2),
-                    child: Icon(Icons.open_in_new, size: 20),
-                  )
-              ]),
+              child: Row(
+                children: [
+                  Text(newsItems[index].text),
+                  if (newsItems[index].hasLink)
+                    const Padding(
+                      padding: EdgeInsets.only(left: kDefaultPadding / 2),
+                      child: Icon(Icons.open_in_new, size: 20),
+                    ),
+                ],
+              ),
             ),
           ),
         ),
         if (newsItems.isNotEmpty)
-          Row(children: [
-            for (int i = 0; i < newsItems.length; i++)
-              Padding(
-                padding: const EdgeInsets.only(right: 4),
-                child: HighlightableWidget(
-                  highlightBackground: true,
-                  onTap: () =>
-                      _pageController.animateToPage(i, duration: kDefaultAnimationDuration, curve: Curves.easeInOut),
-                  child: ListenableBuilder(
-                    listenable: _pageController,
-                    builder: (_, __) => Container(
-                      margin: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
-                      width: 24,
-                      height: 2,
-                      color: yellow.withAlpha((_pageController.page?.round() ?? 0) == i ? 0xff : 0x40),
+          Row(
+            children: [
+              for (int i = 0; i < newsItems.length; i++)
+                Padding(
+                  padding: const EdgeInsets.only(right: 4),
+                  child: HighlightableWidget(
+                    highlightBackground: true,
+                    onTap: () =>
+                        _pageController.animateToPage(i, duration: kDefaultAnimationDuration, curve: Curves.easeInOut),
+                    child: ListenableBuilder(
+                      listenable: _pageController,
+                      builder: (_, __) => Container(
+                        margin: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
+                        width: 24,
+                        height: 2,
+                        color: yellow.withAlpha((_pageController.page?.round() ?? 0) == i ? 0xff : 0x40),
+                      ),
                     ),
                   ),
                 ),
-              ),
-          ]),
+            ],
+          ),
       ],
     );
   }

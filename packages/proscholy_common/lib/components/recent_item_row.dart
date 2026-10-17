@@ -21,24 +21,26 @@ class RecentItemRow extends StatelessWidget {
       highlightBackground: true,
       padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2, vertical: kDefaultPadding / 3),
       onTap: () => _push(context),
-      child: Row(children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
-          child: Icon(switch (recentItem.recentItemType) {
-            RecentItemType.bibleVerse => Icons.book_outlined,
-            RecentItemType.customText => Icons.edit_note,
-            RecentItemType.playlist => Icons.playlist_play_rounded,
-            RecentItemType.songbook => Icons.book,
-            RecentItemType.songLyric => Icons.music_note,
-          }),
-        ),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2, vertical: kDefaultPadding / 2),
-            child: Text(recentItem.displayName),
+      child: Row(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
+            child: Icon(switch (recentItem.recentItemType) {
+              RecentItemType.bibleVerse => Icons.book_outlined,
+              RecentItemType.customText => Icons.edit_note,
+              RecentItemType.playlist => Icons.playlist_play_rounded,
+              RecentItemType.songbook => Icons.book,
+              RecentItemType.songLyric => Icons.music_note,
+            }),
           ),
-        ),
-      ]),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2, vertical: kDefaultPadding / 2),
+              child: Text(recentItem.displayName),
+            ),
+          ),
+        ],
+      ),
     );
   }
 

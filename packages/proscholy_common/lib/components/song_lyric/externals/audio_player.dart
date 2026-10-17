@@ -43,9 +43,10 @@ class _AudioPlayerWrapperState extends State<AudioPlayerWrapper> {
   }
 
   Stream<PositionData> get _positionDataStream => Rx.combineLatest2<Duration, Duration?, PositionData>(
-      _controller.positionStream,
-      _controller.durationStream,
-      (position, duration) => PositionData(position, duration ?? Duration.zero));
+    _controller.positionStream,
+    _controller.durationStream,
+    (position, duration) => PositionData(position, duration ?? Duration.zero),
+  );
 
   @override
   Widget build(BuildContext context) {

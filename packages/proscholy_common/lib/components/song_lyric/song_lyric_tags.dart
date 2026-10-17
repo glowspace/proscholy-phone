@@ -24,8 +24,9 @@ class SongLyricTags extends StatelessWidget {
         Wrap(
           spacing: kDefaultPadding / 2,
           runSpacing: kDefaultPadding / 2,
-          children:
-              songLyric.songbookRecords.map((songbookRecord) => SongLyricTag(songbookRecord: songbookRecord)).toList(),
+          children: songLyric.songbookRecords
+              .map((songbookRecord) => SongLyricTag(songbookRecord: songbookRecord))
+              .toList(),
         ),
       ],
     );

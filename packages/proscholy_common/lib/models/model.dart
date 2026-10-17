@@ -23,12 +23,12 @@ enum RecentItemType {
   songLyric;
 
   int get rawValue => switch (this) {
-        RecentItemType.bibleVerse => 0,
-        RecentItemType.customText => 1,
-        RecentItemType.playlist => 2,
-        RecentItemType.songbook => 3,
-        RecentItemType.songLyric => 4,
-      };
+    RecentItemType.bibleVerse => 0,
+    RecentItemType.customText => 1,
+    RecentItemType.playlist => 2,
+    RecentItemType.songbook => 3,
+    RecentItemType.songLyric => 4,
+  };
 
   factory RecentItemType.fromRawValue(int value) {
     return switch (value) {

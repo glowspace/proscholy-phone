@@ -58,7 +58,8 @@ const _ezAdditionalQueryFields = '''
     hymnology
 ''';
 
-const _songLyricsQuery = '''
+const _songLyricsQuery =
+    '''
 query {
   song_lyrics(updated_after: $_updatedAfterPlaceholder) {
     id
@@ -109,7 +110,8 @@ query {
   }
 }''';
 
-const _songLyricQuery = '''
+const _songLyricQuery =
+    '''
 query {
   song_lyric(id: $_idPlaceholder) {
     id
@@ -204,8 +206,9 @@ class Client {
   }
 
   Future<List<int>> getSvgs(DateTime updatedAfter) async {
-    final response = await http
-        .get(Uri.https('zpevnik.proscholy.cz', 'download-svgs', {'updated_after': _dateFormat.format(updatedAfter)}));
+    final response = await http.get(
+      Uri.https('zpevnik.proscholy.cz', 'download-svgs', {'updated_after': _dateFormat.format(updatedAfter)}),
+    );
 
     return response.bodyBytes;
   }

@@ -55,35 +55,37 @@ class _CustomTextEditScreenState extends State<CustomTextEditScreen> {
       ),
       body: SafeArea(
         bottom: false,
-        child: Column(children: [
-          Padding(
-            padding: const EdgeInsets.all(kDefaultPadding),
-            child: QuillSimpleToolbar(
-              controller: _controller,
-              config: QuillSimpleToolbarConfig(
-                showClearFormat: false,
-                showCodeBlock: false,
-                showFontFamily: false,
-                showFontSize: false,
-                showInlineCode: false,
-                showQuote: false,
-                showSearchButton: false,
-                showSubscript: false,
-                showSuperscript: false,
-                showBackgroundColorButton: false,
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(kDefaultPadding),
+              child: QuillSimpleToolbar(
+                controller: _controller,
+                config: QuillSimpleToolbarConfig(
+                  showClearFormat: false,
+                  showCodeBlock: false,
+                  showFontFamily: false,
+                  showFontSize: false,
+                  showInlineCode: false,
+                  showQuote: false,
+                  showSearchButton: false,
+                  showSubscript: false,
+                  showSuperscript: false,
+                  showBackgroundColorButton: false,
+                ),
               ),
             ),
-          ),
-          const Divider(),
-          Expanded(
-            child: QuillEditor.basic(
-              controller: _controller,
-              config: QuillEditorConfig(
-                padding: EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding, vertical: kDefaultPadding),
+            const Divider(),
+            Expanded(
+              child: QuillEditor.basic(
+                controller: _controller,
+                config: QuillEditorConfig(
+                  padding: EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding, vertical: kDefaultPadding),
+                ),
               ),
             ),
-          ),
-        ]),
+          ],
+        ),
       ),
     );
   }
@@ -96,8 +98,10 @@ class _CustomTextEditScreenState extends State<CustomTextEditScreen> {
           .read(playlistsProvider.notifier)
           .createCustomText(name: name, content: _serializeDocumentToMarkdown(_controller.document) ?? '');
     } else {
-      customText =
-          widget.customText!.copyWith(name: name, content: _serializeDocumentToMarkdown(_controller.document) ?? '');
+      customText = widget.customText!.copyWith(
+        name: name,
+        content: _serializeDocumentToMarkdown(_controller.document) ?? '',
+      );
 
       context.providers.read(appDependenciesProvider).store.box<CustomText>().put(customText);
     }

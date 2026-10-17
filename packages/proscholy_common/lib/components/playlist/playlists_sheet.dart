@@ -45,11 +45,13 @@ class PlaylistsSheet extends StatelessWidget {
                       horizontal: 1.5 * kDefaultPadding,
                       vertical: 2 * kDefaultPadding / 3,
                     ),
-                    child: Row(children: [
-                      const Icon(Icons.playlist_play_rounded),
-                      const SizedBox(width: kDefaultPadding),
-                      Text(playlist.name),
-                    ]),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.playlist_play_rounded),
+                        const SizedBox(width: kDefaultPadding),
+                        Text(playlist.name),
+                      ],
+                    ),
                   ),
               ],
             ],

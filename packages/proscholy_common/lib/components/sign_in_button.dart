@@ -109,7 +109,7 @@ class _SignInButtonState extends State<SignInButton> {
           children: [
             widget.type.logo(theme),
             const SizedBox(width: kDefaultPadding / 2),
-            Expanded(child: Text(widget.type.text, style: widget.type.style(theme), maxLines: 2))
+            Expanded(child: Text(widget.type.text, style: widget.type.style(theme), maxLines: 2)),
           ],
         ),
       ),

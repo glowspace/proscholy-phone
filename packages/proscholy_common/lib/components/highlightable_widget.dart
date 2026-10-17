@@ -64,16 +64,17 @@ class HighlightableWidget extends StatelessWidget {
     if (icon != null && child == null) {
       return IconButton(
         constraints: shrinkWrap ? const BoxConstraints() : null,
-        style: IconButton.styleFrom(
-          padding: padding,
-          highlightColor: Colors.transparent,
-          tapTargetSize: shrinkWrap ? MaterialTapTargetSize.shrinkWrap : null,
-        ).copyWith(
-          foregroundColor: HighlightableForegroundColor(
-            foregroundColor: theme.iconTheme.color,
-            disabledColor: theme.disabledColor,
-          ),
-        ),
+        style:
+            IconButton.styleFrom(
+              padding: padding,
+              highlightColor: Colors.transparent,
+              tapTargetSize: shrinkWrap ? MaterialTapTargetSize.shrinkWrap : null,
+            ).copyWith(
+              foregroundColor: HighlightableForegroundColor(
+                foregroundColor: theme.iconTheme.color,
+                disabledColor: theme.disabledColor,
+              ),
+            ),
         onPressed: isEnabled ? onTap : null,
         icon: icon!,
       );
@@ -81,21 +82,22 @@ class HighlightableWidget extends StatelessWidget {
 
     final textStyle = this.textStyle ?? theme.textTheme.bodyMedium;
 
-    final style = TextButton.styleFrom(
-      padding: padding,
-      textStyle: textStyle,
-      minimumSize: const Size(0, 0),
-      alignment: alignment,
-      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      // set animation duration to zero, so the text and icon colors are synced
-      animationDuration: const Duration(),
-    ).copyWith(
-      foregroundColor: HighlightableForegroundColor(
-        foregroundColor: foregroundColor ?? textStyle?.color,
-        disabledColor: theme.disabledColor,
-      ),
-      overlayColor: const WidgetStatePropertyAll(Colors.transparent),
-    );
+    final style =
+        TextButton.styleFrom(
+          padding: padding,
+          textStyle: textStyle,
+          minimumSize: const Size(0, 0),
+          alignment: alignment,
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          // set animation duration to zero, so the text and icon colors are synced
+          animationDuration: const Duration(),
+        ).copyWith(
+          foregroundColor: HighlightableForegroundColor(
+            foregroundColor: foregroundColor ?? textStyle?.color,
+            disabledColor: theme.disabledColor,
+          ),
+          overlayColor: const WidgetStatePropertyAll(Colors.transparent),
+        );
 
     if (icon != null) {
       return TextButton.icon(style: style, onPressed: isEnabled ? onTap : null, icon: icon!, label: child!);

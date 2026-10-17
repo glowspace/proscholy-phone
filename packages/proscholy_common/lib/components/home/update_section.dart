@@ -23,13 +23,18 @@ class _UpdateSectionState extends ConsumerState<UpdateSection> {
 
   @override
   Widget build(BuildContext context) {
-    return ref.watch(updateProvider).when(
+    return ref
+        .watch(updateProvider)
+        .when(
           data: (updateStatus) {
             final updatedSongLyrics = switch (updateStatus) {
               Updating() => null,
-              Updated(songLyrics: final songLyrics) => songLyrics
-                  .where((songLyric) => songLyric.shouldAppearToUser || ref.read(svgProvider(songLyric.id)).isNotEmpty)
-                  .toList(),
+              Updated(songLyrics: final songLyrics) =>
+                songLyrics
+                    .where(
+                      (songLyric) => songLyric.shouldAppearToUser || ref.read(svgProvider(songLyric.id)).isNotEmpty,
+                    )
+                    .toList(),
             };
 
             return _build(context, updatedSongLyrics: updatedSongLyrics);
@@ -64,36 +69,39 @@ class _UpdateSectionState extends ConsumerState<UpdateSection> {
         padding: const EdgeInsets.all(kDefaultPadding),
         margin: const EdgeInsets.symmetric(vertical: 2 / 3 * kDefaultPadding),
         children: [
-          Row(children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(text, style: theme.textTheme.bodyMedium),
-                  if (hasSonglyrics)
-                    HighlightableWidget(
-                      foregroundColor: theme.colorScheme.primary,
-                      padding: const EdgeInsets.only(top: 2 / 3 * kDefaultPadding),
-                      onTap: () => context.push('/updated_song_lyrics', arguments: updatedSongLyrics),
-                      child: const Text('Zobrazit'),
-                    ),
-                  if (hasError)
-                    HighlightableWidget(
-                      foregroundColor: red,
-                      padding: const EdgeInsets.only(top: 2 / 3 * kDefaultPadding),
-                      onTap: () => launch(
-                          '$reportUrl?customfield_10056=$url&summary=Chyba při aktualizaci písní&description=$description'),
-                      child: const Text('Nahlásit chybu'),
-                    ),
-                ],
+          Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(text, style: theme.textTheme.bodyMedium),
+                    if (hasSonglyrics)
+                      HighlightableWidget(
+                        foregroundColor: theme.colorScheme.primary,
+                        padding: const EdgeInsets.only(top: 2 / 3 * kDefaultPadding),
+                        onTap: () => context.push('/updated_song_lyrics', arguments: updatedSongLyrics),
+                        child: const Text('Zobrazit'),
+                      ),
+                    if (hasError)
+                      HighlightableWidget(
+                        foregroundColor: red,
+                        padding: const EdgeInsets.only(top: 2 / 3 * kDefaultPadding),
+                        onTap: () => launch(
+                          '$reportUrl?customfield_10056=$url&summary=Chyba při aktualizaci písní&description=$description',
+                        ),
+                        child: const Text('Nahlásit chybu'),
+                      ),
+                  ],
+                ),
               ),
-            ),
-            if (isShowing && (hasSonglyrics || hasError))
-              HighlightableWidget(
-                onTap: () => setState(() => _isHidden = true),
-                icon: const Icon(Icons.close),
-              )
-          ]),
+              if (isShowing && (hasSonglyrics || hasError))
+                HighlightableWidget(
+                  onTap: () => setState(() => _isHidden = true),
+                  icon: const Icon(Icons.close),
+                ),
+            ],
+          ),
           if (!hasSonglyrics && !hasError)
             Container(
               padding: const EdgeInsets.only(top: kDefaultPadding / 2),

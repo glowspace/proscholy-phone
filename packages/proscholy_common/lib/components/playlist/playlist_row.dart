@@ -34,16 +34,18 @@ class PlaylistRow extends StatelessWidget {
       child: SelectedRowHighlight(
         selectedObjectNotifier: SelectedPlaylist.of(context),
         object: playlist,
-        child: Row(children: [
-          if (isReorderable) ReorderableDragStartListener(index: playlist.rank, child: leadingIcon) else leadingIcon,
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
-              child: Text(playlist.name),
+        child: Row(
+          children: [
+            if (isReorderable) ReorderableDragStartListener(index: playlist.rank, child: leadingIcon) else leadingIcon,
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
+                child: Text(playlist.name),
+              ),
             ),
-          ),
-          if (!playlist.isFavorites) PlaylistButton(playlist: playlist),
-        ]),
+            if (!playlist.isFavorites) PlaylistButton(playlist: playlist),
+          ],
+        ),
       ),
     );
   }

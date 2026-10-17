@@ -73,7 +73,7 @@ class RecentItems extends _$RecentItems {
 
     final newState = [
       recentItem,
-      ...state.where((element) => element.id != recentItem.id || element.recentItemType != recentItem.recentItemType)
+      ...state.where((element) => element.id != recentItem.id || element.recentItemType != recentItem.recentItemType),
     ];
 
     _update(newState);
@@ -132,8 +132,13 @@ class RecentItems extends _$RecentItems {
   void _update(List<RecentItem> newState) {
     state = newState.sublist(0, min(5, newState.length));
 
-    ref.read(appDependenciesProvider).sharedPreferences.setStringList(
-        _recentItemsKey, state.map((recentItem) => '${recentItem.recentItemType.rawValue};${recentItem.id}').toList());
+    ref
+        .read(appDependenciesProvider)
+        .sharedPreferences
+        .setStringList(
+          _recentItemsKey,
+          state.map((recentItem) => '${recentItem.recentItemType.rawValue};${recentItem.id}').toList(),
+        );
   }
 }
 

@@ -30,7 +30,7 @@ const _existingLogos = [
   'kan',
   'sdmkr',
   'h1',
-  'h2'
+  'h2',
 ];
 
 class SongbookTile extends StatelessWidget {
@@ -71,7 +71,7 @@ class SongbookTile extends StatelessWidget {
                           : Icons.push_pin_outlined,
                     ),
                   ),
-                )
+                ),
               ],
             ),
           ],

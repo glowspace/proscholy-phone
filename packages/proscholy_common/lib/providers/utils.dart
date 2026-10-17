@@ -43,8 +43,9 @@ Future<List<SongLyric>> storeSongLyrics(Store store, List<SongLyric> songLyrics)
   query.close();
 
   for (final songLyric in songLyrics) {
-    externals
-        .addAll(songLyric.externals.map((external) => external.copyWith(songLyric: ToOne(targetId: songLyric.id))));
+    externals.addAll(
+      songLyric.externals.map((external) => external.copyWith(songLyric: ToOne(targetId: songLyric.id))),
+    );
     songbookRecords.addAll(songLyric.songbookRecords);
 
     if (songLyricsWithSettings.containsKey(songLyric.id)) {
@@ -60,13 +61,17 @@ Future<List<SongLyric>> storeSongLyrics(Store store, List<SongLyric> songLyrics)
   ]);
 
   // index new song lyrics on iOS
-  SpotlightService.instance.indexItems(songLyrics
-      .map((songLyric) => SpotlightItem(
+  SpotlightService.instance.indexItems(
+    songLyrics
+        .map(
+          (songLyric) => SpotlightItem(
             identifier: 'song_lyric_${songLyric.id}',
             title: songLyric.name,
             description: songLyric.lyrics?.replaceAll(_chordRE, '') ?? '',
-          ))
-      .toList());
+          ),
+        )
+        .toList(),
+  );
 
   // retrieve the updated song lyrics with correctly setup relations
   return (await store.box<SongLyric>().getManyAsync(songLyricIds)).cast();

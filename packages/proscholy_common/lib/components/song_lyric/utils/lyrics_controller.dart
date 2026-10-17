@@ -35,11 +35,13 @@ class LyricsController extends AssetBundle {
 
     if (viewBoxMatch != null) _musicNotesWidth = double.parse(viewBoxMatch.group(1)!);
 
-    _musicNotes = svg.replaceFirstMapped(_sizeRE, (match) {
-      _musicNotesMaxWidth = double.parse(match.group(1)!);
+    _musicNotes = svg
+        .replaceFirstMapped(_sizeRE, (match) {
+          _musicNotesMaxWidth = double.parse(match.group(1)!);
 
-      return 'viewBox="0 0 ${viewBoxMatch!.group(1)!} ${viewBoxMatch.group(2)!}"';
-    }).replaceAll('Times,serif', 'Times New Roman');
+          return 'viewBox="0 0 ${viewBoxMatch!.group(1)!} ${viewBoxMatch.group(2)!}"';
+        })
+        .replaceAll('Times,serif', 'Times New Roman');
 
     return _musicNotes!;
   }

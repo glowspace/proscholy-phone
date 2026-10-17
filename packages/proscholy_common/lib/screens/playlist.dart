@@ -192,7 +192,9 @@ class _PlaylistScaffold extends StatelessWidget {
     final customText = await context.push('/playlist/custom_text/edit') as CustomText?;
 
     if (context.mounted && customText != null) {
-      context.providers.read(playlistsProvider.notifier).addToPlaylist(
+      context.providers
+          .read(playlistsProvider.notifier)
+          .addToPlaylist(
             playlist,
             customText: customText,
             afterRank: SelectedDisplayableItemArguments.of(context, listen: false)?.value.initialIndex,
@@ -204,7 +206,9 @@ class _PlaylistScaffold extends StatelessWidget {
     final bibleVerse = (await context.push('/playlist/bible_verse/select_verse')) as BibleVerse?;
 
     if (context.mounted && bibleVerse != null) {
-      context.providers.read(playlistsProvider.notifier).addToPlaylist(
+      context.providers
+          .read(playlistsProvider.notifier)
+          .addToPlaylist(
             playlist,
             bibleVerse: bibleVerse,
             afterRank: SelectedDisplayableItemArguments.of(context, listen: false)?.value.initialIndex,
@@ -216,7 +220,9 @@ class _PlaylistScaffold extends StatelessWidget {
     final songLyric = (await context.push('/search', arguments: SearchScreenArguments.returnSongLyric())) as SongLyric?;
 
     if (context.mounted && songLyric != null) {
-      context.providers.read(playlistsProvider.notifier).addToPlaylist(
+      context.providers
+          .read(playlistsProvider.notifier)
+          .addToPlaylist(
             playlist,
             songLyric: songLyric,
             afterRank: SelectedDisplayableItemArguments.of(context, listen: false)?.value.initialIndex,

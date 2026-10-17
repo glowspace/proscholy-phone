@@ -40,8 +40,8 @@ class SongLyricTag extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2).copyWith(
-                  right:
-                      songbookRecord == null || songbookRecord!.number.isEmpty ? kDefaultPadding : kDefaultPadding / 2),
+                right: songbookRecord == null || songbookRecord!.number.isEmpty ? kDefaultPadding : kDefaultPadding / 2,
+              ),
               child: Text(text),
             ),
             if (songbookRecord != null && songbookRecord!.number.isNotEmpty)

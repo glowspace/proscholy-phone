@@ -32,11 +32,13 @@ class AddFilterTag extends StatelessWidget {
           onTap: onTap,
           child: Padding(
             padding: const EdgeInsets.all(kDefaultPadding / 2),
-            child: Row(children: [
-              Icon(Icons.add, size: 12, color: addFilterButtonColor),
-              const SizedBox(width: kDefaultPadding / 4),
-              Text('Přidat filtr', style: theme.textTheme.labelMedium?.copyWith(color: addFilterButtonColor)),
-            ]),
+            child: Row(
+              children: [
+                Icon(Icons.add, size: 12, color: addFilterButtonColor),
+                const SizedBox(width: kDefaultPadding / 4),
+                Text('Přidat filtr', style: theme.textTheme.labelMedium?.copyWith(color: addFilterButtonColor)),
+              ],
+            ),
           ),
         ),
       ),

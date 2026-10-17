@@ -39,15 +39,17 @@ class Section extends StatelessWidget {
           if (outsideTitle != null)
             Padding(
               padding: const EdgeInsets.only(bottom: 2 / 3 * kDefaultPadding),
-              child: Row(children: [
-                Expanded(
-                  child: Text(
-                    outsideTitle!,
-                    style: outsideTitleLarge ? theme.textTheme.titleLarge : theme.textTheme.titleMedium,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      outsideTitle!,
+                      style: outsideTitleLarge ? theme.textTheme.titleLarge : theme.textTheme.titleMedium,
+                    ),
                   ),
-                ),
-                if (action != null) action!,
-              ]),
+                  if (action != null) action!,
+                ],
+              ),
             ),
           Container(
             padding: padding,
@@ -65,11 +67,13 @@ class Section extends StatelessWidget {
                   if (insideTitle != null)
                     Padding(
                       padding: padding == null ? const EdgeInsets.all(kDefaultPadding) : EdgeInsets.zero,
-                      child: Row(children: [
-                        Icon(insideTitleIcon, color: insideTitleIconColor),
-                        const SizedBox(width: kDefaultPadding),
-                        Text(insideTitle!, style: theme.textTheme.titleSmall),
-                      ]),
+                      child: Row(
+                        children: [
+                          Icon(insideTitleIcon, color: insideTitleIconColor),
+                          const SizedBox(width: kDefaultPadding),
+                          Text(insideTitle!, style: theme.textTheme.titleSmall),
+                        ],
+                      ),
                     ),
                   ...children,
                 ],

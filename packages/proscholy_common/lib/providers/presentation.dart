@@ -149,37 +149,43 @@ class PresentationProvider extends ChangeNotifier {
 
     final changeFunction = switch (displayableItem) {
       (BibleVerse bibleVerse) => () {
-          _songLyricsParser = null;
+        _songLyricsParser = null;
 
-          _changeShowingData(_presentationData.copyWith(
+        _changeShowingData(
+          _presentationData.copyWith(
             songLyricId: null,
             isCustomText: false,
             name: bibleVerse.displayName,
             text: bibleVerse.text,
-          ));
-        },
+          ),
+        );
+      },
       (CustomText customText) => () {
-          _songLyricsParser = null;
+        _songLyricsParser = null;
 
-          _changeShowingData(_presentationData.copyWith(
+        _changeShowingData(
+          _presentationData.copyWith(
             songLyricId: null,
             isCustomText: true,
             name: customText.name,
             text: customText.content,
-          ));
-        },
+          ),
+        );
+      },
       (SongLyric songLyric) => () {
-          final songLyricsParser = SongLyricsParser(songLyric);
+        final songLyricsParser = SongLyricsParser(songLyric);
 
-          _songLyricsParser = songLyricsParser;
+        _songLyricsParser = songLyricsParser;
 
-          return _changeShowingData(_presentationData.copyWith(
+        return _changeShowingData(
+          _presentationData.copyWith(
             songLyricId: songLyricsParser.songLyric.id,
             isCustomText: false,
             name: songLyricsParser.songLyric.name,
             text: songLyricsParser.getVerse(_part),
-          ));
-        },
+          ),
+        );
+      },
       _ => throw UnimplementedError(),
     };
 

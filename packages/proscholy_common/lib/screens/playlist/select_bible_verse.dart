@@ -235,31 +235,34 @@ class _SelectBibleVerseScreenState extends State<_SelectBibleVerseScreen> {
                   ),
                   margin: const EdgeInsets.fromLTRB(kDefaultPadding, kDefaultPadding, kDefaultPadding, 0),
                   padding: const EdgeInsets.all(kDefaultPadding),
-                  child: Row(children: [
-                    Icon(Icons.info, color: infoColorScheme.onPrimaryContainer),
-                    const SizedBox(width: kDefaultPadding),
-                    Expanded(
-                      child: RichText(
-                        text: TextSpan(
-                          text: 'Pro biblické verše je využíván ',
-                          style: textStyle,
-                          children: [
-                            TextSpan(text: 'Český ekumenický překlad', style: boldStyle),
-                            TextSpan(
-                              text: ', který je získáván prostřednictím volně dostupného rozhraní od$unbreakableSpace',
-                              style: textStyle,
-                            ),
-                            TextSpan(
-                              text: 'getbible.net',
-                              style: highlightedStyle,
-                              recognizer: TapGestureRecognizer()..onTap = () => launch('https://getbible.net'),
-                            ),
-                            const TextSpan(text: '.'),
-                          ],
+                  child: Row(
+                    children: [
+                      Icon(Icons.info, color: infoColorScheme.onPrimaryContainer),
+                      const SizedBox(width: kDefaultPadding),
+                      Expanded(
+                        child: RichText(
+                          text: TextSpan(
+                            text: 'Pro biblické verše je využíván ',
+                            style: textStyle,
+                            children: [
+                              TextSpan(text: 'Český ekumenický překlad', style: boldStyle),
+                              TextSpan(
+                                text:
+                                    ', který je získáván prostřednictím volně dostupného rozhraní od$unbreakableSpace',
+                                style: textStyle,
+                              ),
+                              TextSpan(
+                                text: 'getbible.net',
+                                style: highlightedStyle,
+                                recognizer: TapGestureRecognizer()..onTap = () => launch('https://getbible.net'),
+                              ),
+                              const TextSpan(text: '.'),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  ]),
+                    ],
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding, vertical: kDefaultPadding),
@@ -276,8 +279,9 @@ class _SelectBibleVerseScreenState extends State<_SelectBibleVerseScreen> {
                           onChanged: (value) => setState(() => _startVerse = int.tryParse(value) ?? 1),
                           decoration: InputDecoration(
                             labelText: 'Počáteční verš',
-                            labelStyle:
-                                startVerseInvalid ? theme.textTheme.labelLarge?.copyWith(color: Colors.red) : null,
+                            labelStyle: startVerseInvalid
+                                ? theme.textTheme.labelLarge?.copyWith(color: Colors.red)
+                                : null,
                             border: startVerseBorder,
                             enabledBorder: startVerseBorder,
                           ),
@@ -291,8 +295,9 @@ class _SelectBibleVerseScreenState extends State<_SelectBibleVerseScreen> {
                           onChanged: (value) => setState(() => _endVerse = int.tryParse(value)),
                           decoration: InputDecoration(
                             labelText: 'Koncový verš',
-                            labelStyle:
-                                endVerseInvalid ? theme.textTheme.labelLarge?.copyWith(color: Colors.red) : null,
+                            labelStyle: endVerseInvalid
+                                ? theme.textTheme.labelLarge?.copyWith(color: Colors.red)
+                                : null,
                             border: endVerseBorder,
                             enabledBorder: endVerseBorder,
                           ),
@@ -312,13 +317,15 @@ class _SelectBibleVerseScreenState extends State<_SelectBibleVerseScreen> {
                       ),
                       child: Consumer(
                         builder: (_, ref, __) => ref
-                            .watch(bibleVerseProvider(
-                              supportedBibleTranslations[1],
-                              widget.book,
-                              widget.chapter,
-                              _startVerse,
-                              endVerse: _endVerse,
-                            ))
+                            .watch(
+                              bibleVerseProvider(
+                                supportedBibleTranslations[1],
+                                widget.book,
+                                widget.chapter,
+                                _startVerse,
+                                endVerse: _endVerse,
+                              ),
+                            )
                             .when(
                               data: (verses) => Column(
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -349,20 +356,24 @@ class _SelectBibleVerseScreenState extends State<_SelectBibleVerseScreen> {
 
   void _pop() async {
     final context = this.context;
-    final text = await context.providers.read(bibleVerseProvider(
-      supportedBibleTranslations[1],
-      widget.book,
-      widget.chapter,
-      _startVerse,
-      endVerse: _endVerse,
-    ).future);
+    final text = await context.providers.read(
+      bibleVerseProvider(
+        supportedBibleTranslations[1],
+        widget.book,
+        widget.chapter,
+        _startVerse,
+        endVerse: _endVerse,
+      ).future,
+    );
 
     if (!context.mounted) return;
 
     final BibleVerse bibleVerse;
 
     if (widget.bibleVerse == null) {
-      bibleVerse = context.providers.read(playlistsProvider.notifier).createBibleVerse(
+      bibleVerse = context.providers
+          .read(playlistsProvider.notifier)
+          .createBibleVerse(
             book: widget.book.number - 1,
             chapter: widget.chapter,
             startVerse: _startVerse,

@@ -62,7 +62,8 @@ class Playlists extends _$Playlists {
 
     // TODO: remove this, it is just to fix errors during testflight
     _playlistRecordsBox.removeMany(
-        _playlistRecordsBox.query(PlaylistRecord_.playlist.equals(0)).build().property(PlaylistRecord_.id).find());
+      _playlistRecordsBox.query(PlaylistRecord_.playlist.equals(0)).build().property(PlaylistRecord_.id).find(),
+    );
 
     return playlists;
   }
@@ -97,15 +98,23 @@ class Playlists extends _$Playlists {
 
         _bibleVerseBox.put(duplicatedBibleVerse);
 
-        playlistRecords
-            .add(playlistRecord.copyWith(id: _nextPlaylistRecordId++, bibleVerse: ToOne(target: duplicatedBibleVerse)));
+        playlistRecords.add(
+          playlistRecord.copyWith(
+            id: _nextPlaylistRecordId++,
+            bibleVerse: ToOne(target: duplicatedBibleVerse),
+          ),
+        );
       } else if (customText != null) {
         final duplicatedCustomText = customText.copyWith(id: _nextCustomTextId++);
 
         _customTextBox.put(duplicatedCustomText);
 
-        playlistRecords
-            .add(playlistRecord.copyWith(id: _nextPlaylistRecordId++, customText: ToOne(target: duplicatedCustomText)));
+        playlistRecords.add(
+          playlistRecord.copyWith(
+            id: _nextPlaylistRecordId++,
+            customText: ToOne(target: duplicatedCustomText),
+          ),
+        );
       } else {
         playlistRecords.add(playlistRecord.copyWith(id: _nextPlaylistRecordId++));
       }
@@ -231,7 +240,7 @@ class Playlists extends _$Playlists {
 
     state = [
       for (final playlist in state)
-        if (playlist == playlistToRename) renamedPlaylist else playlist
+        if (playlist == playlistToRename) renamedPlaylist else playlist,
     ];
 
     _playlistsBox.put(renamedPlaylist);
@@ -242,7 +251,7 @@ class Playlists extends _$Playlists {
   void removePlaylist(Playlist playlistToRemove) {
     state = [
       for (final playlist in state)
-        if (playlist.id != playlistToRemove.id) playlist
+        if (playlist.id != playlistToRemove.id) playlist,
     ];
 
     // remove records first, as they might not be loaded and if we remove playlist first, it won't be possible to load them anymore
@@ -251,14 +260,18 @@ class Playlists extends _$Playlists {
 
     // delete this with delay, so it does not lead to exceptions when poping from playlist screen
     Future.delayed(const Duration(seconds: 1), () {
-      _customTextBox.removeMany(playlistToRemove.records
-          .map((playlistRecord) => playlistRecord.customText.targetId)
-          .where((id) => id != 0)
-          .toList());
-      _bibleVerseBox.removeMany(playlistToRemove.records
-          .map((playlistRecord) => playlistRecord.bibleVerse.targetId)
-          .where((id) => id != 0)
-          .toList());
+      _customTextBox.removeMany(
+        playlistToRemove.records
+            .map((playlistRecord) => playlistRecord.customText.targetId)
+            .where((id) => id != 0)
+            .toList(),
+      );
+      _bibleVerseBox.removeMany(
+        playlistToRemove.records
+            .map((playlistRecord) => playlistRecord.bibleVerse.targetId)
+            .where((id) => id != 0)
+            .toList(),
+      );
     });
   }
 
@@ -270,10 +283,12 @@ class Playlists extends _$Playlists {
     int? afterRank,
   }) {
     // prevent duplicates
-    if (playlist.records.any((playlistRecord) =>
-        playlistRecord.songLyric.targetId == songLyric?.id ||
-        playlistRecord.customText.targetId == customText?.id ||
-        playlistRecord.bibleVerse.targetId == bibleVerse?.id)) {
+    if (playlist.records.any(
+      (playlistRecord) =>
+          playlistRecord.songLyric.targetId == songLyric?.id ||
+          playlistRecord.customText.targetId == customText?.id ||
+          playlistRecord.bibleVerse.targetId == bibleVerse?.id,
+    )) {
       return;
     }
 
@@ -299,8 +314,9 @@ class Playlists extends _$Playlists {
     if (afterRank != null) {
       playlist.records.insert(afterRank + 1, playlistRecord);
 
-      final playlistRecords =
-          playlist.records.mapIndexed((i, playlistRecord) => playlistRecord.copyWith(rank: i)).toList();
+      final playlistRecords = playlist.records
+          .mapIndexed((i, playlistRecord) => playlistRecord.copyWith(rank: i))
+          .toList();
 
       playlist.records.clear();
       playlist.records.addAll(playlistRecords);
@@ -331,8 +347,9 @@ class Playlists extends _$Playlists {
     final favoritePlaylist = ref.read(favoritePlaylistProvider);
 
     if (songLyric.isFavorite) {
-      final playlistRecordToRemove = favoritePlaylist.records
-          .firstWhereOrNull((playlistRecord) => playlistRecord.songLyric.targetId == songLyric.id);
+      final playlistRecordToRemove = favoritePlaylist.records.firstWhereOrNull(
+        (playlistRecord) => playlistRecord.songLyric.targetId == songLyric.id,
+      );
 
       if (playlistRecordToRemove != null) {
         removeFromPlaylist(favoritePlaylist, playlistRecordToRemove);

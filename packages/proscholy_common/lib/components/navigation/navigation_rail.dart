@@ -19,7 +19,8 @@ class CustomNavigationRail extends StatelessWidget {
     final theme = Theme.of(context);
     final mediaQuery = MediaQuery.of(context);
 
-    final displayCollapseMenuButton = mediaQuery.size.width - _navigationRailWidth >
+    final displayCollapseMenuButton =
+        mediaQuery.size.width - _navigationRailWidth >
             (kDefaultSplitViewChildMinWidth + kDefaultSplitViewDetailMinWidth) &&
         (context.isPlaylist ||
             (context.isDisplay &&
@@ -55,18 +56,20 @@ class CustomNavigationRail extends StatelessWidget {
               onDestinationSelected: (index) => onDestinationSelected(context, index),
               leading: context.isHome
                   ? null
-                  : Column(children: [
-                      Image.asset('assets/images/logos/logo.png'),
-                      if (displayCollapseMenuButton)
-                        HighlightableWidget(
-                          onTap: context.providers.read(menuCollapsedProvider.notifier).toggle,
-                          icon: Consumer(
-                            builder: (_, ref, __) => Icon(
-                              ref.watch(menuCollapsedProvider) ? Icons.menu : Icons.menu_open,
+                  : Column(
+                      children: [
+                        Image.asset('assets/images/logos/logo.png'),
+                        if (displayCollapseMenuButton)
+                          HighlightableWidget(
+                            onTap: context.providers.read(menuCollapsedProvider.notifier).toggle,
+                            icon: Consumer(
+                              builder: (_, ref, __) => Icon(
+                                ref.watch(menuCollapsedProvider) ? Icons.menu : Icons.menu_open,
+                              ),
                             ),
                           ),
-                        ),
-                    ]),
+                      ],
+                    ),
               destinations: const [
                 NavigationRailDestination(
                   selectedIcon: Icon(Icons.home),

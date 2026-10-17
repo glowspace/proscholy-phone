@@ -36,8 +36,9 @@ class _PlaylistRecordsListViewState extends ConsumerState<PlaylistRecordsListVie
   late StreamSubscription<Query<PlaylistRecord>> _playlistChangesSubscription;
 
   // it is not possible to sort relations yet, so sort it here when displaying
-  late List<PlaylistRecord> _recordsOrdered =
-      _filterInvalidRecords(widget.playlist.records.sorted((a, b) => a.rank.compareTo(b.rank)));
+  late List<PlaylistRecord> _recordsOrdered = _filterInvalidRecords(
+    widget.playlist.records.sorted((a, b) => a.rank.compareTo(b.rank)),
+  );
 
   @override
   void initState() {
@@ -51,38 +52,42 @@ class _PlaylistRecordsListViewState extends ConsumerState<PlaylistRecordsListVie
         .query(PlaylistRecord_.playlist.equals(widget.playlist.id))
         .watch()
         .listen((_) {
-      setState(() =>
-          _recordsOrdered = _filterInvalidRecords(widget.playlist.records.sorted((a, b) => a.rank.compareTo(b.rank))));
+          setState(
+            () => _recordsOrdered = _filterInvalidRecords(
+              widget.playlist.records.sorted((a, b) => a.rank.compareTo(b.rank)),
+            ),
+          );
 
-      final context = this.context;
-      if (!context.mounted) return;
+          final context = this.context;
+          if (!context.mounted) return;
 
-      final selectedDisplayableItemArgumentsNotifier = SelectedDisplayableItemArguments.of(context, listen: false);
+          final selectedDisplayableItemArgumentsNotifier = SelectedDisplayableItemArguments.of(context, listen: false);
 
-      if (selectedDisplayableItemArgumentsNotifier != null) {
-        final displayableItems = _recordsOrdered.map(_unwrapPlaylistRecord).toList();
+          if (selectedDisplayableItemArgumentsNotifier != null) {
+            final displayableItems = _recordsOrdered.map(_unwrapPlaylistRecord).toList();
 
-        for (int i = 0; i < displayableItems.length; i++) {
-          if (displayableItems[i] ==
-              selectedDisplayableItemArgumentsNotifier
-                  .value.items[selectedDisplayableItemArgumentsNotifier.value.initialIndex]) {
+            for (int i = 0; i < displayableItems.length; i++) {
+              if (displayableItems[i] ==
+                  selectedDisplayableItemArgumentsNotifier.value.items[selectedDisplayableItemArgumentsNotifier
+                      .value
+                      .initialIndex]) {
+                selectedDisplayableItemArgumentsNotifier.value = DisplayScreenArguments(
+                  items: displayableItems,
+                  initialIndex: i,
+                  playlist: widget.playlist,
+                );
+
+                return;
+              }
+            }
+
             selectedDisplayableItemArgumentsNotifier.value = DisplayScreenArguments(
               items: displayableItems,
-              initialIndex: i,
+              initialIndex: 0,
               playlist: widget.playlist,
             );
-
-            return;
           }
-        }
-
-        selectedDisplayableItemArgumentsNotifier.value = DisplayScreenArguments(
-          items: displayableItems,
-          initialIndex: 0,
-          playlist: widget.playlist,
-        );
-      }
-    });
+        });
 
     widget.sortedAlphabeticallyNotifier.addListener(_sortedAlphabeticallyChanged);
   }
@@ -213,8 +218,11 @@ class _PlaylistRecordsListViewState extends ConsumerState<PlaylistRecordsListVie
 
   void _sortedAlphabeticallyChanged() {
     if (widget.sortedAlphabeticallyNotifier.value) {
-      setState(() => _recordsOrdered = widget.playlist.records
-          .sorted((a, b) => _unwrapPlaylistRecord(a).displayName.compareTo(_unwrapPlaylistRecord(b).displayName)));
+      setState(
+        () => _recordsOrdered = widget.playlist.records.sorted(
+          (a, b) => _unwrapPlaylistRecord(a).displayName.compareTo(_unwrapPlaylistRecord(b).displayName),
+        ),
+      );
     } else {
       setState(() => _recordsOrdered = widget.playlist.records.sorted((a, b) => a.rank.compareTo(b.rank)));
     }

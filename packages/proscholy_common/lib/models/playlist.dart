@@ -25,18 +25,18 @@ sealed class Playlist with _$Playlist implements Identifiable, RecentItem, Songs
   }) = _Playlist;
 
   factory Playlist.favorites() => Playlist(
-        id: favoritesPlaylistId,
-        name: _favoritesName,
-        rank: 0,
-        records: ToMany(),
-      );
+    id: favoritesPlaylistId,
+    name: _favoritesName,
+    rank: 0,
+    records: ToMany(),
+  );
 
   Tag get tag => Tag(
-        id: id + playlistIdOffset,
-        name: name,
-        dbType: TagType.playlist.rawValue,
-        songLyricsCount: records.length,
-      );
+    id: id + playlistIdOffset,
+    name: name,
+    dbType: TagType.playlist.rawValue,
+    songLyricsCount: records.length,
+  );
 
   bool get isFavorites => id == favoritesPlaylistId;
 

@@ -118,8 +118,9 @@ class SearchSongLyricsListView extends ConsumerWidget {
               if (index == 0) {
                 return Padding(
                   padding: const EdgeInsets.only(top: kDefaultPadding),
-                  child:
-                      SongLyricsSectionTitle(title: 'Číslo ${searchedSongLyricsResult.searchedNumber} ve zpěvnících'),
+                  child: SongLyricsSectionTitle(
+                    title: 'Číslo ${searchedSongLyricsResult.searchedNumber} ve zpěvnících',
+                  ),
                 );
               }
 
@@ -188,13 +189,17 @@ class SearchSongLyricsListView extends ConsumerWidget {
 
         final shouldRemove = switch (tagType) {
           TagType.language => selectedTags.none((tag) => tag.name == songLyric.langDescription),
-          TagType.playlist => selectedTags.none((tag) => songLyric.playlistRecords
-              .map((playlistRecord) => playlistRecord.playlist.target!)
-              .any((playlist) => tag.name == playlist.name)),
-          TagType.songbook => selectedTags.none((tag) => songLyric.songbookRecords
-              .map((songbookRecord) => songbookRecord.songbook.target!)
-              .any((songbook) => tag.name == songbook.name)),
-          _ => songLyric.tags.none((tag) => selectedTags.contains(tag))
+          TagType.playlist => selectedTags.none(
+            (tag) => songLyric.playlistRecords
+                .map((playlistRecord) => playlistRecord.playlist.target!)
+                .any((playlist) => tag.name == playlist.name),
+          ),
+          TagType.songbook => selectedTags.none(
+            (tag) => songLyric.songbookRecords
+                .map((songbookRecord) => songbookRecord.songbook.target!)
+                .any((songbook) => tag.name == songbook.name),
+          ),
+          _ => songLyric.tags.none((tag) => selectedTags.contains(tag)),
         };
 
         if (shouldRemove) {

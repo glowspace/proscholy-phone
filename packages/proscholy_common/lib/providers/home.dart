@@ -45,7 +45,7 @@ class HomeSectionSettings extends _$HomeSectionSettings {
   void remove(HomeSection homeSection) {
     state = [
       for (final section in state)
-        if (section != homeSection) section
+        if (section != homeSection) section,
     ];
 
     _save();
@@ -63,7 +63,7 @@ class HomeSectionSettings extends _$HomeSectionSettings {
         else if (i >= oldIndex && i < newIndex)
           state[i + 1]
         else
-          state[i]
+          state[i],
     ];
 
     _save();

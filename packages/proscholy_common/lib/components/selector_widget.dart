@@ -29,22 +29,24 @@ class SelectorWidget<T> extends StatelessWidget {
 
     return Padding(
       padding: padding,
-      child: Row(children: [
-        if (title != null)
-          Expanded(
-            child: Text(title!, style: textTheme.bodyMedium?.copyWith(color: isEnabled ? null : theme.disabledColor)),
+      child: Row(
+        children: [
+          if (title != null)
+            Expanded(
+              child: Text(title!, style: textTheme.bodyMedium?.copyWith(color: isEnabled ? null : theme.disabledColor)),
+            ),
+          SegmentedButton<T>(
+            style: SegmentedButton.styleFrom(
+              visualDensity: VisualDensity.compact,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+            segments: segments,
+            selected: {selected},
+            onSelectionChanged: isEnabled ? (selected) => onSelected(selected.first) : null,
+            showSelectedIcon: false,
           ),
-        SegmentedButton<T>(
-          style: SegmentedButton.styleFrom(
-            visualDensity: VisualDensity.compact,
-            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          ),
-          segments: segments,
-          selected: {selected},
-          onSelectionChanged: isEnabled ? (selected) => onSelected(selected.first) : null,
-          showSelectedIcon: false,
-        ),
-      ]),
+        ],
+      ),
     );
   }
 }

@@ -123,7 +123,7 @@ enum _ParserState {
   possibleVerseNumber,
   verseNumber,
   possibleVerseSubstitute,
-  verseLine
+  verseLine,
 }
 
 class _FilledTokensBuilder {

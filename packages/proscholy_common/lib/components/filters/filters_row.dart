@@ -31,13 +31,15 @@ class FiltersRow extends ConsumerWidget {
           Expanded(
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              child: Row(children: [
-                ...selectedTags.map((tag) => FilterTag(tag: tag, isRemovable: true)),
-                if (!MediaQuery.of(context).isTablet ||
-                    0.6 * MediaQuery.sizeOf(context).width < kDefaultSplitViewDetailMinWidth ||
-                    !context.isSearching)
-                  AddFilterTag(onTap: () => _showFilters(context)),
-              ]),
+              child: Row(
+                children: [
+                  ...selectedTags.map((tag) => FilterTag(tag: tag, isRemovable: true)),
+                  if (!MediaQuery.of(context).isTablet ||
+                      0.6 * MediaQuery.sizeOf(context).width < kDefaultSplitViewDetailMinWidth ||
+                      !context.isSearching)
+                    AddFilterTag(onTap: () => _showFilters(context)),
+                ],
+              ),
             ),
           ),
         ],

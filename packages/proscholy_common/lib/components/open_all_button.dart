@@ -21,7 +21,12 @@ class OpenAllButton extends StatelessWidget {
         fontWeight: FontWeight.w500,
       ),
       onTap: onTap,
-      child: Row(children: [Text(title), const Icon(Icons.navigate_next, size: _navigateNextIconSize)]),
+      child: Row(
+        children: [
+          Text(title),
+          const Icon(Icons.navigate_next, size: _navigateNextIconSize),
+        ],
+      ),
     );
   }
 }
