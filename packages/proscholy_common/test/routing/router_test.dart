@@ -1,0 +1,76 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:proscholy_common/models/song_lyric.dart';
+import 'package:proscholy_common/models/utils.dart';
+import 'package:proscholy_common/providers/app_dependencies.dart';
+import 'package:proscholy_common/providers/utils.dart';
+import 'package:proscholy_common/routing/navigation_rail_wrapper.dart';
+import 'package:proscholy_common/routing/router.dart';
+import 'package:proscholy_common/screens/display.dart';
+import 'package:proscholy_common/screens/home.dart';
+import 'package:proscholy_common/screens/songbook.dart';
+import 'package:proscholy_common/screens/songbooks.dart';
+
+import '../utils.dart';
+
+void main() {
+  late BuildContext context;
+
+  Future<void> pumpProviderScope(WidgetTester tester) async {
+    final appDependencies = await tester.runAsync(() async {
+      final appDependencies = await createAppDependencies();
+      final data = readTestData();
+
+      await parseAndStoreData(appDependencies.store, data);
+      await storeSongLyrics(appDependencies.store, readJsonList(data[SongLyric.fieldKey], mapper: SongLyric.fromJson));
+
+      return appDependencies;
+    });
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [appDependenciesProvider.overrideWithValue(appDependencies!)],
+        child: Builder(
+          builder: (buildContext) {
+            context = buildContext;
+
+            return const SizedBox();
+          },
+        ),
+      ),
+    );
+  }
+
+  MaterialPageRoute route(String name) => AppRouter.generateRoute(RouteSettings(name: name)) as MaterialPageRoute;
+
+  Widget screen(String name) => (route(name).builder(context) as NavigationRailWrapper).builder(context);
+
+  testWidgets('song lyric links', (tester) async {
+    await pumpProviderScope(tester);
+
+    expect((screen('/pisen/1/at-srdce-me-tebe-vida') as DisplayScreen).items.single.id, 1);
+    expect((screen('/song_lyric?id=2') as DisplayScreen).items.single.id, 2);
+  });
+
+  testWidgets('songbook links', (tester) async {
+    await pumpProviderScope(tester);
+
+    expect((screen('/zpevnik/9/chvalozpevy-3') as SongbookScreen).songbook.id, 9);
+    expect(screen('/zpevniky'), isA<SongbooksScreen>());
+  });
+
+  testWidgets('search links', (tester) async {
+    await pumpProviderScope(tester);
+
+    expect(route('/hledani?text=srdce').settings.name, '/search');
+    expect(route('/hledani?text=srdce').fullscreenDialog, isTrue);
+    expect(route('/hledani').settings.name, '/');
+  });
+
+  testWidgets('unknown link opens home', (tester) async {
+    await pumpProviderScope(tester);
+
+    expect(screen('/neznama/stranka'), isA<HomeScreen>());
+  });
+}
