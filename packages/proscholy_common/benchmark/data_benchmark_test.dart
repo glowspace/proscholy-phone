@@ -21,6 +21,7 @@ import 'package:proscholy_common/providers/songbooks.dart';
 import 'package:proscholy_common/providers/svgs.dart';
 import 'package:proscholy_common/providers/tags.dart';
 import 'package:proscholy_common/utils/data.dart';
+import 'package:proscholy_common/utils/fts_search.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
@@ -49,6 +50,7 @@ void main() {
   late Directory directory;
   late Store store;
   late Database ftsDatabase;
+  late FTSSearch ftsSearch;
   late Map<String, dynamic> data;
   late List<SongLyric> storedSongLyrics;
 
@@ -58,6 +60,7 @@ void main() {
 
     sqfliteFfiInit();
     ftsDatabase = await databaseFactoryFfi.openDatabase('${directory.path}/fts.db');
+    ftsSearch = FTSSearch(database: ftsDatabase, songLyricsBox: store.box<SongLyric>());
   });
 
   tearDownAll(() async {
@@ -95,7 +98,7 @@ void main() {
       'songbook records': store.box<SongbookRecord>().count(),
     });
 
-    await benchmark.measure('build search index', () => SearchedSongLyrics.update(ftsDatabase, storedSongLyrics));
+    await benchmark.measure('build search index', () => ftsSearch.update(storedSongLyrics));
   });
 
   test('loading data of new version of the app', () async {
@@ -122,7 +125,7 @@ void main() {
 
     await benchmark.measure(
       'update search index with 200 song lyrics',
-      () => SearchedSongLyrics.update(ftsDatabase, storedUpdatedSongLyrics),
+      () => ftsSearch.update(storedUpdatedSongLyrics),
     );
   });
 

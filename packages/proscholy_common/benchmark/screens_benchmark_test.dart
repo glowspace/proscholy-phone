@@ -11,6 +11,7 @@ import 'package:proscholy_common/models/utils.dart';
 import 'package:proscholy_common/providers/search.dart';
 import 'package:proscholy_common/screens/search.dart';
 import 'package:proscholy_common/utils/data.dart';
+import 'package:proscholy_common/views/app_dependencies.dart';
 
 import '../test/utils.dart';
 import 'utils.dart';
@@ -33,7 +34,7 @@ void main() {
         readJsonList(data[SongLyric.fieldKey], mapper: SongLyric.fromJson),
       );
 
-      await SearchedSongLyrics.update(appDependencies.ftsDatabase, songLyrics);
+      await appDependencies.ftsSearch.update(songLyrics);
 
       final longestSongLyric = songLyrics.reduce(
         (a, b) => (a.lyrics?.length ?? 0) >= (b.lyrics?.length ?? 0) ? a : b,

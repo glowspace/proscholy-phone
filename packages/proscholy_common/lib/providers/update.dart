@@ -11,17 +11,16 @@ import 'package:proscholy_common/constants.dart';
 import 'package:proscholy_common/providers/svgs.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:proscholy_common/models/news_item.dart';
 import 'package:proscholy_common/models/generated/objectbox.g.dart';
 import 'package:proscholy_common/models/song_lyric.dart';
 import 'package:proscholy_common/models/utils.dart';
 import 'package:proscholy_common/providers/app_dependencies.dart';
-import 'package:proscholy_common/providers/search.dart';
 import 'package:proscholy_common/providers/song_lyrics.dart';
 import 'package:proscholy_common/utils/api_client.dart';
 import 'package:proscholy_common/utils/data.dart';
 import 'package:proscholy_common/utils/services/spotlight.dart';
+import 'package:proscholy_common/views/app_dependencies.dart';
 
 part 'generated/update.g.dart';
 
@@ -76,10 +75,8 @@ Future<void> loadInitial(AppDependencies appDependencies) async {
   );
 
   // drop "song_lyrics_search" table as there might be change in structure from last version
-  try {
-    await appDependencies.ftsDatabase.execute('DROP TABLE song_lyrics_search');
-  } on DatabaseException {} // ignore exceptions if database does not exist
-  SearchedSongLyrics.update(appDependencies.ftsDatabase, songLyrics);
+  await appDependencies.ftsSearch.drop();
+  appDependencies.ftsSearch.update(songLyrics);
 
   appDependencies.sharedPreferences.remove(_lastUpdateKey);
   appDependencies.sharedPreferences.setString(_versionKey, currentVersion);
@@ -192,7 +189,7 @@ Stream<UpdateStatus> _update(Ref ref) async* {
 
   _cleanup(appDependencies);
 
-  await SearchedSongLyrics.update(appDependencies.ftsDatabase, updatedSongLyrics);
+  await appDependencies.ftsSearch.update(updatedSongLyrics);
 
   yield Updated(updatedSongLyrics);
 

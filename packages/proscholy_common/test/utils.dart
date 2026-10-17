@@ -17,7 +17,6 @@ import 'package:proscholy_common/models/song_lyric.dart';
 import 'package:proscholy_common/models/utils.dart';
 import 'package:proscholy_common/providers/app_dependencies.dart';
 import 'package:proscholy_common/providers/internet_connection.dart';
-import 'package:proscholy_common/providers/search.dart';
 import 'package:proscholy_common/providers/settings.dart';
 import 'package:proscholy_common/providers/svgs.dart';
 import 'package:proscholy_common/providers/update.dart';
@@ -26,6 +25,7 @@ import 'package:proscholy_common/routing/router.dart';
 import 'package:proscholy_common/theme.dart';
 import 'package:proscholy_common/utils/data.dart';
 import 'package:proscholy_common/utils/services/external_actions.dart';
+import 'package:proscholy_common/views/app_dependencies.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
@@ -128,7 +128,7 @@ Future<List<SongLyric>> storeTestData(AppDependencies appDependencies) async {
     readJsonList(data[SongLyric.fieldKey], mapper: SongLyric.fromJson),
   );
 
-  await SearchedSongLyrics.update(appDependencies.ftsDatabase, songLyrics);
+  await appDependencies.ftsSearch.update(songLyrics);
 
   return songLyrics;
 }

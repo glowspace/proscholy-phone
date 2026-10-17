@@ -5,6 +5,7 @@ import 'package:proscholy_common/models/song_lyric.dart';
 import 'package:proscholy_common/models/utils.dart';
 import 'package:proscholy_common/providers/search.dart';
 import 'package:proscholy_common/utils/data.dart';
+import 'package:proscholy_common/views/app_dependencies.dart';
 
 import '../utils.dart';
 
@@ -37,7 +38,7 @@ void main() {
       ],
     );
 
-    await SearchedSongLyrics.update(appDependencies.ftsDatabase, songLyrics);
+    await appDependencies.ftsSearch.update(songLyrics);
 
     container = createContainer(appDependencies);
     container.listen(searchedSongLyricsProvider, (_, _) {});
