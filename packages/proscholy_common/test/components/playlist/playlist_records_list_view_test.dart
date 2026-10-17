@@ -86,4 +86,16 @@ void main() {
 
     expect(shownNames(tester), ['Bože, chválí tebe', 'Ať srdce mé tebe vídá']);
   });
+
+  testWidgets('removing record', (tester) async {
+    await pumpPlaylist(tester);
+
+    await tester.drag(find.byType(PlaylistRecordRow).last, const Offset(-300, 0));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byIcon(Icons.delete));
+    await tester.pumpAndSettle();
+
+    expect(shownNames(tester), ['Bože, chválí tebe']);
+  });
 }

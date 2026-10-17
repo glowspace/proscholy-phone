@@ -191,7 +191,9 @@ class _PlaylistRecordsListViewState extends ConsumerState<PlaylistRecordsListVie
   void _removePlaylistRecord(int index) {
     context.providers.read(playlistsProvider.notifier).removeFromPlaylist(widget.playlist, _recordsOrdered[index]);
 
-    final removed = _recordsOrdered.removeAt(index);
+    final removed = _recordsOrdered[index];
+
+    setState(() => _recordsOrdered.removeAt(index));
 
     final selectedDisplayableItemArguments = SelectedDisplayableItemArguments.of(context);
 
