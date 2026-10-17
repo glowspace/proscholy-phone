@@ -27,7 +27,7 @@ sealed class PresentationData with _$PresentationData {
   @JsonSerializable(fieldRename: FieldRename.none)
   const factory PresentationData({
     int? songLyricId,
-    @Default(false) bool isCustomText,
+    @Default(false) bool isUserText,
     required String name,
     required String text,
     required PresentationSettings settings,

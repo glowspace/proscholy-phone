@@ -18,7 +18,7 @@ PlaylistRecord _record(int id, int songLyricId) {
     id: id,
     rank: id,
     songLyric: ToOne(targetId: songLyricId),
-    customText: ToOne(),
+    userText: ToOne(),
     biblePassage: ToOne(),
     playlist: ToOne(targetId: 2),
   );

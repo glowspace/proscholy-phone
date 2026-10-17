@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:proscholy_common/models/bible_passage.dart';
-import 'package:proscholy_common/models/custom_text.dart';
+import 'package:proscholy_common/models/user_text.dart';
 import 'package:proscholy_common/models/external.dart';
 import 'package:proscholy_common/models/playlist.dart';
 import 'package:proscholy_common/models/song_lyric.dart';
@@ -16,7 +16,7 @@ import 'package:proscholy_common/routing/navigation_rail_wrapper.dart';
 import 'package:proscholy_common/screens/about.dart';
 import 'package:proscholy_common/screens/display.dart';
 import 'package:proscholy_common/screens/home.dart';
-import 'package:proscholy_common/screens/playlist/custom_text_edit.dart';
+import 'package:proscholy_common/screens/playlist/user_text_edit.dart';
 import 'package:proscholy_common/screens/song_lyric/jpg.dart';
 import 'package:proscholy_common/screens/song_lyric/pdf.dart';
 import 'package:proscholy_common/screens/playlist.dart';
@@ -132,8 +132,8 @@ final class AppRouter {
         true,
         false,
       ),
-      '/playlist/custom_text/edit' => (
-        (_) => CustomTextEditScreen(customText: settings.arguments as CustomText?),
+      '/playlist/user_text/edit' => (
+        (_) => UserTextEditScreen(userText: settings.arguments as UserText?),
         true,
         false,
       ),

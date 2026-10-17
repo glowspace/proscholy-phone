@@ -406,11 +406,11 @@
         },
         {
           "id": "6:3910634938425838689",
-          "name": "customTextId",
+          "name": "userTextId",
           "indexId": "20:4666277981806120726",
           "type": 11,
           "flags": 520,
-          "relationTarget": "CustomText"
+          "relationTarget": "UserText"
         },
         {
           "id": "7:5967467250290572620",
@@ -465,7 +465,7 @@
     {
       "id": "21:2063445298157793913",
       "lastPropertyId": "3:4470839687834790316",
-      "name": "CustomText",
+      "name": "UserText",
       "properties": [
         {
           "id": "1:9044510006860898045",

@@ -13,7 +13,7 @@ import 'package:proscholy_common/components/selected_displayable_item_arguments.
 import 'package:proscholy_common/components/split_view.dart';
 import 'package:proscholy_common/constants.dart';
 import 'package:proscholy_common/models/bible_passage.dart';
-import 'package:proscholy_common/models/custom_text.dart';
+import 'package:proscholy_common/models/user_text.dart';
 import 'package:proscholy_common/models/playlist.dart';
 import 'package:proscholy_common/models/song_lyric.dart';
 import 'package:proscholy_common/providers/menu_collapsed.dart';
@@ -189,14 +189,14 @@ class _PlaylistScaffold extends StatelessWidget {
   }
 
   void _addText(BuildContext context) async {
-    final customText = await context.push('/playlist/custom_text/edit') as CustomText?;
+    final userText = await context.push('/playlist/user_text/edit') as UserText?;
 
-    if (context.mounted && customText != null) {
+    if (context.mounted && userText != null) {
       context.providers
           .read(playlistsProvider.notifier)
           .addToPlaylist(
             playlist,
-            customText: customText,
+            userText: userText,
             afterRank: SelectedDisplayableItemArguments.of(context, listen: false)?.value.initialIndex,
           );
     }

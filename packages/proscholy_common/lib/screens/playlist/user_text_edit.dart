@@ -6,25 +6,25 @@ import 'package:proscholy_common/components/custom/close_button.dart';
 import 'package:proscholy_common/components/highlightable_widget.dart';
 import 'package:proscholy_common/components/navigation/scaffold.dart';
 import 'package:proscholy_common/constants.dart';
-import 'package:proscholy_common/models/custom_text.dart';
+import 'package:proscholy_common/models/user_text.dart';
 import 'package:proscholy_common/providers/app_dependencies.dart';
 import 'package:proscholy_common/providers/playlists.dart';
 import 'package:proscholy_common/utils/extensions.dart';
 
-class CustomTextEditScreen extends StatefulWidget {
-  final CustomText? customText;
+class UserTextEditScreen extends StatefulWidget {
+  final UserText? userText;
 
-  const CustomTextEditScreen({super.key, this.customText});
+  const UserTextEditScreen({super.key, this.userText});
 
   @override
-  State<CustomTextEditScreen> createState() => _CustomTextEditScreenState();
+  State<UserTextEditScreen> createState() => _UserTextEditScreenState();
 }
 
-class _CustomTextEditScreenState extends State<CustomTextEditScreen> {
-  late final _nameController = TextEditingController(text: widget.customText?.name);
+class _UserTextEditScreenState extends State<UserTextEditScreen> {
+  late final _nameController = TextEditingController(text: widget.userText?.name);
 
   late final _controller = QuillController(
-    document: _deserializeMarkdownToDocument(widget.customText?.content ?? ''),
+    document: _deserializeMarkdownToDocument(widget.userText?.content ?? ''),
     selection: const TextSelection.collapsed(offset: 0),
   );
 
@@ -91,22 +91,22 @@ class _CustomTextEditScreenState extends State<CustomTextEditScreen> {
   }
 
   void _editOrPop(String name) {
-    final CustomText customText;
+    final UserText userText;
 
-    if (widget.customText == null) {
-      customText = context.providers
+    if (widget.userText == null) {
+      userText = context.providers
           .read(playlistsProvider.notifier)
-          .createCustomText(name: name, content: _serializeDocumentToMarkdown(_controller.document) ?? '');
+          .createUserText(name: name, content: _serializeDocumentToMarkdown(_controller.document) ?? '');
     } else {
-      customText = widget.customText!.copyWith(
+      userText = widget.userText!.copyWith(
         name: name,
         content: _serializeDocumentToMarkdown(_controller.document) ?? '',
       );
 
-      context.providers.read(appDependenciesProvider).store.box<CustomText>().put(customText);
+      context.providers.read(appDependenciesProvider).store.box<UserText>().put(userText);
     }
 
-    context.pop(customText);
+    context.pop(userText);
   }
 
   String? _serializeDocumentToMarkdown(Document document) {

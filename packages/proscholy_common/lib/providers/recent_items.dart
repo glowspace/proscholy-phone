@@ -2,14 +2,14 @@ import 'dart:math';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:proscholy_common/models/bible_passage.dart';
-import 'package:proscholy_common/models/custom_text.dart';
+import 'package:proscholy_common/models/user_text.dart';
 import 'package:proscholy_common/models/model.dart';
 import 'package:proscholy_common/models/playlist.dart';
 import 'package:proscholy_common/models/song_lyric.dart';
 import 'package:proscholy_common/models/songbook.dart';
 import 'package:proscholy_common/providers/app_dependencies.dart';
 import 'package:proscholy_common/providers/bible_passage.dart';
-import 'package:proscholy_common/providers/custom_text.dart';
+import 'package:proscholy_common/providers/user_text.dart';
 import 'package:proscholy_common/providers/playlists.dart';
 
 part 'generated/recent_items.g.dart';
@@ -24,7 +24,7 @@ class RecentItems extends _$RecentItems {
     final appDependencies = ref.read(appDependenciesProvider);
 
     final biblePassageIds = <int>[];
-    final customTextIds = <int>[];
+    final userTextIds = <int>[];
     final playlistIds = <int>[];
     final songbookIds = <int>[];
     final songLyricIds = <int>[];
@@ -36,8 +36,8 @@ class RecentItems extends _$RecentItems {
         case RecentItemType.biblePassage:
           biblePassageIds.add(int.parse(splitted[1]));
           break;
-        case RecentItemType.customText:
-          customTextIds.add(int.parse(splitted[1]));
+        case RecentItemType.userText:
+          userTextIds.add(int.parse(splitted[1]));
           break;
         case RecentItemType.playlist:
           playlistIds.add(int.parse(splitted[1]));
@@ -58,7 +58,7 @@ class RecentItems extends _$RecentItems {
         .cast<RecentItem>()
         .toList();
 
-    recentItems.addAll(appDependencies.store.box<CustomText>().getMany(customTextIds).nonNulls);
+    recentItems.addAll(appDependencies.store.box<UserText>().getMany(userTextIds).nonNulls);
     recentItems.addAll(appDependencies.store.box<Playlist>().getMany(playlistIds).nonNulls);
     recentItems.addAll(appDependencies.store.box<Songbook>().getMany(songbookIds).nonNulls);
     recentItems.addAll(appDependencies.store.box<SongLyric>().getMany(songLyricIds).nonNulls);
@@ -90,10 +90,10 @@ class RecentItems extends _$RecentItems {
         ref.onDispose(subscription.close);
 
         break;
-      case (CustomText customText):
+      case (UserText userText):
         final subscription = ref.listen(
-          customTextProvider(customText.id),
-          (_, newCustomText) => _updateItem(newCustomText, customText.id),
+          userTextProvider(userText.id),
+          (_, newUserText) => _updateItem(newUserText, userText.id),
         );
 
         ref.onDispose(subscription.close);

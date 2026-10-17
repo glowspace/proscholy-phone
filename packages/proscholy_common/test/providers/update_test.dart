@@ -107,7 +107,7 @@ void main() {
         id: 1,
         rank: 0,
         songLyric: ToOne(targetId: 1),
-        customText: ToOne(),
+        userText: ToOne(),
         biblePassage: ToOne(),
         playlist: ToOne(targetId: 1),
       ),

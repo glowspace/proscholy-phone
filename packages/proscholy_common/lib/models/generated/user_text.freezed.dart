@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of '../custom_text.dart';
+part of '../user_text.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -12,14 +12,14 @@ part of '../custom_text.dart';
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
-mixin _$CustomText {
+mixin _$UserText {
 
 @Id(assignable: true) int get id; String get name; String get content;
-/// Create a copy of CustomText
+/// Create a copy of UserText
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$CustomTextCopyWith<CustomText> get copyWith => _$CustomTextCopyWithImpl<CustomText>(this as CustomText, _$identity);
+$UserTextCopyWith<UserText> get copyWith => _$UserTextCopyWithImpl<UserText>(this as UserText, _$identity);
 
 
 
@@ -27,15 +27,15 @@ $CustomTextCopyWith<CustomText> get copyWith => _$CustomTextCopyWithImpl<CustomT
 
 @override
 String toString() {
-  return 'CustomText(id: $id, name: $name, content: $content)';
+  return 'UserText(id: $id, name: $name, content: $content)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $CustomTextCopyWith<$Res>  {
-  factory $CustomTextCopyWith(CustomText value, $Res Function(CustomText) _then) = _$CustomTextCopyWithImpl;
+abstract mixin class $UserTextCopyWith<$Res>  {
+  factory $UserTextCopyWith(UserText value, $Res Function(UserText) _then) = _$UserTextCopyWithImpl;
 @useResult
 $Res call({
 @Id(assignable: true) int id, String name, String content
@@ -46,14 +46,14 @@ $Res call({
 
 }
 /// @nodoc
-class _$CustomTextCopyWithImpl<$Res>
-    implements $CustomTextCopyWith<$Res> {
-  _$CustomTextCopyWithImpl(this._self, this._then);
+class _$UserTextCopyWithImpl<$Res>
+    implements $UserTextCopyWith<$Res> {
+  _$UserTextCopyWithImpl(this._self, this._then);
 
-  final CustomText _self;
-  final $Res Function(CustomText) _then;
+  final UserText _self;
+  final $Res Function(UserText) _then;
 
-/// Create a copy of CustomText
+/// Create a copy of UserText
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? content = null,}) {
   return _then(_self.copyWith(
@@ -67,8 +67,8 @@ as String,
 }
 
 
-/// Adds pattern-matching-related methods to [CustomText].
-extension CustomTextPatterns on CustomText {
+/// Adds pattern-matching-related methods to [UserText].
+extension UserTextPatterns on UserText {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:
@@ -81,10 +81,10 @@ extension CustomTextPatterns on CustomText {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _CustomText value)?  $default,{required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _UserText value)?  $default,{required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _CustomText() when $default != null:
+case _UserText() when $default != null:
 return $default(_that);case _:
   return orElse();
 
@@ -103,10 +103,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _CustomText value)  $default,){
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _UserText value)  $default,){
 final _that = this;
 switch (_that) {
-case _CustomText():
+case _UserText():
 return $default(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
@@ -121,10 +121,10 @@ return $default(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _CustomText value)?  $default,){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _UserText value)?  $default,){
 final _that = this;
 switch (_that) {
-case _CustomText() when $default != null:
+case _UserText() when $default != null:
 return $default(_that);case _:
   return null;
 
@@ -144,7 +144,7 @@ return $default(_that);case _:
 
 @optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@Id(assignable: true)  int id,  String name,  String content)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _CustomText() when $default != null:
+case _UserText() when $default != null:
 return $default(_that.id,_that.name,_that.content);case _:
   return orElse();
 
@@ -165,7 +165,7 @@ return $default(_that.id,_that.name,_that.content);case _:
 
 @optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@Id(assignable: true)  int id,  String name,  String content)  $default,) {final _that = this;
 switch (_that) {
-case _CustomText():
+case _UserText():
 return $default(_that.id,_that.name,_that.content);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -182,7 +182,7 @@ return $default(_that.id,_that.name,_that.content);}
 
 @optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@Id(assignable: true)  int id,  String name,  String content)?  $default,) {final _that = this;
 switch (_that) {
-case _CustomText() when $default != null:
+case _UserText() when $default != null:
 return $default(_that.id,_that.name,_that.content);case _:
   return null;
 
@@ -193,20 +193,20 @@ return $default(_that.id,_that.name,_that.content);case _:
 
 /// @nodoc
 
-@Entity(realClass: CustomText)
-class _CustomText extends CustomText {
-  const _CustomText({@Id(assignable: true) required this.id, required this.name, required this.content}): super._();
+@Entity(realClass: UserText)
+class _UserText extends UserText {
+  const _UserText({@Id(assignable: true) required this.id, required this.name, required this.content}): super._();
   
 
 @override@Id(assignable: true) final  int id;
 @override final  String name;
 @override final  String content;
 
-/// Create a copy of CustomText
+/// Create a copy of UserText
 /// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$CustomTextCopyWith<_CustomText> get copyWith => __$CustomTextCopyWithImpl<_CustomText>(this, _$identity);
+_$UserTextCopyWith<_UserText> get copyWith => __$UserTextCopyWithImpl<_UserText>(this, _$identity);
 
 
 
@@ -214,15 +214,15 @@ _$CustomTextCopyWith<_CustomText> get copyWith => __$CustomTextCopyWithImpl<_Cus
 
 @override
 String toString() {
-  return 'CustomText(id: $id, name: $name, content: $content)';
+  return 'UserText(id: $id, name: $name, content: $content)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$CustomTextCopyWith<$Res> implements $CustomTextCopyWith<$Res> {
-  factory _$CustomTextCopyWith(_CustomText value, $Res Function(_CustomText) _then) = __$CustomTextCopyWithImpl;
+abstract mixin class _$UserTextCopyWith<$Res> implements $UserTextCopyWith<$Res> {
+  factory _$UserTextCopyWith(_UserText value, $Res Function(_UserText) _then) = __$UserTextCopyWithImpl;
 @override @useResult
 $Res call({
 @Id(assignable: true) int id, String name, String content
@@ -233,17 +233,17 @@ $Res call({
 
 }
 /// @nodoc
-class __$CustomTextCopyWithImpl<$Res>
-    implements _$CustomTextCopyWith<$Res> {
-  __$CustomTextCopyWithImpl(this._self, this._then);
+class __$UserTextCopyWithImpl<$Res>
+    implements _$UserTextCopyWith<$Res> {
+  __$UserTextCopyWithImpl(this._self, this._then);
 
-  final _CustomText _self;
-  final $Res Function(_CustomText) _then;
+  final _UserText _self;
+  final $Res Function(_UserText) _then;
 
-/// Create a copy of CustomText
+/// Create a copy of UserText
 /// with the given fields replaced by the non-null parameter values.
 @override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? content = null,}) {
-  return _then(_CustomText(
+  return _then(_UserText(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,content: null == content ? _self.content : content // ignore: cast_nullable_to_non_nullable

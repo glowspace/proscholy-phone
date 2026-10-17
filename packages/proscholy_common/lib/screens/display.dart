@@ -8,7 +8,7 @@ import 'package:proscholy_common/components/custom/back_button.dart';
 import 'package:proscholy_common/components/highlightable_widget.dart';
 import 'package:proscholy_common/components/navigation/scaffold.dart';
 import 'package:proscholy_common/components/playlist/bible_passage.dart';
-import 'package:proscholy_common/components/playlist/custom_text.dart';
+import 'package:proscholy_common/components/playlist/user_text.dart';
 import 'package:proscholy_common/components/playlist/playlists_sheet.dart';
 import 'package:proscholy_common/components/presentation/presentation.dart';
 import 'package:proscholy_common/components/presentation/settings.dart';
@@ -23,7 +23,7 @@ import 'package:proscholy_common/components/song_lyric/utils/auto_scroll.dart';
 import 'package:proscholy_common/components/split_view.dart';
 import 'package:proscholy_common/constants.dart';
 import 'package:proscholy_common/models/bible_passage.dart';
-import 'package:proscholy_common/models/custom_text.dart';
+import 'package:proscholy_common/models/user_text.dart';
 import 'package:proscholy_common/models/model.dart';
 import 'package:proscholy_common/models/playlist.dart';
 import 'package:proscholy_common/models/song_lyric.dart';
@@ -171,8 +171,8 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
                       biblePassage: biblePassage,
                       autoScrollController: _autoScrollController(index),
                     ),
-                    (CustomText customText) => CustomTextWidget(
-                      customText: customText,
+                    (UserText userText) => UserTextWidget(
+                      userText: userText,
                       autoScrollController: _autoScrollController(index),
                     ),
                     (SongLyric songLyric) => SongLyricWidget(
@@ -269,19 +269,19 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
           ),
         ],
       ),
-      (CustomText customText) => AppBar(
+      (UserText userText) => AppBar(
         leading: const CustomBackButton(),
-        title: Text(customText.name),
+        title: Text(userText.name),
         actions: [
           HighlightableWidget(
-            onTap: () => _editCustomText(customText),
+            onTap: () => _editUserText(userText),
             padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
             icon: const Icon(Icons.edit),
           ),
           HighlightableWidget(
             onTap: () => presentationNotifier.isPresenting
                 ? presentationNotifier.stop()
-                : context.push('/display/present').then((_) => presentationNotifier.change(customText)),
+                : context.push('/display/present').then((_) => presentationNotifier.change(userText)),
             padding: const EdgeInsets.only(left: kDefaultPadding, right: 1.5 * kDefaultPadding),
             icon: Icon(
               ref.watch(presentationProvider.select((presentation) => presentation.isPresenting))
@@ -395,11 +395,11 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
     }
   }
 
-  void _editCustomText(CustomText customText) async {
-    final editedCustomText = (await context.push('/playlist/custom_text/edit', arguments: customText)) as CustomText?;
+  void _editUserText(UserText userText) async {
+    final editedUserText = (await context.push('/playlist/user_text/edit', arguments: userText)) as UserText?;
 
-    if (editedCustomText != null) {
-      setState(() => _items[_currentIndex] = editedCustomText);
+    if (editedUserText != null) {
+      setState(() => _items[_currentIndex] = editedUserText);
     }
   }
 

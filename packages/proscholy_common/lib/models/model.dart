@@ -17,14 +17,14 @@ abstract class SongsList {
 
 enum RecentItemType {
   biblePassage,
-  customText,
+  userText,
   playlist,
   songbook,
   songLyric;
 
   int get rawValue => switch (this) {
     RecentItemType.biblePassage => 0,
-    RecentItemType.customText => 1,
+    RecentItemType.userText => 1,
     RecentItemType.playlist => 2,
     RecentItemType.songbook => 3,
     RecentItemType.songLyric => 4,
@@ -33,7 +33,7 @@ enum RecentItemType {
   factory RecentItemType.fromRawValue(int value) {
     return switch (value) {
       0 => RecentItemType.biblePassage,
-      1 => RecentItemType.customText,
+      1 => RecentItemType.userText,
       2 => RecentItemType.playlist,
       3 => RecentItemType.songbook,
       4 => RecentItemType.songLyric,

@@ -71,7 +71,7 @@ class Presentation extends StatelessWidget {
                   top: (presentationData.settings.showName ? 4 : 1) * textScaleFactor * kDefaultPadding,
                   bottom: (onExternalDisplay ? 1 : 8) * textScaleFactor * kDefaultPadding,
                 ),
-                child: presentationData.isCustomText
+                child: presentationData.isUserText
                     ? QuillEditor.basic(
                         controller: QuillController(
                           document: _deserializeMarkdownToDocument(presentingText),

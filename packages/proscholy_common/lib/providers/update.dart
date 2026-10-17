@@ -220,7 +220,7 @@ void _cleanup(AppDependencies appDependencies) async {
     PlaylistRecord_.songLyric
         .equals(0)
         .and(PlaylistRecord_.biblePassage.equals(0))
-        .and(PlaylistRecord_.customText.equals(0)),
+        .and(PlaylistRecord_.userText.equals(0)),
   );
 
   // remove shared playlists

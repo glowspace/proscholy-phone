@@ -16,7 +16,6 @@ import 'package:objectbox_flutter_libs/objectbox_flutter_libs.dart';
 
 import '../../models/author.dart';
 import '../../models/bible_passage.dart';
-import '../../models/custom_text.dart';
 import '../../models/external.dart';
 import '../../models/news_item.dart';
 import '../../models/playlist.dart';
@@ -27,6 +26,7 @@ import '../../models/song_lyric.dart';
 import '../../models/songbook.dart';
 import '../../models/songbook_record.dart';
 import '../../models/tag.dart';
+import '../../models/user_text.dart';
 
 export 'package:objectbox/objectbox.dart'; // so that callers only have to import this file
 
@@ -526,12 +526,12 @@ final _entities = <obx_int.ModelEntity>[
       ),
       obx_int.ModelProperty(
         id: const obx_int.IdUid(6, 3910634938425838689),
-        name: 'customTextId',
+        name: 'userTextId',
         type: 11,
         flags: 520,
         indexId: const obx_int.IdUid(20, 4666277981806120726),
-        relationField: 'customText',
-        relationTarget: 'CustomText',
+        relationField: 'userText',
+        relationTarget: 'UserText',
       ),
       obx_int.ModelProperty(
         id: const obx_int.IdUid(7, 5967467250290572620),
@@ -594,7 +594,7 @@ final _entities = <obx_int.ModelEntity>[
   ),
   obx_int.ModelEntity(
     id: const obx_int.IdUid(21, 2063445298157793913),
-    name: 'CustomText',
+    name: 'UserText',
     lastPropertyId: const obx_int.IdUid(3, 4470839687834790316),
     flags: 0,
     properties: <obx_int.ModelProperty>[
@@ -1578,7 +1578,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
       toOneRelations: (PlaylistRecord object) => [
         object.songLyric,
         object.playlist,
-        object.customText,
+        object.userText,
         object.biblePassage,
       ],
       toManyRelations: (PlaylistRecord object) => {},
@@ -1600,7 +1600,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
         fbb.addInt64(2, object.songLyric.targetId);
         fbb.addInt64(3, object.playlist.targetId);
         fbb.addInt64(4, object.rank);
-        fbb.addInt64(5, object.customText.targetId);
+        fbb.addInt64(5, object.userText.targetId);
         fbb.addInt64(6, object.biblePassage.targetId);
         fbb.finish(fbb.endTable());
         return object.id;
@@ -1623,7 +1623,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final songLyricParam = obx.ToOne<SongLyric>(
           targetId: const fb.Int64Reader().vTableGet(buffer, rootOffset, 8, 0),
         );
-        final customTextParam = obx.ToOne<CustomText>(
+        final userTextParam = obx.ToOne<UserText>(
           targetId: const fb.Int64Reader().vTableGet(buffer, rootOffset, 14, 0),
         );
         final biblePassageParam = obx.ToOne<BiblePassage>(
@@ -1636,13 +1636,13 @@ obx_int.ModelDefinition getObjectBoxModel() {
           id: idParam,
           rank: rankParam,
           songLyric: songLyricParam,
-          customText: customTextParam,
+          userText: userTextParam,
           biblePassage: biblePassageParam,
           playlist: playlistParam,
         );
         object.songLyric.attach(store);
         object.playlist.attach(store);
-        object.customText.attach(store);
+        object.userText.attach(store);
         object.biblePassage.attach(store);
         return object;
       },
@@ -1722,15 +1722,15 @@ obx_int.ModelDefinition getObjectBoxModel() {
         return object;
       },
     ),
-    CustomText: obx_int.EntityDefinition<CustomText>(
+    UserText: obx_int.EntityDefinition<UserText>(
       model: _entities[11],
-      toOneRelations: (CustomText object) => [],
-      toManyRelations: (CustomText object) => {},
-      getId: (CustomText object) => object.id,
-      setId: (CustomText object, int id) {
+      toOneRelations: (UserText object) => [],
+      toManyRelations: (UserText object) => {},
+      getId: (UserText object) => object.id,
+      setId: (UserText object, int id) {
         if (object.id != id) {
           throw ArgumentError(
-            'Field CustomText.id is read-only '
+            'Field UserText.id is read-only '
             '(final or getter-only) and it was declared to be self-assigned. '
             'However, the currently inserted object (.id=${object.id}) '
             "doesn't match the inserted ID (ID $id). "
@@ -1738,7 +1738,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
           );
         }
       },
-      objectToFB: (CustomText object, fb.Builder fbb) {
+      objectToFB: (UserText object, fb.Builder fbb) {
         final nameOffset = fbb.writeString(object.name);
         final contentOffset = fbb.writeString(object.content);
         fbb.startTable(4);
@@ -1763,7 +1763,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final contentParam = const fb.StringReader(
           asciiOptimization: true,
         ).vTableGet(buffer, rootOffset, 8, '');
-        final object = CustomText(
+        final object = UserText(
           id: idParam,
           name: nameParam,
           content: contentParam,
@@ -2190,8 +2190,8 @@ class PlaylistRecord_ {
     _entities[9].properties[3],
   );
 
-  /// See [PlaylistRecord.customText].
-  static final customText = obx.QueryRelationToOne<PlaylistRecord, CustomText>(
+  /// See [PlaylistRecord.userText].
+  static final userText = obx.QueryRelationToOne<PlaylistRecord, UserText>(
     _entities[9].properties[4],
   );
 
@@ -2235,20 +2235,20 @@ class BiblePassage_ {
   );
 }
 
-/// [CustomText] entity fields to define ObjectBox queries.
-class CustomText_ {
-  /// See [CustomText.id].
-  static final id = obx.QueryIntegerProperty<CustomText>(
+/// [UserText] entity fields to define ObjectBox queries.
+class UserText_ {
+  /// See [UserText.id].
+  static final id = obx.QueryIntegerProperty<UserText>(
     _entities[11].properties[0],
   );
 
-  /// See [CustomText.name].
-  static final name = obx.QueryStringProperty<CustomText>(
+  /// See [UserText.name].
+  static final name = obx.QueryStringProperty<UserText>(
     _entities[11].properties[1],
   );
 
-  /// See [CustomText.content].
-  static final content = obx.QueryStringProperty<CustomText>(
+  /// See [UserText.content].
+  static final content = obx.QueryStringProperty<UserText>(
     _entities[11].properties[2],
   );
 }

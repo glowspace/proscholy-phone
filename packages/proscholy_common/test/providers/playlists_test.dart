@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:proscholy_common/models/custom_text.dart';
+import 'package:proscholy_common/models/user_text.dart';
 import 'package:proscholy_common/models/playlist.dart';
 import 'package:proscholy_common/models/playlist_record.dart';
 import 'package:proscholy_common/models/song_lyric.dart';
@@ -30,7 +30,7 @@ void main() {
     return [
       for (final playlistRecord in sortedRecords(playlist))
         playlistRecord.songLyric.target?.name ??
-            playlistRecord.customText.target?.name ??
+            playlistRecord.userText.target?.name ??
             playlistRecord.biblePassage.target!.displayName,
     ];
   }
@@ -88,7 +88,7 @@ void main() {
     notifier.addToPlaylist(newPlaylist, songLyric: songLyric(1));
     notifier.addToPlaylist(
       newPlaylist,
-      customText: notifier.createCustomText(name: 'Ohlášky', content: 'text'),
+      userText: notifier.createUserText(name: 'Ohlášky', content: 'text'),
     );
     notifier.addToPlaylist(
       newPlaylist,
@@ -109,9 +109,9 @@ void main() {
 
   test('removing record removes its custom text', () {
     final newPlaylist = notifier.createPlaylist('Mše');
-    final customText = notifier.createCustomText(name: 'Ohlášky', content: 'text');
+    final userText = notifier.createUserText(name: 'Ohlášky', content: 'text');
 
-    notifier.addToPlaylist(newPlaylist, customText: customText);
+    notifier.addToPlaylist(newPlaylist, userText: userText);
 
     final playlistRecord = playlist(newPlaylist.id).records.single;
 
@@ -120,7 +120,7 @@ void main() {
     final store = container.read(appDependenciesProvider).store;
 
     expect(store.box<PlaylistRecord>().get(playlistRecord.id), isNull);
-    expect(store.box<CustomText>().get(customText.id), isNull);
+    expect(store.box<UserText>().get(userText.id), isNull);
   });
 
   test('duplicated playlist has own custom texts', () {
@@ -129,17 +129,17 @@ void main() {
     notifier.addToPlaylist(original, songLyric: songLyric(1));
     notifier.addToPlaylist(
       original,
-      customText: notifier.createCustomText(name: 'Ohlášky', content: 'text'),
+      userText: notifier.createUserText(name: 'Ohlášky', content: 'text'),
     );
 
     final duplicate = notifier.duplicatePlaylist(playlist(original.id), 'Mše (kopie)');
 
     expect(records(playlist(duplicate.id)), records(playlist(original.id)));
 
-    final originalCustomText = sortedRecords(playlist(original.id)).last.customText.targetId;
-    final duplicatedCustomText = sortedRecords(playlist(duplicate.id)).last.customText.targetId;
+    final originalUserText = sortedRecords(playlist(original.id)).last.userText.targetId;
+    final duplicatedUserText = sortedRecords(playlist(duplicate.id)).last.userText.targetId;
 
-    expect(duplicatedCustomText, isNot(originalCustomText));
+    expect(duplicatedUserText, isNot(originalUserText));
   });
 
   test('shared playlist is accepted with song lyric settings', () {
@@ -148,7 +148,7 @@ void main() {
     notifier.addToPlaylist(original, songLyric: songLyric(1));
     notifier.addToPlaylist(
       original,
-      customText: notifier.createCustomText(name: 'Ohlášky', content: 'text'),
+      userText: notifier.createUserText(name: 'Ohlášky', content: 'text'),
     );
     notifier.addToPlaylist(
       original,

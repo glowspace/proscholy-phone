@@ -13,7 +13,7 @@ import 'package:proscholy_common/models/playlist.dart';
 import 'package:proscholy_common/models/playlist_record.dart';
 import 'package:proscholy_common/providers/app_dependencies.dart';
 import 'package:proscholy_common/providers/bible_passage.dart';
-import 'package:proscholy_common/providers/custom_text.dart';
+import 'package:proscholy_common/providers/user_text.dart';
 import 'package:proscholy_common/providers/playlists.dart';
 import 'package:proscholy_common/providers/song_lyrics.dart';
 import 'package:proscholy_common/routing/arguments.dart';
@@ -147,22 +147,22 @@ class _PlaylistRecordsListViewState extends ConsumerState<PlaylistRecordsListVie
   List<PlaylistRecord> _filterInvalidRecords(List<PlaylistRecord> playlistRecords) {
     return playlistRecords.where((playlistRecord) {
       final biblePassage = ref.watch(biblePassageProvider(playlistRecord.biblePassage.targetId));
-      final customText = ref.watch(customTextProvider(playlistRecord.customText.targetId));
+      final userText = ref.watch(userTextProvider(playlistRecord.userText.targetId));
       final songLyric = ref.watch(songLyricProvider(playlistRecord.songLyric.targetId));
 
-      return biblePassage != null || customText != null || songLyric != null;
+      return biblePassage != null || userText != null || songLyric != null;
     }).toList();
   }
 
   DisplayableItem _unwrapPlaylistRecord(PlaylistRecord playlistRecord) {
     final biblePassage = ref.watch(biblePassageProvider(playlistRecord.biblePassage.targetId));
-    final customText = ref.watch(customTextProvider(playlistRecord.customText.targetId));
+    final userText = ref.watch(userTextProvider(playlistRecord.userText.targetId));
     final songLyric = ref.watch(songLyricProvider(playlistRecord.songLyric.targetId));
 
     if (biblePassage != null) {
       return biblePassage;
-    } else if (customText != null) {
-      return customText;
+    } else if (userText != null) {
+      return userText;
     }
 
     return songLyric!;

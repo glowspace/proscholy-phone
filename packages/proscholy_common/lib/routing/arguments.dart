@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:proscholy_common/models/bible_passage.dart';
-import 'package:proscholy_common/models/custom_text.dart';
+import 'package:proscholy_common/models/user_text.dart';
 import 'package:proscholy_common/models/model.dart';
 import 'package:proscholy_common/models/playlist.dart';
 import 'package:proscholy_common/models/song_lyric.dart';
@@ -28,8 +28,8 @@ class DisplayScreenArguments {
     return DisplayScreenArguments(items: [biblePassage]);
   }
 
-  factory DisplayScreenArguments.customText(CustomText customText) {
-    return DisplayScreenArguments(items: [customText]);
+  factory DisplayScreenArguments.userText(UserText userText) {
+    return DisplayScreenArguments(items: [userText]);
   }
 
   factory DisplayScreenArguments.songLyric(SongLyric songLyric, {bool showSearchScreen = false}) {

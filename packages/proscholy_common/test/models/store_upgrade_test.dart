@@ -28,7 +28,7 @@ void main() {
     query.close();
 
     expect(records.map((record) => record.songLyric.targetId), [1, 0, 0]);
-    expect(records[1].customText.target?.name, 'Ohlášky');
+    expect(records[1].userText.target?.name, 'Ohlášky');
     expect(records[2].biblePassage.target?.text, 'Na počátku stvořil Bůh nebe a zemi.');
 
     expect(store.box<Playlist>().get(favoritesPlaylistId)!.records.single.songLyric.targetId, 1);

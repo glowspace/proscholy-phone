@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:proscholy_common/components/highlightable_widget.dart';
 import 'package:proscholy_common/constants.dart';
 import 'package:proscholy_common/models/bible_passage.dart';
-import 'package:proscholy_common/models/custom_text.dart';
+import 'package:proscholy_common/models/user_text.dart';
 import 'package:proscholy_common/models/model.dart';
 import 'package:proscholy_common/models/playlist.dart';
 import 'package:proscholy_common/models/song_lyric.dart';
@@ -27,7 +27,7 @@ class RecentItemRow extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
             child: Icon(switch (recentItem.recentItemType) {
               RecentItemType.biblePassage => Icons.book_outlined,
-              RecentItemType.customText => Icons.edit_note,
+              RecentItemType.userText => Icons.edit_note,
               RecentItemType.playlist => Icons.playlist_play_rounded,
               RecentItemType.songbook => Icons.book,
               RecentItemType.songLyric => Icons.music_note,
@@ -49,8 +49,8 @@ class RecentItemRow extends StatelessWidget {
       case RecentItemType.biblePassage:
         context.push('/display', arguments: DisplayScreenArguments.biblePassage(recentItem as BiblePassage));
         break;
-      case RecentItemType.customText:
-        context.push('/display', arguments: DisplayScreenArguments.customText(recentItem as CustomText));
+      case RecentItemType.userText:
+        context.push('/display', arguments: DisplayScreenArguments.userText(recentItem as UserText));
         break;
       case RecentItemType.playlist:
         context.push('/playlist', arguments: recentItem as Playlist);
