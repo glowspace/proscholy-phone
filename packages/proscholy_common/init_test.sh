@@ -7,5 +7,5 @@ echo $VERSION
 
 bash <(curl -s https://raw.githubusercontent.com/objectbox/objectbox-dart/v$VERSION/install.sh)
 
-rm lib/libobjectbox.dylib
+mv -f lib/libobjectbox.dylib /usr/local/lib/libobjectbox.dylib
 rm -rf download
