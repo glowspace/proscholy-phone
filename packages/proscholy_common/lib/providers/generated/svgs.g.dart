@@ -43,7 +43,7 @@ final class SvgsProvider
   }
 }
 
-String _$svgsHash() => r'1b27a273e3d071a402ff874f8865ce7637c011ec';
+String _$svgsHash() => r'cebdeff398ee0ddaa0fe657b3cbc7c12f2cac265';
 
 abstract class _$Svgs extends $Notifier<Map<String, FileSystemEntity>> {
   Map<String, FileSystemEntity> build();

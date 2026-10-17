@@ -93,12 +93,12 @@ Future<Directory> mockDocumentsDirectory() async {
   return directory;
 }
 
-// makes `rootBundle` return `data` for asset with `key`
-void mockAsset(String key, String data) {
+// makes `rootBundle` return `bytes` for asset with `key`
+void mockAsset(String key, List<int> bytes) {
   _messenger.setMockMessageHandler('flutter/assets', (message) async {
     if (utf8.decode(message!.buffer.asUint8List()) != key) return null;
 
-    return ByteData.sublistView(utf8.encode(data));
+    return ByteData.sublistView(Uint8List.fromList(bytes));
   });
 
   addTearDown(() {
