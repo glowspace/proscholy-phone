@@ -98,8 +98,8 @@ class _SearchFieldState extends State<SearchField> {
 
     if (!widget.isHome) {
       searchTextSubscription = context.providers.listen(searchTextProvider, (_, text) {
-        // avoid IME restart by not mutating text during composing
-        if (_controller.text != text && !_controller.value.composing.isValid) {
+        // setting the same text again resets the keyboard (composing region, cursor)
+        if (_controller.text != text) {
           _controller.text = text;
         }
       });
