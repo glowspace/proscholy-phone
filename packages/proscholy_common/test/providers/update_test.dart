@@ -364,6 +364,25 @@ void main() {
       expect(store.box<Tag>().count(), 2);
     });
 
+    test('empty list of song lyrics from server does not remove them from playlists', () async {
+      final appDependencies = await createAppDependencies(preferences: {'last_update': '2026-01-01 00:00:00'});
+      final store = appDependencies.store;
+
+      await storeTestData(appDependencies);
+
+      createUpdateContainer(
+        appDependencies,
+      ).read(playlistsProvider.notifier).toggleFavorite(store.box<SongLyric>().get(1)!);
+
+      when(() => client.getData()).thenAnswer((_) async => {...readTestData(), SongLyric.fieldKey: []});
+      when(() => client.getSongLyrics(any())).thenAnswer((_) async => {SongLyric.fieldKey: []});
+
+      await runUpdate(appDependencies);
+
+      expect(store.box<SongLyric>().count(), 2);
+      expect(store.box<PlaylistRecord>().getAll().map((playlistRecord) => playlistRecord.songLyric.targetId), [1]);
+    });
+
     test('does not fetch arrangements and keeps the ones stored by older versions', () async {
       final appDependencies = await createAppDependencies(preferences: {'last_update': '2026-01-01 00:00:00'});
 

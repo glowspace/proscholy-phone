@@ -161,11 +161,14 @@ Stream<UpdateStatus> _update(Ref ref) async* {
     existingSongLyricsIds.remove(id);
   }
 
-  // remove song lyrics that were removed on server
-  box.removeMany(existingSongLyricsIds.toList());
+  // remove song lyrics that were removed on server, empty list is more likely an error on server, it would remove
+  // song lyrics from all playlists
+  if (data['song_lyrics'].isNotEmpty) {
+    box.removeMany(existingSongLyricsIds.toList());
 
-  // on iOS also remove them from spotlight indexing
-  SpotlightService.instance.deindexItems(existingSongLyricsIds.map((id) => 'song_lyric_$id').toList());
+    // on iOS also remove them from spotlight indexing
+    SpotlightService.instance.deindexItems(existingSongLyricsIds.map((id) => 'song_lyric_$id').toList());
+  }
 
   // update song lyrics
   final songLyrics = await client
