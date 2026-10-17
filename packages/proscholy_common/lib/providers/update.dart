@@ -49,6 +49,8 @@ class Updated extends UpdateStatus {
 }
 
 Future<void> loadInitial(AppDependencies appDependencies) async {
+  assert(isZPS || isEZ || isEK, 'Unknown target, run with `--dart-define=ZPEVNIK_TARGET=<ZPS|EZ|EK>`.');
+
   _cleanup(appDependencies);
 
   final lastVersion = appDependencies.sharedPreferences.getString(_versionKey);
