@@ -35,6 +35,11 @@ dart format $(git ls-files 'lib/*.dart' 'test/*.dart' | grep -v -e '/generated/'
 ./init_test.sh                                             # once per objectbox version: installs native objectbox library
 flutter test --dart-define=ZPEVNIK_TARGET=ZPS
 flutter test test/setup_test.dart --plain-name 'objectbox store' --dart-define=ZPEVNIK_TARGET=ZPS
+
+# benchmarks with assets/data.json of the app next to this repo, results are saved to build/benchmarks
+flutter test benchmark --dart-define=ZPEVNIK_TARGET=ZPS
+# requests to API run only on demand, as they load the server
+flutter test benchmark/api_benchmark_test.dart --dart-define=ZPEVNIK_TARGET=ZPS --dart-define=LIVE_API=true
 ```
 
 Run an app from its repo, e.g. `cd ../proscholy-flutter && flutter run --dart-define=ZPEVNIK_TARGET=ZPS`.
