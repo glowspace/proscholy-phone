@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:proscholy_common/components/highlightable_widget.dart';
 import 'package:proscholy_common/components/section.dart';
 import 'package:proscholy_common/constants.dart';
+import 'package:proscholy_common/links.dart';
+import 'package:proscholy_common/models/news_item.dart';
 import 'package:proscholy_common/providers/news_items.dart';
 import 'package:proscholy_common/utils/url_launcher.dart';
 
@@ -78,4 +80,10 @@ class _NewsSectionState extends ConsumerState<NewsSection> {
       ],
     );
   }
+}
+
+extension _NewsItemView on NewsItem {
+  bool get hasLink => link.isNotEmpty;
+
+  String get preparedLink => link.startsWith('/') ? 'https://$baseUrl$link' : link;
 }

@@ -119,7 +119,7 @@ Stream<UpdateStatus> _update(Ref ref) async* {
 
   // update news
   final newsItems = await client.getNews().then(
-    (json) => readJsonList(json[NewsItem.fieldKey], mapper: NewsItem.fromJson),
+    (json) => readJsonList(json['news_items'], mapper: NewsItem.fromJson),
   );
 
   // remove all news items, that were deleted on server
