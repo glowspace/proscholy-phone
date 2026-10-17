@@ -9,7 +9,7 @@ import 'package:proscholy_common/models/playlist_record.dart';
 import 'package:proscholy_common/models/song_lyric.dart';
 import 'package:proscholy_common/models/utils.dart';
 import 'package:proscholy_common/providers/app_dependencies.dart';
-import 'package:proscholy_common/providers/utils.dart';
+import 'package:proscholy_common/utils/data.dart';
 
 import '../../utils.dart';
 

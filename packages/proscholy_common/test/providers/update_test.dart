@@ -26,8 +26,8 @@ import 'package:proscholy_common/providers/playlists.dart';
 import 'package:proscholy_common/providers/settings.dart';
 import 'package:proscholy_common/providers/svgs.dart';
 import 'package:proscholy_common/providers/update.dart';
-import 'package:proscholy_common/providers/utils.dart';
 import 'package:proscholy_common/utils/api_client.dart';
+import 'package:proscholy_common/utils/data.dart';
 
 import '../utils.dart';
 

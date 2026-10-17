@@ -19,8 +19,8 @@ import 'package:proscholy_common/models/utils.dart';
 import 'package:proscholy_common/providers/app_dependencies.dart';
 import 'package:proscholy_common/providers/search.dart';
 import 'package:proscholy_common/providers/song_lyrics.dart';
-import 'package:proscholy_common/providers/utils.dart';
 import 'package:proscholy_common/utils/api_client.dart';
+import 'package:proscholy_common/utils/data.dart';
 import 'package:proscholy_common/utils/services/spotlight.dart';
 
 part 'generated/update.g.dart';

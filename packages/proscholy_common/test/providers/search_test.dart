@@ -4,7 +4,7 @@ import 'package:proscholy_common/constants.dart';
 import 'package:proscholy_common/models/song_lyric.dart';
 import 'package:proscholy_common/models/utils.dart';
 import 'package:proscholy_common/providers/search.dart';
-import 'package:proscholy_common/providers/utils.dart';
+import 'package:proscholy_common/utils/data.dart';
 
 import '../utils.dart';
 

@@ -5,7 +5,7 @@ import 'package:proscholy_common/models/songbook.dart';
 import 'package:proscholy_common/models/utils.dart';
 import 'package:proscholy_common/providers/app_dependencies.dart';
 import 'package:proscholy_common/providers/recent_items.dart';
-import 'package:proscholy_common/providers/utils.dart';
+import 'package:proscholy_common/utils/data.dart';
 
 import '../utils.dart';
 

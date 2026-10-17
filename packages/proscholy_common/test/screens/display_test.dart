@@ -8,9 +8,9 @@ import 'package:proscholy_common/models/song_lyric.dart';
 import 'package:proscholy_common/models/utils.dart';
 import 'package:proscholy_common/providers/app_dependencies.dart';
 import 'package:proscholy_common/providers/svgs.dart';
-import 'package:proscholy_common/providers/utils.dart';
 import 'package:proscholy_common/routing/arguments.dart';
 import 'package:proscholy_common/screens/display.dart';
+import 'package:proscholy_common/utils/data.dart';
 
 import '../utils.dart';
 
