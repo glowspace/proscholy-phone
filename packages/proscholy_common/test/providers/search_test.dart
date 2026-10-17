@@ -1,9 +1,17 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:proscholy_common/constants.dart';
+import 'package:proscholy_common/models/generated/objectbox.g.dart';
 import 'package:proscholy_common/models/song_lyric.dart';
+import 'package:proscholy_common/models/songbook.dart';
+import 'package:proscholy_common/models/songbook_record.dart';
+import 'package:proscholy_common/models/tag.dart';
 import 'package:proscholy_common/models/utils.dart';
+import 'package:proscholy_common/providers/app_dependencies.dart';
+import 'package:proscholy_common/providers/playlists.dart';
 import 'package:proscholy_common/providers/search.dart';
+import 'package:proscholy_common/providers/sort.dart';
+import 'package:proscholy_common/providers/tags.dart';
 import 'package:proscholy_common/utils/data.dart';
 import 'package:proscholy_common/views/app_dependencies.dart';
 
@@ -84,5 +92,60 @@ void main() {
     final result = await search('10');
 
     expect(result.matchedById?.id, isZPS ? 10 : null);
+  });
+
+  group('filters', skip: isZPS ? false : 'filters are only in ZPS', () {
+    List<int> filteredIds() => [
+      for (final songLyric in container.read(filteredSongLyricsProvider).songLyrics!) songLyric.id,
+    ]..sort();
+
+    setUp(() => container.listen(filteredSongLyricsProvider, (_, _) {}));
+
+    test('song lyrics match any selected tag of each tag type', () {
+      final store = container.read(appDependenciesProvider).store;
+      final selectedTags = container.read(selectedTagsProvider.notifier);
+
+      // only song lyric 1 has these tags
+      selectedTags.toggleSelection(store.box<Tag>().get(9)!);
+      selectedTags.toggleSelection(store.box<Tag>().get(16)!);
+      selectedTags.toggleSelection(store.box<Songbook>().get(58)!.tag);
+      expect(filteredIds(), [1]);
+
+      selectedTags.toggleSelection(store.box<Tag>().get(9)!);
+      selectedTags.toggleSelection(store.box<Tag>().get(16)!);
+      expect(filteredIds(), [1, 2]);
+
+      selectedTags.toggleSelection(Tag.fromLanguage(0, 'Čeština', 1));
+      expect(filteredIds(), isEmpty);
+
+      selectedTags.toggleSelection(Tag.fromLanguage(1, 'čeština', 2));
+      expect(filteredIds(), [1, 2]);
+    });
+
+    test('song lyrics in selected playlist', () {
+      final playlists = container.read(playlistsProvider.notifier);
+      final playlist = playlists.createPlaylist('Mše');
+
+      playlists.addToPlaylist(
+        playlist,
+        songLyric: container.read(appDependenciesProvider).store.box<SongLyric>().get(2),
+      );
+      container.read(selectedTagsProvider.notifier).toggleSelection(Tag.fromPlaylist(playlist));
+
+      expect(filteredIds(), [2]);
+    });
+
+    test('song lyrics of one songbook are in its order when sorted by numbers', () {
+      final store = container.read(appDependenciesProvider).store;
+
+      store.box<SongbookRecord>().put(
+        SongbookRecord(id: 9999, number: '1', songLyric: ToOne(targetId: 10), songbook: ToOne(targetId: 58)),
+      );
+
+      container.read(sortProvider.notifier).change(SortType.numeric);
+      container.read(selectedTagsProvider.notifier).toggleSelection(store.box<Songbook>().get(58)!.tag);
+
+      expect(container.read(filteredSongLyricsProvider).songLyrics!.map((songLyric) => songLyric.id), [10, 1, 2]);
+    });
   });
 }

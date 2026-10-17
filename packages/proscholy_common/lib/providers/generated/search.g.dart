@@ -114,3 +114,51 @@ abstract class _$SearchedSongLyrics
     element.handleCreate(ref, build);
   }
 }
+
+@ProviderFor(filteredSongLyrics)
+final filteredSongLyricsProvider = FilteredSongLyricsProvider._();
+
+final class FilteredSongLyricsProvider
+    extends
+        $FunctionalProvider<
+          SearchedSongLyricsResult,
+          SearchedSongLyricsResult,
+          SearchedSongLyricsResult
+        >
+    with $Provider<SearchedSongLyricsResult> {
+  FilteredSongLyricsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'filteredSongLyricsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$filteredSongLyricsHash();
+
+  @$internal
+  @override
+  $ProviderElement<SearchedSongLyricsResult> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  SearchedSongLyricsResult create(Ref ref) {
+    return filteredSongLyrics(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(SearchedSongLyricsResult value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<SearchedSongLyricsResult>(value),
+    );
+  }
+}
+
+String _$filteredSongLyricsHash() =>
+    r'57d14659821f2453aa1882d19a1bd6db30b4093a';
