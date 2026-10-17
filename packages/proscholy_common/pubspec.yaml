@@ -49,12 +49,17 @@ dependencies:
   url_launcher: ^6.3.2
 
 dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
   flutter_lints: ^6.0.0
   build_runner: any
   freezed: any
   json_serializable: any
   objectbox_generator: any
   riverpod_generator: any
+  mocktail: ^1.0.5
+  sqflite_common_ffi: ^2.4.0+3
 
 flutter:
   uses-material-design: true
@@ -75,3 +80,9 @@ flutter:
 
 objectbox:
   output_dir: models/generated
+
+# tests must use sqlite provided by system (same as sqflite on iOS and Android), bundled one does not support FTS4
+hooks:
+  user_defines:
+    sqlite3:
+      source: system
