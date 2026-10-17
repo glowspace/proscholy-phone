@@ -36,18 +36,34 @@ class ExternalActionsService {
   void _handleReceivedPlaylist(dynamic playlistData) {
     final context = navigatorKey.currentContext;
 
-    if (context == null) return;
+    // on Android all opened links are handled here too, their content is null
+    if (context == null || playlistData is! String) return;
 
-    try {
-      showAcceptReceivedPlaylistDialog(context, jsonDecode(playlistData));
-    } on FormatException {
+    final playlist = _decodePlaylist(playlistData);
+
+    if (playlist == null) {
       showAlertDialog(
         context: context,
         title: 'Chyba při importu playlistu.',
         message: 'Importovaný playlist se nepodařilo načíst, zkontrolujte prosím, že je soubor ve správném formátu.',
         actions: [const AlertDialogAction(key: '', label: 'Ok')],
       );
+    } else {
+      showAcceptReceivedPlaylistDialog(context, playlist);
     }
+  }
+
+  // app can be opened with any json file, so it is necessary to check that it is playlist
+  Map<String, dynamic>? _decodePlaylist(String playlistData) {
+    try {
+      final playlist = jsonDecode(playlistData);
+
+      if (playlist is Map<String, dynamic> && playlist['records'] is List) return playlist;
+    } on FormatException {
+      // not a json
+    }
+
+    return null;
   }
 
   void _handleSpotlight(String? route) {
