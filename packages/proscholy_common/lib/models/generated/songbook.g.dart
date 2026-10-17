@@ -13,6 +13,5 @@ _Songbook _$SongbookFromJson(Map<String, dynamic> json) => _Songbook(
   color: json['color'] as String?,
   colorText: json['color_text'] as String?,
   isPrivate: json['is_private'] as bool,
-  isPinned: json['is_pinned'] as bool?,
   records: _songbookRecordsFromJson(json['records'] as List?),
 );

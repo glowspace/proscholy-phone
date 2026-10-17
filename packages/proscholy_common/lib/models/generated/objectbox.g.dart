@@ -157,12 +157,6 @@ final _entities = <obx_int.ModelEntity>[
         type: 1,
         flags: 0,
       ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(7, 6957339251542960973),
-        name: 'isPinned',
-        type: 1,
-        flags: 0,
-      ),
     ],
     relations: <obx_int.ModelRelation>[],
     backlinks: <obx_int.ModelBacklink>[
@@ -280,24 +274,6 @@ final _entities = <obx_int.ModelEntity>[
         id: const obx_int.IdUid(12, 4793601887131442231),
         name: 'hasChords',
         type: 1,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(22, 4355414326890607438),
-        name: 'accidentals',
-        type: 6,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(23, 7347294181262392126),
-        name: 'showChords',
-        type: 1,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(24, 8592014509296857970),
-        name: 'transposition',
-        type: 6,
         flags: 0,
       ),
       obx_int.ModelProperty(
@@ -824,6 +800,10 @@ obx_int.ModelDefinition getObjectBoxModel() {
       6098338462102959253,
       3138933648918384884,
       7820390369179908800,
+      4355414326890607438,
+      7347294181262392126,
+      8592014509296857970,
+      6957339251542960973,
     ],
     retiredRelationUids: const [
       7916874752771113838,
@@ -1036,7 +1016,6 @@ obx_int.ModelDefinition getObjectBoxModel() {
         fbb.addOffset(3, colorOffset);
         fbb.addOffset(4, colorTextOffset);
         fbb.addBool(5, object.isPrivate);
-        fbb.addBool(6, object.isPinned);
         fbb.finish(fbb.endTable());
         return object.id;
       },
@@ -1067,11 +1046,6 @@ obx_int.ModelDefinition getObjectBoxModel() {
           14,
           false,
         );
-        final isPinnedParam = const fb.BoolReader().vTableGetNullable(
-          buffer,
-          rootOffset,
-          16,
-        );
         final recordsParam = obx.ToMany<SongbookRecord>();
         final object = Songbook(
           id: idParam,
@@ -1080,7 +1054,6 @@ obx_int.ModelDefinition getObjectBoxModel() {
           color: colorParam,
           colorText: colorTextParam,
           isPrivate: isPrivateParam,
-          isPinned: isPinnedParam,
           records: recordsParam,
         );
         obx_int.InternalToManyAccess.setRelInfo<Songbook>(
@@ -1210,9 +1183,6 @@ obx_int.ModelDefinition getObjectBoxModel() {
         fbb.addInt64(8, object.song.targetId);
         fbb.addInt64(10, object.dbType);
         fbb.addBool(11, object.hasChords);
-        fbb.addInt64(21, object.accidentals);
-        fbb.addBool(22, object.showChords);
-        fbb.addInt64(23, object.transposition);
         fbb.addInt64(26, object.settings.targetId);
         fbb.addOffset(34, hymnologyNewOffset);
         fbb.addOffset(36, displayIdOffset);
@@ -1275,21 +1245,6 @@ obx_int.ModelDefinition getObjectBoxModel() {
           80,
           false,
         );
-        final accidentalsParam = const fb.Int64Reader().vTableGetNullable(
-          buffer,
-          rootOffset,
-          46,
-        );
-        final showChordsParam = const fb.BoolReader().vTableGetNullable(
-          buffer,
-          rootOffset,
-          48,
-        );
-        final transpositionParam = const fb.Int64Reader().vTableGetNullable(
-          buffer,
-          rootOffset,
-          50,
-        );
         final songParam = obx.ToOne<Song>(
           targetId: const fb.Int64Reader().vTableGet(buffer, rootOffset, 20, 0),
         );
@@ -1315,9 +1270,6 @@ obx_int.ModelDefinition getObjectBoxModel() {
           dbType: dbTypeParam,
           hasChords: hasChordsParam,
           isArrangement: isArrangementParam,
-          accidentals: accidentalsParam,
-          showChords: showChordsParam,
-          transposition: transpositionParam,
           song: songParam,
           settings: settingsParam,
           authors: authorsParam,
@@ -1929,11 +1881,6 @@ class Songbook_ {
     _entities[3].properties[5],
   );
 
-  /// See [Songbook.isPinned].
-  static final isPinned = obx.QueryBooleanProperty<Songbook>(
-    _entities[3].properties[6],
-  );
-
   /// see [Songbook.records]
   static final records = obx.QueryBacklinkToMany<SongbookRecord, Songbook>(
     SongbookRecord_.songbook,
@@ -2015,45 +1962,30 @@ class SongLyric_ {
     _entities[5].properties[9],
   );
 
-  /// See [SongLyric.accidentals].
-  static final accidentals = obx.QueryIntegerProperty<SongLyric>(
-    _entities[5].properties[10],
-  );
-
-  /// See [SongLyric.showChords].
-  static final showChords = obx.QueryBooleanProperty<SongLyric>(
-    _entities[5].properties[11],
-  );
-
-  /// See [SongLyric.transposition].
-  static final transposition = obx.QueryIntegerProperty<SongLyric>(
-    _entities[5].properties[12],
-  );
-
   /// See [SongLyric.settings].
   static final settings =
       obx.QueryRelationToOne<SongLyric, SongLyricSettingsModel>(
-        _entities[5].properties[13],
+        _entities[5].properties[10],
       );
 
   /// See [SongLyric.hymnologyNew].
   static final hymnologyNew = obx.QueryStringProperty<SongLyric>(
-    _entities[5].properties[14],
+    _entities[5].properties[11],
   );
 
   /// See [SongLyric.displayId].
   static final displayId = obx.QueryStringProperty<SongLyric>(
-    _entities[5].properties[15],
+    _entities[5].properties[12],
   );
 
   /// See [SongLyric.displayName].
   static final displayName = obx.QueryStringProperty<SongLyric>(
-    _entities[5].properties[16],
+    _entities[5].properties[13],
   );
 
   /// See [SongLyric.isArrangement].
   static final isArrangement = obx.QueryBooleanProperty<SongLyric>(
-    _entities[5].properties[17],
+    _entities[5].properties[14],
   );
 
   /// see [SongLyric.authors]

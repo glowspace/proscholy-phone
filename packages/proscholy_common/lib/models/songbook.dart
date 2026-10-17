@@ -24,7 +24,6 @@ sealed class Songbook with _$Songbook implements Comparable<Songbook>, Identifia
     String? color,
     String? colorText,
     required bool isPrivate,
-    @Deprecated('is handled independently on model') bool? isPinned,
     @Backlink() @JsonKey(fromJson: _songbookRecordsFromJson) required ToMany<SongbookRecord> records,
   }) = _Songbook;
 

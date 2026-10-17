@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Songbook {
 
-@Id(assignable: true)@JsonKey(fromJson: int.parse) int get id; String get name;@JsonKey(defaultValue: '') String get shortcut; String? get color; String? get colorText; bool get isPrivate;@Deprecated('is handled independently on model') bool? get isPinned;@Backlink()@JsonKey(fromJson: _songbookRecordsFromJson) ToMany<SongbookRecord> get records;
+@Id(assignable: true)@JsonKey(fromJson: int.parse) int get id; String get name;@JsonKey(defaultValue: '') String get shortcut; String? get color; String? get colorText; bool get isPrivate;@Backlink()@JsonKey(fromJson: _songbookRecordsFromJson) ToMany<SongbookRecord> get records;
 /// Create a copy of Songbook
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,7 +28,7 @@ $SongbookCopyWith<Songbook> get copyWith => _$SongbookCopyWithImpl<Songbook>(thi
 
 @override
 String toString() {
-  return 'Songbook(id: $id, name: $name, shortcut: $shortcut, color: $color, colorText: $colorText, isPrivate: $isPrivate, isPinned: $isPinned, records: $records)';
+  return 'Songbook(id: $id, name: $name, shortcut: $shortcut, color: $color, colorText: $colorText, isPrivate: $isPrivate, records: $records)';
 }
 
 
@@ -39,7 +39,7 @@ abstract mixin class $SongbookCopyWith<$Res>  {
   factory $SongbookCopyWith(Songbook value, $Res Function(Songbook) _then) = _$SongbookCopyWithImpl;
 @useResult
 $Res call({
-@Id(assignable: true)@JsonKey(fromJson: int.parse) int id, String name,@JsonKey(defaultValue: '') String shortcut, String? color, String? colorText, bool isPrivate,@Deprecated('is handled independently on model') bool? isPinned,@Backlink()@JsonKey(fromJson: _songbookRecordsFromJson) ToMany<SongbookRecord> records
+@Id(assignable: true)@JsonKey(fromJson: int.parse) int id, String name,@JsonKey(defaultValue: '') String shortcut, String? color, String? colorText, bool isPrivate,@Backlink()@JsonKey(fromJson: _songbookRecordsFromJson) ToMany<SongbookRecord> records
 });
 
 
@@ -56,7 +56,7 @@ class _$SongbookCopyWithImpl<$Res>
 
 /// Create a copy of Songbook
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? shortcut = null,Object? color = freezed,Object? colorText = freezed,Object? isPrivate = null,Object? isPinned = freezed,Object? records = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? shortcut = null,Object? color = freezed,Object? colorText = freezed,Object? isPrivate = null,Object? records = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -64,8 +64,7 @@ as String,shortcut: null == shortcut ? _self.shortcut : shortcut // ignore: cast
 as String,color: freezed == color ? _self.color : color // ignore: cast_nullable_to_non_nullable
 as String?,colorText: freezed == colorText ? _self.colorText : colorText // ignore: cast_nullable_to_non_nullable
 as String?,isPrivate: null == isPrivate ? _self.isPrivate : isPrivate // ignore: cast_nullable_to_non_nullable
-as bool,isPinned: freezed == isPinned ? _self.isPinned : isPinned // ignore: cast_nullable_to_non_nullable
-as bool?,records: null == records ? _self.records : records // ignore: cast_nullable_to_non_nullable
+as bool,records: null == records ? _self.records : records // ignore: cast_nullable_to_non_nullable
 as ToMany<SongbookRecord>,
   ));
 }
@@ -148,10 +147,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@Id(assignable: true)@JsonKey(fromJson: int.parse)  int id,  String name, @JsonKey(defaultValue: '')  String shortcut,  String? color,  String? colorText,  bool isPrivate, @Deprecated('is handled independently on model')  bool? isPinned, @Backlink()@JsonKey(fromJson: _songbookRecordsFromJson)  ToMany<SongbookRecord> records)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@Id(assignable: true)@JsonKey(fromJson: int.parse)  int id,  String name, @JsonKey(defaultValue: '')  String shortcut,  String? color,  String? colorText,  bool isPrivate, @Backlink()@JsonKey(fromJson: _songbookRecordsFromJson)  ToMany<SongbookRecord> records)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Songbook() when $default != null:
-return $default(_that.id,_that.name,_that.shortcut,_that.color,_that.colorText,_that.isPrivate,_that.isPinned,_that.records);case _:
+return $default(_that.id,_that.name,_that.shortcut,_that.color,_that.colorText,_that.isPrivate,_that.records);case _:
   return orElse();
 
 }
@@ -169,10 +168,10 @@ return $default(_that.id,_that.name,_that.shortcut,_that.color,_that.colorText,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@Id(assignable: true)@JsonKey(fromJson: int.parse)  int id,  String name, @JsonKey(defaultValue: '')  String shortcut,  String? color,  String? colorText,  bool isPrivate, @Deprecated('is handled independently on model')  bool? isPinned, @Backlink()@JsonKey(fromJson: _songbookRecordsFromJson)  ToMany<SongbookRecord> records)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@Id(assignable: true)@JsonKey(fromJson: int.parse)  int id,  String name, @JsonKey(defaultValue: '')  String shortcut,  String? color,  String? colorText,  bool isPrivate, @Backlink()@JsonKey(fromJson: _songbookRecordsFromJson)  ToMany<SongbookRecord> records)  $default,) {final _that = this;
 switch (_that) {
 case _Songbook():
-return $default(_that.id,_that.name,_that.shortcut,_that.color,_that.colorText,_that.isPrivate,_that.isPinned,_that.records);}
+return $default(_that.id,_that.name,_that.shortcut,_that.color,_that.colorText,_that.isPrivate,_that.records);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -186,10 +185,10 @@ return $default(_that.id,_that.name,_that.shortcut,_that.color,_that.colorText,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@Id(assignable: true)@JsonKey(fromJson: int.parse)  int id,  String name, @JsonKey(defaultValue: '')  String shortcut,  String? color,  String? colorText,  bool isPrivate, @Deprecated('is handled independently on model')  bool? isPinned, @Backlink()@JsonKey(fromJson: _songbookRecordsFromJson)  ToMany<SongbookRecord> records)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@Id(assignable: true)@JsonKey(fromJson: int.parse)  int id,  String name, @JsonKey(defaultValue: '')  String shortcut,  String? color,  String? colorText,  bool isPrivate, @Backlink()@JsonKey(fromJson: _songbookRecordsFromJson)  ToMany<SongbookRecord> records)?  $default,) {final _that = this;
 switch (_that) {
 case _Songbook() when $default != null:
-return $default(_that.id,_that.name,_that.shortcut,_that.color,_that.colorText,_that.isPrivate,_that.isPinned,_that.records);case _:
+return $default(_that.id,_that.name,_that.shortcut,_that.color,_that.colorText,_that.isPrivate,_that.records);case _:
   return null;
 
 }
@@ -201,7 +200,7 @@ return $default(_that.id,_that.name,_that.shortcut,_that.color,_that.colorText,_
 @JsonSerializable(createToJson: false)
 @Entity(realClass: Songbook)
 class _Songbook extends Songbook {
-  const _Songbook({@Id(assignable: true)@JsonKey(fromJson: int.parse) required this.id, required this.name, @JsonKey(defaultValue: '') required this.shortcut, this.color, this.colorText, required this.isPrivate, @Deprecated('is handled independently on model') this.isPinned, @Backlink()@JsonKey(fromJson: _songbookRecordsFromJson) required this.records}): super._();
+  const _Songbook({@Id(assignable: true)@JsonKey(fromJson: int.parse) required this.id, required this.name, @JsonKey(defaultValue: '') required this.shortcut, this.color, this.colorText, required this.isPrivate, @Backlink()@JsonKey(fromJson: _songbookRecordsFromJson) required this.records}): super._();
   factory _Songbook.fromJson(Map<String, dynamic> json) => _$SongbookFromJson(json);
 
 @override@Id(assignable: true)@JsonKey(fromJson: int.parse) final  int id;
@@ -210,7 +209,6 @@ class _Songbook extends Songbook {
 @override final  String? color;
 @override final  String? colorText;
 @override final  bool isPrivate;
-@override@Deprecated('is handled independently on model') final  bool? isPinned;
 @override@Backlink()@JsonKey(fromJson: _songbookRecordsFromJson) final  ToMany<SongbookRecord> records;
 
 /// Create a copy of Songbook
@@ -225,7 +223,7 @@ _$SongbookCopyWith<_Songbook> get copyWith => __$SongbookCopyWithImpl<_Songbook>
 
 @override
 String toString() {
-  return 'Songbook(id: $id, name: $name, shortcut: $shortcut, color: $color, colorText: $colorText, isPrivate: $isPrivate, isPinned: $isPinned, records: $records)';
+  return 'Songbook(id: $id, name: $name, shortcut: $shortcut, color: $color, colorText: $colorText, isPrivate: $isPrivate, records: $records)';
 }
 
 
@@ -236,7 +234,7 @@ abstract mixin class _$SongbookCopyWith<$Res> implements $SongbookCopyWith<$Res>
   factory _$SongbookCopyWith(_Songbook value, $Res Function(_Songbook) _then) = __$SongbookCopyWithImpl;
 @override @useResult
 $Res call({
-@Id(assignable: true)@JsonKey(fromJson: int.parse) int id, String name,@JsonKey(defaultValue: '') String shortcut, String? color, String? colorText, bool isPrivate,@Deprecated('is handled independently on model') bool? isPinned,@Backlink()@JsonKey(fromJson: _songbookRecordsFromJson) ToMany<SongbookRecord> records
+@Id(assignable: true)@JsonKey(fromJson: int.parse) int id, String name,@JsonKey(defaultValue: '') String shortcut, String? color, String? colorText, bool isPrivate,@Backlink()@JsonKey(fromJson: _songbookRecordsFromJson) ToMany<SongbookRecord> records
 });
 
 
@@ -253,7 +251,7 @@ class __$SongbookCopyWithImpl<$Res>
 
 /// Create a copy of Songbook
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? shortcut = null,Object? color = freezed,Object? colorText = freezed,Object? isPrivate = null,Object? isPinned = freezed,Object? records = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? shortcut = null,Object? color = freezed,Object? colorText = freezed,Object? isPrivate = null,Object? records = null,}) {
   return _then(_Songbook(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -261,8 +259,7 @@ as String,shortcut: null == shortcut ? _self.shortcut : shortcut // ignore: cast
 as String,color: freezed == color ? _self.color : color // ignore: cast_nullable_to_non_nullable
 as String?,colorText: freezed == colorText ? _self.colorText : colorText // ignore: cast_nullable_to_non_nullable
 as String?,isPrivate: null == isPrivate ? _self.isPrivate : isPrivate // ignore: cast_nullable_to_non_nullable
-as bool,isPinned: freezed == isPinned ? _self.isPinned : isPinned // ignore: cast_nullable_to_non_nullable
-as bool?,records: null == records ? _self.records : records // ignore: cast_nullable_to_non_nullable
+as bool,records: null == records ? _self.records : records // ignore: cast_nullable_to_non_nullable
 as ToMany<SongbookRecord>,
   ));
 }
