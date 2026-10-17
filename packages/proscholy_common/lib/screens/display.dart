@@ -98,6 +98,8 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
 
   final FocusNode _focusNode = FocusNode();
 
+  ValueNotifier<DisplayScreenArguments>? _selectedDisplayableItemArgumentsNotifier;
+
   DisplayableItem get _currentItem => _items[_currentIndex];
 
   @override
@@ -193,6 +195,7 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
 
   @override
   void dispose() {
+    _selectedDisplayableItemArgumentsNotifier?.removeListener(_selectedDisplayableItemArgumentsChanged);
     _addRecentItemTimer?.cancel();
 
     _focusNode.dispose();
@@ -209,30 +212,31 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
     // TODO: make sure this widget does not depend on `presentationProvider` and do this without delay
     Future.delayed(const Duration(milliseconds: 10), () => ref.read(presentationProvider).change(_currentItem));
 
-    final selectedDisplayableItemArgumentsNotifier = SelectedDisplayableItemArguments.of(context, listen: false);
-
-    selectedDisplayableItemArgumentsNotifier?.addListener(() {
-      final newItems = selectedDisplayableItemArgumentsNotifier.value.items;
-      final newIndex = selectedDisplayableItemArgumentsNotifier.value.initialIndex;
-
-      if (newItems.hashCode != _items.hashCode) {
-        setState(() => _items = newItems);
-
-        if (newItems.length > 1) {
-          // do this with delay, because if previous `_items` contained only one item `_controller` won't be attached until redraw
-          Future.delayed(
-            const Duration(milliseconds: 100),
-            () => _controller.jumpToPage(newIndex + 100 * newItems.length),
-          );
-        }
-        _itemChanged(newIndex);
-      } else if (newIndex != _currentIndex % _items.length) {
-        _controller.jumpToPage(newIndex + 100 * _items.length);
-        _itemChanged(newIndex);
-      }
-    });
+    _selectedDisplayableItemArgumentsNotifier = SelectedDisplayableItemArguments.of(context, listen: false);
+    _selectedDisplayableItemArgumentsNotifier?.addListener(_selectedDisplayableItemArgumentsChanged);
 
     _focusNode.requestFocus();
+  }
+
+  void _selectedDisplayableItemArgumentsChanged() {
+    final newItems = _selectedDisplayableItemArgumentsNotifier!.value.items;
+    final newIndex = _selectedDisplayableItemArgumentsNotifier!.value.initialIndex;
+
+    if (newItems.hashCode != _items.hashCode) {
+      setState(() => _items = newItems);
+
+      if (newItems.length > 1) {
+        // do this with delay, because if previous `_items` contained only one item `_controller` won't be attached until redraw
+        Future.delayed(const Duration(milliseconds: 100), () {
+          if (_controller.hasClients) _controller.jumpToPage(newIndex + 100 * newItems.length);
+        });
+      }
+      _itemChanged(newIndex);
+    } else if (newIndex != _currentIndex % _items.length) {
+      // `_controller` is not attached when there is only one item
+      if (_controller.hasClients) _controller.jumpToPage(newIndex + 100 * _items.length);
+      _itemChanged(newIndex);
+    }
   }
 
   AutoScrollController _autoScrollController(int index) {
