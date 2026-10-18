@@ -12,14 +12,11 @@ PODS:
     - Flutter
     - ObjectBox (= 5.3.0)
   - OrderedSet (6.0.3)
-  - proscholy_common (0.0.1):
-    - Flutter
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_inappwebview_ios (from `.symlinks/plugins/flutter_inappwebview_ios/ios`)
   - objectbox_flutter_libs (from `.symlinks/plugins/objectbox_flutter_libs/ios`)
-  - proscholy_common (from `.symlinks/plugins/proscholy_common/ios`)
 
 SPEC REPOS:
   trunk:
@@ -33,8 +30,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_inappwebview_ios/ios"
   objectbox_flutter_libs:
     :path: ".symlinks/plugins/objectbox_flutter_libs/ios"
-  proscholy_common:
-    :path: ".symlinks/plugins/proscholy_common/ios"
 
 SPEC CHECKSUMS:
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
@@ -42,7 +37,6 @@ SPEC CHECKSUMS:
   ObjectBox: 2aae8ad350012cb53c6e7848064307cf68617f73
   objectbox_flutter_libs: 42b57158b8c4869b731487f220e07d6edc6616e0
   OrderedSet: e539b66b644ff081c73a262d24ad552a69be3a94
-  proscholy_common: 2a7067f16ed8daaccff85d300776c1ac046ea281
 
 PODFILE CHECKSUM: 7cc5797d94078f633dfba6fd301b2c72c0acf3c4
 
