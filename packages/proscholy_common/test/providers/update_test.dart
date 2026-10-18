@@ -398,6 +398,62 @@ void main() {
       expect(appDependencies.store.box<SongLyric>().get(3), isNotNull);
     });
 
+    test('removes records of shared playlist with song lyrics that are not on server', () async {
+      final appDependencies = await createAppDependencies(preferences: {'last_update': '2026-01-01 00:00:00'});
+
+      when(() => client.getData()).thenAnswer(
+        (_) async => {
+          ...readTestData(),
+          SongLyric.fieldKey: [
+            {'id': '1', 'is_arrangement': false},
+            {'id': '3', 'is_arrangement': true},
+            {'id': '5', 'is_arrangement': false},
+          ],
+        },
+      );
+      when(() => client.getSongLyrics(any())).thenAnswer((_) async => {SongLyric.fieldKey: []});
+      when(() => client.getSongLyric(1)).thenAnswer((_) async => songLyricsJson[0]);
+      when(() => client.getSongLyric(5)).thenAnswer((_) => Future.error(_serverError));
+
+      // arrangement 3 and song lyric 99, which isn't on server, will never be stored, while song lyric 5 can be
+      // downloaded during next update
+      final playlist = createContainer(appDependencies).read(playlistsProvider.notifier).acceptPlaylist({
+        'records': [
+          {
+            'rank': 0,
+            'song_lyric': {'id': 1},
+          },
+          {
+            'rank': 1,
+            'song_lyric': {'id': 3},
+          },
+          {
+            'rank': 2,
+            'song_lyric': {'id': 5},
+          },
+          {
+            'rank': 3,
+            'song_lyric': {'id': 99},
+          },
+          {
+            'rank': 4,
+            'custom_text': {'name': 'Ohlášky', 'content': 'text'},
+          },
+        ],
+      }, 'Přijatý');
+
+      await runUpdate(appDependencies);
+
+      final query = appDependencies.store
+          .box<PlaylistRecord>()
+          .query(PlaylistRecord_.playlist.equals(playlist.id))
+          .build();
+
+      expect(query.find().map((playlistRecord) => playlistRecord.songLyric.targetId), [1, 5, 0]);
+
+      query.close();
+    });
+
     test('song lyric that failed to download does not fail update', () async {
       final appDependencies = await createAppDependencies(preferences: {'last_update': '2026-01-01 00:00:00'});
 

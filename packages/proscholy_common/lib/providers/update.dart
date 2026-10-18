@@ -13,6 +13,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:proscholy_common/models/news_item.dart';
 import 'package:proscholy_common/models/generated/objectbox.g.dart';
+import 'package:proscholy_common/models/playlist_record.dart';
 import 'package:proscholy_common/models/song_lyric.dart';
 import 'package:proscholy_common/models/utils.dart';
 import 'package:proscholy_common/providers/app_dependencies.dart';
@@ -186,6 +187,10 @@ Stream<UpdateStatus> _update(Ref ref) async* {
 
   final updatedSongLyrics = await storeSongLyrics(appDependencies.store, songLyrics);
 
+  // records of song lyrics that are neither stored nor on server would be never shown, e.g. arrangements or song lyrics
+  // from shared playlist of other app, the ones that failed to download are kept
+  if (data['song_lyrics'].isNotEmpty) _removeRecordsOfUnavailableSongLyrics(appDependencies.store, missingSongLyricIds);
+
   _cleanup(appDependencies);
 
   await appDependencies.ftsSearch.update(updatedSongLyrics);
@@ -234,6 +239,23 @@ void _cleanup(AppDependencies appDependencies) async {
       } catch (_) {}
     }
   }
+}
+
+void _removeRecordsOfUnavailableSongLyrics(Store store, Set<int> missingSongLyricIds) {
+  final songLyricsQuery = store.box<SongLyric>().query().build();
+  final availableIds = songLyricsQuery.property(SongLyric_.id).find().toSet()..addAll(missingSongLyricIds);
+
+  songLyricsQuery.close();
+
+  final box = store.box<PlaylistRecord>();
+  final query = box.query(PlaylistRecord_.songLyric.notEquals(0)).build();
+
+  box.removeMany([
+    for (final playlistRecord in query.find())
+      if (!availableIds.contains(playlistRecord.songLyric.targetId)) playlistRecord.id,
+  ]);
+
+  query.close();
 }
 
 void _removeRelations<T>(Store store, Condition<T> condition) {
