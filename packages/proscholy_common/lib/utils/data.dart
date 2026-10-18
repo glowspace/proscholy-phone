@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:proscholy_common/models/author.dart';
 import 'package:proscholy_common/models/external.dart';
 import 'package:proscholy_common/models/generated/objectbox.g.dart';
@@ -96,18 +98,20 @@ Future<List<SongLyric>> storeSongLyrics(Store store, List<SongLyric> songLyrics)
     store.box<SongbookRecord>().putManyAsync(songbookRecords),
   ]);
 
-  // index new song lyrics on iOS
-  SpotlightService.instance.indexItems(
-    songLyrics
-        .map(
-          (songLyric) => SpotlightItem(
-            identifier: 'song_lyric_${songLyric.id}',
-            title: songLyric.name,
-            description: songLyric.lyrics?.replaceAll(_chordRE, '') ?? '',
-          ),
-        )
-        .toList(),
-  );
+  // index new song lyrics on iOS, items are not built on other platforms, as removing chords from all lyrics is slow
+  if (Platform.isIOS) {
+    SpotlightService.instance.indexItems(
+      songLyrics
+          .map(
+            (songLyric) => SpotlightItem(
+              identifier: 'song_lyric_${songLyric.id}',
+              title: songLyric.name,
+              description: songLyric.lyrics?.replaceAll(_chordRE, '') ?? '',
+            ),
+          )
+          .toList(),
+    );
+  }
 
   // retrieve the updated song lyrics with correctly setup relations
   return (await store.box<SongLyric>().getManyAsync(songLyricIds)).cast();
