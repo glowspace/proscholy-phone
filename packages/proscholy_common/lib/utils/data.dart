@@ -63,7 +63,7 @@ Future<List<SongLyric>> storeSongLyrics(Store store, List<SongLyric> songLyrics)
   final songbookRecords = <SongbookRecord>[];
 
   // query song lyrics with settings to preserve the relations after update
-  final query = store.box<SongLyric>().query(SongLyric_.settings.notNull()).build();
+  final query = store.box<SongLyric>().query(SongLyric_.settings.notEquals(0)).build();
   final songLyricsWithSettings = {for (final songLyric in query.find()) songLyric.id: songLyric};
 
   query.close();
