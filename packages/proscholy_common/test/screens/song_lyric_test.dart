@@ -46,6 +46,30 @@ void main() {
     expect(find.text('Dmaj7', findRichText: true), findsNothing);
   });
 
+  testWidgets('scrolls lyrics above system navigation bar in full screen', (tester) async {
+    await pumpSongLyric(tester);
+
+    // small phone with three-button navigation of android, so the lyrics do not fit
+    tester.view.physicalSize = const Size(1170, 1200);
+    tester.view.padding = const FakeViewPadding(bottom: 144);
+    tester.view.viewPadding = const FakeViewPadding(bottom: 144);
+
+    await tester.tap(find.byIcon(Icons.fullscreen));
+    await tester.pumpAndSettle();
+
+    await tester.fling(
+      find.textContaining('srdce mé tebe vídá', findRichText: true).last,
+      const Offset(0, -1000),
+      1000,
+    );
+    await tester.pumpAndSettle();
+
+    expect(
+      tester.getBottomLeft(find.textContaining('Krále na trů', findRichText: true).last).dy,
+      lessThanOrEqualTo(400 - 48),
+    );
+  });
+
   testWidgets('adds song lyric to favorites', (tester) async {
     final appDependencies = await pumpSongLyric(tester);
 

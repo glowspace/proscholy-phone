@@ -133,16 +133,16 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
               ),
             ),
             SizedBox(height: fontSizeScaler.scale(kDefaultPadding)),
-            // make sure lyrics are visible with bottom sheet
+            // make sure lyrics are visible with bottom sheet and above system navigation bar in full screen
             SizedBox(
               height:
-                  (ref.watch(presentationProvider.select((presentation) => presentation.isPresenting)) ||
-                      ref.watch(activePlayerProvider.select((activePlayer) => activePlayer != null)))
-                  ? (4 * kDefaultPadding +
-                        (ref.watch(displayScreenStatusProvider.select((status) => status.fullScreen))
-                            ? MediaQuery.of(context).padding.bottom
-                            : 0))
-                  : 0,
+                  ((ref.watch(presentationProvider.select((presentation) => presentation.isPresenting)) ||
+                          ref.watch(activePlayerProvider.select((activePlayer) => activePlayer != null)))
+                      ? 4 * kDefaultPadding
+                      : 0) +
+                  (ref.watch(displayScreenStatusProvider.select((status) => status.fullScreen))
+                      ? MediaQuery.of(context).padding.bottom
+                      : 0),
             ),
           ],
         ),
