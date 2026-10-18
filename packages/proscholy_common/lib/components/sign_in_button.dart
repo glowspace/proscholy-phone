@@ -35,7 +35,7 @@ extension _SignInButtonTypeExtension on SignInButtonType {
           color: theme.brightness.isLight ? Colors.white : Colors.black,
         );
       case SignInButtonType.noSignIn:
-        return TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: theme.colorScheme.onBackground);
+        return TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: theme.colorScheme.onSurface);
     }
   }
 
@@ -74,7 +74,7 @@ extension _SignInButtonTypeExtension on SignInButtonType {
         return SizedBox(
           width: 32,
           height: 32,
-          child: Icon(CupertinoIcons.person_crop_circle, color: theme.colorScheme.onBackground, size: 20),
+          child: Icon(CupertinoIcons.person_crop_circle, color: theme.colorScheme.onSurface, size: 20),
         );
     }
   }
