@@ -4,6 +4,7 @@ import 'package:proscholy_common/components/playlist/playlist_button.dart';
 import 'package:proscholy_common/models/generated/objectbox.g.dart';
 import 'package:proscholy_common/models/playlist.dart';
 import 'package:proscholy_common/models/playlist_record.dart';
+import 'package:proscholy_common/models/song_lyric.dart';
 import 'package:proscholy_common/models/user_text.dart';
 import 'package:proscholy_common/providers/app_dependencies.dart';
 import 'package:proscholy_common/screens/playlist.dart';
@@ -81,6 +82,39 @@ void main() {
     await pumpUntil(tester, () => title.evaluate().isNotEmpty);
 
     expect(title, findsOneWidget);
+  });
+
+  testWidgets('records removed from store are removed from open playlist', (tester) async {
+    final appDependencies = await pumpPlaylists(tester);
+    final store = appDependencies.store;
+    final names = [
+      for (final id in [1, 2]) store.box<SongLyric>().get(id)!.name,
+    ];
+
+    store.box<PlaylistRecord>().putMany([
+      for (final id in [1, 2])
+        PlaylistRecord(
+          id: id,
+          rank: id,
+          songLyric: ToOne(targetId: id),
+          userText: ToOne(),
+          biblePassage: ToOne(),
+          playlist: ToOne(targetId: 2),
+        ),
+    ]);
+
+    await tester.tap(find.text('Mše'));
+    await tester.pumpAndSettle();
+
+    expect(find.text(names[1]), findsOneWidget);
+
+    // e.g. update removes records of song lyrics that are not on server
+    store.box<PlaylistRecord>().remove(2);
+
+    await pumpUntil(tester, () => find.text(names[1]).evaluate().isEmpty);
+
+    expect(find.text(names[0]), findsOneWidget);
+    expect(find.text(names[1]), findsNothing);
   });
 
   testWidgets('removing open playlist removes its texts and returns to playlists', (tester) async {
