@@ -29,7 +29,9 @@ class FTSSearch {
   Future<void> drop() async {
     try {
       await database.execute(_dropTableQuery);
-    } on DatabaseException {} // ignore exceptions if database does not exist
+    } on DatabaseException {
+      // ignore exceptions if database does not exist
+    }
   }
 
   Future<void> update(List<SongLyric> songLyrics) async {

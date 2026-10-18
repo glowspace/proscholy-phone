@@ -42,11 +42,11 @@ class ExternalActionsService {
     final playlist = _decodePlaylist(playlistData);
 
     if (playlist == null) {
-      showAlertDialog(
+      showOkAlertDialog(
         context: context,
         title: 'Chyba při importu playlistu.',
         message: 'Importovaný playlist se nepodařilo načíst, zkontrolujte prosím, že je soubor ve správném formátu.',
-        actions: [const AlertDialogAction(key: '', label: 'Ok')],
+        okLabel: 'Ok',
       );
     } else {
       PlaylistDialogsExtension.acceptPlaylistWithDialog(context, playlist);
