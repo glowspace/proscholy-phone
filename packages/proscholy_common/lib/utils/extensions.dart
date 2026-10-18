@@ -34,10 +34,6 @@ extension HexColor on Color {
 
     return Color(value);
   }
-
-  String get hex {
-    return '#${red.toRadixString(16)}${green.toRadixString(16)}${blue.toRadixString(16)}';
-  }
 }
 
 extension MediaQueryExtension on MediaQueryData {
