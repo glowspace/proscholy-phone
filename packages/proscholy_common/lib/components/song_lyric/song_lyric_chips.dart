@@ -16,13 +16,13 @@ class SongLyricChips extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final fontSizeScale = MediaQuery.textScaleFactorOf(context);
+    final textScaler = MediaQuery.textScalerOf(context);
 
     final displayableItemArgumentsNotifier = SelectedDisplayableItemArguments.of(context);
 
     return Wrap(
-      spacing: fontSizeScale * kDefaultPadding / 2,
-      runSpacing: fontSizeScale * kDefaultPadding / 4,
+      spacing: textScaler.scale(kDefaultPadding / 2),
+      runSpacing: textScaler.scale(kDefaultPadding / 4),
       children: [
         if (songLyric.hasFiles)
           SongLyricChip(

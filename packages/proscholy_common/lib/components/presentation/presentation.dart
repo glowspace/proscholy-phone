@@ -25,14 +25,16 @@ class Presentation extends StatelessWidget {
     final presentingText = (presentationData.songLyricId != null && presentationData.settings.allCapital)
         ? presentationData.text.toUpperCase()
         : presentationData.text;
-    final textScaleFactor = onExternalDisplay
-        ? _computeTextScaleFactor(
-            context,
-            // for lyrics compute scale factor so there are no line breaks, there can be line breaks for custom text and bible verse
-            presentationData.songLyricId == null ? 'Na počátku stvořil Bůh nebe a zemi.' : presentingText,
-            presentationData.settings.showName,
+    final textScaler = onExternalDisplay
+        ? TextScaler.linear(
+            _computeTextScaleFactor(
+              context,
+              // for lyrics compute scale factor so there are no line breaks, there can be line breaks for custom text and bible verse
+              presentationData.songLyricId == null ? 'Na počátku stvořil Bůh nebe a zemi.' : presentingText,
+              presentationData.settings.showName,
+            ),
           )
-        : mediaQuery.textScaleFactor;
+        : mediaQuery.textScaler;
 
     if (!presentationData.settings.isVisible) return Container(color: backgroundColor);
 
@@ -56,7 +58,7 @@ class Presentation extends StatelessWidget {
                   child: Text(
                     presentationData.name,
                     style: textTheme.bodyMedium?.copyWith(color: textColor),
-                    textScaleFactor: textScaleFactor,
+                    textScaler: textScaler,
                   ),
                 ),
               ),
@@ -68,8 +70,8 @@ class Presentation extends StatelessWidget {
               },
               child: Padding(
                 padding: EdgeInsets.only(
-                  top: (presentationData.settings.showName ? 4 : 1) * textScaleFactor * kDefaultPadding,
-                  bottom: (onExternalDisplay ? 1 : 8) * textScaleFactor * kDefaultPadding,
+                  top: textScaler.scale((presentationData.settings.showName ? 4 : 1) * kDefaultPadding),
+                  bottom: textScaler.scale((onExternalDisplay ? 1 : 8) * kDefaultPadding),
                 ),
                 child: presentationData.isUserText
                     ? QuillEditor.basic(
@@ -91,7 +93,7 @@ class Presentation extends StatelessWidget {
                         child: Text(
                           presentingText,
                           style: textTheme.bodyMedium?.copyWith(color: textColor),
-                          textScaleFactor: textScaleFactor,
+                          textScaler: textScaler,
                         ),
                       ),
               ),
@@ -104,7 +106,7 @@ class Presentation extends StatelessWidget {
                   child: Text(
                     '${presentationData.songLyricId}',
                     style: textTheme.bodyMedium?.copyWith(color: textColor),
-                    textScaleFactor: width / 400,
+                    textScaler: TextScaler.linear(width / 400),
                   ),
                 ),
               ),
@@ -138,7 +140,7 @@ class Presentation extends StatelessWidget {
       final textPainter = TextPainter(
         text: TextSpan(text: lyrics, style: Theme.of(context).textTheme.bodyMedium),
         textDirection: TextDirection.ltr,
-        textScaleFactor: textScaleFactor,
+        textScaler: TextScaler.linear(textScaleFactor),
         textWidthBasis: TextWidthBasis.longestLine,
       );
 
