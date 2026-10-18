@@ -69,7 +69,7 @@ every target. Format only handwritten files, generated ones are excluded.
 - **Routing** is Navigator 1 with `AppRouter.generateRoute` (`lib/routing/router.dart`). Internal routes are English.
   The Czech paths (`/hledani`, `/zpevniky`, `/pisen/<id>`, `/zpevnik/<id>`) are deep links from the websites.
 - **Native features** are reached through method channels in `lib/utils/services`. The matching Kotlin/Swift code is in
-  `android/src` and `ios/Classes`:
+  `android/src` and `ios/proscholy_common/Sources/proscholy_common` (a Swift package, which the podspec also uses):
   - presentation on an external display runs a second Flutter engine, which starts at the app's `mainPresentation`
     entry point;
   - shared `.proscholy` playlist files;
