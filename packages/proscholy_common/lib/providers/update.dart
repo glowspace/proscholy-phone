@@ -167,6 +167,9 @@ Stream<UpdateStatus> _update(Ref ref) async* {
     SpotlightService.instance.deindexItems(existingSongLyricsIds.map((id) => 'song_lyric_$id').toList());
   }
 
+  // relations of removed song lyrics are removed right away, as the rest of update can be interrupted
+  _cleanup(appDependencies);
+
   // update song lyrics
   final songLyrics = await client
       .getSongLyrics(lastUpdate)
@@ -190,8 +193,6 @@ Stream<UpdateStatus> _update(Ref ref) async* {
   // records of song lyrics that are neither stored nor on server would be never shown, e.g. arrangements or song lyrics
   // from shared playlist of other app, the ones that failed to download are kept
   if (data['song_lyrics'].isNotEmpty) _removeRecordsOfUnavailableSongLyrics(appDependencies.store, missingSongLyricIds);
-
-  _cleanup(appDependencies);
 
   await appDependencies.ftsSearch.update(updatedSongLyrics);
 

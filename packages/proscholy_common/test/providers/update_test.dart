@@ -490,6 +490,37 @@ void main() {
       expect(appDependencies.sharedPreferences.getString('last_update'), '2026-01-01 00:00:00');
     });
 
+    test('interrupted update leaves no relations of removed song lyrics', () async {
+      final appDependencies = await createAppDependencies(preferences: {'last_update': '2026-01-01 00:00:00'});
+      final store = appDependencies.store;
+      final data = readTestData();
+
+      await parseAndStoreData(store, data);
+      await storeSongLyrics(store, readJsonList(data[SongLyric.fieldKey], mapper: SongLyric.fromJson));
+
+      // song lyric 2 was removed on server, connection is lost before updated song lyrics are downloaded
+      when(() => client.getData()).thenAnswer(
+        (_) async => {
+          ...data,
+          SongLyric.fieldKey: [
+            {'id': '1', 'is_arrangement': false},
+          ],
+        },
+      );
+      when(() => client.getSongLyrics(any())).thenAnswer((_) => Future.error(_connectionError));
+
+      final states = await runUpdate(appDependencies);
+
+      expect(states.last, isA<UpdateInterrupted>());
+      expect(store.box<SongLyric>().get(2), isNull);
+      expect(store.box<SongbookRecord>().getAll().map((songbookRecord) => songbookRecord.songLyric.targetId), [
+        1,
+        1,
+        1,
+      ]);
+      expect(store.box<External>().getAll().map((external) => external.songLyric.targetId), isNot(contains(0)));
+    });
+
     test('server errors are shown and update is not retried', () async {
       final appDependencies = await createAppDependencies(preferences: {'last_update': '2026-01-01 00:00:00'});
 
