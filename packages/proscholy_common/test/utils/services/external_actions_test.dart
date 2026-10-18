@@ -47,7 +47,14 @@ void main() {
     expect(find.text('Chyba při importu playlistu.'), findsOneWidget);
   });
 
-  testWidgets('opened link is ignored', (tester) async {
+  // Android sends empty text for files that are too big to be playlist
+  testWidgets('received file that is too big', (tester) async {
+    await openFile(tester, '');
+
+    expect(find.text('Chyba při importu playlistu.'), findsOneWidget);
+  });
+
+  testWidgets('file that could not be read is ignored', (tester) async {
     await openFile(tester, null);
 
     expect(find.byType(Dialog), findsNothing);

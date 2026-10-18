@@ -36,7 +36,7 @@ class ExternalActionsService {
   void _handleReceivedPlaylist(dynamic playlistData) {
     final context = navigatorKey.currentContext;
 
-    // on Android all opened links are handled here too, their content is null
+    // content of file that could not be read is null
     if (context == null || playlistData is! String) return;
 
     final playlist = _decodePlaylist(playlistData);
