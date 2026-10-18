@@ -142,7 +142,7 @@ class _PlaylistRecordsListViewState extends ConsumerState<PlaylistRecordsListVie
           ),
         ),
       ),
-      onReorder: _reorder,
+      onReorderItem: _reorder,
     );
   }
 
@@ -172,8 +172,6 @@ class _PlaylistRecordsListViewState extends ConsumerState<PlaylistRecordsListVie
   }
 
   void _reorder(int oldIndex, int newIndex) {
-    if (oldIndex < newIndex) newIndex -= 1;
-
     if (oldIndex == newIndex) return;
 
     _recordsOrdered.insert(newIndex, _recordsOrdered.removeAt(oldIndex));

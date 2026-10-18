@@ -36,7 +36,7 @@ class EditHomeSectionsSheet extends ConsumerWidget {
               ],
             ),
           ),
-          onReorder: ref.read(homeSectionSettingsProvider.notifier).onReorder,
+          onReorderItem: ref.read(homeSectionSettingsProvider.notifier).reorder,
         ),
       ],
     );

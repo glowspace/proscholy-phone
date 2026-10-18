@@ -82,9 +82,14 @@ void main() {
 
     expect(container.read(playlistsProvider).map((playlist) => playlist.name), ['Přejmenovaný', 'Třetí', 'Druhý']);
 
+    notifier.reorderPlaylists(0, 2);
+    notifier.reorderPlaylists(0, 1);
+
+    expect(container.read(playlistsProvider).map((playlist) => playlist.name), ['Druhý', 'Třetí', 'Přejmenovaný']);
+
     edit(container.read(playlistsProvider).first).remove();
 
-    expect(container.read(playlistsProvider).map((playlist) => playlist.name), ['Třetí', 'Druhý']);
+    expect(container.read(playlistsProvider).map((playlist) => playlist.name), ['Třetí', 'Přejmenovaný']);
   });
 
   test('add records', () {

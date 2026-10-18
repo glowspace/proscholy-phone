@@ -376,8 +376,6 @@ class Playlists extends _$Playlists {
   }
 
   void reorderPlaylists(int oldIndex, int newIndex) {
-    if (oldIndex < newIndex) newIndex -= 1;
-
     final playlists = state;
 
     playlists.insert(newIndex, playlists.removeAt(oldIndex));

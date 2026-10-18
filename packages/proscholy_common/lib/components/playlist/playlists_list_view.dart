@@ -28,7 +28,7 @@ class PlaylistsListView extends StatelessWidget {
                   playlist: playlists[index],
                   isReorderable: true,
                 ),
-                onReorder: context.providers.read(playlistsProvider.notifier).reorderPlaylists,
+                onReorderItem: context.providers.read(playlistsProvider.notifier).reorderPlaylists,
               );
             },
           ),
