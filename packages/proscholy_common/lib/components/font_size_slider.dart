@@ -15,7 +15,7 @@ class FontSizeSlider extends StatelessWidget {
         Text('A', style: theme.textTheme.bodyMedium, textScaler: TextScaler.linear(kMinimumFontSizeScale)),
         Expanded(
           child: Consumer(
-            builder: (_, ref, __) => Slider.adaptive(
+            builder: (_, ref, _) => Slider.adaptive(
               min: kMinimumFontSizeScale,
               max: kMaximumFontSizeScale,
               value: ref.watch(settingsProvider.select((settings) => settings.fontSizeScale)),

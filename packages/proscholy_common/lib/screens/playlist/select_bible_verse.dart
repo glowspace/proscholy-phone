@@ -315,7 +315,7 @@ class _SelectBiblePassageScreenState extends State<_SelectBiblePassageScreen> {
                         MediaQuery.paddingOf(context).bottom + kDefaultPadding,
                       ),
                       child: Consumer(
-                        builder: (_, ref, __) => ref
+                        builder: (_, ref, _) => ref
                             .watch(
                               biblePassageProvider(
                                 supportedBibleTranslations[1],
@@ -338,7 +338,7 @@ class _SelectBiblePassageScreenState extends State<_SelectBiblePassageScreen> {
                                   ),
                                 ],
                               ),
-                              error: (_, __) => const Center(child: Text(_failedToLoadVersesMessage)),
+                              error: (_, _) => const Center(child: Text(_failedToLoadVersesMessage)),
                               loading: () => const Center(child: CircularProgressIndicator.adaptive()),
                             ),
                       ),

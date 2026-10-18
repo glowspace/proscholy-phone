@@ -15,7 +15,7 @@ class PlaylistsListView extends StatelessWidget {
         children: [
           PlaylistRow(playlist: context.providers.read(favoritePlaylistProvider)),
           Consumer(
-            builder: (_, ref, __) {
+            builder: (_, ref, _) {
               final playlists = ref.watch(playlistsProvider);
 
               return ReorderableListView.builder(

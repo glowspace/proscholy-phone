@@ -25,7 +25,7 @@ class CollapsedPlayer extends StatelessWidget {
           ),
           ValueListenableBuilder(
             valueListenable: controller.isPlaying,
-            builder: (_, isPlaying, __) => HighlightableWidget(
+            builder: (_, isPlaying, _) => HighlightableWidget(
               onTap: isPlaying ? controller.pause : controller.play,
               padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
               icon: Icon(isPlaying ? Icons.pause : Icons.play_arrow),

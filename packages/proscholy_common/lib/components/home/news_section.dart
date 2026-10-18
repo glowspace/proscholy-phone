@@ -66,7 +66,7 @@ class _NewsSectionState extends ConsumerState<NewsSection> {
                         _pageController.animateToPage(i, duration: kDefaultAnimationDuration, curve: Curves.easeInOut),
                     child: ListenableBuilder(
                       listenable: _pageController,
-                      builder: (_, __) => Container(
+                      builder: (_, _) => Container(
                         margin: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
                         width: 24,
                         height: 2,

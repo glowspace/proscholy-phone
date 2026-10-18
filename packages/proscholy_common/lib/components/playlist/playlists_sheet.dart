@@ -22,7 +22,7 @@ class PlaylistsSheet extends StatelessWidget {
       childrenPadding: false,
       children: [
         Consumer(
-          builder: (context, ref, __) => Column(
+          builder: (context, ref, _) => Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               HighlightableWidget(

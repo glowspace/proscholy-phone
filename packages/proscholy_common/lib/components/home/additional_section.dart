@@ -37,7 +37,7 @@ class AdditionalSection extends StatelessWidget {
           padding: const EdgeInsets.all(kDefaultPadding),
           onTap: () => context.push('/settings'),
           child: Consumer(
-            builder: (_, ref, __) => IconItem(
+            builder: (_, ref, _) => IconItem(
               icon: Icons.settings,
               text: 'Nastavení aplikace',
               trailingtext: ref.read(appDependenciesProvider).packageInfo.version,

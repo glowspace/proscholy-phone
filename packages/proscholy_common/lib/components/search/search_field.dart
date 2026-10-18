@@ -135,7 +135,7 @@ class _SearchFieldState extends State<SearchField> {
             Expanded(
               child: ValueListenableBuilder<TextEditingValue>(
                 valueListenable: _controller,
-                builder: (_, value, __) => TextField(
+                builder: (_, value, _) => TextField(
                   decoration: InputDecoration(
                     hintText: 'Název, číslo nebo část textu',
                     hintStyle: theme.textTheme.titleMedium?.copyWith(

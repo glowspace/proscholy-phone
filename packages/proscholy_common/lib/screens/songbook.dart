@@ -34,7 +34,7 @@ class SongbookScreen extends StatelessWidget {
       body: SafeArea(
         bottom: false,
         child: Consumer(
-          builder: (_, ref, __) => SongLyricsListView(
+          builder: (_, ref, _) => SongLyricsListView(
             songLyrics: ref.watch(songsListSongLyricsProvider(songbook)),
             songbook: songbook,
           ),

@@ -154,7 +154,7 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
                       ),
                     )) {
                       return Consumer(
-                        builder: (_, ref, __) => Presentation(
+                        builder: (_, ref, _) => Presentation(
                           onExternalDisplay: false,
                           presentationData: ref.watch(
                             presentationProvider.select((presentation) => presentation.presentationData),

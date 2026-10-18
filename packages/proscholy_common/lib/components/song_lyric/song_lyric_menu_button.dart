@@ -38,7 +38,7 @@ class SongLyricMenuButton extends StatelessWidget {
       PopupMenuItem(
         value: SongLyricMenuAction.present,
         child: Consumer(
-          builder: (_, ref, __) => IconItem(
+          builder: (_, ref, _) => IconItem(
             icon: Icons.cast,
             text: ref.watch(presentationProvider.select((presentationProvider) => presentationProvider.isPresenting))
                 ? 'Ukončit promítání'

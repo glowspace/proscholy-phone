@@ -82,7 +82,7 @@ class Stepper extends StatelessWidget {
                       ),
                       alignment: Alignment.center,
                       child: Consumer(
-                        builder: (_, ref, __) => Text(
+                        builder: (_, ref, _) => Text(
                           '${ref.watch(songLyricSettingsProvider(songLyric.id).select((songLyricSettings) => songLyricSettings.transposition))}',
                           textAlign: TextAlign.center,
                           style: textTheme.bodyMedium?.copyWith(color: isEnabled ? null : disabledColor),

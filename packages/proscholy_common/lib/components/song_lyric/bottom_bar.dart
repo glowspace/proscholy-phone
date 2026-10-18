@@ -25,7 +25,7 @@ class SongLyricBottomBar extends ConsumerWidget {
     return LayoutBuilder(
       builder: (_, constraints) => ListenableBuilder(
         listenable: autoScrollController,
-        builder: (_, __) => BottomAppBar(
+        builder: (_, _) => BottomAppBar(
           height: _bottomBarHeight,
           padding: const EdgeInsets.fromLTRB(kDefaultPadding, kDefaultPadding / 4, kDefaultPadding, 0),
           child: Row(

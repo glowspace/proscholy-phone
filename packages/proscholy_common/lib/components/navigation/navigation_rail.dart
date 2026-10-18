@@ -63,7 +63,7 @@ class CustomNavigationRail extends StatelessWidget {
                           HighlightableWidget(
                             onTap: context.providers.read(menuCollapsedProvider.notifier).toggle,
                             icon: Consumer(
-                              builder: (_, ref, __) => Icon(
+                              builder: (_, ref, _) => Icon(
                                 ref.watch(menuCollapsedProvider) ? Icons.menu : Icons.menu_open,
                               ),
                             ),

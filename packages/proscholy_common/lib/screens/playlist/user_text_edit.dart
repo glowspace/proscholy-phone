@@ -43,7 +43,7 @@ class _UserTextEditScreenState extends State<UserTextEditScreen> {
         actions: [
           ValueListenableBuilder<TextEditingValue>(
             valueListenable: _nameController,
-            builder: (_, value, __) => HighlightableWidget(
+            builder: (_, value, _) => HighlightableWidget(
               onTap: () => _editOrPop(value.text),
               padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
               isEnabled: value.text.isNotEmpty,

@@ -26,7 +26,7 @@ class RecentSection extends ConsumerWidget {
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           itemCount: recentItems.length,
           itemBuilder: (_, index) => RecentItemRow(recentItem: recentItems[index]),
-          separatorBuilder: (_, __) => const Divider(),
+          separatorBuilder: (_, _) => const Divider(),
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
         ),

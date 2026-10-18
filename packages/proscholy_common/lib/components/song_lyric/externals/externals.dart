@@ -51,7 +51,7 @@ class ExternalsWidget extends ConsumerWidget {
                   shrinkWrap: true,
                   itemBuilder: (_, index) => ExternalWidget(external: externals[index]),
                 ),
-                error: (_, __) => const Padding(
+                error: (_, _) => const Padding(
                   padding: EdgeInsets.all(kDefaultPadding),
                   child: Material(
                     color: Colors.transparent,

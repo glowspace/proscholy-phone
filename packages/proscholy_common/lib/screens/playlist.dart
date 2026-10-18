@@ -55,7 +55,7 @@ class _PlaylistScreenTabletState extends ConsumerState<_PlaylistScreenTablet> {
       showingOnlyDetail: ref.watch(menuCollapsedProvider),
       detail: ValueListenableBuilder(
         valueListenable: _selectedPlaylistNotifier,
-        builder: (_, playlist, __) => _PlaylistScaffold(key: Key('${playlist.id}'), playlist: playlist),
+        builder: (_, playlist, _) => _PlaylistScaffold(key: Key('${playlist.id}'), playlist: playlist),
       ),
       child: SelectedPlaylist(
         playlistNotifier: _selectedPlaylistNotifier,
@@ -151,7 +151,7 @@ class _PlaylistScaffold extends ConsumerWidget {
             ),
             ValueListenableBuilder(
               valueListenable: sortedAlphabeticallyNotifier,
-              builder: (_, sortedAlphabetically, __) => HighlightableWidget(
+              builder: (_, sortedAlphabetically, _) => HighlightableWidget(
                 isEnabled: playlist.records.isNotEmpty,
                 onTap: () => sortedAlphabeticallyNotifier.value = !sortedAlphabeticallyNotifier.value,
                 padding: EdgeInsets.only(

@@ -56,7 +56,7 @@ class SongLyricRow extends StatelessWidget {
                     children: [
                       Text(songLyric.displayName, style: textTheme.bodyMedium),
                       Consumer(
-                        builder: (_, ref, __) {
+                        builder: (_, ref, _) {
                           final searchText = ref.watch(searchTextProvider);
 
                           if (searchText.isNotEmpty) {
