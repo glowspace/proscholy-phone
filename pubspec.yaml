@@ -18,7 +18,7 @@ dependencies:
   proscholy_common:
     git:
       url: https://github.com/glowspace/proscholy-phone-common.git
-      ref: d3d81dbdf03b36f6d1d7b97f3e728003abff229c
+      ref: 27def6405861c5b3c06690e1f8491d0dc7d52a37
 
   sqflite: ^2.0.2+1
   firebase_core: ^5.0.0
