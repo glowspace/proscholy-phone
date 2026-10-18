@@ -21,7 +21,7 @@ dependencies:
   objectbox_flutter_libs: ^5.2.0
   # generated code is committed, so it must be the version that riverpod_generator uses
   riverpod_annotation: 4.0.2
-  sentry_flutter: ^9.6.0
+  sentry_flutter: ^10.1.0
   shared_preferences: ^2.4.0
   sqflite: ^2.4.1
   package_info_plus: ^10.2.2
