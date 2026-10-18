@@ -89,6 +89,8 @@ every target. Format only handwritten files, generated ones are excluded.
   `test/models/store_upgrade_test.dart` opens a store saved by the app before the renames and checks that user data
   are kept.
 - **Fonts** in `assets/fonts` must also be declared in each app's `pubspec.yaml`, otherwise they are not bundled.
+- **`riverpod_annotation` is pinned** to the version that `riverpod_generator` depends on. Apps resolve riverpod
+  without the generator, and a newer riverpod doesn't compile the committed generated code, so upgrade them together.
 
 ## Style
 
