@@ -9,9 +9,10 @@ import 'package:proscholy_common/utils/extensions.dart';
 
 class PlaylistRow extends StatelessWidget {
   final Playlist playlist;
-  final bool isReorderable;
+  // position in reorderable list, playlist can be dragged only when it is set
+  final int? reorderIndex;
 
-  const PlaylistRow({super.key, required this.playlist, this.isReorderable = false});
+  const PlaylistRow({super.key, required this.playlist, this.reorderIndex});
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +24,7 @@ class PlaylistRow extends StatelessWidget {
         kDefaultPadding / 2,
       ),
       child: Icon(
-        playlist.isFavorites ? Icons.star : (isReorderable ? Icons.drag_indicator : Icons.playlist_play_rounded),
+        playlist.isFavorites ? Icons.star : (reorderIndex != null ? Icons.drag_indicator : Icons.playlist_play_rounded),
       ),
     );
 
@@ -36,7 +37,10 @@ class PlaylistRow extends StatelessWidget {
         object: playlist,
         child: Row(
           children: [
-            if (isReorderable) ReorderableDragStartListener(index: playlist.rank, child: leadingIcon) else leadingIcon,
+            if (reorderIndex != null)
+              ReorderableDragStartListener(index: reorderIndex!, child: leadingIcon)
+            else
+              leadingIcon,
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),

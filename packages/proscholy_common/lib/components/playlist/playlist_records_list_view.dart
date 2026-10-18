@@ -140,6 +140,7 @@ class _PlaylistRecordsListViewState extends ConsumerState<PlaylistRecordsListVie
             initialIndex: index,
             playlist: widget.playlist,
           ),
+          index: index,
         ),
       ),
       onReorderItem: _reorder,

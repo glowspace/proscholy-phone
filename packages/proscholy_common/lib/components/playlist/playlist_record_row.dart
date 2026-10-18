@@ -14,8 +14,15 @@ import 'package:proscholy_common/utils/extensions.dart';
 class PlaylistRecordRow extends ConsumerWidget {
   final PlaylistRecord playlistRecord;
   final DisplayScreenArguments displayScreenArguments;
+  // position in reorderable list
+  final int index;
 
-  const PlaylistRecordRow({super.key, required this.playlistRecord, required this.displayScreenArguments});
+  const PlaylistRecordRow({
+    super.key,
+    required this.playlistRecord,
+    required this.displayScreenArguments,
+    required this.index,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -54,9 +61,9 @@ class PlaylistRecordRow extends ConsumerWidget {
           constraints: const BoxConstraints(minHeight: 40),
           child: Row(
             children: [
-              const ReorderableDragStartListener(
-                index: 0,
-                child: Padding(
+              ReorderableDragStartListener(
+                index: index,
+                child: const Padding(
                   padding: EdgeInsets.fromLTRB(
                     1.5 * kDefaultPadding,
                     kDefaultPadding / 2,

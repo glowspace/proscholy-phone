@@ -194,6 +194,20 @@ Future<void> pumpUntil(
   }
 }
 
+// drags reorderable item by its handle
+Future<void> dragHandle(WidgetTester tester, Finder handle, Offset offset) async {
+  final gesture = await tester.startGesture(tester.getCenter(handle));
+  await tester.pump();
+
+  for (var i = 0; i < 4; i++) {
+    await gesture.moveBy(offset / 4);
+    await tester.pump();
+  }
+
+  await gesture.up();
+  await tester.pumpAndSettle();
+}
+
 // makes `FirebaseAnalytics.instance` usable in tests, call it in `setUpAll`
 Future<void> mockFirebase() async {
   setupFirebaseCoreMocks();

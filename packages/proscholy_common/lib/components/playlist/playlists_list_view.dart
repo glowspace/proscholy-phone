@@ -26,7 +26,7 @@ class PlaylistsListView extends StatelessWidget {
                 itemBuilder: (_, index) => PlaylistRow(
                   key: Key('${playlists[index].id}'),
                   playlist: playlists[index],
-                  isReorderable: true,
+                  reorderIndex: index,
                 ),
                 onReorderItem: context.providers.read(playlistsProvider.notifier).reorderPlaylists,
               );

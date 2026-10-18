@@ -1,5 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
+import 'package:proscholy_common/constants.dart';
 import 'package:proscholy_common/links.dart';
 import 'package:proscholy_common/models/news_item.dart';
 import 'package:proscholy_common/models/song_lyric.dart';
@@ -38,6 +40,24 @@ void main() {
       return appDependencies;
     }))!;
   }
+
+  // home can be edited only in ZPS
+  testWidgets('dragging section in edit sheet moves that section', skip: !isZPS, (tester) async {
+    final appDependencies = await createAppDependenciesWithData(tester, HomeSection.values);
+
+    await pumpApp(tester, appDependencies);
+
+    await tester.dragUntilVisible(find.text('Upravit nástěnku'), find.byType(CustomScrollView), const Offset(0, -300));
+    await tester.tap(find.text('Upravit nástěnku'));
+    await tester.pumpAndSettle();
+
+    await dragHandle(tester, find.byIcon(Icons.drag_indicator).last, const Offset(0, -300));
+
+    expect(appDependencies.sharedPreferences.getStringList('home_screen_sections'), [
+      for (final homeSection in [HomeSection.songbooks, HomeSection.news, HomeSection.recent, HomeSection.playlists])
+        '${homeSection.index}',
+    ]);
+  });
 
   testWidgets('opens songbook', (tester) async {
     final appDependencies = await createAppDependenciesWithData(tester, [HomeSection.songbooks]);

@@ -25,9 +25,9 @@ class EditHomeSectionsSheet extends ConsumerWidget {
             padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding, vertical: 2 * kDefaultPadding / 3),
             child: Row(
               children: [
-                const ReorderableDragStartListener(
-                  index: 0,
-                  child: Padding(
+                ReorderableDragStartListener(
+                  index: index,
+                  child: const Padding(
                     padding: EdgeInsets.only(right: 2 * kDefaultPadding),
                     child: Icon(Icons.drag_indicator),
                   ),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:proscholy_common/components/playlist/playlist_button.dart';
+import 'package:proscholy_common/components/playlist/playlist_record_row.dart';
+import 'package:proscholy_common/components/playlist/playlist_row.dart';
 import 'package:proscholy_common/models/generated/objectbox.g.dart';
 import 'package:proscholy_common/models/playlist.dart';
 import 'package:proscholy_common/models/playlist_record.dart';
@@ -115,6 +117,71 @@ void main() {
 
     expect(find.text(names[0]), findsOneWidget);
     expect(find.text(names[1]), findsNothing);
+  });
+
+  testWidgets('dragging playlist moves that playlist', (tester) async {
+    final appDependencies = await pumpPlaylists(tester);
+
+    // ranks can have gaps, e.g. after removing playlist
+    appDependencies.store.box<Playlist>().putMany([
+      Playlist(id: 3, name: 'Adorace', rank: 2, records: ToMany()),
+      Playlist(id: 4, name: 'Svatba', rank: 5, records: ToMany()),
+    ]);
+
+    await pumpUntil(tester, () => find.text('Svatba').evaluate().isNotEmpty);
+
+    final row = find.ancestor(of: find.text('Svatba'), matching: find.byType(PlaylistRow));
+
+    await dragHandle(
+      tester,
+      find.descendant(of: row, matching: find.byIcon(Icons.drag_indicator)),
+      const Offset(0, -300),
+    );
+
+    final query = appDependencies.store.box<Playlist>().query(Playlist_.id.notEquals(1)).order(Playlist_.rank).build();
+
+    expect(query.find().map((playlist) => playlist.name), ['Svatba', 'Mše', 'Adorace']);
+
+    query.close();
+  });
+
+  testWidgets('dragging record of scrolled playlist moves that record', (tester) async {
+    final appDependencies = await pumpPlaylists(tester);
+    final store = appDependencies.store;
+
+    store.box<UserText>().putMany([for (var id = 1; id <= 30; id++) UserText(id: id, name: 'Text $id', content: '')]);
+    store.box<PlaylistRecord>().putMany([
+      for (var id = 1; id <= 30; id++)
+        PlaylistRecord(
+          id: id,
+          rank: id - 1,
+          songLyric: ToOne(),
+          userText: ToOne(targetId: id),
+          biblePassage: ToOne(),
+          playlist: ToOne(targetId: 2),
+        ),
+    ]);
+
+    await tester.tap(find.text('Mše'));
+    await tester.pumpAndSettle();
+
+    // first records are no longer built
+    await tester.drag(find.byType(ReorderableListView), const Offset(0, -3000));
+    await tester.pumpAndSettle();
+
+    final row = find.ancestor(of: find.text('Text 30'), matching: find.byType(PlaylistRecordRow));
+
+    await dragHandle(
+      tester,
+      find.descendant(of: row, matching: find.byIcon(Icons.drag_indicator)),
+      const Offset(0, -100),
+    );
+
+    final query = store.box<PlaylistRecord>().query().order(PlaylistRecord_.rank).build();
+
+    expect(query.find().last.id, isNot(30));
+
+    query.close();
   });
 
   testWidgets('removing open playlist removes its texts and returns to playlists', (tester) async {
