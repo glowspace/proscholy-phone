@@ -69,7 +69,7 @@ class AppTheme {
       colorScheme: ColorScheme.fromSeed(
         seedColor: seedColor,
         brightness: Brightness.dark,
-        background: darkBackgroundColor,
+        surfaceBright: darkBackgroundColor,
       ),
       scaffoldBackgroundColor: darkBackgroundColor,
       appBarTheme: const AppBarTheme(

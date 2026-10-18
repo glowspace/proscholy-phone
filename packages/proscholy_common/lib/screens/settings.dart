@@ -22,7 +22,7 @@ class SettingsScreen extends ConsumerWidget {
 
     return SafeAreaWrapper(
       child: Scaffold(
-        backgroundColor: theme.colorScheme.background,
+        backgroundColor: theme.colorScheme.surfaceBright,
         appBar: AppBar(leading: const CustomCloseButton(), title: const Text('Nastavení')),
         body: SafeArea(
           child: SingleChildScrollView(

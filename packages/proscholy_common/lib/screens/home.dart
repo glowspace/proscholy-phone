@@ -117,7 +117,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return AnnotatedRegion(
       value: theme.brightness.isLight ? SystemUiOverlayStyle.dark : SystemUiOverlayStyle.light,
       child: CustomScaffold(
-        backgroundColor: theme.colorScheme.background,
+        backgroundColor: theme.colorScheme.surfaceBright,
         useMaxWidth: false,
         body: SafeArea(
           child: columns == 1
