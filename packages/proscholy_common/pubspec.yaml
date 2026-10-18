@@ -39,7 +39,7 @@ dependencies:
   wakelock_plus: ^1.2.10
   flutter_speed_dial: ^7.0.0
   flex_color_picker: ^3.7.0
-  cached_network_image: ^3.4.1
+  cached_network_image: ^4.0.3
   photo_view: ^0.15.0
   flutter_cached_pdfview: ^0.4.3
   youtube_player_flutter: ^9.1.1
