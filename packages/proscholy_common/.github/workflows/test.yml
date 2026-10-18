@@ -20,8 +20,7 @@ jobs:
       - run: flutter pub get
       - name: Check formatting
         run: dart format --output=none --set-exit-if-changed $(git ls-files 'lib/*.dart' 'test/*.dart' | grep -v -e '/generated/' -e '\.g\.dart$' -e '\.freezed\.dart$')
-      # only errors fail the build until existing warnings and infos are fixed
-      - run: flutter analyze --no-fatal-infos --no-fatal-warnings
+      - run: flutter analyze
 
   test:
     runs-on: ubuntu-latest

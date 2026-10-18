@@ -47,7 +47,7 @@ Run an app from its repo, e.g. `cd ../proscholy-flutter && flutter run --dart-de
 Tests get an in-memory ObjectBox store and an FTS database from `test/utils.dart`. The FTS database uses system SQLite,
 because the SQLite bundled with package `sqlite3` lacks FTS4. Mocks use mocktail, not mockito.
 
-CI (`.github/workflows/test.yml`) checks formatting, runs the analyzer (only errors fail for now) and runs tests for
+CI (`.github/workflows/test.yml`) checks formatting, runs the analyzer (any issue fails) and runs tests for
 every target. Format only handwritten files, generated ones are excluded.
 
 ## Architecture
