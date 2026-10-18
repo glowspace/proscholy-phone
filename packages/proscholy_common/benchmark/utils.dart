@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:proscholy_common/constants.dart';
 
@@ -22,13 +24,21 @@ class Benchmark {
 
   Benchmark(this.name);
 
-  // measures `action` once, use for slow actions
-  Future<T> measure<T>(String step, Future<T> Function() action, {Map<String, Object> info = const {}}) async {
+  // measures `action` once, use for slow actions, with `blocking` it also measures how long it blocked the isolate
+  Future<T> measure<T>(
+    String step,
+    Future<T> Function() action, {
+    bool blocking = false,
+    Map<String, Object> info = const {},
+  }) async {
+    late final T result;
     final stopwatch = Stopwatch()..start();
-    final result = await action();
+    final blockedMs = blocking ? await _longestBlock(() async => result = await action()) : null;
+
+    if (!blocking) result = await action();
 
     stopwatch.stop();
-    results.add({'step': step, 'ms': stopwatch.elapsedMicroseconds / 1000, ...info});
+    results.add({'step': step, 'ms': stopwatch.elapsedMicroseconds / 1000, 'blocked_ms': ?blockedMs, ...info});
 
     return result;
   }
@@ -39,9 +49,11 @@ class Benchmark {
     Future<void> Function() action, {
     int runs = 20,
     Future<void> Function()? before,
+    bool blocking = false,
     Map<String, Object> info = const {},
   }) async {
     final times = <double>[];
+    final blocks = <double>[];
 
     for (var i = 0; i < runs; i++) {
       await before?.call();
@@ -54,8 +66,40 @@ class Benchmark {
       times.add(stopwatch.elapsedMicroseconds / 1000);
     }
 
+    // timer of blocking measurement would slow down the timed runs, so it has its own runs
+    for (var i = 0; blocking && i < runs; i++) {
+      await before?.call();
+
+      blocks.add(await _longestBlock(action));
+    }
+
     times.sort();
-    results.add({'step': step, 'ms': times[times.length ~/ 2], 'max_ms': times.last, 'runs': runs, ...info});
+    blocks.sort();
+    results.add({
+      'step': step,
+      'ms': times[times.length ~/ 2],
+      'max_ms': times.last,
+      if (blocking) 'blocked_ms': blocks[blocks.length ~/ 2],
+      'runs': runs,
+      ...info,
+    });
+  }
+
+  // the longest time a 1 ms timer could not run during `action`, frames of the app could not be drawn for so long
+  Future<double> _longestBlock(Future<void> Function() action) async {
+    final stopwatch = Stopwatch()..start();
+    var lastTick = 0;
+    var longest = 0;
+    final timer = Timer.periodic(const Duration(milliseconds: 1), (_) {
+      longest = max(longest, stopwatch.elapsedMicroseconds - lastTick);
+      lastTick = stopwatch.elapsedMicroseconds;
+    });
+
+    await action();
+
+    timer.cancel();
+
+    return max(longest, stopwatch.elapsedMicroseconds - lastTick) / 1000;
   }
 
   // results are printed and saved to `build/benchmarks`, so they can be compared

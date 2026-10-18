@@ -91,6 +91,7 @@ void main() {
     storedSongLyrics = await benchmark.measure(
       'store song lyrics into empty store',
       () => storeSongLyrics(store, songLyrics),
+      blocking: true,
     );
 
     benchmark.results.last.addAll({
@@ -118,10 +119,15 @@ void main() {
       removeMissingData(store, data);
     });
 
-    final storedUpdatedSongLyrics = await benchmark.measure(
+    // single runs vary with garbage collection after the previous steps
+    await benchmark.measureRepeated(
       'store 200 updated song lyrics',
       () => storeSongLyrics(store, updatedSongLyrics),
+      runs: 10,
+      blocking: true,
     );
+
+    final storedUpdatedSongLyrics = await storeSongLyrics(store, updatedSongLyrics);
 
     await benchmark.measure(
       'update search index with 200 song lyrics',
@@ -171,10 +177,15 @@ void main() {
     // keeps search providers alive between searches
     container.listen(searchedSongLyricsProvider, (_, _) {});
 
-    await benchmark.measureRepeated('provider of all song lyrics', () async {
-      container.invalidate(songLyricsProvider);
-      container.read(songLyricsProvider);
-    }, runs: 10);
+    await benchmark.measureRepeated(
+      'provider of all song lyrics',
+      () async {
+        container.invalidate(songLyricsProvider);
+        container.read(songLyricsProvider);
+      },
+      runs: 10,
+      blocking: true,
+    );
 
     await benchmark.measureRepeated('provider of language tags', () async {
       container.invalidate(tagsProvider(TagType.language));
@@ -194,6 +205,7 @@ void main() {
         () => _search(container, text),
         before: () => _search(container, ''),
         runs: 10,
+        blocking: true,
         info: {'results': result.songLyrics?.length ?? 0},
       );
     }
