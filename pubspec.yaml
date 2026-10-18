@@ -23,7 +23,7 @@ dependencies:
   sqflite: ^2.0.2+1
   firebase_core: ^5.0.0
   flutter_riverpod: ^3.0.0
-  package_info_plus: ^9.0.0
+  package_info_plus: ^10.2.2
   path: ^1.9.1
   sentry_flutter: ^9.6.0
   shared_preferences: ^2.4.0
