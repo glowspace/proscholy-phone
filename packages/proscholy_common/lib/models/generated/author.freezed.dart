@@ -192,9 +192,8 @@ return $default(_that.id,_that.name);case _:
 }
 
 /// @nodoc
-
+@JsonSerializable(createToJson: false)
 @Entity(realClass: Author)
-@JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
 class _Author extends Author {
   const _Author({@Id(assignable: true)@JsonKey(fromJson: int.parse) required this.id, required this.name}): super._();
   factory _Author.fromJson(Map<String, dynamic> json) => _$AuthorFromJson(json);

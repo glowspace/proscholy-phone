@@ -7,14 +7,13 @@ import 'package:proscholy_common/models/song_lyric.dart';
 part 'generated/song.freezed.dart';
 part 'generated/song.g.dart';
 
-@Freezed(toJson: false, equal: false)
+@freezed
 sealed class Song with _$Song implements Identifiable {
   static const String fieldKey = 'songs';
 
   const Song._();
 
   @Entity(realClass: Song)
-  @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
   const factory Song({
     @Id(assignable: true) @JsonKey(fromJson: int.parse) required int id,
     required String name,

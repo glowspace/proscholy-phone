@@ -194,9 +194,8 @@ return $default(_that.id,_that.name,_that.dbType,_that.songLyricsCount);case _:
 }
 
 /// @nodoc
-
+@JsonSerializable(createToJson: false)
 @Entity(realClass: Tag)
-@JsonSerializable(fieldRename: FieldRename.snake)
 class _Tag extends Tag {
   const _Tag({@Id(assignable: true)@JsonKey(fromJson: int.parse) required this.id, required this.name, @JsonKey(name: 'type_enum', fromJson: TagType.rawValueFromString) required this.dbType, required this.songLyricsCount}): super._();
   factory _Tag.fromJson(Map<String, dynamic> json) => _$TagFromJson(json);

@@ -17,8 +17,9 @@ class TranslationsSheet extends StatelessWidget {
 
     final original = songLyrics.firstWhereOrNull((songLyric) => songLyric.type == SongLyricType.original);
 
-    final authorizedTranslations =
-        songLyrics.where((songLyric) => songLyric.type == SongLyricType.authorizedTranslation);
+    final authorizedTranslations = songLyrics.where(
+      (songLyric) => songLyric.type == SongLyricType.authorizedTranslation,
+    );
 
     final translations = songLyrics.where((songLyric) => songLyric.type == SongLyricType.translation);
 
@@ -44,7 +45,7 @@ class TranslationsSheet extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SongLyricsSectionTitle(title: songLyricType.description),
-        for (final songLyric in songLyrics) SongLyricRow(songLyric: songLyric, isInsideTranslationSheet: true)
+        for (final songLyric in songLyrics) SongLyricRow(songLyric: songLyric, isInsideTranslationSheet: true),
       ],
     );
   }

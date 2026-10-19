@@ -1,0 +1,43 @@
+name: test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+env:
+  FLUTTER_VERSION: 3.44.4
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+      - run: flutter pub get
+      - name: Check formatting
+        run: dart format --output=none --set-exit-if-changed $(git ls-files 'lib/*.dart' 'test/*.dart' | grep -v -e '/generated/' -e '\.g\.dart$' -e '\.freezed\.dart$')
+      - run: flutter analyze
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [ZPS, EZ, EK]
+    steps:
+      - uses: actions/checkout@v5
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+      - run: sudo apt-get install -y libsqlite3-dev
+      - run: flutter pub get
+      - name: Install ObjectBox library
+        run: |
+          VERSION=$(grep -E objectbox$ -A 4 pubspec.lock | grep version | awk -F'"' '{print $2}')
+          bash <(curl -s https://raw.githubusercontent.com/objectbox/objectbox-dart/v$VERSION/install.sh)
+      - run: flutter test --dart-define=ZPEVNIK_TARGET=${{ matrix.target }}

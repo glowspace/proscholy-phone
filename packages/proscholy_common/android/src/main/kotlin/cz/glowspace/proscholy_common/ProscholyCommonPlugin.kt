@@ -8,11 +8,13 @@ class ProscholyCommonPlugin: FlutterPlugin, ActivityAware {
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         OpenedFileService.register(binding.binaryMessenger)
         PresentationService.register(binding.binaryMessenger)
+        BrowserService.register(binding.binaryMessenger)
     }
 
     // ActivityAware callbacks
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
         OpenedFileService.activity = binding.activity
+        BrowserService.activity = binding.activity
         PresentationService.context = binding.activity.applicationContext
 
         binding.addOnNewIntentListener { intent ->
@@ -26,11 +28,13 @@ class ProscholyCommonPlugin: FlutterPlugin, ActivityAware {
 
     override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
         OpenedFileService.activity = binding.activity
+        BrowserService.activity = binding.activity
         PresentationService.context = binding.activity.applicationContext
     }
 
     override fun onDetachedFromActivity() {
         OpenedFileService.activity = null
+        BrowserService.activity = null
         PresentationService.context = null
     }
 

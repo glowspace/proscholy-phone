@@ -24,8 +24,8 @@ class JpgScreen extends StatelessWidget {
         body: PhotoView(
           backgroundDecoration: BoxDecoration(color: Theme.of(context).scaffoldBackgroundColor),
           imageProvider: CachedNetworkImageProvider(jpg.url ?? ''),
-          loadingBuilder: (_, __) => const Center(child: CircularProgressIndicator()),
-          errorBuilder: (_, error, __) => Center(
+          loadingBuilder: (_, _) => const Center(child: CircularProgressIndicator()),
+          errorBuilder: (_, error, _) => Center(
             child: Text(error is SocketException ? _noInternetMessage : '$error', textAlign: TextAlign.center),
           ),
         ),

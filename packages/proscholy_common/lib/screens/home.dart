@@ -80,7 +80,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         if (i * sectionsPerColumn < sections.length)
           sections.sublist(i * sectionsPerColumn, min((i + 1) * sectionsPerColumn, sections.length))
         else
-          <Widget>[]
+          <Widget>[],
     ];
 
     columnSections.first = [
@@ -92,7 +92,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       ],
       Text(greetings, style: Theme.of(context).textTheme.titleLarge),
       const UpdateSection(),
-      ...columnSections.first
+      ...columnSections.first,
     ];
 
     if (isZPS) {
@@ -105,7 +105,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             children: [
               Icon(Icons.edit, size: kDefaultIconSize),
               SizedBox(width: kDefaultPadding / 2),
-              Text('Upravit nástěnku')
+              Text('Upravit nástěnku'),
             ],
           ),
         ),
@@ -117,7 +117,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return AnnotatedRegion(
       value: theme.brightness.isLight ? SystemUiOverlayStyle.dark : SystemUiOverlayStyle.light,
       child: CustomScaffold(
-        backgroundColor: theme.colorScheme.background,
+        backgroundColor: theme.colorScheme.surfaceBright,
         useMaxWidth: false,
         body: SafeArea(
           child: columns == 1

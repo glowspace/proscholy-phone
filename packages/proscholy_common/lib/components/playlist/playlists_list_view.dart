@@ -11,25 +11,29 @@ class PlaylistsListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: Column(children: [
-        PlaylistRow(playlist: context.providers.read(favoritePlaylistProvider)),
-        Consumer(builder: (_, ref, __) {
-          final playlists = ref.watch(playlistsProvider);
+      child: Column(
+        children: [
+          PlaylistRow(playlist: context.providers.read(favoritePlaylistProvider)),
+          Consumer(
+            builder: (_, ref, _) {
+              final playlists = ref.watch(playlistsProvider);
 
-          return ReorderableListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            padding: const EdgeInsets.only(bottom: 2 * kDefaultPadding),
-            itemCount: playlists.length,
-            itemBuilder: (_, index) => PlaylistRow(
-              key: Key('${playlists[index].id}'),
-              playlist: playlists[index],
-              isReorderable: true,
-            ),
-            onReorder: context.providers.read(playlistsProvider.notifier).reorderPlaylists,
-          );
-        }),
-      ]),
+              return ReorderableListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                padding: const EdgeInsets.only(bottom: 2 * kDefaultPadding),
+                itemCount: playlists.length,
+                itemBuilder: (_, index) => PlaylistRow(
+                  key: Key('${playlists[index].id}'),
+                  playlist: playlists[index],
+                  reorderIndex: index,
+                ),
+                onReorderItem: context.providers.read(playlistsProvider.notifier).reorderPlaylists,
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 }

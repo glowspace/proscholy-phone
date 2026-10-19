@@ -43,7 +43,7 @@ class FiltersWidget extends ConsumerWidget {
                   ],
                   selected: ref.watch(sortProvider),
                   onSelected: (sortType) => ref.read(sortProvider.notifier).change(sortType),
-                )
+                ),
               ],
             );
           }

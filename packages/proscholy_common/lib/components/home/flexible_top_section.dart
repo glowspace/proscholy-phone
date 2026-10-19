@@ -16,34 +16,36 @@ class FlexibleTopSection extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.all(kDefaultPadding),
-      child: Stack(children: [
-        Opacity(opacity: expansion, child: const Logo(showFullName: false)),
-        Align(
-          alignment: Alignment(0, expansion),
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(kDefaultRadius),
-              boxShadow: [
-                BoxShadow(
-                  color: theme.shadowColor.withValues(alpha: 0.5 * (1 - expansion)),
-                  spreadRadius: 0,
-                  blurRadius: 6,
-                  offset: const Offset(2, 4),
-                ),
-              ],
+      child: Stack(
+        children: [
+          Opacity(opacity: expansion, child: const Logo(showFullName: false)),
+          Align(
+            alignment: Alignment(0, expansion),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(kDefaultRadius),
+                boxShadow: [
+                  BoxShadow(
+                    color: theme.shadowColor.withValues(alpha: 0.5 * (1 - expansion)),
+                    spreadRadius: 0,
+                    blurRadius: 6,
+                    offset: const Offset(2, 4),
+                  ),
+                ],
+              ),
+              child: const SearchField(key: Key('search_field'), isHome: true),
             ),
-            child: const SearchField(key: Key('search_field'), isHome: true),
           ),
-        ),
-        Align(
-          alignment: Alignment(1, -expansion),
-          child: HighlightableWidget(
-            onTap: () => context.push('/settings'),
-            padding: const EdgeInsets.all(kDefaultPadding / 2),
-            icon: const Icon(Icons.settings),
+          Align(
+            alignment: Alignment(1, -expansion),
+            child: HighlightableWidget(
+              onTap: () => context.push('/settings'),
+              padding: const EdgeInsets.all(kDefaultPadding / 2),
+              icon: const Icon(Icons.settings),
+            ),
           ),
-        ),
-      ]),
+        ],
+      ),
     );
   }
 }

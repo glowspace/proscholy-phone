@@ -29,8 +29,11 @@ class SongLyricWidget extends ConsumerStatefulWidget {
 }
 
 class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
-  late final controller =
-      LyricsController(widget.songLyric, context.providers.read(svgProvider(widget.songLyric.id)), context);
+  late final controller = LyricsController(
+    widget.songLyric,
+    context.providers.read(svgProvider(widget.songLyric.id)),
+    context,
+  );
 
   final _presentationPartGlobalKeysMap = <int, GlobalKey>{};
 
@@ -40,20 +43,23 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
 
     // listen for changes in presented verse and make sure it is visible
     context.providers.listen(
-        presentationProvider.select((presentation) =>
-            presentation.isPresenting && presentation.songLyric == widget.songLyric ? presentation.part : -1),
-        (_, presentationPart) {
-      final context = _presentationPartGlobalKeysMap[presentationPart]?.currentContext;
+      presentationProvider.select(
+        (presentation) =>
+            presentation.isPresenting && presentation.songLyric == widget.songLyric ? presentation.part : -1,
+      ),
+      (_, presentationPart) {
+        final context = _presentationPartGlobalKeysMap[presentationPart]?.currentContext;
 
-      if (context != null) {
-        Scrollable.ensureVisible(
-          context,
-          alignment: 0.05,
-          duration: kDefaultAnimationDuration,
-          curve: Curves.easeInOut,
-        );
-      }
-    });
+        if (context != null) {
+          Scrollable.ensureVisible(
+            context,
+            alignment: 0.05,
+            duration: kDefaultAnimationDuration,
+            curve: Curves.easeInOut,
+          );
+        }
+      },
+    );
 
     FirebaseAnalytics.instance.logScreenView(screenName: widget.songLyric.name);
   }
@@ -64,8 +70,9 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
 
     final fontSizeScaler = MediaQuery.textScalerOf(context);
 
-    final showLilypond = ref.watch(songLyricSettingsProvider(widget.songLyric.id)
-        .select((songLyricSettings) => songLyricSettings.showMusicalNotes));
+    final showLilypond = ref.watch(
+      songLyricSettingsProvider(widget.songLyric.id).select((songLyricSettings) => songLyricSettings.showMusicalNotes),
+    );
 
     return SingleChildScrollView(
       controller: widget.autoScrollController,
@@ -108,7 +115,8 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
                 child: ScalableImageWidget.fromSISource(
                   si: ScalableImageSource.fromSvg(controller, ''),
                   isComplex: true,
-                  scale: min(MediaQuery.sizeOf(context).width, controller.musicNotesMaxWidth / (isZPS ? 1 : 2)) /
+                  scale:
+                      min(MediaQuery.sizeOf(context).width, controller.musicNotesMaxWidth / (isZPS ? 1 : 2)) /
                       controller.musicNotesWidth,
                 ),
               ),
@@ -116,23 +124,26 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
             MediaQuery(
               // double the text scale factor for lyrics as they look wrong with text scale factor < 1 and minimum is 0.5
               // font size is changed according to it
-              data: MediaQuery.of(context)
-                  .copyWith(textScaler: TextScaler.linear(MediaQuery.textScalerOf(context).scale(1) * 2)),
+              data: MediaQuery.of(
+                context,
+              ).copyWith(textScaler: TextScaler.linear(MediaQuery.textScalerOf(context).scale(1) * 2)),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 2 * kDefaultPadding),
                 child: _buildLyrics(context),
               ),
             ),
             SizedBox(height: fontSizeScaler.scale(kDefaultPadding)),
-            // make sure lyrics are visible with bottom sheet
+            // make sure lyrics are visible with bottom sheet and above system navigation bar in full screen
             SizedBox(
-                height: (ref.watch(presentationProvider.select((presentation) => presentation.isPresenting)) ||
-                        ref.watch(activePlayerProvider.select((activePlayer) => activePlayer != null)))
-                    ? (4 * kDefaultPadding +
-                        (ref.watch(displayScreenStatusProvider.select((status) => status.fullScreen))
-                            ? MediaQuery.of(context).padding.bottom
-                            : 0))
-                    : 0),
+              height:
+                  ((ref.watch(presentationProvider.select((presentation) => presentation.isPresenting)) ||
+                          ref.watch(activePlayerProvider.select((activePlayer) => activePlayer != null)))
+                      ? 4 * kDefaultPadding
+                      : 0) +
+                  (ref.watch(displayScreenStatusProvider.select((status) => status.fullScreen))
+                      ? MediaQuery.of(context).padding.bottom
+                      : 0),
+            ),
           ],
         ),
       ),
@@ -151,8 +162,9 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
       if (currentToken is Comment) {
         children.add(_buildComment(context, currentToken, false));
       } else if (currentToken is Interlude) {
-        if (ref.watch(songLyricSettingsProvider(widget.songLyric.id)
-            .select((songLyricSettings) => songLyricSettings.showChords))) {
+        if (ref.watch(
+          songLyricSettingsProvider(widget.songLyric.id).select((songLyricSettings) => songLyricSettings.showChords),
+        )) {
           children.add(_buildInterlude(context, currentToken));
         } else {
           while (currentToken != null && currentToken is! InterludeEnd) {
@@ -198,7 +210,9 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
           padding: const EdgeInsets.only(right: kDefaultPadding / 2),
           child: Text(interlude.value, style: _textStyle(context, false)),
         ),
-        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: children)),
+        Expanded(
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: children),
+        ),
       ],
     );
   }
@@ -236,14 +250,20 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
       children: [
         if (number.value.isNotEmpty)
           Container(
-            color: ref.watch(presentationProvider.select(
-                    (presentation) => presentation.isPresenting && presentation.part == originalPresentationPart))
+            color:
+                ref.watch(
+                  presentationProvider.select(
+                    (presentation) => presentation.isPresenting && presentation.part == originalPresentationPart,
+                  ),
+                )
                 ? Theme.of(context).colorScheme.secondaryContainer
                 : null,
             padding: const EdgeInsets.only(right: kDefaultPadding / 2),
             child: Text(number.value, style: textStyle),
           ),
-        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: children)),
+        Expanded(
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: children),
+        ),
       ],
     );
   }
@@ -263,16 +283,20 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
     while (currentToken != null && currentToken is! NewLine) {
       if (currentToken is VersePart) {
         if (currentChord == null ||
-            ref.watch(songLyricSettingsProvider(widget.songLyric.id)
-                .select((songLyricSettings) => !songLyricSettings.showChords))) {
+            ref.watch(
+              songLyricSettingsProvider(
+                widget.songLyric.id,
+              ).select((songLyricSettings) => !songLyricSettings.showChords),
+            )) {
           children.add(WidgetSpan(child: Text(currentToken.value, style: textStyle)));
         } else {
           children.add(_buildChord(context, currentChord, textStyle, versePart: currentToken));
           currentChord = null;
         }
       } else if (currentToken is Chord &&
-          ref.watch(songLyricSettingsProvider(widget.songLyric.id)
-              .select((songLyricSettings) => songLyricSettings.showChords))) {
+          ref.watch(
+            songLyricSettingsProvider(widget.songLyric.id).select((songLyricSettings) => songLyricSettings.showChords),
+          )) {
         if (isInterlude) {
           children.add(_buildChord(context, currentToken, textStyle, isInterlude: true));
         } else if (currentChord != null) {
@@ -287,8 +311,9 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
 
     if (!isInterlude &&
         currentChord != null &&
-        ref.watch(songLyricSettingsProvider(widget.songLyric.id)
-            .select((songLyricSettings) => songLyricSettings.showChords))) {
+        ref.watch(
+          songLyricSettingsProvider(widget.songLyric.id).select((songLyricSettings) => songLyricSettings.showChords),
+        )) {
       children.add(_buildChord(context, currentChord, textStyle));
     }
 
@@ -297,8 +322,12 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
           ? () => ref.read(presentationProvider.notifier).changePart(presentationPart!)
           : null,
       child: Container(
-        color: ref.watch(presentationProvider
-                .select((presentation) => presentation.isPresenting && presentation.part == presentationPart))
+        color:
+            ref.watch(
+              presentationProvider.select(
+                (presentation) => presentation.isPresenting && presentation.part == presentationPart,
+              ),
+            )
             ? Theme.of(context).colorScheme.secondaryContainer
             : null,
         child: RichText(
@@ -310,14 +339,16 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
   }
 
   Widget _buildComment(BuildContext context, Comment comment, bool hasChords) {
-    final showChords = hasChords &&
+    final showChords =
+        hasChords &&
         ref.watch(
-            songLyricSettingsProvider(widget.songLyric.id).select((songLyricSettings) => songLyricSettings.showChords));
-    final textStyle = Theme.of(context).textTheme.labelLarge?.copyWith(
-          fontSize: 8,
-          fontStyle: FontStyle.italic,
-          height: showChords ? 2.5 : 1.5,
+          songLyricSettingsProvider(widget.songLyric.id).select((songLyricSettings) => songLyricSettings.showChords),
         );
+    final textStyle = Theme.of(context).textTheme.labelLarge?.copyWith(
+      fontSize: 8,
+      fontStyle: FontStyle.italic,
+      height: showChords ? 2.5 : 1.5,
+    );
 
     return Text(comment.value, style: textStyle);
   }
@@ -334,12 +365,18 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
         : -2 * MediaQuery.textScalerOf(context).scale(textStyle!.fontSize!);
 
     String chordText = convertAccidentals(
-        transpose(
-            chord.value,
-            ref.watch(songLyricSettingsProvider(widget.songLyric.id)
-                .select((songLyricSettings) => songLyricSettings.transposition))),
-        ref.watch(songLyricSettingsProvider(widget.songLyric.id)
-            .select((songLyricSettings) => songLyricSettings.accidentals ?? widget.songLyric.defaultAccidentals)));
+      transpose(
+        chord.value,
+        ref.watch(
+          songLyricSettingsProvider(widget.songLyric.id).select((songLyricSettings) => songLyricSettings.transposition),
+        ),
+      ),
+      ref.watch(
+        songLyricSettingsProvider(
+          widget.songLyric.id,
+        ).select((songLyricSettings) => songLyricSettings.accidentals ?? widget.songLyric.defaultAccidentals),
+      ),
+    );
 
     final chordColor = Theme.of(context).colorScheme.primary;
 
@@ -353,34 +390,42 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
     }
 
     return WidgetSpan(
-      child: Stack(children: [
-        Container(
-          transform: Matrix4.translationValues(0, chordOffset, 0),
-          padding: EdgeInsets.only(right: MediaQuery.textScalerOf(context).scale(kDefaultPadding) / 2),
-          child: Text.rich(TextSpan(children: [
-            for (int i = 0; i < chordText.length; i++)
+      child: Stack(
+        children: [
+          Container(
+            transform: Matrix4.translationValues(0, chordOffset, 0),
+            padding: EdgeInsets.only(right: MediaQuery.textScalerOf(context).scale(kDefaultPadding) / 2),
+            child: Text.rich(
               TextSpan(
-                text: chordText[i],
-                style: textStyle?.copyWith(
-                  color: chordColor,
-                  fontFeatures: [if (shouldBeSuperscript(i)) FontFeature.superscripts()],
-                ),
-              )
-          ])),
-        ),
-        if (versePart != null) Text(versePart.value, style: textStyle),
-      ]),
+                children: [
+                  for (int i = 0; i < chordText.length; i++)
+                    TextSpan(
+                      text: chordText[i],
+                      style: textStyle?.copyWith(
+                        color: chordColor,
+                        fontFeatures: [if (shouldBeSuperscript(i)) FontFeature.superscripts()],
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+          if (versePart != null) Text(versePart.value, style: textStyle),
+        ],
+      ),
     );
   }
 
   TextStyle? _textStyle(BuildContext context, bool hasChords) {
-    final showChords = hasChords &&
+    final showChords =
+        hasChords &&
         ref.watch(
-            songLyricSettingsProvider(widget.songLyric.id).select((songLyricSettings) => songLyricSettings.showChords));
+          songLyricSettingsProvider(widget.songLyric.id).select((songLyricSettings) => songLyricSettings.showChords),
+        );
 
     return Theme.of(context).textTheme.bodyMedium?.copyWith(
-          fontSize: 8,
-          height: showChords ? 2.25 : 1.5,
-        );
+      fontSize: 8,
+      height: showChords ? 2.25 : 1.5,
+    );
   }
 }

@@ -194,9 +194,8 @@ return $default(_that.id,_that.number,_that.songLyric,_that.songbook);case _:
 }
 
 /// @nodoc
-
+@JsonSerializable(createToJson: false)
 @Entity(realClass: SongbookRecord)
-@JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
 class _SongbookRecord extends SongbookRecord {
   const _SongbookRecord({@Id(assignable: true)@JsonKey(fromJson: int.parse) required this.id, required this.number, @JsonKey(fromJson: _songLyricFromJson) required this.songLyric, @JsonKey(fromJson: _songbookFromJson) required this.songbook}): super._();
   factory _SongbookRecord.fromJson(Map<String, dynamic> json) => _$SongbookRecordFromJson(json);

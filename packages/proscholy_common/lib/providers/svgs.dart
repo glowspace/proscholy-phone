@@ -31,6 +31,9 @@ class Svgs extends _$Svgs {
       } on PathNotFoundException {
         await storeSvgs((await rootBundle.load('assets/svg.zip')).buffer.asUint8List());
 
+        // archive in assets might be empty, so the directory would not be created
+        await svgsDir.create(recursive: true);
+
         files = svgsDir.listSync().where((file) => file.path.endsWith('.svg.gz')).toList();
       }
 

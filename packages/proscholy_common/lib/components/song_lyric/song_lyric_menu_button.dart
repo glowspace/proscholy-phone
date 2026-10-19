@@ -38,7 +38,7 @@ class SongLyricMenuButton extends StatelessWidget {
       PopupMenuItem(
         value: SongLyricMenuAction.present,
         child: Consumer(
-          builder: (_, ref, __) => IconItem(
+          builder: (_, ref, _) => IconItem(
             icon: Icons.cast,
             text: ref.watch(presentationProvider.select((presentationProvider) => presentationProvider.isPresenting))
                 ? 'Ukončit promítání'
@@ -79,13 +79,13 @@ class SongLyricMenuButton extends StatelessWidget {
 
         SharePlus.instance.share(
           ShareParams(
-            uri: Uri.parse('https://${isZPS ? "" : "www."}$songUrl/${songLyric.id}/'),
+            uri: Uri.parse('https://$songUrl/${songLyric.id}/'),
             sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
           ),
         );
         break;
       case SongLyricMenuAction.openInBrowser:
-        launch('https://${isZPS ? "www." : ""}$songUrl/${songLyric.id}/');
+        launch('https://$songUrl/${songLyric.id}/');
         break;
       case SongLyricMenuAction.report:
         final version = context.providers.read(appDependenciesProvider).packageInfo.version;

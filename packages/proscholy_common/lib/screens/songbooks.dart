@@ -13,7 +13,7 @@ class SongbooksScreen extends StatelessWidget {
     return CustomScaffold(
       appBar: AppBar(leading: const CustomBackButton(), title: const Text('Zpěvníky')),
       body: SafeArea(
-        child: Consumer(builder: (_, ref, __) => SongbooksGridView(songbooks: ref.watch(songbooksProvider))),
+        child: Consumer(builder: (_, ref, _) => SongbooksGridView(songbooks: ref.watch(songbooksProvider))),
       ),
     );
   }

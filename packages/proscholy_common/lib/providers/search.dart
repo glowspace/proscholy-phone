@@ -1,33 +1,27 @@
-import 'dart:typed_data';
-
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:proscholy_common/constants.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:proscholy_common/custom/sqlite-bm25/bm25.dart';
+import 'package:proscholy_common/constants.dart';
 import 'package:proscholy_common/models/generated/objectbox.g.dart';
+import 'package:proscholy_common/models/playlist.dart';
 import 'package:proscholy_common/models/song_lyric.dart';
+import 'package:proscholy_common/models/songbook.dart';
+import 'package:proscholy_common/models/tag.dart';
 import 'package:proscholy_common/providers/app_dependencies.dart';
 import 'package:proscholy_common/providers/song_lyrics.dart';
+import 'package:proscholy_common/providers/songbooks.dart';
+import 'package:proscholy_common/providers/sort.dart';
+import 'package:proscholy_common/providers/tags.dart';
 import 'package:proscholy_common/providers/utils.dart';
+import 'package:proscholy_common/views/app_dependencies.dart';
+import 'package:proscholy_common/views/tag.dart';
 
 part 'generated/search.freezed.dart';
 part 'generated/search.g.dart';
 
 final _numberRE = RegExp(r'[1-9]\d*[A-Z]?');
-
-// [name, secondary_name_1, secondary_name_2, lyrics, authors, hymnology]
-const _searchResultsWeights = [40.0, 35.0, 30.0, 1.0, 2.0, 5.0];
-
-const _createTableQuery =
-    'CREATE VIRTUAL TABLE IF NOT EXISTS song_lyrics_search USING FTS4(name, secondary_name_1, secondary_name_2, lyrics, authors, hymnology, tokenize=unicode61);';
-
-const _upsertQuery =
-    'INSERT OR REPLACE INTO song_lyrics_search(rowid, name, secondary_name_1, secondary_name_2, lyrics, authors, hymnology) VALUES(?, ?, ?, ?, ?, ?, ?);';
-
-const _selectQuery =
-    'SELECT rowid, matchinfo(song_lyrics_search, "pcnalx") as info FROM song_lyrics_search WHERE song_lyrics_search MATCH ?;';
+// number in songbook preceded by shortcut of the songbook, e.g. "EZ 12"
+final _shortcutNumberRE = RegExp(r'^(\S+)\s+([1-9]\d*[A-Z]?)$');
 
 @riverpod
 class SearchText extends _$SearchText {
@@ -70,26 +64,6 @@ class SearchedSongLyrics extends _$SearchedSongLyrics {
     return const SearchedSongLyricsResult();
   }
 
-  static Future<void> update(Database ftsDatabase, List<SongLyric> songLyrics) async {
-    await ftsDatabase.execute(_createTableQuery);
-
-    final batch = ftsDatabase.batch();
-
-    for (final songLyric in songLyrics) {
-      batch.execute(_upsertQuery, [
-        songLyric.id,
-        songLyric.displayName,
-        songLyric.secondaryName1,
-        songLyric.secondaryName2,
-        songLyric.lyrics,
-        songLyric.authors.map((author) => author.name).join(','),
-        songLyric.hymnology,
-      ]);
-    }
-
-    await batch.commit();
-  }
-
   Future<SearchedSongLyricsResult> _search(String searchText) async {
     searchText = searchText.trim();
 
@@ -105,14 +79,26 @@ class SearchedSongLyrics extends _$SearchedSongLyrics {
     if (searchedNumber == null) {
       searchText = '${searchText.replaceAll(' ', '* ')}*';
     } else {
-      if (isZPS) {
+      final shortcutNumberMatch = _shortcutNumberRE.firstMatch(searchText);
+      final songbookIds = {
+        if (shortcutNumberMatch != null)
+          for (final songbook in ref.read(appDependenciesProvider).store.box<Songbook>().getAll())
+            if (songbook.shortcut.toLowerCase() == shortcutNumberMatch.group(1)!.toLowerCase()) songbook.id,
+      };
+
+      if (isZPS && songbookIds.isEmpty) {
         final searchId = int.tryParse(searchedNumber);
         if (searchId != null) matchedById = songLyricBox.get(searchId);
 
         if (matchedById != null) matchedIds.add(matchedById.id);
       }
 
-      final songbookRecords = queryStore(ref, condition: SongbookRecord_.number.equals(searchText));
+      final songbookRecords = songbookIds.isEmpty
+          ? queryStore(ref, condition: SongbookRecord_.number.equals(searchText))
+          : queryStore(
+              ref,
+              condition: SongbookRecord_.number.equals(shortcutNumberMatch!.group(2)!),
+            ).where((songbookRecord) => songbookIds.contains(songbookRecord.songbook.targetId)).toList();
       songbookRecords.sort((a, b) => a.songbook.target!.compareTo(b.songbook.target!));
 
       for (final songbookRecord in songbookRecords) {
@@ -137,24 +123,10 @@ class SearchedSongLyrics extends _$SearchedSongLyrics {
       }
     }
 
-    final ranks = <int, double>{};
-    final searchResults = <int>[];
-
-    for (final value in await ref.read(appDependenciesProvider).ftsDatabase.rawQuery(_selectQuery, [searchText])) {
-      final songLyricId = value['rowid'] as int;
-
-      if (!matchedIds.contains(songLyricId)) {
-        searchResults.add(songLyricId);
-        ranks[songLyricId] = bm25(value['info'] as Uint8List, weights: _searchResultsWeights);
-      }
-    }
-
-    searchResults.sort((a, b) => ranks[a]!.compareTo(ranks[b]!));
-
-    final songLyrics = await songLyricBox.getManyAsync(searchResults);
+    final songLyrics = await ref.read(appDependenciesProvider).ftsSearch.search(searchText, ignore: matchedIds);
 
     return SearchedSongLyricsResult(
-      songLyrics: songLyrics.nonNulls.toList(),
+      songLyrics: songLyrics,
       searchedNumber: searchedNumber,
       matchedById: matchedById,
       matchedBySongbookNumber: matchedBySongbookNumber,
@@ -162,7 +134,83 @@ class SearchedSongLyrics extends _$SearchedSongLyrics {
   }
 }
 
-@freezed
+// search results, or all song lyrics when nothing is searched, that match the selected tags
+@riverpod
+SearchedSongLyricsResult filteredSongLyrics(Ref ref) {
+  final searchedSongLyricsResult = ref.watch(searchedSongLyricsProvider);
+  final songbookTags = ref.watch(selectedTagsByTypeProvider(TagType.songbook));
+
+  final List<SongLyric> allSongLyrics;
+  if (songbookTags.length == 1 &&
+      ref.watch(searchTextProvider).isEmpty &&
+      ref.watch(sortProvider) == SortType.numeric) {
+    final songbook = ref.watch(songbooksProvider).firstWhere((songbook) => songbook.name == songbookTags.first.name);
+    songbook.records.sort();
+
+    allSongLyrics = songbook.records.map((songbookRecord) => songbookRecord.songLyric.target!).toList();
+  } else {
+    allSongLyrics = ref.watch(songLyricsProvider);
+  }
+
+  final matchesSelectedTags = _selectedTagsFilter(ref);
+  final matchedById = searchedSongLyricsResult.matchedById;
+
+  return SearchedSongLyricsResult(
+    songLyrics: (searchedSongLyricsResult.songLyrics ?? allSongLyrics).where(matchesSelectedTags).toList(),
+    searchedNumber: searchedSongLyricsResult.searchedNumber,
+    matchedById: matchedById != null && matchesSelectedTags(matchedById) ? matchedById : null,
+    matchedBySongbookNumber: searchedSongLyricsResult.matchedBySongbookNumber.where(matchesSelectedTags).toList(),
+  );
+}
+
+// song lyric has to match any of the selected tags of each tag type, ids of matching song lyrics are found at once, so
+// relations of every song lyric don't have to be loaded
+bool Function(SongLyric) _selectedTagsFilter(Ref ref) {
+  final store = ref.read(appDependenciesProvider).store;
+  final filters = <bool Function(SongLyric)>[];
+
+  for (final tagType in kSupportedTagTypes) {
+    final selectedTags = ref.watch(selectedTagsByTypeProvider(tagType));
+
+    if (selectedTags.isEmpty) continue;
+
+    switch (tagType) {
+      case TagType.language:
+        final languages = {for (final tag in selectedTags) tag.name};
+
+        filters.add((songLyric) => languages.contains(songLyric.langDescription));
+      case TagType.songbook:
+        final songLyricIds = {
+          for (final tag in selectedTags)
+            for (final songbookRecord in store.box<Songbook>().get(kSongbookTagIdOffset - tag.id)?.records ?? [])
+              songbookRecord.songLyric.targetId,
+        };
+
+        filters.add((songLyric) => songLyricIds.contains(songLyric.id));
+      case TagType.playlist:
+        final songLyricIds = {
+          for (final tag in selectedTags)
+            for (final playlistRecord in store.box<Playlist>().get(kPlaylistTagIdOffset - tag.id)?.records ?? [])
+              playlistRecord.songLyric.targetId,
+        };
+
+        filters.add((songLyric) => songLyricIds.contains(songLyric.id));
+      default:
+        final queryBuilder = store.box<SongLyric>().query()
+          ..linkMany(SongLyric_.tags, Tag_.id.oneOf([for (final tag in selectedTags) tag.id]));
+        final query = queryBuilder.build();
+        final songLyricIds = query.findIds().toSet();
+
+        query.close();
+
+        filters.add((songLyric) => songLyricIds.contains(songLyric.id));
+    }
+  }
+
+  return (songLyric) => filters.every((filter) => filter(songLyric));
+}
+
+@Freezed(equal: true)
 sealed class SearchedSongLyricsResult with _$SearchedSongLyricsResult {
   const factory SearchedSongLyricsResult({
     List<SongLyric>? songLyrics,

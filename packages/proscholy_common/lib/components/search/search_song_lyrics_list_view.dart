@@ -4,45 +4,23 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:proscholy_common/components/song_lyric/song_lyrics_section_title.dart';
 import 'package:proscholy_common/components/song_lyric/song_lyric_row.dart';
 import 'package:proscholy_common/constants.dart';
-import 'package:proscholy_common/models/playlist.dart';
-import 'package:proscholy_common/models/song_lyric.dart';
 import 'package:proscholy_common/models/tag.dart';
 import 'package:proscholy_common/providers/playlists.dart';
 import 'package:proscholy_common/providers/recent_items.dart';
 import 'package:proscholy_common/providers/search.dart';
-import 'package:proscholy_common/providers/song_lyrics.dart';
-import 'package:proscholy_common/providers/songbooks.dart';
-import 'package:proscholy_common/providers/sort.dart';
 import 'package:proscholy_common/providers/tags.dart';
 import 'package:proscholy_common/routing/arguments.dart';
-import 'package:proscholy_common/views/tag.dart';
 
 class SearchSongLyricsListView extends ConsumerWidget {
   const SearchSongLyricsListView({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final searchedSongLyricsResult = ref.watch(searchedSongLyricsProvider);
+    final searchedSongLyricsResult = ref.watch(filteredSongLyricsProvider);
 
-    final songbookTags = ref.watch(selectedTagsByTypeProvider(TagType.songbook));
-
-    final List<SongLyric> allSongLyrics;
-    if (songbookTags.length == 1 &&
-        ref.watch(searchTextProvider).isEmpty &&
-        ref.watch(sortProvider) == SortType.numeric) {
-      final songbook = ref.watch(songbooksProvider).firstWhere((songbook) => songbook.name == songbookTags.first.name);
-      songbook.records.sort();
-
-      allSongLyrics = songbook.records.map((songbookRecord) => songbookRecord.songLyric.target!).toList();
-    } else {
-      allSongLyrics = ref.watch(songLyricsProvider);
-    }
-
-    final songLyrics = filterSongLyrics(searchedSongLyricsResult.songLyrics ?? allSongLyrics, ref);
-    final matchedById = searchedSongLyricsResult.matchedById == null
-        ? null
-        : filterSongLyrics([searchedSongLyricsResult.matchedById!], ref).firstOrNull;
-    final matchedBySongbookNumber = filterSongLyrics(searchedSongLyricsResult.matchedBySongbookNumber, ref);
+    final songLyrics = searchedSongLyricsResult.songLyrics!;
+    final matchedById = searchedSongLyricsResult.matchedById;
+    final matchedBySongbookNumber = searchedSongLyricsResult.matchedBySongbookNumber;
 
     final recentSongLyrics = ref.watch(recentSongLyricsProvider);
 
@@ -64,7 +42,7 @@ class SearchSongLyricsListView extends ConsumerWidget {
     final selectedTags = ref.read(selectedTagsProvider);
     final playlist = selectedTags.length != 1 || selectedTags.firstOrNull?.type != TagType.playlist
         ? null
-        : ref.read(playlistProvider(selectedTags.first.id - playlistIdOffset));
+        : ref.read(playlistProvider(kPlaylistTagIdOffset - selectedTags.first.id));
 
     return SafeArea(
       bottom: false,
@@ -118,8 +96,9 @@ class SearchSongLyricsListView extends ConsumerWidget {
               if (index == 0) {
                 return Padding(
                   padding: const EdgeInsets.only(top: kDefaultPadding),
-                  child:
-                      SongLyricsSectionTitle(title: 'Číslo ${searchedSongLyricsResult.searchedNumber} ve zpěvnících'),
+                  child: SongLyricsSectionTitle(
+                    title: 'Číslo ${searchedSongLyricsResult.searchedNumber} ve zpěvnících',
+                  ),
                 );
               }
 
@@ -173,37 +152,5 @@ class SearchSongLyricsListView extends ConsumerWidget {
         ),
       ),
     );
-  }
-
-  List<SongLyric> filterSongLyrics(List<SongLyric> songLyrics, WidgetRef ref) {
-    final filteredSongLyrics = <SongLyric>[...songLyrics];
-
-    for (int i = filteredSongLyrics.length - 1; i >= 0; i--) {
-      final songLyric = filteredSongLyrics[i];
-
-      for (final tagType in kSupportedTagTypes) {
-        final selectedTags = ref.watch(selectedTagsByTypeProvider(tagType));
-
-        if (selectedTags.isEmpty) continue;
-
-        final shouldRemove = switch (tagType) {
-          TagType.language => selectedTags.none((tag) => tag.name == songLyric.langDescription),
-          TagType.playlist => selectedTags.none((tag) => songLyric.playlistRecords
-              .map((playlistRecord) => playlistRecord.playlist.target!)
-              .any((playlist) => tag.name == playlist.name)),
-          TagType.songbook => selectedTags.none((tag) => songLyric.songbookRecords
-              .map((songbookRecord) => songbookRecord.songbook.target!)
-              .any((songbook) => tag.name == songbook.name)),
-          _ => songLyric.tags.none((tag) => selectedTags.contains(tag))
-        };
-
-        if (shouldRemove) {
-          filteredSongLyrics.removeAt(i);
-          break;
-        }
-      }
-    }
-
-    return filteredSongLyrics;
   }
 }

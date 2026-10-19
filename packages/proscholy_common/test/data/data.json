@@ -1,0 +1,90 @@
+{
+  "data": {
+    "authors": [
+      {"id": "31", "name": "Tomáš Coufal"},
+      {"id": "32", "name": "Jana Hlavsová"}
+    ],
+    "tags_enum": [
+      {"id": "9", "name": "závěr", "type_enum": "LITURGY_PART", "song_lyrics_count": 425},
+      {"id": "16", "name": "chvály", "type_enum": "SACRED_OCCASION", "song_lyrics_count": 240}
+    ],
+    "songbooks": [
+      {"id": "9", "name": "Chvalozpěvy 3", "shortcut": "3Ch", "color": "#1a237e", "color_text": "#ffffff", "is_private": false},
+      {"id": "58", "name": "Evangelický zpěvník", "shortcut": "EZ", "color": "#ad1457", "color_text": "#ffffff", "is_private": false},
+      {"id": "63", "name": "Evangelický kancionál", "shortcut": "EK", "color": "", "color_text": null, "is_private": false}
+    ],
+    "songs": [
+      {"id": "2560", "name": "Otwórz me oczy o Panie"},
+      {"id": "2561", "name": "Bože, chválí tebe"}
+    ],
+    "song_lyrics": [
+      {
+        "id": "1",
+        "name": "Ať srdce mé tebe vídá",
+        "secondary_name_1": "Otwórz me oczy",
+        "secondary_name_2": null,
+        "lyrics": "1. /: [D]Ať srdce mé tebe vídá,\n[Dmaj7]ať srdce mé tebe zná. :/\n\nR: Chci vidět [A]Krále na trů[Hm]nu",
+        "lang": "cs",
+        "lang_string": "čeština",
+        "type_enum": "TRANSLATION",
+        "is_arrangement": false,
+        "has_chords": true,
+        "song": {"id": "2560"},
+        "songbook_records": [
+          {"pivot": {"id": "3", "number": "1", "song_lyric": {"id": "1"}, "songbook": {"id": "9"}}},
+          {"pivot": {"id": "4001", "number": "12", "song_name": "Ať mé srdce tebe vídá", "song_lyric": {"id": "1"}, "songbook": {"id": "58"}}},
+          {"pivot": {"id": "5001", "number": "7A", "song_name": "", "song_lyric": {"id": "1"}, "songbook": {"id": "63"}}}
+        ],
+        "externals": [
+          {"id": "1", "public_name": "youtube (Ať srdce mé tebe vídá | Schola brněnské mládeže (SBM))", "url": "https://www.youtube.com/watch?v=QCIZKQG37J4", "media_id": "QCIZKQG37J4", "media_type": "youtube", "content_type": "RECORDING"},
+          {"id": "861", "public_name": "noty (Ať srdce mé tebe vídá | Karel Řežábek)", "url": "https://zpevnik.proscholy.cz/soubor/at-srdce-me-tebe-vida.pdf", "media_id": "at-srdce-me-tebe-vida.pdf", "media_type": "file/pdf", "content_type": "SCORE"}
+        ],
+        "authors_pivot": [
+          {"pivot": {"author": {"id": "31"}}},
+          {"pivot": {"author": {"id": "32"}}}
+        ],
+        "tags": [{"id": "16"}, {"id": "9"}]
+      },
+      {
+        "id": "2",
+        "name": "Bože, chválí tebe",
+        "secondary_name_1": null,
+        "secondary_name_2": null,
+        "lyrics": "1. Bože, [B]chválí [Es]tebe",
+        "lang": "cs",
+        "lang_string": "čeština",
+        "type_enum": "ORIGINAL",
+        "is_arrangement": false,
+        "has_chords": false,
+        "song": {"id": "2561"},
+        "songbook_records": [
+          {"pivot": {"id": "4002", "number": "13", "song_name": null, "song_lyric": {"id": "2"}, "songbook": {"id": "58"}}},
+          {"pivot": {"id": "5002", "number": "8", "song_name": "Bože, chválí tě", "song_lyric": {"id": "2"}, "songbook": {"id": "63"}}}
+        ],
+        "externals": [],
+        "authors_pivot": [],
+        "tags": []
+      },
+      {
+        "id": "3",
+        "name": "Bože, chválí tebe (aranžmá)",
+        "secondary_name_1": null,
+        "secondary_name_2": null,
+        "lyrics": "1. Bože, chválí tebe",
+        "lang": "cs",
+        "lang_string": "čeština",
+        "type_enum": "ORIGINAL",
+        "is_arrangement": true,
+        "has_chords": false,
+        "song": {"id": "2561"},
+        "songbook_records": [
+          {"pivot": {"id": "4003", "number": "13a", "song_name": null, "song_lyric": {"id": "3"}, "songbook": {"id": "58"}}},
+          {"pivot": {"id": "5003", "number": "8a", "song_name": null, "song_lyric": {"id": "3"}, "songbook": {"id": "63"}}}
+        ],
+        "externals": [],
+        "authors_pivot": [],
+        "tags": []
+      }
+    ]
+  }
+}

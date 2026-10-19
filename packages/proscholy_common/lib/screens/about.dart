@@ -21,7 +21,7 @@ class AboutScreen extends StatelessWidget {
 
     return SafeAreaWrapper(
       child: Scaffold(
-        backgroundColor: theme.colorScheme.background,
+        backgroundColor: theme.colorScheme.surfaceBright,
         appBar: AppBar(leading: const CustomBackButton(), title: const Text('O projektu')),
         body: SafeArea(
           child: Padding(

@@ -17,26 +17,29 @@ class Presentation extends StatelessWidget {
     final mediaQuery = MediaQuery.of(context);
     final width = mediaQuery.size.width - mediaQuery.padding.horizontal;
 
-    final backgroundColor =
-        (onExternalDisplay ? (presentationData.settings.darkMode ? Colors.black : Colors.white) : null);
+    final backgroundColor = (onExternalDisplay
+        ? (presentationData.settings.darkMode ? Colors.black : Colors.white)
+        : null);
     final textColor = onExternalDisplay ? (presentationData.settings.darkMode ? Colors.white : Colors.black) : null;
 
     final presentingText = (presentationData.songLyricId != null && presentationData.settings.allCapital)
         ? presentationData.text.toUpperCase()
         : presentationData.text;
-    final textScaleFactor = onExternalDisplay
-        ? _computeTextScaleFactor(
-            context,
-            // for lyrics compute scale factor so there are no line breaks, there can be line breaks for custom text and bible verse
-            presentationData.songLyricId == null ? 'Na počátku stvořil Bůh nebe a zemi.' : presentingText,
-            presentationData.settings.showName,
+    final textScaler = onExternalDisplay
+        ? TextScaler.linear(
+            _computeTextScaleFactor(
+              context,
+              // for lyrics compute scale factor so there are no line breaks, there can be line breaks for custom text and bible verse
+              presentationData.songLyricId == null ? 'Na počátku stvořil Bůh nebe a zemi.' : presentingText,
+              presentationData.settings.showName,
+            ),
           )
-        : mediaQuery.textScaleFactor;
+        : mediaQuery.textScaler;
 
     if (!presentationData.settings.isVisible) return Container(color: backgroundColor);
 
     return RotatedBox(
-      quarterTurns: switch(presentationData.settings.rotation) {
+      quarterTurns: switch (presentationData.settings.rotation) {
         PresentationRotation.none => 0,
         PresentationRotation.right90 => 1,
         PresentationRotation.upsideDown => 2,
@@ -44,77 +47,83 @@ class Presentation extends StatelessWidget {
         _ => 0,
       },
       child: Container(
-      color: backgroundColor,
-      child: Stack(
-        children: [
-          if (presentationData.settings.showName && presentingText.isNotEmpty)
-            Align(
-              alignment: Alignment.topCenter,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
-                child: Text(
-                  presentationData.name,
-                  style: textTheme.bodyMedium?.copyWith(color: textColor),
-                  textScaleFactor: textScaleFactor,
+        color: backgroundColor,
+        child: Stack(
+          children: [
+            if (presentationData.settings.showName && presentingText.isNotEmpty)
+              Align(
+                alignment: Alignment.topCenter,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
+                  child: Text(
+                    presentationData.name,
+                    style: textTheme.bodyMedium?.copyWith(color: textColor),
+                    textScaler: textScaler,
+                  ),
                 ),
               ),
-            ),
-          Align(
-            alignment: switch (presentationData.settings.alignment) {
-              PresentationAlignment.top => Alignment.topCenter,
-              PresentationAlignment.bottom => Alignment.bottomCenter,
-              _ => Alignment.center,
-            },
-            child: Padding(
-              padding: EdgeInsets.only(
-                top: (presentationData.settings.showName ? 4 : 1) * textScaleFactor * kDefaultPadding,
-                bottom: (onExternalDisplay ? 1 : 8) * textScaleFactor * kDefaultPadding,
-              ),
-              child: presentationData.isCustomText
-                  ? QuillEditor.basic(
-                      controller: QuillController(
-                        document: _deserializeMarkdownToDocument(presentingText),
-                        selection: const TextSelection.collapsed(offset: 0),
-                        readOnly: true,
-                      ),
-                      config: QuillEditorConfig(
-                        padding:
-                            const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding, vertical: kDefaultPadding),
-                        showCursor: false,
-                      ),
-                    )
-                  : Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 2 * kDefaultPadding),
-                      child: Text(
-                        presentingText,
-                        style: textTheme.bodyMedium?.copyWith(color: textColor),
-                        textScaleFactor: textScaleFactor,
-                      ),
-                    ),
-            ),
-          ),
-          if (onExternalDisplay && presentingText.isNotEmpty && presentationData.songLyricId != null)
             Align(
-              alignment: Alignment.bottomLeft,
+              alignment: switch (presentationData.settings.alignment) {
+                PresentationAlignment.top => Alignment.topCenter,
+                PresentationAlignment.bottom => Alignment.bottomCenter,
+                _ => Alignment.center,
+              },
               child: Padding(
-                padding: const EdgeInsets.all(2 * kDefaultPadding),
-                child: Text(
-                  '${presentationData.songLyricId}',
-                  style: textTheme.bodyMedium?.copyWith(color: textColor),
-                  textScaleFactor: width / 400,
+                padding: EdgeInsets.only(
+                  top: textScaler.scale((presentationData.settings.showName ? 4 : 1) * kDefaultPadding),
+                  bottom: textScaler.scale((onExternalDisplay ? 1 : 8) * kDefaultPadding),
+                ),
+                child: presentationData.isUserText
+                    ? QuillEditor.basic(
+                        controller: QuillController(
+                          document: _deserializeMarkdownToDocument(presentingText),
+                          selection: const TextSelection.collapsed(offset: 0),
+                          readOnly: true,
+                        ),
+                        config: QuillEditorConfig(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 1.5 * kDefaultPadding,
+                            vertical: kDefaultPadding,
+                          ),
+                          showCursor: false,
+                        ),
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 2 * kDefaultPadding),
+                        child: Text(
+                          presentingText,
+                          style: textTheme.bodyMedium?.copyWith(color: textColor),
+                          textScaler: textScaler,
+                        ),
+                      ),
+              ),
+            ),
+            if (onExternalDisplay && presentingText.isNotEmpty && presentationData.songLyricId != null)
+              Align(
+                alignment: Alignment.bottomLeft,
+                child: Padding(
+                  padding: const EdgeInsets.all(2 * kDefaultPadding),
+                  child: Text(
+                    '${presentationData.songLyricId}',
+                    style: textTheme.bodyMedium?.copyWith(color: textColor),
+                    textScaler: TextScaler.linear(width / 400),
+                  ),
                 ),
               ),
-            ),
-          if (onExternalDisplay && presentingText.isNotEmpty)
-            Align(
-              alignment: Alignment.bottomRight,
-              child: Padding(
-                padding: const EdgeInsets.all(2 * kDefaultPadding),
-                child: Image.asset('$imagesPath/songbooks/default.png', width: width / 20, package: 'proscholy_common'),
+            if (onExternalDisplay && presentingText.isNotEmpty)
+              Align(
+                alignment: Alignment.bottomRight,
+                child: Padding(
+                  padding: const EdgeInsets.all(2 * kDefaultPadding),
+                  child: Image.asset(
+                    '$imagesPath/songbooks/default.png',
+                    width: width / 20,
+                    package: 'proscholy_common',
+                  ),
+                ),
               ),
-            ),
-        ],
-      ),
+          ],
+        ),
       ),
     );
   }
@@ -131,7 +140,7 @@ class Presentation extends StatelessWidget {
       final textPainter = TextPainter(
         text: TextSpan(text: lyrics, style: Theme.of(context).textTheme.bodyMedium),
         textDirection: TextDirection.ltr,
-        textScaleFactor: textScaleFactor,
+        textScaler: TextScaler.linear(textScaleFactor),
         textWidthBasis: TextWidthBasis.longestLine,
       );
 

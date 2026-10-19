@@ -31,61 +31,60 @@ enum TagType {
   unknown;
 
   factory TagType.fromRawValue(int rawValue) => switch (rawValue) {
-        0 => TagType.liturgyPart,
-        1 => TagType.liturgyPeriod,
-        2 => TagType.generic,
-        3 => TagType.historyPeriod,
-        4 => TagType.instrumentation,
-        5 => TagType.genre,
-        6 => TagType.musicalForm,
-        7 => TagType.sacredOccasion,
-        8 => TagType.saints,
-        9 => TagType.language,
-        10 => TagType.liturgyDay,
-        11 => TagType.songbook,
-        12 => TagType.playlist,
-        _ => TagType.unknown,
-      };
+    0 => TagType.liturgyPart,
+    1 => TagType.liturgyPeriod,
+    2 => TagType.generic,
+    3 => TagType.historyPeriod,
+    4 => TagType.instrumentation,
+    5 => TagType.genre,
+    6 => TagType.musicalForm,
+    7 => TagType.sacredOccasion,
+    8 => TagType.saints,
+    9 => TagType.language,
+    10 => TagType.liturgyDay,
+    11 => TagType.songbook,
+    12 => TagType.playlist,
+    _ => TagType.unknown,
+  };
 
   static int rawValueFromString(String string) => switch (string) {
-        'LITURGY_PART' => 0,
-        'LITURGY_PERIOD' => 1,
-        'LITURGY_DAY' => 10,
-        'SAINTS' => 8,
-        'HISTORY_PERIOD' => 3,
-        'INSTRUMENTATION' => 4,
-        'GENRE' => 5,
-        'MUSICAL_FORM' => 6,
-        'SACRED_OCCASION' => 7,
-        'LANGUAGE' => 9,
-        'GENERIC' => 2,
-        _ => -1,
-      };
+    'LITURGY_PART' => 0,
+    'LITURGY_PERIOD' => 1,
+    'LITURGY_DAY' => 10,
+    'SAINTS' => 8,
+    'HISTORY_PERIOD' => 3,
+    'INSTRUMENTATION' => 4,
+    'GENRE' => 5,
+    'MUSICAL_FORM' => 6,
+    'SACRED_OCCASION' => 7,
+    'LANGUAGE' => 9,
+    'GENERIC' => 2,
+    _ => -1,
+  };
 
   int get rawValue => switch (this) {
-        TagType.liturgyPart => 0,
-        TagType.liturgyPeriod => 1,
-        TagType.generic => 2,
-        TagType.historyPeriod => 3,
-        TagType.instrumentation => 4,
-        TagType.genre => 5,
-        TagType.musicalForm => 6,
-        TagType.sacredOccasion => 7,
-        TagType.saints => 8,
-        TagType.language => 9,
-        TagType.liturgyDay => 10,
-        TagType.songbook => 11,
-        TagType.playlist => 12,
-        _ => -1,
-      };
+    TagType.liturgyPart => 0,
+    TagType.liturgyPeriod => 1,
+    TagType.generic => 2,
+    TagType.historyPeriod => 3,
+    TagType.instrumentation => 4,
+    TagType.genre => 5,
+    TagType.musicalForm => 6,
+    TagType.sacredOccasion => 7,
+    TagType.saints => 8,
+    TagType.language => 9,
+    TagType.liturgyDay => 10,
+    TagType.songbook => 11,
+    TagType.playlist => 12,
+    _ => -1,
+  };
 }
 
-@Freezed(toJson: false, equal: false)
+@freezed
 sealed class Tag extends Model with _$Tag {
   const Tag._();
 
   @Entity(realClass: Tag)
-  @JsonSerializable(fieldRename: FieldRename.snake)
   const factory Tag({
     @Id(assignable: true) @JsonKey(fromJson: int.parse) required int id,
     required String name,

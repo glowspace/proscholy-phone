@@ -37,7 +37,10 @@ class GlowspaceLogo extends StatelessWidget {
       children: [
         Image.asset('assets/images/logos/gs_logo.png'),
         const SizedBox(width: kDefaultPadding),
-        Text(text, style: TextStyle(fontSize: 17, color: textColor, fontWeight: FontWeight.w500)),
+        Text(
+          text,
+          style: TextStyle(fontSize: 17, color: textColor, fontWeight: FontWeight.w500),
+        ),
       ],
     );
   }

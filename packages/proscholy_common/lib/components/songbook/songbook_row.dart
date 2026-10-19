@@ -19,19 +19,21 @@ class SongbookRow extends StatelessWidget {
       highlightBackground: true,
       padding: const EdgeInsets.symmetric(vertical: kDefaultPadding, horizontal: 1.25 * kDefaultPadding),
       onTap: () => context.push('/songbook', arguments: songbook),
-      child: Row(children: [
-        Container(
-          width: _songbookColorBoxSize,
-          height: _songbookColorBoxSize,
-          decoration: BoxDecoration(
-            color: HexColor.fromHex(songbook.color) ?? blue,
-            borderRadius: BorderRadius.circular(4),
+      child: Row(
+        children: [
+          Container(
+            width: _songbookColorBoxSize,
+            height: _songbookColorBoxSize,
+            decoration: BoxDecoration(
+              color: HexColor.fromHex(songbook.color) ?? blue,
+              borderRadius: BorderRadius.circular(4),
+            ),
           ),
-        ),
-        const SizedBox(width: kDefaultPadding),
-        Expanded(child: Text(songbook.name, style: textTheme.bodyMedium)),
-        Text(songbook.shortcut, style: textTheme.bodySmall),
-      ]),
+          const SizedBox(width: kDefaultPadding),
+          Expanded(child: Text(songbook.name, style: textTheme.bodyMedium)),
+          Text(songbook.shortcut, style: textTheme.bodySmall),
+        ],
+      ),
     );
   }
 }

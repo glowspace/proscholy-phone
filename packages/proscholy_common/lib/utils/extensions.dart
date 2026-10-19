@@ -27,11 +27,12 @@ extension HexColor on Color {
 
     if (hexColor.length == 6) hexColor = "FF$hexColor";
 
-    return Color(int.parse(hexColor, radix: 16));
-  }
+    // API might return empty or otherwise invalid color
+    final value = int.tryParse(hexColor, radix: 16);
 
-  String get hex {
-    return '#${red.toRadixString(16)}${green.toRadixString(16)}${blue.toRadixString(16)}';
+    if (hexColor.length != 8 || value == null) return null;
+
+    return Color(value);
   }
 }
 

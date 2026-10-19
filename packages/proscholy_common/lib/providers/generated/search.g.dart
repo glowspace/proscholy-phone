@@ -93,7 +93,7 @@ final class SearchedSongLyricsProvider
 }
 
 String _$searchedSongLyricsHash() =>
-    r'0d46f0ae5a8f8c97d5d371bc5f16caebda36880e';
+    r'39e354c7c3687d2840db3fbe922cabaf22fefd0e';
 
 abstract class _$SearchedSongLyrics
     extends $Notifier<SearchedSongLyricsResult> {
@@ -114,3 +114,51 @@ abstract class _$SearchedSongLyrics
     element.handleCreate(ref, build);
   }
 }
+
+@ProviderFor(filteredSongLyrics)
+final filteredSongLyricsProvider = FilteredSongLyricsProvider._();
+
+final class FilteredSongLyricsProvider
+    extends
+        $FunctionalProvider<
+          SearchedSongLyricsResult,
+          SearchedSongLyricsResult,
+          SearchedSongLyricsResult
+        >
+    with $Provider<SearchedSongLyricsResult> {
+  FilteredSongLyricsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'filteredSongLyricsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$filteredSongLyricsHash();
+
+  @$internal
+  @override
+  $ProviderElement<SearchedSongLyricsResult> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  SearchedSongLyricsResult create(Ref ref) {
+    return filteredSongLyrics(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(SearchedSongLyricsResult value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<SearchedSongLyricsResult>(value),
+    );
+  }
+}
+
+String _$filteredSongLyricsHash() =>
+    r'57d14659821f2453aa1882d19a1bd6db30b4093a';

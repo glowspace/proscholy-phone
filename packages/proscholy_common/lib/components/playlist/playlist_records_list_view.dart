@@ -4,7 +4,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:proscholy_common/components/playlist/playlist_record_row.dart';
 import 'package:proscholy_common/components/selected_displayable_item_arguments.dart';
 import 'package:proscholy_common/constants.dart';
@@ -13,8 +12,8 @@ import 'package:proscholy_common/models/generated/objectbox.g.dart';
 import 'package:proscholy_common/models/playlist.dart';
 import 'package:proscholy_common/models/playlist_record.dart';
 import 'package:proscholy_common/providers/app_dependencies.dart';
-import 'package:proscholy_common/providers/bible_verse.dart';
-import 'package:proscholy_common/providers/custom_text.dart';
+import 'package:proscholy_common/providers/bible_passage.dart';
+import 'package:proscholy_common/providers/user_text.dart';
 import 'package:proscholy_common/providers/playlists.dart';
 import 'package:proscholy_common/providers/song_lyrics.dart';
 import 'package:proscholy_common/routing/arguments.dart';
@@ -35,9 +34,13 @@ class PlaylistRecordsListView extends ConsumerStatefulWidget {
 class _PlaylistRecordsListViewState extends ConsumerState<PlaylistRecordsListView> {
   late StreamSubscription<Query<PlaylistRecord>> _playlistChangesSubscription;
 
+  // records are read from store, as `widget.playlist` might not have them up to date
+  late List<PlaylistRecord> _records = widget.playlist.records.toList();
+
   // it is not possible to sort relations yet, so sort it here when displaying
-  late List<PlaylistRecord> _recordsOrdered =
-      _filterInvalidRecords(widget.playlist.records.sorted((a, b) => a.rank.compareTo(b.rank)));
+  late List<PlaylistRecord> _recordsOrdered = _filterInvalidRecords(
+    _records.sorted((a, b) => a.rank.compareTo(b.rank)),
+  );
 
   @override
   void initState() {
@@ -50,39 +53,43 @@ class _PlaylistRecordsListViewState extends ConsumerState<PlaylistRecordsListVie
         .box<PlaylistRecord>()
         .query(PlaylistRecord_.playlist.equals(widget.playlist.id))
         .watch()
-        .listen((_) {
-      setState(() =>
-          _recordsOrdered = _filterInvalidRecords(widget.playlist.records.sorted((a, b) => a.rank.compareTo(b.rank))));
+        .listen((query) {
+          _records = query.find();
 
-      final context = this.context;
-      if (!context.mounted) return;
+          setState(
+            () => _recordsOrdered = _filterInvalidRecords(_records.sorted((a, b) => a.rank.compareTo(b.rank))),
+          );
 
-      final selectedDisplayableItemArgumentsNotifier = SelectedDisplayableItemArguments.of(context, listen: false);
+          final context = this.context;
+          if (!context.mounted) return;
 
-      if (selectedDisplayableItemArgumentsNotifier != null) {
-        final displayableItems = _recordsOrdered.map(_unwrapPlaylistRecord).toList();
+          final selectedDisplayableItemArgumentsNotifier = SelectedDisplayableItemArguments.of(context, listen: false);
 
-        for (int i = 0; i < displayableItems.length; i++) {
-          if (displayableItems[i] ==
-              selectedDisplayableItemArgumentsNotifier
-                  .value.items[selectedDisplayableItemArgumentsNotifier.value.initialIndex]) {
+          if (selectedDisplayableItemArgumentsNotifier != null) {
+            final displayableItems = _recordsOrdered.map(_unwrapPlaylistRecord).toList();
+
+            for (int i = 0; i < displayableItems.length; i++) {
+              if (displayableItems[i] ==
+                  selectedDisplayableItemArgumentsNotifier.value.items[selectedDisplayableItemArgumentsNotifier
+                      .value
+                      .initialIndex]) {
+                selectedDisplayableItemArgumentsNotifier.value = DisplayScreenArguments(
+                  items: displayableItems,
+                  initialIndex: i,
+                  playlist: widget.playlist,
+                );
+
+                return;
+              }
+            }
+
             selectedDisplayableItemArgumentsNotifier.value = DisplayScreenArguments(
               items: displayableItems,
-              initialIndex: i,
+              initialIndex: 0,
               playlist: widget.playlist,
             );
-
-            return;
           }
-        }
-
-        selectedDisplayableItemArgumentsNotifier.value = DisplayScreenArguments(
-          items: displayableItems,
-          initialIndex: 0,
-          playlist: widget.playlist,
-        );
-      }
-    });
+        });
 
     widget.sortedAlphabeticallyNotifier.addListener(_sortedAlphabeticallyChanged);
   }
@@ -133,60 +140,58 @@ class _PlaylistRecordsListViewState extends ConsumerState<PlaylistRecordsListVie
             initialIndex: index,
             playlist: widget.playlist,
           ),
+          index: index,
         ),
       ),
-      onReorder: _reorder,
+      onReorderItem: _reorder,
     );
   }
 
   // TODO: temporary fix, so there are playlist records can't fail during _unwrapPlaylistRecord
   List<PlaylistRecord> _filterInvalidRecords(List<PlaylistRecord> playlistRecords) {
     return playlistRecords.where((playlistRecord) {
-      final bibleVerse = ref.watch(bibleVerseProvider(playlistRecord.bibleVerse.targetId));
-      final customText = ref.watch(customTextProvider(playlistRecord.customText.targetId));
+      final biblePassage = ref.watch(biblePassageProvider(playlistRecord.biblePassage.targetId));
+      final userText = ref.watch(userTextProvider(playlistRecord.userText.targetId));
       final songLyric = ref.watch(songLyricProvider(playlistRecord.songLyric.targetId));
 
-      if (bibleVerse == null && customText == null && songLyric == null) {
-        Sentry.captureMessage('had to filter invalid record');
-      }
-
-      return bibleVerse != null || customText != null || songLyric != null;
+      return biblePassage != null || userText != null || songLyric != null;
     }).toList();
   }
 
   DisplayableItem _unwrapPlaylistRecord(PlaylistRecord playlistRecord) {
-    final bibleVerse = ref.watch(bibleVerseProvider(playlistRecord.bibleVerse.targetId));
-    final customText = ref.watch(customTextProvider(playlistRecord.customText.targetId));
+    final biblePassage = ref.watch(biblePassageProvider(playlistRecord.biblePassage.targetId));
+    final userText = ref.watch(userTextProvider(playlistRecord.userText.targetId));
     final songLyric = ref.watch(songLyricProvider(playlistRecord.songLyric.targetId));
 
-    if (bibleVerse != null) {
-      return bibleVerse;
-    } else if (customText != null) {
-      return customText;
+    if (biblePassage != null) {
+      return biblePassage;
+    } else if (userText != null) {
+      return userText;
     }
 
     return songLyric!;
   }
 
   void _reorder(int oldIndex, int newIndex) {
-    if (oldIndex < newIndex) newIndex -= 1;
-
     if (oldIndex == newIndex) return;
 
     _recordsOrdered.insert(newIndex, _recordsOrdered.removeAt(oldIndex));
 
-    widget.playlist.records.setAll(0, _recordsOrdered.mapIndexed((index, record) => record.copyWith(rank: index)));
-
-    // `widget.playlist.records.applyToDb` saves sometimes incorrectly new ranks, so save it using `putMany`
-    context.providers.read(appDependenciesProvider).store.box<PlaylistRecord>().putMany(widget.playlist.records);
+    context.providers
+        .read(appDependenciesProvider)
+        .store
+        .box<PlaylistRecord>()
+        .putMany(_recordsOrdered.mapIndexed((index, record) => record.copyWith(rank: index)).toList());
 
     widget.sortedAlphabeticallyNotifier.value = false;
   }
 
   void _removePlaylistRecord(int index) {
-    context.providers.read(playlistsProvider.notifier).removeFromPlaylist(widget.playlist, _recordsOrdered[index]);
+    context.providers.read(playlistProvider(widget.playlist.id).notifier).removeRecord(_recordsOrdered[index]);
 
-    final removed = _recordsOrdered.removeAt(index);
+    final removed = _recordsOrdered[index];
+
+    setState(() => _recordsOrdered.removeAt(index));
 
     final selectedDisplayableItemArguments = SelectedDisplayableItemArguments.of(context);
 
@@ -212,11 +217,16 @@ class _PlaylistRecordsListViewState extends ConsumerState<PlaylistRecordsListVie
   }
 
   void _sortedAlphabeticallyChanged() {
+    final playlistRecords = _filterInvalidRecords(_records);
+
     if (widget.sortedAlphabeticallyNotifier.value) {
-      setState(() => _recordsOrdered = widget.playlist.records
-          .sorted((a, b) => _unwrapPlaylistRecord(a).displayName.compareTo(_unwrapPlaylistRecord(b).displayName)));
+      setState(
+        () => _recordsOrdered = playlistRecords.sorted(
+          (a, b) => _unwrapPlaylistRecord(a).displayName.compareTo(_unwrapPlaylistRecord(b).displayName),
+        ),
+      );
     } else {
-      setState(() => _recordsOrdered = widget.playlist.records.sorted((a, b) => a.rank.compareTo(b.rank)));
+      setState(() => _recordsOrdered = playlistRecords.sorted((a, b) => a.rank.compareTo(b.rank)));
     }
   }
 }

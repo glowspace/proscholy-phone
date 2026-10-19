@@ -13,8 +13,8 @@ part of '../update.dart';
 final graphQLClientProvider = GraphQLClientProvider._();
 
 final class GraphQLClientProvider
-    extends $FunctionalProvider<Client, Client, Client>
-    with $Provider<Client> {
+    extends $FunctionalProvider<ApiClient, ApiClient, ApiClient>
+    with $Provider<ApiClient> {
   GraphQLClientProvider._()
     : super(
         from: null,
@@ -31,24 +31,24 @@ final class GraphQLClientProvider
 
   @$internal
   @override
-  $ProviderElement<Client> $createElement($ProviderPointer pointer) =>
+  $ProviderElement<ApiClient> $createElement($ProviderPointer pointer) =>
       $ProviderElement(pointer);
 
   @override
-  Client create(Ref ref) {
+  ApiClient create(Ref ref) {
     return graphQLClient(ref);
   }
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(Client value) {
+  Override overrideWithValue(ApiClient value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<Client>(value),
+      providerOverride: $SyncValueProvider<ApiClient>(value),
     );
   }
 }
 
-String _$graphQLClientHash() => r'9f6e28b05c9d7c2b492b193f830631ce52f58d46';
+String _$graphQLClientHash() => r'0034d3d19e3decdb5e1a4b9c744a6de031d89b74';
 
 @ProviderFor(update)
 final updateProvider = UpdateProvider._();
@@ -65,7 +65,7 @@ final class UpdateProvider
     : super(
         from: null,
         argument: null,
-        retry: null,
+        retry: _noRetry,
         name: r'updateProvider',
         isAutoDispose: true,
         dependencies: null,
@@ -87,4 +87,4 @@ final class UpdateProvider
   }
 }
 
-String _$updateHash() => r'f87c4dd64a366a03129d04bd7f6a41ff3af0f58b';
+String _$updateHash() => r'9bd4400e3bb918b45d4271eda9ce7f94212366e9';

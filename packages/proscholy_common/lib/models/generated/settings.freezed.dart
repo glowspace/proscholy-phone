@@ -206,8 +206,8 @@ return $default(_that.darkModeEnabled,_that.seedColor,_that.fontSizeScale,_that.
 }
 
 /// @nodoc
-@JsonSerializable()
 
+@JsonSerializable(fieldRename: FieldRename.none)
 class _GlobalSettings implements GlobalSettings {
   const _GlobalSettings({this.darkModeEnabled, required this.seedColor, required this.fontSizeScale, required this.showChords, required this.showMusicalNotes, required this.accidentals, required this.autoScrollSpeedIndex});
   factory _GlobalSettings.fromJson(Map<String, dynamic> json) => _$GlobalSettingsFromJson(json);

@@ -9,7 +9,7 @@ part of '../presentation.dart';
 _PresentationData _$PresentationDataFromJson(Map<String, dynamic> json) =>
     _PresentationData(
       songLyricId: (json['songLyricId'] as num?)?.toInt(),
-      isCustomText: json['isCustomText'] as bool? ?? false,
+      isUserText: json['isUserText'] as bool? ?? false,
       name: json['name'] as String,
       text: json['text'] as String,
       settings: PresentationSettings.fromJson(
@@ -20,7 +20,7 @@ _PresentationData _$PresentationDataFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$PresentationDataToJson(_PresentationData instance) =>
     <String, dynamic>{
       'songLyricId': instance.songLyricId,
-      'isCustomText': instance.isCustomText,
+      'isUserText': instance.isUserText,
       'name': instance.name,
       'text': instance.text,
       'settings': instance.settings,

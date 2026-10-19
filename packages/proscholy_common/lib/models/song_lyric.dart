@@ -51,14 +51,13 @@ enum SongLyricType {
   }
 }
 
-@Freezed(toJson: false, equal: false)
+@freezed
 sealed class SongLyric with _$SongLyric implements DisplayableItem, Identifiable, RecentItem {
   static const String fieldKey = 'song_lyrics';
 
   const SongLyric._();
 
   @Entity(realClass: SongLyric)
-  @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
   const factory SongLyric({
     @Id(assignable: true) @JsonKey(fromJson: int.parse) required int id,
     @JsonKey(readValue: _readDisplayId) required String displayId,
@@ -74,14 +73,11 @@ sealed class SongLyric with _$SongLyric implements DisplayableItem, Identifiable
     @JsonKey(name: 'type_enum', fromJson: SongLyricType.rawValueFromString) required int dbType,
     required bool hasChords,
     required bool isArrangement,
-    @Deprecated('is handled independently on model') int? accidentals,
-    @Deprecated('is handled independently on model') bool? showChords,
-    @Deprecated('is handled independently on model') int? transposition,
     @JsonKey(fromJson: _songFromJson) required ToOne<Song> song,
     @JsonKey(fromJson: _settingsFromJson) required ToOne<SongLyricSettingsModel> settings,
     @JsonKey(name: 'authors_pivot', fromJson: _authorsFromJson) required ToMany<Author> authors,
     @JsonKey(fromJson: _tagsFromJson) required ToMany<Tag> tags,
-    @JsonKey(fromJson: _externalsFromJson) required ToMany<External> externals,
+    @Backlink() @JsonKey(fromJson: _externalsFromJson) required ToMany<External> externals,
     @Backlink() @JsonKey(fromJson: _songbookRecordsFromJson) required ToMany<SongbookRecord> songbookRecords,
     @Backlink() @JsonKey(fromJson: _playlistRecordsFromJson) required ToMany<PlaylistRecord> playlistRecords,
   }) = _SongLyric;

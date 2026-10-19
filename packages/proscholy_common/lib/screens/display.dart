@@ -7,8 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:proscholy_common/components/custom/back_button.dart';
 import 'package:proscholy_common/components/highlightable_widget.dart';
 import 'package:proscholy_common/components/navigation/scaffold.dart';
-import 'package:proscholy_common/components/playlist/bible_verse.dart';
-import 'package:proscholy_common/components/playlist/custom_text.dart';
+import 'package:proscholy_common/components/playlist/bible_passage.dart';
+import 'package:proscholy_common/components/playlist/user_text.dart';
 import 'package:proscholy_common/components/playlist/playlists_sheet.dart';
 import 'package:proscholy_common/components/presentation/presentation.dart';
 import 'package:proscholy_common/components/presentation/settings.dart';
@@ -22,8 +22,8 @@ import 'package:proscholy_common/components/song_lyric/utils/active_player_contr
 import 'package:proscholy_common/components/song_lyric/utils/auto_scroll.dart';
 import 'package:proscholy_common/components/split_view.dart';
 import 'package:proscholy_common/constants.dart';
-import 'package:proscholy_common/models/bible_verse.dart';
-import 'package:proscholy_common/models/custom_text.dart';
+import 'package:proscholy_common/models/bible_passage.dart';
+import 'package:proscholy_common/models/user_text.dart';
 import 'package:proscholy_common/models/model.dart';
 import 'package:proscholy_common/models/playlist.dart';
 import 'package:proscholy_common/models/song_lyric.dart';
@@ -98,6 +98,8 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
 
   final FocusNode _focusNode = FocusNode();
 
+  ValueNotifier<DisplayScreenArguments>? _selectedDisplayableItemArgumentsNotifier;
+
   DisplayableItem get _currentItem => _items[_currentIndex];
 
   @override
@@ -141,15 +143,22 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
                   index = index % _items.length;
                   final item = _items[index];
 
-                  if (ref.watch(presentationProvider
-                      .select((presentation) => presentation.isPresenting && presentation.isPresentingLocally))) {
-                    if (ref.watch(presentationProvider
-                        .select((presentation) => presentation.presentationData.name == item.displayName))) {
+                  if (ref.watch(
+                    presentationProvider.select(
+                      (presentation) => presentation.isPresenting && presentation.isPresentingLocally,
+                    ),
+                  )) {
+                    if (ref.watch(
+                      presentationProvider.select(
+                        (presentation) => presentation.presentationData.name == item.displayName,
+                      ),
+                    )) {
                       return Consumer(
-                        builder: (_, ref, __) => Presentation(
+                        builder: (_, ref, _) => Presentation(
                           onExternalDisplay: false,
-                          presentationData:
-                              ref.watch(presentationProvider.select((presentation) => presentation.presentationData)),
+                          presentationData: ref.watch(
+                            presentationProvider.select((presentation) => presentation.presentationData),
+                          ),
                         ),
                       );
                     } else {
@@ -158,18 +167,18 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
                   }
 
                   return switch (item) {
-                    (BibleVerse bibleVerse) => BibleVerseWidget(
-                        bibleVerse: bibleVerse,
-                        autoScrollController: _autoScrollController(index),
-                      ),
-                    (CustomText customText) => CustomTextWidget(
-                        customText: customText,
-                        autoScrollController: _autoScrollController(index),
-                      ),
+                    (BiblePassage biblePassage) => BiblePassageWidget(
+                      biblePassage: biblePassage,
+                      autoScrollController: _autoScrollController(index),
+                    ),
+                    (UserText userText) => UserTextWidget(
+                      userText: userText,
+                      autoScrollController: _autoScrollController(index),
+                    ),
                     (SongLyric songLyric) => SongLyricWidget(
-                        songLyric: songLyric,
-                        autoScrollController: _autoScrollController(index),
-                      ),
+                      songLyric: songLyric,
+                      autoScrollController: _autoScrollController(index),
+                    ),
                     _ => throw UnimplementedError(),
                   };
                 },
@@ -186,6 +195,7 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
 
   @override
   void dispose() {
+    _selectedDisplayableItemArgumentsNotifier?.removeListener(_selectedDisplayableItemArgumentsChanged);
     _addRecentItemTimer?.cancel();
 
     _focusNode.dispose();
@@ -202,30 +212,31 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
     // TODO: make sure this widget does not depend on `presentationProvider` and do this without delay
     Future.delayed(const Duration(milliseconds: 10), () => ref.read(presentationProvider).change(_currentItem));
 
-    final selectedDisplayableItemArgumentsNotifier = SelectedDisplayableItemArguments.of(context, listen: false);
-
-    selectedDisplayableItemArgumentsNotifier?.addListener(() {
-      final newItems = selectedDisplayableItemArgumentsNotifier.value.items;
-      final newIndex = selectedDisplayableItemArgumentsNotifier.value.initialIndex;
-
-      if (newItems.hashCode != _items.hashCode) {
-        setState(() => _items = newItems);
-
-        if (newItems.length > 1) {
-          // do this with delay, because if previous `_items` contained only one item `_controller` won't be attached until redraw
-          Future.delayed(
-            const Duration(milliseconds: 100),
-            () => _controller.jumpToPage(newIndex + 100 * newItems.length),
-          );
-        }
-        _itemChanged(newIndex);
-      } else if (newIndex != _currentIndex % _items.length) {
-        _controller.jumpToPage(newIndex + 100 * _items.length);
-        _itemChanged(newIndex);
-      }
-    });
+    _selectedDisplayableItemArgumentsNotifier = SelectedDisplayableItemArguments.of(context, listen: false);
+    _selectedDisplayableItemArgumentsNotifier?.addListener(_selectedDisplayableItemArgumentsChanged);
 
     _focusNode.requestFocus();
+  }
+
+  void _selectedDisplayableItemArgumentsChanged() {
+    final newItems = _selectedDisplayableItemArgumentsNotifier!.value.items;
+    final newIndex = _selectedDisplayableItemArgumentsNotifier!.value.initialIndex;
+
+    if (newItems.hashCode != _items.hashCode) {
+      setState(() => _items = newItems);
+
+      if (newItems.length > 1) {
+        // do this with delay, because if previous `_items` contained only one item `_controller` won't be attached until redraw
+        Future.delayed(const Duration(milliseconds: 100), () {
+          if (_controller.hasClients) _controller.jumpToPage(newIndex + 100 * newItems.length);
+        });
+      }
+      _itemChanged(newIndex);
+    } else if (newIndex != _currentIndex % _items.length) {
+      // `_controller` is not attached when there is only one item
+      if (_controller.hasClients) _controller.jumpToPage(newIndex + 100 * _items.length);
+      _itemChanged(newIndex);
+    }
   }
 
   AutoScrollController _autoScrollController(int index) {
@@ -236,68 +247,72 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
     final presentationNotifier = ref.read(presentationProvider.notifier);
 
     return switch (_currentItem) {
-      (BibleVerse bibleVerse) => AppBar(
-          leading: const CustomBackButton(),
-          title: Text(bibleVerse.displayName),
-          actions: [
-            HighlightableWidget(
-              onTap: () => _editBibleVerse(bibleVerse),
-              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-              icon: const Icon(Icons.edit),
-            ),
-            HighlightableWidget(
-              onTap: () => presentationNotifier.isPresenting
-                  ? presentationNotifier.stop()
-                  : context.push('/display/present').then((_) => presentationNotifier.change(bibleVerse)),
-              padding: const EdgeInsets.only(left: kDefaultPadding, right: 1.5 * kDefaultPadding),
-              icon: Icon(ref.watch(presentationProvider.select((presentation) => presentation.isPresenting))
+      (BiblePassage biblePassage) => AppBar(
+        leading: const CustomBackButton(),
+        title: Text(biblePassage.displayName),
+        actions: [
+          HighlightableWidget(
+            onTap: () => _editBiblePassage(biblePassage),
+            padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+            icon: const Icon(Icons.edit),
+          ),
+          HighlightableWidget(
+            onTap: () => presentationNotifier.isPresenting
+                ? presentationNotifier.stop()
+                : context.push('/display/present').then((_) => presentationNotifier.change(biblePassage)),
+            padding: const EdgeInsets.only(left: kDefaultPadding, right: 1.5 * kDefaultPadding),
+            icon: Icon(
+              ref.watch(presentationProvider.select((presentation) => presentation.isPresenting))
                   ? Icons.cancel_presentation
-                  : Icons.cast),
+                  : Icons.cast,
             ),
-          ],
-        ),
-      (CustomText customText) => AppBar(
-          leading: const CustomBackButton(),
-          title: Text(customText.name),
-          actions: [
-            HighlightableWidget(
-              onTap: () => _editCustomText(customText),
-              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-              icon: const Icon(Icons.edit),
-            ),
-            HighlightableWidget(
-              onTap: () => presentationNotifier.isPresenting
-                  ? presentationNotifier.stop()
-                  : context.push('/display/present').then((_) => presentationNotifier.change(customText)),
-              padding: const EdgeInsets.only(left: kDefaultPadding, right: 1.5 * kDefaultPadding),
-              icon: Icon(ref.watch(presentationProvider.select((presentation) => presentation.isPresenting))
+          ),
+        ],
+      ),
+      (UserText userText) => AppBar(
+        leading: const CustomBackButton(),
+        title: Text(userText.name),
+        actions: [
+          HighlightableWidget(
+            onTap: () => _editUserText(userText),
+            padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+            icon: const Icon(Icons.edit),
+          ),
+          HighlightableWidget(
+            onTap: () => presentationNotifier.isPresenting
+                ? presentationNotifier.stop()
+                : context.push('/display/present').then((_) => presentationNotifier.change(userText)),
+            padding: const EdgeInsets.only(left: kDefaultPadding, right: 1.5 * kDefaultPadding),
+            icon: Icon(
+              ref.watch(presentationProvider.select((presentation) => presentation.isPresenting))
                   ? Icons.cancel_presentation
-                  : Icons.cast),
+                  : Icons.cast,
             ),
-          ],
-        ),
+          ),
+        ],
+      ),
       (SongLyric songLyric) => AppBar(
-          title: Text(songLyric.displayId),
-          leading: const CustomBackButton(),
-          actions: [
-            StatefulBuilder(
-              builder: (context, setState) => HighlightableWidget(
-                onTap: () => setState(() => ref.read(playlistsProvider.notifier).toggleFavorite(songLyric)),
-                padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-                icon: Icon(songLyric.isFavorite ? Icons.star : Icons.star_outline),
-              ),
-            ),
-            HighlightableWidget(
-              onTap: () => showModalBottomSheet(
-                context: context,
-                builder: (context) => PlaylistsSheet(selectedSongLyric: songLyric),
-              ),
+        title: Text(songLyric.displayId),
+        leading: const CustomBackButton(),
+        actions: [
+          StatefulBuilder(
+            builder: (context, setState) => HighlightableWidget(
+              onTap: () => setState(() => ref.read(playlistsProvider.notifier).toggleFavorite(songLyric)),
               padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-              icon: const Icon(Icons.playlist_add),
+              icon: Icon(songLyric.isFavorite ? Icons.star : Icons.star_outline),
             ),
-            SongLyricMenuButton(songLyric: songLyric),
-          ],
-        ),
+          ),
+          HighlightableWidget(
+            onTap: () => showModalBottomSheet(
+              context: context,
+              builder: (context) => PlaylistsSheet(selectedSongLyric: songLyric),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+            icon: const Icon(Icons.playlist_add),
+          ),
+          SongLyricMenuButton(songLyric: songLyric),
+        ],
+      ),
       _ => throw UnimplementedError(),
     };
   }
@@ -310,42 +325,44 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
     Widget? bottomSheet;
 
     if (presentation.isPresenting) {
-      bottomSheet = Row(children: [
-        HighlightableWidget(
-          isEnabled: presentation.hasSongLyricsParser,
-          onTap: presentation.prevVerse,
-          // use arrow_back_ios_new, because arrow_back_ios is not centered
-          icon: Icon(Theme.of(context).platform.isIos ? Icons.arrow_back_ios_new : Icons.arrow_back),
-        ),
-        HighlightableWidget(
-          onTap: presentation.togglePause,
-          icon: Icon(presentation.isPaused ? Icons.play_arrow : Icons.pause),
-        ),
-        HighlightableWidget(
-          isEnabled: presentation.hasSongLyricsParser,
-          onTap: presentation.nextVerse,
-          icon: Icon(Icons.adaptive.arrow_forward),
-        ),
-        const Spacer(),
-        HighlightableWidget(
-          isEnabled: presentation.hasSongLyricsParser,
-          onTap: presentation.toggleVisibility,
-          icon: Icon(presentation.isVisible ? Icons.visibility_off : Icons.visibility),
-        ),
-        HighlightableWidget(
-          onTap: () => showModalBottomSheet(
-            context: context,
-            builder: (context) => PresentationSettingsWidget(
-              onExternalDisplay: !ref.read(presentationProvider).isPresentingLocally,
-            ),
+      bottomSheet = Row(
+        children: [
+          HighlightableWidget(
+            isEnabled: presentation.hasSongLyricsParser,
+            onTap: presentation.prevVerse,
+            // use arrow_back_ios_new, because arrow_back_ios is not centered
+            icon: Icon(Theme.of(context).platform.isIos ? Icons.arrow_back_ios_new : Icons.arrow_back),
           ),
-          icon: const Icon(Icons.tune),
-        ),
-        HighlightableWidget(
-          onTap: () => presentation.stop(),
-          icon: const Icon(Icons.close),
-        ),
-      ]);
+          HighlightableWidget(
+            onTap: presentation.togglePause,
+            icon: Icon(presentation.isPaused ? Icons.play_arrow : Icons.pause),
+          ),
+          HighlightableWidget(
+            isEnabled: presentation.hasSongLyricsParser,
+            onTap: presentation.nextVerse,
+            icon: Icon(Icons.adaptive.arrow_forward),
+          ),
+          const Spacer(),
+          HighlightableWidget(
+            isEnabled: presentation.hasSongLyricsParser,
+            onTap: presentation.toggleVisibility,
+            icon: Icon(presentation.isVisible ? Icons.visibility_off : Icons.visibility),
+          ),
+          HighlightableWidget(
+            onTap: () => showModalBottomSheet(
+              context: context,
+              builder: (context) => PresentationSettingsWidget(
+                onExternalDisplay: !ref.read(presentationProvider).isPresentingLocally,
+              ),
+            ),
+            icon: const Icon(Icons.tune),
+          ),
+          HighlightableWidget(
+            onTap: () => presentation.stop(),
+            icon: const Icon(Icons.close),
+          ),
+        ],
+      );
     } else if (activePlayer != null) {
       bottomSheet = GestureDetector(
         behavior: HitTestBehavior.translucent,
@@ -359,7 +376,8 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
 
     if (bottomSheet != null) {
       return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding, vertical: kDefaultPadding) +
+        padding:
+            const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding, vertical: kDefaultPadding) +
             EdgeInsets.only(bottom: fullScreen ? MediaQuery.paddingOf(context).bottom : 0),
         child: bottomSheet,
       );
@@ -368,20 +386,20 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
     return null;
   }
 
-  void _editBibleVerse(BibleVerse bibleVerse) async {
-    final editedBibleVerse =
-        (await context.push('/playlist/bible_verse/select_verse', arguments: bibleVerse)) as BibleVerse?;
+  void _editBiblePassage(BiblePassage biblePassage) async {
+    final editedBiblePassage =
+        (await context.push('/playlist/bible_verse/select_verse', arguments: biblePassage)) as BiblePassage?;
 
-    if (editedBibleVerse != null) {
-      setState(() => _items[_currentIndex] = editedBibleVerse);
+    if (editedBiblePassage != null) {
+      setState(() => _items[_currentIndex] = editedBiblePassage);
     }
   }
 
-  void _editCustomText(CustomText customText) async {
-    final editedCustomText = (await context.push('/playlist/custom_text/edit', arguments: customText)) as CustomText?;
+  void _editUserText(UserText userText) async {
+    final editedUserText = (await context.push('/playlist/user_text/edit', arguments: userText)) as UserText?;
 
-    if (editedCustomText != null) {
-      setState(() => _items[_currentIndex] = editedCustomText);
+    if (editedUserText != null) {
+      setState(() => _items[_currentIndex] = editedUserText);
     }
   }
 

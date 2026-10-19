@@ -23,18 +23,20 @@ class EditHomeSectionsSheet extends ConsumerWidget {
           itemBuilder: (_, index) => Padding(
             key: Key(homeSections[index].description),
             padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding, vertical: 2 * kDefaultPadding / 3),
-            child: Row(children: [
-              const ReorderableDragStartListener(
-                index: 0,
-                child: Padding(
-                  padding: EdgeInsets.only(right: 2 * kDefaultPadding),
-                  child: Icon(Icons.drag_indicator),
+            child: Row(
+              children: [
+                ReorderableDragStartListener(
+                  index: index,
+                  child: const Padding(
+                    padding: EdgeInsets.only(right: 2 * kDefaultPadding),
+                    child: Icon(Icons.drag_indicator),
+                  ),
                 ),
-              ),
-              Text(homeSections[index].description),
-            ]),
+                Text(homeSections[index].description),
+              ],
+            ),
           ),
-          onReorder: ref.read(homeSectionSettingsProvider.notifier).onReorder,
+          onReorderItem: ref.read(homeSectionSettingsProvider.notifier).reorder,
         ),
       ],
     );

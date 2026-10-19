@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$PresentationData {
 
- int? get songLyricId; bool get isCustomText; String get name; String get text; PresentationSettings get settings;
+ int? get songLyricId; bool get isUserText; String get name; String get text; PresentationSettings get settings;
 /// Create a copy of PresentationData
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $PresentationDataCopyWith<PresentationData> get copyWith => _$PresentationDataCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationData&&(identical(other.songLyricId, songLyricId) || other.songLyricId == songLyricId)&&(identical(other.isCustomText, isCustomText) || other.isCustomText == isCustomText)&&(identical(other.name, name) || other.name == name)&&(identical(other.text, text) || other.text == text)&&(identical(other.settings, settings) || other.settings == settings));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationData&&(identical(other.songLyricId, songLyricId) || other.songLyricId == songLyricId)&&(identical(other.isUserText, isUserText) || other.isUserText == isUserText)&&(identical(other.name, name) || other.name == name)&&(identical(other.text, text) || other.text == text)&&(identical(other.settings, settings) || other.settings == settings));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,songLyricId,isCustomText,name,text,settings);
+int get hashCode => Object.hash(runtimeType,songLyricId,isUserText,name,text,settings);
 
 @override
 String toString() {
-  return 'PresentationData(songLyricId: $songLyricId, isCustomText: $isCustomText, name: $name, text: $text, settings: $settings)';
+  return 'PresentationData(songLyricId: $songLyricId, isUserText: $isUserText, name: $name, text: $text, settings: $settings)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $PresentationDataCopyWith<$Res>  {
   factory $PresentationDataCopyWith(PresentationData value, $Res Function(PresentationData) _then) = _$PresentationDataCopyWithImpl;
 @useResult
 $Res call({
- int? songLyricId, bool isCustomText, String name, String text, PresentationSettings settings
+ int? songLyricId, bool isUserText, String name, String text, PresentationSettings settings
 });
 
 
@@ -65,10 +65,10 @@ class _$PresentationDataCopyWithImpl<$Res>
 
 /// Create a copy of PresentationData
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? songLyricId = freezed,Object? isCustomText = null,Object? name = null,Object? text = null,Object? settings = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? songLyricId = freezed,Object? isUserText = null,Object? name = null,Object? text = null,Object? settings = null,}) {
   return _then(_self.copyWith(
 songLyricId: freezed == songLyricId ? _self.songLyricId : songLyricId // ignore: cast_nullable_to_non_nullable
-as int?,isCustomText: null == isCustomText ? _self.isCustomText : isCustomText // ignore: cast_nullable_to_non_nullable
+as int?,isUserText: null == isUserText ? _self.isUserText : isUserText // ignore: cast_nullable_to_non_nullable
 as bool,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
 as String,settings: null == settings ? _self.settings : settings // ignore: cast_nullable_to_non_nullable
@@ -163,10 +163,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? songLyricId,  bool isCustomText,  String name,  String text,  PresentationSettings settings)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? songLyricId,  bool isUserText,  String name,  String text,  PresentationSettings settings)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PresentationData() when $default != null:
-return $default(_that.songLyricId,_that.isCustomText,_that.name,_that.text,_that.settings);case _:
+return $default(_that.songLyricId,_that.isUserText,_that.name,_that.text,_that.settings);case _:
   return orElse();
 
 }
@@ -184,10 +184,10 @@ return $default(_that.songLyricId,_that.isCustomText,_that.name,_that.text,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? songLyricId,  bool isCustomText,  String name,  String text,  PresentationSettings settings)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? songLyricId,  bool isUserText,  String name,  String text,  PresentationSettings settings)  $default,) {final _that = this;
 switch (_that) {
 case _PresentationData():
-return $default(_that.songLyricId,_that.isCustomText,_that.name,_that.text,_that.settings);}
+return $default(_that.songLyricId,_that.isUserText,_that.name,_that.text,_that.settings);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -201,10 +201,10 @@ return $default(_that.songLyricId,_that.isCustomText,_that.name,_that.text,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? songLyricId,  bool isCustomText,  String name,  String text,  PresentationSettings settings)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? songLyricId,  bool isUserText,  String name,  String text,  PresentationSettings settings)?  $default,) {final _that = this;
 switch (_that) {
 case _PresentationData() when $default != null:
-return $default(_that.songLyricId,_that.isCustomText,_that.name,_that.text,_that.settings);case _:
+return $default(_that.songLyricId,_that.isUserText,_that.name,_that.text,_that.settings);case _:
   return null;
 
 }
@@ -213,14 +213,14 @@ return $default(_that.songLyricId,_that.isCustomText,_that.name,_that.text,_that
 }
 
 /// @nodoc
-@JsonSerializable()
 
+@JsonSerializable(fieldRename: FieldRename.none)
 class _PresentationData implements PresentationData {
-  const _PresentationData({this.songLyricId, this.isCustomText = false, required this.name, required this.text, required this.settings});
+  const _PresentationData({this.songLyricId, this.isUserText = false, required this.name, required this.text, required this.settings});
   factory _PresentationData.fromJson(Map<String, dynamic> json) => _$PresentationDataFromJson(json);
 
 @override final  int? songLyricId;
-@override@JsonKey() final  bool isCustomText;
+@override@JsonKey() final  bool isUserText;
 @override final  String name;
 @override final  String text;
 @override final  PresentationSettings settings;
@@ -238,16 +238,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PresentationData&&(identical(other.songLyricId, songLyricId) || other.songLyricId == songLyricId)&&(identical(other.isCustomText, isCustomText) || other.isCustomText == isCustomText)&&(identical(other.name, name) || other.name == name)&&(identical(other.text, text) || other.text == text)&&(identical(other.settings, settings) || other.settings == settings));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PresentationData&&(identical(other.songLyricId, songLyricId) || other.songLyricId == songLyricId)&&(identical(other.isUserText, isUserText) || other.isUserText == isUserText)&&(identical(other.name, name) || other.name == name)&&(identical(other.text, text) || other.text == text)&&(identical(other.settings, settings) || other.settings == settings));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,songLyricId,isCustomText,name,text,settings);
+int get hashCode => Object.hash(runtimeType,songLyricId,isUserText,name,text,settings);
 
 @override
 String toString() {
-  return 'PresentationData(songLyricId: $songLyricId, isCustomText: $isCustomText, name: $name, text: $text, settings: $settings)';
+  return 'PresentationData(songLyricId: $songLyricId, isUserText: $isUserText, name: $name, text: $text, settings: $settings)';
 }
 
 
@@ -258,7 +258,7 @@ abstract mixin class _$PresentationDataCopyWith<$Res> implements $PresentationDa
   factory _$PresentationDataCopyWith(_PresentationData value, $Res Function(_PresentationData) _then) = __$PresentationDataCopyWithImpl;
 @override @useResult
 $Res call({
- int? songLyricId, bool isCustomText, String name, String text, PresentationSettings settings
+ int? songLyricId, bool isUserText, String name, String text, PresentationSettings settings
 });
 
 
@@ -275,10 +275,10 @@ class __$PresentationDataCopyWithImpl<$Res>
 
 /// Create a copy of PresentationData
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? songLyricId = freezed,Object? isCustomText = null,Object? name = null,Object? text = null,Object? settings = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? songLyricId = freezed,Object? isUserText = null,Object? name = null,Object? text = null,Object? settings = null,}) {
   return _then(_PresentationData(
 songLyricId: freezed == songLyricId ? _self.songLyricId : songLyricId // ignore: cast_nullable_to_non_nullable
-as int?,isCustomText: null == isCustomText ? _self.isCustomText : isCustomText // ignore: cast_nullable_to_non_nullable
+as int?,isUserText: null == isUserText ? _self.isUserText : isUserText // ignore: cast_nullable_to_non_nullable
 as bool,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
 as String,settings: null == settings ? _self.settings : settings // ignore: cast_nullable_to_non_nullable
@@ -492,8 +492,8 @@ return $default(_that.darkMode,_that.showName,_that.allCapital,_that.isVisible,_
 }
 
 /// @nodoc
-@JsonSerializable()
 
+@JsonSerializable(fieldRename: FieldRename.none)
 class _PresentationSettings implements PresentationSettings {
   const _PresentationSettings({required this.darkMode, required this.showName, required this.allCapital, required this.isVisible, this.alignment, this.rotation});
   factory _PresentationSettings.fromJson(Map<String, dynamic> json) => _$PresentationSettingsFromJson(json);

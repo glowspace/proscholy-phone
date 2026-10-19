@@ -30,10 +30,12 @@ class _ExternalWidgetState extends State<ExternalWidget> {
   void initState() {
     super.initState();
 
-    _showingExternalsSubscription =
-        context.providers.listen(displayScreenStatusProvider.select((status) => status.showingExternals), (_, next) {
-      if (!_lazyLoaded && next) setState(() => _lazyLoaded = true);
-    });
+    _showingExternalsSubscription = context.providers.listen(
+      displayScreenStatusProvider.select((status) => status.showingExternals),
+      (_, next) {
+        if (!_lazyLoaded && next) setState(() => _lazyLoaded = true);
+      },
+    );
   }
 
   @override

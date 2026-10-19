@@ -19,8 +19,11 @@ const defaultGlobalSettings = GlobalSettings(
   autoScrollSpeedIndex: 6,
 );
 
-@freezed
+@Freezed(equal: true, toJson: true)
 sealed class GlobalSettings with _$GlobalSettings {
+  // stored in shared preferences with these keys
+  // ignore: invalid_annotation_target
+  @JsonSerializable(fieldRename: FieldRename.none)
   const factory GlobalSettings({
     bool? darkModeEnabled,
     required int seedColor,
@@ -34,7 +37,7 @@ sealed class GlobalSettings with _$GlobalSettings {
   factory GlobalSettings.fromJson(Map<String, Object?> json) => _$GlobalSettingsFromJson(json);
 }
 
-@Freezed(equal: false)
+@freezed
 sealed class SongLyricSettingsModel with _$SongLyricSettingsModel implements Identifiable {
   const SongLyricSettingsModel._();
 

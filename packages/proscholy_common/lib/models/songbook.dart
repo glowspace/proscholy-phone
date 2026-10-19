@@ -10,17 +10,13 @@ part 'generated/songbook.g.dart';
 // prioritized songbook shortcuts in sorting
 const prioritized = {'CSMOv': -1, 'H1': 0, 'H2': 1, 'K': 2, 'Kan': 3};
 
-// offset for songbook tags, tags from API have id > 0, language tags have negative id starting from -1, so offset -1000 should be enough
-const _songbookIdOffset = -1000;
-
-@Freezed(toJson: false, equal: false)
+@freezed
 sealed class Songbook with _$Songbook implements Comparable<Songbook>, Identifiable, SongsList, RecentItem {
   static const String fieldKey = 'songbooks';
 
   const Songbook._();
 
   @Entity(realClass: Songbook)
-  @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
   const factory Songbook({
     @Id(assignable: true) @JsonKey(fromJson: int.parse) required int id,
     required String name,
@@ -28,18 +24,12 @@ sealed class Songbook with _$Songbook implements Comparable<Songbook>, Identifia
     String? color,
     String? colorText,
     required bool isPrivate,
-    @Deprecated('is handled independently on model') bool? isPinned,
     @Backlink() @JsonKey(fromJson: _songbookRecordsFromJson) required ToMany<SongbookRecord> records,
   }) = _Songbook;
 
   factory Songbook.fromJson(Map<String, Object?> json) => _$SongbookFromJson(json);
 
-  Tag get tag => Tag(
-        id: id + _songbookIdOffset,
-        name: name,
-        dbType: TagType.songbook.rawValue,
-        songLyricsCount: records.length,
-      );
+  Tag get tag => Tag.fromSongbook(this);
 
   @override
   int compareTo(Songbook other) {

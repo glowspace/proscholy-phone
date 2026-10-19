@@ -15,8 +15,7 @@ import 'package:objectbox/objectbox.dart' as obx;
 import 'package:objectbox_flutter_libs/objectbox_flutter_libs.dart';
 
 import '../../models/author.dart';
-import '../../models/bible_verse.dart';
-import '../../models/custom_text.dart';
+import '../../models/bible_passage.dart';
 import '../../models/external.dart';
 import '../../models/news_item.dart';
 import '../../models/playlist.dart';
@@ -27,6 +26,7 @@ import '../../models/song_lyric.dart';
 import '../../models/songbook.dart';
 import '../../models/songbook_record.dart';
 import '../../models/tag.dart';
+import '../../models/user_text.dart';
 
 export 'package:objectbox/objectbox.dart'; // so that callers only have to import this file
 
@@ -157,12 +157,6 @@ final _entities = <obx_int.ModelEntity>[
         type: 1,
         flags: 0,
       ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(7, 6957339251542960973),
-        name: 'isPinned',
-        type: 1,
-        flags: 0,
-      ),
     ],
     relations: <obx_int.ModelRelation>[],
     backlinks: <obx_int.ModelBacklink>[
@@ -283,24 +277,6 @@ final _entities = <obx_int.ModelEntity>[
         flags: 0,
       ),
       obx_int.ModelProperty(
-        id: const obx_int.IdUid(22, 4355414326890607438),
-        name: 'accidentals',
-        type: 6,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(23, 7347294181262392126),
-        name: 'showChords',
-        type: 1,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(24, 8592014509296857970),
-        name: 'transposition',
-        type: 6,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
         id: const obx_int.IdUid(27, 6291458277285942163),
         name: 'settingsId',
         type: 11,
@@ -345,13 +321,13 @@ final _entities = <obx_int.ModelEntity>[
         name: 'tags',
         targetId: const obx_int.IdUid(4, 6296825599350518621),
       ),
-      obx_int.ModelRelation(
-        id: const obx_int.IdUid(9, 6609909260274628973),
-        name: 'externals',
-        targetId: const obx_int.IdUid(13, 34413049226011067),
-      ),
     ],
     backlinks: <obx_int.ModelBacklink>[
+      obx_int.ModelBacklink(
+        name: 'externals',
+        srcEntity: 'External',
+        srcField: '',
+      ),
       obx_int.ModelBacklink(
         name: 'songbookRecords',
         srcEntity: 'SongbookRecord',
@@ -526,21 +502,21 @@ final _entities = <obx_int.ModelEntity>[
       ),
       obx_int.ModelProperty(
         id: const obx_int.IdUid(6, 3910634938425838689),
-        name: 'customTextId',
+        name: 'userTextId',
         type: 11,
         flags: 520,
         indexId: const obx_int.IdUid(20, 4666277981806120726),
-        relationField: 'customText',
-        relationTarget: 'CustomText',
+        relationField: 'userText',
+        relationTarget: 'UserText',
       ),
       obx_int.ModelProperty(
         id: const obx_int.IdUid(7, 5967467250290572620),
-        name: 'bibleVerseId',
+        name: 'biblePassageId',
         type: 11,
         flags: 520,
         indexId: const obx_int.IdUid(21, 6699618113083989690),
-        relationField: 'bibleVerse',
-        relationTarget: 'BibleVerse',
+        relationField: 'biblePassage',
+        relationTarget: 'BiblePassage',
       ),
     ],
     relations: <obx_int.ModelRelation>[],
@@ -548,7 +524,7 @@ final _entities = <obx_int.ModelEntity>[
   ),
   obx_int.ModelEntity(
     id: const obx_int.IdUid(20, 8093518841538767418),
-    name: 'BibleVerse',
+    name: 'BiblePassage',
     lastPropertyId: const obx_int.IdUid(6, 3522228504437507385),
     flags: 0,
     properties: <obx_int.ModelProperty>[
@@ -594,7 +570,7 @@ final _entities = <obx_int.ModelEntity>[
   ),
   obx_int.ModelEntity(
     id: const obx_int.IdUid(21, 2063445298157793913),
-    name: 'CustomText',
+    name: 'UserText',
     lastPropertyId: const obx_int.IdUid(3, 4470839687834790316),
     flags: 0,
     properties: <obx_int.ModelProperty>[
@@ -824,12 +800,17 @@ obx_int.ModelDefinition getObjectBoxModel() {
       6098338462102959253,
       3138933648918384884,
       7820390369179908800,
+      4355414326890607438,
+      7347294181262392126,
+      8592014509296857970,
+      6957339251542960973,
     ],
     retiredRelationUids: const [
       7916874752771113838,
       8475939472281092043,
       908885689419134235,
       1345337331648128811,
+      6609909260274628973,
     ],
     modelVersion: 5,
     modelVersionParserMinimum: 5,
@@ -1036,7 +1017,6 @@ obx_int.ModelDefinition getObjectBoxModel() {
         fbb.addOffset(3, colorOffset);
         fbb.addOffset(4, colorTextOffset);
         fbb.addBool(5, object.isPrivate);
-        fbb.addBool(6, object.isPinned);
         fbb.finish(fbb.endTable());
         return object.id;
       },
@@ -1067,11 +1047,6 @@ obx_int.ModelDefinition getObjectBoxModel() {
           14,
           false,
         );
-        final isPinnedParam = const fb.BoolReader().vTableGetNullable(
-          buffer,
-          rootOffset,
-          16,
-        );
         final recordsParam = obx.ToMany<SongbookRecord>();
         final object = Songbook(
           id: idParam,
@@ -1080,7 +1055,6 @@ obx_int.ModelDefinition getObjectBoxModel() {
           color: colorParam,
           colorText: colorTextParam,
           isPrivate: isPrivateParam,
-          isPinned: isPinnedParam,
           records: recordsParam,
         );
         obx_int.InternalToManyAccess.setRelInfo<Songbook>(
@@ -1159,7 +1133,11 @@ obx_int.ModelDefinition getObjectBoxModel() {
       toManyRelations: (SongLyric object) => {
         obx_int.RelInfo<SongLyric>.toMany(6, object.id): object.authors,
         obx_int.RelInfo<SongLyric>.toMany(7, object.id): object.tags,
-        obx_int.RelInfo<SongLyric>.toMany(9, object.id): object.externals,
+        obx_int.RelInfo<External>.toOneBacklink(
+          7,
+          object.id,
+          (External srcObject) => srcObject.songLyric,
+        ): object.externals,
         obx_int.RelInfo<SongbookRecord>.toOneBacklink(
           7,
           object.id,
@@ -1210,9 +1188,6 @@ obx_int.ModelDefinition getObjectBoxModel() {
         fbb.addInt64(8, object.song.targetId);
         fbb.addInt64(10, object.dbType);
         fbb.addBool(11, object.hasChords);
-        fbb.addInt64(21, object.accidentals);
-        fbb.addBool(22, object.showChords);
-        fbb.addInt64(23, object.transposition);
         fbb.addInt64(26, object.settings.targetId);
         fbb.addOffset(34, hymnologyNewOffset);
         fbb.addOffset(36, displayIdOffset);
@@ -1275,21 +1250,6 @@ obx_int.ModelDefinition getObjectBoxModel() {
           80,
           false,
         );
-        final accidentalsParam = const fb.Int64Reader().vTableGetNullable(
-          buffer,
-          rootOffset,
-          46,
-        );
-        final showChordsParam = const fb.BoolReader().vTableGetNullable(
-          buffer,
-          rootOffset,
-          48,
-        );
-        final transpositionParam = const fb.Int64Reader().vTableGetNullable(
-          buffer,
-          rootOffset,
-          50,
-        );
         final songParam = obx.ToOne<Song>(
           targetId: const fb.Int64Reader().vTableGet(buffer, rootOffset, 20, 0),
         );
@@ -1315,9 +1275,6 @@ obx_int.ModelDefinition getObjectBoxModel() {
           dbType: dbTypeParam,
           hasChords: hasChordsParam,
           isArrangement: isArrangementParam,
-          accidentals: accidentalsParam,
-          showChords: showChordsParam,
-          transposition: transpositionParam,
           song: songParam,
           settings: settingsParam,
           authors: authorsParam,
@@ -1341,7 +1298,11 @@ obx_int.ModelDefinition getObjectBoxModel() {
         obx_int.InternalToManyAccess.setRelInfo<SongLyric>(
           object.externals,
           store,
-          obx_int.RelInfo<SongLyric>.toMany(9, object.id),
+          obx_int.RelInfo<External>.toOneBacklink(
+            7,
+            object.id,
+            (External srcObject) => srcObject.songLyric,
+          ),
         );
         obx_int.InternalToManyAccess.setRelInfo<SongLyric>(
           object.songbookRecords,
@@ -1578,8 +1539,8 @@ obx_int.ModelDefinition getObjectBoxModel() {
       toOneRelations: (PlaylistRecord object) => [
         object.songLyric,
         object.playlist,
-        object.customText,
-        object.bibleVerse,
+        object.userText,
+        object.biblePassage,
       ],
       toManyRelations: (PlaylistRecord object) => {},
       getId: (PlaylistRecord object) => object.id,
@@ -1600,8 +1561,8 @@ obx_int.ModelDefinition getObjectBoxModel() {
         fbb.addInt64(2, object.songLyric.targetId);
         fbb.addInt64(3, object.playlist.targetId);
         fbb.addInt64(4, object.rank);
-        fbb.addInt64(5, object.customText.targetId);
-        fbb.addInt64(6, object.bibleVerse.targetId);
+        fbb.addInt64(5, object.userText.targetId);
+        fbb.addInt64(6, object.biblePassage.targetId);
         fbb.finish(fbb.endTable());
         return object.id;
       },
@@ -1623,10 +1584,10 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final songLyricParam = obx.ToOne<SongLyric>(
           targetId: const fb.Int64Reader().vTableGet(buffer, rootOffset, 8, 0),
         );
-        final customTextParam = obx.ToOne<CustomText>(
+        final userTextParam = obx.ToOne<UserText>(
           targetId: const fb.Int64Reader().vTableGet(buffer, rootOffset, 14, 0),
         );
-        final bibleVerseParam = obx.ToOne<BibleVerse>(
+        final biblePassageParam = obx.ToOne<BiblePassage>(
           targetId: const fb.Int64Reader().vTableGet(buffer, rootOffset, 16, 0),
         );
         final playlistParam = obx.ToOne<Playlist>(
@@ -1636,26 +1597,26 @@ obx_int.ModelDefinition getObjectBoxModel() {
           id: idParam,
           rank: rankParam,
           songLyric: songLyricParam,
-          customText: customTextParam,
-          bibleVerse: bibleVerseParam,
+          userText: userTextParam,
+          biblePassage: biblePassageParam,
           playlist: playlistParam,
         );
         object.songLyric.attach(store);
         object.playlist.attach(store);
-        object.customText.attach(store);
-        object.bibleVerse.attach(store);
+        object.userText.attach(store);
+        object.biblePassage.attach(store);
         return object;
       },
     ),
-    BibleVerse: obx_int.EntityDefinition<BibleVerse>(
+    BiblePassage: obx_int.EntityDefinition<BiblePassage>(
       model: _entities[10],
-      toOneRelations: (BibleVerse object) => [],
-      toManyRelations: (BibleVerse object) => {},
-      getId: (BibleVerse object) => object.id,
-      setId: (BibleVerse object, int id) {
+      toOneRelations: (BiblePassage object) => [],
+      toManyRelations: (BiblePassage object) => {},
+      getId: (BiblePassage object) => object.id,
+      setId: (BiblePassage object, int id) {
         if (object.id != id) {
           throw ArgumentError(
-            'Field BibleVerse.id is read-only '
+            'Field BiblePassage.id is read-only '
             '(final or getter-only) and it was declared to be self-assigned. '
             'However, the currently inserted object (.id=${object.id}) '
             "doesn't match the inserted ID (ID $id). "
@@ -1663,7 +1624,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
           );
         }
       },
-      objectToFB: (BibleVerse object, fb.Builder fbb) {
+      objectToFB: (BiblePassage object, fb.Builder fbb) {
         final textOffset = fbb.writeString(object.text);
         fbb.startTable(7);
         fbb.addInt64(0, object.id);
@@ -1710,7 +1671,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final textParam = const fb.StringReader(
           asciiOptimization: true,
         ).vTableGet(buffer, rootOffset, 14, '');
-        final object = BibleVerse(
+        final object = BiblePassage(
           id: idParam,
           book: bookParam,
           chapter: chapterParam,
@@ -1722,15 +1683,15 @@ obx_int.ModelDefinition getObjectBoxModel() {
         return object;
       },
     ),
-    CustomText: obx_int.EntityDefinition<CustomText>(
+    UserText: obx_int.EntityDefinition<UserText>(
       model: _entities[11],
-      toOneRelations: (CustomText object) => [],
-      toManyRelations: (CustomText object) => {},
-      getId: (CustomText object) => object.id,
-      setId: (CustomText object, int id) {
+      toOneRelations: (UserText object) => [],
+      toManyRelations: (UserText object) => {},
+      getId: (UserText object) => object.id,
+      setId: (UserText object, int id) {
         if (object.id != id) {
           throw ArgumentError(
-            'Field CustomText.id is read-only '
+            'Field UserText.id is read-only '
             '(final or getter-only) and it was declared to be self-assigned. '
             'However, the currently inserted object (.id=${object.id}) '
             "doesn't match the inserted ID (ID $id). "
@@ -1738,7 +1699,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
           );
         }
       },
-      objectToFB: (CustomText object, fb.Builder fbb) {
+      objectToFB: (UserText object, fb.Builder fbb) {
         final nameOffset = fbb.writeString(object.name);
         final contentOffset = fbb.writeString(object.content);
         fbb.startTable(4);
@@ -1763,7 +1724,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final contentParam = const fb.StringReader(
           asciiOptimization: true,
         ).vTableGet(buffer, rootOffset, 8, '');
-        final object = CustomText(
+        final object = UserText(
           id: idParam,
           name: nameParam,
           content: contentParam,
@@ -1929,11 +1890,6 @@ class Songbook_ {
     _entities[3].properties[5],
   );
 
-  /// See [Songbook.isPinned].
-  static final isPinned = obx.QueryBooleanProperty<Songbook>(
-    _entities[3].properties[6],
-  );
-
   /// see [Songbook.records]
   static final records = obx.QueryBacklinkToMany<SongbookRecord, Songbook>(
     SongbookRecord_.songbook,
@@ -2015,45 +1971,30 @@ class SongLyric_ {
     _entities[5].properties[9],
   );
 
-  /// See [SongLyric.accidentals].
-  static final accidentals = obx.QueryIntegerProperty<SongLyric>(
-    _entities[5].properties[10],
-  );
-
-  /// See [SongLyric.showChords].
-  static final showChords = obx.QueryBooleanProperty<SongLyric>(
-    _entities[5].properties[11],
-  );
-
-  /// See [SongLyric.transposition].
-  static final transposition = obx.QueryIntegerProperty<SongLyric>(
-    _entities[5].properties[12],
-  );
-
   /// See [SongLyric.settings].
   static final settings =
       obx.QueryRelationToOne<SongLyric, SongLyricSettingsModel>(
-        _entities[5].properties[13],
+        _entities[5].properties[10],
       );
 
   /// See [SongLyric.hymnologyNew].
   static final hymnologyNew = obx.QueryStringProperty<SongLyric>(
-    _entities[5].properties[14],
+    _entities[5].properties[11],
   );
 
   /// See [SongLyric.displayId].
   static final displayId = obx.QueryStringProperty<SongLyric>(
-    _entities[5].properties[15],
+    _entities[5].properties[12],
   );
 
   /// See [SongLyric.displayName].
   static final displayName = obx.QueryStringProperty<SongLyric>(
-    _entities[5].properties[16],
+    _entities[5].properties[13],
   );
 
   /// See [SongLyric.isArrangement].
   static final isArrangement = obx.QueryBooleanProperty<SongLyric>(
-    _entities[5].properties[17],
+    _entities[5].properties[14],
   );
 
   /// see [SongLyric.authors]
@@ -2067,8 +2008,8 @@ class SongLyric_ {
   );
 
   /// see [SongLyric.externals]
-  static final externals = obx.QueryRelationToMany<SongLyric, External>(
-    _entities[5].relations[2],
+  static final externals = obx.QueryBacklinkToMany<External, SongLyric>(
+    External_.songLyric,
   );
 
   /// see [SongLyric.songbookRecords]
@@ -2190,64 +2131,65 @@ class PlaylistRecord_ {
     _entities[9].properties[3],
   );
 
-  /// See [PlaylistRecord.customText].
-  static final customText = obx.QueryRelationToOne<PlaylistRecord, CustomText>(
+  /// See [PlaylistRecord.userText].
+  static final userText = obx.QueryRelationToOne<PlaylistRecord, UserText>(
     _entities[9].properties[4],
   );
 
-  /// See [PlaylistRecord.bibleVerse].
-  static final bibleVerse = obx.QueryRelationToOne<PlaylistRecord, BibleVerse>(
-    _entities[9].properties[5],
-  );
+  /// See [PlaylistRecord.biblePassage].
+  static final biblePassage =
+      obx.QueryRelationToOne<PlaylistRecord, BiblePassage>(
+        _entities[9].properties[5],
+      );
 }
 
-/// [BibleVerse] entity fields to define ObjectBox queries.
-class BibleVerse_ {
-  /// See [BibleVerse.id].
-  static final id = obx.QueryIntegerProperty<BibleVerse>(
+/// [BiblePassage] entity fields to define ObjectBox queries.
+class BiblePassage_ {
+  /// See [BiblePassage.id].
+  static final id = obx.QueryIntegerProperty<BiblePassage>(
     _entities[10].properties[0],
   );
 
-  /// See [BibleVerse.book].
-  static final book = obx.QueryIntegerProperty<BibleVerse>(
+  /// See [BiblePassage.book].
+  static final book = obx.QueryIntegerProperty<BiblePassage>(
     _entities[10].properties[1],
   );
 
-  /// See [BibleVerse.chapter].
-  static final chapter = obx.QueryIntegerProperty<BibleVerse>(
+  /// See [BiblePassage.chapter].
+  static final chapter = obx.QueryIntegerProperty<BiblePassage>(
     _entities[10].properties[2],
   );
 
-  /// See [BibleVerse.startVerse].
-  static final startVerse = obx.QueryIntegerProperty<BibleVerse>(
+  /// See [BiblePassage.startVerse].
+  static final startVerse = obx.QueryIntegerProperty<BiblePassage>(
     _entities[10].properties[3],
   );
 
-  /// See [BibleVerse.endVerse].
-  static final endVerse = obx.QueryIntegerProperty<BibleVerse>(
+  /// See [BiblePassage.endVerse].
+  static final endVerse = obx.QueryIntegerProperty<BiblePassage>(
     _entities[10].properties[4],
   );
 
-  /// See [BibleVerse.text].
-  static final text = obx.QueryStringProperty<BibleVerse>(
+  /// See [BiblePassage.text].
+  static final text = obx.QueryStringProperty<BiblePassage>(
     _entities[10].properties[5],
   );
 }
 
-/// [CustomText] entity fields to define ObjectBox queries.
-class CustomText_ {
-  /// See [CustomText.id].
-  static final id = obx.QueryIntegerProperty<CustomText>(
+/// [UserText] entity fields to define ObjectBox queries.
+class UserText_ {
+  /// See [UserText.id].
+  static final id = obx.QueryIntegerProperty<UserText>(
     _entities[11].properties[0],
   );
 
-  /// See [CustomText.name].
-  static final name = obx.QueryStringProperty<CustomText>(
+  /// See [UserText.name].
+  static final name = obx.QueryStringProperty<UserText>(
     _entities[11].properties[1],
   );
 
-  /// See [CustomText.content].
-  static final content = obx.QueryStringProperty<CustomText>(
+  /// See [UserText.content].
+  static final content = obx.QueryStringProperty<UserText>(
     _entities[11].properties[2],
   );
 }

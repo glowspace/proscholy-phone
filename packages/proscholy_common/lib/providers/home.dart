@@ -45,15 +45,13 @@ class HomeSectionSettings extends _$HomeSectionSettings {
   void remove(HomeSection homeSection) {
     state = [
       for (final section in state)
-        if (section != homeSection) section
+        if (section != homeSection) section,
     ];
 
     _save();
   }
 
-  void onReorder(int oldIndex, int newIndex) {
-    if (oldIndex < newIndex) newIndex--;
-
+  void reorder(int oldIndex, int newIndex) {
     state = [
       for (int i = 0; i < state.length; i++)
         if (i == newIndex)
@@ -63,7 +61,7 @@ class HomeSectionSettings extends _$HomeSectionSettings {
         else if (i >= oldIndex && i < newIndex)
           state[i + 1]
         else
-          state[i]
+          state[i],
     ];
 
     _save();

@@ -113,7 +113,7 @@ class SelectedTagsByType extends _$SelectedTagsByType {
     if (state.contains(tagToToggle)) {
       state = {
         for (final tag in state)
-          if (tag != tagToToggle) tag
+          if (tag != tagToToggle) tag,
       };
     } else {
       state = {tagToToggle, ...state};

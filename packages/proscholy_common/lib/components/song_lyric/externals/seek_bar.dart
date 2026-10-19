@@ -39,7 +39,9 @@ class SeekBarState extends State<SeekBar> {
               min: 0.0,
               max: widget.duration.inMilliseconds.toDouble(),
               value: min(
-                  _dragValue ?? widget.position.inMilliseconds.toDouble(), widget.duration.inMilliseconds.toDouble()),
+                _dragValue ?? widget.position.inMilliseconds.toDouble(),
+                widget.duration.inMilliseconds.toDouble(),
+              ),
               onChanged: (value) {
                 setState(() => _dragValue = value);
 

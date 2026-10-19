@@ -1,38 +1,40 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:graphql_flutter/graphql_flutter.dart' hide Store;
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:proscholy_common/constants.dart';
 import 'package:proscholy_common/providers/svgs.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:proscholy_common/models/news_item.dart';
 import 'package:proscholy_common/models/generated/objectbox.g.dart';
+import 'package:proscholy_common/models/playlist_record.dart';
 import 'package:proscholy_common/models/song_lyric.dart';
 import 'package:proscholy_common/models/utils.dart';
 import 'package:proscholy_common/providers/app_dependencies.dart';
-import 'package:proscholy_common/providers/search.dart';
-import 'package:proscholy_common/providers/song_lyrics.dart';
-import 'package:proscholy_common/providers/utils.dart';
-import 'package:proscholy_common/utils/client.dart';
+import 'package:proscholy_common/utils/api_client.dart';
+import 'package:proscholy_common/utils/data.dart';
 import 'package:proscholy_common/utils/services/spotlight.dart';
+import 'package:proscholy_common/views/app_dependencies.dart';
 
 part 'generated/update.g.dart';
 
 const _versionKey = 'current_version';
 
 const _lastUpdateKey = 'last_update';
-const _initialLastUpdate = isZPS ? '2026-04-07 09:00:00' : (isEZ ? '2025-09-24 09:00:00' : '2025-09-24 09:00:00');
+const _initialLastUpdate = isZPS ? '2026-10-18 13:40:00' : (isEZ ? '2025-09-24 09:00:00' : '2025-09-24 09:00:00');
 
 const _updatePeriod = Duration(hours: 1);
 
 final _dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
 
 @Riverpod(keepAlive: true)
-Client graphQLClient(Ref ref) => Client();
+ApiClient graphQLClient(Ref ref) => ApiClient();
 
 sealed class UpdateStatus {
   const UpdateStatus();
@@ -48,7 +50,14 @@ class Updated extends UpdateStatus {
   const Updated(this.songLyrics);
 }
 
+// update failed because of connection and it will be tried again later
+class UpdateInterrupted extends UpdateStatus {
+  const UpdateInterrupted();
+}
+
 Future<void> loadInitial(AppDependencies appDependencies) async {
+  assert(isZPS || isEZ || isEK, 'Unknown target, run with `--dart-define=ZPEVNIK_TARGET=<ZPS|EZ|EK>`.');
+
   _cleanup(appDependencies);
 
   final lastVersion = appDependencies.sharedPreferences.getString(_versionKey);
@@ -66,40 +75,59 @@ Future<void> loadInitial(AppDependencies appDependencies) async {
   );
 
   // drop "song_lyrics_search" table as there might be change in structure from last version
-  try {
-    await appDependencies.ftsDatabase.execute('DROP TABLE song_lyrics_search');
-  } on DatabaseException {} // ignore exceptions if database does not exist
-  SearchedSongLyrics.update(appDependencies.ftsDatabase, songLyrics);
+  await appDependencies.ftsSearch.drop();
+  appDependencies.ftsSearch.update(songLyrics);
 
   appDependencies.sharedPreferences.remove(_lastUpdateKey);
   appDependencies.sharedPreferences.setString(_versionKey, currentVersion);
 }
 
-@riverpod
+// update is not retried automatically, as all requests would be made again, it will be tried again later
+@Riverpod(retry: _noRetry)
 Stream<UpdateStatus> update(Ref ref) async* {
+  try {
+    // `yield*` would pass errors directly to listeners, so they could not be caught here
+    await for (final status in _update(ref)) {
+      yield status;
+    }
+  } catch (error) {
+    if (!_isConnectionError(error)) rethrow;
+
+    yield const UpdateInterrupted();
+  }
+}
+
+Duration? _noRetry(int retryCount, Object error) => null;
+
+// errors caused by connection, errors from server are not included, so they can be reported
+bool _isConnectionError(Object? error) {
+  return switch (error) {
+    OperationException(:final linkException) => _isConnectionError(linkException),
+    // failed requests are wrapped in link exceptions
+    LinkException(:final originalException) => _isConnectionError(originalException),
+    SocketException() || HttpException() || TlsException() || TimeoutException() || http.ClientException() => true,
+    _ => false,
+  };
+}
+
+Stream<UpdateStatus> _update(Ref ref) async* {
   final client = ref.read(graphQLClientProvider);
   final appDependencies = ref.read(appDependenciesProvider);
 
   // update news
-  try {
-    final newsItems =
-        await client.getNews().then((json) => readJsonList(json[NewsItem.fieldKey], mapper: NewsItem.fromJson));
+  final newsItems = await client.getNews().then(
+    (json) => readJsonList(json['news_items'], mapper: NewsItem.fromJson),
+  );
 
-    // remove all news items, that were deleted on server
-    appDependencies.store.box<NewsItem>().removeAll();
-    appDependencies.store.box<NewsItem>().putMany(newsItems);
-  } on OperationException catch (e) {
-    if (e.linkException?.originalException is SocketException) return;
-
-    rethrow;
-  } on SocketException {
-    return;
-  }
+  // remove all news items, that were deleted on server
+  appDependencies.store.box<NewsItem>().removeAll();
+  appDependencies.store.box<NewsItem>().putMany(newsItems);
 
   // check if update should happen
   final now = DateTime.now().toUtc();
-  final lastUpdate =
-      _dateFormat.parseUtc(appDependencies.sharedPreferences.getString(_lastUpdateKey) ?? _initialLastUpdate);
+  final lastUpdate = _dateFormat.parseUtc(
+    appDependencies.sharedPreferences.getString(_lastUpdateKey) ?? _initialLastUpdate,
+  );
 
   if (now.isBefore(lastUpdate.add(_updatePeriod))) return;
 
@@ -110,6 +138,7 @@ Stream<UpdateStatus> update(Ref ref) async* {
   if (ref.mounted) ref.read(svgsProvider.notifier).storeSvgs(await client.getSvgs(lastUpdate));
 
   await parseAndStoreData(appDependencies.store, data);
+  removeMissingData(appDependencies.store, data);
 
   // query existing song lyrics to check song lyrics that are missing in local db or that were removed on server
   final box = appDependencies.store.box<SongLyric>();
@@ -123,16 +152,23 @@ Stream<UpdateStatus> update(Ref ref) async* {
   for (final songLyric in data['song_lyrics']) {
     final id = int.parse(songLyric['id']);
 
-    if (!existingSongLyricsIds.contains(id)) missingSongLyricIds.add(id);
+    // arrangements are not stored, so they would be always missing and fetched again during every update
+    if (!existingSongLyricsIds.contains(id) && songLyric['is_arrangement'] != true) missingSongLyricIds.add(id);
 
     existingSongLyricsIds.remove(id);
   }
 
-  // remove song lyrics that were removed on server
-  box.removeMany(existingSongLyricsIds.toList());
+  // remove song lyrics that were removed on server, empty list is more likely an error on server, it would remove
+  // song lyrics from all playlists
+  if (data['song_lyrics'].isNotEmpty) {
+    box.removeMany(existingSongLyricsIds.toList());
 
-  // on iOS also remove them from spotlight indexing
-  SpotlightService.instance.deindexItems(existingSongLyricsIds.map((id) => 'song_lyric_$id').toList());
+    // on iOS also remove them from spotlight indexing
+    SpotlightService.instance.deindexItems(existingSongLyricsIds.map((id) => 'song_lyric_$id').toList());
+  }
+
+  // relations of removed song lyrics are removed right away, as the rest of update can be interrupted
+  _cleanup(appDependencies);
 
   // update song lyrics
   final songLyrics = await client
@@ -143,27 +179,40 @@ Stream<UpdateStatus> update(Ref ref) async* {
     missingSongLyricIds.remove(songLyric.id);
   }
 
-  // fetch missing song lyrics
-  final List<Future<SongLyric>> futures = [];
+  // fetch missing song lyrics, the ones that fail will be still missing and fetched again during next update
+  final List<Future<SongLyric?>> futures = [];
 
   for (final songLyricId in missingSongLyricIds) {
-    futures.add(client.getSongLyric(songLyricId).then((json) => SongLyric.fromJson(json)));
+    futures.add(_fetchSongLyric(client, songLyricId));
   }
 
-  songLyrics.addAll(await Future.wait(futures));
+  songLyrics.addAll((await Future.wait(futures)).nonNulls);
 
   final updatedSongLyrics = await storeSongLyrics(appDependencies.store, songLyrics);
 
-  _cleanup(appDependencies);
+  // records of song lyrics that are neither stored nor on server would be never shown, e.g. arrangements or song lyrics
+  // from shared playlist of other app, the ones that failed to download are kept
+  if (data['song_lyrics'].isNotEmpty) _removeRecordsOfUnavailableSongLyrics(appDependencies.store, missingSongLyricIds);
 
-  SearchedSongLyrics.update(appDependencies.ftsDatabase, updatedSongLyrics);
+  await appDependencies.ftsSearch.update(updatedSongLyrics);
 
   yield Updated(updatedSongLyrics);
 
   appDependencies.sharedPreferences.setString(_lastUpdateKey, _dateFormat.format(now));
 }
 
-// FIXME: does not seem to work correctly? try removing based on song_lyric ids
+// returns null, when song lyric could not be fetched
+Future<SongLyric?> _fetchSongLyric(ApiClient client, int id) async {
+  try {
+    return SongLyric.fromJson(await client.getSongLyric(id));
+  } catch (error, stackTrace) {
+    if (!_isConnectionError(error)) Sentry.captureException(error, stackTrace: stackTrace);
+
+    return null;
+  }
+}
+
+// removing song lyric sets relations pointing to it to 0, so these relations are removed here
 void _cleanup(AppDependencies appDependencies) async {
   // remove externals that were associated with removed song lyrics
   _removeRelations(appDependencies.store, External_.songLyric.equals(0));
@@ -176,8 +225,8 @@ void _cleanup(AppDependencies appDependencies) async {
     appDependencies.store,
     PlaylistRecord_.songLyric
         .equals(0)
-        .and(PlaylistRecord_.bibleVerse.equals(0))
-        .and(PlaylistRecord_.customText.equals(0)),
+        .and(PlaylistRecord_.biblePassage.equals(0))
+        .and(PlaylistRecord_.userText.equals(0)),
   );
 
   // remove shared playlists
@@ -191,6 +240,23 @@ void _cleanup(AppDependencies appDependencies) async {
       } catch (_) {}
     }
   }
+}
+
+void _removeRecordsOfUnavailableSongLyrics(Store store, Set<int> missingSongLyricIds) {
+  final songLyricsQuery = store.box<SongLyric>().query().build();
+  final availableIds = songLyricsQuery.property(SongLyric_.id).find().toSet()..addAll(missingSongLyricIds);
+
+  songLyricsQuery.close();
+
+  final box = store.box<PlaylistRecord>();
+  final query = box.query(PlaylistRecord_.songLyric.notEquals(0)).build();
+
+  box.removeMany([
+    for (final playlistRecord in query.find())
+      if (!availableIds.contains(playlistRecord.songLyric.targetId)) playlistRecord.id,
+  ]);
+
+  query.close();
 }
 
 void _removeRelations<T>(Store store, Condition<T> condition) {

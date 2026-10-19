@@ -25,59 +25,62 @@ class SongLyricBottomBar extends ConsumerWidget {
     return LayoutBuilder(
       builder: (_, constraints) => ListenableBuilder(
         listenable: autoScrollController,
-        builder: (_, __) => BottomAppBar(
+        builder: (_, _) => BottomAppBar(
           height: _bottomBarHeight,
           padding: const EdgeInsets.fromLTRB(kDefaultPadding, kDefaultPadding / 4, kDefaultPadding, 0),
-          child: Row(children: [
-            HighlightableWidget(
-              padding: const EdgeInsets.all(kDefaultPadding),
-              isEnabled: songLyric?.hasChordsReal ?? false,
-              onTap: () => showModalBottomSheet(
-                context: context,
-                builder: (context) => SongLyricSettingsModelWidget(songLyric: songLyric!),
-              ),
-              icon: const Icon(Icons.tune),
-              child: constraints.maxWidth > kTabletSizeBreakpoint ? const Text('Nástroje') : null,
-            ),
-            HighlightableWidget(
-              padding: const EdgeInsets.all(kDefaultPadding),
-              isEnabled: songLyric?.hasRecordings ?? false,
-              onTap: ref.read(displayScreenStatusProvider.notifier).showExternals,
-              icon: const Icon(Icons.headphones),
-              child: constraints.maxWidth > kTabletSizeBreakpoint ? const Text('Nahrávky') : null,
-            ),
-            HighlightableWidget(
-              padding: const EdgeInsets.all(kDefaultPadding),
-              onTap: ref.read(displayScreenStatusProvider.notifier).enableFullScreen,
-              icon: const Icon(Icons.fullscreen),
-              child: constraints.maxWidth > kTabletSizeBreakpoint ? const Text('Celá obrazovka') : null,
-            ),
-            const Spacer(),
-            if (autoScrollController.isScrolling)
+          child: Row(
+            children: [
               HighlightableWidget(
                 padding: const EdgeInsets.all(kDefaultPadding),
-                isEnabled: autoScrollSpeedIndex != 0,
-                onTap: ref.read(settingsProvider.notifier).decreaseAutoScrollSpeedIndex,
-                icon: const Icon(Icons.remove),
+                isEnabled: songLyric?.hasChordsReal ?? false,
+                onTap: () => showModalBottomSheet(
+                  context: context,
+                  builder: (context) => SongLyricSettingsModelWidget(songLyric: songLyric!),
+                ),
+                icon: const Icon(Icons.tune),
+                child: constraints.maxWidth > kTabletSizeBreakpoint ? const Text('Nástroje') : null,
               ),
-            if (autoScrollController.isScrolling)
               HighlightableWidget(
                 padding: const EdgeInsets.all(kDefaultPadding),
-                isEnabled: autoScrollSpeedIndex != autoScrollSpeeds.length - 1,
-                onTap: ref.read(settingsProvider.notifier).increaseAutoScrollSpeedIndex,
-                icon: const Icon(Icons.add),
+                isEnabled: songLyric?.hasRecordings ?? false,
+                onTap: ref.read(displayScreenStatusProvider.notifier).showExternals,
+                icon: const Icon(Icons.headphones),
+                child: constraints.maxWidth > kTabletSizeBreakpoint ? const Text('Nahrávky') : null,
               ),
-            HighlightableWidget(
-              padding: const EdgeInsets.all(kDefaultPadding),
-              isEnabled: autoScrollController.canScroll &&
-                  ref.watch(presentationProvider.select((presentation) => !presentation.isPresentingLocally)),
-              onTap: () => autoScrollController.toggle(ref),
-              icon: autoScrollController.isScrolling ? const Icon(Icons.stop) : const Icon(Icons.arrow_downward),
-              child: constraints.maxWidth > kTabletSizeBreakpoint
-                  ? (autoScrollController.isScrolling ? const Text('Zastavit') : const Text('Rolovat'))
-                  : null,
-            ),
-          ]),
+              HighlightableWidget(
+                padding: const EdgeInsets.all(kDefaultPadding),
+                onTap: ref.read(displayScreenStatusProvider.notifier).enableFullScreen,
+                icon: const Icon(Icons.fullscreen),
+                child: constraints.maxWidth > kTabletSizeBreakpoint ? const Text('Celá obrazovka') : null,
+              ),
+              const Spacer(),
+              if (autoScrollController.isScrolling)
+                HighlightableWidget(
+                  padding: const EdgeInsets.all(kDefaultPadding),
+                  isEnabled: autoScrollSpeedIndex != 0,
+                  onTap: ref.read(settingsProvider.notifier).decreaseAutoScrollSpeedIndex,
+                  icon: const Icon(Icons.remove),
+                ),
+              if (autoScrollController.isScrolling)
+                HighlightableWidget(
+                  padding: const EdgeInsets.all(kDefaultPadding),
+                  isEnabled: autoScrollSpeedIndex != autoScrollSpeeds.length - 1,
+                  onTap: ref.read(settingsProvider.notifier).increaseAutoScrollSpeedIndex,
+                  icon: const Icon(Icons.add),
+                ),
+              HighlightableWidget(
+                padding: const EdgeInsets.all(kDefaultPadding),
+                isEnabled:
+                    autoScrollController.canScroll &&
+                    ref.watch(presentationProvider.select((presentation) => !presentation.isPresentingLocally)),
+                onTap: () => autoScrollController.toggle(ref),
+                icon: autoScrollController.isScrolling ? const Icon(Icons.stop) : const Icon(Icons.arrow_downward),
+                child: constraints.maxWidth > kTabletSizeBreakpoint
+                    ? (autoScrollController.isScrolling ? const Text('Zastavit') : const Text('Rolovat'))
+                    : null,
+              ),
+            ],
+          ),
         ),
       ),
     );

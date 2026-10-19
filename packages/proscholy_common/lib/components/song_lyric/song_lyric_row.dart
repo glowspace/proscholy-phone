@@ -55,25 +55,29 @@ class SongLyricRow extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(songLyric.displayName, style: textTheme.bodyMedium),
-                      Consumer(builder: (_, ref, __) {
-                        final searchText = ref.watch(searchTextProvider);
+                      Consumer(
+                        builder: (_, ref, _) {
+                          final searchText = ref.watch(searchTextProvider);
 
-                        if (searchText.isNotEmpty) {
-                          for (final songbookRecord in songLyric.songbookRecords) {
-                            if (searchText == songbookRecord.number) {
-                              return Container(
-                                margin: textMargin,
-                                child: Text(songbookRecord.songbook.target!.name, style: textTheme.bodySmall),
-                              );
+                          if (searchText.isNotEmpty) {
+                            for (final songbookRecord in songLyric.songbookRecords) {
+                              if (searchText == songbookRecord.number) {
+                                return Container(
+                                  margin: textMargin,
+                                  child: Text(songbookRecord.songbook.target!.name, style: textTheme.bodySmall),
+                                );
+                              }
                             }
                           }
-                        }
 
-                        return const SizedBox();
-                      }),
+                          return const SizedBox();
+                        },
+                      ),
                       if (songLyric.secondaryName1?.isNotEmpty ?? false)
                         Container(
-                            margin: textMargin, child: Text(songLyric.secondaryName1!, style: textTheme.bodySmall)),
+                          margin: textMargin,
+                          child: Text(songLyric.secondaryName1!, style: textTheme.bodySmall),
+                        ),
                       // if (songLyric.secondaryName2?.isNotEmpty ?? false)
                       //   Container(margin: textMargin, child: Text(songLyric.secondaryName2!, style: textTheme.bodySmall)),
                     ],

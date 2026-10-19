@@ -5,9 +5,8 @@ import 'package:proscholy_common/components/custom/back_button.dart';
 import 'package:proscholy_common/components/custom/close_button.dart';
 import 'package:proscholy_common/components/highlightable_widget.dart';
 import 'package:proscholy_common/constants.dart';
-import 'package:proscholy_common/models/bible_verse.dart';
+import 'package:proscholy_common/models/bible_passage.dart';
 import 'package:proscholy_common/providers/app_dependencies.dart';
-import 'package:proscholy_common/providers/playlists.dart';
 import 'package:proscholy_common/routing/safe_area_wrapper.dart';
 import 'package:proscholy_common/utils/bible_api_client.dart';
 import 'package:proscholy_common/utils/extensions.dart';
@@ -15,23 +14,23 @@ import 'package:proscholy_common/utils/url_launcher.dart';
 
 const _failedToLoadVersesMessage = 'Během načítání veršů nastala chyba, zkontrolujte prosím připojení k internetu.';
 
-class SelectBibleVerseScreen extends StatelessWidget {
-  final BibleVerse? bibleVerse;
+class SelectBiblePassageScreen extends StatelessWidget {
+  final BiblePassage? biblePassage;
 
-  const SelectBibleVerseScreen({super.key, this.bibleVerse});
+  const SelectBiblePassageScreen({super.key, this.biblePassage});
 
   @override
   Widget build(BuildContext context) {
     return Navigator(
-      onGenerateRoute: (_) => MaterialPageRoute(builder: (_) => _SelectBibleBookScreen(bibleVerse: bibleVerse)),
+      onGenerateRoute: (_) => MaterialPageRoute(builder: (_) => _SelectBibleBookScreen(biblePassage: biblePassage)),
     );
   }
 }
 
 class _SelectBibleBookScreen extends StatefulWidget {
-  final BibleVerse? bibleVerse;
+  final BiblePassage? biblePassage;
 
-  const _SelectBibleBookScreen({this.bibleVerse});
+  const _SelectBibleBookScreen({this.biblePassage});
 
   @override
   State<_SelectBibleBookScreen> createState() => _SelectBibleBookScreenState();
@@ -40,8 +39,8 @@ class _SelectBibleBookScreen extends StatefulWidget {
 class _SelectBibleBookScreenState extends State<_SelectBibleBookScreen> {
   final initiallyExpandedTileKey = GlobalKey();
 
-  late int? _selectedBook = widget.bibleVerse?.book;
-  late int? _selectedChapter = widget.bibleVerse?.chapter;
+  late int? _selectedBook = widget.biblePassage?.book;
+  late int? _selectedChapter = widget.biblePassage?.chapter;
 
   @override
   void initState() {
@@ -110,10 +109,10 @@ class _SelectBibleBookScreenState extends State<_SelectBibleBookScreen> {
                               });
                               Navigator.of(context).push(
                                 MaterialPageRoute(
-                                  builder: (_) => _SelectBibleVerseScreen(
+                                  builder: (_) => _SelectBiblePassageScreen(
                                     book: supportedBibleBooks[index],
                                     chapter: chapterIndex + 1,
-                                    bibleVerse: widget.bibleVerse,
+                                    biblePassage: widget.biblePassage,
                                   ),
                                 ),
                               );
@@ -141,28 +140,28 @@ class _SelectBibleBookScreenState extends State<_SelectBibleBookScreen> {
   void _forward(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => _SelectBibleVerseScreen(
+        builder: (_) => _SelectBiblePassageScreen(
           book: supportedBibleBooks[_selectedBook!],
           chapter: _selectedChapter!,
-          bibleVerse: widget.bibleVerse,
+          biblePassage: widget.biblePassage,
         ),
       ),
     );
   }
 }
 
-class _SelectBibleVerseScreen extends StatefulWidget {
-  final BibleVerse? bibleVerse;
+class _SelectBiblePassageScreen extends StatefulWidget {
+  final BiblePassage? biblePassage;
   final BibleBook book;
   final int chapter;
 
-  const _SelectBibleVerseScreen({required this.book, required this.chapter, this.bibleVerse});
+  const _SelectBiblePassageScreen({required this.book, required this.chapter, this.biblePassage});
 
   @override
-  State<_SelectBibleVerseScreen> createState() => _SelectBibleVerseScreenState();
+  State<_SelectBiblePassageScreen> createState() => _SelectBiblePassageScreenState();
 }
 
-class _SelectBibleVerseScreenState extends State<_SelectBibleVerseScreen> {
+class _SelectBiblePassageScreenState extends State<_SelectBiblePassageScreen> {
   late int _startVerse;
   late int? _endVerse;
 
@@ -172,11 +171,11 @@ class _SelectBibleVerseScreenState extends State<_SelectBibleVerseScreen> {
   void initState() {
     super.initState();
 
-    if (widget.bibleVerse != null &&
-        supportedBibleBooks[widget.bibleVerse!.book] == widget.book &&
-        widget.bibleVerse!.chapter == widget.chapter) {
-      _startVerse = widget.bibleVerse!.startVerse;
-      _endVerse = widget.bibleVerse!.endVerse;
+    if (widget.biblePassage != null &&
+        supportedBibleBooks[widget.biblePassage!.book] == widget.book &&
+        widget.biblePassage!.chapter == widget.chapter) {
+      _startVerse = widget.biblePassage!.startVerse;
+      _endVerse = widget.biblePassage!.endVerse;
     } else {
       _startVerse = 1;
       _endVerse = null;
@@ -235,31 +234,34 @@ class _SelectBibleVerseScreenState extends State<_SelectBibleVerseScreen> {
                   ),
                   margin: const EdgeInsets.fromLTRB(kDefaultPadding, kDefaultPadding, kDefaultPadding, 0),
                   padding: const EdgeInsets.all(kDefaultPadding),
-                  child: Row(children: [
-                    Icon(Icons.info, color: infoColorScheme.onPrimaryContainer),
-                    const SizedBox(width: kDefaultPadding),
-                    Expanded(
-                      child: RichText(
-                        text: TextSpan(
-                          text: 'Pro biblické verše je využíván ',
-                          style: textStyle,
-                          children: [
-                            TextSpan(text: 'Český ekumenický překlad', style: boldStyle),
-                            TextSpan(
-                              text: ', který je získáván prostřednictím volně dostupného rozhraní od$unbreakableSpace',
-                              style: textStyle,
-                            ),
-                            TextSpan(
-                              text: 'getbible.net',
-                              style: highlightedStyle,
-                              recognizer: TapGestureRecognizer()..onTap = () => launch('https://getbible.net'),
-                            ),
-                            const TextSpan(text: '.'),
-                          ],
+                  child: Row(
+                    children: [
+                      Icon(Icons.info, color: infoColorScheme.onPrimaryContainer),
+                      const SizedBox(width: kDefaultPadding),
+                      Expanded(
+                        child: RichText(
+                          text: TextSpan(
+                            text: 'Pro biblické verše je využíván ',
+                            style: textStyle,
+                            children: [
+                              TextSpan(text: 'Český ekumenický překlad', style: boldStyle),
+                              TextSpan(
+                                text:
+                                    ', který je získáván prostřednictím volně dostupného rozhraní od$unbreakableSpace',
+                                style: textStyle,
+                              ),
+                              TextSpan(
+                                text: 'getbible.net',
+                                style: highlightedStyle,
+                                recognizer: TapGestureRecognizer()..onTap = () => launch('https://getbible.net'),
+                              ),
+                              const TextSpan(text: '.'),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  ]),
+                    ],
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding, vertical: kDefaultPadding),
@@ -276,8 +278,9 @@ class _SelectBibleVerseScreenState extends State<_SelectBibleVerseScreen> {
                           onChanged: (value) => setState(() => _startVerse = int.tryParse(value) ?? 1),
                           decoration: InputDecoration(
                             labelText: 'Počáteční verš',
-                            labelStyle:
-                                startVerseInvalid ? theme.textTheme.labelLarge?.copyWith(color: Colors.red) : null,
+                            labelStyle: startVerseInvalid
+                                ? theme.textTheme.labelLarge?.copyWith(color: Colors.red)
+                                : null,
                             border: startVerseBorder,
                             enabledBorder: startVerseBorder,
                           ),
@@ -291,8 +294,9 @@ class _SelectBibleVerseScreenState extends State<_SelectBibleVerseScreen> {
                           onChanged: (value) => setState(() => _endVerse = int.tryParse(value)),
                           decoration: InputDecoration(
                             labelText: 'Koncový verš',
-                            labelStyle:
-                                endVerseInvalid ? theme.textTheme.labelLarge?.copyWith(color: Colors.red) : null,
+                            labelStyle: endVerseInvalid
+                                ? theme.textTheme.labelLarge?.copyWith(color: Colors.red)
+                                : null,
                             border: endVerseBorder,
                             enabledBorder: endVerseBorder,
                           ),
@@ -311,14 +315,16 @@ class _SelectBibleVerseScreenState extends State<_SelectBibleVerseScreen> {
                         MediaQuery.paddingOf(context).bottom + kDefaultPadding,
                       ),
                       child: Consumer(
-                        builder: (_, ref, __) => ref
-                            .watch(bibleVerseProvider(
-                              supportedBibleTranslations[1],
-                              widget.book,
-                              widget.chapter,
-                              _startVerse,
-                              endVerse: _endVerse,
-                            ))
+                        builder: (_, ref, _) => ref
+                            .watch(
+                              biblePassageProvider(
+                                supportedBibleTranslations[1],
+                                widget.book,
+                                widget.chapter,
+                                _startVerse,
+                                endVerse: _endVerse,
+                              ),
+                            )
                             .when(
                               data: (verses) => Column(
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -332,7 +338,7 @@ class _SelectBibleVerseScreenState extends State<_SelectBibleVerseScreen> {
                                   ),
                                 ],
                               ),
-                              error: (_, __) => const Center(child: Text(_failedToLoadVersesMessage)),
+                              error: (_, _) => const Center(child: Text(_failedToLoadVersesMessage)),
                               loading: () => const Center(child: CircularProgressIndicator.adaptive()),
                             ),
                       ),
@@ -349,28 +355,31 @@ class _SelectBibleVerseScreenState extends State<_SelectBibleVerseScreen> {
 
   void _pop() async {
     final context = this.context;
-    final text = await context.providers.read(bibleVerseProvider(
-      supportedBibleTranslations[1],
-      widget.book,
-      widget.chapter,
-      _startVerse,
-      endVerse: _endVerse,
-    ).future);
+    final text = await context.providers.read(
+      biblePassageProvider(
+        supportedBibleTranslations[1],
+        widget.book,
+        widget.chapter,
+        _startVerse,
+        endVerse: _endVerse,
+      ).future,
+    );
 
     if (!context.mounted) return;
 
-    final BibleVerse bibleVerse;
+    final BiblePassage biblePassage;
 
-    if (widget.bibleVerse == null) {
-      bibleVerse = context.providers.read(playlistsProvider.notifier).createBibleVerse(
-            book: widget.book.number - 1,
-            chapter: widget.chapter,
-            startVerse: _startVerse,
-            endVerse: _endVerse,
-            text: text,
-          );
+    if (widget.biblePassage == null) {
+      // it is stored when it is added to playlist
+      biblePassage = BiblePassage(
+        book: widget.book.number - 1,
+        chapter: widget.chapter,
+        startVerse: _startVerse,
+        endVerse: _endVerse,
+        text: text,
+      );
     } else {
-      bibleVerse = widget.bibleVerse!.copyWith(
+      biblePassage = widget.biblePassage!.copyWith(
         book: widget.book.number - 1,
         chapter: widget.chapter,
         startVerse: _startVerse,
@@ -378,9 +387,9 @@ class _SelectBibleVerseScreenState extends State<_SelectBibleVerseScreen> {
         text: text,
       );
 
-      context.providers.read(appDependenciesProvider).store.box<BibleVerse>().put(bibleVerse);
+      context.providers.read(appDependenciesProvider).store.box<BiblePassage>().put(biblePassage);
     }
 
-    if (context.mounted) Navigator.of(context, rootNavigator: true).pop(bibleVerse);
+    if (context.mounted) Navigator.of(context, rootNavigator: true).pop(biblePassage);
   }
 }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:proscholy_common/components/bottom_sheet_section.dart';
 import 'package:proscholy_common/components/highlightable_widget.dart';
-import 'package:proscholy_common/components/playlist/dialogs.dart';
+import 'package:proscholy_common/components/playlist/dialog_extensions.dart';
 import 'package:proscholy_common/constants.dart';
 import 'package:proscholy_common/models/playlist.dart';
 import 'package:proscholy_common/models/song_lyric.dart';
@@ -22,11 +22,11 @@ class PlaylistsSheet extends StatelessWidget {
       childrenPadding: false,
       children: [
         Consumer(
-          builder: (context, ref, __) => Column(
+          builder: (context, ref, _) => Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               HighlightableWidget(
-                onTap: () => showPlaylistDialog(context, selectedSongLyric: selectedSongLyric),
+                onTap: () => PlaylistDialogsExtension.createPlaylistWithDialog(context, songLyric: selectedSongLyric),
                 padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
                 icon: const Icon(Icons.add),
                 child: const Padding(
@@ -45,11 +45,13 @@ class PlaylistsSheet extends StatelessWidget {
                       horizontal: 1.5 * kDefaultPadding,
                       vertical: 2 * kDefaultPadding / 3,
                     ),
-                    child: Row(children: [
-                      const Icon(Icons.playlist_play_rounded),
-                      const SizedBox(width: kDefaultPadding),
-                      Text(playlist.name),
-                    ]),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.playlist_play_rounded),
+                        const SizedBox(width: kDefaultPadding),
+                        Text(playlist.name),
+                      ],
+                    ),
                   ),
               ],
             ],
@@ -60,7 +62,7 @@ class PlaylistsSheet extends StatelessWidget {
   }
 
   void _addToPlaylist(BuildContext context, Playlist playlist) {
-    context.providers.read(playlistsProvider.notifier).addToPlaylist(playlist, songLyric: selectedSongLyric);
+    context.providers.read(playlistProvider(playlist.id).notifier).addSongLyric(selectedSongLyric);
 
     context.popAndPush('/playlist', arguments: playlist);
   }

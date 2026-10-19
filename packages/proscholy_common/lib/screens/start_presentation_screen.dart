@@ -68,24 +68,28 @@ class _StartPresentationScreenState extends State<StartPresentationScreen> with 
           ],
         ),
         body: SafeArea(
-          child: Column(children: [
-            if (!_onExternalDisplay)
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: infoColorScheme.primary),
-                  color: infoColorScheme.primaryContainer,
-                  borderRadius: BorderRadius.circular(kDefaultRadius),
+          child: Column(
+            children: [
+              if (!_onExternalDisplay)
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: infoColorScheme.primary),
+                    color: infoColorScheme.primaryContainer,
+                    borderRadius: BorderRadius.circular(kDefaultRadius),
+                  ),
+                  margin: const EdgeInsets.fromLTRB(kDefaultPadding, kDefaultPadding, kDefaultPadding, 0),
+                  padding: const EdgeInsets.all(kDefaultPadding),
+                  child: Row(
+                    children: [
+                      Icon(Icons.info, color: infoColorScheme.onPrimaryContainer),
+                      const SizedBox(width: kDefaultPadding),
+                      const Expanded(child: Text(_noExternalDisplayText)),
+                    ],
+                  ),
                 ),
-                margin: const EdgeInsets.fromLTRB(kDefaultPadding, kDefaultPadding, kDefaultPadding, 0),
-                padding: const EdgeInsets.all(kDefaultPadding),
-                child: Row(children: [
-                  Icon(Icons.info, color: infoColorScheme.onPrimaryContainer),
-                  const SizedBox(width: kDefaultPadding),
-                  const Expanded(child: Text(_noExternalDisplayText)),
-                ]),
-              ),
-            PresentationSettingsWidget(onExternalDisplay: _onExternalDisplay),
-          ]),
+              PresentationSettingsWidget(onExternalDisplay: _onExternalDisplay),
+            ],
+          ),
         ),
       ),
     );

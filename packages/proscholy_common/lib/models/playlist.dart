@@ -9,10 +9,7 @@ part 'generated/playlist.freezed.dart';
 const favoritesPlaylistId = 1;
 const _favoritesName = 'Písně s hvězdičkou';
 
-// offset for songbook tags, tags from API have id > 0, songbook tags have negative id starting from -1000, so offset -2000 should be enough
-const playlistIdOffset = -2000;
-
-@Freezed(equal: false)
+@freezed
 sealed class Playlist with _$Playlist implements Identifiable, RecentItem, SongsList {
   const Playlist._();
 
@@ -24,19 +21,17 @@ sealed class Playlist with _$Playlist implements Identifiable, RecentItem, Songs
     @Backlink() required ToMany<PlaylistRecord> records,
   }) = _Playlist;
 
-  factory Playlist.favorites() => Playlist(
-        id: favoritesPlaylistId,
-        name: _favoritesName,
-        rank: 0,
-        records: ToMany(),
-      );
+  // its id is set when it is added to playlists
+  factory Playlist.empty(String name) => Playlist(id: 0, name: name, rank: 0, records: ToMany());
 
-  Tag get tag => Tag(
-        id: id + playlistIdOffset,
-        name: name,
-        dbType: TagType.playlist.rawValue,
-        songLyricsCount: records.length,
-      );
+  factory Playlist.favorites() => Playlist(
+    id: favoritesPlaylistId,
+    name: _favoritesName,
+    rank: 0,
+    records: ToMany(),
+  );
+
+  Tag get tag => Tag.fromPlaylist(this);
 
   bool get isFavorites => id == favoritesPlaylistId;
 

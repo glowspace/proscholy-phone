@@ -126,7 +126,7 @@ final class SongLyricsProvider
   }
 }
 
-String _$songLyricsHash() => r'b24a72d219c4ada10938de8b6135aab500e3f41f';
+String _$songLyricsHash() => r'80ee6a320c9c78cd2760ece5613f9e8308356d2f';
 
 @ProviderFor(songsListSongLyrics)
 final songsListSongLyricsProvider = SongsListSongLyricsFamily._();

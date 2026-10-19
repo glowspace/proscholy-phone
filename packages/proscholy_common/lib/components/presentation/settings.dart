@@ -54,7 +54,8 @@ class PresentationSettingsWidget extends ConsumerWidget {
             ButtonSegment(value: PresentationAlignment.center, icon: Icon(Icons.align_vertical_center)),
             ButtonSegment(value: PresentationAlignment.bottom, icon: Icon(Icons.align_vertical_bottom)),
           ],
-          selected: ref.watch(presentationProvider.select((presentation) => presentation.settings.alignment)) ??
+          selected:
+              ref.watch(presentationProvider.select((presentation) => presentation.settings.alignment)) ??
               PresentationAlignment.center,
           onSelected: (value) =>
               ref.read(presentationProvider.notifier).changeSettings(settings.copyWith(alignment: value)),
@@ -67,7 +68,8 @@ class PresentationSettingsWidget extends ConsumerWidget {
             ButtonSegment(value: PresentationRotation.right90, icon: Icon(Icons.rotate_90_degrees_cw)),
             ButtonSegment(value: PresentationRotation.upsideDown, icon: Icon(Icons.swap_vert)),
           ],
-          selected: ref.watch(presentationProvider.select((presentation) => presentation.settings.rotation)) ??
+          selected:
+              ref.watch(presentationProvider.select((presentation) => presentation.settings.rotation)) ??
               PresentationRotation.none,
           onSelected: (value) =>
               ref.read(presentationProvider.notifier).changeSettings(settings.copyWith(rotation: value)),

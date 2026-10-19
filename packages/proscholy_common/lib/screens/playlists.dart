@@ -3,7 +3,7 @@ import 'package:proscholy_common/components/custom/back_button.dart';
 import 'package:proscholy_common/components/navigation/hero_app_bar.dart';
 import 'package:proscholy_common/components/navigation/scaffold.dart';
 import 'package:proscholy_common/components/playlist/playlists_list_view.dart';
-import 'package:proscholy_common/components/playlist/dialogs.dart';
+import 'package:proscholy_common/components/playlist/dialog_extensions.dart';
 import 'package:proscholy_common/constants.dart';
 import 'package:proscholy_common/utils/extensions.dart';
 import 'package:proscholy_common/utils/hero_tags.dart';
@@ -30,13 +30,13 @@ class PlaylistsScreen extends StatelessWidget {
                 backgroundColor: Theme.of(context).colorScheme.surface,
                 icon: const Icon(Icons.add),
                 label: const Text('Vytvořit nový seznam'),
-                onPressed: () => showPlaylistDialog(context),
+                onPressed: () => PlaylistDialogsExtension.createPlaylistWithDialog(context),
               )
             : FloatingActionButton(
                 heroTag: HeroTags.playlistsFAB,
                 backgroundColor: Theme.of(context).colorScheme.surface,
                 child: const Icon(Icons.add),
-                onPressed: () => showPlaylistDialog(context),
+                onPressed: () => PlaylistDialogsExtension.createPlaylistWithDialog(context),
               ),
       ),
       body: const Hero(

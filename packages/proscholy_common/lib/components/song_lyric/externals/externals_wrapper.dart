@@ -53,14 +53,15 @@ class _ExternalsWrapperState extends State<ExternalsWrapper> {
                 builder: (_, setState) => Transform.translate(
                   offset: Offset(0, _bottomOffset),
                   child: GestureDetector(
-                      onPanUpdate: (details) => setState(() => _updateOffset(details)),
-                      onPanEnd: (details) => _snapOffset(details, setState, ref),
-                      child: child!),
+                    onPanUpdate: (details) => setState(() => _updateOffset(details)),
+                    onPanEnd: (details) => _snapOffset(details, setState, ref),
+                    child: child!,
+                  ),
                 ),
               ),
             ),
             child: ExternalsWidget(songLyric: widget.songLyric!),
-          )
+          ),
       ],
     );
   }

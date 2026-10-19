@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:proscholy_common/models/bible_verse.dart';
+import 'package:proscholy_common/models/bible_passage.dart';
 
 part 'bible_api_client.g.dart';
 
@@ -11,7 +11,7 @@ final _bibleApiUrl = Uri.https('api.getbible.net');
 // TODO: make this work without riverpod
 
 @Riverpod(keepAlive: true)
-Future<List<dynamic>> bibleVerses(Ref ref, BibleTranslation translation, BibleBook book, int chapter) async {
+Future<List<dynamic>> biblePassages(Ref ref, BibleTranslation translation, BibleBook book, int chapter) async {
   final response = await http.get(_bibleApiUrl.resolve('v2/${translation.abbreviation}/${book.number}/$chapter.json'));
 
   final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
@@ -20,7 +20,7 @@ Future<List<dynamic>> bibleVerses(Ref ref, BibleTranslation translation, BibleBo
 }
 
 @riverpod
-Future<String> bibleVerse(
+Future<String> biblePassage(
   Ref ref,
   BibleTranslation translation,
   BibleBook book,
@@ -28,7 +28,7 @@ Future<String> bibleVerse(
   int startVerse, {
   int? endVerse,
 }) async {
-  final verses = await ref.read(bibleVersesProvider(translation, book, chapter).future);
+  final verses = await ref.read(biblePassagesProvider(translation, book, chapter).future);
 
   if (endVerse == null) return verses[startVerse - 1]['text'];
 

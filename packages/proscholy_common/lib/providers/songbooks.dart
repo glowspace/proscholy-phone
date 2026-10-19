@@ -31,7 +31,7 @@ class PinnedSongbookIds extends _$PinnedSongbookIds {
     if (state.contains(songbook.id)) {
       state = {
         for (final id in state)
-          if (id != songbook.id) id
+          if (id != songbook.id) id,
       };
     } else {
       state = {songbook.id, ...state};

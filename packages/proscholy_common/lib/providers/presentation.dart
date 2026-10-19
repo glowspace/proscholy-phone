@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:proscholy_common/components/song_lyric/utils/parser.dart';
-import 'package:proscholy_common/models/bible_verse.dart';
-import 'package:proscholy_common/models/custom_text.dart';
+import 'package:proscholy_common/models/bible_passage.dart';
+import 'package:proscholy_common/models/user_text.dart';
 import 'package:proscholy_common/models/model.dart';
 import 'package:proscholy_common/models/presentation.dart';
 import 'package:proscholy_common/models/song_lyric.dart';
@@ -148,38 +148,44 @@ class PresentationProvider extends ChangeNotifier {
     _part = 0;
 
     final changeFunction = switch (displayableItem) {
-      (BibleVerse bibleVerse) => () {
-          _songLyricsParser = null;
+      (BiblePassage biblePassage) => () {
+        _songLyricsParser = null;
 
-          _changeShowingData(_presentationData.copyWith(
+        _changeShowingData(
+          _presentationData.copyWith(
             songLyricId: null,
-            isCustomText: false,
-            name: bibleVerse.displayName,
-            text: bibleVerse.text,
-          ));
-        },
-      (CustomText customText) => () {
-          _songLyricsParser = null;
+            isUserText: false,
+            name: biblePassage.displayName,
+            text: biblePassage.text,
+          ),
+        );
+      },
+      (UserText userText) => () {
+        _songLyricsParser = null;
 
-          _changeShowingData(_presentationData.copyWith(
+        _changeShowingData(
+          _presentationData.copyWith(
             songLyricId: null,
-            isCustomText: true,
-            name: customText.name,
-            text: customText.content,
-          ));
-        },
+            isUserText: true,
+            name: userText.name,
+            text: userText.content,
+          ),
+        );
+      },
       (SongLyric songLyric) => () {
-          final songLyricsParser = SongLyricsParser(songLyric);
+        final songLyricsParser = SongLyricsParser(songLyric);
 
-          _songLyricsParser = songLyricsParser;
+        _songLyricsParser = songLyricsParser;
 
-          return _changeShowingData(_presentationData.copyWith(
+        return _changeShowingData(
+          _presentationData.copyWith(
             songLyricId: songLyricsParser.songLyric.id,
-            isCustomText: false,
+            isUserText: false,
             name: songLyricsParser.songLyric.name,
             text: songLyricsParser.getVerse(_part),
-          ));
-        },
+          ),
+        );
+      },
       _ => throw UnimplementedError(),
     };
 

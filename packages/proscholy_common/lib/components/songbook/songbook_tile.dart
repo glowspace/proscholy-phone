@@ -30,7 +30,7 @@ const _existingLogos = [
   'kan',
   'sdmkr',
   'h1',
-  'h2'
+  'h2',
 ];
 
 class SongbookTile extends StatelessWidget {
@@ -65,13 +65,13 @@ class SongbookTile extends StatelessWidget {
                 HighlightableWidget(
                   onTap: () => context.providers.read(pinnedSongbookIdsProvider.notifier).togglePin(songbook),
                   icon: Consumer(
-                    builder: (_, ref, __) => Icon(
+                    builder: (_, ref, _) => Icon(
                       ref.watch(pinnedSongbookIdsProvider).contains(songbook.id)
                           ? Icons.push_pin
                           : Icons.push_pin_outlined,
                     ),
                   ),
-                )
+                ),
               ],
             ),
           ],

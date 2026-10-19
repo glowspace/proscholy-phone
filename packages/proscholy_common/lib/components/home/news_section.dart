@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:proscholy_common/components/highlightable_widget.dart';
 import 'package:proscholy_common/components/section.dart';
 import 'package:proscholy_common/constants.dart';
+import 'package:proscholy_common/links.dart';
+import 'package:proscholy_common/models/news_item.dart';
 import 'package:proscholy_common/providers/news_items.dart';
 import 'package:proscholy_common/utils/url_launcher.dart';
 
@@ -39,39 +41,49 @@ class _NewsSectionState extends ConsumerState<NewsSection> {
             itemBuilder: (_, index) => HighlightableWidget(
               padding: EdgeInsets.zero,
               onTap: newsItems[index].hasLink ? () => launch(newsItems[index].preparedLink) : null,
-              child: Row(children: [
-                Text(newsItems[index].text),
-                if (newsItems[index].hasLink)
-                  const Padding(
-                    padding: EdgeInsets.only(left: kDefaultPadding / 2),
-                    child: Icon(Icons.open_in_new, size: 20),
-                  )
-              ]),
+              child: Row(
+                children: [
+                  Expanded(child: Text(newsItems[index].text, maxLines: 1, overflow: TextOverflow.ellipsis)),
+                  if (newsItems[index].hasLink)
+                    const Padding(
+                      padding: EdgeInsets.only(left: kDefaultPadding / 2),
+                      child: Icon(Icons.open_in_new, size: 20),
+                    ),
+                ],
+              ),
             ),
           ),
         ),
         if (newsItems.isNotEmpty)
-          Row(children: [
-            for (int i = 0; i < newsItems.length; i++)
-              Padding(
-                padding: const EdgeInsets.only(right: 4),
-                child: HighlightableWidget(
-                  highlightBackground: true,
-                  onTap: () =>
-                      _pageController.animateToPage(i, duration: kDefaultAnimationDuration, curve: Curves.easeInOut),
-                  child: ListenableBuilder(
-                    listenable: _pageController,
-                    builder: (_, __) => Container(
-                      margin: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
-                      width: 24,
-                      height: 2,
-                      color: yellow.withAlpha((_pageController.page?.round() ?? 0) == i ? 0xff : 0x40),
+          Row(
+            children: [
+              for (int i = 0; i < newsItems.length; i++)
+                Padding(
+                  padding: const EdgeInsets.only(right: 4),
+                  child: HighlightableWidget(
+                    highlightBackground: true,
+                    onTap: () =>
+                        _pageController.animateToPage(i, duration: kDefaultAnimationDuration, curve: Curves.easeInOut),
+                    child: ListenableBuilder(
+                      listenable: _pageController,
+                      builder: (_, _) => Container(
+                        margin: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
+                        width: 24,
+                        height: 2,
+                        color: yellow.withAlpha((_pageController.page?.round() ?? 0) == i ? 0xff : 0x40),
+                      ),
                     ),
                   ),
                 ),
-              ),
-          ]),
+            ],
+          ),
       ],
     );
   }
+}
+
+extension _NewsItemView on NewsItem {
+  bool get hasLink => link.isNotEmpty;
+
+  String get preparedLink => link.startsWith('/') ? 'https://$baseUrl$link' : link;
 }
