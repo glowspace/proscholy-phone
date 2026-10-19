@@ -59,17 +59,14 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.OPENABLE" />
 
-                <data android:mimeType="application/json" android:pathPattern=".*\\.proscholy"/>
-                <data android:mimeType="application/json" android:scheme="file"/>
-                <data android:mimeType="application/json" android:scheme="content"/>
-
-                <data android:mimeType="text/json" android:pathPattern=".*\\.proscholy"/>
-                <data android:mimeType="text/json" android:scheme="file"/>
-                <data android:mimeType="text/json" android:scheme="content"/>
-
-                <data android:mimeType="*/*" android:pathPattern=".*\\.proscholy"/>
-                <data android:mimeType="*/*" android:scheme="file" android:pathPattern=".*\\.proscholy"/>
-                <data android:mimeType="*/*" android:scheme="content" android:pathPattern=".*\\.proscholy"/>
+                <!-- data elements of a filter combine and path patterns are ignored without a host, so a wildcard type
+                     would make every file open in the app -->
+                <data android:scheme="content"/>
+                <data android:scheme="file"/>
+                <data android:mimeType="application/json"/>
+                <data android:mimeType="text/json"/>
+                <!-- type of files with unknown extension, e.g. .proscholy in file managers -->
+                <data android:mimeType="application/octet-stream"/>
             </intent-filter>
 
             <meta-data android:name="flutter_deeplinking_enabled" android:value="true" />

@@ -4,7 +4,7 @@
 cd $CI_PRIMARY_REPOSITORY_PATH # change working directory to the root of your cloned repo.
 
 # Install Flutter using git.
-git clone https://github.com/flutter/flutter.git -b stable $HOME/flutter
+git clone https://github.com/flutter/flutter.git -b 3.44.4 $HOME/flutter
 export PATH="$PATH:$HOME/flutter/bin"
 
 # Install Flutter artifacts for iOS (--ios), or macOS (--macos) platforms.
@@ -16,7 +16,8 @@ flutter pub get
 # Install CocoaPods using Homebrew.
 brew install cocoapods
 
-# Install CocoaPods dependencies.
-cd ios && pod install # run `pod install` in the `ios` directory.
+# Generate iOS configuration with the target of this app (Xcode compiles Dart with its defines), the Swift package of
+# plugins and install CocoaPods dependencies.
+flutter build ios --config-only --dart-define=ZPEVNIK_TARGET=ZPS
 
 exit 0
