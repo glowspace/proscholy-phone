@@ -7,6 +7,7 @@ import 'package:proscholy_common/components/highlightable_widget.dart';
 import 'package:proscholy_common/components/section.dart';
 import 'package:proscholy_common/components/selector_widget.dart';
 import 'package:proscholy_common/constants.dart';
+import 'package:proscholy_common/links.dart';
 import 'package:proscholy_common/providers/settings.dart';
 import 'package:proscholy_common/routing/safe_area_wrapper.dart';
 import 'package:proscholy_common/utils/extensions.dart';
@@ -38,11 +39,7 @@ class SettingsScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: kDefaultPadding),
                 HighlightableWidget(
-                  onTap: () => isZPS
-                      ? context.push('/about')
-                      : (isEZ
-                            ? launch('https://evangelickyzpevnik.cz/o-zpevniku')
-                            : launch('https://evangelickykancional.cz/o-zpevniku')),
+                  onTap: () => isZPS ? context.push('/about') : launch('https://$baseUrl/o-zpevniku'),
                   padding: const EdgeInsets.all(kDefaultPadding / 2),
                   textStyle: textTheme.bodySmall,
                   child: const Text('O projektu'),

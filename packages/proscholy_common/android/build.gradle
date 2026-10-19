@@ -54,6 +54,10 @@ android {
     }
 }
 
+dependencies {
+    implementation("androidx.browser:browser:1.9.0")
+}
+
 kotlin {
     compilerOptions {
         jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11

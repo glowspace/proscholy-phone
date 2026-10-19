@@ -85,7 +85,7 @@ class SongLyricMenuButton extends StatelessWidget {
         );
         break;
       case SongLyricMenuAction.openInBrowser:
-        launch('https://${isZPS ? "www." : ""}$songUrl/${songLyric.id}/');
+        launch('https://$songUrl/${songLyric.id}/');
         break;
       case SongLyricMenuAction.report:
         final version = context.providers.read(appDependenciesProvider).packageInfo.version;
