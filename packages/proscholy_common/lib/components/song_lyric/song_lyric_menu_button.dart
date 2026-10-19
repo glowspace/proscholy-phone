@@ -79,7 +79,7 @@ class SongLyricMenuButton extends StatelessWidget {
 
         SharePlus.instance.share(
           ShareParams(
-            uri: Uri.parse('https://${isZPS ? "" : "www."}$songUrl/${songLyric.id}/'),
+            uri: Uri.parse('https://$songUrl/${songLyric.id}/'),
             sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
           ),
         );
