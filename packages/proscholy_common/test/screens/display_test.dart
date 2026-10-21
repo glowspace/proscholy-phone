@@ -8,6 +8,7 @@ import 'package:proscholy_common/components/playlist/bible_passage.dart';
 import 'package:proscholy_common/components/selected_displayable_item_arguments.dart';
 import 'package:proscholy_common/models/bible_passage.dart';
 import 'package:proscholy_common/models/song_lyric.dart';
+import 'package:proscholy_common/models/songbook.dart';
 import 'package:proscholy_common/models/utils.dart';
 import 'package:proscholy_common/providers/app_dependencies.dart';
 import 'package:proscholy_common/providers/display_screen_status.dart';
@@ -94,7 +95,7 @@ void main() {
     await tester.pump(const Duration(seconds: 1));
   });
 
-  testWidgets('navigation rail selects destination the display screen was opened from', (tester) async {
+  testWidgets('navigation rail selects destination of the screen', (tester) async {
     final appDependencies = (await tester.runAsync(() async {
       final appDependencies = await createAppDependencies();
 
@@ -110,12 +111,17 @@ void main() {
     await tester.pumpAndSettle();
 
     final songLyric = appDependencies.store.box<SongLyric>().get(1)!;
+    final songbook = appDependencies.store.box<Songbook>().getAll().first;
 
-    for (final (arguments, selectedIndex) in [
-      (DisplayScreenArguments.songLyric(songLyric), 0),
-      (DisplayScreenArguments.songLyric(songLyric, showSearchScreen: true), 1),
+    // display screen selects the same destination as the screen it was opened from, songbooks have no destination
+    for (final (route, arguments, selectedIndex) in [
+      ('/display', DisplayScreenArguments.songLyric(songLyric), 0),
+      ('/display', DisplayScreenArguments.songLyric(songLyric, showSearchScreen: true), 1),
+      ('/display', DisplayScreenArguments(items: [songLyric], songbook: songbook), null),
+      ('/songbooks', null, null),
+      ('/songbook', songbook, null),
     ]) {
-      ExternalActionsService.instance.navigatorKey.currentState!.pushNamed('/display', arguments: arguments);
+      ExternalActionsService.instance.navigatorKey.currentState!.pushNamed(route, arguments: arguments);
       await tester.pumpAndSettle();
 
       expect(tester.widget<NavigationRail>(find.byType(NavigationRail)).selectedIndex, selectedIndex);

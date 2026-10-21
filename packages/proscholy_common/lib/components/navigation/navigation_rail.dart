@@ -92,17 +92,23 @@ class CustomNavigationRail extends StatelessWidget {
     );
   }
 
-  int _selectedIndex(BuildContext context) {
+  // screens without own destination, e.g. songbooks, select none
+  int? _selectedIndex(BuildContext context) {
     // display screen selects the same destination as the screen it was opened from
     if (context.isDisplay) {
       final arguments = ModalRoute.of(context)?.settings.arguments as DisplayScreenArguments?;
 
       if (arguments?.showSearchScreen ?? false) return 1;
-      if (arguments?.playlist != null || arguments?.songbook != null) return 2;
+      if (arguments?.playlist != null) return 2;
+      if (arguments?.songbook != null) return null;
 
       return 0;
     }
 
-    return context.isHome ? 0 : (context.isSearching ? 1 : 2);
+    if (context.isHome) return 0;
+    if (context.isSearching) return 1;
+    if (context.isPlaylists || context.isPlaylist) return 2;
+
+    return null;
   }
 }
