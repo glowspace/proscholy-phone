@@ -83,6 +83,8 @@ class SettingsScreen extends ConsumerWidget {
                   ref.watch(settingsProvider.select((settings) => Color(settings.seedColor))),
                   pickersEnabled: {ColorPickerType.primary: true, ColorPickerType.accent: false},
                   enableShadesSelection: false,
+                  // on tablets the colors would be in one long row
+                  constraints: const BoxConstraints(maxWidth: 480),
                 ).then((color) => ref.read(settingsProvider.notifier).changeSeedColor(color.toARGB32())),
                 child: Ink(
                   width: 24,
