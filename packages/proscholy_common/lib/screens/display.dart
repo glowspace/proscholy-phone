@@ -227,8 +227,8 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
 
     _currentIndex = widget.initialIndex;
 
-    // TODO: make sure this widget does not depend on `presentationProvider` and do this without delay
-    Future.delayed(const Duration(milliseconds: 10), () => ref.read(presentationProvider).change(_currentItem));
+    // this widget depends on `presentationProvider`, so it can't be changed until the widget is built
+    WidgetsBinding.instance.addPostFrameCallback((_) => ref.read(presentationProvider).change(_currentItem));
 
     _selectedDisplayableItemArgumentsNotifier = SelectedDisplayableItemArguments.of(context, listen: false);
     _selectedDisplayableItemArgumentsNotifier?.addListener(_selectedDisplayableItemArgumentsChanged);
@@ -264,53 +264,9 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
   }
 
   PreferredSizeWidget? _buildAppBar() {
-    final presentationNotifier = ref.read(presentationProvider.notifier);
-
     return switch (_currentItem) {
-      (BiblePassage biblePassage) => AppBar(
-        leading: const CustomBackButton(),
-        title: Text(biblePassage.displayName),
-        actions: [
-          HighlightableWidget(
-            onTap: () => _editBiblePassage(biblePassage),
-            padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-            icon: const Icon(Icons.edit),
-          ),
-          HighlightableWidget(
-            onTap: () => presentationNotifier.isPresenting
-                ? presentationNotifier.stop()
-                : context.push('/display/present').then((_) => presentationNotifier.change(biblePassage)),
-            padding: const EdgeInsets.only(left: kDefaultPadding, right: 1.5 * kDefaultPadding),
-            icon: Icon(
-              ref.watch(presentationProvider.select((presentation) => presentation.isPresenting))
-                  ? Icons.cancel_presentation
-                  : Icons.cast,
-            ),
-          ),
-        ],
-      ),
-      (UserText userText) => AppBar(
-        leading: const CustomBackButton(),
-        title: Text(userText.name),
-        actions: [
-          HighlightableWidget(
-            onTap: () => _editUserText(userText),
-            padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-            icon: const Icon(Icons.edit),
-          ),
-          HighlightableWidget(
-            onTap: () => presentationNotifier.isPresenting
-                ? presentationNotifier.stop()
-                : context.push('/display/present').then((_) => presentationNotifier.change(userText)),
-            padding: const EdgeInsets.only(left: kDefaultPadding, right: 1.5 * kDefaultPadding),
-            icon: Icon(
-              ref.watch(presentationProvider.select((presentation) => presentation.isPresenting))
-                  ? Icons.cancel_presentation
-                  : Icons.cast,
-            ),
-          ),
-        ],
-      ),
+      (BiblePassage biblePassage) => _buildEditableItemAppBar(biblePassage, () => _editBiblePassage(biblePassage)),
+      (UserText userText) => _buildEditableItemAppBar(userText, () => _editUserText(userText)),
       (SongLyric songLyric) => AppBar(
         title: Text(songLyric.displayId),
         leading: const CustomBackButton(),
@@ -335,6 +291,34 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
       ),
       _ => throw UnimplementedError(),
     };
+  }
+
+  // bible passages and user texts can be edited and presented
+  PreferredSizeWidget _buildEditableItemAppBar(DisplayableItem item, void Function() edit) {
+    final presentationNotifier = ref.read(presentationProvider.notifier);
+
+    return AppBar(
+      leading: const CustomBackButton(),
+      title: Text(item.displayName),
+      actions: [
+        HighlightableWidget(
+          onTap: edit,
+          padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+          icon: const Icon(Icons.edit),
+        ),
+        HighlightableWidget(
+          onTap: () => presentationNotifier.isPresenting
+              ? presentationNotifier.stop()
+              : context.push('/display/present').then((_) => presentationNotifier.change(item)),
+          padding: const EdgeInsets.only(left: kDefaultPadding, right: 1.5 * kDefaultPadding),
+          icon: Icon(
+            ref.watch(presentationProvider.select((presentation) => presentation.isPresenting))
+                ? Icons.cancel_presentation
+                : Icons.cast,
+          ),
+        ),
+      ],
+    );
   }
 
   Widget? _buildBottomSheet(double systemBottomPadding) {
@@ -437,7 +421,7 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
     ref.read(presentationProvider.notifier).change(_currentItem);
 
     // change highlight index on tablet
-    final selectedDisplayableItemArgumentsNotifier = SelectedDisplayableItemArguments.of(context);
+    final selectedDisplayableItemArgumentsNotifier = SelectedDisplayableItemArguments.of(context, listen: false);
 
     if (selectedDisplayableItemArgumentsNotifier != null) {
       selectedDisplayableItemArgumentsNotifier.value = DisplayScreenArguments(
@@ -460,7 +444,7 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
     if (event is KeyDownEvent) {
       final key = event.logicalKey;
       final scrollController = _autoScrollController(_currentIndex);
-      final step = _scrollStep * ref.watch(settingsProvider.select((settings) => settings.fontSizeScale));
+      final step = _scrollStep * ref.read(settingsProvider).fontSizeScale;
 
       if (key == LogicalKeyboardKey.arrowUp || key == LogicalKeyboardKey.pageUp) {
         scrollController.animateTo(
