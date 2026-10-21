@@ -144,57 +144,67 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
             bottom: false,
             child: MediaQuery(
               data: newMediaQuery,
-              child: PageView.builder(
-                // new items start with new page view, so it does not show items at previous page
-                key: ObjectKey(_items),
-                controller: _items.length == 1 ? null : _controller,
-                onPageChanged: _itemChanged,
-                itemCount: _items.length == 1 ? 1 : null,
-                // disable scrolling when there is only one item
-                physics: _items.length == 1 ? const NeverScrollableScrollPhysics() : null,
-                itemBuilder: (_, index) {
-                  index = index % _items.length;
-                  final item = _items[index];
-
-                  if (ref.watch(
-                    presentationProvider.select(
-                      (presentation) => presentation.isPresenting && presentation.isPresentingLocally,
-                    ),
-                  )) {
-                    if (ref.watch(
-                      presentationProvider.select(
-                        (presentation) => presentation.presentationData.name == item.displayName,
-                      ),
-                    )) {
-                      return Consumer(
-                        builder: (_, ref, _) => Presentation(
-                          onExternalDisplay: false,
-                          presentationData: ref.watch(
-                            presentationProvider.select((presentation) => presentation.presentationData),
-                          ),
-                        ),
-                      );
-                    } else {
-                      return const SizedBox();
-                    }
+              child: NotificationListener<ScrollMetricsNotification>(
+                onNotification: (notification) {
+                  // items scroll vertically, page view horizontally
+                  if (notification.metrics.axis == Axis.vertical) {
+                    _autoScrollController(_currentIndex).contentSizeChanged();
                   }
 
-                  return switch (item) {
-                    (BiblePassage biblePassage) => BiblePassageWidget(
-                      biblePassage: biblePassage,
-                      autoScrollController: _autoScrollController(index),
-                    ),
-                    (UserText userText) => UserTextWidget(
-                      userText: userText,
-                      autoScrollController: _autoScrollController(index),
-                    ),
-                    (SongLyric songLyric) => SongLyricWidget(
-                      songLyric: songLyric,
-                      autoScrollController: _autoScrollController(index),
-                    ),
-                    _ => throw UnimplementedError(),
-                  };
+                  return false;
                 },
+                child: PageView.builder(
+                  // new items start with new page view, so it does not show items at previous page
+                  key: ObjectKey(_items),
+                  controller: _items.length == 1 ? null : _controller,
+                  onPageChanged: _itemChanged,
+                  itemCount: _items.length == 1 ? 1 : null,
+                  // disable scrolling when there is only one item
+                  physics: _items.length == 1 ? const NeverScrollableScrollPhysics() : null,
+                  itemBuilder: (_, index) {
+                    index = index % _items.length;
+                    final item = _items[index];
+
+                    if (ref.watch(
+                      presentationProvider.select(
+                        (presentation) => presentation.isPresenting && presentation.isPresentingLocally,
+                      ),
+                    )) {
+                      if (ref.watch(
+                        presentationProvider.select(
+                          (presentation) => presentation.presentationData.name == item.displayName,
+                        ),
+                      )) {
+                        return Consumer(
+                          builder: (_, ref, _) => Presentation(
+                            onExternalDisplay: false,
+                            presentationData: ref.watch(
+                              presentationProvider.select((presentation) => presentation.presentationData),
+                            ),
+                          ),
+                        );
+                      } else {
+                        return const SizedBox();
+                      }
+                    }
+
+                    return switch (item) {
+                      (BiblePassage biblePassage) => BiblePassageWidget(
+                        biblePassage: biblePassage,
+                        autoScrollController: _autoScrollController(index),
+                      ),
+                      (UserText userText) => UserTextWidget(
+                        userText: userText,
+                        autoScrollController: _autoScrollController(index),
+                      ),
+                      (SongLyric songLyric) => SongLyricWidget(
+                        songLyric: songLyric,
+                        autoScrollController: _autoScrollController(index),
+                      ),
+                      _ => throw UnimplementedError(),
+                    };
+                  },
+                ),
               ),
             ),
           ),

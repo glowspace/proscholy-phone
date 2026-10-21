@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:proscholy_common/components/custom/back_button.dart';
 import 'package:proscholy_common/models/playlist_record.dart';
 import 'package:proscholy_common/models/song_lyric.dart';
 import 'package:proscholy_common/providers/app_dependencies.dart';
+import 'package:proscholy_common/screens/display.dart';
 
 import '../utils.dart';
 
@@ -68,6 +70,24 @@ void main() {
       tester.getBottomLeft(find.textContaining('Krále na trů', findRichText: true).last).dy,
       lessThanOrEqualTo(400 - 48),
     );
+  });
+
+  testWidgets('closes while scrolling automatically', (tester) async {
+    await pumpSongLyric(tester);
+
+    // small phone, so the lyrics can scroll
+    tester.view.physicalSize = const Size(1170, 1200);
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byIcon(Icons.arrow_downward));
+    await tester.pump(const Duration(seconds: 1));
+
+    expect(find.byIcon(Icons.stop), findsOneWidget);
+
+    await tester.tap(find.byType(CustomBackButton));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(DisplayScreen), findsNothing);
   });
 
   testWidgets('adds song lyric to favorites', (tester) async {
