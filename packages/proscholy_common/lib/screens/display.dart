@@ -43,6 +43,9 @@ import 'package:proscholy_common/utils/extensions.dart';
 // step value when scrolling by pressing hardware key (up, pageUp, down, pageDown)
 const double _scrollStep = 100.0;
 
+// bottom sheet shows a row of icon buttons with vertical padding
+const double _bottomSheetHeight = kMinInteractiveDimension + 2 * kDefaultPadding;
+
 class DisplayScreen extends StatelessWidget {
   final List<DisplayableItem> items;
   final int initialIndex;
@@ -104,16 +107,24 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
 
   @override
   Widget build(BuildContext context) {
+    final fullScreen = ref.watch(displayScreenStatusProvider.select((status) => status.fullScreen));
+
+    // there is no bottom bar in full screen, so system navigation bar covers the bottom of the screen
+    final systemBottomPadding = fullScreen ? MediaQuery.paddingOf(context).bottom : 0.0;
+    final bottomSheet = _buildBottomSheet(systemBottomPadding);
+
     // update media query with font size scale from settings, so all children has correct font size scale and it does not have to be set individually
+    // its bottom padding is the space covered by bottom sheet and system navigation bar, so children can keep their end visible
     final newMediaQuery = MediaQuery.of(context).copyWith(
       textScaler: TextScaler.linear(ref.watch(settingsProvider.select((settings) => settings.fontSizeScale))),
+      padding: MediaQuery.paddingOf(
+        context,
+      ).copyWith(bottom: systemBottomPadding + (bottomSheet == null ? 0 : _bottomSheetHeight)),
     );
-
-    final fullScreen = ref.watch(displayScreenStatusProvider.select((status) => status.fullScreen));
 
     final scaffold = CustomScaffold(
       appBar: fullScreen ? null : _buildAppBar(),
-      bottomSheet: _buildBottomSheet(),
+      bottomSheet: bottomSheet,
       bottomNavigationBar: fullScreen
           ? const SizedBox()
           : SongLyricBottomBar(
@@ -317,10 +328,9 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
     };
   }
 
-  Widget? _buildBottomSheet() {
+  Widget? _buildBottomSheet(double systemBottomPadding) {
     final activePlayer = ref.watch(activePlayerProvider);
     final presentation = ref.watch(presentationProvider);
-    final fullScreen = ref.watch(displayScreenStatusProvider.select((status) => status.fullScreen));
 
     Widget? bottomSheet;
 
@@ -378,7 +388,7 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
       return Padding(
         padding:
             const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding, vertical: kDefaultPadding) +
-            EdgeInsets.only(bottom: fullScreen ? MediaQuery.paddingOf(context).bottom : 0),
+            EdgeInsets.only(bottom: systemBottomPadding),
         child: bottomSheet,
       );
     }

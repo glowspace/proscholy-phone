@@ -5,11 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jovial_svg/jovial_svg.dart';
 import 'package:proscholy_common/components/song_lyric/song_lyric_chips.dart';
-import 'package:proscholy_common/components/song_lyric/utils/active_player_controller.dart';
 import 'package:proscholy_common/components/song_lyric/utils/auto_scroll.dart';
 import 'package:proscholy_common/constants.dart';
 import 'package:proscholy_common/models/song_lyric.dart';
-import 'package:proscholy_common/providers/display_screen_status.dart';
 import 'package:proscholy_common/providers/presentation.dart';
 import 'package:proscholy_common/providers/settings.dart';
 import 'package:proscholy_common/components/song_lyric/utils/converter.dart';
@@ -133,17 +131,8 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
               ),
             ),
             SizedBox(height: fontSizeScaler.scale(kDefaultPadding)),
-            // make sure lyrics are visible with bottom sheet and above system navigation bar in full screen
-            SizedBox(
-              height:
-                  ((ref.watch(presentationProvider.select((presentation) => presentation.isPresenting)) ||
-                          ref.watch(activePlayerProvider.select((activePlayer) => activePlayer != null)))
-                      ? 4 * kDefaultPadding
-                      : 0) +
-                  (ref.watch(displayScreenStatusProvider.select((status) => status.fullScreen))
-                      ? MediaQuery.of(context).padding.bottom
-                      : 0),
-            ),
+            // make sure lyrics are visible above bottom sheet and system navigation bar
+            SizedBox(height: MediaQuery.paddingOf(context).bottom),
           ],
         ),
       ),
