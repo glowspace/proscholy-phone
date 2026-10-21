@@ -110,12 +110,14 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
                         0.0, 0.0, 1.0, 0.0, 0.0, //
                         0.0, 0.0, 0.0, 1.0, 0.0, //
                       ]),
-                child: ScalableImageWidget.fromSISource(
-                  si: ScalableImageSource.fromSvg(controller, ''),
-                  isComplex: true,
-                  scale:
-                      min(MediaQuery.sizeOf(context).width, controller.musicNotesMaxWidth / (isZPS ? 1 : 2)) /
-                      controller.musicNotesWidth,
+                child: LayoutBuilder(
+                  builder: (_, constraints) => ScalableImageWidget.fromSISource(
+                    si: ScalableImageSource.fromSvg(controller, ''),
+                    isComplex: true,
+                    scale:
+                        min(constraints.maxWidth, controller.musicNotesMaxWidth / (isZPS ? 1 : 2)) /
+                        controller.musicNotesWidth,
+                  ),
                 ),
               ),
             SizedBox(height: fontSizeScaler.scale(kDefaultPadding)),
