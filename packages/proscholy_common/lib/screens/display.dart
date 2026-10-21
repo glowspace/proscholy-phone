@@ -87,7 +87,7 @@ class _DisplayScaffold extends ConsumerStatefulWidget {
 class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
   // make sure it is possible to swipe to previous item
   // this controller is only used to set the initial page
-  late final _controller = PageController(initialPage: widget.initialIndex + 100 * widget.items.length);
+  late var _controller = PageController(initialPage: widget.initialIndex + 100 * widget.items.length);
 
   final _autoScrollControllers = <int, AutoScrollController>{};
 
@@ -145,6 +145,8 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
             child: MediaQuery(
               data: newMediaQuery,
               child: PageView.builder(
+                // new items start with new page view, so it does not show items at previous page
+                key: ObjectKey(_items),
                 controller: _items.length == 1 ? null : _controller,
                 onPageChanged: _itemChanged,
                 itemCount: _items.length == 1 ? 1 : null,
@@ -209,6 +211,11 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
     _selectedDisplayableItemArgumentsNotifier?.removeListener(_selectedDisplayableItemArgumentsChanged);
     _addRecentItemTimer?.cancel();
 
+    _controller.dispose();
+    for (final autoScrollController in _autoScrollControllers.values) {
+      autoScrollController.dispose();
+    }
+
     _focusNode.dispose();
 
     super.dispose();
@@ -234,14 +241,16 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
     final newIndex = _selectedDisplayableItemArgumentsNotifier!.value.initialIndex;
 
     if (newItems.hashCode != _items.hashCode) {
-      setState(() => _items = newItems);
+      final previousController = _controller;
 
-      if (newItems.length > 1) {
-        // do this with delay, because if previous `_items` contained only one item `_controller` won't be attached until redraw
-        Future.delayed(const Duration(milliseconds: 100), () {
-          if (_controller.hasClients) _controller.jumpToPage(newIndex + 100 * newItems.length);
-        });
-      }
+      setState(() {
+        _items = newItems;
+        _controller = PageController(initialPage: newIndex + 100 * newItems.length);
+      });
+
+      // previous page view still uses it until it is rebuilt
+      WidgetsBinding.instance.addPostFrameCallback((_) => previousController.dispose());
+
       _itemChanged(newIndex);
     } else if (newIndex != _currentIndex % _items.length) {
       // `_controller` is not attached when there is only one item

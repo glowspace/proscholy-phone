@@ -29,7 +29,9 @@ void main() {
   setUpAll(mockFirebase);
 
   // tablet shows list of items next to display screen and both share selected item
-  testWidgets('closed display screen does not react to change of selected item', (tester) async {
+  Future<(List<SongLyric>, ValueNotifier<DisplayScreenArguments>, Future<void> Function(Widget))> setUpTablet(
+    WidgetTester tester,
+  ) async {
     final (appDependencies, songLyrics) = (await tester.runAsync(() async {
       final appDependencies = await createAppDependencies();
       final data = readTestData();
@@ -60,6 +62,27 @@ void main() {
         ),
       );
     }
+
+    return (songLyrics, selectedNotifier, pumpTablet);
+  }
+
+  testWidgets('shows newly selected items at once', (tester) async {
+    final (songLyrics, selectedNotifier, pumpTablet) = await setUpTablet(tester);
+
+    await pumpTablet(DisplayScreen(items: songLyrics));
+    await tester.pump(const Duration(seconds: 1));
+
+    selectedNotifier.value = DisplayScreenArguments(items: [songLyrics[1]]);
+    await tester.pump();
+
+    expect(find.text(songLyrics[1].displayName), findsOneWidget);
+    expect(find.text(songLyrics[0].displayName), findsNothing);
+
+    await tester.pump(const Duration(seconds: 3));
+  });
+
+  testWidgets('closed display screen does not react to change of selected item', (tester) async {
+    final (songLyrics, selectedNotifier, pumpTablet) = await setUpTablet(tester);
 
     await pumpTablet(DisplayScreen(items: songLyrics));
     await tester.pump(const Duration(seconds: 1));
