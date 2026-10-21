@@ -21,16 +21,12 @@ class ExternalsWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final size = MediaQuery.sizeOf(context);
-    final width = size.width - MediaQuery.paddingOf(context).horizontal;
-
     final externals = songLyric.externals
         .where((external) => external.mediaType == MediaType.youtube || external.mediaType == MediaType.mp3)
         .toList();
 
     return Container(
-      width: width,
-      constraints: BoxConstraints(maxHeight: 2 / 3 * size.height),
+      constraints: BoxConstraints(maxHeight: 2 / 3 * MediaQuery.sizeOf(context).height),
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.vertical(top: Radius.circular(kDefaultRadius)),
         color: Theme.of(context).colorScheme.surface,
@@ -41,15 +37,17 @@ class ExternalsWidget extends ConsumerWidget {
           ref
               .watch(internetConnectionProvider)
               .when(
-                data: (_) => AlignedGridView.count(
-                  primary: false,
-                  padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
-                  crossAxisCount: max(1, (width / _externalMinWidth).floor()),
-                  crossAxisSpacing: kDefaultPadding,
-                  mainAxisSpacing: kDefaultPadding,
-                  itemCount: externals.length,
-                  shrinkWrap: true,
-                  itemBuilder: (_, index) => ExternalWidget(external: externals[index]),
+                data: (_) => LayoutBuilder(
+                  builder: (_, constraints) => AlignedGridView.count(
+                    primary: false,
+                    padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
+                    crossAxisCount: max(1, (constraints.maxWidth / _externalMinWidth).floor()),
+                    crossAxisSpacing: kDefaultPadding,
+                    mainAxisSpacing: kDefaultPadding,
+                    itemCount: externals.length,
+                    shrinkWrap: true,
+                    itemBuilder: (_, index) => ExternalWidget(external: externals[index]),
+                  ),
                 ),
                 error: (_, _) => const Padding(
                   padding: EdgeInsets.all(kDefaultPadding),

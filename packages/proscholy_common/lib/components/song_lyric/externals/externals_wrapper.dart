@@ -46,6 +46,8 @@ class _ExternalsWrapperState extends State<ExternalsWrapper> {
           Consumer(
             builder: (_, ref, child) => AnimatedPositioned(
               duration: kDefaultAnimationDuration,
+              left: 0,
+              right: 0,
               bottom: ref.watch(displayScreenStatusProvider.select((status) => status.showingExternals))
                   ? 0
                   : -MediaQuery.sizeOf(context).height,
