@@ -94,6 +94,34 @@ void main() {
     await tester.pump(const Duration(seconds: 1));
   });
 
+  testWidgets('navigation rail selects destination the display screen was opened from', (tester) async {
+    final appDependencies = (await tester.runAsync(() async {
+      final appDependencies = await createAppDependencies();
+
+      await storeTestData(appDependencies);
+
+      return appDependencies;
+    }))!;
+
+    await pumpApp(tester, appDependencies);
+
+    // small tablet shows navigation rail, but labels in bottom bar would not fit with test font
+    tester.view.physicalSize = const Size(1920, 2700);
+    await tester.pumpAndSettle();
+
+    final songLyric = appDependencies.store.box<SongLyric>().get(1)!;
+
+    for (final (arguments, selectedIndex) in [
+      (DisplayScreenArguments.songLyric(songLyric), 0),
+      (DisplayScreenArguments.songLyric(songLyric, showSearchScreen: true), 1),
+    ]) {
+      ExternalActionsService.instance.navigatorKey.currentState!.pushNamed('/display', arguments: arguments);
+      await tester.pumpAndSettle();
+
+      expect(tester.widget<NavigationRail>(find.byType(NavigationRail)).selectedIndex, selectedIndex);
+    }
+  });
+
   group('bottom space of items', () {
     final biblePassage = BiblePassage(
       book: 0,
