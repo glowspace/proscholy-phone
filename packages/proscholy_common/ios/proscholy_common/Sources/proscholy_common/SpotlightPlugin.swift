@@ -83,6 +83,13 @@ class SpotlightPlugin: NSObject, FlutterPlugin, FlutterSceneLifeCycleDelegate {
 
     // MARK: - Handle Spotlight activity
 
+    // activity that launches the app comes only with connection options, universal links are left to deep linking of Flutter
+    public func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions?) -> Bool {
+        guard let userActivity = connectionOptions?.userActivities.first(where: { $0.activityType == CSSearchableItemActionType }) else { return false }
+
+        return self.scene(scene, continue: userActivity)
+    }
+
     public func scene(_ scene: UIScene, continue userActivity: NSUserActivity) -> Bool {
         if userActivity.activityType == CSSearchableItemActionType {
             userActivity.resignCurrent()

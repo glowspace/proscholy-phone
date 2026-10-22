@@ -34,6 +34,11 @@ class OpenedFilePlugin: NSObject, FlutterPlugin, FlutterSceneLifeCycleDelegate {
 
     // MARK: - Handle opened file activity
 
+    // file that launches the app comes only with connection options
+    public func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions?) -> Bool {
+        return self.scene(scene, openURLContexts: connectionOptions?.urlContexts ?? [])
+    }
+
     public func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) -> Bool {
         guard let url = URLContexts.first?.url else { return false }
 
