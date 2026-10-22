@@ -229,6 +229,9 @@ void _cleanup(AppDependencies appDependencies) async {
         .and(PlaylistRecord_.userText.equals(0)),
   );
 
+  // remove playlist records without playlist, some were left by early test builds
+  _removeRelations(appDependencies.store, PlaylistRecord_.playlist.equals(0));
+
   // remove shared playlists
   final dir = await getApplicationDocumentsDirectory();
   final files = dir.listSync();
