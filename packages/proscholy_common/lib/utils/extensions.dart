@@ -67,10 +67,11 @@ extension BuildContextExtension on BuildContext {
       return Navigator.of(this).pushNamed('/search');
     }
 
-    if (providers.read(appNavigatorObserverProvider).isPathInStack(routeName)) {
+    // screens without arguments, e.g. search, are open only once, screens with them, e.g. song lyric, can be open more times
+    if (arguments == null && providers.read(appNavigatorObserverProvider).isPathInStack(routeName)) {
       popUntil(routeName);
 
-      return arguments == null ? null : replace(routeName, arguments: arguments);
+      return null;
     }
 
     return Navigator.of(this).pushNamed(routeName, arguments: arguments);
@@ -90,9 +91,5 @@ extension BuildContextExtension on BuildContext {
 
   void maybePop<T>([T? result]) {
     Navigator.of(this).maybePop(result);
-  }
-
-  Future<T?> replace<T extends Object?>(String routeName, {Object? arguments}) {
-    return Navigator.of(this).pushReplacementNamed(routeName, arguments: arguments);
   }
 }

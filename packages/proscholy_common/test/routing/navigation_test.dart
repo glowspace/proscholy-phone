@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:proscholy_common/components/song_lyric/song_lyric_row.dart';
+import 'package:proscholy_common/components/song_lyric/song_lyric_tag.dart';
 import 'package:proscholy_common/constants.dart';
 import 'package:proscholy_common/models/generated/objectbox.g.dart';
 import 'package:proscholy_common/models/playlist.dart';
@@ -9,6 +10,7 @@ import 'package:proscholy_common/models/playlist_record.dart';
 import 'package:proscholy_common/models/tag.dart';
 import 'package:proscholy_common/providers/app_dependencies.dart';
 import 'package:proscholy_common/providers/tags.dart';
+import 'package:proscholy_common/screens/display.dart';
 import 'package:proscholy_common/screens/playlist.dart';
 import 'package:proscholy_common/screens/playlists.dart';
 import 'package:proscholy_common/screens/search.dart';
@@ -151,6 +153,35 @@ void main() {
     expect(findInStack(SearchScreen), findsOneWidget);
     expect(selectedTagNames(tester), {?tagName});
   });
+
+  testWidgets('song lyric opened from tag search keeps previous screens', (tester) async {
+    await pumpNavigation(tester);
+
+    // songbook chips in sheet with tags don't fit on smaller phone in test font
+    tester.view.physicalSize = const Size(1290, 2796);
+    await tester.pumpAndSettle();
+
+    await tapDestination(tester, 'Hledání');
+    final songLyricRow = find.byWidgetPredicate((widget) => widget is SongLyricRow && widget.songLyric.id == 1);
+    await pumpUntil(tester, () => songLyricRow.evaluate().isNotEmpty);
+    await tester.tap(songLyricRow.first);
+    await tester.pumpAndSettle();
+    await tester.tap(find.textContaining('Štítky').first);
+    await tester.pumpAndSettle();
+    await tester.tap(find.byType(SongLyricTag).first);
+    await tester.pumpAndSettle();
+    await pumpUntil(tester, () => find.byType(SongLyricRow).evaluate().isNotEmpty);
+    await tester.tap(find.byType(SongLyricRow).first);
+    await tester.pumpAndSettle();
+
+    expect(findInStack(DisplayScreen), findsNWidgets(2));
+    expect(findInStack(SearchScreen), findsNWidgets(2));
+
+    await goBack(tester);
+
+    expect(find.byType(SearchScreen), findsOneWidget);
+    expect(findInStack(DisplayScreen), findsOneWidget);
+  }, skip: !isZPS);
 
   testWidgets('home destination closes all screens', (tester) async {
     await pumpNavigation(tester);
