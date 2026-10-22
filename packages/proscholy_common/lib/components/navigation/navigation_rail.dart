@@ -52,7 +52,7 @@ class CustomNavigationRail extends StatelessWidget {
               backgroundColor: Colors.transparent,
               labelType: NavigationRailLabelType.all,
               groupAlignment: context.isHome ? 0 : (displayCollapseMenuButton ? -0.125 : -0.065),
-              selectedIndex: context.isHome ? 0 : (context.isSearching ? 1 : 2),
+              selectedIndex: _selectedIndex(context),
               onDestinationSelected: (index) => onDestinationSelected(context, index),
               leading: context.isHome
                   ? null
@@ -90,5 +90,19 @@ class CustomNavigationRail extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  int _selectedIndex(BuildContext context) {
+    // display screen selects the same destination as the screen it was opened from
+    if (context.isDisplay) {
+      final arguments = ModalRoute.of(context)?.settings.arguments as DisplayScreenArguments?;
+
+      if (arguments?.showSearchScreen ?? false) return 1;
+      if (arguments?.playlist != null || arguments?.songbook != null) return 2;
+
+      return 0;
+    }
+
+    return context.isHome ? 0 : (context.isSearching ? 1 : 2);
   }
 }

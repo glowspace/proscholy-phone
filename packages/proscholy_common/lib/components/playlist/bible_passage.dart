@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:proscholy_common/components/song_lyric/utils/auto_scroll.dart';
 import 'package:proscholy_common/constants.dart';
 import 'package:proscholy_common/models/bible_passage.dart';
-import 'package:proscholy_common/providers/display_screen_status.dart';
 
-class BiblePassageWidget extends ConsumerWidget {
+class BiblePassageWidget extends StatelessWidget {
   final BiblePassage biblePassage;
   final AutoScrollController autoScrollController;
 
   const BiblePassageWidget({super.key, required this.biblePassage, required this.autoScrollController});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -22,11 +20,7 @@ class BiblePassageWidget extends ConsumerWidget {
             child: Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: 2 * kDefaultPadding, vertical: kDefaultPadding) +
-                  EdgeInsets.only(
-                    bottom: ref.watch(displayScreenStatusProvider.select((status) => status.fullScreen))
-                        ? MediaQuery.paddingOf(context).bottom
-                        : 0,
-                  ),
+                  EdgeInsets.only(bottom: MediaQuery.paddingOf(context).bottom),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [

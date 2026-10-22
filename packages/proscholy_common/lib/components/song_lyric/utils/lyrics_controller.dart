@@ -17,34 +17,19 @@ class LyricsController extends AssetBundle {
 
   LyricsController(this.songLyric, this.svg, this.context) : parser = SongLyricsParser(songLyric);
 
-  double? _musicNotesWidth;
-  double? _musicNotesMaxWidth;
-  String? _musicNotes;
+  late final _viewBoxMatch = _viewBoxRE.firstMatch(svg);
+  late final _sizeMatch = _sizeRE.firstMatch(svg);
 
   String get title => songLyric.name;
 
   bool get hasMusicNotes => svg.isNotEmpty;
 
-  double get musicNotesWidth => _musicNotesWidth ?? 0;
-  double get musicNotesMaxWidth => _musicNotesMaxWidth ?? 0;
+  double get musicNotesWidth => double.parse(_viewBoxMatch?.group(1) ?? '0');
+  double get musicNotesMaxWidth => double.parse(_sizeMatch?.group(1) ?? '0');
 
-  String get musicNotes {
-    if (_musicNotes != null) return _musicNotes!;
-
-    final viewBoxMatch = _viewBoxRE.firstMatch(svg);
-
-    if (viewBoxMatch != null) _musicNotesWidth = double.parse(viewBoxMatch.group(1)!);
-
-    _musicNotes = svg
-        .replaceFirstMapped(_sizeRE, (match) {
-          _musicNotesMaxWidth = double.parse(match.group(1)!);
-
-          return 'viewBox="0 0 ${viewBoxMatch!.group(1)!} ${viewBoxMatch.group(2)!}"';
-        })
-        .replaceAll('Times,serif', 'Times New Roman');
-
-    return _musicNotes!;
-  }
+  late final String musicNotes = svg
+      .replaceFirst(_sizeRE, 'viewBox="0 0 ${_viewBoxMatch?.group(1)} ${_viewBoxMatch?.group(2)}"')
+      .replaceAll('Times,serif', 'Times New Roman');
 
   @override
   Future<ByteData> load(String _) async => utf8.encode(musicNotes).buffer.asByteData();

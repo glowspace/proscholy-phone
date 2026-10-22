@@ -43,6 +43,9 @@ import 'package:proscholy_common/utils/extensions.dart';
 // step value when scrolling by pressing hardware key (up, pageUp, down, pageDown)
 const double _scrollStep = 100.0;
 
+// bottom sheet shows a row of icon buttons with vertical padding
+const double _bottomSheetHeight = kMinInteractiveDimension + 2 * kDefaultPadding;
+
 class DisplayScreen extends StatelessWidget {
   final List<DisplayableItem> items;
   final int initialIndex;
@@ -84,7 +87,7 @@ class _DisplayScaffold extends ConsumerStatefulWidget {
 class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
   // make sure it is possible to swipe to previous item
   // this controller is only used to set the initial page
-  late final _controller = PageController(initialPage: widget.initialIndex + 100 * widget.items.length);
+  late var _controller = PageController(initialPage: widget.initialIndex + 100 * widget.items.length);
 
   final _autoScrollControllers = <int, AutoScrollController>{};
 
@@ -104,16 +107,24 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
 
   @override
   Widget build(BuildContext context) {
+    final fullScreen = ref.watch(displayScreenStatusProvider.select((status) => status.fullScreen));
+
+    // there is no bottom bar in full screen, so system navigation bar covers the bottom of the screen
+    final systemBottomPadding = fullScreen ? MediaQuery.paddingOf(context).bottom : 0.0;
+    final bottomSheet = _buildBottomSheet(systemBottomPadding);
+
     // update media query with font size scale from settings, so all children has correct font size scale and it does not have to be set individually
+    // its bottom padding is the space covered by bottom sheet and system navigation bar, so children can keep their end visible
     final newMediaQuery = MediaQuery.of(context).copyWith(
       textScaler: TextScaler.linear(ref.watch(settingsProvider.select((settings) => settings.fontSizeScale))),
+      padding: MediaQuery.paddingOf(
+        context,
+      ).copyWith(bottom: systemBottomPadding + (bottomSheet == null ? 0 : _bottomSheetHeight)),
     );
-
-    final fullScreen = ref.watch(displayScreenStatusProvider.select((status) => status.fullScreen));
 
     final scaffold = CustomScaffold(
       appBar: fullScreen ? null : _buildAppBar(),
-      bottomSheet: _buildBottomSheet(),
+      bottomSheet: bottomSheet,
       bottomNavigationBar: fullScreen
           ? const SizedBox()
           : SongLyricBottomBar(
@@ -133,55 +144,67 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
             bottom: false,
             child: MediaQuery(
               data: newMediaQuery,
-              child: PageView.builder(
-                controller: _items.length == 1 ? null : _controller,
-                onPageChanged: _itemChanged,
-                itemCount: _items.length == 1 ? 1 : null,
-                // disable scrolling when there is only one item
-                physics: _items.length == 1 ? const NeverScrollableScrollPhysics() : null,
-                itemBuilder: (_, index) {
-                  index = index % _items.length;
-                  final item = _items[index];
-
-                  if (ref.watch(
-                    presentationProvider.select(
-                      (presentation) => presentation.isPresenting && presentation.isPresentingLocally,
-                    ),
-                  )) {
-                    if (ref.watch(
-                      presentationProvider.select(
-                        (presentation) => presentation.presentationData.name == item.displayName,
-                      ),
-                    )) {
-                      return Consumer(
-                        builder: (_, ref, _) => Presentation(
-                          onExternalDisplay: false,
-                          presentationData: ref.watch(
-                            presentationProvider.select((presentation) => presentation.presentationData),
-                          ),
-                        ),
-                      );
-                    } else {
-                      return const SizedBox();
-                    }
+              child: NotificationListener<ScrollMetricsNotification>(
+                onNotification: (notification) {
+                  // items scroll vertically, page view horizontally
+                  if (notification.metrics.axis == Axis.vertical) {
+                    _autoScrollController(_currentIndex).contentSizeChanged();
                   }
 
-                  return switch (item) {
-                    (BiblePassage biblePassage) => BiblePassageWidget(
-                      biblePassage: biblePassage,
-                      autoScrollController: _autoScrollController(index),
-                    ),
-                    (UserText userText) => UserTextWidget(
-                      userText: userText,
-                      autoScrollController: _autoScrollController(index),
-                    ),
-                    (SongLyric songLyric) => SongLyricWidget(
-                      songLyric: songLyric,
-                      autoScrollController: _autoScrollController(index),
-                    ),
-                    _ => throw UnimplementedError(),
-                  };
+                  return false;
                 },
+                child: PageView.builder(
+                  // new items start with new page view, so it does not show items at previous page
+                  key: ObjectKey(_items),
+                  controller: _items.length == 1 ? null : _controller,
+                  onPageChanged: _itemChanged,
+                  itemCount: _items.length == 1 ? 1 : null,
+                  // disable scrolling when there is only one item
+                  physics: _items.length == 1 ? const NeverScrollableScrollPhysics() : null,
+                  itemBuilder: (_, index) {
+                    index = index % _items.length;
+                    final item = _items[index];
+
+                    if (ref.watch(
+                      presentationProvider.select(
+                        (presentation) => presentation.isPresenting && presentation.isPresentingLocally,
+                      ),
+                    )) {
+                      if (ref.watch(
+                        presentationProvider.select(
+                          (presentation) => presentation.presentationData.name == item.displayName,
+                        ),
+                      )) {
+                        return Consumer(
+                          builder: (_, ref, _) => Presentation(
+                            onExternalDisplay: false,
+                            presentationData: ref.watch(
+                              presentationProvider.select((presentation) => presentation.presentationData),
+                            ),
+                          ),
+                        );
+                      } else {
+                        return const SizedBox();
+                      }
+                    }
+
+                    return switch (item) {
+                      (BiblePassage biblePassage) => BiblePassageWidget(
+                        biblePassage: biblePassage,
+                        autoScrollController: _autoScrollController(index),
+                      ),
+                      (UserText userText) => UserTextWidget(
+                        userText: userText,
+                        autoScrollController: _autoScrollController(index),
+                      ),
+                      (SongLyric songLyric) => SongLyricWidget(
+                        songLyric: songLyric,
+                        autoScrollController: _autoScrollController(index),
+                      ),
+                      _ => throw UnimplementedError(),
+                    };
+                  },
+                ),
               ),
             ),
           ),
@@ -198,6 +221,11 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
     _selectedDisplayableItemArgumentsNotifier?.removeListener(_selectedDisplayableItemArgumentsChanged);
     _addRecentItemTimer?.cancel();
 
+    _controller.dispose();
+    for (final autoScrollController in _autoScrollControllers.values) {
+      autoScrollController.dispose();
+    }
+
     _focusNode.dispose();
 
     super.dispose();
@@ -209,8 +237,8 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
 
     _currentIndex = widget.initialIndex;
 
-    // TODO: make sure this widget does not depend on `presentationProvider` and do this without delay
-    Future.delayed(const Duration(milliseconds: 10), () => ref.read(presentationProvider).change(_currentItem));
+    // this widget depends on `presentationProvider`, so it can't be changed until the widget is built
+    WidgetsBinding.instance.addPostFrameCallback((_) => ref.read(presentationProvider).change(_currentItem));
 
     _selectedDisplayableItemArgumentsNotifier = SelectedDisplayableItemArguments.of(context, listen: false);
     _selectedDisplayableItemArgumentsNotifier?.addListener(_selectedDisplayableItemArgumentsChanged);
@@ -223,14 +251,16 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
     final newIndex = _selectedDisplayableItemArgumentsNotifier!.value.initialIndex;
 
     if (newItems.hashCode != _items.hashCode) {
-      setState(() => _items = newItems);
+      final previousController = _controller;
 
-      if (newItems.length > 1) {
-        // do this with delay, because if previous `_items` contained only one item `_controller` won't be attached until redraw
-        Future.delayed(const Duration(milliseconds: 100), () {
-          if (_controller.hasClients) _controller.jumpToPage(newIndex + 100 * newItems.length);
-        });
-      }
+      setState(() {
+        _items = newItems;
+        _controller = PageController(initialPage: newIndex + 100 * newItems.length);
+      });
+
+      // previous page view still uses it until it is rebuilt
+      WidgetsBinding.instance.addPostFrameCallback((_) => previousController.dispose());
+
       _itemChanged(newIndex);
     } else if (newIndex != _currentIndex % _items.length) {
       // `_controller` is not attached when there is only one item
@@ -244,53 +274,9 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
   }
 
   PreferredSizeWidget? _buildAppBar() {
-    final presentationNotifier = ref.read(presentationProvider.notifier);
-
     return switch (_currentItem) {
-      (BiblePassage biblePassage) => AppBar(
-        leading: const CustomBackButton(),
-        title: Text(biblePassage.displayName),
-        actions: [
-          HighlightableWidget(
-            onTap: () => _editBiblePassage(biblePassage),
-            padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-            icon: const Icon(Icons.edit),
-          ),
-          HighlightableWidget(
-            onTap: () => presentationNotifier.isPresenting
-                ? presentationNotifier.stop()
-                : context.push('/display/present').then((_) => presentationNotifier.change(biblePassage)),
-            padding: const EdgeInsets.only(left: kDefaultPadding, right: 1.5 * kDefaultPadding),
-            icon: Icon(
-              ref.watch(presentationProvider.select((presentation) => presentation.isPresenting))
-                  ? Icons.cancel_presentation
-                  : Icons.cast,
-            ),
-          ),
-        ],
-      ),
-      (UserText userText) => AppBar(
-        leading: const CustomBackButton(),
-        title: Text(userText.name),
-        actions: [
-          HighlightableWidget(
-            onTap: () => _editUserText(userText),
-            padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-            icon: const Icon(Icons.edit),
-          ),
-          HighlightableWidget(
-            onTap: () => presentationNotifier.isPresenting
-                ? presentationNotifier.stop()
-                : context.push('/display/present').then((_) => presentationNotifier.change(userText)),
-            padding: const EdgeInsets.only(left: kDefaultPadding, right: 1.5 * kDefaultPadding),
-            icon: Icon(
-              ref.watch(presentationProvider.select((presentation) => presentation.isPresenting))
-                  ? Icons.cancel_presentation
-                  : Icons.cast,
-            ),
-          ),
-        ],
-      ),
+      (BiblePassage biblePassage) => _buildEditableItemAppBar(biblePassage, () => _editBiblePassage(biblePassage)),
+      (UserText userText) => _buildEditableItemAppBar(userText, () => _editUserText(userText)),
       (SongLyric songLyric) => AppBar(
         title: Text(songLyric.displayId),
         leading: const CustomBackButton(),
@@ -317,10 +303,37 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
     };
   }
 
-  Widget? _buildBottomSheet() {
+  // bible passages and user texts can be edited and presented
+  PreferredSizeWidget _buildEditableItemAppBar(DisplayableItem item, void Function() edit) {
+    final presentationNotifier = ref.read(presentationProvider.notifier);
+
+    return AppBar(
+      leading: const CustomBackButton(),
+      title: Text(item.displayName),
+      actions: [
+        HighlightableWidget(
+          onTap: edit,
+          padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+          icon: const Icon(Icons.edit),
+        ),
+        HighlightableWidget(
+          onTap: () => presentationNotifier.isPresenting
+              ? presentationNotifier.stop()
+              : context.push('/display/present').then((_) => presentationNotifier.change(item)),
+          padding: const EdgeInsets.only(left: kDefaultPadding, right: 1.5 * kDefaultPadding),
+          icon: Icon(
+            ref.watch(presentationProvider.select((presentation) => presentation.isPresenting))
+                ? Icons.cancel_presentation
+                : Icons.cast,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget? _buildBottomSheet(double systemBottomPadding) {
     final activePlayer = ref.watch(activePlayerProvider);
     final presentation = ref.watch(presentationProvider);
-    final fullScreen = ref.watch(displayScreenStatusProvider.select((status) => status.fullScreen));
 
     Widget? bottomSheet;
 
@@ -378,7 +391,7 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
       return Padding(
         padding:
             const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding, vertical: kDefaultPadding) +
-            EdgeInsets.only(bottom: fullScreen ? MediaQuery.paddingOf(context).bottom : 0),
+            EdgeInsets.only(bottom: systemBottomPadding),
         child: bottomSheet,
       );
     }
@@ -418,7 +431,7 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
     ref.read(presentationProvider.notifier).change(_currentItem);
 
     // change highlight index on tablet
-    final selectedDisplayableItemArgumentsNotifier = SelectedDisplayableItemArguments.of(context);
+    final selectedDisplayableItemArgumentsNotifier = SelectedDisplayableItemArguments.of(context, listen: false);
 
     if (selectedDisplayableItemArgumentsNotifier != null) {
       selectedDisplayableItemArgumentsNotifier.value = DisplayScreenArguments(
@@ -441,7 +454,7 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
     if (event is KeyDownEvent) {
       final key = event.logicalKey;
       final scrollController = _autoScrollController(_currentIndex);
-      final step = _scrollStep * ref.watch(settingsProvider.select((settings) => settings.fontSizeScale));
+      final step = _scrollStep * ref.read(settingsProvider).fontSizeScale;
 
       if (key == LogicalKeyboardKey.arrowUp || key == LogicalKeyboardKey.pageUp) {
         scrollController.animateTo(

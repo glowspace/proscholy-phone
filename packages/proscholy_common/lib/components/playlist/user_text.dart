@@ -2,20 +2,18 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:proscholy_common/components/song_lyric/utils/auto_scroll.dart';
 import 'package:proscholy_common/constants.dart';
 import 'package:proscholy_common/models/user_text.dart';
-import 'package:proscholy_common/providers/display_screen_status.dart';
 
-class UserTextWidget extends ConsumerWidget {
+class UserTextWidget extends StatelessWidget {
   final UserText userText;
   final AutoScrollController autoScrollController;
 
   const UserTextWidget({super.key, required this.userText, required this.autoScrollController});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return QuillEditor.basic(
       controller: QuillController(
         document: _deserializeMarkdownToDocument(userText.content),
@@ -26,11 +24,7 @@ class UserTextWidget extends ConsumerWidget {
       config: QuillEditorConfig(
         padding:
             const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding, vertical: kDefaultPadding) +
-            EdgeInsets.only(
-              bottom: ref.watch(displayScreenStatusProvider.select((status) => status.fullScreen))
-                  ? MediaQuery.paddingOf(context).bottom
-                  : 0,
-            ),
+            EdgeInsets.only(bottom: MediaQuery.paddingOf(context).bottom),
       ),
     );
   }

@@ -6,6 +6,10 @@ import 'package:proscholy_common/providers/settings.dart';
 class AutoScrollController extends ScrollController {
   final _scrollFutures = <Future<void>>{};
 
+  ProviderSubscription<int>? _speedSubscription;
+
+  bool _isDisposed = false;
+
   bool get canScroll =>
       (positions.isEmpty || !position.hasContentDimensions) ? true : offset < position.maxScrollExtent;
   bool get isScrolling => _scrollFutures.isNotEmpty;
@@ -18,13 +22,24 @@ class AutoScrollController extends ScrollController {
       return;
     }
 
-    ref.listenManual(
+    _speedSubscription = ref.listenManual(
       settingsProvider.select((settings) => autoScrollSpeeds[settings.autoScrollSpeedIndex]),
       // on speed change will start new animation, which cancels the previous
       (_, msPerPixel) => _start(msPerPixel),
     );
 
     _start(autoScrollSpeeds[ref.read(settingsProvider).autoScrollSpeedIndex]);
+  }
+
+  // listeners are notified only about scrolling, but whether it can scroll depends also on size of content
+  void contentSizeChanged() => notifyListeners();
+
+  @override
+  void dispose() {
+    _isDisposed = true;
+    _speedSubscription?.close();
+
+    super.dispose();
   }
 
   void _start(int msPerPixel) async {
@@ -41,7 +56,11 @@ class AutoScrollController extends ScrollController {
 
     await scrollFuture;
 
+    // closing the scroll view ends the animation, but the controller might be already disposed
+    if (_isDisposed) return;
+
     _scrollFutures.remove(scrollFuture);
+    if (!isScrolling) _speedSubscription?.close();
     notifyListeners();
   }
 }
