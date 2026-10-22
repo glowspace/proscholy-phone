@@ -71,7 +71,7 @@ class SelectedTags extends _$SelectedTags {
   }
 
   // prepares state for new search screen with optional `initialTag` by storing current state and invalidating all providers
-  // is called when starting search from `PlaylistScreen`, `SongbookScreen` or `SongLyricTag`
+  // is called when starting search from `PlaylistScreen`, `SongbookScreen` or `SongLyricTag` and when picking song lyric for playlist
   void push({Tag? initialTag, List<Tag> initialTags = const []}) {
     if (state.isNotEmpty) selectedTagsStack.add(state);
 

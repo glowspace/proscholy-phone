@@ -46,6 +46,6 @@ class SongbookScreen extends StatelessWidget {
   void _pushSearch(BuildContext context) {
     context.providers.read(selectedTagsProvider.notifier).push(initialTag: songbook.tag);
 
-    context.push('/search');
+    Navigator.of(context).pushNamed('/search');
   }
 }

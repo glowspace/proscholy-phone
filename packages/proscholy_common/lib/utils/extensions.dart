@@ -64,13 +64,13 @@ extension BuildContextExtension on BuildContext {
 
       providers.read(selectedTagsProvider.notifier).push(initialTags: selectedTags);
 
-      routeName = '/search';
+      return Navigator.of(this).pushNamed('/search');
     }
 
     if (providers.read(appNavigatorObserverProvider).isPathInStack(routeName)) {
       popUntil(routeName);
 
-      if (arguments != null) return replace(routeName, arguments: arguments);
+      return arguments == null ? null : replace(routeName, arguments: arguments);
     }
 
     return Navigator.of(this).pushNamed(routeName, arguments: arguments);

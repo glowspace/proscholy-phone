@@ -16,7 +16,8 @@ part 'navigator_observer.g.dart';
 AppNavigatorObserver appNavigatorObserver(Ref ref) => AppNavigatorObserver();
 
 class AppNavigatorObserver extends NavigatorObserver {
-  final Set<String> _pathsInStack = {};
+  // list, as some screens can be in stack more times, e.g. search from playlist opened over another search
+  final List<String> _pathsInStack = [];
 
   bool isPathInStack(String name) => _pathsInStack.contains(name);
 

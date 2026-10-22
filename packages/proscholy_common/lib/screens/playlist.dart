@@ -188,7 +188,7 @@ class _PlaylistScaffold extends ConsumerWidget {
   void _pushSearch(BuildContext context) {
     context.providers.read(selectedTagsProvider.notifier).push(initialTag: playlist.tag);
 
-    context.push('/search');
+    Navigator.of(context).pushNamed('/search');
   }
 
   void _addText(BuildContext context) async {
@@ -218,7 +218,11 @@ class _PlaylistScaffold extends ConsumerWidget {
   }
 
   void _addSongLyric(BuildContext context) async {
-    final songLyric = (await context.push('/search', arguments: SearchScreenArguments.returnSongLyric())) as SongLyric?;
+    context.providers.read(selectedTagsProvider.notifier).push();
+
+    final songLyric =
+        (await Navigator.of(context).pushNamed('/search', arguments: SearchScreenArguments.returnSongLyric()))
+            as SongLyric?;
 
     if (context.mounted && songLyric != null) {
       context.providers
