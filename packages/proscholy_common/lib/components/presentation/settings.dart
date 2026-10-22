@@ -62,6 +62,7 @@ class PresentationSettingsWidget extends ConsumerWidget {
         ),
         SelectorWidget(
           title: 'Otočení obrazu',
+          padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding, vertical: kDefaultPadding / 2),
           segments: const [
             ButtonSegment(value: PresentationRotation.left90, icon: Icon(Icons.rotate_90_degrees_ccw)),
             ButtonSegment(value: PresentationRotation.none, icon: Icon(Icons.horizontal_rule)),
