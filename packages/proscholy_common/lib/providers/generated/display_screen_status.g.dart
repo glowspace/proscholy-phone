@@ -49,7 +49,7 @@ abstract class _$DisplayScreenStatus
   DisplayScreenStatusModel build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref =
         this.ref as $Ref<DisplayScreenStatusModel, DisplayScreenStatusModel>;
     final element =
@@ -60,6 +60,6 @@ abstract class _$DisplayScreenStatus
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }

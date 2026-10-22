@@ -47,7 +47,7 @@ abstract class _$Settings extends $Notifier<GlobalSettings> {
   GlobalSettings build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<GlobalSettings, GlobalSettings>;
     final element =
         ref.element
@@ -57,7 +57,7 @@ abstract class _$Settings extends $Notifier<GlobalSettings> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -144,7 +144,7 @@ abstract class _$SongLyricSettings extends $Notifier<SongLyricSettingsModel> {
   SongLyricSettingsModel build(int songLyricId);
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref =
         this.ref as $Ref<SongLyricSettingsModel, SongLyricSettingsModel>;
     final element =
@@ -155,6 +155,6 @@ abstract class _$SongLyricSettings extends $Notifier<SongLyricSettingsModel> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, () => build(_$args));
+    return element.handleCreate(ref, () => build(_$args));
   }
 }

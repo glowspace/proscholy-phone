@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of '../settings.dart';
@@ -9,6 +9,7 @@ part of '../settings.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -66,7 +67,7 @@ class _$GlobalSettingsCopyWithImpl<$Res>
 /// Create a copy of GlobalSettings
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? darkModeEnabled = freezed,Object? seedColor = null,Object? fontSizeScale = null,Object? showChords = null,Object? showMusicalNotes = null,Object? accidentals = null,Object? autoScrollSpeedIndex = null,}) {
-  return _then(_self.copyWith(
+  return _then(GlobalSettings(
 darkModeEnabled: freezed == darkModeEnabled ? _self.darkModeEnabled : darkModeEnabled // ignore: cast_nullable_to_non_nullable
 as bool?,seedColor: null == seedColor ? _self.seedColor : seedColor // ignore: cast_nullable_to_non_nullable
 as int,fontSizeScale: null == fontSizeScale ? _self.fontSizeScale : fontSizeScale // ignore: cast_nullable_to_non_nullable
@@ -331,7 +332,7 @@ class _$SongLyricSettingsModelCopyWithImpl<$Res>
 /// Create a copy of SongLyricSettingsModel
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? showChords = null,Object? showMusicalNotes = null,Object? accidentals = freezed,Object? transposition = null,Object? songLyric = null,}) {
-  return _then(_self.copyWith(
+  return _then(SongLyricSettingsModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,showChords: null == showChords ? _self.showChords : showChords // ignore: cast_nullable_to_non_nullable
 as bool,showMusicalNotes: null == showMusicalNotes ? _self.showMusicalNotes : showMusicalNotes // ignore: cast_nullable_to_non_nullable

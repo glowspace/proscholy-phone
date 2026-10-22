@@ -47,7 +47,7 @@ abstract class _$RecentItems extends $Notifier<List<RecentItem>> {
   List<RecentItem> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<List<RecentItem>, List<RecentItem>>;
     final element =
         ref.element
@@ -57,7 +57,7 @@ abstract class _$RecentItems extends $Notifier<List<RecentItem>> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -99,7 +99,7 @@ abstract class _$RecentSongLyrics extends $Notifier<List<SongLyric>> {
   List<SongLyric> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<List<SongLyric>, List<SongLyric>>;
     final element =
         ref.element
@@ -109,6 +109,6 @@ abstract class _$RecentSongLyrics extends $Notifier<List<SongLyric>> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }

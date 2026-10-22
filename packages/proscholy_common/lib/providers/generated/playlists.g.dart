@@ -92,7 +92,7 @@ abstract class _$PlaylistNotifier extends $Notifier<Playlist?> {
   Playlist? build(int id);
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<Playlist?, Playlist?>;
     final element =
         ref.element
@@ -102,7 +102,7 @@ abstract class _$PlaylistNotifier extends $Notifier<Playlist?> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, () => build(_$args));
+    return element.handleCreate(ref, () => build(_$args));
   }
 }
 
@@ -185,7 +185,7 @@ abstract class _$Playlists extends $Notifier<List<Playlist>> {
   List<Playlist> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<List<Playlist>, List<Playlist>>;
     final element =
         ref.element
@@ -195,6 +195,6 @@ abstract class _$Playlists extends $Notifier<List<Playlist>> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }

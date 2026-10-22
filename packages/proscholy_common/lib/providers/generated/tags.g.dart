@@ -197,7 +197,7 @@ abstract class _$SelectedTags extends $Notifier<Set<Tag>> {
   Set<Tag> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<Set<Tag>, Set<Tag>>;
     final element =
         ref.element
@@ -207,7 +207,7 @@ abstract class _$SelectedTags extends $Notifier<Set<Tag>> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -295,7 +295,7 @@ abstract class _$SelectedTagsByType extends $Notifier<Set<Tag>> {
   Set<Tag> build(TagType tagType);
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<Set<Tag>, Set<Tag>>;
     final element =
         ref.element
@@ -305,6 +305,6 @@ abstract class _$SelectedTagsByType extends $Notifier<Set<Tag>> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, () => build(_$args));
+    return element.handleCreate(ref, () => build(_$args));
   }
 }

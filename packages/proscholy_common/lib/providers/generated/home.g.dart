@@ -48,7 +48,7 @@ abstract class _$HomeSectionSettings extends $Notifier<List<HomeSection>> {
   List<HomeSection> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<List<HomeSection>, List<HomeSection>>;
     final element =
         ref.element
@@ -58,6 +58,6 @@ abstract class _$HomeSectionSettings extends $Notifier<List<HomeSection>> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }

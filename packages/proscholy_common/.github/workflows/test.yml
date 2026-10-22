@@ -36,8 +36,7 @@ jobs:
           cache: true
       - run: sudo apt-get install -y libsqlite3-dev
       - run: flutter pub get
+      # objectbox-dart has no tags for 6.0.0 previews, so the C library of objectbox 6.0.0-preview.5 is installed directly
       - name: Install ObjectBox library
-        run: |
-          VERSION=$(grep -E objectbox$ -A 4 pubspec.lock | grep version | awk -F'"' '{print $2}')
-          bash <(curl -s https://raw.githubusercontent.com/objectbox/objectbox-dart/v$VERSION/install.sh)
+        run: bash <(curl -s https://raw.githubusercontent.com/objectbox/objectbox-c/v6.0.0-beta2/download.sh) --quiet --install 6.0.0-beta2
       - run: flutter test --dart-define=ZPEVNIK_TARGET=${{ matrix.target }}
