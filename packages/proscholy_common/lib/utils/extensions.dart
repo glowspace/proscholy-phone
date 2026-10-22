@@ -57,7 +57,7 @@ extension BuildContextExtension on BuildContext {
     if (uri.queryParameters.containsKey('stitky')) {
       final selectedTags = uri.queryParameters['stitky']!
           .split(',')
-          .map((id) => providers.read(tagProvider(int.parse(id))))
+          .map((id) => providers.read(tagProvider(int.tryParse(id) ?? 0)))
           .where((tag) => tag != null)
           .cast<Tag>()
           .toList();
