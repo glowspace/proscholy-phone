@@ -26,7 +26,7 @@ final class BiblePassagesProvider
   }) : super(
          retry: null,
          name: r'biblePassagesProvider',
-         isAutoDispose: false,
+         isAutoDispose: true,
          dependencies: null,
          $allTransitiveDependencies: null,
        );
@@ -64,7 +64,7 @@ final class BiblePassagesProvider
   }
 }
 
-String _$biblePassagesHash() => r'615ffcbb9d08def4d044f2d5cad34ddfd20ea1de';
+String _$biblePassagesHash() => r'a9e5a4d7219995866b1306eee8b19a482b6a9a61';
 
 final class BiblePassagesFamily extends $Family
     with
@@ -78,7 +78,7 @@ final class BiblePassagesFamily extends $Family
         name: r'biblePassagesProvider',
         dependencies: null,
         $allTransitiveDependencies: null,
-        isAutoDispose: false,
+        isAutoDispose: true,
       );
 
   BiblePassagesProvider call(
@@ -153,7 +153,7 @@ final class BiblePassageProvider
   }
 }
 
-String _$biblePassageHash() => r'871183bb91d948b2a61845d5d0d28728552183b2';
+String _$biblePassageHash() => r'0235a873058580a38ed3a0ce8059e31f3c062e84';
 
 final class BiblePassageFamily extends $Family
     with
