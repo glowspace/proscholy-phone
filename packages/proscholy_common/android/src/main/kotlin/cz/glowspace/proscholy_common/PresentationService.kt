@@ -80,7 +80,8 @@ object PresentationService: EventChannel.StreamHandler  {
 
     private fun createFlutterEngine(): FlutterEngine {
         if (FlutterEngineCache.getInstance().get("/") == null) {
-            val flutterEngine = FlutterEngine(context!!)
+            // plugins of the app would register their channels again, so e.g. opened files would be sent to this engine
+            val flutterEngine = FlutterEngine(context!!, null, false)
             flutterEngine.getNavigationChannel().setInitialRoute("/")
             flutterEngine.getDartExecutor().executeDartEntrypoint(DartExecutor.DartEntrypoint(FlutterInjector.instance().flutterLoader().findAppBundlePath(), "mainPresentation"))
             flutterEngine.getLifecycleChannel().appIsResumed()
