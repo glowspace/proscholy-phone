@@ -42,7 +42,7 @@ final class HomeSectionSettingsProvider
 }
 
 String _$homeSectionSettingsHash() =>
-    r'366d1e46aea16cb0ce96dec4a2e6916e5e6aabbd';
+    r'08f3824f53c84c86c4f9575e8ae224abb08b224f';
 
 abstract class _$HomeSectionSettings extends $Notifier<List<HomeSection>> {
   List<HomeSection> build();
