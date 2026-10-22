@@ -21,21 +21,13 @@ class _StartPresentationScreenState extends State<StartPresentationScreen> with 
   bool _onExternalDisplay = false;
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    context.providers
-        .read(presentationProvider)
-        .onExternalDisplay
-        .then((onExternalDisplay) => setState(() => _onExternalDisplay = onExternalDisplay));
-  }
+  void didChangeAppLifecycleState(AppLifecycleState state) => _updateOnExternalDisplay();
 
   @override
   void initState() {
     super.initState();
 
-    context.providers
-        .read(presentationProvider)
-        .onExternalDisplay
-        .then((onExternalDisplay) => setState(() => _onExternalDisplay = onExternalDisplay));
+    _updateOnExternalDisplay();
 
     WidgetsBinding.instance.addObserver(this);
   }
@@ -45,6 +37,12 @@ class _StartPresentationScreenState extends State<StartPresentationScreen> with 
     WidgetsBinding.instance.removeObserver(this);
 
     super.dispose();
+  }
+
+  void _updateOnExternalDisplay() {
+    context.providers.read(presentationProvider).onExternalDisplay.then((onExternalDisplay) {
+      if (mounted) setState(() => _onExternalDisplay = onExternalDisplay);
+    });
   }
 
   @override
