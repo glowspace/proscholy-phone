@@ -85,7 +85,7 @@ class _StartPresentationScreenState extends State<StartPresentationScreen> with 
                     ],
                   ),
                 ),
-              PresentationSettingsWidget(onExternalDisplay: _onExternalDisplay),
+              Expanded(child: PresentationSettingsWidget(onExternalDisplay: _onExternalDisplay)),
             ],
           ),
         ),
