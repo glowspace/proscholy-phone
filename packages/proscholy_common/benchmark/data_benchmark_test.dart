@@ -181,11 +181,13 @@ void main() {
       'provider of all song lyrics',
       () async {
         container.invalidate(songLyricsProvider);
-        container.read(songLyricsProvider);
+        await container.read(songLyricsProvider.future);
       },
       runs: 10,
       blocking: true,
     );
+
+    await container.read(songLyricsProvider.future);
 
     await benchmark.measureRepeated('provider of language tags', () async {
       container.invalidate(tagsProvider(TagType.language));

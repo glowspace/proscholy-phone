@@ -43,7 +43,7 @@ void main() {
     final appDependencies = await pumpSearch(tester);
 
     await search(tester, 'Bože chválí');
-    await pumpUntil(tester, () => findSongLyricRow(1).evaluate().isEmpty);
+    await pumpUntil(tester, () => findSongLyricRow(1).evaluate().isEmpty && findSongLyricRow(2).evaluate().isNotEmpty);
 
     expect(find.byType(SongLyricRow), findsOneWidget);
     expect(findSongLyricRow(2), findsOneWidget);

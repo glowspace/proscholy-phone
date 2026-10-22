@@ -42,7 +42,7 @@ List<Tag> tags(Ref ref, TagType tagType) {
     case TagType.language:
       final languageCounts = <String, int>{};
 
-      for (final songLyric in ref.watch(songLyricsProvider)) {
+      for (final songLyric in ref.watch(songLyricsProvider).value ?? []) {
         languageCounts[songLyric.langDescription] = (languageCounts[songLyric.langDescription] ?? 0) + 1;
       }
 

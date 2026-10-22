@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:proscholy_common/constants.dart';
@@ -11,12 +13,19 @@ import 'package:proscholy_common/models/utils.dart';
 import 'package:proscholy_common/providers/app_dependencies.dart';
 import 'package:proscholy_common/providers/playlists.dart';
 import 'package:proscholy_common/providers/search.dart';
+import 'package:proscholy_common/providers/song_lyrics.dart';
+import 'package:proscholy_common/providers/svgs.dart';
 import 'package:proscholy_common/providers/sort.dart';
 import 'package:proscholy_common/providers/tags.dart';
 import 'package:proscholy_common/utils/data.dart';
 import 'package:proscholy_common/views/app_dependencies.dart';
 
 import '../utils.dart';
+
+class _FakeSvgs extends Svgs {
+  @override
+  Map<String, FileSystemEntity> build() => {};
+}
 
 void main() {
   late ProviderContainer container;
@@ -49,7 +58,7 @@ void main() {
 
     await appDependencies.ftsSearch.update(songLyrics);
 
-    container = createContainer(appDependencies);
+    container = createContainer(appDependencies, overrides: [svgsProvider.overrideWith(_FakeSvgs.new)]);
     container.listen(searchedSongLyricsProvider, (_, _) {});
   });
 
@@ -122,7 +131,12 @@ void main() {
       for (final songLyric in container.read(filteredSongLyricsProvider).songLyrics!) songLyric.id,
     ]..sort();
 
-    setUp(() => container.listen(filteredSongLyricsProvider, (_, _) {}));
+    setUp(() async {
+      container.listen(filteredSongLyricsProvider, (_, _) {});
+
+      // all song lyrics are loaded in another isolate
+      await container.read(songLyricsProvider.future);
+    });
 
     test('song lyrics match any selected tag of each tag type', () {
       final store = container.read(appDependenciesProvider).store;

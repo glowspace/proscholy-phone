@@ -161,4 +161,4 @@ final class FilteredSongLyricsProvider
 }
 
 String _$filteredSongLyricsHash() =>
-    r'57d14659821f2453aa1882d19a1bd6db30b4093a';
+    r'39f990d31d1e6ff0a9b39313d7846b72d1286a56';
