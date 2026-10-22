@@ -6,6 +6,5 @@ public class ProscholyCommonPlugin: NSObject, FlutterPlugin {
         OpenedFilePlugin.register(with: registrar)
         PresentationPlugin.register(with: registrar)
         SpotlightPlugin.register(with: registrar)
-        WindowPlugin.register(with: registrar)
     }
 }

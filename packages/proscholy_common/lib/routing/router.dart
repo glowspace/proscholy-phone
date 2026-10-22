@@ -13,7 +13,6 @@ import 'package:proscholy_common/providers/songbooks.dart';
 import 'package:proscholy_common/providers/tags.dart';
 import 'package:proscholy_common/routing/arguments.dart';
 import 'package:proscholy_common/routing/navigation_rail_wrapper.dart';
-import 'package:proscholy_common/routing/window_controls_wrapper.dart';
 import 'package:proscholy_common/screens/about.dart';
 import 'package:proscholy_common/screens/display.dart';
 import 'package:proscholy_common/screens/home.dart';
@@ -195,9 +194,7 @@ final class AppRouter {
 
     return MaterialPageRoute(
       settings: settings,
-      builder: (_) => WindowControlsWrapper(
-        child: NavigationRailWrapper(builder: builder, showNavigationRail: showNavigationRail),
-      ),
+      builder: (_) => NavigationRailWrapper(builder: builder, showNavigationRail: showNavigationRail),
       fullscreenDialog: fullScreenDialog,
     );
   }

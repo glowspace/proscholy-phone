@@ -6,7 +6,6 @@ import 'package:proscholy_common/models/utils.dart';
 import 'package:proscholy_common/providers/app_dependencies.dart';
 import 'package:proscholy_common/routing/navigation_rail_wrapper.dart';
 import 'package:proscholy_common/routing/router.dart';
-import 'package:proscholy_common/routing/window_controls_wrapper.dart';
 import 'package:proscholy_common/screens/display.dart';
 import 'package:proscholy_common/screens/home.dart';
 import 'package:proscholy_common/screens/songbook.dart';
@@ -49,8 +48,7 @@ void main() {
 
   MaterialPageRoute route(String name) => AppRouter.generateRoute(RouteSettings(name: name)) as MaterialPageRoute;
 
-  Widget screen(String name) =>
-      ((route(name).builder(context) as WindowControlsWrapper).child as NavigationRailWrapper).builder(context);
+  Widget screen(String name) => (route(name).builder(context) as NavigationRailWrapper).builder(context);
 
   testWidgets('song lyric links', (tester) async {
     await pumpProviderScope(tester);
