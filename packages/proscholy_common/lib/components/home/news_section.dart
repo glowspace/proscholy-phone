@@ -21,6 +21,13 @@ class _NewsSectionState extends ConsumerState<NewsSection> {
   final _pageController = PageController(initialPage: 0);
 
   @override
+  void dispose() {
+    _pageController.dispose();
+
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final newsItems = ref.watch(newsItemsProvider);
 

@@ -27,6 +27,14 @@ class _UserTextEditScreenState extends State<UserTextEditScreen> {
   );
 
   @override
+  void dispose() {
+    _nameController.dispose();
+    _controller.dispose();
+
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
