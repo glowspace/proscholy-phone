@@ -10,7 +10,7 @@ import android.widget.FrameLayout
 import io.flutter.embedding.android.FlutterView
 import io.flutter.embedding.engine.FlutterEngineCache
 
-class PresentationDisplay(context: Context, display: Display): Presentation(context, display) {
+class PresentationDisplay(context: Context, display: Display, private val onRemoved: () -> Unit): Presentation(context, display) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -28,5 +28,11 @@ class PresentationDisplay(context: Context, display: Display): Presentation(cont
 
         val flutterEngine = FlutterEngineCache.getInstance().get("/")!!
         flutterView.attachToFlutterEngine(flutterEngine)
+    }
+
+    override fun onDisplayRemoved() {
+        super.onDisplayRemoved()
+
+        onRemoved()
     }
 }

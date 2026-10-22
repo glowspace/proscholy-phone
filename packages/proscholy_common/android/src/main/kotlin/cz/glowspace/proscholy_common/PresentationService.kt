@@ -13,6 +13,8 @@ import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
 
 object PresentationService: EventChannel.StreamHandler  {
+    private lateinit var channel: MethodChannel
+
     private var presentationDisplay: PresentationDisplay? = null
 
     private var dataSink: EventChannel.EventSink? = null
@@ -21,7 +23,7 @@ object PresentationService: EventChannel.StreamHandler  {
     var context: Context? = null
 
     fun register(binaryMessenger: BinaryMessenger) {
-        val channel = MethodChannel(binaryMessenger, "proscholyCommon/presentation")
+        channel = MethodChannel(binaryMessenger, "proscholyCommon/presentation")
         channel.setMethodCallHandler { call, result ->
             when (call.method) {
                 "startPresentation" -> {
@@ -58,7 +60,11 @@ object PresentationService: EventChannel.StreamHandler  {
             val eventChannel = EventChannel(flutterEngine.dartExecutor.binaryMessenger, "proscholyCommon/presentation/stream")
             eventChannel?.setStreamHandler(this)
 
-            presentationDisplay = PresentationDisplay(context!!, presentationDisplays[0])
+            presentationDisplay = PresentationDisplay(context!!, presentationDisplays[0]) {
+                stopPresentation()
+
+                channel.invokeMethod("onExternalDisplayDisconnected", null)
+            }
             presentationDisplay?.show()
         }
     }

@@ -4,7 +4,6 @@ import Flutter
 class PresentationPlugin: NSObject, FlutterPlugin, FlutterStreamHandler {
     private var channel: FlutterMethodChannel!
 
-    private var externalScreen: UIScreen?
     private var externalWindow: UIWindow?
 
     private var dataSink: FlutterEventSink?
@@ -18,8 +17,7 @@ class PresentationPlugin: NSObject, FlutterPlugin, FlutterStreamHandler {
 
         registrar.addMethodCallDelegate(instance, channel: channel)
 
-        NotificationCenter.default.addObserver(instance, selector: #selector(screenDidConnect), name: UIScreen.didConnectNotification, object: nil)
-        NotificationCenter.default.addObserver(instance, selector: #selector(screenDidDisconnect), name: UIScreen.didDisconnectNotification, object: nil)
+        NotificationCenter.default.addObserver(instance, selector: #selector(sceneDidDisconnect), name: UIScene.didDisconnectNotification, object: nil)
     }
 
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -93,18 +91,14 @@ class PresentationPlugin: NSObject, FlutterPlugin, FlutterStreamHandler {
         }
     }
 
-    // MARK: - UIScreen observers
+    // MARK: - UIScene observers
 
-    @objc func screenDidConnect(notification: Notification) {
-        guard let externalScreen = notification.object as? UIScreen else { return }
+    @objc func sceneDidDisconnect(notification: Notification) {
+        guard let scene = notification.object as? UIWindowScene, scene === externalWindow?.windowScene else { return }
 
-        self.externalScreen = externalScreen
-    }
+        stopPresentation()
 
-    @objc func screenDidDisconnect(notification: Notification) {
-        guard let externalScreen = notification.object as? UIScreen, externalScreen == self.externalScreen else { return }
-
-        self.externalScreen = nil
+        channel.invokeMethod("onExternalDisplayDisconnected", arguments: nil)
     }
 
     // MARK: - FlutterStreamHandler

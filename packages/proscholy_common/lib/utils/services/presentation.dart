@@ -20,6 +20,12 @@ class PresentationService {
 
   Future<void> transferData(PresentationData data) => methodChannel.invokeMethod('transferData', jsonEncode(data));
 
+  void setOnExternalDisplayDisconnected(void Function() onDisconnected) {
+    methodChannel.setMethodCallHandler((call) async {
+      if (call.method == 'onExternalDisplayDisconnected') onDisconnected();
+    });
+  }
+
   Stream<PresentationData> getDataStream() =>
       streamChannel.receiveBroadcastStream().map((event) => PresentationData.fromJson(jsonDecode(event)));
 }
