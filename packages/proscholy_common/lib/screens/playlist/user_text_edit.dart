@@ -1,10 +1,9 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:proscholy_common/components/custom/close_button.dart';
 import 'package:proscholy_common/components/highlightable_widget.dart';
 import 'package:proscholy_common/components/navigation/scaffold.dart';
+import 'package:proscholy_common/components/playlist/user_text.dart';
 import 'package:proscholy_common/constants.dart';
 import 'package:proscholy_common/models/user_text.dart';
 import 'package:proscholy_common/providers/app_dependencies.dart';
@@ -23,7 +22,7 @@ class _UserTextEditScreenState extends State<UserTextEditScreen> {
   late final _nameController = TextEditingController(text: widget.userText?.name);
 
   late final _controller = QuillController(
-    document: _deserializeMarkdownToDocument(widget.userText?.content ?? ''),
+    document: decodeUserText(widget.userText?.content ?? ''),
     selection: const TextSelection.collapsed(offset: 0),
   );
 
@@ -94,28 +93,13 @@ class _UserTextEditScreenState extends State<UserTextEditScreen> {
 
     if (widget.userText == null) {
       // it is stored when it is added to playlist
-      userText = UserText(name: name, content: _serializeDocumentToMarkdown(_controller.document) ?? '');
+      userText = UserText(name: name, content: encodeUserText(_controller.document));
     } else {
-      userText = widget.userText!.copyWith(
-        name: name,
-        content: _serializeDocumentToMarkdown(_controller.document) ?? '',
-      );
+      userText = widget.userText!.copyWith(name: name, content: encodeUserText(_controller.document));
 
       context.providers.read(appDependenciesProvider).store.box<UserText>().put(userText);
     }
 
     context.pop(userText);
-  }
-
-  String? _serializeDocumentToMarkdown(Document document) {
-    return jsonEncode(document.toDelta().toJson()).toString();
-  }
-
-  Document _deserializeMarkdownToDocument(String serializedDelta) {
-    if (serializedDelta.isEmpty) return Document();
-
-    final value = jsonDecode(serializedDelta);
-
-    return Document.fromJson(value);
   }
 }
