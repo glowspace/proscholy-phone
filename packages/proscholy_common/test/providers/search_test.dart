@@ -189,12 +189,12 @@ void main() {
     final songbookTag = container.read(appDependenciesProvider).store.box<Songbook>().get(58)!.tag;
     final selectedTags = container.read(selectedTagsProvider.notifier);
 
-    selectedTags.push(initialTag: songbookTag);
+    selectedTags.push(initialTags: [songbookTag]);
     selectedTags.pop();
 
     expect(container.read(selectedTagsByTypeProvider(TagType.songbook)), isEmpty);
 
-    selectedTags.push(initialTag: songbookTag);
+    selectedTags.push(initialTags: [songbookTag]);
 
     expect(container.read(selectedTagsByTypeProvider(TagType.songbook)), {songbookTag});
   });

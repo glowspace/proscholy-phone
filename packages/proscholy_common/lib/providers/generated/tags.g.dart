@@ -191,7 +191,7 @@ final class SelectedTagsProvider
   }
 }
 
-String _$selectedTagsHash() => r'08b6ca80061bb729318f30b0976cde9037ff3434';
+String _$selectedTagsHash() => r'2dfa0e6d08bc327545230531151cf51cf967a2a8';
 
 abstract class _$SelectedTags extends $Notifier<Set<Tag>> {
   Set<Tag> build();

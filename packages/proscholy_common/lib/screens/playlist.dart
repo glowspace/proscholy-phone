@@ -19,7 +19,6 @@ import 'package:proscholy_common/models/song_lyric.dart';
 import 'package:proscholy_common/models/tag.dart';
 import 'package:proscholy_common/providers/menu_collapsed.dart';
 import 'package:proscholy_common/providers/playlists.dart';
-import 'package:proscholy_common/providers/tags.dart';
 import 'package:proscholy_common/routing/arguments.dart';
 import 'package:proscholy_common/screens/playlists.dart';
 import 'package:proscholy_common/utils/extensions.dart';
@@ -189,9 +188,7 @@ class _PlaylistScaffold extends ConsumerWidget {
   }
 
   void _pushSearch(BuildContext context) {
-    context.providers.read(selectedTagsProvider.notifier).push(initialTag: playlist.tag);
-
-    Navigator.of(context).pushNamed('/search');
+    context.pushSearch(initialTags: [playlist.tag]);
   }
 
   void _addText(BuildContext context) async {
@@ -221,11 +218,7 @@ class _PlaylistScaffold extends ConsumerWidget {
   }
 
   void _addSongLyric(BuildContext context) async {
-    context.providers.read(selectedTagsProvider.notifier).push();
-
-    final songLyric =
-        (await Navigator.of(context).pushNamed('/search', arguments: SearchScreenArguments.returnSongLyric()))
-            as SongLyric?;
+    final songLyric = (await context.pushSearch(arguments: SearchScreenArguments.returnSongLyric())) as SongLyric?;
 
     if (context.mounted && songLyric != null) {
       context.providers

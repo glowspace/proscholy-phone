@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:proscholy_common/constants.dart' hide red, green, blue;
 import 'package:proscholy_common/models/tag.dart';
 import 'package:proscholy_common/providers/tags.dart';
+import 'package:proscholy_common/routing/arguments.dart';
 import 'package:proscholy_common/routing/navigator_observer.dart';
 
 extension PlatformExtension on TargetPlatform {
@@ -62,9 +63,7 @@ extension BuildContextExtension on BuildContext {
           .cast<Tag>()
           .toList();
 
-      providers.read(selectedTagsProvider.notifier).push(initialTags: selectedTags);
-
-      return Navigator.of(this).pushNamed('/search');
+      return pushSearch(initialTags: selectedTags);
     }
 
     // screens without arguments, e.g. search, are open only once, screens with them, e.g. song lyric, can be open more times
@@ -75,6 +74,13 @@ extension BuildContextExtension on BuildContext {
     }
 
     return Navigator.of(this).pushNamed(routeName, arguments: arguments);
+  }
+
+  // each search screen restores selected tags of the previous one when it is closed, so new search is always pushed
+  Future<T?> pushSearch<T extends Object?>({List<Tag> initialTags = const [], SearchScreenArguments? arguments}) {
+    providers.read(selectedTagsProvider.notifier).push(initialTags: initialTags);
+
+    return Navigator.of(this).pushNamed('/search', arguments: arguments);
   }
 
   void pop<T>([T? result]) {

@@ -8,7 +8,6 @@ import 'package:proscholy_common/constants.dart';
 import 'package:proscholy_common/models/songbook.dart';
 import 'package:proscholy_common/models/tag.dart';
 import 'package:proscholy_common/providers/song_lyrics.dart';
-import 'package:proscholy_common/providers/tags.dart';
 import 'package:proscholy_common/utils/extensions.dart';
 import 'package:proscholy_common/views/tag.dart';
 
@@ -47,8 +46,6 @@ class SongbookScreen extends StatelessWidget {
   }
 
   void _pushSearch(BuildContext context) {
-    context.providers.read(selectedTagsProvider.notifier).push(initialTag: songbook.tag);
-
-    Navigator.of(context).pushNamed('/search');
+    context.pushSearch(initialTags: [songbook.tag]);
   }
 }
