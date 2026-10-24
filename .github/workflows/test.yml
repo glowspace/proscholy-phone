@@ -2,11 +2,15 @@ name: test
 
 on:
   push:
-    branches: [main]
+    branches: [develop]
   pull_request:
 
 env:
   FLUTTER_VERSION: 3.44.4
+
+defaults:
+  run:
+    working-directory: packages/proscholy_common
 
 jobs:
   analyze:
@@ -21,6 +25,8 @@ jobs:
       - name: Check formatting
         run: dart format --output=none --set-exit-if-changed $(git ls-files 'lib/*.dart' 'test/*.dart' | grep -v -e '/generated/' -e '\.g\.dart$' -e '\.freezed\.dart$')
       - run: flutter analyze
+      - name: Analyze apps
+        run: for app in zps ez ek; do (cd ../../apps/$app && flutter analyze lib) || exit 1; done
 
   test:
     runs-on: ubuntu-latest
