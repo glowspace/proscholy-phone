@@ -40,7 +40,7 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
     super.initState();
 
     // listen for changes in presented verse and make sure it is visible
-    context.providers.listen(
+    ref.listenManual(
       presentationProvider.select(
         (presentation) =>
             presentation.isPresenting && presentation.songLyric == widget.songLyric ? presentation.part : -1,
