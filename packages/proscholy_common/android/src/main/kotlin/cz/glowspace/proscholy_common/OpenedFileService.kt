@@ -47,6 +47,9 @@ object OpenedFileService {
         // links to websites are handled by Flutter
         if (uri.scheme != ContentResolver.SCHEME_CONTENT && uri.scheme != ContentResolver.SCHEME_FILE) return
 
+        // otherwise Flutter would push uri of the file as route, as deep linking is enabled
+        intent.setData(null)
+
         val contentResolver = activity?.contentResolver ?: return
 
         // reading can be slow, e.g. for files in cloud storage
