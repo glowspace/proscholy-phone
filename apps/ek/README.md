@@ -8,7 +8,7 @@ Verze pro iOS: *link bude přidán po zveřejnění*
 
 Aplikace čerpá data z API serveru ProScholy: https://github.com/proscholy/proscholy-api
 
-Společný kód je spravován v repozitáři [proscholy-phone-common](https://github.com/glowspace/proscholy-phone-common)
+Společný kód je ve složce [packages/proscholy_common](../../packages/proscholy_common)
 
 ## Made by Glow Space
 

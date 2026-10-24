@@ -5,13 +5,12 @@ import 'dart:math';
 
 import 'package:proscholy_common/constants.dart';
 
-// repos of the apps are next to this repo by default
-const _appsDirectory = String.fromEnvironment('APPS_DIRECTORY', defaultValue: '..');
+const _appsDirectory = String.fromEnvironment('APPS_DIRECTORY', defaultValue: '../../apps');
 
 const _dataPaths = {
-  'ZPS': '$_appsDirectory/proscholy-flutter/assets/data.json',
-  'EZ': '$_appsDirectory/evangelicky-zpevnik-phone/assets/data.json',
-  'EK': '$_appsDirectory/evangelicky-kancional-phone/assets/data.json',
+  'ZPS': '$_appsDirectory/zps/assets/data.json',
+  'EZ': '$_appsDirectory/ez/assets/data.json',
+  'EK': '$_appsDirectory/ek/assets/data.json',
 };
 
 String get target => isZPS ? 'ZPS' : (isEZ ? 'EZ' : 'EK');

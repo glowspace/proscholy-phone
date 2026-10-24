@@ -8,7 +8,7 @@ Verze pro iOS: https://apps.apple.com/us/app/zpěvn%C3%ADk-pro-scholy/id14753754
 
 Aplikace čerpá data z API serveru ProScholy: https://github.com/proscholy/proscholy-api
 
-Společný kód je spravován v repozitáři [proscholy-phone-common](https://github.com/glowspace/proscholy-phone-common)
+Společný kód je ve složce [packages/proscholy_common](../../packages/proscholy_common)
 
 ## Made by Glow Space
 

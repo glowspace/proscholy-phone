@@ -5,21 +5,21 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## What this is
 
 `proscholy_common` is a Flutter package (with a small native plugin in `android/` and `ios/`) that holds nearly all
-code of three songbook apps. Each app is a thin repo with its own `main.dart`, Firebase/Sentry setup, fonts and offline
-data, living next to this repo:
+code of three songbook apps. Each app is a thin package with its own `main.dart`, Firebase/Sentry setup, fonts and
+offline data, in the same pub workspace:
 
-| Target | App repo | Website |
+| Target | App | Website |
 | --- | --- | --- |
-| `ZPS` | `../proscholy-flutter` | zpevnik.proscholy.cz |
-| `EZ` | `../evangelicky-zpevnik-phone` | evangelickyzpevnik.cz |
-| `EK` | `../evangelicky-kancional-phone` | evangelickykancional.cz |
+| `ZPS` | `../../apps/zps` | zpevnik.proscholy.cz |
+| `EZ` | `../../apps/ez` | evangelickyzpevnik.cz |
+| `EK` | `../../apps/ek` | evangelickykancional.cz |
 
 The target is a compile-time define, `--dart-define=ZPEVNIK_TARGET=<ZPS|EZ|EK>`, read as `isZPS`/`isEZ`/`isEK` in
 `lib/constants.dart`. It changes JSON parsing (EZ/EK take song number and name from songbook 58/63), API headers
 (`Filter-Content`), links and UI. Every change must keep all three targets working.
 
-Apps depend on this repo via git, and locally via a gitignored `pubspec_overrides.yaml` pointing to
-`../proscholy-common`, so app builds use whatever branch is checked out here.
+Apps use this package from the workspace, so a change of it reaches all three apps in the same commit. `flutter pub get`
+resolves the whole workspace into one `pubspec.lock` in the root of the repository.
 
 The UI is Czech only; strings are written inline, there is no localization.
 
@@ -36,19 +36,19 @@ dart format $(git ls-files 'lib/*.dart' 'test/*.dart' | grep -v -e '/generated/'
 flutter test --dart-define=ZPEVNIK_TARGET=ZPS
 flutter test test/setup_test.dart --plain-name 'objectbox store' --dart-define=ZPEVNIK_TARGET=ZPS
 
-# benchmarks with assets/data.json of the app next to this repo, results are saved to build/benchmarks
+# benchmarks with assets/data.json of the app in ../../apps, results are saved to build/benchmarks
 flutter test benchmark --dart-define=ZPEVNIK_TARGET=ZPS
 # requests to API run only on demand, as they load the server
 flutter test benchmark/api_benchmark_test.dart --dart-define=ZPEVNIK_TARGET=ZPS --dart-define=LIVE_API=true
 ```
 
-Run an app from its repo, e.g. `cd ../proscholy-flutter && flutter run --dart-define=ZPEVNIK_TARGET=ZPS`.
+Run an app from its folder, e.g. `cd ../../apps/zps && flutter run --dart-define=ZPEVNIK_TARGET=ZPS`.
 
 Tests get an in-memory ObjectBox store and an FTS database from `test/utils.dart`. The FTS database uses system SQLite,
 because the SQLite bundled with package `sqlite3` lacks FTS4. Mocks use mocktail, not mockito.
 
-CI (`.github/workflows/test.yml`) checks formatting, runs the analyzer (any issue fails) and runs tests for
-every target. Format only handwritten files, generated ones are excluded.
+CI (`.github/workflows/test.yml` in the root) checks formatting, runs the analyzer on this package and the apps (any
+issue fails) and runs tests for every target. Format only handwritten files, generated ones are excluded.
 
 ## Architecture
 
@@ -78,7 +78,7 @@ every target. Format only handwritten files, generated ones are excluded.
 
 ## Rules that are easy to break
 
-- **Generated code is committed** because apps consume this package from git without running build_runner. Outputs go
+- **Generated code is committed** because app builds (Xcode Cloud, build_android.sh) don't run build_runner. Outputs go
   to `generated/` folders (see `build.yaml`). Never edit them by hand. Commit regenerated output in the same commit as
   the change that caused it, so every commit works for the apps. The exception is churn from a generator upgrade
   that rewrites unrelated files: commit that on its own.
@@ -89,8 +89,8 @@ every target. Format only handwritten files, generated ones are excluded.
   `test/models/store_upgrade_test.dart` opens a store saved by the app before the renames and checks that user data
   are kept.
 - **Fonts** in `assets/fonts` must also be declared in each app's `pubspec.yaml`, otherwise they are not bundled.
-- **`riverpod_annotation` is pinned** to the version that `riverpod_generator` depends on. Apps resolve riverpod
-  without the generator, and a newer riverpod doesn't compile the committed generated code, so upgrade them together.
+- **`riverpod_annotation` is pinned** to the version that `riverpod_generator` depends on. A newer riverpod
+  doesn't compile the committed generated code, so upgrade them together.
 
 ## Style
 

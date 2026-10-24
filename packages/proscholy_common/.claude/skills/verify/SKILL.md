@@ -17,6 +17,6 @@ description: Check a change in proscholy-common before committing it, covering f
 
    If a test fails with "ObjectBox platform-specific database library not compatible", the native library must be
    updated with `./init_test.sh`. That downloads a library, so ask the user first.
-4. If the UI changed, run the ZPS app (`../proscholy-flutter`, `--dart-define=ZPEVNIK_TARGET=ZPS`) in the iOS simulator
+4. If the UI changed, run the ZPS app (`../../apps/zps`, `--dart-define=ZPEVNIK_TARGET=ZPS`) in the iOS simulator
    and check the affected screens.
 5. Report exactly what passed. If you skipped a step, say so.
