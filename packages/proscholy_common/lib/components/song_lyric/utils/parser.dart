@@ -470,7 +470,8 @@ class SongLyricsParser {
         // handles end of line
         case '\r\n':
         case '\n':
-          if (currentString.trim().isEmpty && (tokens.last is VerseNumber || tokens.last is VerseSubstitute)) {
+          if (currentString.trim().isEmpty &&
+              (tokens.lastOrNull is VerseNumber || tokens.lastOrNull is VerseSubstitute)) {
             tokens.add(VerseEnd());
             isInsideVerse = false;
           }
@@ -480,7 +481,7 @@ class SongLyricsParser {
           } else if (currentString.isNotEmpty) {
             tokens.add(VersePart(currentString));
             tokens.add(NewLine());
-          } else if (tokens.last is! VerseEnd) {
+          } else if (tokens.isNotEmpty && tokens.last is! VerseEnd) {
             tokens.add(NewLine());
           }
 
