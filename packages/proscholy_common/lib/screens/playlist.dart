@@ -16,6 +16,7 @@ import 'package:proscholy_common/models/bible_passage.dart';
 import 'package:proscholy_common/models/user_text.dart';
 import 'package:proscholy_common/models/playlist.dart';
 import 'package:proscholy_common/models/song_lyric.dart';
+import 'package:proscholy_common/models/tag.dart';
 import 'package:proscholy_common/providers/menu_collapsed.dart';
 import 'package:proscholy_common/providers/playlists.dart';
 import 'package:proscholy_common/providers/tags.dart';
@@ -23,6 +24,7 @@ import 'package:proscholy_common/routing/arguments.dart';
 import 'package:proscholy_common/screens/playlists.dart';
 import 'package:proscholy_common/utils/extensions.dart';
 import 'package:proscholy_common/utils/hero_tags.dart';
+import 'package:proscholy_common/views/tag.dart';
 
 class PlaylistScreen extends StatelessWidget {
   final Playlist playlist;
@@ -142,13 +144,14 @@ class _PlaylistScaffold extends ConsumerWidget {
           titleSpacing: context.isPlaylist ? null : 2 * kDefaultPadding,
           title: Text(playlist.name),
           actions: [
-            HighlightableWidget(
-              // enable filter only if there are some song lyrics in playlist
-              isEnabled: playlist.records.where((record) => record.songLyric.targetId != 0).isNotEmpty,
-              onTap: () => _pushSearch(context),
-              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-              icon: const Icon(Icons.filter_alt),
-            ),
+            if (kSupportedTagTypes.contains(TagType.playlist))
+              HighlightableWidget(
+                // enable filter only if there are some song lyrics in playlist
+                isEnabled: playlist.records.where((record) => record.songLyric.targetId != 0).isNotEmpty,
+                onTap: () => _pushSearch(context),
+                padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+                icon: const Icon(Icons.filter_alt),
+              ),
             ValueListenableBuilder(
               valueListenable: sortedAlphabeticallyNotifier,
               builder: (_, sortedAlphabetically, _) => HighlightableWidget(

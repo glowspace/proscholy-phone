@@ -75,7 +75,8 @@ class SelectedTags extends _$SelectedTags {
   void push({Tag? initialTag, List<Tag> initialTags = const []}) {
     if (state.isNotEmpty) selectedTagsStack.add(state);
 
-    for (final tagType in kSupportedTagTypes) {
+    // unsupported types too, e.g. songbook tags are used for order of songbook in search on EZ and EK
+    for (final tagType in TagType.values) {
       ref.invalidate(selectedTagsByTypeProvider(tagType));
     }
 
@@ -88,7 +89,7 @@ class SelectedTags extends _$SelectedTags {
   // restores state of previous search screen
   // is called in `onWillPop` function in `SearchScreen`
   void pop() {
-    for (final tagType in kSupportedTagTypes) {
+    for (final tagType in TagType.values) {
       ref.invalidate(selectedTagsByTypeProvider(tagType));
     }
 

@@ -183,4 +183,19 @@ void main() {
       expect(container.read(filteredSongLyricsProvider).songLyrics!.map((songLyric) => songLyric.id), [10, 1, 2]);
     });
   });
+
+  // songbook tags give order of songbook in search on EZ and EK too, where tags can't be selected in filters
+  test('closing search clears tags of all types', () {
+    final songbookTag = container.read(appDependenciesProvider).store.box<Songbook>().get(58)!.tag;
+    final selectedTags = container.read(selectedTagsProvider.notifier);
+
+    selectedTags.push(initialTag: songbookTag);
+    selectedTags.pop();
+
+    expect(container.read(selectedTagsByTypeProvider(TagType.songbook)), isEmpty);
+
+    selectedTags.push(initialTag: songbookTag);
+
+    expect(container.read(selectedTagsByTypeProvider(TagType.songbook)), {songbookTag});
+  });
 }

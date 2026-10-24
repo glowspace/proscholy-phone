@@ -121,12 +121,21 @@ void main() {
 
     expect(findInStack(SearchScreen), findsNWidgets(2));
     expect(findInStack(PlaylistScreen), findsOneWidget);
-    expect(selectedTagNames(tester), {if (isZPS) 'Mše'});
+    expect(selectedTagNames(tester), {'Mše'});
 
     await goBack(tester);
 
     expect(find.byType(PlaylistScreen), findsOneWidget);
     expect(selectedTagNames(tester), isEmpty);
+  }, skip: !isZPS);
+
+  testWidgets('playlist has filter only where tags are supported', (tester) async {
+    await pumpNavigation(tester);
+
+    await tapDestination(tester, 'Seznamy');
+    await tapText(tester, 'Mše');
+
+    expect(find.byIcon(Icons.filter_alt), isZPS ? findsOneWidget : findsNothing);
   });
 
   testWidgets('song lyric for playlist is picked in new search', (tester) async {
@@ -189,8 +198,9 @@ void main() {
     await tapDestination(tester, 'Hledání');
     await tapDestination(tester, 'Seznamy');
     await tapText(tester, 'Mše');
-    await tester.tap(find.byIcon(Icons.filter_alt));
+    await tester.tap(find.byIcon(Icons.add));
     await tester.pumpAndSettle();
+    await tapText(tester, 'píseň');
     await tapDestination(tester, 'Nástěnka');
 
     expect(findInStack(SearchScreen), findsNothing);
