@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gql/ast.dart';
 import 'package:gql/language.dart';
@@ -30,6 +32,16 @@ class _FakeLink extends Link {
         response: const {},
       ),
     );
+  }
+}
+
+// answers after timeout of requests
+class _SlowLink extends Link {
+  @override
+  Stream<Response> request(Request request, [NextLink? forward]) async* {
+    await Future.delayed(const Duration(seconds: 70));
+
+    yield Response(data: const {'__typename': 'Query', 'news_items': []}, response: const {});
   }
 }
 
@@ -76,5 +88,19 @@ void main() {
 
     expect(link.requests[0].variables, {'updated_after': '2026-01-02 03:04:05'});
     expect(link.requests[1].variables, {'id': 1});
+  });
+
+  // widget test is used for its fake time
+  testWidgets('response that comes after timeout is ignored', (tester) async {
+    final client = ApiClient(link: _SlowLink());
+
+    Object? error;
+    client.getNews().then<void>((_) {}, onError: (Object e) => error = e);
+
+    await tester.pump(const Duration(seconds: 61));
+
+    expect(error, isA<TimeoutException>());
+
+    await tester.pump(const Duration(seconds: 10));
   });
 }
