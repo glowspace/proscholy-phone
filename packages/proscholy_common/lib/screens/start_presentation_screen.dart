@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:proscholy_common/components/custom/close_button.dart';
 import 'package:proscholy_common/components/highlightable_widget.dart';
@@ -17,32 +19,26 @@ class StartPresentationScreen extends StatefulWidget {
   State<StartPresentationScreen> createState() => _StartPresentationScreenState();
 }
 
-class _StartPresentationScreenState extends State<StartPresentationScreen> with WidgetsBindingObserver {
-  bool _onExternalDisplay = false;
+class _StartPresentationScreenState extends State<StartPresentationScreen> {
+  late final StreamSubscription<bool> _onExternalDisplaySubscription;
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) => _updateOnExternalDisplay();
+  bool _onExternalDisplay = false;
 
   @override
   void initState() {
     super.initState();
 
-    _updateOnExternalDisplay();
-
-    WidgetsBinding.instance.addObserver(this);
+    _onExternalDisplaySubscription = context.providers
+        .read(presentationProvider)
+        .onExternalDisplayChanges
+        .listen((onExternalDisplay) => setState(() => _onExternalDisplay = onExternalDisplay));
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
+    _onExternalDisplaySubscription.cancel();
 
     super.dispose();
-  }
-
-  void _updateOnExternalDisplay() {
-    context.providers.read(presentationProvider).onExternalDisplay.then((onExternalDisplay) {
-      if (mounted) setState(() => _onExternalDisplay = onExternalDisplay);
-    });
   }
 
   @override

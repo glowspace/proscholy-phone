@@ -32,6 +32,7 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 const _pathProviderChannel = MethodChannel('plugins.flutter.io/path_provider');
 const _openedFileChannel = MethodChannel('proscholyCommon/openedFile');
 const _presentationChannel = MethodChannel('proscholyCommon/presentation');
+const _externalDisplayChannel = EventChannel('proscholyCommon/presentation/externalDisplay');
 const _wakelockChannel = 'dev.flutter.pigeon.wakelock_plus_platform_interface.WakelockPlusApi.toggle';
 
 // logo is in assets of the apps, so transparent 1x1 png is used in tests
@@ -226,6 +227,10 @@ Future<void> pumpApp(
 }) async {
   _messenger.setMockMethodCallHandler(_openedFileChannel, (_) async => null);
   _messenger.setMockMethodCallHandler(_presentationChannel, (_) async => null);
+  _messenger.setMockStreamHandler(
+    _externalDisplayChannel,
+    MockStreamHandler.inline(onListen: (_, events) => events.success(false)),
+  );
   _messenger.setMockMessageHandler(
     _wakelockChannel,
     (_) async => const StandardMessageCodec().encodeMessage(<Object?>[null]),
@@ -239,6 +244,7 @@ Future<void> pumpApp(
   addTearDown(() {
     _messenger.setMockMethodCallHandler(_openedFileChannel, null);
     _messenger.setMockMethodCallHandler(_presentationChannel, null);
+    _messenger.setMockStreamHandler(_externalDisplayChannel, null);
     _messenger.setMockMessageHandler(_wakelockChannel, null);
     _messenger.setMockMessageHandler('flutter/assets', null);
   });

@@ -17,6 +17,9 @@ class PresentationPlugin: NSObject, FlutterPlugin, FlutterStreamHandler {
 
         registrar.addMethodCallDelegate(instance, channel: channel)
 
+        let externalDisplayChannel = FlutterEventChannel(name: "proscholyCommon/presentation/externalDisplay", binaryMessenger: registrar.messenger())
+        externalDisplayChannel.setStreamHandler(ExternalDisplayStreamHandler())
+
         NotificationCenter.default.addObserver(instance, selector: #selector(sceneDidDisconnect), name: UIScene.didDisconnectNotification, object: nil)
     }
 
@@ -119,5 +122,41 @@ class PresentationPlugin: NSObject, FlutterPlugin, FlutterStreamHandler {
         dataSink = nil
 
         return nil
+    }
+}
+
+// sends whether external display is connected, when it is listened to and whenever it connects or disconnects
+class ExternalDisplayStreamHandler: NSObject, FlutterStreamHandler {
+    private var eventSink: FlutterEventSink?
+
+    public func onListen(withArguments arguments: Any?, eventSink: @escaping FlutterEventSink) -> FlutterError? {
+        self.eventSink = eventSink
+
+        NotificationCenter.default.addObserver(self, selector: #selector(sceneWillConnect), name: UIScene.willConnectNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(sceneDidDisconnect), name: UIScene.didDisconnectNotification, object: nil)
+
+        eventSink(UIScreen.screens.count > 1)
+
+        return nil
+    }
+
+    public func onCancel(withArguments arguments: Any?) -> FlutterError? {
+        NotificationCenter.default.removeObserver(self)
+
+        eventSink = nil
+
+        return nil
+    }
+
+    @objc func sceneWillConnect(notification: Notification) {
+        guard let scene = notification.object as? UIWindowScene, scene.session.role == .windowExternalDisplay else { return }
+
+        eventSink?(true)
+    }
+
+    @objc func sceneDidDisconnect(notification: Notification) {
+        guard let scene = notification.object as? UIWindowScene, scene.session.role == .windowExternalDisplay else { return }
+
+        eventSink?(false)
     }
 }

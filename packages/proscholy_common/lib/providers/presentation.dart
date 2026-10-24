@@ -211,4 +211,6 @@ class PresentationProvider extends ChangeNotifier {
   }
 
   Future<bool> get onExternalDisplay => PresentationService.instance.isExternalScreenConnected();
+
+  Stream<bool> get onExternalDisplayChanges => PresentationService.instance.getExternalScreenConnectedStream();
 }

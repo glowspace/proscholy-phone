@@ -1,9 +1,6 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:proscholy_common/screens/start_presentation_screen.dart';
 import 'package:proscholy_common/utils/services/external_actions.dart';
 
 import '../utils.dart';
@@ -11,30 +8,38 @@ import '../utils.dart';
 void main() {
   setUpAll(mockFirebase);
 
-  testWidgets('screen closed before external display is checked', (tester) async {
+  testWidgets('external display connected while screen is open is detected', (tester) async {
     final appDependencies = await tester.runAsync(createAppDependencies);
 
     await pumpApp(tester, appDependencies!);
 
-    final isConnected = Completer<bool>();
+    late MockStreamHandlerEventSink externalDisplay;
 
-    tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
-      const MethodChannel('proscholyCommon/presentation'),
-      (_) => isConnected.future,
+    tester.binding.defaultBinaryMessenger.setMockStreamHandler(
+      const EventChannel('proscholyCommon/presentation/externalDisplay'),
+      MockStreamHandler.inline(
+        onListen: (_, events) {
+          externalDisplay = events;
+          externalDisplay.success(false);
+        },
+      ),
     );
 
     ExternalActionsService.instance.navigatorKey.currentState!.pushNamed('/display/present');
     await tester.pumpAndSettle();
 
-    expect(find.byType(StartPresentationScreen), findsOneWidget);
+    expect(find.textContaining('Nebyl detekován žádný externí displej'), findsOneWidget);
 
-    ExternalActionsService.instance.navigatorKey.currentState!.pop();
+    externalDisplay.success(true);
     await tester.pumpAndSettle();
 
-    isConnected.complete(true);
-    await tester.pump();
+    expect(find.textContaining('Nebyl detekován žádný externí displej'), findsNothing);
+    expect(find.text('Světlé písmo'), findsOneWidget);
 
-    expect(tester.takeException(), isNull);
+    externalDisplay.success(false);
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('Nebyl detekován žádný externí displej'), findsOneWidget);
   });
 
   testWidgets('settings can be scrolled on small phone with large text', (tester) async {

@@ -20,6 +20,20 @@ object PresentationService: EventChannel.StreamHandler  {
     private var dataSink: EventChannel.EventSink? = null
     private var pendingData: String? = null
 
+    private var externalDisplaySink: EventChannel.EventSink? = null
+
+    private val displayListener = object : DisplayManager.DisplayListener {
+        override fun onDisplayAdded(displayId: Int) {
+            externalDisplaySink?.success(isExternalScreenConnected())
+        }
+
+        override fun onDisplayRemoved(displayId: Int) {
+            externalDisplaySink?.success(isExternalScreenConnected())
+        }
+
+        override fun onDisplayChanged(displayId: Int) { }
+    }
+
     var context: Context? = null
 
     fun register(binaryMessenger: BinaryMessenger) {
@@ -36,10 +50,7 @@ object PresentationService: EventChannel.StreamHandler  {
 
                     result.success(null)
                 }
-                "isExternalScreenConnected" -> {
-                    val displayManager = context!!.getSystemService(Context.DISPLAY_SERVICE) as DisplayManager
-                    result.success(displayManager.getDisplays(DisplayManager.DISPLAY_CATEGORY_PRESENTATION).isNotEmpty())
-                }
+                "isExternalScreenConnected" -> result.success(isExternalScreenConnected())
                 "transferData" -> {
                     (call.arguments as? String)?.let { transferData(it) }
 
@@ -48,6 +59,29 @@ object PresentationService: EventChannel.StreamHandler  {
                 else -> result.notImplemented()
             }
         }
+
+        // sends whether external display is connected, when it is listened to and whenever display is added or removed
+        EventChannel(binaryMessenger, "proscholyCommon/presentation/externalDisplay").setStreamHandler(object : EventChannel.StreamHandler {
+            override fun onListen(args: Any?, events: EventChannel.EventSink?) {
+                externalDisplaySink = events
+
+                (context!!.getSystemService(Context.DISPLAY_SERVICE) as DisplayManager).registerDisplayListener(displayListener, null)
+
+                events?.success(isExternalScreenConnected())
+            }
+
+            override fun onCancel(args: Any?) {
+                (context?.getSystemService(Context.DISPLAY_SERVICE) as? DisplayManager)?.unregisterDisplayListener(displayListener)
+
+                externalDisplaySink = null
+            }
+        })
+    }
+
+    private fun isExternalScreenConnected(): Boolean {
+        val displayManager = context!!.getSystemService(Context.DISPLAY_SERVICE) as DisplayManager
+
+        return displayManager.getDisplays(DisplayManager.DISPLAY_CATEGORY_PRESENTATION).isNotEmpty()
     }
 
     private fun startPresentation() {
