@@ -1,0 +1,3 @@
+# packages of the workspace share these
+/.dart_tool/
+/build/

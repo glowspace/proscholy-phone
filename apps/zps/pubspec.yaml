@@ -8,6 +8,8 @@ environment:
   sdk: ^3.8.0
   flutter: ">=1.17.0"
 
+resolution: workspace
+
 dependencies:
   flutter:
     sdk: flutter
@@ -15,10 +17,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  proscholy_common:
-    git:
-      url: https://github.com/glowspace/proscholy-phone-common.git
-      ref: f5cde08224e5ab6eaaf8e480bb4fea5169ce4154
+  proscholy_common: ^0.0.1
 
   sqflite: ^2.0.2+1
   firebase_core: ^5.0.0

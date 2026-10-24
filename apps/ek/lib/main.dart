@@ -19,7 +19,7 @@ import 'package:proscholy_common/screens/presentation.dart';
 import 'package:proscholy_common/theme.dart';
 import 'package:proscholy_common/utils/services/external_actions.dart';
 import 'package:proscholy_common/utils/services/spotlight.dart';
-import 'package:zpevnik/firebase_options.dart';
+import 'package:evangelicky_kancional/firebase_options.dart';
 
 const _title = 'Evangelický kancionál';
 
