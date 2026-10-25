@@ -11,7 +11,6 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:zpevnik/firebase_options.dart';
-import 'package:proscholy_common/models/generated/objectbox.g.dart';
 import 'package:proscholy_common/providers/app_dependencies.dart';
 import 'package:proscholy_common/providers/settings.dart';
 import 'package:proscholy_common/providers/update.dart';
@@ -45,7 +44,7 @@ Future<void> _start() async {
 
   final appDependencies = AppDependencies(
     sharedPreferences: await SharedPreferences.getInstance(),
-    store: await openStore(),
+    store: await openOrAttachStore(),
     ftsDatabase: await openDatabase(join(await getDatabasesPath(), 'zpevnik.db')),
     packageInfo: await PackageInfo.fromPlatform(),
   );
