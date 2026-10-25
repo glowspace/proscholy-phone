@@ -2,7 +2,7 @@ name: evangelicky_zpevnik
 
 publish_to: 'none'
 
-version: 1.2.3+25
+version: 1.2.4+26
 
 environment:
   sdk: ^3.8.0
