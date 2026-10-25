@@ -1,0 +1,54 @@
+name: zpevnik
+
+publish_to: 'none'
+
+version: 3.4.2+201
+
+environment:
+  sdk: ^3.8.0
+  flutter: ">=1.17.0"
+
+resolution: workspace
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  flutter_localizations:
+    sdk: flutter
+
+  proscholy_common: ^0.0.1
+
+  sqflite: ^2.0.2+1
+  firebase_core: ^5.0.0
+  flutter_riverpod: ^3.0.0
+  package_info_plus: ^10.2.2
+  path: ^1.9.1
+  sentry_flutter: ^10.1.0
+  shared_preferences: ^2.4.0
+  flutter_quill: ^11.0.0
+  flutter_native_splash: ^2.4.6
+  firebase_analytics: ^13.0.0
+
+dev_dependencies:
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+
+  # fonts must be defined per project, otherwise they are not bundled
+  fonts:
+    - family: CustomIcon
+      fonts:
+        - asset: packages/proscholy_common/assets/fonts/CustomIcon.ttf
+    - family: KaiseiHarunoUmi
+      fonts:
+        - asset: packages/proscholy_common/assets/fonts/KaiseiHarunoUmi-Regular.ttf
+    - family: Amiri
+      fonts:
+        - asset: packages/proscholy_common/assets/fonts/Amiri-Regular.ttf
+
+  assets:
+    - assets/data.json
+    - assets/svg.zip
+    - assets/images/logos/

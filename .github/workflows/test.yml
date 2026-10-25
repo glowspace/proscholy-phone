@@ -1,0 +1,48 @@
+name: test
+
+on:
+  push:
+    branches: [develop]
+  pull_request:
+
+env:
+  FLUTTER_VERSION: 3.44.4
+
+defaults:
+  run:
+    working-directory: packages/proscholy_common
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+      - run: flutter pub get
+      - name: Check formatting
+        run: dart format --output=none --set-exit-if-changed $(git ls-files 'lib/*.dart' 'test/*.dart' | grep -v -e '/generated/' -e '\.g\.dart$' -e '\.freezed\.dart$')
+      - run: flutter analyze
+      - name: Analyze apps
+        run: for app in zps ez ek; do (cd ../../apps/$app && flutter analyze lib) || exit 1; done
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [ZPS, EZ, EK]
+    steps:
+      - uses: actions/checkout@v5
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+      - run: sudo apt-get install -y libsqlite3-dev
+      - run: flutter pub get
+      # objectbox-dart has no tags for 6.0.0 previews, so the C library of objectbox 6.0.0-preview.5 is installed directly
+      - name: Install ObjectBox library
+        run: bash <(curl -s https://raw.githubusercontent.com/objectbox/objectbox-c/v6.0.0-beta2/download.sh) --quiet --install 6.0.0-beta2
+      - run: flutter test --dart-define=ZPEVNIK_TARGET=${{ matrix.target }}
