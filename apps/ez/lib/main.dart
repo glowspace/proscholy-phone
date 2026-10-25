@@ -1,0 +1,113 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_quill/flutter_quill.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:path/path.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:proscholy_common/providers/app_dependencies.dart';
+import 'package:proscholy_common/providers/settings.dart';
+import 'package:proscholy_common/providers/update.dart';
+import 'package:proscholy_common/routing/navigator_observer.dart';
+import 'package:proscholy_common/routing/router.dart';
+import 'package:proscholy_common/screens/presentation.dart';
+import 'package:proscholy_common/theme.dart';
+import 'package:proscholy_common/utils/services/external_actions.dart';
+import 'package:proscholy_common/utils/services/spotlight.dart';
+import 'package:zpevnik/firebase_options.dart';
+
+const _title = 'Evangelický zpěvník';
+
+Future<void> main() async {
+  if (kDebugMode) return _start();
+
+  // app is started inside, so errors during its start are reported too
+  await SentryFlutter.init(
+    (options) {
+      options.dsn = 'https://a4f7c8bc0e75a175dcf43de9f3959f7e@o4506177850572800.ingest.sentry.io/4510074271694848';
+      options.tracesSampleRate = 0.1;
+    },
+    appRunner: _start,
+  );
+}
+
+Future<void> _start() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  FirebaseAnalytics.instance.setUserProperty(name: 'app', value: 'EZ');
+
+  final appDependencies = AppDependencies(
+    sharedPreferences: await SharedPreferences.getInstance(),
+    store: await openOrAttachStore(),
+    ftsDatabase: await openDatabase(join(await getDatabasesPath(), 'zpevnik.db')),
+    packageInfo: await PackageInfo.fromPlatform(),
+  );
+
+  // initialize listeners for externals actions
+  ExternalActionsService.instance.initialize();
+
+  // load offline data during first start
+  await loadInitial(appDependencies);
+
+  // check if app was opened from spotlight search on iOS
+  final initialRoute = await SpotlightService.instance.getInitialRoute();
+
+  runApp(ProviderScope(
+    overrides: [appDependenciesProvider.overrideWithValue(appDependencies)],
+    child: MainWidget(initialRoute: initialRoute),
+  ));
+}
+
+class MainWidget extends ConsumerWidget {
+  final String? initialRoute;
+
+  const MainWidget({super.key, this.initialRoute});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final darkModeEnabled = ref.watch(settingsProvider.select((settings) => settings.darkModeEnabled));
+    final seedColor = ref.watch(settingsProvider.select((settings) => Color(settings.seedColor)));
+
+    ThemeMode? themeMode;
+
+    if (darkModeEnabled != null) {
+      if (darkModeEnabled) {
+        themeMode = ThemeMode.dark;
+      } else {
+        themeMode = ThemeMode.light;
+      }
+    }
+
+    return MaterialApp(
+      navigatorKey: ExternalActionsService.instance.navigatorKey,
+      supportedLocales: const [Locale('cs', 'CZ')],
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        FlutterQuillLocalizations.delegate,
+      ],
+      debugShowCheckedModeBanner: false,
+      title: _title,
+      theme: AppTheme.light(seedColor),
+      darkTheme: AppTheme.dark(seedColor),
+      themeMode: themeMode,
+      initialRoute: initialRoute ?? '/',
+      onGenerateInitialRoutes: AppRouter.generateInitialRoutes,
+      onGenerateRoute: AppRouter.generateRoute,
+      navigatorObservers: [
+        ref.read(appNavigatorObserverProvider),
+        FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance),
+      ],
+    );
+  }
+}
+
+@pragma('vm:entry-point')
+void mainPresentation() => runApp(const MaterialApp(home: PresentationScreen(), debugShowCheckedModeBanner: false));
