@@ -1,3 +1,6 @@
 # packages of the workspace share these
 /.dart_tool/
 /build/
+
+# upload key of zpevnik is kept in the repository root
+*.jks
