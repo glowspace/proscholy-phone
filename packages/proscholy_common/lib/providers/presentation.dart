@@ -65,7 +65,10 @@ class PresentationProvider extends ChangeNotifier {
     _isPresentingLocally = !(await onExternalDisplay);
     _part = 0;
 
-    if (!_isPresentingLocally) PresentationService.instance.startPresentation();
+    if (!_isPresentingLocally) {
+      PresentationService.instance.setOnExternalDisplayDisconnected(stop);
+      PresentationService.instance.startPresentation();
+    }
 
     notifyListeners();
   }
@@ -208,4 +211,6 @@ class PresentationProvider extends ChangeNotifier {
   }
 
   Future<bool> get onExternalDisplay => PresentationService.instance.isExternalScreenConnected();
+
+  Stream<bool> get onExternalDisplayChanges => PresentationService.instance.getExternalScreenConnectedStream();
 }

@@ -42,7 +42,7 @@ List<Tag> tags(Ref ref, TagType tagType) {
     case TagType.language:
       final languageCounts = <String, int>{};
 
-      for (final songLyric in ref.watch(songLyricsProvider)) {
+      for (final songLyric in ref.watch(songLyricsProvider).value ?? []) {
         languageCounts[songLyric.langDescription] = (languageCounts[songLyric.langDescription] ?? 0) + 1;
       }
 
@@ -70,16 +70,16 @@ class SelectedTags extends _$SelectedTags {
     return {for (final tagType in kSupportedTagTypes) ...ref.watch(selectedTagsByTypeProvider(tagType))};
   }
 
-  // prepares state for new search screen with optional `initialTag` by storing current state and invalidating all providers
-  // is called when starting search from `PlaylistScreen`, `SongbookScreen` or `SongLyricTag`
-  void push({Tag? initialTag, List<Tag> initialTags = const []}) {
+  // prepares state for new search screen with `initialTags` by storing current state and invalidating all providers
+  // is called by `pushSearch` and for search links
+  void push({List<Tag> initialTags = const []}) {
     if (state.isNotEmpty) selectedTagsStack.add(state);
 
-    for (final tagType in kSupportedTagTypes) {
+    // unsupported types too, e.g. songbook tags are used for order of songbook in search on EZ and EK
+    for (final tagType in TagType.values) {
       ref.invalidate(selectedTagsByTypeProvider(tagType));
     }
 
-    if (initialTag != null) toggleSelection(initialTag);
     for (final tag in initialTags) {
       toggleSelection(tag);
     }
@@ -88,7 +88,7 @@ class SelectedTags extends _$SelectedTags {
   // restores state of previous search screen
   // is called in `onWillPop` function in `SearchScreen`
   void pop() {
-    for (final tagType in kSupportedTagTypes) {
+    for (final tagType in TagType.values) {
       ref.invalidate(selectedTagsByTypeProvider(tagType));
     }
 

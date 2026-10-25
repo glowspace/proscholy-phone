@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of '../song_lyric.dart';
@@ -9,14 +9,14 @@ part of '../song_lyric.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
 /// @nodoc
 mixin _$SongLyric {
 
-@Id(assignable: true)@JsonKey(fromJson: int.parse) int get id;@JsonKey(readValue: _readDisplayId) String get displayId;@JsonKey(readValue: _readDisplayName) String get displayName; String get name;@JsonKey(name: 'secondary_name_1') String? get secondaryName1;@JsonKey(name: 'secondary_name_2') String? get secondaryName2; String? get lyrics;// uses *New* to migrate conflicts between ZP and EZ
-@JsonKey(name: 'hymnology') String get hymnologyNew; String get lang;@JsonKey(name: 'lang_string') String get langDescription;@JsonKey(name: 'type_enum', fromJson: SongLyricType.rawValueFromString) int get dbType; bool get hasChords; bool get isArrangement;@JsonKey(fromJson: _songFromJson) ToOne<Song> get song;@JsonKey(fromJson: _settingsFromJson) ToOne<SongLyricSettingsModel> get settings;@JsonKey(name: 'authors_pivot', fromJson: _authorsFromJson) ToMany<Author> get authors;@JsonKey(fromJson: _tagsFromJson) ToMany<Tag> get tags;@Backlink()@JsonKey(fromJson: _externalsFromJson) ToMany<External> get externals;@Backlink()@JsonKey(fromJson: _songbookRecordsFromJson) ToMany<SongbookRecord> get songbookRecords;@Backlink()@JsonKey(fromJson: _playlistRecordsFromJson) ToMany<PlaylistRecord> get playlistRecords;
+@Id(assignable: true)@JsonKey(fromJson: int.parse) int get id;@JsonKey(readValue: _readDisplayId) String get displayId;@JsonKey(readValue: _readDisplayName) String get displayName; String get name;@JsonKey(name: 'secondary_name_1') String? get secondaryName1;@JsonKey(name: 'secondary_name_2') String? get secondaryName2; String? get lyrics;@JsonKey(name: 'hymnology') String get hymnologyNew; String get lang;@JsonKey(name: 'lang_string') String get langDescription;@JsonKey(name: 'type_enum', fromJson: SongLyricType.rawValueFromString) int get dbType; bool get hasChords; bool get isArrangement;@JsonKey(fromJson: _songFromJson) ToOne<Song> get song;@JsonKey(fromJson: _settingsFromJson) ToOne<SongLyricSettingsModel> get settings;@JsonKey(name: 'authors_pivot', fromJson: _authorsFromJson) ToMany<Author> get authors;@JsonKey(fromJson: _tagsFromJson) ToMany<Tag> get tags;@Backlink()@JsonKey(fromJson: _externalsFromJson) ToMany<External> get externals;@Backlink()@JsonKey(fromJson: _songbookRecordsFromJson) ToMany<SongbookRecord> get songbookRecords;@Backlink()@JsonKey(fromJson: _playlistRecordsFromJson) ToMany<PlaylistRecord> get playlistRecords;
 /// Create a copy of SongLyric
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -58,7 +58,7 @@ class _$SongLyricCopyWithImpl<$Res>
 /// Create a copy of SongLyric
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? displayId = null,Object? displayName = null,Object? name = null,Object? secondaryName1 = freezed,Object? secondaryName2 = freezed,Object? lyrics = freezed,Object? hymnologyNew = null,Object? lang = null,Object? langDescription = null,Object? dbType = null,Object? hasChords = null,Object? isArrangement = null,Object? song = null,Object? settings = null,Object? authors = null,Object? tags = null,Object? externals = null,Object? songbookRecords = null,Object? playlistRecords = null,}) {
-  return _then(_self.copyWith(
+  return _then(SongLyric(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,displayId: null == displayId ? _self.displayId : displayId // ignore: cast_nullable_to_non_nullable
 as String,displayName: null == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
@@ -224,7 +224,6 @@ class _SongLyric extends SongLyric {
 @override@JsonKey(name: 'secondary_name_1') final  String? secondaryName1;
 @override@JsonKey(name: 'secondary_name_2') final  String? secondaryName2;
 @override final  String? lyrics;
-// uses *New* to migrate conflicts between ZP and EZ
 @override@JsonKey(name: 'hymnology') final  String hymnologyNew;
 @override final  String lang;
 @override@JsonKey(name: 'lang_string') final  String langDescription;

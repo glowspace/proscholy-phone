@@ -113,6 +113,9 @@ class _SearchFieldState extends State<SearchField> {
   void dispose() {
     if (!widget.isHome) searchTextSubscription.close();
 
+    _controller.dispose();
+    _focusNode.dispose();
+
     super.dispose();
   }
 
@@ -211,7 +214,9 @@ class _SearchFieldState extends State<SearchField> {
     void handler(AnimationStatus status) {
       if (status == AnimationStatus.completed) {
         // TODO: why is it needed with delay?
-        Future.delayed(const Duration(milliseconds: 10), () => _focusNode.requestFocus());
+        Future.delayed(const Duration(milliseconds: 10), () {
+          if (mounted) _focusNode.requestFocus();
+        });
 
         animation?.removeStatusListener(handler);
       }

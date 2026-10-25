@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:proscholy_common/constants.dart' hide red, green, blue;
 import 'package:proscholy_common/models/tag.dart';
 import 'package:proscholy_common/providers/tags.dart';
+import 'package:proscholy_common/routing/arguments.dart';
 import 'package:proscholy_common/routing/navigator_observer.dart';
 
 extension PlatformExtension on TargetPlatform {
@@ -57,23 +58,29 @@ extension BuildContextExtension on BuildContext {
     if (uri.queryParameters.containsKey('stitky')) {
       final selectedTags = uri.queryParameters['stitky']!
           .split(',')
-          .map((id) => providers.read(tagProvider(int.parse(id))))
+          .map((id) => providers.read(tagProvider(int.tryParse(id) ?? 0)))
           .where((tag) => tag != null)
           .cast<Tag>()
           .toList();
 
-      providers.read(selectedTagsProvider.notifier).push(initialTags: selectedTags);
-
-      routeName = '/search';
+      return pushSearch(initialTags: selectedTags);
     }
 
-    if (providers.read(appNavigatorObserverProvider).isPathInStack(routeName)) {
+    // screens without arguments, e.g. search, are open only once, screens with them, e.g. song lyric, can be open more times
+    if (arguments == null && providers.read(appNavigatorObserverProvider).isPathInStack(routeName)) {
       popUntil(routeName);
 
-      if (arguments != null) return replace(routeName, arguments: arguments);
+      return null;
     }
 
     return Navigator.of(this).pushNamed(routeName, arguments: arguments);
+  }
+
+  // each search screen restores selected tags of the previous one when it is closed, so new search is always pushed
+  Future<T?> pushSearch<T extends Object?>({List<Tag> initialTags = const [], SearchScreenArguments? arguments}) {
+    providers.read(selectedTagsProvider.notifier).push(initialTags: initialTags);
+
+    return Navigator.of(this).pushNamed('/search', arguments: arguments);
   }
 
   void pop<T>([T? result]) {
@@ -90,9 +97,5 @@ extension BuildContextExtension on BuildContext {
 
   void maybePop<T>([T? result]) {
     Navigator.of(this).maybePop(result);
-  }
-
-  Future<T?> replace<T extends Object?>(String routeName, {Object? arguments}) {
-    return Navigator.of(this).pushReplacementNamed(routeName, arguments: arguments);
   }
 }

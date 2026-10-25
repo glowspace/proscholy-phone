@@ -13,15 +13,31 @@ import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
 
 object PresentationService: EventChannel.StreamHandler  {
+    private lateinit var channel: MethodChannel
+
     private var presentationDisplay: PresentationDisplay? = null
 
     private var dataSink: EventChannel.EventSink? = null
     private var pendingData: String? = null
 
+    private var externalDisplaySink: EventChannel.EventSink? = null
+
+    private val displayListener = object : DisplayManager.DisplayListener {
+        override fun onDisplayAdded(displayId: Int) {
+            externalDisplaySink?.success(isExternalScreenConnected())
+        }
+
+        override fun onDisplayRemoved(displayId: Int) {
+            externalDisplaySink?.success(isExternalScreenConnected())
+        }
+
+        override fun onDisplayChanged(displayId: Int) { }
+    }
+
     var context: Context? = null
 
     fun register(binaryMessenger: BinaryMessenger) {
-        val channel = MethodChannel(binaryMessenger, "proscholyCommon/presentation")
+        channel = MethodChannel(binaryMessenger, "proscholyCommon/presentation")
         channel.setMethodCallHandler { call, result ->
             when (call.method) {
                 "startPresentation" -> {
@@ -34,10 +50,7 @@ object PresentationService: EventChannel.StreamHandler  {
 
                     result.success(null)
                 }
-                "isExternalScreenConnected" -> {
-                    val displayManager = context!!.getSystemService(Context.DISPLAY_SERVICE) as DisplayManager
-                    result.success(displayManager.getDisplays(DisplayManager.DISPLAY_CATEGORY_PRESENTATION).isNotEmpty())
-                }
+                "isExternalScreenConnected" -> result.success(isExternalScreenConnected())
                 "transferData" -> {
                     (call.arguments as? String)?.let { transferData(it) }
 
@@ -46,6 +59,29 @@ object PresentationService: EventChannel.StreamHandler  {
                 else -> result.notImplemented()
             }
         }
+
+        // sends whether external display is connected, when it is listened to and whenever display is added or removed
+        EventChannel(binaryMessenger, "proscholyCommon/presentation/externalDisplay").setStreamHandler(object : EventChannel.StreamHandler {
+            override fun onListen(args: Any?, events: EventChannel.EventSink?) {
+                externalDisplaySink = events
+
+                (context!!.getSystemService(Context.DISPLAY_SERVICE) as DisplayManager).registerDisplayListener(displayListener, null)
+
+                events?.success(isExternalScreenConnected())
+            }
+
+            override fun onCancel(args: Any?) {
+                (context?.getSystemService(Context.DISPLAY_SERVICE) as? DisplayManager)?.unregisterDisplayListener(displayListener)
+
+                externalDisplaySink = null
+            }
+        })
+    }
+
+    private fun isExternalScreenConnected(): Boolean {
+        val displayManager = context!!.getSystemService(Context.DISPLAY_SERVICE) as DisplayManager
+
+        return displayManager.getDisplays(DisplayManager.DISPLAY_CATEGORY_PRESENTATION).isNotEmpty()
     }
 
     private fun startPresentation() {
@@ -58,7 +94,11 @@ object PresentationService: EventChannel.StreamHandler  {
             val eventChannel = EventChannel(flutterEngine.dartExecutor.binaryMessenger, "proscholyCommon/presentation/stream")
             eventChannel?.setStreamHandler(this)
 
-            presentationDisplay = PresentationDisplay(context!!, presentationDisplays[0])
+            presentationDisplay = PresentationDisplay(context!!, presentationDisplays[0]) {
+                stopPresentation()
+
+                channel.invokeMethod("onExternalDisplayDisconnected", null)
+            }
             presentationDisplay?.show()
         }
     }
@@ -80,7 +120,8 @@ object PresentationService: EventChannel.StreamHandler  {
 
     private fun createFlutterEngine(): FlutterEngine {
         if (FlutterEngineCache.getInstance().get("/") == null) {
-            val flutterEngine = FlutterEngine(context!!)
+            // plugins of the app would register their channels again, so e.g. opened files would be sent to this engine
+            val flutterEngine = FlutterEngine(context!!, null, false)
             flutterEngine.getNavigationChannel().setInitialRoute("/")
             flutterEngine.getDartExecutor().executeDartEntrypoint(DartExecutor.DartEntrypoint(FlutterInjector.instance().flutterLoader().findAppBundlePath(), "mainPresentation"))
             flutterEngine.getLifecycleChannel().appIsResumed()

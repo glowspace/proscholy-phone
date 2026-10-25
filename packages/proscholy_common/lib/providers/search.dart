@@ -149,7 +149,7 @@ SearchedSongLyricsResult filteredSongLyrics(Ref ref) {
 
     allSongLyrics = songbook.records.map((songbookRecord) => songbookRecord.songLyric.target!).toList();
   } else {
-    allSongLyrics = ref.watch(songLyricsProvider);
+    allSongLyrics = ref.watch(songLyricsProvider).value ?? [];
   }
 
   final matchesSelectedTags = _selectedTagsFilter(ref);

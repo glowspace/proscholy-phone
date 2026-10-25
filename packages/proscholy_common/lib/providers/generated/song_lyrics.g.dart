@@ -91,8 +91,12 @@ final songLyricsProvider = SongLyricsProvider._();
 
 final class SongLyricsProvider
     extends
-        $FunctionalProvider<List<SongLyric>, List<SongLyric>, List<SongLyric>>
-    with $Provider<List<SongLyric>> {
+        $FunctionalProvider<
+          AsyncValue<List<SongLyric>>,
+          List<SongLyric>,
+          FutureOr<List<SongLyric>>
+        >
+    with $FutureModifier<List<SongLyric>>, $FutureProvider<List<SongLyric>> {
   SongLyricsProvider._()
     : super(
         from: null,
@@ -109,24 +113,17 @@ final class SongLyricsProvider
 
   @$internal
   @override
-  $ProviderElement<List<SongLyric>> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
+  $FutureProviderElement<List<SongLyric>> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
 
   @override
-  List<SongLyric> create(Ref ref) {
+  FutureOr<List<SongLyric>> create(Ref ref) {
     return songLyrics(ref);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(List<SongLyric> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<List<SongLyric>>(value),
-    );
   }
 }
 
-String _$songLyricsHash() => r'80ee6a320c9c78cd2760ece5613f9e8308356d2f';
+String _$songLyricsHash() => r'76c0ab79f8d3fdfc6ec066922652bdf48bdc1731';
 
 @ProviderFor(songsListSongLyrics)
 final songsListSongLyricsProvider = SongsListSongLyricsFamily._();

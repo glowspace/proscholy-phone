@@ -1,7 +1,5 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_quill/flutter_quill.dart';
+import 'package:proscholy_common/components/playlist/user_text.dart';
 import 'package:proscholy_common/constants.dart';
 import 'package:proscholy_common/models/presentation.dart';
 
@@ -74,18 +72,11 @@ class Presentation extends StatelessWidget {
                   bottom: textScaler.scale((onExternalDisplay ? 1 : 8) * kDefaultPadding),
                 ),
                 child: presentationData.isUserText
-                    ? QuillEditor.basic(
-                        controller: QuillController(
-                          document: _deserializeMarkdownToDocument(presentingText),
-                          selection: const TextSelection.collapsed(offset: 0),
-                          readOnly: true,
-                        ),
-                        config: QuillEditorConfig(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 1.5 * kDefaultPadding,
-                            vertical: kDefaultPadding,
-                          ),
-                          showCursor: false,
+                    ? UserTextContent(
+                        content: presentingText,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 1.5 * kDefaultPadding,
+                          vertical: kDefaultPadding,
                         ),
                       )
                     : Padding(
@@ -166,13 +157,5 @@ class Presentation extends StatelessWidget {
 
       textScaleFactor -= 0.2;
     }
-  }
-
-  Document _deserializeMarkdownToDocument(String serializedDelta) {
-    if (serializedDelta.isEmpty) return Document();
-
-    final value = jsonDecode(serializedDelta);
-
-    return Document.fromJson(value);
   }
 }

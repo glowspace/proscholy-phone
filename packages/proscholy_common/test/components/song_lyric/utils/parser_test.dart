@@ -46,6 +46,10 @@ void main() {
       ]);
     });
 
+    test('empty lines at start are ignored', () {
+      expect(_tokens('\n\r\n1. Ahoj'), _tokens('1. Ahoj'));
+    });
+
     test('flat chords are converted to sharps', () {
       expect(_tokens('1. [B]a [Es]b [Fsus4]c'), [
         'PresentationBreakpoint(0)',

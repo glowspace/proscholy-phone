@@ -1,6 +1,8 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:objectbox/objectbox.dart';
+import 'package:objectbox_flutter_libs/objectbox_flutter_libs.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:proscholy_common/models/generated/objectbox.g.dart' show getObjectBoxModel, openStore;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
@@ -24,4 +26,13 @@ sealed class AppDependencies with _$AppDependencies {
     // info about application (used for version and build number)
     required PackageInfo packageInfo,
   }) = _AppDependencies;
+}
+
+// Android can start the app again in the same process, e.g. from a link, while the store of the previous start is open
+Future<Store> openOrAttachStore({String? directory}) async {
+  final path = directory ?? (await defaultStoreDirectory()).path;
+
+  if (Store.isOpen(path)) return Store.attach(getObjectBoxModel(), path);
+
+  return openStore(directory: path);
 }

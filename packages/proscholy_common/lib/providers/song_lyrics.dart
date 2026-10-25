@@ -8,7 +8,6 @@ import 'package:proscholy_common/models/generated/objectbox.g.dart';
 import 'package:proscholy_common/models/song_lyric.dart';
 import 'package:proscholy_common/providers/app_dependencies.dart';
 import 'package:proscholy_common/providers/sort.dart';
-import 'package:proscholy_common/providers/utils.dart';
 
 part 'generated/song_lyrics.g.dart';
 
@@ -19,16 +18,31 @@ SongLyric? songLyric(Ref ref, int id) {
   return ref.read(appDependenciesProvider).store.box<SongLyric>().get(id);
 }
 
+// loading all song lyrics with their lyrics and externals would block the app, so they are loaded in another isolate
 @Riverpod(keepAlive: true)
-List<SongLyric> songLyrics(Ref ref) {
-  final random = Random();
-  final songLyrics = queryStore(
-    ref,
-    orderBy: SongLyric_.name,
-  ).where((songLyric) => songLyric.shouldAppearToUser || ref.read(svgProvider(songLyric.id)).isNotEmpty).toList();
+Future<List<SongLyric>> songLyrics(Ref ref) {
+  final store = ref.read(appDependenciesProvider).store;
+  final subscription = store.box<SongLyric>().query().watch().listen((_) => ref.invalidateSelf());
 
-  return switch (ref.watch(sortProvider)) {
-    SortType.random => songLyrics..shuffle(random),
+  ref.onDispose(subscription.cancel);
+
+  final songLyricIdsWithSvg = {for (final fileName in ref.watch(svgsProvider).keys) int.parse(fileName.split('.')[0])};
+
+  return store.runAsync(_loadSongLyrics, (ref.watch(sortProvider), songLyricIdsWithSvg));
+}
+
+List<SongLyric> _loadSongLyrics(Store store, (SortType, Set<int>) parameters) {
+  final (sortType, songLyricIdsWithSvg) = parameters;
+  final query = (store.box<SongLyric>().query()..order(SongLyric_.name)).build();
+  final songLyrics = query
+      .find()
+      .where((songLyric) => songLyric.shouldAppearToUser || songLyricIdsWithSvg.contains(songLyric.id))
+      .toList();
+
+  query.close();
+
+  return switch (sortType) {
+    SortType.random => songLyrics..shuffle(Random()),
     SortType.alpha => songLyrics..sort((a, b) => a.name.compareTo(b.name)),
     SortType.numeric => songLyrics..sort((a, b) => compareNatural(a.displayId, b.displayId)),
   };

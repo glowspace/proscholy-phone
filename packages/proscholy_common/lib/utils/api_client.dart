@@ -126,7 +126,8 @@ class ApiClient {
         cache: GraphQLCache(),
         // by default results are cached, so later updates would get old data and cache would keep all data in memory
         defaultPolicies: DefaultPolicies(query: Policies(fetch: FetchPolicy.noCache)),
-        queryRequestTimeout: Duration(seconds: 60),
+        // graphql completes request again when response comes after its timeout, so timeout is applied in `_query`
+        queryRequestTimeout: null,
       );
 
   Future<Map<String, dynamic>> getNews() async {
@@ -158,7 +159,7 @@ class ApiClient {
   }
 
   Future<Map<String, dynamic>> _query(QueryOptions options) async {
-    final result = await client.query(options);
+    final result = await client.query(options).timeout(const Duration(seconds: 60));
 
     if (result.hasException) throw result.exception!;
 

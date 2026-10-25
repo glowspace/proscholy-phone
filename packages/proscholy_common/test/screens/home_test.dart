@@ -41,6 +41,20 @@ void main() {
     }))!;
   }
 
+  testWidgets('home without data', (tester) async {
+    final appDependencies = await tester.runAsync(
+      () => createAppDependencies(
+        preferences: {
+          'home_screen_sections': [for (final homeSection in HomeSection.values) '${homeSection.index}'],
+        },
+      ),
+    );
+
+    await pumpApp(tester, appDependencies!);
+
+    expect(find.text('Zpěvníky'), findsOneWidget);
+  });
+
   // home can be edited only in ZPS
   testWidgets('dragging section in edit sheet moves that section', skip: !isZPS, (tester) async {
     final appDependencies = await createAppDependenciesWithData(tester, HomeSection.values);

@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:proscholy_common/models/bible_passage.dart';
@@ -62,32 +63,24 @@ final class AppRouter {
                 uri.queryParameters.containsKey('stitky') ||
                 uri.queryParameters.containsKey('zpevniky')) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
-                if (uri.queryParameters['stitky'] != null) {
-                  context.providers
-                      .read(selectedTagsProvider.notifier)
-                      .push(
-                        initialTags: uri.queryParameters['stitky']!
-                            .split(',')
-                            .map((id) => context.providers.read(tagProvider(int.parse(id))))
-                            .toList()
-                            .cast(),
-                      );
-                }
-                if (uri.queryParameters['zpevniky'] != null) {
-                  context.providers
-                      .read(selectedTagsProvider.notifier)
-                      .push(
-                        initialTags: uri.queryParameters['zpevniky']!
-                            .split(',')
-                            .map(
-                              (id) => context.providers
-                                  .read(tagsProvider(TagType.songbook))
-                                  .firstWhere((tag) => tag.id == kSongbookTagIdOffset - int.parse(id)),
-                            )
-                            .toList()
-                            .cast(),
-                      );
-                }
+                if (uri.queryParameters['stitky'] == null && uri.queryParameters['zpevniky'] == null) return;
+
+                final tagIds = uri.queryParameters['stitky']?.split(',') ?? [];
+                final songbookIds = uri.queryParameters['zpevniky']?.split(',') ?? [];
+                final songbookTags = context.providers.read(tagsProvider(TagType.songbook));
+
+                // ids from the website might be missing in the app, one push selects all, as each push clears the selection
+                context.providers
+                    .read(selectedTagsProvider.notifier)
+                    .push(
+                      initialTags: [
+                        for (final id in tagIds) ?context.providers.read(tagProvider(int.tryParse(id) ?? 0)),
+                        for (final id in songbookIds)
+                          ?songbookTags.firstWhereOrNull(
+                            (tag) => tag.id == kSongbookTagIdOffset - (int.tryParse(id) ?? 0),
+                          ),
+                      ],
+                    );
               });
 
               return ProviderScope(

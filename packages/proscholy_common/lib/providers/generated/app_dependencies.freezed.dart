@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of '../app_dependencies.dart';
@@ -9,16 +9,13 @@ part of '../app_dependencies.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$AppDependencies {
 
-// reference to simple key-value storage
- SharedPreferences get sharedPreferences;// objectbox store used as NoSQL database
- Store get store;// FTS4 database that is used during song lyrics search
- Database get ftsDatabase;// info about application (used for version and build number)
- PackageInfo get packageInfo;
+ SharedPreferences get sharedPreferences; Store get store; Database get ftsDatabase; PackageInfo get packageInfo;
 /// Create a copy of AppDependencies
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -67,7 +64,7 @@ class _$AppDependenciesCopyWithImpl<$Res>
 /// Create a copy of AppDependencies
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? sharedPreferences = null,Object? store = null,Object? ftsDatabase = null,Object? packageInfo = null,}) {
-  return _then(_self.copyWith(
+  return _then(AppDependencies(
 sharedPreferences: null == sharedPreferences ? _self.sharedPreferences : sharedPreferences // ignore: cast_nullable_to_non_nullable
 as SharedPreferences,store: null == store ? _self.store : store // ignore: cast_nullable_to_non_nullable
 as Store,ftsDatabase: null == ftsDatabase ? _self.ftsDatabase : ftsDatabase // ignore: cast_nullable_to_non_nullable
@@ -210,13 +207,9 @@ class _AppDependencies implements AppDependencies {
   const _AppDependencies({required this.sharedPreferences, required this.store, required this.ftsDatabase, required this.packageInfo});
   
 
-// reference to simple key-value storage
 @override final  SharedPreferences sharedPreferences;
-// objectbox store used as NoSQL database
 @override final  Store store;
-// FTS4 database that is used during song lyrics search
 @override final  Database ftsDatabase;
-// info about application (used for version and build number)
 @override final  PackageInfo packageInfo;
 
 /// Create a copy of AppDependencies

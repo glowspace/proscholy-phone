@@ -231,15 +231,7 @@ class Playlists extends _$Playlists {
     // favorite playlist must exist before next id is found, otherwise new playlist would get its id
     ref.read(favoritePlaylistProvider);
 
-    final playlists = queryStore(ref, condition: Playlist_.id.notEquals(favoritesPlaylistId), orderBy: Playlist_.rank);
-
-    // TODO: remove this, it is just to fix errors during testflight
-    final playlistRecordsBox = _store.box<PlaylistRecord>();
-    playlistRecordsBox.removeMany(
-      playlistRecordsBox.query(PlaylistRecord_.playlist.equals(0)).build().property(PlaylistRecord_.id).find(),
-    );
-
-    return playlists;
+    return queryStore(ref, condition: Playlist_.id.notEquals(favoritesPlaylistId), orderBy: Playlist_.rank);
   }
 
   // playlist is added as the first one

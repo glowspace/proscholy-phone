@@ -157,6 +157,36 @@ void main() {
     expect(store.box<PlaylistRecord>().get(1), isNull);
   });
 
+  test('playlist records without playlist are removed', () async {
+    await mockDocumentsDirectory();
+
+    final appDependencies = await createAppDependencies(preferences: {'current_version': '1.0.0+1'});
+    final box = appDependencies.store.box<PlaylistRecord>();
+
+    box.putMany([
+      PlaylistRecord(
+        id: 1,
+        rank: 0,
+        songLyric: ToOne(),
+        userText: ToOne(targetId: 1),
+        biblePassage: ToOne(),
+        playlist: ToOne(targetId: 1),
+      ),
+      PlaylistRecord(
+        id: 2,
+        rank: 0,
+        songLyric: ToOne(),
+        userText: ToOne(targetId: 2),
+        biblePassage: ToOne(),
+        playlist: ToOne(),
+      ),
+    ]);
+
+    await loadInitial(appDependencies);
+
+    expect(box.getAll().map((playlistRecord) => playlistRecord.id), [1]);
+  });
+
   group('update', () {
     late _MockClient client;
     late List<dynamic> songLyricsJson;

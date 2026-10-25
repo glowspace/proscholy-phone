@@ -139,7 +139,7 @@ final class TagsProvider
   }
 }
 
-String _$tagsHash() => r'fadc644898d46366b52f4001d1e761d15816d9bb';
+String _$tagsHash() => r'4d11d6f3fdf2ec951edd6c4024651b16843f93e4';
 
 final class TagsFamily extends $Family
     with $FunctionalFamilyOverride<List<Tag>, TagType> {
@@ -191,13 +191,13 @@ final class SelectedTagsProvider
   }
 }
 
-String _$selectedTagsHash() => r'500acd145b94f2031c9c326344187de4aff2bf9d';
+String _$selectedTagsHash() => r'2dfa0e6d08bc327545230531151cf51cf967a2a8';
 
 abstract class _$SelectedTags extends $Notifier<Set<Tag>> {
   Set<Tag> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<Set<Tag>, Set<Tag>>;
     final element =
         ref.element
@@ -207,7 +207,7 @@ abstract class _$SelectedTags extends $Notifier<Set<Tag>> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -295,7 +295,7 @@ abstract class _$SelectedTagsByType extends $Notifier<Set<Tag>> {
   Set<Tag> build(TagType tagType);
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<Set<Tag>, Set<Tag>>;
     final element =
         ref.element
@@ -305,6 +305,6 @@ abstract class _$SelectedTagsByType extends $Notifier<Set<Tag>> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, () => build(_$args));
+    return element.handleCreate(ref, () => build(_$args));
   }
 }

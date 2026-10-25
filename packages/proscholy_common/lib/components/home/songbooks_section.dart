@@ -14,7 +14,7 @@ class SongbooksSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final showingSongbooks = ref.watch(songbooksProvider).sublist(0, _maxShowingSongbooks);
+    final showingSongbooks = ref.watch(songbooksProvider).take(_maxShowingSongbooks).toList();
 
     return Section(
       outsideTitle: 'Zpěvníky',

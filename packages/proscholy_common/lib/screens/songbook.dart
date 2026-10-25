@@ -6,9 +6,10 @@ import 'package:proscholy_common/components/navigation/scaffold.dart';
 import 'package:proscholy_common/components/song_lyric/song_lyrics_list_view.dart';
 import 'package:proscholy_common/constants.dart';
 import 'package:proscholy_common/models/songbook.dart';
+import 'package:proscholy_common/models/tag.dart';
 import 'package:proscholy_common/providers/song_lyrics.dart';
-import 'package:proscholy_common/providers/tags.dart';
 import 'package:proscholy_common/utils/extensions.dart';
+import 'package:proscholy_common/views/tag.dart';
 
 class SongbookScreen extends StatelessWidget {
   final Songbook songbook;
@@ -24,11 +25,12 @@ class SongbookScreen extends StatelessWidget {
         titleSpacing: context.isSongbook ? null : 2 * kDefaultPadding,
         title: Text(songbook.name),
         actions: [
-          HighlightableWidget(
-            onTap: () => _pushSearch(context),
-            padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
-            icon: const Icon(Icons.filter_alt),
-          ),
+          if (kSupportedTagTypes.contains(TagType.songbook))
+            HighlightableWidget(
+              onTap: () => _pushSearch(context),
+              padding: const EdgeInsets.symmetric(horizontal: 1.5 * kDefaultPadding),
+              icon: const Icon(Icons.filter_alt),
+            ),
         ],
       ),
       body: SafeArea(
@@ -44,8 +46,6 @@ class SongbookScreen extends StatelessWidget {
   }
 
   void _pushSearch(BuildContext context) {
-    context.providers.read(selectedTagsProvider.notifier).push(initialTag: songbook.tag);
-
-    context.push('/search');
+    context.pushSearch(initialTags: [songbook.tag]);
   }
 }

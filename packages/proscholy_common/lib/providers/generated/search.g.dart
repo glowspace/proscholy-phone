@@ -46,7 +46,7 @@ abstract class _$SearchText extends $Notifier<String> {
   String build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<String, String>;
     final element =
         ref.element
@@ -56,7 +56,7 @@ abstract class _$SearchText extends $Notifier<String> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -100,7 +100,7 @@ abstract class _$SearchedSongLyrics
   SearchedSongLyricsResult build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref =
         this.ref as $Ref<SearchedSongLyricsResult, SearchedSongLyricsResult>;
     final element =
@@ -111,7 +111,7 @@ abstract class _$SearchedSongLyrics
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -161,4 +161,4 @@ final class FilteredSongLyricsProvider
 }
 
 String _$filteredSongLyricsHash() =>
-    r'57d14659821f2453aa1882d19a1bd6db30b4093a';
+    r'39f990d31d1e6ff0a9b39313d7846b72d1286a56';
