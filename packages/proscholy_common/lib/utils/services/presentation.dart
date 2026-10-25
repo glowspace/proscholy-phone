@@ -1,0 +1,35 @@
+import 'dart:convert';
+
+import 'package:flutter/services.dart';
+import 'package:proscholy_common/models/presentation.dart';
+
+class PresentationService {
+  final methodChannel = const MethodChannel('proscholyCommon/presentation');
+  final streamChannel = const EventChannel('proscholyCommon/presentation/stream');
+  final externalDisplayChannel = const EventChannel('proscholyCommon/presentation/externalDisplay');
+
+  const PresentationService._();
+
+  static PresentationService instance = const PresentationService._();
+
+  Future<void> startPresentation() => methodChannel.invokeMethod('startPresentation');
+
+  Future<void> stopPresentation() => methodChannel.invokeMethod('stopPresentation');
+
+  Future<bool> isExternalScreenConnected() =>
+      methodChannel.invokeMethod<bool>('isExternalScreenConnected').then((value) => value ?? false);
+
+  // current state when listened to and then its changes
+  Stream<bool> getExternalScreenConnectedStream() => externalDisplayChannel.receiveBroadcastStream().cast<bool>();
+
+  Future<void> transferData(PresentationData data) => methodChannel.invokeMethod('transferData', jsonEncode(data));
+
+  void setOnExternalDisplayDisconnected(void Function() onDisconnected) {
+    methodChannel.setMethodCallHandler((call) async {
+      if (call.method == 'onExternalDisplayDisconnected') onDisconnected();
+    });
+  }
+
+  Stream<PresentationData> getDataStream() =>
+      streamChannel.receiveBroadcastStream().map((event) => PresentationData.fromJson(jsonDecode(event)));
+}

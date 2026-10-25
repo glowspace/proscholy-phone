@@ -1,0 +1,159 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+part of '../svgs.dart';
+
+// **************************************************************************
+// RiverpodGenerator
+// **************************************************************************
+
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
+@ProviderFor(Svgs)
+final svgsProvider = SvgsProvider._();
+
+final class SvgsProvider
+    extends $NotifierProvider<Svgs, Map<String, FileSystemEntity>> {
+  SvgsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'svgsProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$svgsHash();
+
+  @$internal
+  @override
+  Svgs create() => Svgs();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Map<String, FileSystemEntity> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<Map<String, FileSystemEntity>>(
+        value,
+      ),
+    );
+  }
+}
+
+String _$svgsHash() => r'cebdeff398ee0ddaa0fe657b3cbc7c12f2cac265';
+
+abstract class _$Svgs extends $Notifier<Map<String, FileSystemEntity>> {
+  Map<String, FileSystemEntity> build();
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref =
+        this.ref
+            as $Ref<
+              Map<String, FileSystemEntity>,
+              Map<String, FileSystemEntity>
+            >;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<
+                Map<String, FileSystemEntity>,
+                Map<String, FileSystemEntity>
+              >,
+              Map<String, FileSystemEntity>,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, build);
+  }
+}
+
+@ProviderFor(Svg)
+final svgProvider = SvgFamily._();
+
+final class SvgProvider extends $NotifierProvider<Svg, String> {
+  SvgProvider._({required SvgFamily super.from, required int super.argument})
+    : super(
+        retry: null,
+        name: r'svgProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$svgHash();
+
+  @override
+  String toString() {
+    return r'svgProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  Svg create() => Svg();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<String>(value),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is SvgProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$svgHash() => r'b914e952dee78cce383080765a1ea85b6ab0694f';
+
+final class SvgFamily extends $Family
+    with $ClassFamilyOverride<Svg, String, String, String, int> {
+  SvgFamily._()
+    : super(
+        retry: null,
+        name: r'svgProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  SvgProvider call(int songLyricId) =>
+      SvgProvider._(argument: songLyricId, from: this);
+
+  @override
+  String toString() => r'svgProvider';
+}
+
+abstract class _$Svg extends $Notifier<String> {
+  late final _$args = ref.$arg as int;
+  int get songLyricId => _$args;
+
+  String build(int songLyricId);
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref = this.ref as $Ref<String, String>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<String, String>,
+              String,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, () => build(_$args));
+  }
+}

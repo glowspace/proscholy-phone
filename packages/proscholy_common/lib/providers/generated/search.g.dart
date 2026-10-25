@@ -1,0 +1,164 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+part of '../search.dart';
+
+// **************************************************************************
+// RiverpodGenerator
+// **************************************************************************
+
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
+@ProviderFor(SearchText)
+final searchTextProvider = SearchTextProvider._();
+
+final class SearchTextProvider extends $NotifierProvider<SearchText, String> {
+  SearchTextProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'searchTextProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$searchTextHash();
+
+  @$internal
+  @override
+  SearchText create() => SearchText();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<String>(value),
+    );
+  }
+}
+
+String _$searchTextHash() => r'96b6c748a31a65dfcba1567c22aea95bbd1c600b';
+
+abstract class _$SearchText extends $Notifier<String> {
+  String build();
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref = this.ref as $Ref<String, String>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<String, String>,
+              String,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, build);
+  }
+}
+
+@ProviderFor(SearchedSongLyrics)
+final searchedSongLyricsProvider = SearchedSongLyricsProvider._();
+
+final class SearchedSongLyricsProvider
+    extends $NotifierProvider<SearchedSongLyrics, SearchedSongLyricsResult> {
+  SearchedSongLyricsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'searchedSongLyricsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$searchedSongLyricsHash();
+
+  @$internal
+  @override
+  SearchedSongLyrics create() => SearchedSongLyrics();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(SearchedSongLyricsResult value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<SearchedSongLyricsResult>(value),
+    );
+  }
+}
+
+String _$searchedSongLyricsHash() =>
+    r'39e354c7c3687d2840db3fbe922cabaf22fefd0e';
+
+abstract class _$SearchedSongLyrics
+    extends $Notifier<SearchedSongLyricsResult> {
+  SearchedSongLyricsResult build();
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref =
+        this.ref as $Ref<SearchedSongLyricsResult, SearchedSongLyricsResult>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<SearchedSongLyricsResult, SearchedSongLyricsResult>,
+              SearchedSongLyricsResult,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, build);
+  }
+}
+
+@ProviderFor(filteredSongLyrics)
+final filteredSongLyricsProvider = FilteredSongLyricsProvider._();
+
+final class FilteredSongLyricsProvider
+    extends
+        $FunctionalProvider<
+          SearchedSongLyricsResult,
+          SearchedSongLyricsResult,
+          SearchedSongLyricsResult
+        >
+    with $Provider<SearchedSongLyricsResult> {
+  FilteredSongLyricsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'filteredSongLyricsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$filteredSongLyricsHash();
+
+  @$internal
+  @override
+  $ProviderElement<SearchedSongLyricsResult> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  SearchedSongLyricsResult create(Ref ref) {
+    return filteredSongLyrics(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(SearchedSongLyricsResult value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<SearchedSongLyricsResult>(value),
+    );
+  }
+}
+
+String _$filteredSongLyricsHash() =>
+    r'39f990d31d1e6ff0a9b39313d7846b72d1286a56';

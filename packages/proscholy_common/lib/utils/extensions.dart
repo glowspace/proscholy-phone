@@ -1,0 +1,101 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:proscholy_common/constants.dart' hide red, green, blue;
+import 'package:proscholy_common/models/tag.dart';
+import 'package:proscholy_common/providers/tags.dart';
+import 'package:proscholy_common/routing/arguments.dart';
+import 'package:proscholy_common/routing/navigator_observer.dart';
+
+extension PlatformExtension on TargetPlatform {
+  bool get isAndroid => this == TargetPlatform.android;
+  bool get isIos => this == TargetPlatform.iOS;
+}
+
+extension BrightnessExtension on Brightness {
+  bool get isLight => this == Brightness.light;
+  bool get isDark => this == Brightness.dark;
+}
+
+extension AsyncSnapshotExtension on AsyncSnapshot {
+  bool get isDone => connectionState == ConnectionState.done;
+}
+
+extension HexColor on Color {
+  static Color? fromHex(String? hexColor) {
+    if (hexColor == null) return null;
+
+    hexColor = hexColor.toUpperCase().replaceAll("#", "");
+
+    if (hexColor.length == 6) hexColor = "FF$hexColor";
+
+    // API might return empty or otherwise invalid color
+    final value = int.tryParse(hexColor, radix: 16);
+
+    if (hexColor.length != 8 || value == null) return null;
+
+    return Color(value);
+  }
+}
+
+extension MediaQueryExtension on MediaQueryData {
+  bool get isTablet => size.width > kTabletSizeBreakpoint && size.height > kTabletSizeBreakpoint;
+}
+
+extension BuildContextExtension on BuildContext {
+  bool get isHome => ModalRoute.of(this)?.settings.name == '/';
+  bool get isDisplay => ModalRoute.of(this)?.settings.name == '/display';
+  bool get isPlaylist => ModalRoute.of(this)?.settings.name == '/playlist';
+  bool get isPlaylists => ModalRoute.of(this)?.settings.name == '/playlists';
+  bool get isSearching => ModalRoute.of(this)?.settings.name == '/search';
+  bool get isSongbook => ModalRoute.of(this)?.settings.name == '/songbook';
+
+  ProviderContainer get providers => ProviderScope.containerOf(this, listen: false);
+
+  Future<T?> push<T extends Object?>(String routeName, {Object? arguments}) async {
+    // TODO: support better way to redirect
+    final uri = Uri.parse(routeName);
+
+    if (uri.queryParameters.containsKey('stitky')) {
+      final selectedTags = uri.queryParameters['stitky']!
+          .split(',')
+          .map((id) => providers.read(tagProvider(int.tryParse(id) ?? 0)))
+          .where((tag) => tag != null)
+          .cast<Tag>()
+          .toList();
+
+      return pushSearch(initialTags: selectedTags);
+    }
+
+    // screens without arguments, e.g. search, are open only once, screens with them, e.g. song lyric, can be open more times
+    if (arguments == null && providers.read(appNavigatorObserverProvider).isPathInStack(routeName)) {
+      popUntil(routeName);
+
+      return null;
+    }
+
+    return Navigator.of(this).pushNamed(routeName, arguments: arguments);
+  }
+
+  // each search screen restores selected tags of the previous one when it is closed, so new search is always pushed
+  Future<T?> pushSearch<T extends Object?>({List<Tag> initialTags = const [], SearchScreenArguments? arguments}) {
+    providers.read(selectedTagsProvider.notifier).push(initialTags: initialTags);
+
+    return Navigator.of(this).pushNamed('/search', arguments: arguments);
+  }
+
+  void pop<T>([T? result]) {
+    Navigator.of(this).pop(result);
+  }
+
+  void popUntil(String routeName) {
+    Navigator.of(this).popUntil((route) => route.settings.name == routeName);
+  }
+
+  Future<T?> popAndPush<T extends Object?>(String routeName, {Object? arguments}) {
+    return Navigator.of(this).popAndPushNamed(routeName, arguments: arguments);
+  }
+
+  void maybePop<T>([T? result]) {
+    Navigator.of(this).maybePop(result);
+  }
+}

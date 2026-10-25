@@ -1,0 +1,310 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+part of '../tags.dart';
+
+// **************************************************************************
+// RiverpodGenerator
+// **************************************************************************
+
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
+@ProviderFor(tag)
+final tagProvider = TagFamily._();
+
+final class TagProvider extends $FunctionalProvider<Tag?, Tag?, Tag?>
+    with $Provider<Tag?> {
+  TagProvider._({required TagFamily super.from, required int super.argument})
+    : super(
+        retry: null,
+        name: r'tagProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$tagHash();
+
+  @override
+  String toString() {
+    return r'tagProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  $ProviderElement<Tag?> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  Tag? create(Ref ref) {
+    final argument = this.argument as int;
+    return tag(ref, argument);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Tag? value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<Tag?>(value),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is TagProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$tagHash() => r'415f0496af28772c9735fa6e7f2dc8ef80c632de';
+
+final class TagFamily extends $Family
+    with $FunctionalFamilyOverride<Tag?, int> {
+  TagFamily._()
+    : super(
+        retry: null,
+        name: r'tagProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  TagProvider call(int id) => TagProvider._(argument: id, from: this);
+
+  @override
+  String toString() => r'tagProvider';
+}
+
+@ProviderFor(tags)
+final tagsProvider = TagsFamily._();
+
+final class TagsProvider
+    extends $FunctionalProvider<List<Tag>, List<Tag>, List<Tag>>
+    with $Provider<List<Tag>> {
+  TagsProvider._({
+    required TagsFamily super.from,
+    required TagType super.argument,
+  }) : super(
+         retry: null,
+         name: r'tagsProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$tagsHash();
+
+  @override
+  String toString() {
+    return r'tagsProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  $ProviderElement<List<Tag>> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  List<Tag> create(Ref ref) {
+    final argument = this.argument as TagType;
+    return tags(ref, argument);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(List<Tag> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<List<Tag>>(value),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is TagsProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$tagsHash() => r'4d11d6f3fdf2ec951edd6c4024651b16843f93e4';
+
+final class TagsFamily extends $Family
+    with $FunctionalFamilyOverride<List<Tag>, TagType> {
+  TagsFamily._()
+    : super(
+        retry: null,
+        name: r'tagsProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  TagsProvider call(TagType tagType) =>
+      TagsProvider._(argument: tagType, from: this);
+
+  @override
+  String toString() => r'tagsProvider';
+}
+
+@ProviderFor(SelectedTags)
+final selectedTagsProvider = SelectedTagsProvider._();
+
+final class SelectedTagsProvider
+    extends $NotifierProvider<SelectedTags, Set<Tag>> {
+  SelectedTagsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'selectedTagsProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$selectedTagsHash();
+
+  @$internal
+  @override
+  SelectedTags create() => SelectedTags();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Set<Tag> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<Set<Tag>>(value),
+    );
+  }
+}
+
+String _$selectedTagsHash() => r'2dfa0e6d08bc327545230531151cf51cf967a2a8';
+
+abstract class _$SelectedTags extends $Notifier<Set<Tag>> {
+  Set<Tag> build();
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref = this.ref as $Ref<Set<Tag>, Set<Tag>>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<Set<Tag>, Set<Tag>>,
+              Set<Tag>,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, build);
+  }
+}
+
+@ProviderFor(SelectedTagsByType)
+final selectedTagsByTypeProvider = SelectedTagsByTypeFamily._();
+
+final class SelectedTagsByTypeProvider
+    extends $NotifierProvider<SelectedTagsByType, Set<Tag>> {
+  SelectedTagsByTypeProvider._({
+    required SelectedTagsByTypeFamily super.from,
+    required TagType super.argument,
+  }) : super(
+         retry: null,
+         name: r'selectedTagsByTypeProvider',
+         isAutoDispose: false,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$selectedTagsByTypeHash();
+
+  @override
+  String toString() {
+    return r'selectedTagsByTypeProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  SelectedTagsByType create() => SelectedTagsByType();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Set<Tag> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<Set<Tag>>(value),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is SelectedTagsByTypeProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$selectedTagsByTypeHash() =>
+    r'4de8cf236965b0cb7288b9c7170f47e4fb96fc95';
+
+final class SelectedTagsByTypeFamily extends $Family
+    with
+        $ClassFamilyOverride<
+          SelectedTagsByType,
+          Set<Tag>,
+          Set<Tag>,
+          Set<Tag>,
+          TagType
+        > {
+  SelectedTagsByTypeFamily._()
+    : super(
+        retry: null,
+        name: r'selectedTagsByTypeProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: false,
+      );
+
+  SelectedTagsByTypeProvider call(TagType tagType) =>
+      SelectedTagsByTypeProvider._(argument: tagType, from: this);
+
+  @override
+  String toString() => r'selectedTagsByTypeProvider';
+}
+
+abstract class _$SelectedTagsByType extends $Notifier<Set<Tag>> {
+  late final _$args = ref.$arg as TagType;
+  TagType get tagType => _$args;
+
+  Set<Tag> build(TagType tagType);
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref = this.ref as $Ref<Set<Tag>, Set<Tag>>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<Set<Tag>, Set<Tag>>,
+              Set<Tag>,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, () => build(_$args));
+  }
+}

@@ -1,0 +1,114 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:proscholy_common/components/highlightable_widget.dart';
+import 'package:proscholy_common/components/navigation/utils.dart';
+import 'package:proscholy_common/components/split_view.dart';
+import 'package:proscholy_common/providers/menu_collapsed.dart';
+import 'package:proscholy_common/routing/arguments.dart';
+import 'package:proscholy_common/utils/extensions.dart';
+import 'package:proscholy_common/utils/hero_tags.dart';
+
+// checked using widget inspector tools
+const _navigationRailWidth = 80;
+
+class CustomNavigationRail extends StatelessWidget {
+  const CustomNavigationRail({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final mediaQuery = MediaQuery.of(context);
+
+    final displayCollapseMenuButton =
+        mediaQuery.size.width - _navigationRailWidth >
+            (kDefaultSplitViewChildMinWidth + kDefaultSplitViewDetailMinWidth) &&
+        (context.isPlaylist ||
+            (context.isDisplay &&
+                ((ModalRoute.of(context)?.settings.arguments as DisplayScreenArguments?)?.canShowMenu ?? false)));
+
+    // can't set `surfaceTintColor` for `NavigationRail`, so it is wrapped to match the app bar color
+    return Hero(
+      tag: HeroTags.navigationRail,
+      child: Container(
+        decoration: BoxDecoration(
+          boxShadow: [
+            if (context.isHome)
+              BoxShadow(
+                color: theme.shadowColor.withValues(alpha: 0.2),
+                spreadRadius: 0,
+                blurRadius: 6,
+                offset: const Offset(2, 0),
+              ),
+          ],
+        ),
+        child: Material(
+          color: context.isHome ? theme.colorScheme.surface : theme.colorScheme.surface,
+          elevation: 1,
+          surfaceTintColor: context.isHome ? null : theme.colorScheme.surfaceTint,
+          child: MediaQuery(
+            // remove bottom padding, as `NavigationRail` uses `SafeArea` and it moves destination items little bit when keyboard appears
+            data: mediaQuery.copyWith(padding: mediaQuery.padding.copyWith(bottom: 0)),
+            child: NavigationRail(
+              backgroundColor: Colors.transparent,
+              labelType: NavigationRailLabelType.all,
+              groupAlignment: context.isHome ? 0 : (displayCollapseMenuButton ? -0.125 : -0.065),
+              selectedIndex: _selectedIndex(context),
+              onDestinationSelected: (index) => onDestinationSelected(context, index),
+              leading: context.isHome
+                  ? null
+                  : Column(
+                      children: [
+                        Image.asset('assets/images/logos/logo.png'),
+                        if (displayCollapseMenuButton)
+                          HighlightableWidget(
+                            onTap: context.providers.read(menuCollapsedProvider.notifier).toggle,
+                            icon: Consumer(
+                              builder: (_, ref, _) => Icon(
+                                ref.watch(menuCollapsedProvider) ? Icons.menu : Icons.menu_open,
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+              destinations: const [
+                NavigationRailDestination(
+                  selectedIcon: Icon(Icons.home),
+                  icon: Icon(Icons.home_outlined),
+                  label: Text('Nástěnka'),
+                ),
+                NavigationRailDestination(
+                  icon: Icon(Icons.search),
+                  label: Text('Hledání'),
+                ),
+                NavigationRailDestination(
+                  icon: Icon(Icons.playlist_play_rounded),
+                  label: Text('Seznamy'),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // screens without own destination, e.g. songbooks, select none
+  int? _selectedIndex(BuildContext context) {
+    // display screen selects the same destination as the screen it was opened from
+    if (context.isDisplay) {
+      final arguments = ModalRoute.of(context)?.settings.arguments as DisplayScreenArguments?;
+
+      if (arguments?.showSearchScreen ?? false) return 1;
+      if (arguments?.playlist != null) return 2;
+      if (arguments?.songbook != null) return null;
+
+      return 0;
+    }
+
+    if (context.isHome) return 0;
+    if (context.isSearching) return 1;
+    if (context.isPlaylists || context.isPlaylist) return 2;
+
+    return null;
+  }
+}
