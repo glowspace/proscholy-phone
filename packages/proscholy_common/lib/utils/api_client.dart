@@ -25,13 +25,7 @@ query {
 // tags of other types are not shown, EZ and EK show no tags
 const _tagTypes = isZPS ? ['LITURGY_PART', 'LITURGY_PERIOD', 'SACRED_OCCASION', 'GENERIC', 'SAINTS'] : <String>[];
 
-final _updateQuery =
-    '''
-query {
-  authors {
-    id
-    name
-  }
+const _songbooksFields = '''
   songbooks {
     id
     name
@@ -39,7 +33,24 @@ query {
     color
     color_text
     is_private
+  }''';
+
+// records of updated song lyrics need their songbooks, so these are fetched during every update
+const _songbooksQuery =
+    '''
+query {
+$_songbooksFields
+}''';
+
+// lists of everything are fetched only once a day to find what was removed on server
+final _updateQuery =
+    '''
+query {
+  authors {
+    id
+    name
   }
+$_songbooksFields
   songs {
     id
   }
@@ -92,6 +103,7 @@ const _songLyricFields =
       pivot {
         author {
           id
+          name
         }
       }
     }
@@ -140,6 +152,10 @@ class ApiClient {
       ...data,
       'tags_enum': [for (final type in _tagTypes) ...?data[type]],
     };
+  }
+
+  Future<Map<String, dynamic>> getSongbooks() async {
+    return _query(QueryOptions(document: gql(_songbooksQuery)));
   }
 
   Future<Map<String, dynamic>> getSongLyrics(DateTime updatedAfter) async {

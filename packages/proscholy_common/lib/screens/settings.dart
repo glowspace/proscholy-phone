@@ -9,6 +9,7 @@ import 'package:proscholy_common/components/selector_widget.dart';
 import 'package:proscholy_common/constants.dart';
 import 'package:proscholy_common/links.dart';
 import 'package:proscholy_common/providers/settings.dart';
+import 'package:proscholy_common/providers/update.dart';
 import 'package:proscholy_common/routing/safe_area_wrapper.dart';
 import 'package:proscholy_common/utils/extensions.dart';
 import 'package:proscholy_common/utils/url_launcher.dart';
@@ -21,6 +22,8 @@ class SettingsScreen extends ConsumerWidget {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
 
+    final isUpdating = ref.watch(updateProvider).value is Updating;
+
     return SafeAreaWrapper(
       child: Scaffold(
         backgroundColor: theme.colorScheme.surfaceBright,
@@ -31,6 +34,13 @@ class SettingsScreen extends ConsumerWidget {
               children: [
                 _buildAppSettings(context, ref),
                 _buildSongSettings(context, ref),
+                HighlightableWidget(
+                  isEnabled: !isUpdating,
+                  onTap: ref.read(updateRequestsProvider.notifier).request,
+                  padding: const EdgeInsets.all(kDefaultPadding / 2),
+                  textStyle: theme.textTheme.bodySmall,
+                  child: Text(isUpdating ? 'Probíhá aktualizace písní' : 'Aktualizovat písně'),
+                ),
                 HighlightableWidget(
                   onTap: ref.read(settingsProvider.notifier).reset,
                   padding: const EdgeInsets.all(kDefaultPadding / 2),

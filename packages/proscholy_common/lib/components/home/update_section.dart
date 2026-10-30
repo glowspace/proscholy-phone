@@ -23,6 +23,11 @@ class _UpdateSectionState extends ConsumerState<UpdateSection> {
 
   @override
   Widget build(BuildContext context) {
+    // update requested in settings is shown, even when previous one was closed
+    ref.listen(updateProvider, (_, next) {
+      if (next.value is Updating) setState(() => _isHidden = false);
+    });
+
     return ref
         .watch(updateProvider)
         .when(

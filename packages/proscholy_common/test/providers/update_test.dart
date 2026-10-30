@@ -304,6 +304,71 @@ void main() {
       );
     });
 
+    test('fetches lists of everything only once a day', () async {
+      final appDependencies = await createAppDependencies(
+        preferences: {
+          'last_update': '2026-01-01 00:00:00',
+          'last_full_update': _dateFormat.format(DateTime.now().toUtc()),
+        },
+      );
+      final box = appDependencies.store.box<SongLyric>();
+
+      // song lyric 99 would be removed by full update
+      box.put(createSongLyric(id: 99));
+
+      when(() => client.getSongbooks()).thenAnswer((_) async => {Songbook.fieldKey: readTestData()[Songbook.fieldKey]});
+      when(() => client.getSongLyrics(any())).thenAnswer(
+        (_) async => {
+          SongLyric.fieldKey: [
+            <String, dynamic>{
+              ...songLyricsJson[1],
+              'authors_pivot': [
+                {
+                  'pivot': {
+                    'author': {'id': '99', 'name': 'Nový autor'},
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      );
+
+      await runUpdate(appDependencies);
+
+      verifyNever(() => client.getData());
+      expect(box.get(99), isNotNull);
+      expect(box.get(2)!.songbookRecords, isNotEmpty);
+      // new authors are searchable before the next full update
+      expect(appDependencies.store.box<Author>().get(99)!.name, 'Nový autor');
+      expect(await appDependencies.ftsDatabase.query('song_lyrics_search', where: 'rowid = 2'), [
+        containsPair('authors', 'Nový autor'),
+      ]);
+    });
+
+    test('update requested by user is full and starts right away', () async {
+      final now = _dateFormat.format(DateTime.now().toUtc());
+      final appDependencies = await createAppDependencies(
+        preferences: {'last_update': now, 'last_full_update': now},
+      );
+      final container = createUpdateContainer(appDependencies);
+      final states = <UpdateStatus>[];
+
+      when(() => client.getSongLyrics(any())).thenAnswer((_) async => {SongLyric.fieldKey: []});
+
+      container.listen(updateProvider, (_, state) {
+        if (state.value case final status?) states.add(status);
+      });
+      await pumpEventQueue();
+
+      expect(states, isEmpty);
+
+      container.read(updateRequestsProvider.notifier).request();
+
+      await eventually(() => expect(states, contains(isA<Updated>())));
+      verify(() => client.getData()).called(1);
+    });
+
     test('keeps relations of song lyrics and user data', () async {
       final appDependencies = await createAppDependencies(preferences: {'last_update': '2026-01-01 00:00:00'});
       final store = appDependencies.store;
