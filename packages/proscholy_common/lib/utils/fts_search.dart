@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:proscholy_common/custom/sqlite-bm25/bm25.dart';
 import 'package:proscholy_common/models/generated/objectbox.g.dart';
 import 'package:proscholy_common/models/song_lyric.dart';
+import 'package:proscholy_common/utils/data.dart';
 import 'package:sqflite/sqflite.dart';
 
 // [name, secondary_name_1, secondary_name_2, lyrics, authors, hymnology]
@@ -18,6 +19,8 @@ const _selectQuery =
     'SELECT rowid, matchinfo(song_lyrics_search, "pcnalx") as info FROM song_lyrics_search WHERE song_lyrics_search MATCH ?;';
 
 const _dropTableQuery = 'DROP TABLE song_lyrics_search';
+
+const _optimizeQuery = "INSERT INTO song_lyrics_search(song_lyrics_search) VALUES('optimize');";
 
 // full-text search of song lyrics, results are ranked by bm25
 class FTSSearch {
@@ -45,13 +48,19 @@ class FTSSearch {
         songLyric.displayName,
         songLyric.secondaryName1,
         songLyric.secondaryName2,
-        songLyric.lyrics,
+        songLyric.lyrics?.replaceAll(chordRE, ''),
         songLyric.authors.map((author) => author.name).join(','),
         songLyric.hymnology,
       ]);
     }
 
     await batch.commit();
+  }
+
+  // merges index into one segment and gives free space of database back, e.g. after index is built again
+  Future<void> compact() async {
+    await database.execute(_optimizeQuery);
+    await database.execute('VACUUM');
   }
 
   // song lyrics matching full-text `query` from the best one, the ones with id in `ignore` are left out

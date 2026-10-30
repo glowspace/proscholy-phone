@@ -80,6 +80,10 @@ void main() {
     expect((await search('bož chv')).songLyrics?.map((songLyric) => songLyric.id), [2]);
   });
 
+  test('chords are not searched', () async {
+    expect((await search('dmaj7')).songLyrics, isEmpty);
+  });
+
   test('match in name is ranked higher than match in lyrics', () async {
     expect((await search('krále')).songLyrics?.map((songLyric) => songLyric.id), [10, 1]);
   });

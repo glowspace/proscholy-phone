@@ -83,7 +83,7 @@ Future<void> loadInitial(AppDependencies appDependencies) async {
 
   // drop "song_lyrics_search" table as there might be change in structure from last version
   await appDependencies.ftsSearch.drop();
-  appDependencies.ftsSearch.update(songLyrics);
+  appDependencies.ftsSearch.update(songLyrics).then((_) => appDependencies.ftsSearch.compact());
 
   appDependencies.sharedPreferences.remove(_lastUpdateKey);
   appDependencies.sharedPreferences.remove(_lastFullUpdateKey);
