@@ -49,6 +49,6 @@ flutter:
         - asset: packages/proscholy_common/assets/fonts/Amiri-Regular.ttf
 
   assets:
-    - assets/data.json
+    - assets/data.json.gz
     - assets/svg.zip
     - assets/images/logos/

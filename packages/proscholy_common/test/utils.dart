@@ -62,7 +62,7 @@ class _FakeSvgs extends Svgs {
 
 TestDefaultBinaryMessenger get _messenger => TestWidgetsFlutterBinding.ensureInitialized().defaultBinaryMessenger;
 
-// data in the same format as API response and `assets/data.json` of the apps
+// data in the same format as API response and `assets/data.json.gz` of the apps
 Map<String, dynamic> readTestData() => jsonDecode(File('test/data/data.json').readAsStringSync())['data'];
 
 SongLyric createSongLyric({int id = 1, String name = 'Píseň', String? lyrics}) {
@@ -129,7 +129,7 @@ Future<List<SongLyric>> storeTestData(AppDependencies appDependencies) async {
     readJsonList(data[SongLyric.fieldKey], mapper: SongLyric.fromJson),
   );
 
-  await appDependencies.ftsSearch.update(songLyrics);
+  await appDependencies.ftsSearch.rebuild();
 
   return songLyrics;
 }

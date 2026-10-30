@@ -16,7 +16,6 @@ sealed class Song with _$Song implements Identifiable {
   @Entity(realClass: Song)
   const factory Song({
     @Id(assignable: true) @JsonKey(fromJson: int.parse) required int id,
-    required String name,
     @Backlink() @JsonKey(fromJson: _songLyricsFromJson) required ToMany<SongLyric> songLyrics,
   }) = _Song;
 

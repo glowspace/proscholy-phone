@@ -77,12 +77,6 @@ final _entities = <obx_int.ModelEntity>[
         type: 6,
         flags: 129,
       ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(2, 7814837987719399877),
-        name: 'name',
-        type: 9,
-        flags: 0,
-      ),
     ],
     relations: <obx_int.ModelRelation>[],
     backlinks: <obx_int.ModelBacklink>[
@@ -800,6 +794,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
       7347294181262392126,
       8592014509296857970,
       6957339251542960973,
+      7814837987719399877,
     ],
     retiredRelationUids: const [
       7916874752771113838,
@@ -897,10 +892,8 @@ obx_int.ModelDefinition getObjectBoxModel() {
         }
       },
       objectToFB: (Song object, fb.Builder fbb) {
-        final nameOffset = fbb.writeString(object.name);
         fbb.startTable(3);
         fbb.addInt64(0, object.id);
-        fbb.addOffset(1, nameOffset);
         fbb.finish(fbb.endTable());
         return object.id;
       },
@@ -913,15 +906,8 @@ obx_int.ModelDefinition getObjectBoxModel() {
           4,
           0,
         );
-        final nameParam = const fb.StringReader(
-          asciiOptimization: true,
-        ).vTableGet(buffer, rootOffset, 6, '');
         final songLyricsParam = obx.ToMany<SongLyric>();
-        final object = Song(
-          id: idParam,
-          name: nameParam,
-          songLyrics: songLyricsParam,
-        );
+        final object = Song(id: idParam, songLyrics: songLyricsParam);
         obx_int.InternalToManyAccess.setRelInfo<Song>(
           object.songLyrics,
           store,
@@ -1831,9 +1817,6 @@ class Tag_ {
 class Song_ {
   /// See [Song.id].
   static final id = obx.QueryIntegerProperty<Song>(_entities[1].properties[0]);
-
-  /// See [Song.name].
-  static final name = obx.QueryStringProperty<Song>(_entities[1].properties[1]);
 
   /// see [Song.songLyrics]
   static final songLyrics = obx.QueryBacklinkToMany<SongLyric, Song>(

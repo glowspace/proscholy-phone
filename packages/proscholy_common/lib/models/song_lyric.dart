@@ -212,7 +212,10 @@ ToOne<Song> _songFromJson(Map<String, dynamic>? json) {
 ToOne<SongLyricSettingsModel> _settingsFromJson(Map<String, dynamic>? json) => ToOne();
 
 ToMany<Author> _authorsFromJson(List<dynamic> jsonList) {
-  final authors = [for (final json in jsonList) Author(id: int.parse(json['pivot']['author']['id']), name: '')];
+  final authors = [
+    for (final json in jsonList)
+      Author(id: int.parse(json['pivot']['author']['id']), name: json['pivot']['author']['name'] ?? ''),
+  ];
 
   return ToMany(items: authors);
 }

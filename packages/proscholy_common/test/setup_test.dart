@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:proscholy_common/models/author.dart';
-import 'package:proscholy_common/models/song_lyric.dart';
 import 'package:proscholy_common/utils/fts_search.dart';
 
 import 'utils.dart';
@@ -18,8 +17,10 @@ void main() {
     final database = await openTestFtsDatabase();
     final store = await openTestStore();
 
-    await FTSSearch(database: database, songLyricsBox: store.box<SongLyric>()).update([]);
+    final ftsSearch = FTSSearch(database: database, store: store);
 
-    expect(await database.query('song_lyrics_search'), isEmpty);
+    await ftsSearch.rebuild();
+
+    expect(await ftsSearch.search('srdce'), isEmpty);
   });
 }

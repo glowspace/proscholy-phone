@@ -28,6 +28,7 @@ import 'package:proscholy_common/providers/svgs.dart';
 import 'package:proscholy_common/providers/update.dart';
 import 'package:proscholy_common/utils/api_client.dart';
 import 'package:proscholy_common/utils/data.dart';
+import 'package:proscholy_common/views/app_dependencies.dart';
 
 import '../utils.dart';
 
@@ -85,7 +86,7 @@ void main() {
   group('load initial', () {
     test('stores data from assets on first start', () async {
       await mockDocumentsDirectory();
-      mockAsset('assets/data.json', utf8.encode(jsonEncode({'data': readTestData()})));
+      mockAsset('assets/data.json.gz', gzip.encode(utf8.encode(jsonEncode({'data': readTestData()}))));
 
       final appDependencies = await createAppDependencies(preferences: {'last_update': '2026-01-01 00:00:00'});
 
@@ -96,7 +97,10 @@ void main() {
       expect(appDependencies.sharedPreferences.getString('last_update'), isNull);
 
       await eventually(() async {
-        expect(await appDependencies.ftsDatabase.query('song_lyrics_search'), hasLength(2));
+        expect(
+          (await appDependencies.ftsSearch.search('tebe')).map((songLyric) => songLyric.id),
+          unorderedEquals([1, 2]),
+        );
       });
     });
 
@@ -297,11 +301,104 @@ void main() {
       expect(box.get(1), isNotNull);
       expect(box.get(2)!.name, 'Bože, chválíme tebe');
 
-      expect(await appDependencies.ftsDatabase.query('song_lyrics_search'), hasLength(2));
+      expect(
+        (await appDependencies.ftsSearch.search('tebe')).map((songLyric) => songLyric.id),
+        unorderedEquals([1, 2]),
+      );
 
       await eventually(
         () => expect(appDependencies.sharedPreferences.getString('last_update'), isNot('2026-01-01 00:00:00')),
       );
+    });
+
+    test('fetches lists of everything only once a day', () async {
+      final appDependencies = await createAppDependencies(
+        preferences: {
+          'last_update': '2026-01-01 00:00:00',
+          'last_full_update': _dateFormat.format(DateTime.now().toUtc()),
+        },
+      );
+      final box = appDependencies.store.box<SongLyric>();
+
+      // song lyric 99 would be removed by full update
+      box.put(createSongLyric(id: 99));
+
+      when(() => client.getSongbooks()).thenAnswer((_) async => {Songbook.fieldKey: readTestData()[Songbook.fieldKey]});
+      when(() => client.getSongLyrics(any())).thenAnswer(
+        (_) async => {
+          SongLyric.fieldKey: [
+            <String, dynamic>{
+              ...songLyricsJson[1],
+              'authors_pivot': [
+                {
+                  'pivot': {
+                    'author': {'id': '99', 'name': 'Nový autor'},
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      );
+
+      await runUpdate(appDependencies);
+
+      verifyNever(() => client.getData());
+      expect(box.get(99), isNotNull);
+      expect(box.get(2)!.songbookRecords, isNotEmpty);
+      // new authors are searchable before the next full update
+      expect(appDependencies.store.box<Author>().get(99)!.name, 'Nový autor');
+      expect((await appDependencies.ftsSearch.search('autor')).map((songLyric) => songLyric.id), [2]);
+    });
+
+    test('songbook removed on server is removed with its records before the next full update', () async {
+      final appDependencies = await createAppDependencies(
+        preferences: {
+          'last_update': '2026-01-01 00:00:00',
+          'last_full_update': _dateFormat.format(DateTime.now().toUtc()),
+        },
+      );
+      final store = appDependencies.store;
+
+      await storeTestData(appDependencies);
+
+      store.box<Songbook>().put(Songbook(id: 99, name: 'Zpěvník', shortcut: 'Z', isPrivate: false, records: ToMany()));
+      store.box<SongbookRecord>().put(
+        SongbookRecord(id: 99, number: '1', songLyric: ToOne(targetId: 1), songbook: ToOne(targetId: 99)),
+      );
+
+      when(() => client.getSongbooks()).thenAnswer((_) async => {Songbook.fieldKey: readTestData()[Songbook.fieldKey]});
+      when(() => client.getSongLyrics(any())).thenAnswer((_) async => {SongLyric.fieldKey: []});
+
+      await runUpdate(appDependencies);
+
+      verifyNever(() => client.getData());
+      expect(store.box<Songbook>().get(99), isNull);
+      expect(store.box<SongbookRecord>().get(99), isNull);
+      expect(store.box<SongLyric>().get(1)!.songbookRecords, hasLength(3));
+    });
+
+    test('update requested by user is full and starts right away', () async {
+      final now = _dateFormat.format(DateTime.now().toUtc());
+      final appDependencies = await createAppDependencies(
+        preferences: {'last_update': now, 'last_full_update': now},
+      );
+      final container = createUpdateContainer(appDependencies);
+      final states = <UpdateStatus>[];
+
+      when(() => client.getSongLyrics(any())).thenAnswer((_) async => {SongLyric.fieldKey: []});
+
+      container.listen(updateProvider, (_, state) {
+        if (state.value case final status?) states.add(status);
+      });
+      await pumpEventQueue();
+
+      expect(states, isEmpty);
+
+      container.read(updateRequestsProvider.notifier).request();
+
+      await eventually(() => expect(states, contains(isA<Updated>())));
+      verify(() => client.getData()).called(1);
     });
 
     test('keeps relations of song lyrics and user data', () async {
@@ -347,7 +444,7 @@ void main() {
       await storeTestData(appDependencies);
 
       store.box<Author>().put(const Author(id: 99, name: 'Autor'));
-      store.box<Song>().put(Song(id: 99, name: 'Píseň', songLyrics: ToMany()));
+      store.box<Song>().put(Song(id: 99, songLyrics: ToMany()));
       store.box<Tag>().put(const Tag(id: 99, name: 'Štítek', dbType: 0, songLyricsCount: 1));
       store.box<Songbook>().put(Songbook(id: 99, name: 'Zpěvník', shortcut: 'Z', isPrivate: false, records: ToMany()));
       store.box<SongbookRecord>().put(

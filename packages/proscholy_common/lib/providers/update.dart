@@ -11,6 +11,7 @@ import 'package:proscholy_common/constants.dart';
 import 'package:proscholy_common/providers/svgs.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:proscholy_common/models/author.dart';
 import 'package:proscholy_common/models/news_item.dart';
 import 'package:proscholy_common/models/generated/objectbox.g.dart';
 import 'package:proscholy_common/models/playlist_record.dart';
@@ -27,9 +28,12 @@ part 'generated/update.g.dart';
 const _versionKey = 'current_version';
 
 const _lastUpdateKey = 'last_update';
-const _initialLastUpdate = isZPS ? '2026-10-18 13:40:00' : (isEZ ? '2026-10-18 13:41:00' : '2026-10-18 13:41:00');
+const _initialLastUpdate = isZPS ? '2026-10-30 12:05:47' : (isEZ ? '2026-10-30 12:05:47' : '2026-10-30 12:05:47');
+
+const _lastFullUpdateKey = 'last_full_update';
 
 const _updatePeriod = Duration(hours: 1);
+const _fullUpdatePeriod = Duration(days: 1);
 
 final _dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
 
@@ -65,29 +69,48 @@ Future<void> loadInitial(AppDependencies appDependencies) async {
 
   if (lastVersion == currentVersion) return;
 
-  final json = jsonDecode(await rootBundle.loadString('assets/data.json'));
+  // decoded while unpacking, so unpacked data and their string are never whole in memory
+  final bytes = (await rootBundle.load('assets/data.json.gz')).buffer.asUint8List();
+  final text = Stream<List<int>>.value(bytes).transform(gzip.decoder).transform(utf8.decoder);
+  final json = await text.transform(const JsonDecoder()).single as Map<String, dynamic>;
 
   await parseAndStoreData(appDependencies.store, json['data']);
 
-  final songLyrics = await storeSongLyrics(
+  await storeSongLyrics(
     appDependencies.store,
     readJsonList(json['data'][SongLyric.fieldKey], mapper: SongLyric.fromJson),
   );
 
-  // drop "song_lyrics_search" table as there might be change in structure from last version
-  await appDependencies.ftsSearch.drop();
-  appDependencies.ftsSearch.update(songLyrics);
+  // index is built in the background, until then search uses the index of previous version
+  appDependencies.ftsSearch.rebuild();
 
   appDependencies.sharedPreferences.remove(_lastUpdateKey);
+  appDependencies.sharedPreferences.remove(_lastFullUpdateKey);
   appDependencies.sharedPreferences.setString(_versionKey, currentVersion);
+}
+
+// time of last update, before the first one it is the time of data in assets
+DateTime lastUpdateOf(AppDependencies appDependencies) {
+  return _dateFormat.parseUtc(appDependencies.sharedPreferences.getString(_lastUpdateKey) ?? _initialLastUpdate);
+}
+
+// updates requested by user are full and start right away, e.g. for editors to see their changes
+@Riverpod(keepAlive: true)
+class UpdateRequests extends _$UpdateRequests {
+  @override
+  int build() => 0;
+
+  void request() => state++;
 }
 
 // update is not retried automatically, as all requests would be made again, it will be tried again later
 @Riverpod(retry: _noRetry)
 Stream<UpdateStatus> update(Ref ref) async* {
+  final isRequested = ref.watch(updateRequestsProvider) > 0;
+
   try {
     // `yield*` would pass errors directly to listeners, so they could not be caught here
-    await for (final status in _update(ref)) {
+    await for (final status in _update(ref, isRequested: isRequested)) {
       yield status;
     }
   } catch (error) {
@@ -110,7 +133,7 @@ bool _isConnectionError(Object? error) {
   };
 }
 
-Stream<UpdateStatus> _update(Ref ref) async* {
+Stream<UpdateStatus> _update(Ref ref, {required bool isRequested}) async* {
   final client = ref.read(graphQLClientProvider);
   final appDependencies = ref.read(appDependenciesProvider);
 
@@ -125,20 +148,27 @@ Stream<UpdateStatus> _update(Ref ref) async* {
 
   // check if update should happen
   final now = DateTime.now().toUtc();
-  final lastUpdate = _dateFormat.parseUtc(
-    appDependencies.sharedPreferences.getString(_lastUpdateKey) ?? _initialLastUpdate,
-  );
+  final lastUpdate = lastUpdateOf(appDependencies);
 
-  if (now.isBefore(lastUpdate.add(_updatePeriod))) return;
+  if (!isRequested && now.isBefore(lastUpdate.add(_updatePeriod))) return;
 
   yield const Updating();
 
-  final data = await client.getData();
+  final lastFullUpdate = appDependencies.sharedPreferences.getString(_lastFullUpdateKey);
+  final isFullUpdate =
+      isRequested ||
+      lastFullUpdate == null ||
+      !now.isBefore(_dateFormat.parseUtc(lastFullUpdate).add(_fullUpdatePeriod));
+
+  final data = isFullUpdate ? await client.getData() : await client.getSongbooks();
 
   if (ref.mounted) ref.read(svgsProvider.notifier).storeSvgs(await client.getSvgs(lastUpdate));
 
   await parseAndStoreData(appDependencies.store, data);
   removeMissingData(appDependencies.store, data);
+
+  // ids of all song lyrics on server come only with full update
+  final List<dynamic> songLyricsOnServer = data[SongLyric.fieldKey] ?? [];
 
   // query existing song lyrics to check song lyrics that are missing in local db or that were removed on server
   final box = appDependencies.store.box<SongLyric>();
@@ -149,7 +179,7 @@ Stream<UpdateStatus> _update(Ref ref) async* {
 
   final missingSongLyricIds = <int>{};
 
-  for (final songLyric in data['song_lyrics']) {
+  for (final songLyric in songLyricsOnServer) {
     final id = int.parse(songLyric['id']);
 
     // arrangements are not stored, so they would be always missing and fetched again during every update
@@ -160,7 +190,7 @@ Stream<UpdateStatus> _update(Ref ref) async* {
 
   // remove song lyrics that were removed on server, empty list is more likely an error on server, it would remove
   // song lyrics from all playlists
-  if (data['song_lyrics'].isNotEmpty) {
+  if (songLyricsOnServer.isNotEmpty) {
     box.removeMany(existingSongLyricsIds.toList());
 
     // on iOS also remove them from spotlight indexing
@@ -188,17 +218,23 @@ Stream<UpdateStatus> _update(Ref ref) async* {
 
   songLyrics.addAll((await Future.wait(futures)).nonNulls);
 
+  // authors come with song lyrics too, so their names are stored and searchable before the next full update
+  await appDependencies.store.box<Author>().putManyAsync([
+    for (final songLyric in songLyrics) ...songLyric.authors.where((author) => author.name.isNotEmpty),
+  ]);
+
   final updatedSongLyrics = await storeSongLyrics(appDependencies.store, songLyrics);
 
   // records of song lyrics that are neither stored nor on server would be never shown, e.g. arrangements or song lyrics
   // from shared playlist of other app, the ones that failed to download are kept
-  if (data['song_lyrics'].isNotEmpty) _removeRecordsOfUnavailableSongLyrics(appDependencies.store, missingSongLyricIds);
+  if (songLyricsOnServer.isNotEmpty) _removeRecordsOfUnavailableSongLyrics(appDependencies.store, missingSongLyricIds);
 
-  await appDependencies.ftsSearch.update(updatedSongLyrics);
+  if (updatedSongLyrics.isNotEmpty) await appDependencies.ftsSearch.rebuild();
 
   yield Updated(updatedSongLyrics);
 
   appDependencies.sharedPreferences.setString(_lastUpdateKey, _dateFormat.format(now));
+  if (isFullUpdate) appDependencies.sharedPreferences.setString(_lastFullUpdateKey, _dateFormat.format(now));
 }
 
 // returns null, when song lyric could not be fetched

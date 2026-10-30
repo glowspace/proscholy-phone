@@ -1,4 +1,4 @@
-// benchmarks of storing, updating and searching data of the app, `../<app>/assets/data.json` is used as data
+// benchmarks of storing, updating and searching data of the app, `../<app>/assets/data.json.gz` is used as data
 // flutter test benchmark/data_benchmark_test.dart --dart-define=ZPEVNIK_TARGET=ZPS
 import 'dart:async';
 import 'dart:convert';
@@ -60,7 +60,7 @@ void main() {
 
     sqfliteFfiInit();
     ftsDatabase = await databaseFactoryFfi.openDatabase('${directory.path}/fts.db');
-    ftsSearch = FTSSearch(database: ftsDatabase, songLyricsBox: store.box<SongLyric>());
+    ftsSearch = FTSSearch(database: ftsDatabase, store: store);
   });
 
   tearDownAll(() async {
@@ -72,13 +72,17 @@ void main() {
   });
 
   test('loading data of the app on first start', () async {
-    final jsonString = await benchmark.measure(
-      'read data.json',
-      appDataFile.readAsString,
+    final bytes = await benchmark.measure(
+      'read data.json.gz',
+      appDataFile.readAsBytes,
       info: {'bytes': appDataFile.lengthSync()},
     );
 
-    data = await benchmark.measure('decode data.json', () async => jsonDecode(jsonString)['data']);
+    data = await benchmark.measure('decode data.json.gz', () async {
+      final text = Stream<List<int>>.value(bytes).transform(gzip.decoder).transform(utf8.decoder);
+
+      return (await text.transform(const JsonDecoder()).single as Map)['data'];
+    });
 
     await benchmark.measure('store authors, songs, songbooks and tags', () => parseAndStoreData(store, data));
 
@@ -99,7 +103,7 @@ void main() {
       'songbook records': store.box<SongbookRecord>().count(),
     });
 
-    await benchmark.measure('build search index', () => ftsSearch.update(storedSongLyrics));
+    await benchmark.measure('build search index', ftsSearch.rebuild, blocking: true);
   });
 
   test('loading data of new version of the app', () async {
@@ -127,12 +131,9 @@ void main() {
       blocking: true,
     );
 
-    final storedUpdatedSongLyrics = await storeSongLyrics(store, updatedSongLyrics);
+    await storeSongLyrics(store, updatedSongLyrics);
 
-    await benchmark.measure(
-      'update search index with 200 song lyrics',
-      () => ftsSearch.update(storedUpdatedSongLyrics),
-    );
+    await benchmark.measure('build search index again after update', ftsSearch.rebuild, blocking: true);
   });
 
   test('lyrics parser', () async {

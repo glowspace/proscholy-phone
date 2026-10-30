@@ -12,13 +12,14 @@ import 'package:proscholy_common/models/tag.dart';
 import 'package:proscholy_common/models/utils.dart';
 import 'package:proscholy_common/utils/services/spotlight.dart';
 
-final _chordRE = RegExp(r'\[[^\]]+\]');
+final chordRE = RegExp(r'\[[^\]]+\]');
 
+// lists missing in `json` are left as they are
 Future<void> parseAndStoreData(Store store, Map<String, dynamic> json) async {
-  final authors = readJsonList(json[Author.fieldKey], mapper: Author.fromJson);
-  final songs = readJsonList(json[Song.fieldKey], mapper: Song.fromJson);
-  final songbooks = readJsonList(json[Songbook.fieldKey], mapper: Songbook.fromJson);
-  final tags = readJsonList(json['tags_enum'], mapper: Tag.fromJson);
+  final authors = readJsonList(json[Author.fieldKey] ?? [], mapper: Author.fromJson);
+  final songs = readJsonList(json[Song.fieldKey] ?? [], mapper: Song.fromJson);
+  final songbooks = readJsonList(json[Songbook.fieldKey] ?? [], mapper: Songbook.fromJson);
+  final tags = readJsonList(json['tags_enum'] ?? [], mapper: Tag.fromJson);
 
   await Future.wait([
     store.box<Author>().putManyAsync(authors),
@@ -106,7 +107,7 @@ Future<List<SongLyric>> storeSongLyrics(Store store, List<SongLyric> songLyrics)
             (songLyric) => SpotlightItem(
               identifier: 'song_lyric_${songLyric.id}',
               title: songLyric.name,
-              description: songLyric.lyrics?.replaceAll(_chordRE, '') ?? '',
+              description: songLyric.lyrics?.replaceAll(chordRE, '') ?? '',
             ),
           )
           .toList(),

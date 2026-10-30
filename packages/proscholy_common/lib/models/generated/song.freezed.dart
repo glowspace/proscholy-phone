@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Song {
 
-@Id(assignable: true)@JsonKey(fromJson: int.parse) int get id; String get name;@Backlink()@JsonKey(fromJson: _songLyricsFromJson) ToMany<SongLyric> get songLyrics;
+@Id(assignable: true)@JsonKey(fromJson: int.parse) int get id;@Backlink()@JsonKey(fromJson: _songLyricsFromJson) ToMany<SongLyric> get songLyrics;
 /// Create a copy of Song
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,7 +29,7 @@ $SongCopyWith<Song> get copyWith => _$SongCopyWithImpl<Song>(this as Song, _$ide
 
 @override
 String toString() {
-  return 'Song(id: $id, name: $name, songLyrics: $songLyrics)';
+  return 'Song(id: $id, songLyrics: $songLyrics)';
 }
 
 
@@ -40,7 +40,7 @@ abstract mixin class $SongCopyWith<$Res>  {
   factory $SongCopyWith(Song value, $Res Function(Song) _then) = _$SongCopyWithImpl;
 @useResult
 $Res call({
-@Id(assignable: true)@JsonKey(fromJson: int.parse) int id, String name,@Backlink()@JsonKey(fromJson: _songLyricsFromJson) ToMany<SongLyric> songLyrics
+@Id(assignable: true)@JsonKey(fromJson: int.parse) int id,@Backlink()@JsonKey(fromJson: _songLyricsFromJson) ToMany<SongLyric> songLyrics
 });
 
 
@@ -57,11 +57,10 @@ class _$SongCopyWithImpl<$Res>
 
 /// Create a copy of Song
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? songLyrics = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? songLyrics = null,}) {
   return _then(Song(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,songLyrics: null == songLyrics ? _self.songLyrics : songLyrics // ignore: cast_nullable_to_non_nullable
+as int,songLyrics: null == songLyrics ? _self.songLyrics : songLyrics // ignore: cast_nullable_to_non_nullable
 as ToMany<SongLyric>,
   ));
 }
@@ -144,10 +143,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@Id(assignable: true)@JsonKey(fromJson: int.parse)  int id,  String name, @Backlink()@JsonKey(fromJson: _songLyricsFromJson)  ToMany<SongLyric> songLyrics)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@Id(assignable: true)@JsonKey(fromJson: int.parse)  int id, @Backlink()@JsonKey(fromJson: _songLyricsFromJson)  ToMany<SongLyric> songLyrics)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Song() when $default != null:
-return $default(_that.id,_that.name,_that.songLyrics);case _:
+return $default(_that.id,_that.songLyrics);case _:
   return orElse();
 
 }
@@ -165,10 +164,10 @@ return $default(_that.id,_that.name,_that.songLyrics);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@Id(assignable: true)@JsonKey(fromJson: int.parse)  int id,  String name, @Backlink()@JsonKey(fromJson: _songLyricsFromJson)  ToMany<SongLyric> songLyrics)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@Id(assignable: true)@JsonKey(fromJson: int.parse)  int id, @Backlink()@JsonKey(fromJson: _songLyricsFromJson)  ToMany<SongLyric> songLyrics)  $default,) {final _that = this;
 switch (_that) {
 case _Song():
-return $default(_that.id,_that.name,_that.songLyrics);}
+return $default(_that.id,_that.songLyrics);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -182,10 +181,10 @@ return $default(_that.id,_that.name,_that.songLyrics);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@Id(assignable: true)@JsonKey(fromJson: int.parse)  int id,  String name, @Backlink()@JsonKey(fromJson: _songLyricsFromJson)  ToMany<SongLyric> songLyrics)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@Id(assignable: true)@JsonKey(fromJson: int.parse)  int id, @Backlink()@JsonKey(fromJson: _songLyricsFromJson)  ToMany<SongLyric> songLyrics)?  $default,) {final _that = this;
 switch (_that) {
 case _Song() when $default != null:
-return $default(_that.id,_that.name,_that.songLyrics);case _:
+return $default(_that.id,_that.songLyrics);case _:
   return null;
 
 }
@@ -197,11 +196,10 @@ return $default(_that.id,_that.name,_that.songLyrics);case _:
 @JsonSerializable(createToJson: false)
 @Entity(realClass: Song)
 class _Song extends Song {
-  const _Song({@Id(assignable: true)@JsonKey(fromJson: int.parse) required this.id, required this.name, @Backlink()@JsonKey(fromJson: _songLyricsFromJson) required this.songLyrics}): super._();
+  const _Song({@Id(assignable: true)@JsonKey(fromJson: int.parse) required this.id, @Backlink()@JsonKey(fromJson: _songLyricsFromJson) required this.songLyrics}): super._();
   factory _Song.fromJson(Map<String, dynamic> json) => _$SongFromJson(json);
 
 @override@Id(assignable: true)@JsonKey(fromJson: int.parse) final  int id;
-@override final  String name;
 @override@Backlink()@JsonKey(fromJson: _songLyricsFromJson) final  ToMany<SongLyric> songLyrics;
 
 /// Create a copy of Song
@@ -216,7 +214,7 @@ _$SongCopyWith<_Song> get copyWith => __$SongCopyWithImpl<_Song>(this, _$identit
 
 @override
 String toString() {
-  return 'Song(id: $id, name: $name, songLyrics: $songLyrics)';
+  return 'Song(id: $id, songLyrics: $songLyrics)';
 }
 
 
@@ -227,7 +225,7 @@ abstract mixin class _$SongCopyWith<$Res> implements $SongCopyWith<$Res> {
   factory _$SongCopyWith(_Song value, $Res Function(_Song) _then) = __$SongCopyWithImpl;
 @override @useResult
 $Res call({
-@Id(assignable: true)@JsonKey(fromJson: int.parse) int id, String name,@Backlink()@JsonKey(fromJson: _songLyricsFromJson) ToMany<SongLyric> songLyrics
+@Id(assignable: true)@JsonKey(fromJson: int.parse) int id,@Backlink()@JsonKey(fromJson: _songLyricsFromJson) ToMany<SongLyric> songLyrics
 });
 
 
@@ -244,11 +242,10 @@ class __$SongCopyWithImpl<$Res>
 
 /// Create a copy of Song
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? songLyrics = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? songLyrics = null,}) {
   return _then(_Song(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,songLyrics: null == songLyrics ? _self.songLyrics : songLyrics // ignore: cast_nullable_to_non_nullable
+as int,songLyrics: null == songLyrics ? _self.songLyrics : songLyrics // ignore: cast_nullable_to_non_nullable
 as ToMany<SongLyric>,
   ));
 }

@@ -48,7 +48,7 @@ void main() {
 
     await parseAndStoreData(appDependencies.store, data);
 
-    final songLyrics = await storeSongLyrics(
+    await storeSongLyrics(
       appDependencies.store,
       [
         ...readJsonList(data[SongLyric.fieldKey], mapper: SongLyric.fromJson),
@@ -56,7 +56,7 @@ void main() {
       ],
     );
 
-    await appDependencies.ftsSearch.update(songLyrics);
+    await appDependencies.ftsSearch.rebuild();
 
     container = createContainer(appDependencies, overrides: [svgsProvider.overrideWith(_FakeSvgs.new)]);
     container.listen(searchedSongLyricsProvider, (_, _) {});
@@ -78,6 +78,10 @@ void main() {
   test('searches by word prefixes', () async {
     expect((await search('chvál')).songLyrics?.map((songLyric) => songLyric.id), unorderedEquals([2, 10]));
     expect((await search('bož chv')).songLyrics?.map((songLyric) => songLyric.id), [2]);
+  });
+
+  test('chords are not searched', () async {
+    expect((await search('dmaj7')).songLyrics, isEmpty);
   });
 
   test('match in name is ranked higher than match in lyrics', () async {

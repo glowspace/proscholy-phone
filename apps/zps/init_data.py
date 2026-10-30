@@ -1,10 +1,16 @@
+import gzip
+import io
 import requests
 import json
 import time
+import zipfile
 
 url = 'https://zpevnik.proscholy.cz/graphql'
 
 headers = {'Content-type': 'application/json'}
+
+# tags of other types are not shown in the app
+tag_types = ['LITURGY_PART', 'LITURGY_PERIOD', 'SACRED_OCCASION', 'GENERIC', 'SAINTS']
 
 all_data = {
     'query': '''query {
@@ -28,7 +34,6 @@ all_data = {
         }
         songs {
             id
-            name
         }
     }'''
 }
@@ -104,10 +109,30 @@ for i in range(100):
 
     time.sleep(0.1)
 
-with open('assets/data.json', 'w') as file:
-    json.dump(data, file)
+data['data']['tags_enum'] = [tag for tag in data['data']['tags_enum'] if tag['type_enum'] in tag_types]
 
+# only authors of song lyrics in the app
+author_ids = {
+    author['pivot']['author']['id'] for song_lyric in data['data']['song_lyrics'] for author in song_lyric['authors_pivot']
+}
+data['data']['authors'] = [author for author in data['data']['authors'] if author['id'] in author_ids]
 
+# compressed and without escaped characters, as the app keeps it in its assets
+with gzip.open('assets/data.json.gz', 'wt', encoding='utf-8') as file:
+    json.dump(data, file, ensure_ascii=False, separators=(',', ':'))
 
-with open('assets/svg.zip', 'wb') as file:
-    file.write(requests.get('https://zpevnik.proscholy.cz/download-svgs').content)
+# server exports empty archive at the moment, the archive in assets is kept then
+svgs = requests.get('https://zpevnik.proscholy.cz/download-svgs').content
+
+if not zipfile.ZipFile(io.BytesIO(svgs)).namelist():
+    with open('assets/svg.zip', 'rb') as file:
+        svgs = file.read()
+
+# only music notes of song lyrics in the app
+song_lyric_ids = {song_lyric['id'] for song_lyric in data['data']['song_lyrics']}
+
+with zipfile.ZipFile(io.BytesIO(svgs)) as source, zipfile.ZipFile('assets/svg.zip', 'w') as target:
+    # archive might contain a file more times, the app keeps the last one
+    for info in {info.filename: info for info in source.infolist()}.values():
+        if info.filename.split('.')[0] in song_lyric_ids:
+            target.writestr(info, source.read(info))

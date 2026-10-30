@@ -36,7 +36,7 @@ dart format $(git ls-files 'lib/*.dart' 'test/*.dart' | grep -v -e '/generated/'
 flutter test --dart-define=ZPEVNIK_TARGET=ZPS
 flutter test test/setup_test.dart --plain-name 'objectbox store' --dart-define=ZPEVNIK_TARGET=ZPS
 
-# benchmarks with assets/data.json of the app in ../../apps, results are saved to build/benchmarks
+# benchmarks with assets/data.json.gz of the app in ../../apps, results are saved to build/benchmarks
 flutter test benchmark --dart-define=ZPEVNIK_TARGET=ZPS
 # requests to API run only on demand, as they load the server
 flutter test benchmark/api_benchmark_test.dart --dart-define=ZPEVNIK_TARGET=ZPS --dart-define=LIVE_API=true
@@ -60,10 +60,11 @@ issue fails) and runs tests for every target. Format only handwritten files, gen
 - **State** is Riverpod 3 with code generation (`@riverpod`) in `lib/providers`. Providers read the store through
   helpers in `lib/providers/utils.dart`.
 - **Data flow** (`lib/providers/update.dart`):
-  - On first start of a new app version, `loadInitial` imports the app's `assets/data.json` snapshot (ZPS creates it
+  - On first start of a new app version, `loadInitial` imports the app's `assets/data.json.gz` snapshot (ZPS creates it
     with `init_data.py`) into ObjectBox and rebuilds the FTS index.
   - Afterwards `updateProvider` asks the GraphQL API (`lib/utils/client.dart`) at most once an hour for changes since
-    `last_update`. When a new `data.json` is generated, bump `_initialLastUpdate` for that target.
+    `last_update`, and once a day (or when requested in settings) for lists of everything to find what was removed on
+    server. When a new `data.json.gz` is generated, bump `_initialLastUpdate` for that target.
 - **Search** (`lib/providers/search.dart`) combines a FTS4 table `song_lyrics_search` ranked by bm25
   (`lib/custom/sqlite-bm25`) with matching by song id (ZPS only) and songbook number.
 - **Routing** is Navigator 1 with `AppRouter.generateRoute` (`lib/routing/router.dart`). Internal routes are English.
