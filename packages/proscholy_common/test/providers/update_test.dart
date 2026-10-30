@@ -346,6 +346,33 @@ void main() {
       ]);
     });
 
+    test('songbook removed on server is removed with its records before the next full update', () async {
+      final appDependencies = await createAppDependencies(
+        preferences: {
+          'last_update': '2026-01-01 00:00:00',
+          'last_full_update': _dateFormat.format(DateTime.now().toUtc()),
+        },
+      );
+      final store = appDependencies.store;
+
+      await storeTestData(appDependencies);
+
+      store.box<Songbook>().put(Songbook(id: 99, name: 'Zpěvník', shortcut: 'Z', isPrivate: false, records: ToMany()));
+      store.box<SongbookRecord>().put(
+        SongbookRecord(id: 99, number: '1', songLyric: ToOne(targetId: 1), songbook: ToOne(targetId: 99)),
+      );
+
+      when(() => client.getSongbooks()).thenAnswer((_) async => {Songbook.fieldKey: readTestData()[Songbook.fieldKey]});
+      when(() => client.getSongLyrics(any())).thenAnswer((_) async => {SongLyric.fieldKey: []});
+
+      await runUpdate(appDependencies);
+
+      verifyNever(() => client.getData());
+      expect(store.box<Songbook>().get(99), isNull);
+      expect(store.box<SongbookRecord>().get(99), isNull);
+      expect(store.box<SongLyric>().get(1)!.songbookRecords, hasLength(3));
+    });
+
     test('update requested by user is full and starts right away', () async {
       final now = _dateFormat.format(DateTime.now().toUtc());
       final appDependencies = await createAppDependencies(
