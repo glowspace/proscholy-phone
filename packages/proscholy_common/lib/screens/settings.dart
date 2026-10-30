@@ -16,7 +16,7 @@ import 'package:proscholy_common/routing/safe_area_wrapper.dart';
 import 'package:proscholy_common/utils/extensions.dart';
 import 'package:proscholy_common/utils/url_launcher.dart';
 
-final _lastUpdateFormat = DateFormat("d. M. y 'v' H:mm");
+final _lastUpdateFormat = DateFormat("d.M. 'v' H:mm");
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -182,7 +182,7 @@ class SettingsScreen extends ConsumerWidget {
         ListTile(
           title: Text('Aktualizovat písně', style: textTheme.bodyMedium),
           subtitle: Text(
-            isUpdating ? 'Probíhá aktualizace' : 'Naposledy aktualizováno ${_lastUpdateFormat.format(lastUpdate)}',
+            isUpdating ? 'Probíhá aktualizace' : 'Aktualizováno ${_lastUpdateFormat.format(lastUpdate)}',
             style: textTheme.bodySmall,
           ),
           trailing: isUpdating
