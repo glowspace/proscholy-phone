@@ -20,7 +20,14 @@ class Settings extends _$Settings {
 
     listenSelf((_, next) => prefs.setString(_settingsKey, jsonEncode(next)));
 
-    if (settingsData != null) return GlobalSettings.fromJson(jsonDecode(settingsData));
+    if (settingsData != null) {
+      final settings = GlobalSettings.fromJson(jsonDecode(settingsData));
+
+      // previous versions could save index out of range of speeds
+      return settings.copyWith(
+        autoScrollSpeedIndex: settings.autoScrollSpeedIndex.clamp(0, autoScrollSpeeds.length - 1),
+      );
+    }
 
     return defaultGlobalSettings;
   }
@@ -43,9 +50,13 @@ class Settings extends _$Settings {
 
   void changeAccidentals(int accidentals) => state = state.copyWith(accidentals: accidentals);
 
-  void decreaseAutoScrollSpeedIndex() => state = state.copyWith(autoScrollSpeedIndex: state.autoScrollSpeedIndex - 1);
+  void decreaseAutoScrollSpeedIndex() => state = state.copyWith(
+    autoScrollSpeedIndex: (state.autoScrollSpeedIndex - 1).clamp(0, autoScrollSpeeds.length - 1),
+  );
 
-  void increaseAutoScrollSpeedIndex() => state = state.copyWith(autoScrollSpeedIndex: state.autoScrollSpeedIndex + 1);
+  void increaseAutoScrollSpeedIndex() => state = state.copyWith(
+    autoScrollSpeedIndex: (state.autoScrollSpeedIndex + 1).clamp(0, autoScrollSpeeds.length - 1),
+  );
 
   void changeSeedColor(int color) => state = state.copyWith(seedColor: color);
 

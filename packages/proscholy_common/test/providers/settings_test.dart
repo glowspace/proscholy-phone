@@ -56,6 +56,30 @@ void main() {
       container.read(settingsProvider.notifier).changeFontSizeScale(0);
       expect(container.read(settingsProvider).fontSizeScale, kMinimumFontSizeScale);
     });
+
+    test('auto scroll speed index stays within speeds', () async {
+      final appDependencies = await createAppDependencies(
+        preferences: {
+          'settings':
+              '{"seedColor":4284955319,"fontSizeScale":1.0,"showChords":true,"showMusicalNotes":true,"accidentals":0,'
+              '"autoScrollSpeedIndex":13}',
+        },
+      );
+
+      final container = createContainer(appDependencies);
+      container.listen(settingsProvider, (_, _) {});
+      final notifier = container.read(settingsProvider.notifier);
+
+      expect(container.read(settingsProvider).autoScrollSpeedIndex, autoScrollSpeeds.length - 1);
+
+      notifier.increaseAutoScrollSpeedIndex();
+      expect(container.read(settingsProvider).autoScrollSpeedIndex, autoScrollSpeeds.length - 1);
+
+      for (var i = 0; i < autoScrollSpeeds.length; i++) {
+        notifier.decreaseAutoScrollSpeedIndex();
+      }
+      expect(container.read(settingsProvider).autoScrollSpeedIndex, 0);
+    });
   });
 
   group('song lyric settings', () {
