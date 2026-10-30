@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:gql/ast.dart';
 import 'package:gql/language.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:proscholy_common/constants.dart';
 import 'package:proscholy_common/utils/api_client.dart';
 
 class _FakeLink extends Link {
@@ -28,6 +29,12 @@ class _FakeLink extends Link {
           ],
           'song_lyrics': [],
           'song_lyric': {'__typename': 'SongLyric', 'id': '1'},
+          'LITURGY_PART': [
+            {'__typename': 'Tag', 'id': '1'},
+          ],
+          'SAINTS': [
+            {'__typename': 'Tag', 'id': '2'},
+          ],
         },
         response: const {},
       ),
@@ -88,6 +95,13 @@ void main() {
 
     expect(link.requests[0].variables, {'updated_after': '2026-01-02 03:04:05'});
     expect(link.requests[1].variables, {'id': 1});
+  });
+
+  // ZPS shows only some types of tags, EZ and EK show none
+  test('tags of each type are merged into one list', () async {
+    final data = await ApiClient(link: _FakeLink()).getData();
+
+    expect(data['tags_enum'], hasLength(isZPS ? 2 : 0));
   });
 
   // widget test is used for its fake time

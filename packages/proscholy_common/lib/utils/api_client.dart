@@ -22,7 +22,11 @@ query {
   }
 }''';
 
-const _updateQuery = '''
+// tags of other types are not shown, EZ and EK show no tags
+const _tagTypes = isZPS ? ['LITURGY_PART', 'LITURGY_PERIOD', 'SACRED_OCCASION', 'GENERIC', 'SAINTS'] : <String>[];
+
+final _updateQuery =
+    '''
 query {
   authors {
     id
@@ -37,19 +41,13 @@ query {
     is_private
   }
   songs {
-      id
-      name
+    id
   }
   song_lyrics {
     id
     is_arrangement
   }
-  tags_enum {
-    id
-    name
-    type_enum
-    song_lyrics_count
-  }
+${[for (final type in _tagTypes) '  $type: tags_enum(type: $type) { id name type_enum song_lyrics_count }'].join('\n')}
 }''';
 
 // same fields are needed for updated and missing song lyrics
@@ -135,7 +133,13 @@ class ApiClient {
   }
 
   Future<Map<String, dynamic>> getData() async {
-    return _query(QueryOptions(document: gql(_updateQuery)));
+    final data = await _query(QueryOptions(document: gql(_updateQuery)));
+
+    // tags of each type come in their own list
+    return {
+      ...data,
+      'tags_enum': [for (final type in _tagTypes) ...?data[type]],
+    };
   }
 
   Future<Map<String, dynamic>> getSongLyrics(DateTime updatedAfter) async {

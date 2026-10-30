@@ -29,7 +29,7 @@ void main() {
 
     expect(songLyric.authors.map((author) => author.name), unorderedEquals(['Tomáš Coufal', 'Jana Hlavsová']));
     expect(songLyric.tags.map((tag) => tag.name), unorderedEquals(['chvály', 'závěr']));
-    expect(songLyric.song.target?.name, 'Otwórz me oczy o Panie');
+    expect(songLyric.song.target?.id, 2560);
     expect(songLyric.externals.map((external) => external.songLyric.targetId), [1, 1]);
     expect(
       songLyric.songbookRecords.map((songbookRecord) => songbookRecord.songbook.target?.shortcut),

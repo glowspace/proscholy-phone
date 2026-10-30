@@ -106,7 +106,6 @@ void main() {
           );
       final song = Song(
         id: 1,
-        name: 'Song',
         songLyrics: ToMany(items: [original]),
       );
       final translation = createSongLyric().copyWith(dbType: 2, song: ToOne(target: song));

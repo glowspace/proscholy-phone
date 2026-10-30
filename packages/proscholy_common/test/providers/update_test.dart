@@ -347,7 +347,7 @@ void main() {
       await storeTestData(appDependencies);
 
       store.box<Author>().put(const Author(id: 99, name: 'Autor'));
-      store.box<Song>().put(Song(id: 99, name: 'Píseň', songLyrics: ToMany()));
+      store.box<Song>().put(Song(id: 99, songLyrics: ToMany()));
       store.box<Tag>().put(const Tag(id: 99, name: 'Štítek', dbType: 0, songLyricsCount: 1));
       store.box<Songbook>().put(Songbook(id: 99, name: 'Zpěvník', shortcut: 'Z', isPrivate: false, records: ToMany()));
       store.box<SongbookRecord>().put(
