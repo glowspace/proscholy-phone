@@ -1,4 +1,4 @@
-// benchmarks of storing, updating and searching data of the app, `../<app>/assets/data.json` is used as data
+// benchmarks of storing, updating and searching data of the app, `../<app>/assets/data.json.gz` is used as data
 // flutter test benchmark/data_benchmark_test.dart --dart-define=ZPEVNIK_TARGET=ZPS
 import 'dart:async';
 import 'dart:convert';
@@ -72,13 +72,17 @@ void main() {
   });
 
   test('loading data of the app on first start', () async {
-    final jsonString = await benchmark.measure(
-      'read data.json',
-      appDataFile.readAsString,
+    final bytes = await benchmark.measure(
+      'read data.json.gz',
+      appDataFile.readAsBytes,
       info: {'bytes': appDataFile.lengthSync()},
     );
 
-    data = await benchmark.measure('decode data.json', () async => jsonDecode(jsonString)['data']);
+    data = await benchmark.measure('decode data.json.gz', () async {
+      final text = Stream<List<int>>.value(bytes).transform(gzip.decoder).transform(utf8.decoder);
+
+      return (await text.transform(const JsonDecoder()).single as Map)['data'];
+    });
 
     await benchmark.measure('store authors, songs, songbooks and tags', () => parseAndStoreData(store, data));
 

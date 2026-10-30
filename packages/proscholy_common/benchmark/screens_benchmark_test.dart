@@ -1,7 +1,8 @@
-// benchmarks of screens with data of the app, `../<app>/assets/data.json` is used as data
+// benchmarks of screens with data of the app, `../<app>/assets/data.json.gz` is used as data
 // they run in test environment, so only building, layout and painting are measured, without GPU
 // flutter test benchmark/screens_benchmark_test.dart --dart-define=ZPEVNIK_TARGET=ZPS
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,7 +26,7 @@ void main() {
   testWidgets('screens with data of the app', (tester) async {
     final (appDependencies, longestSongLyric) = (await tester.runAsync(() async {
       final appDependencies = await createAppDependencies();
-      final data = jsonDecode(appDataFile.readAsStringSync())['data'];
+      final data = jsonDecode(utf8.decode(gzip.decode(appDataFile.readAsBytesSync())))['data'];
 
       await parseAndStoreData(appDependencies.store, data);
 

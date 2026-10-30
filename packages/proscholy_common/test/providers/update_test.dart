@@ -85,7 +85,7 @@ void main() {
   group('load initial', () {
     test('stores data from assets on first start', () async {
       await mockDocumentsDirectory();
-      mockAsset('assets/data.json', utf8.encode(jsonEncode({'data': readTestData()})));
+      mockAsset('assets/data.json.gz', gzip.encode(utf8.encode(jsonEncode({'data': readTestData()}))));
 
       final appDependencies = await createAppDependencies(preferences: {'last_update': '2026-01-01 00:00:00'});
 

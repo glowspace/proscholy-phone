@@ -28,7 +28,7 @@ part 'generated/update.g.dart';
 const _versionKey = 'current_version';
 
 const _lastUpdateKey = 'last_update';
-const _initialLastUpdate = isZPS ? '2026-10-18 13:40:00' : (isEZ ? '2026-10-18 13:41:00' : '2026-10-18 13:41:00');
+const _initialLastUpdate = isZPS ? '2026-10-30 12:05:47' : (isEZ ? '2026-10-30 12:05:47' : '2026-10-30 12:05:47');
 
 const _lastFullUpdateKey = 'last_full_update';
 
@@ -69,7 +69,10 @@ Future<void> loadInitial(AppDependencies appDependencies) async {
 
   if (lastVersion == currentVersion) return;
 
-  final json = jsonDecode(await rootBundle.loadString('assets/data.json'));
+  // decoded while unpacking, so unpacked data and their string are never whole in memory
+  final bytes = (await rootBundle.load('assets/data.json.gz')).buffer.asUint8List();
+  final text = Stream<List<int>>.value(bytes).transform(gzip.decoder).transform(utf8.decoder);
+  final json = await text.transform(const JsonDecoder()).single as Map<String, dynamic>;
 
   await parseAndStoreData(appDependencies.store, json['data']);
 

@@ -8,9 +8,9 @@ import 'package:proscholy_common/constants.dart';
 const _appsDirectory = String.fromEnvironment('APPS_DIRECTORY', defaultValue: '../../apps');
 
 const _dataPaths = {
-  'ZPS': '$_appsDirectory/zps/assets/data.json',
-  'EZ': '$_appsDirectory/ez/assets/data.json',
-  'EK': '$_appsDirectory/ek/assets/data.json',
+  'ZPS': '$_appsDirectory/zps/assets/data.json.gz',
+  'EZ': '$_appsDirectory/ez/assets/data.json.gz',
+  'EK': '$_appsDirectory/ek/assets/data.json.gz',
 };
 
 String get target => isZPS ? 'ZPS' : (isEZ ? 'EZ' : 'EK');
