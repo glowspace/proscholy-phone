@@ -89,6 +89,11 @@ Future<void> loadInitial(AppDependencies appDependencies) async {
   appDependencies.sharedPreferences.setString(_versionKey, currentVersion);
 }
 
+// time of last update, before the first one it is the time of data in assets
+DateTime lastUpdateOf(AppDependencies appDependencies) {
+  return _dateFormat.parseUtc(appDependencies.sharedPreferences.getString(_lastUpdateKey) ?? _initialLastUpdate);
+}
+
 // updates requested by user are full and start right away, e.g. for editors to see their changes
 @Riverpod(keepAlive: true)
 class UpdateRequests extends _$UpdateRequests {
@@ -143,9 +148,7 @@ Stream<UpdateStatus> _update(Ref ref, {required bool isRequested}) async* {
 
   // check if update should happen
   final now = DateTime.now().toUtc();
-  final lastUpdate = _dateFormat.parseUtc(
-    appDependencies.sharedPreferences.getString(_lastUpdateKey) ?? _initialLastUpdate,
-  );
+  final lastUpdate = lastUpdateOf(appDependencies);
 
   if (!isRequested && now.isBefore(lastUpdate.add(_updatePeriod))) return;
 

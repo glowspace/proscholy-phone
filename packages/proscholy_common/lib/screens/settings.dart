@@ -1,6 +1,7 @@
 import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:proscholy_common/components/custom/close_button.dart';
 import 'package:proscholy_common/components/font_size_slider.dart';
 import 'package:proscholy_common/components/highlightable_widget.dart';
@@ -8,11 +9,14 @@ import 'package:proscholy_common/components/section.dart';
 import 'package:proscholy_common/components/selector_widget.dart';
 import 'package:proscholy_common/constants.dart';
 import 'package:proscholy_common/links.dart';
+import 'package:proscholy_common/providers/app_dependencies.dart';
 import 'package:proscholy_common/providers/settings.dart';
 import 'package:proscholy_common/providers/update.dart';
 import 'package:proscholy_common/routing/safe_area_wrapper.dart';
 import 'package:proscholy_common/utils/extensions.dart';
 import 'package:proscholy_common/utils/url_launcher.dart';
+
+final _lastUpdateFormat = DateFormat("d. M. y 'v' H:mm");
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -21,8 +25,6 @@ class SettingsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
-
-    final isUpdating = ref.watch(updateProvider).value is Updating;
 
     return SafeAreaWrapper(
       child: Scaffold(
@@ -34,13 +36,7 @@ class SettingsScreen extends ConsumerWidget {
               children: [
                 _buildAppSettings(context, ref),
                 _buildSongSettings(context, ref),
-                HighlightableWidget(
-                  isEnabled: !isUpdating,
-                  onTap: ref.read(updateRequestsProvider.notifier).request,
-                  padding: const EdgeInsets.all(kDefaultPadding / 2),
-                  textStyle: theme.textTheme.bodySmall,
-                  child: Text(isUpdating ? 'Probíhá aktualizace písní' : 'Aktualizovat písně'),
-                ),
+                _buildUpdate(context, ref),
                 HighlightableWidget(
                   onTap: ref.read(settingsProvider.notifier).reset,
                   padding: const EdgeInsets.all(kDefaultPadding / 2),
@@ -168,6 +164,32 @@ class SettingsScreen extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [Text('Velikost písma'), FontSizeSlider()],
           ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildUpdate(BuildContext context, WidgetRef ref) {
+    final textTheme = Theme.of(context).textTheme;
+
+    final isUpdating = ref.watch(updateProvider).value is Updating;
+    final lastUpdate = lastUpdateOf(ref.read(appDependenciesProvider)).toLocal();
+
+    return Section(
+      outsideTitle: 'Aktualizace',
+      margin: const EdgeInsets.all(kDefaultPadding),
+      children: [
+        ListTile(
+          title: Text('Aktualizovat písně', style: textTheme.bodyMedium),
+          subtitle: Text(
+            isUpdating ? 'Probíhá aktualizace' : 'Naposledy aktualizováno ${_lastUpdateFormat.format(lastUpdate)}',
+            style: textTheme.bodySmall,
+          ),
+          trailing: isUpdating
+              ? const SizedBox.square(dimension: 24, child: CircularProgressIndicator(strokeWidth: 2))
+              : const Icon(Icons.refresh),
+          onTap: isUpdating ? null : ref.read(updateRequestsProvider.notifier).request,
+          contentPadding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
         ),
       ],
     );

@@ -14,6 +14,9 @@ void main() {
 
     await tester.ensureVisible(find.text('Aktualizovat písně'));
     await tester.pumpAndSettle();
+
+    expect(find.textContaining('Naposledy aktualizováno'), findsOneWidget);
+
     await tester.tap(find.text('Aktualizovat písně'));
     await tester.pump();
 
