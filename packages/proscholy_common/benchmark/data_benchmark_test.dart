@@ -60,7 +60,7 @@ void main() {
 
     sqfliteFfiInit();
     ftsDatabase = await databaseFactoryFfi.openDatabase('${directory.path}/fts.db');
-    ftsSearch = FTSSearch(database: ftsDatabase, songLyricsBox: store.box<SongLyric>());
+    ftsSearch = FTSSearch(database: ftsDatabase, store: store);
   });
 
   tearDownAll(() async {
@@ -103,7 +103,7 @@ void main() {
       'songbook records': store.box<SongbookRecord>().count(),
     });
 
-    await benchmark.measure('build search index', () => ftsSearch.update(storedSongLyrics));
+    await benchmark.measure('build search index', ftsSearch.rebuild, blocking: true);
   });
 
   test('loading data of new version of the app', () async {
@@ -131,12 +131,9 @@ void main() {
       blocking: true,
     );
 
-    final storedUpdatedSongLyrics = await storeSongLyrics(store, updatedSongLyrics);
+    await storeSongLyrics(store, updatedSongLyrics);
 
-    await benchmark.measure(
-      'update search index with 200 song lyrics',
-      () => ftsSearch.update(storedUpdatedSongLyrics),
-    );
+    await benchmark.measure('build search index again after update', ftsSearch.rebuild, blocking: true);
   });
 
   test('lyrics parser', () async {

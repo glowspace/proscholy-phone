@@ -35,7 +35,7 @@ void main() {
         readJsonList(data[SongLyric.fieldKey], mapper: SongLyric.fromJson),
       );
 
-      await appDependencies.ftsSearch.update(songLyrics);
+      await appDependencies.ftsSearch.rebuild();
 
       final longestSongLyric = songLyrics.reduce(
         (a, b) => (a.lyrics?.length ?? 0) >= (b.lyrics?.length ?? 0) ? a : b,

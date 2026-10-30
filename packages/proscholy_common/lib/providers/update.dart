@@ -76,14 +76,13 @@ Future<void> loadInitial(AppDependencies appDependencies) async {
 
   await parseAndStoreData(appDependencies.store, json['data']);
 
-  final songLyrics = await storeSongLyrics(
+  await storeSongLyrics(
     appDependencies.store,
     readJsonList(json['data'][SongLyric.fieldKey], mapper: SongLyric.fromJson),
   );
 
-  // drop "song_lyrics_search" table as there might be change in structure from last version
-  await appDependencies.ftsSearch.drop();
-  appDependencies.ftsSearch.update(songLyrics).then((_) => appDependencies.ftsSearch.compact());
+  // index is built in the background, until then search uses the index of previous version
+  appDependencies.ftsSearch.rebuild();
 
   appDependencies.sharedPreferences.remove(_lastUpdateKey);
   appDependencies.sharedPreferences.remove(_lastFullUpdateKey);
@@ -227,7 +226,7 @@ Stream<UpdateStatus> _update(Ref ref, {required bool isRequested}) async* {
   // from shared playlist of other app, the ones that failed to download are kept
   if (songLyricsOnServer.isNotEmpty) _removeRecordsOfUnavailableSongLyrics(appDependencies.store, missingSongLyricIds);
 
-  await appDependencies.ftsSearch.update(updatedSongLyrics);
+  if (updatedSongLyrics.isNotEmpty) await appDependencies.ftsSearch.rebuild();
 
   yield Updated(updatedSongLyrics);
 

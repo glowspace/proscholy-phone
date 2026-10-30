@@ -28,6 +28,7 @@ import 'package:proscholy_common/providers/svgs.dart';
 import 'package:proscholy_common/providers/update.dart';
 import 'package:proscholy_common/utils/api_client.dart';
 import 'package:proscholy_common/utils/data.dart';
+import 'package:proscholy_common/views/app_dependencies.dart';
 
 import '../utils.dart';
 
@@ -96,7 +97,10 @@ void main() {
       expect(appDependencies.sharedPreferences.getString('last_update'), isNull);
 
       await eventually(() async {
-        expect(await appDependencies.ftsDatabase.query('song_lyrics_search'), hasLength(2));
+        expect(
+          (await appDependencies.ftsSearch.search('tebe')).map((songLyric) => songLyric.id),
+          unorderedEquals([1, 2]),
+        );
       });
     });
 
@@ -297,7 +301,10 @@ void main() {
       expect(box.get(1), isNotNull);
       expect(box.get(2)!.name, 'Bože, chválíme tebe');
 
-      expect(await appDependencies.ftsDatabase.query('song_lyrics_search'), hasLength(2));
+      expect(
+        (await appDependencies.ftsSearch.search('tebe')).map((songLyric) => songLyric.id),
+        unorderedEquals([1, 2]),
+      );
 
       await eventually(
         () => expect(appDependencies.sharedPreferences.getString('last_update'), isNot('2026-01-01 00:00:00')),
@@ -341,9 +348,7 @@ void main() {
       expect(box.get(2)!.songbookRecords, isNotEmpty);
       // new authors are searchable before the next full update
       expect(appDependencies.store.box<Author>().get(99)!.name, 'Nový autor');
-      expect(await appDependencies.ftsDatabase.query('song_lyrics_search', where: 'rowid = 2'), [
-        containsPair('authors', 'Nový autor'),
-      ]);
+      expect((await appDependencies.ftsSearch.search('autor')).map((songLyric) => songLyric.id), [2]);
     });
 
     test('songbook removed on server is removed with its records before the next full update', () async {

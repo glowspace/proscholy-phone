@@ -129,7 +129,7 @@ Future<List<SongLyric>> storeTestData(AppDependencies appDependencies) async {
     readJsonList(data[SongLyric.fieldKey], mapper: SongLyric.fromJson),
   );
 
-  await appDependencies.ftsSearch.update(songLyrics);
+  await appDependencies.ftsSearch.rebuild();
 
   return songLyrics;
 }

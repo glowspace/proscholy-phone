@@ -48,7 +48,7 @@ void main() {
 
     await parseAndStoreData(appDependencies.store, data);
 
-    final songLyrics = await storeSongLyrics(
+    await storeSongLyrics(
       appDependencies.store,
       [
         ...readJsonList(data[SongLyric.fieldKey], mapper: SongLyric.fromJson),
@@ -56,7 +56,7 @@ void main() {
       ],
     );
 
-    await appDependencies.ftsSearch.update(songLyrics);
+    await appDependencies.ftsSearch.rebuild();
 
     container = createContainer(appDependencies, overrides: [svgsProvider.overrideWith(_FakeSvgs.new)]);
     container.listen(searchedSongLyricsProvider, (_, _) {});
