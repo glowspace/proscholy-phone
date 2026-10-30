@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:proscholy_common/components/song_lyric/song_lyric_row.dart';
@@ -11,9 +12,11 @@ import 'package:proscholy_common/models/tag.dart';
 import 'package:proscholy_common/providers/app_dependencies.dart';
 import 'package:proscholy_common/providers/tags.dart';
 import 'package:proscholy_common/screens/display.dart';
+import 'package:proscholy_common/screens/home.dart';
 import 'package:proscholy_common/screens/playlist.dart';
 import 'package:proscholy_common/screens/playlists.dart';
 import 'package:proscholy_common/screens/search.dart';
+import 'package:proscholy_common/screens/songbook.dart';
 import 'package:proscholy_common/utils/services/external_actions.dart';
 import 'package:proscholy_common/views/tag.dart';
 
@@ -22,7 +25,7 @@ import '../utils.dart';
 void main() {
   setUpAll(mockFirebase);
 
-  Future<void> pumpNavigation(WidgetTester tester) async {
+  Future<void> pumpNavigation(WidgetTester tester, {String route = '/'}) async {
     final appDependencies = (await tester.runAsync(() async {
       final appDependencies = await createAppDependencies();
 
@@ -43,7 +46,7 @@ void main() {
       return appDependencies;
     }))!;
 
-    await pumpApp(tester, appDependencies);
+    await pumpApp(tester, appDependencies, route: route);
   }
 
   Future<void> tapDestination(WidgetTester tester, String label) async {
@@ -207,5 +210,52 @@ void main() {
     expect(findInStack(PlaylistsScreen), findsNothing);
     expect(findInStack(PlaylistScreen), findsNothing);
     expect(selectedTagNames(tester), isEmpty);
+  });
+
+  testWidgets('link opens its screen above home', (tester) async {
+    final handlesBack = <bool>[];
+    tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(SystemChannels.platform, (call) async {
+      if (call.method == 'SystemNavigator.setFrameworkHandlesBack') handlesBack.add(call.arguments as bool);
+
+      return null;
+    });
+    addTearDown(() => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(SystemChannels.platform, null));
+    // app tells Android whether it handles back only when it has lifecycle state
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+
+    await pumpNavigation(tester, route: 'https://zpevnik.proscholy.cz/zpevnik/9/chvalozpevy-3');
+
+    expect(find.byType(SongbookScreen), findsOneWidget);
+    expect(findInStack(HomeScreen), findsOneWidget);
+    // otherwise back on Android closes the app instead of going home
+    expect(handlesBack.last, isTrue);
+  });
+
+  // opened files are handled by `ExternalActionsService`, but their uri is also used as initial route
+  testWidgets('opened file opens only home', (tester) async {
+    await pumpNavigation(tester, route: 'content://com.microsoft.office.outlook.fileprovider/attachment/hodina.docx');
+
+    expect(find.byType(HomeScreen), findsOneWidget);
+    expect(ExternalActionsService.instance.navigatorKey.currentState!.canPop(), isFalse);
+  });
+
+  // Android starts the gesture with the linked screen fully shown, so heroes measure home right away
+  testWidgets('back gesture on screen opened by link', (tester) async {
+    await pumpNavigation(tester, route: '/zpevnik/9/chvalozpevy-3');
+
+    await tester.binding.defaultBinaryMessenger.handlePlatformMessage(
+      SystemChannels.backGesture.name,
+      SystemChannels.backGesture.codec.encodeMethodCall(
+        const MethodCall('startBackGesture', {
+          'touchOffset': [5.0, 300.0],
+          'progress': 0.0,
+          'swipeEdge': 0,
+        }),
+      ),
+      (_) {},
+    );
+    await tester.pump();
+
+    expect(tester.takeException(), isNull);
   });
 }

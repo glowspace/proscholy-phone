@@ -37,10 +37,15 @@ final class AppRouter {
     final uri = Uri.tryParse(initialRoute);
     final isLink = uri != null && (!uri.hasScheme || uri.isScheme('http') || uri.isScheme('https'));
 
-    return [
-      generateRoute(const RouteSettings(name: '/')),
-      if (initialRoute != '/' && isLink) generateRoute(RouteSettings(name: initialRoute)),
-    ];
+    final home = generateRoute(const RouteSettings(name: '/'));
+
+    // home has to be laid out before the link covers it, as heroes of back gesture measure it right away,
+    // and the link is pushed after navigator reports from the first frame that it can't pop
+    if (initialRoute != '/' && isLink) {
+      WidgetsBinding.instance.endOfFrame.then((_) => home.navigator?.pushNamed(initialRoute));
+    }
+
+    return [home];
   }
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
