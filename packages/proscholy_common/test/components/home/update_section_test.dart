@@ -8,25 +8,39 @@ import 'package:proscholy_common/providers/update.dart';
 import '../../utils.dart';
 
 void main() {
-  Future<void> pumpUpdateSection(WidgetTester tester, Stream<UpdateStatus> update) async {
+  var updates = 0;
+
+  setUp(() => updates = 0);
+
+  Future<void> pumpUpdateSection(
+    WidgetTester tester,
+    Stream<UpdateStatus> update, {
+    Widget body = const UpdateSection(),
+  }) async {
     final appDependencies = await tester.runAsync(createAppDependencies);
 
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
           appDependenciesProvider.overrideWithValue(appDependencies!),
-          updateProvider.overrideWith((_) => update),
+          updateProvider.overrideWith((_) {
+            updates++;
+            return update;
+          }),
         ],
         // disable automatic retry, so that no retry timer is left pending after test
         retry: (_, _) => null,
-        child: const MaterialApp(home: Scaffold(body: UpdateSection())),
+        child: MaterialApp(home: Scaffold(body: body)),
       ),
     );
     await tester.pump();
   }
 
   bool isShowing(WidgetTester tester) {
-    return tester.widget<AnimatedCrossFade>(find.byType(AnimatedCrossFade)).crossFadeState == CrossFadeState.showFirst;
+    // closed section has no height, so it is offstage
+    final crossFade = tester.widget<AnimatedCrossFade>(find.byType(AnimatedCrossFade, skipOffstage: false));
+
+    return crossFade.crossFadeState == CrossFadeState.showFirst;
   }
 
   testWidgets('shows progress during update', (tester) async {
@@ -75,6 +89,31 @@ void main() {
     await tester.tap(find.byIcon(Icons.close));
     await tester.pump();
 
+    expect(isShowing(tester), isFalse);
+  });
+
+  // on phones sections of home are in a lazy list, which disposes the ones that are scrolled away
+  testWidgets('keeps update and its closing, when scrolled away', (tester) async {
+    await pumpUpdateSection(
+      tester,
+      Stream.value(Updated([createSongLyric(id: 1, lyrics: 'text')])),
+      body: CustomScrollView(
+        slivers: [
+          SliverList.list(children: const [UpdateSection(), SizedBox(height: 2000)]),
+        ],
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byIcon(Icons.close));
+    await tester.pumpAndSettle();
+
+    await tester.drag(find.byType(CustomScrollView), const Offset(0, -1500));
+    await tester.pumpAndSettle();
+    await tester.drag(find.byType(CustomScrollView), const Offset(0, 1500));
+    await tester.pumpAndSettle();
+
+    expect(updates, 1);
     expect(isShowing(tester), isFalse);
   });
 }

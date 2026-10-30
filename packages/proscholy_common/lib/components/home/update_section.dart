@@ -18,11 +18,17 @@ class UpdateSection extends ConsumerStatefulWidget {
   ConsumerState<UpdateSection> createState() => _UpdateSectionState();
 }
 
-class _UpdateSectionState extends ConsumerState<UpdateSection> {
+class _UpdateSectionState extends ConsumerState<UpdateSection> with AutomaticKeepAliveClientMixin {
   bool _isHidden = false;
+
+  // lazy list of home on phones would dispose the section with its update, when it is scrolled away
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     // update requested in settings is shown, even when previous one was closed
     ref.listen(updateProvider, (_, next) {
       if (next.value is Updating) setState(() => _isHidden = false);
