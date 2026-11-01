@@ -88,6 +88,13 @@ void main() {
     expect((await search('krále')).songLyrics?.map((songLyric) => songLyric.id), [10, 1]);
   });
 
+  // e.g. `"` starts a phrase and OR joins words in full-text query
+  test('searches text with characters and words of full-text query syntax', () async {
+    expect((await search('srdce"')).songLyrics?.map((songLyric) => songLyric.id), [1]);
+    expect((await search('(bož - chv')).songLyrics?.map((songLyric) => songLyric.id), [2]);
+    expect((await search('OR 8')).searchedNumber, '8');
+  });
+
   test('searches by number', () async {
     final result = await search('8');
 

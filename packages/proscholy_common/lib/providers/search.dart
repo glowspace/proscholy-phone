@@ -22,6 +22,8 @@ part 'generated/search.g.dart';
 final _numberRE = RegExp(r'[1-9]\d*[A-Z]?');
 // number in songbook preceded by shortcut of the songbook, e.g. "EZ 12"
 final _shortcutNumberRE = RegExp(r'^(\S+)\s+([1-9]\d*[A-Z]?)$');
+// in index characters other than letters and digits only separate words, in query they could be operators, e.g. `"`
+final _wordSeparatorRE = RegExp(r'[^\p{L}\p{M}\p{N}]+', unicode: true);
 
 @riverpod
 class SearchText extends _$SearchText {
@@ -76,9 +78,7 @@ class SearchedSongLyrics extends _$SearchedSongLyrics {
     SongLyric? matchedById;
     final matchedBySongbookNumber = <SongLyric>[];
 
-    if (searchedNumber == null) {
-      searchText = '${searchText.replaceAll(' ', '* ')}*';
-    } else {
+    if (searchedNumber != null) {
       final shortcutNumberMatch = _shortcutNumberRE.firstMatch(searchText);
       final songbookIds = {
         if (shortcutNumberMatch != null)
@@ -123,7 +123,13 @@ class SearchedSongLyrics extends _$SearchedSongLyrics {
       }
     }
 
-    final songLyrics = await ref.read(appDependenciesProvider).ftsSearch.search(searchText, ignore: matchedIds);
+    final query = [
+      // quoted, so words like OR are not operators
+      for (final word in searchText.split(_wordSeparatorRE))
+        if (word.isNotEmpty) searchedNumber == null ? '"$word*"' : '"$word"',
+    ].join(' ');
+
+    final songLyrics = await ref.read(appDependenciesProvider).ftsSearch.search(query, ignore: matchedIds);
 
     return SearchedSongLyricsResult(
       songLyrics: songLyrics,
