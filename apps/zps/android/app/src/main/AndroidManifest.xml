@@ -67,6 +67,8 @@
                 <data android:mimeType="text/json"/>
                 <!-- type of files with unknown extension, e.g. .proscholy in file managers -->
                 <data android:mimeType="application/octet-stream"/>
+                <!-- type of .proscholy files shared from iOS, declared in Info.plist of the iOS app -->
+                <data android:mimeType="application/data"/>
             </intent-filter>
 
             <meta-data android:name="flutter_deeplinking_enabled" android:value="true" />
