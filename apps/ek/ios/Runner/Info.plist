@@ -124,7 +124,7 @@
 				</array>
 				<key>public.mime-type</key>
 				<array>
-					<string>application/data</string>
+					<string>application/json</string>
 				</array>
 			</dict>
 		</dict>
