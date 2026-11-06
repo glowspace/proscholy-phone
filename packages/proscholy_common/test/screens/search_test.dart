@@ -28,11 +28,12 @@ void main() {
     return appDependencies;
   }
 
+  Finder findSearchField() {
+    return find.descendant(of: find.byKey(const Key('searchfield')), matching: find.byType(TextField));
+  }
+
   Future<void> search(WidgetTester tester, String text) async {
-    await tester.enterText(
-      find.descendant(of: find.byKey(const Key('searchfield')), matching: find.byType(TextField)),
-      text,
-    );
+    await tester.enterText(findSearchField(), text);
   }
 
   Finder findSongLyricRow(int id) {
@@ -69,5 +70,19 @@ void main() {
     await tester.pumpAndSettle();
 
     expect((tester.widget(find.byType(DisplayScreen)) as DisplayScreen).items.single.id, 1);
+  });
+
+  testWidgets('keeps cursor in the middle of searched text while typing', (tester) async {
+    await pumpSearch(tester);
+
+    final container = ProviderScope.containerOf(tester.element(find.byType(SearchScreen)));
+
+    await search(tester, '13');
+    tester.testTextInput.updateEditingValue(
+      const TextEditingValue(text: '123', selection: TextSelection.collapsed(offset: 2)),
+    );
+    await pumpUntil(tester, () => container.read(searchedSongLyricsProvider).searchedNumber == '123');
+
+    expect(tester.widget<TextField>(findSearchField()).controller!.selection, const TextSelection.collapsed(offset: 2));
   });
 }
