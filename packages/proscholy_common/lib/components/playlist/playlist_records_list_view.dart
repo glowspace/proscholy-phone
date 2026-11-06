@@ -65,7 +65,8 @@ class _PlaylistRecordsListViewState extends ConsumerState<PlaylistRecordsListVie
 
           final selectedDisplayableItemArgumentsNotifier = SelectedDisplayableItemArguments.of(context, listen: false);
 
-          if (selectedDisplayableItemArgumentsNotifier != null) {
+          // display screen can't show an empty playlist, it keeps showing the last item
+          if (selectedDisplayableItemArgumentsNotifier != null && _recordsOrdered.isNotEmpty) {
             final displayableItems = _recordsOrdered.map(_unwrapPlaylistRecord).toList();
 
             for (int i = 0; i < displayableItems.length; i++) {
