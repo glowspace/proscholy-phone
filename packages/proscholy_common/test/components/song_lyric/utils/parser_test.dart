@@ -151,5 +151,18 @@ void main() {
     test('empty lines split verse', () {
       expect(_verses('1. první\n\n\ndruhý odstavec', 2), ['1. první', 'druhý odstavec']);
     });
+
+    test('empty lines split repeated refrain', () {
+      expect(_verses('1. sloka\n\nR: první\n\ndruhý odstavec\n\n2. druhá\n\nR.\n\n3. třetí', 8), [
+        '1. sloka',
+        'R: první',
+        'druhý odstavec',
+        '2. druhá',
+        'R: první',
+        'druhý odstavec',
+        '3. třetí',
+        '',
+      ]);
+    });
   });
 }

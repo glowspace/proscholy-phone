@@ -304,7 +304,15 @@ class _FilledTokensBuilder {
         final substitutes = verseSubstitutes[verseNumber] ?? verseSubstitutes[verseNumber.replaceFirst('.', ':')] ?? [];
 
         if (filledTokens.lastOrNull is! PresentationBreakpoint) filledTokens.add(PresentationBreakpoint(part++));
-        filledTokens.addAll(substitutes);
+        for (final substitute in substitutes) {
+          // empty line at the end of substituted verse doesn't start a new part
+          if (substitute is VerseEnd && filledTokens.last is PresentationBreakpoint) {
+            filledTokens.removeLast();
+            part--;
+          }
+
+          _fillToken(substitute);
+        }
         filledTokens.addAll(comments);
 
         return i;
